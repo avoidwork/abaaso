@@ -117,7 +117,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 			(!xmlHttp)?eval("return false"):void(0);
 
-			xmlHttp.onreadystatechange=function() { client.httpGet(id,xmlHttp,type); }
+			xmlHttp.onreadystatechange=function() { client.httpGet(id,xmlHttp,type); };
 			xmlHttp.open("GET",resource,true);
 			xmlHttp.send(null);
 		},
