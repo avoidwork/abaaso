@@ -7,7 +7,7 @@
  */
 
 /**
- * aFrame singleton, with RESTful caching.
+ * aFrame singleton
  */
 var aFrame=(aFrame)?aFrame:function()
 {
@@ -22,9 +22,8 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			case "object":
 				alert("sent in an array, expecting one back?");
-				//instances=[];
-				//return instances;
-				return null;
+				instances=[];
+				return instances;
 
 			case "string":
 			default:
@@ -34,7 +33,6 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * @param {Boolean} IE detection
-	 * @member pub
 	 */
 	ie=(document.all)?true:false;
 
@@ -44,60 +42,77 @@ var aFrame=(aFrame)?aFrame:function()
 	cache=[];
 
 	/**
+	 * @param {Boolean} CSS3 detection, kinda weak!
+	 */
+	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
+	
+	/**
+	 * Error class does stuff, eventually.
+	 */
+	err=
+	{
+	};
+	
+	/**
+	 * Calendar class will render a calendar, and act as a date picker.
+	 */
+	calendar=
+	{
+			clear:false,
+			date:new Date(),
+			dateMonths:new Array("January","February","March","April","May","June","July","August","September","October","November","December"),
+			datePattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
+	};
+	
+	/**
 	 * Client class contains methods to retrieve data.
-	 * @member pub
 	 */
 	client=
 	{
 
 		/**
 		 * Receives and caches the URI/xmlHttp response
-		 * @member client
+		 *  set attribute based on typeof maybe?
+		 *  @param {Integer} Target element ID.
+		 *  @param {String} Attribute to set with response.
+		 *  @param {Object} XMLHttp object.
+		 * @TODO add a timestamp for expiration.
 		 */
-		httpGet:function(obj,xmlHttp)
+		httpGet:function(obj,attribute,xmlHttp)
 		{
 			if (xmlHttp.readyState==4)
 			{
-						if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
+					if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
+					{
+						eval("cache[\""+obj+"\"]="+xmlHttp.responseText+";");
+						
+						if ($(obj))
 						{
-							eval("cache[\""+obj+"\"]="+xmlHttp.responseText+";");
-
-							// chain events here? not sure what to do atm.
-							/*switch(obj)
+							try
 							{
-								case "config":
-									eval("config=cache.json[\"config\"];");
-									(config.keyboard)?document.onkeydown=awFlickr.keyCode:void(0);
-									(!config.rightClick)?document.onmousedown=awFlickr.mouseCode:void(0);
-									awFlickr.sets(1);
-									awFlickr.set("photostream","photostream");
-									break;
-
-								case "sets":
-									eval("cache.sets=cache.json[\"sets\"];");
-									awFlickr.sets(1);
-									break;
-
-								default:
-									eval("cache.loaded=cache.json[\""+obj+"\"];");
-									client.cache();
-									break;
+								element.update($(obj),[[attribute,xmlHttp.responseText]]);
 							}
+							catch(err)
+							{
+								this.error(err);
+							};
 						}
-						break;
-
-					default:
-						document.getElementById(obj).innerHTML=(xmlHttp.status==200)?xmlHttp.responseText:"A server error has occurred";
-						break;*/
-				}
+						else
+						{
+							throw exception.err1;
+						}
+					}
+					else
+					{
+						throw exception.err2;
+					}
 			}
 		},
 
 		/**
 		 * Creates an xmlHttp request for a URI.
-		 * @member client
 		 */
-		httpRequest:function(id,resource,type)
+		httpRequest:function(id,attribute,uri,operation)
 		{
 			var xmlHttp=false;
 
@@ -117,14 +132,21 @@ var aFrame=(aFrame)?aFrame:function()
 
 			(!xmlHttp)?eval("return false"):void(0);
 
-			xmlHttp.onreadystatechange=function() { client.httpGet(id,xmlHttp,type); };
-			xmlHttp.open("GET",resource,true);
-			xmlHttp.send(null);
+			switch(operation)
+			{
+			case "get":
+				xmlHttp.onreadystatechange=function() { client.httpGet(id,attribute,xmlHttp); };
+				xmlHttp.open("GET",uri,true);
+				xmlHttp.send(null);
+				break;
+			case "post":
+				// @TODO finish this!
+				break;
+			};
 		},
 
 		/**
 		 * Renders a loading (spinning) icon in a target element.
-		 * @member client
 		 * @TODO refactor with element.create()!
 		 */
 		icon: function(obj)
@@ -143,41 +165,79 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * @param {Boolean} CSS3 detection, kinda weak!
+	 * Creates the object
+	 * @constructor
 	 */
-	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
+	constructor=
+	{
+		// Public properties
+		ie:this.parent.ie,
+		css3:this.parent.css3,
 
+		// Public methods
+		$:this.parent.$,
+		position:null, //find the position; maybe put this in the element class?
+
+		//Public classes
+		calendar:this.parent.calendar,
+		client:this.parent.client,
+		element:this.parent.element,
+		fx:this.parent.fx
+	};
+	
 	/**
-	 * Element CRUD methods.
+	 * Element class provides CRUD methods.
 	 */
 	element=
 	{
 		/**
 		 * Creates an element; optional styling and innerHTML injection.
-		 * @member element
+		 * @param {Array} Literal array of attributes for the new element.
+		 * @param {String} Optional target element ID.
 		 */
-		create:function(element,id,style,content,target)
+		create:function(args,target)
 		{
-
-			var obj=document.createElement(element);
-			(id!="")?obj.setAttribute("id",id):void(0);
-			(style!="")?obj.setAttribute("style",style):void(0);
-			(content!="")?obj.innerHTML=content:void(0);
-			(target==undefined)?document.body.appendChild(obj):target.appendChild(obj);
+			if (typeof args=="object")
+			{
+				var loop=args.length;
+				var obj=document.createElement(element);
+				
+				for (i=0;i<loop;i++)
+				{
+					switch(args[i]["attribute"])
+					{
+					case "class":
+						(this.ie)?obj.setAttribute("className",args[i]["value"]):href.setAttribute("class",args[i]["value"]);
+						break;
+					case "innerHTML":
+						obj.innerHTML=args[i]["value"];
+						break;
+					default:
+						obj.setAttribute(args[i]["attribute"],args[i]["value"])
+						break;
+					};
+				}
+				
+				((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
+			}
+			else
+			{
+				throw exception.err3;
+			}
 		},
 
 		/**
 		 * Destroys an element if it exists.
-		 * @member element
+		 * @param {Integer} Target element ID.
 		 */
 		destroy:function(id)
 		{
-			($(id))?document.body.removeChild(document.getElementById(id)):void(0);
+			if ($(id)) { document.body.removeChild($(id)); }
 		},
 
 		/**
 		 * Overload of reset, to clear an element.
-		 * @member element
+		 * @param {Integer} Target element ID.
 		 */
 		reset:function(id)
 		{
@@ -189,30 +249,77 @@ var aFrame=(aFrame)?aFrame:function()
 					case "object":
 						element.innerHTML="";
 						break;
+					case "form":
+						break;
 				}
+			}
+			else
+			{
+				throw exception.err1;
 			}
 		},
 
 		/**
-		 * Updates an element
-		 * @TODO Make this work; not tested.
-		 * @member element
+		 * Updates an element.
+		 * @param {Integer} Target element ID.
+		 * @param {Array} Literal array of attributes and values.
 		 */
-		update:function(id,attr,value)
+		update:function(id,args)
 		{
-			(element=$(id))?element.attr=value:void(0);
+			if ($(id))
+			{
+				if (typeof args=="object")
+				{
+					var loop=args.length;
+					var obj=document.createElement(element);
+					
+					for (i=0;i<loop;i++)
+					{
+						switch(args[i]["attribute"])
+						{
+						case "class":
+							(this.ie)?obj.setAttribute("className",args[i]["value"]):href.setAttribute("class",args[i]["value"]);
+							break;
+						case "innerHTML":
+							obj.innerHTML=args[i]["value"];
+							break;
+						default:
+							obj.setAttribute(args[i]["attribute"],args[i]["value"])
+							break;
+						};
+					}
+					
+					((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
+				}
+				else
+				{
+					throw exception.err3;
+				}
+			}
+			else
+			{
+				throw exception.err1;
+			}
 		}
+	};
+	
+	/**
+	 * Exception class holds exceptions messages
+	 */
+	exception=
+	{
+			"err1":"Couldn't find target element",
+			"err2":"A server error has occurred",
+			"err3":"Expected an array"
 	};
 
 	/**
-	 * Various GUI effects
-	 * @member pub
+	 * GUI effects
 	 */
 	fx=
 	{
 		/**
 		 * Changes an element's opacity to the supplied value.
-		 * @member fx
 		 */
 		opacity:function(opacity,id)
 		{
@@ -228,7 +335,6 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Changes an element's opacity to the supplied value, spanning a supplied timeframe.
-		 * @member fx
 		 * @TODO replace aFrame hook with a reference to the parent object/id/name
 		 */
 		opacityChange:function(id,start,end,ms)
@@ -256,7 +362,6 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Shifts an element's opacity, spanning a supplied timeframe.
-		 * @member fx
 		 */
 		opacityShift:function(id,ms)
 		{
@@ -264,24 +369,5 @@ var aFrame=(aFrame)?aFrame:function()
 		}
 	};
 
-	/**
-	 * Public class exposed to the client.
-	 */
-	pub=
-	{
-		// Public properties
-		ie:this.parent.ie,
-		css3:this.parent.css3,
-
-		// Public methods
-		$:this.parent.$,
-		position:null, //find the position; maybe put this in the element class?
-
-		//Public classes
-		client:this.parent.client,
-		element:this.parent.element,
-		fx:this.parent.fx
-	};
-
-	return pub;
+	return constructor;
 }();

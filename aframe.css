@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-#awCalendar
+#aframe.calendar
 {
 	background:#f5f5f5;
 	border:1px solid #e2e2e2;
@@ -10,31 +10,31 @@
 	z-index:99999;
 	color:#999;
 }
-#awCalendar a
+#aframe.calendar a
 {
 	color:#999;
 	outline-style:none;
 	text-decoration:none;
 	cursor:pointer;
 }
-#awCalendar a:hover
+#aframe.calendar a:hover
 {
 	color:#000;
 }
-#awCalendar a.current
+#aframe.calendar a.current
 {
 	color:#09F;
 }
-#awCalendar a.weekend
+#aframe.calendar a.weekend
 {
 	color:#F00;
 }
-#awCalendar div
+#aframe.calendar div
 {
 	margin:0 0 0 0;
 	border:0px;
 }
-#awCalendar div.day
+#aframe.calendar div.day
 {
 	float:left;
 	height:24px;
@@ -43,11 +43,11 @@
 	text-align:center;
 	vertical-align:middle;
 }
-#awCalendar div.day a:hover
+#aframe.calendar div.day a:hover
 {
 	font-weight:bold;
 }
-#calendarTop
+#aframe.calendarTop
 {
 	text-align:right;
 	padding:1px 4px 4px 1px;
@@ -55,33 +55,33 @@
 	font-size:10px;
 	background:#e2e2e2;
 }
-#calendarTop a
+#aframe.calendarTop a
 {
 	margin:0 0 0 5px;
 }
-#calendarHeader
+#aframe.calendarHeader
 {
 	text-align:center;
 	padding:4px 0 4px 0;
 	font-weight:bold;
 }
-#calendarHeader a
+#aframe.calendarHeader a
 {
 	font-weight:bold;
 }
-#calendarMonth
+#aframe.calendarMonth
 {
 	width:120px;
 	height:24px;
 	display:inline-block;
 }
-#calendarPrev
+#aframe.calendarPrev
 {
 	width:24px;
 	height:24px;
 	display:inline-block;
 }
-#calendarNext
+#aframe.calendarNext
 {
 	width:24px;
 	height:24px;
