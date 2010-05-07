@@ -165,24 +165,31 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Creates the object
+	 * Exposes classes, methods & properties.
 	 * @constructor
 	 */
 	constructor=
 	{
-		// Public properties
-		ie:this.parent.ie,
-		css3:this.parent.css3,
-
-		// Public methods
+		/**
+		 * Classes
+		 */
+		calendar:this.parent.calendar,
+		client:this.parent.client, // add client height/width properties
+		element:this.parent.element,
+		fx:this.parent.fx,
+		labels:this.parent.labels,
+		
+		/**
+		 * Methods
+		 */
 		$:this.parent.$,
 		position:null, //find the position; maybe put this in the element class?
-
-		//Public classes
-		calendar:this.parent.calendar,
-		client:this.parent.client,
-		element:this.parent.element,
-		fx:this.parent.fx
+		
+		/**
+		 * Properties
+		 */
+		ie:this.parent.ie,
+		css3:this.parent.css3
 	};
 	
 	/**
@@ -204,16 +211,16 @@ var aFrame=(aFrame)?aFrame:function()
 				
 				for (i=0;i<loop;i++)
 				{
-					switch(args[i]["attribute"])
+					switch(args[i][0])
 					{
 					case "class":
-						(this.ie)?obj.setAttribute("className",args[i]["value"]):href.setAttribute("class",args[i]["value"]);
+						(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
 						break;
 					case "innerHTML":
-						obj.innerHTML=args[i]["value"];
+						obj.innerHTML=args[i][1];
 						break;
 					default:
-						obj.setAttribute(args[i]["attribute"],args[i]["value"])
+						obj.setAttribute(args[i][0],args[i][1]);
 						break;
 					};
 				}
@@ -243,13 +250,14 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if ($(id))
 			{
-				element=$(id);
+				var element=$(id);
 				switch(typeof element)
 				{
 					case "object":
-						element.innerHTML="";
+						element.update(id,["innerHTML",""]);
 						break;
 					case "form":
+						$(id).reset();
 						break;
 				}
 			}
@@ -271,25 +279,23 @@ var aFrame=(aFrame)?aFrame:function()
 				if (typeof args=="object")
 				{
 					var loop=args.length;
-					var obj=document.createElement(element);
+					var obj=$(id);
 					
 					for (i=0;i<loop;i++)
 					{
-						switch(args[i]["attribute"])
+						switch(args[i][0])
 						{
 						case "class":
-							(this.ie)?obj.setAttribute("className",args[i]["value"]):href.setAttribute("class",args[i]["value"]);
+							(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
 							break;
 						case "innerHTML":
-							obj.innerHTML=args[i]["value"];
+							obj.innerHTML=args[i][1];
 							break;
 						default:
-							obj.setAttribute(args[i]["attribute"],args[i]["value"])
+							obj.setAttribute(args[i][0],args[i][1]);
 							break;
 						};
 					}
-					
-					((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
 				}
 				else
 				{
@@ -368,6 +374,22 @@ var aFrame=(aFrame)?aFrame:function()
 			($(id).style.opacity==0)?opacityChange(id,0,100,ms):opacityChange(id,100,0,ms);
 		}
 	};
-
+	
+	/**
+	 * Labels is a collection of button labels.
+	 */
+	var labels=
+	{
+		"back":"Back",
+		"cancel":"Cancel",
+		"continue":"Continue",
+		"delete":"Delete",
+		"edit":"Edit",
+		"next":"Next",
+		"login":"Login",
+		"save":"Save",
+		"submit":"Submit"
+	};
+	
 	return constructor;
 }();
