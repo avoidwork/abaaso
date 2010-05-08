@@ -77,6 +77,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 *  @param {String} Attribute to set with response.
 		 *  @param {Object} XMLHttp object.
 		 * @TODO add a timestamp for expiration.
+		 * wrap this in a try/catch!
 		 */
 		httpGet:function(obj,attribute,xmlHttp)
 		{
@@ -88,23 +89,16 @@ var aFrame=(aFrame)?aFrame:function()
 						
 						if ($(obj))
 						{
-							try
-							{
-								element.update($(obj),[[attribute,xmlHttp.responseText]]);
-							}
-							catch(err)
-							{
-								this.error(err);
-							};
+							element.update($(obj),[[attribute,xmlHttp.responseText]]);
 						}
 						else
 						{
-							throw labels.exception.err1;
+							throw label.exception.err1;
 						}
 					}
 					else
 					{
-						throw labels.exception.err2;
+						throw label.exception.err2;
 					}
 			}
 		},
@@ -177,7 +171,7 @@ var aFrame=(aFrame)?aFrame:function()
 		client:this.parent.client, // add client height/width properties
 		element:this.parent.element,
 		fx:this.parent.fx,
-		labels:this.parent.labels,
+		label:this.parent.label,
 		
 		/**
 		 * Methods
@@ -229,7 +223,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw labels.exception.err3;
+				throw label.exception.err3;
 			}
 		},
 
@@ -263,7 +257,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw labels.exception.err1;
+				throw label.exception.err1;
 			}
 		},
 
@@ -299,12 +293,12 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 				else
 				{
-					throw labels.exception.err3;
+					throw label.exception.err3;
 				}
 			}
 			else
 			{
-				throw labels.exception.err1;
+				throw label.exception.err1;
 			}
 		}
 	};
@@ -366,9 +360,10 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 	
 	/**
-	 * Labels is a collection of button labels.
+	 * Label collection / language pack.
+	 * Overload this to change from English.
 	 */
-	var labels=
+	var label=
 	{
 		exception:
 		{
