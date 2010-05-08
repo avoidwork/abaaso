@@ -243,7 +243,7 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Overload of reset, to clear an element.
+		 * Resets an element.
 		 * @param {Integer} Target element ID.
 		 */
 		reset:function(id)
@@ -254,7 +254,7 @@ var aFrame=(aFrame)?aFrame:function()
 				switch(typeof element)
 				{
 					case "object":
-						element.update(id,["innerHTML",""]);
+						element.update(id,[["innerHTML",""]]);
 						break;
 					case "form":
 						$(id).reset();
@@ -390,7 +390,7 @@ var aFrame=(aFrame)?aFrame:function()
 			submit:"Submit"
 		},
 		
-		months:
+		month:
 		{
 			1:"January",
 			2:"February",
