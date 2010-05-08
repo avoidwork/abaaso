@@ -99,12 +99,12 @@ var aFrame=(aFrame)?aFrame:function()
 						}
 						else
 						{
-							throw exception.err1;
+							throw labels.exception.err1;
 						}
 					}
 					else
 					{
-						throw exception.err2;
+						throw labels.exception.err2;
 					}
 			}
 		},
@@ -229,7 +229,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw exception.err3;
+				throw labels.exception.err3;
 			}
 		},
 
@@ -263,7 +263,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw exception.err1;
+				throw labels.exception.err1;
 			}
 		},
 
@@ -299,24 +299,14 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 				else
 				{
-					throw exception.err3;
+					throw labels.exception.err3;
 				}
 			}
 			else
 			{
-				throw exception.err1;
+				throw labels.exception.err1;
 			}
 		}
-	};
-	
-	/**
-	 * Exception class holds exceptions messages
-	 */
-	exception=
-	{
-			"err1":"Couldn't find target element",
-			"err2":"A server error has occurred",
-			"err3":"Expected an array"
 	};
 
 	/**
@@ -380,15 +370,41 @@ var aFrame=(aFrame)?aFrame:function()
 	 */
 	var labels=
 	{
-		"back":"Back",
-		"cancel":"Cancel",
-		"continue":"Continue",
-		"delete":"Delete",
-		"edit":"Edit",
-		"next":"Next",
-		"login":"Login",
-		"save":"Save",
-		"submit":"Submit"
+		exception:
+		{
+			err1:"Couldn't find target element.",
+			err2:"A server error has occurred.",
+			err3:"Expected an array."
+		},
+		
+		form:
+		{
+			back:"Back",
+			cancel:"Cancel",
+			cont:"Continue",
+			del:"Delete",
+			edit:"Edit",
+			next:"Next",
+			login:"Login",
+			save:"Save",
+			submit:"Submit"
+		},
+		
+		months:
+		{
+			1:"January",
+			2:"February",
+			3:"March",
+			4:"April",
+			5:"May",
+			6:"June",
+			7:"July",
+			8:"August",
+			9:"September",
+			10:"October",
+			11:"November",
+			12:"December"
+		}
 	};
 	
 	return constructor;
