@@ -86,7 +86,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 *  @param {Object} XMLHttp object.
 		 * @TODO add a timestamp for expiration.
 		 */
-		httpGet:function(obj,attribute,xmlHttp)
+		httpGet:function(target,xmlHttp)
 		{
 			if (xmlHttp.readyState==4)
 			{
@@ -94,8 +94,8 @@ var aFrame=(aFrame)?aFrame:function()
 					{
 						if ($(obj))
 						{
-							eval("cache[\""+obj+"\"]="+xmlHttp.responseText+";");
-							element.update($(obj),[[attribute,xmlHttp.responseText]]);
+							eval("cache[\""+target+"\"]="+xmlHttp.responseText+";");
+							element.update($(target),[["innerHTML",xmlHttp.responseText]]);
 						}
 						else
 						{
@@ -112,7 +112,7 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Creates an xmlHttp request for a URI.
 		 */
-		httpRequest:function(id,attribute,uri,operation)
+		httpRequest:function(target,uri,operation)
 		{
 			var xmlHttp=false;
 
@@ -140,7 +140,7 @@ var aFrame=(aFrame)?aFrame:function()
 				switch(operation)
 				{
 				case "get":
-					xmlHttp.onreadystatechange=function() { client.httpGet(id,attribute,xmlHttp); };
+					xmlHttp.onreadystatechange=function() { client.httpGet(target,xmlHttp); };
 					xmlHttp.open("GET",uri,true);
 					xmlHttp.send(null);
 					break;
@@ -227,27 +227,24 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if (typeof args=="object")
 			{
-				var loop=args.length;
-				var obj=document.createElement(element);
-				
-				for (i=0;i<loop;i++)
+				var obj=document.createElement(element);			
+				for (attribute in args)
 				{
-					switch(args[i][0])
+					switch(attribute[0])
 					{
 					case "class":
-						(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
+						(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
 						break;
 					case "innerHTML":
 					case "type":
 					case "src":
-						obj.args[i][0]=args[i][1];
+						obj.attribute[0]=attribute[1];
 						break;
 					default:
-						obj.setAttribute(args[i][0],args[i][1]);
+						obj.setAttribute(attribute[0],attribute[1]);
 						break;
 					};
 				}
-				
 				((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
 			}
 			else
@@ -278,12 +275,13 @@ var aFrame=(aFrame)?aFrame:function()
 				var element=$(id);
 				switch(typeof element)
 				{
-					case "object":
-						element.update(id,[["innerHTML",""]]);
-						break;
-					case "form":
-						$(id).reset();
-						break;
+				case "form":
+					$(id).reset();
+					break;
+				case "object":
+				default:
+					element.update(id,[["innerHTML",""]]);
+					break;
 				}
 			}
 			else
@@ -304,22 +302,21 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				if (typeof args=="object")
 				{
-					var loop=args.length;
 					var obj=$(id);
-					for (i=0;i<loop;i++)
+					for (attribute in args)
 					{
-						switch(args[i][0])
+						switch(attribute[0])
 						{
 						case "class":
-							(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
+							(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
 							break;
 						case "innerHTML":
 						case "type":
 						case "src":
-							obj.args[i][0]=args[i][1];
+							obj.attribute[0]=attribute[1];
 							break;
 						default:
-							obj.setAttribute(args[i][0],args[i][1]);
+							obj.setAttribute(attribute[0],attribute[1]);
 							break;
 						};
 					}
@@ -344,7 +341,7 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Changes an element's opacity to the supplied value.
 		 */
-		opacity:function(opacity,id)
+		opacity:function(id,opacity)
 		{
 			if ($(id))
 			{
@@ -370,7 +367,7 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				for (i=start;i>=end;i--)
 				{
-					setTimeout("aFrame.fx.opacity("+i+",'"+id+"')",(timer*speed));
+					setTimeout("aFrame.fx.opacity('"+id+"',"+i+")",(timer*speed));
 					timer++;
 				}
 			}
@@ -378,7 +375,7 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				for (i=start;i<=end;i++)
 				{
-					setTimeout("aFrame.fx.opacity("+i+",'"+id+"')",(timer*speed));
+					setTimeout("aFrame.fx.opacity('"+id+"',"+i+")",(timer*speed));
 					timer++;
 				}
 			}
