@@ -8,6 +8,7 @@
 
 /**
  * aFrame singleton.
+ * @constructor
  */
 var aFrame=(aFrame)?aFrame:function()
 {
@@ -51,7 +52,7 @@ var aFrame=(aFrame)?aFrame:function()
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
 
 	/**
-	 * Exception handling.
+	 * Error handling.
 	 *
 	 * @TODO Figure out what to do with this!
 	 */
@@ -100,12 +101,12 @@ var aFrame=(aFrame)?aFrame:function()
 						}
 						else
 						{
-							throw label.exception.err1;
+							throw label.error.msg1;
 						}
 					}
 					else
 					{
-						throw label.exception.err2;
+						throw label.error.msg2;
 					}
 			}
 		},
@@ -185,7 +186,6 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * Exposed to the client.
-	 * @constructor
 	 */
 	constructor=
 	{
@@ -210,8 +210,13 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		ie:this.parent.ie,
 		css3:this.parent.css3
+		
+		/**
+		 * AJAX loader icon
+		 */
+		// cache the object here!
 	};
-
+	
 	/**
 	 * Element class provides CRUD methods.
 	 */
@@ -250,7 +255,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw label.exception.err3;
+				throw label.error.msg3;
 			}
 		},
 
@@ -287,7 +292,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw label.exception.err1;
+				throw label.error.msg1;
 			}
 		},
 
@@ -324,12 +329,12 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 				else
 				{
-					throw label.exception.err3;
+					throw label.error.msg3;
 				}
 			}
 			else
 			{
-				throw label.exception.err1;
+				throw label.error.msg1;
 			}
 		}
 	};
@@ -395,13 +400,13 @@ var aFrame=(aFrame)?aFrame:function()
 	 * Label collection / language pack.
 	 * Overload this to change languages..
 	 */
-	var label=
+	label=
 	{
-		exception:
+		error:
 		{
-			err1:"Couldn't find target element.",
-			err2:"A server error has occurred.",
-			err3:"Expected an array."
+			msg1:"Couldn't find target element.",
+			msg2:"A server error has occurred.",
+			msg3:"Expected an array."
 		},
 
 		element:
@@ -434,11 +439,11 @@ var aFrame=(aFrame)?aFrame:function()
 			12:"December"
 		}
 	};
-
+	
 	/**
 	 * Form validation.
 	 */
-	var validate=
+	validate=
 	{
 	};
 
