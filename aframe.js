@@ -13,7 +13,7 @@ var aFrame=(aFrame)?aFrame:function()
 {
 	/**
 	 * Helper function.
-	 * 
+	 *
 	 * @param {mixed} Element ID or array of element IDs.
 	 * @returns {mixed} Instance or Array of Instances of elements.
 	 * @TODO Test!
@@ -49,17 +49,18 @@ var aFrame=(aFrame)?aFrame:function()
 	 * CSS3 detection, kinda weak!
 	 */
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
-	
+
 	/**
 	 * Exception handling.
-	 * 
+	 *
 	 * @TODO Figure out what to do with this!
 	 */
-	ex=function(args)
+	error=function(args)
 	{
-		alert(args); // temp!!
+		var err = new Error(args);
+		alert(err.toString()); // temp!!
 	};
-	
+
 	/**
 	 * Calendar class will render a calendar, and act as a date picker.
 	 */
@@ -69,7 +70,7 @@ var aFrame=(aFrame)?aFrame:function()
 			date:new Date(),
 			pattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
 	};
-	
+
 	/**
 	 * Client class contains methods to retrieve data.
 	 * These methods should be executed from a try{} statement.
@@ -80,7 +81,7 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Receives and caches the URI/xmlHttp response
 		 *  set attribute based on typeof maybe?
-		 *  
+		 *
 		 *  @param {Integer} Target element ID.
 		 *  @param {String} Attribute to set with response.
 		 *  @param {Object} XMLHttp object.
@@ -128,7 +129,7 @@ var aFrame=(aFrame)?aFrame:function()
 					try { xmlHttp=new ActiveXObject("Microsoft.XMLHTTP"); }
 					catch (e)
 					{
-						ex(e);
+						error(e);
 					}
 				}
 			}
@@ -151,7 +152,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			catch(e)
 			{
-				ex(e);
+				error(e);
 			}
 		},
 
@@ -169,14 +170,14 @@ var aFrame=(aFrame)?aFrame:function()
 				      [["src",window["aFrame.icon"].src]],
 				      [["class","loading"]]
 				];
-				
+
 				try
 				{
 					element.create("img",args,obj);
 				}
 				catch(e)
 				{
-					ex(e);
+					error(e);
 				}
 			}
 		}
@@ -197,20 +198,20 @@ var aFrame=(aFrame)?aFrame:function()
 		fx:this.parent.fx,
 		label:this.parent.label,
 		validate:this.parent.validate,
-		
+
 		/**
 		 * Methods
 		 */
 		$:this.parent.$,
 		position:null, //find the position; maybe put this in the element class?
-		
+
 		/**
 		 * Properties
 		 */
 		ie:this.parent.ie,
 		css3:this.parent.css3
 	};
-	
+
 	/**
 	 * Element class provides CRUD methods.
 	 */
@@ -218,7 +219,7 @@ var aFrame=(aFrame)?aFrame:function()
 	{
 		/**
 		 * Creates an element.
-		 * 
+		 *
 		 * @param {String} Type of element to create.
 		 * @param {Array} Literal array of attributes for the new element.
 		 * @param {String} Optional target element ID.
@@ -227,7 +228,7 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if (typeof args=="object")
 			{
-				var obj=document.createElement(element);			
+				var obj=document.createElement(element);
 				for (attribute in args)
 				{
 					switch(attribute[0])
@@ -255,7 +256,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Destroys an element if it exists.
-		 * 
+		 *
 		 * @param {Integer} Target element ID.
 		 */
 		destroy:function(id)
@@ -265,7 +266,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Resets an element.
-		 * 
+		 *
 		 * @param {Integer} Target element ID.
 		 */
 		reset:function(id)
@@ -292,7 +293,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Updates an element.
-		 * 
+		 *
 		 * @param {Integer} Target element ID.
 		 * @param {Array} Literal array of attributes and values.
 		 */
@@ -355,7 +356,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Changes an element's opacity to the supplied value, spanning a supplied timeframe.
-		 * 
+		 *
 		 * @TODO replace aFrame hook with a reference to the parent object/id/name
 		 */
 		opacityChange:function(id,start,end,ms)
@@ -389,7 +390,7 @@ var aFrame=(aFrame)?aFrame:function()
 			($(id).style.opacity==0)?opacityChange(id,0,100,ms):opacityChange(id,100,0,ms);
 		}
 	};
-	
+
 	/**
 	 * Label collection / language pack.
 	 * Overload this to change languages..
@@ -402,7 +403,7 @@ var aFrame=(aFrame)?aFrame:function()
 			err2:"A server error has occurred.",
 			err3:"Expected an array."
 		},
-		
+
 		element:
 		{
 			back:"Back",
@@ -416,7 +417,7 @@ var aFrame=(aFrame)?aFrame:function()
 			save:"Save",
 			submit:"Submit"
 		},
-		
+
 		month:
 		{
 			1:"January",
@@ -433,13 +434,13 @@ var aFrame=(aFrame)?aFrame:function()
 			12:"December"
 		}
 	};
-	
+
 	/**
 	 * Form validation.
 	 */
 	var validate=
 	{
 	};
-	
+
 	return constructor;
 }();
