@@ -7,50 +7,54 @@
  */
 
 /**
- * aFrame singleton
+ * aFrame singleton.
  */
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
-	 * Helper function
-	 * @param {mixed} Element ID or array of Element IDs.
-	 * @returns {mixed} Instance, or Array of Instances of Elements.
+	 * Helper function.
+	 * 
+	 * @param {mixed} Element ID or array of element IDs.
+	 * @returns {mixed} Instance or Array of Instances of elements.
 	 */
 	$=function(args)
 	{
 		switch(typeof args)
 		{
-			case "object":
-				alert("sent in an array, expecting one back?");
-				instances=[];
-				return instances;
+		case "object":
+			alert("sent in an array, expecting one back?");
+			var instances=[];
+			return instances;
 
-			case "string":
-			default:
-				return document.getElementById(args);
+		case "string":
+		default:
+			return document.getElementById(args);
 		}
 	};
 
 	/**
-	 * @param {Boolean} IE detection
+	 * IE detection
 	 */
 	ie=(document.all)?true:false;
 
 	/**
-	 * @param {Array} cache This array holds caches URI resources.
+	 * This array holds cached URI resources.
 	 */
 	cache=[];
 
 	/**
-	 * @param {Boolean} CSS3 detection, kinda weak!
+	 * CSS3 detection, kinda weak!
 	 */
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
 	
 	/**
-	 * Error class does stuff, eventually.
+	 * Exception handling.
+	 * 
+	 * @TODO Figure out what to do with this!
 	 */
-	err=
+	ex=function(args)
 	{
+		alert(args); // temp!!
 	};
 	
 	/**
@@ -60,12 +64,12 @@ var aFrame=(aFrame)?aFrame:function()
 	{
 			clear:false,
 			date:new Date(),
-			dateMonths:new Array("January","February","March","April","May","June","July","August","September","October","November","December"),
-			datePattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
+			pattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
 	};
 	
 	/**
 	 * Client class contains methods to retrieve data.
+	 * These methods should be executed from a try{} statement.
 	 */
 	client=
 	{
@@ -73,11 +77,11 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Receives and caches the URI/xmlHttp response
 		 *  set attribute based on typeof maybe?
+		 *  
 		 *  @param {Integer} Target element ID.
 		 *  @param {String} Attribute to set with response.
 		 *  @param {Object} XMLHttp object.
 		 * @TODO add a timestamp for expiration.
-		 * wrap this in a try/catch!
 		 */
 		httpGet:function(obj,attribute,xmlHttp)
 		{
@@ -120,46 +124,57 @@ var aFrame=(aFrame)?aFrame:function()
 				catch (e)
 				{
 					try { xmlHttp=new ActiveXObject("Microsoft.XMLHTTP"); }
-					catch (e) {}
+					catch (e)
+					{
+						ex(e);
+					}
 				}
 			}
 
 			(!xmlHttp)?eval("return false"):void(0);
 
-			switch(operation)
+			try
 			{
-			case "get":
-				xmlHttp.onreadystatechange=function() { client.httpGet(id,attribute,xmlHttp); };
-				xmlHttp.open("GET",uri,true);
-				xmlHttp.send(null);
-				break;
-			case "post":
-				// @TODO finish this!
-				break;
-			};
+				switch(operation)
+				{
+				case "get":
+					xmlHttp.onreadystatechange=function() { client.httpGet(id,attribute,xmlHttp); };
+					xmlHttp.open("GET",uri,true);
+					xmlHttp.send(null);
+					break;
+				case "post":
+					// @TODO finish this!
+					break;
+				};
+			}
+			catch(e)
+			{
+				ex(e);
+			}
 		},
 
 		/**
 		 * Renders a loading (spinning) icon in a target element.
-		 * @TODO refactor with element.create()!
 		 */
 		icon: function(obj)
 		{
-			if (!$(obj.id+"_loading"))
+			if (!$(obj).id+"_"+label.element.loading)
 			{
-				var objImage=document.createElement("img");
-				objImage.type="image";
-				objImage.src=window["icon"].src;
-				objImage.setAttribute("id",obj.id+"_loading");
-				objImage.setAttribute("alt","");
-				(this.ie)?objImage.setAttribute("className","loading"):objImage.setAttribute("class","loading");
-				obj.appendChild(objImage);
+				var args=
+				[
+				      [["alt",label.element.loading]],
+				      [["id",$(obj).id+"_"+label.element.loading]],
+				      [["src",window["aFrame.icon"].src]],
+				      [["class","loading"]]
+				];
+				
+				element.create("img",args,obj);
 			}
 		}
 	};
 
 	/**
-	 * Exposes classes, methods & properties.
+	 * Exposed to the client.
 	 * @constructor
 	 */
 	constructor=
@@ -172,6 +187,7 @@ var aFrame=(aFrame)?aFrame:function()
 		element:this.parent.element,
 		fx:this.parent.fx,
 		label:this.parent.label,
+		validate:this.parent.validate,
 		
 		/**
 		 * Methods
@@ -192,11 +208,13 @@ var aFrame=(aFrame)?aFrame:function()
 	element=
 	{
 		/**
-		 * Creates an element; optional styling and innerHTML injection.
+		 * Creates an element.
+		 * 
+		 * @param {String} Type of element to create.
 		 * @param {Array} Literal array of attributes for the new element.
 		 * @param {String} Optional target element ID.
 		 */
-		create:function(args,target)
+		create:function(element,args,target)
 		{
 			if (typeof args=="object")
 			{
@@ -211,7 +229,9 @@ var aFrame=(aFrame)?aFrame:function()
 						(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
 						break;
 					case "innerHTML":
-						obj.innerHTML=args[i][1];
+					case "type":
+					case "src":
+						obj.args[i][0]=args[i][1];
 						break;
 					default:
 						obj.setAttribute(args[i][0],args[i][1]);
@@ -229,6 +249,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Destroys an element if it exists.
+		 * 
 		 * @param {Integer} Target element ID.
 		 */
 		destroy:function(id)
@@ -238,6 +259,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Resets an element.
+		 * 
 		 * @param {Integer} Target element ID.
 		 */
 		reset:function(id)
@@ -263,6 +285,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Updates an element.
+		 * 
 		 * @param {Integer} Target element ID.
 		 * @param {Array} Literal array of attributes and values.
 		 */
@@ -283,7 +306,9 @@ var aFrame=(aFrame)?aFrame:function()
 							(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
 							break;
 						case "innerHTML":
-							obj.innerHTML=args[i][1];
+						case "type":
+						case "src":
+							obj.args[i][0]=args[i][1];
 							break;
 						default:
 							obj.setAttribute(args[i][0],args[i][1]);
@@ -325,6 +350,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Changes an element's opacity to the supplied value, spanning a supplied timeframe.
+		 * 
 		 * @TODO replace aFrame hook with a reference to the parent object/id/name
 		 */
 		opacityChange:function(id,start,end,ms)
@@ -361,7 +387,7 @@ var aFrame=(aFrame)?aFrame:function()
 	
 	/**
 	 * Label collection / language pack.
-	 * Overload this to change from English.
+	 * Overload this to change languages..
 	 */
 	var label=
 	{
@@ -372,13 +398,14 @@ var aFrame=(aFrame)?aFrame:function()
 			err3:"Expected an array."
 		},
 		
-		form:
+		element:
 		{
 			back:"Back",
 			cancel:"Cancel",
 			cont:"Continue",
 			del:"Delete",
 			edit:"Edit",
+			loading:"Loading",
 			next:"Next",
 			login:"Login",
 			save:"Save",
@@ -400,6 +427,13 @@ var aFrame=(aFrame)?aFrame:function()
 			11:"November",
 			12:"December"
 		}
+	};
+	
+	/**
+	 * Form validation.
+	 */
+	var validate=
+	{
 	};
 	
 	return constructor;
