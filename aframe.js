@@ -16,16 +16,19 @@ var aFrame=(aFrame)?aFrame:function()
 	 * 
 	 * @param {mixed} Element ID or array of element IDs.
 	 * @returns {mixed} Instance or Array of Instances of elements.
+	 * @TODO Test!
 	 */
 	$=function(args)
 	{
 		switch(typeof args)
 		{
 		case "object":
-			alert("sent in an array, expecting one back?");
 			var instances=[];
+			for (id in args)
+			{
+				instances.push(document.getElementById(id));
+			}
 			return instances;
-
 		case "string":
 		default:
 			return document.getElementById(args);
@@ -89,10 +92,9 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 					if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
 					{
-						eval("cache[\""+obj+"\"]="+xmlHttp.responseText+";");
-						
 						if ($(obj))
 						{
+							eval("cache[\""+obj+"\"]="+xmlHttp.responseText+";");
 							element.update($(obj),[[attribute,xmlHttp.responseText]]);
 						}
 						else
@@ -168,7 +170,14 @@ var aFrame=(aFrame)?aFrame:function()
 				      [["class","loading"]]
 				];
 				
-				element.create("img",args,obj);
+				try
+				{
+					element.create("img",args,obj);
+				}
+				catch(e)
+				{
+					ex(e);
+				}
 			}
 		}
 	};
@@ -297,7 +306,6 @@ var aFrame=(aFrame)?aFrame:function()
 				{
 					var loop=args.length;
 					var obj=$(id);
-					
 					for (i=0;i<loop;i++)
 					{
 						switch(args[i][0])
@@ -340,11 +348,11 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if ($(id))
 			{
-				obj=$(id);
-				obj.style.opacity=(opacity/100);
-				obj.style.MozOpacity=(opacity/100);
-				obj.style.KhtmlOpacity=(opacity/100);
-				obj.style.filter="alpha(opacity="+opacity+")";
+				var style=$(id).style;
+				style.opacity=(opacity/100);
+				style.MozOpacity=(opacity/100);
+				style.KhtmlOpacity=(opacity/100);
+				style.filter="alpha(opacity="+opacity+")";
 			}
 		},
 
