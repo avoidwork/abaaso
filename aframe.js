@@ -49,9 +49,9 @@ var aFrame=(aFrame)?aFrame:function()
 	 */
 	calendar=
 	{
-			clear:false,
-			date:new Date(),
-			pattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
+		clear:false,
+		date:new Date(),
+		pattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
 	};
 	
 	/**
@@ -78,7 +78,7 @@ var aFrame=(aFrame)?aFrame:function()
 					if ($(obj))
 					{
 						eval("cache[\""+id+"\"]="+xmlHttp.responseText+";");
-						element.update($(id).id,[["innerHTML",xmlHttp.responseText]]);
+						element.update(id,[["innerHTML",xmlHttp.responseText]]);
 					}
 					else
 					{
@@ -142,21 +142,21 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Renders a loading (spinning) icon in a target element.
 		 */
-		icon: function(obj)
+		icon: function(id)
 		{
-			if (!$(obj).id+"_"+label.element.loading)
+			if (!$(id+"_"+label.element.loading))
 			{
 				var args=
-					[
-				      ["alt",label.element.loading],
-				      ["id",$(obj).id+"_"+label.element.loading],
-				      ["src",window["aFrame.icon"].src],
-				      ["class","loading"]
-				    ];
+				[
+					["alt",label.element.loading],
+					["id",id+"_"+label.element.loading],
+					["src",window["aFrame.icon"].src],
+					["class","loading"]
+				];
 
 				try
 				{
-					element.create("img",args,obj);
+					element.create("img",args,id);
 				}
 				catch(e)
 				{
@@ -176,42 +176,42 @@ var aFrame=(aFrame)?aFrame:function()
 	 */
 	element=
 	{
-			/**
-			 * Creates an element.
-			 *
-			 * @param {String} Type of element to create.
-			 * @param {Array} Literal array of attributes for the new element.
-			 * @param {String} Optional target element ID.
-			 */
-			create:function(element,args,target)
+		/**
+		 * Creates an element.
+		 *
+		 * @param {String} Type of element to create.
+		 * @param {Array} Literal array of attributes for the new element.
+		 * @param {String} Optional target element ID.
+		 */
+		create:function(element,args,target)
+		{
+			if (typeof args=="object")
 			{
-				if (typeof args=="object")
+				var obj=document.createElement(element);
+				for (attribute in args)
 				{
-					var obj=document.createElement(element);
-					for (attribute in args)
+					switch(attribute[0])
 					{
-						switch(attribute[0])
-						{
-						case "class":
-							(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
-							break;
-						case "innerHTML":
-						case "type":
-						case "src":
-							obj.attribute[0]=attribute[1];
-							break;
-						default:
-							obj.setAttribute(attribute[0],attribute[1]);
-							break;
-						};
-					}
-					((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
+					case "class":
+						(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
+						break;
+					case "innerHTML":
+					case "type":
+					case "src":
+						obj.attribute[0]=attribute[1];
+						break;
+					default:
+						obj.setAttribute(attribute[0],attribute[1]);
+						break;
+					};
 				}
-				else
-				{
-					throw label.error.msg3;
-				}
-			},
+				((target==undefined)||(!$(target)))?document.body.appendChild(obj):$(target).appendChild(obj);
+			}
+			else
+			{
+				throw label.error.msg3;
+			}
+		},
 
 		/**
 		 * Destroys an element if it exists.
@@ -219,7 +219,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		destroy:function(id)
 		{
-			($(id))?document.body.removeChild(document.getElementById(id)):void(0);
+			if ($(id)) { document.body.removeChild($(id)); }
 		},
 
 		/**
