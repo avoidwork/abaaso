@@ -7,8 +7,7 @@
  */
 
 /**
- * aFrame singleton.
- * @constructor
+ * aFrame singleton, with RESTful caching.
  */
 var aFrame=(aFrame)?aFrame:function()
 {
@@ -30,14 +29,13 @@ var aFrame=(aFrame)?aFrame:function()
 				instances.push(document.getElementById(id));
 			}
 			return instances;
-		case "string":
 		default:
 			return document.getElementById(args);
 		}
 	};
 
 	/**
-	 * IE detection
+	 * IE detection.
 	 */
 	ie=(document.all)?true:false;
 
@@ -45,23 +43,7 @@ var aFrame=(aFrame)?aFrame:function()
 	 * This array holds cached URI resources.
 	 */
 	cache=[];
-
-	/**
-	 * CSS3 detection, kinda weak!
-	 */
-	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
-
-	/**
-	 * Error handling.
-	 *
-	 * @TODO Figure out what to do with this!
-	 */
-	error=function(args)
-	{
-		var err = new Error(args);
-		alert(err.toString()); // temp!!
-	};
-
+	
 	/**
 	 * Calendar class will render a calendar, and act as a date picker.
 	 */
@@ -71,7 +53,7 @@ var aFrame=(aFrame)?aFrame:function()
 			date:new Date(),
 			pattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
 	};
-
+	
 	/**
 	 * Client class contains methods to retrieve data.
 	 * These methods should be executed from a try{} statement.
@@ -81,40 +63,40 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Receives and caches the URI/xmlHttp response
-		 *  set attribute based on typeof maybe?
+		 * set attribute based on typeof maybe?
 		 *
-		 *  @param {Integer} Target element ID.
-		 *  @param {String} Attribute to set with response.
-		 *  @param {Object} XMLHttp object.
+		 * @param {Integer} Target element ID.
+		 * @param {Object} XMLHttp object.
 		 * @TODO add a timestamp for expiration.
 		 */
-		httpGet:function(target,xmlHttp)
+		httpGet:function(id,xmlHttp)
 		{
 			if (xmlHttp.readyState==4)
 			{
-					if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
+				if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
+				{
+					if ($(obj))
 					{
-						if ($(obj))
-						{
-							eval("cache[\""+target+"\"]="+xmlHttp.responseText+";");
-							element.update($(target),[["innerHTML",xmlHttp.responseText]]);
-						}
-						else
-						{
-							throw label.error.msg1;
-						}
+						eval("cache[\""+id+"\"]="+xmlHttp.responseText+";");
+						element.update($(id).id,[["innerHTML",xmlHttp.responseText]]);
 					}
 					else
 					{
-						throw label.error.msg2;
+						throw label.error.msg1;
 					}
+				}
+				else
+				{
+					throw label.error.msg2;
+				}
 			}
 		},
 
 		/**
 		 * Creates an xmlHttp request for a URI.
+		 * @member client
 		 */
-		httpRequest:function(target,uri,operation)
+		httpRequest:function(id,uri,type)
 		{
 			var xmlHttp=false;
 
@@ -142,7 +124,7 @@ var aFrame=(aFrame)?aFrame:function()
 				switch(operation)
 				{
 				case "get":
-					xmlHttp.onreadystatechange=function() { client.httpGet(target,xmlHttp); };
+					xmlHttp.onreadystatechange=function() { client.httpGet(id,xmlHttp); };
 					xmlHttp.open("GET",uri,true);
 					xmlHttp.send(null);
 					break;
@@ -165,12 +147,12 @@ var aFrame=(aFrame)?aFrame:function()
 			if (!$(obj).id+"_"+label.element.loading)
 			{
 				var args=
-				[
-				      [["alt",label.element.loading]],
-				      [["id",$(obj).id+"_"+label.element.loading]],
-				      [["src",window["aFrame.icon"].src]],
-				      [["class","loading"]]
-				];
+					[
+				      ["alt",label.element.loading],
+				      ["id",$(obj).id+"_"+label.element.loading],
+				      ["src",window["aFrame.icon"].src],
+				      ["class","loading"]
+				    ];
 
 				try
 				{
@@ -185,94 +167,64 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Exposed to the client.
+	 * CSS3 detection, kinda weak!
 	 */
-	constructor=
-	{
-		/**
-		 * Classes
-		 */
-		calendar:this.parent.calendar,
-		client:this.parent.client, // add client height/width properties
-		element:this.parent.element,
-		fx:this.parent.fx,
-		label:this.parent.label,
-		validate:this.parent.validate,
-
-		/**
-		 * Methods
-		 */
-		$:this.parent.$,
-		position:null, //find the position; maybe put this in the element class?
-
-		/**
-		 * Properties
-		 */
-		ie:this.parent.ie,
-		css3:this.parent.css3
-		
-		/**
-		 * AJAX loader icon
-		 */
-		// cache the object here!
-	};
+	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
 	
 	/**
-	 * Element class provides CRUD methods.
+	 * Element CRUD methods.
 	 */
 	element=
 	{
-		/**
-		 * Creates an element.
-		 *
-		 * @param {String} Type of element to create.
-		 * @param {Array} Literal array of attributes for the new element.
-		 * @param {String} Optional target element ID.
-		 */
-		create:function(element,args,target)
-		{
-			if (typeof args=="object")
+			/**
+			 * Creates an element.
+			 *
+			 * @param {String} Type of element to create.
+			 * @param {Array} Literal array of attributes for the new element.
+			 * @param {String} Optional target element ID.
+			 */
+			create:function(element,args,target)
 			{
-				var obj=document.createElement(element);
-				for (attribute in args)
+				if (typeof args=="object")
 				{
-					switch(attribute[0])
+					var obj=document.createElement(element);
+					for (attribute in args)
 					{
-					case "class":
-						(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
-						break;
-					case "innerHTML":
-					case "type":
-					case "src":
-						obj.attribute[0]=attribute[1];
-						break;
-					default:
-						obj.setAttribute(attribute[0],attribute[1]);
-						break;
-					};
+						switch(attribute[0])
+						{
+						case "class":
+							(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
+							break;
+						case "innerHTML":
+						case "type":
+						case "src":
+							obj.attribute[0]=attribute[1];
+							break;
+						default:
+							obj.setAttribute(attribute[0],attribute[1]);
+							break;
+						};
+					}
+					((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
 				}
-				((target==undefined)||(!$(target)))?document.body.appendChild(obj):target.appendChild(obj);
-			}
-			else
-			{
-				throw label.error.msg3;
-			}
-		},
+				else
+				{
+					throw label.error.msg3;
+				}
+			},
 
 		/**
 		 * Destroys an element if it exists.
-		 *
-		 * @param {Integer} Target element ID.
+		 * @param {String} Target element ID.
 		 */
 		destroy:function(id)
 		{
-			if ($(id)) { document.body.removeChild($(id)); }
+			($(id))?document.body.removeChild(document.getElementById(id)):void(0);
 		},
 
 		/**
 		 * Resets an element.
-		 *
-		 * @param {Integer} Target element ID.
+		 * @param {String} Target element ID.
 		 */
 		reset:function(id)
 		{
@@ -340,29 +292,38 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * GUI effects
+	 * Error handling.
+	 *
+	 * @TODO Figure out what to do with this!
+	 */
+	error=function(args)
+	{
+		var err = new Error(args);
+		alert(err.toString()); // temp!!
+	};
+	
+	/**
+	 * Various GUI effects
 	 */
 	fx=
 	{
 		/**
 		 * Changes an element's opacity to the supplied value.
 		 */
-		opacity:function(id,opacity)
+		opacity:function(opacity,id)
 		{
 			if ($(id))
 			{
-				var style=$(id).style;
-				style.opacity=(opacity/100);
-				style.MozOpacity=(opacity/100);
-				style.KhtmlOpacity=(opacity/100);
-				style.filter="alpha(opacity="+opacity+")";
+				obj=$(id);
+				obj.style.opacity=(opacity/100);
+				obj.style.MozOpacity=(opacity/100);
+				obj.style.KhtmlOpacity=(opacity/100);
+				obj.style.filter="alpha(opacity="+opacity+")";
 			}
 		},
 
 		/**
 		 * Changes an element's opacity to the supplied value, spanning a supplied timeframe.
-		 *
-		 * @TODO replace aFrame hook with a reference to the parent object/id/name
 		 */
 		opacityChange:function(id,start,end,ms)
 		{
@@ -373,7 +334,7 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				for (i=start;i>=end;i--)
 				{
-					setTimeout("aFrame.fx.opacity('"+id+"',"+i+")",(timer*speed));
+					setTimeout("aFrame.fx.opacity("+i+",'"+id+"')",(timer*speed));
 					timer++;
 				}
 			}
@@ -381,7 +342,7 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				for (i=start;i<=end;i++)
 				{
-					setTimeout("aFrame.fx.opacity('"+id+"',"+i+")",(timer*speed));
+					setTimeout("aFrame.fx.opacity("+i+",'"+id+"')",(timer*speed));
 					timer++;
 				}
 			}
@@ -392,10 +353,10 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		opacityShift:function(id,ms)
 		{
-			($(id).style.opacity==0)?opacityChange(id,0,100,ms):opacityChange(id,100,0,ms);
+			($(id).style.opacity==0)?aFrame.fx.opacityChange(id,0,100,ms):aFrame.fx.opacityChange(id,100,0,ms);
 		}
 	};
-
+	
 	/**
 	 * Label collection / language pack.
 	 * Overload this to change languages..
@@ -439,12 +400,29 @@ var aFrame=(aFrame)?aFrame:function()
 			12:"December"
 		}
 	};
-	
+
 	/**
-	 * Form validation.
+	 * Exposed to the client.
 	 */
-	validate=
+	constructor=
 	{
+		// Cache the AJAX loader img object here!
+			
+		// Public properties
+		ie:this.parent.ie,
+		css3:this.parent.css3,
+
+		// Public methods
+		$:this.parent.$,
+		position:null, //find the position; maybe put this in the element class?
+
+		//Public classes
+		calendar:this.parent.calendar,
+		client:this.parent.client,
+		element:this.parent.element,
+		fx:this.parent.fx,
+		label:this.parent.label,
+		validate:this.parent.validate
 	};
 
 	return constructor;
