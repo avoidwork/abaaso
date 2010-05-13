@@ -12,26 +12,25 @@
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
-	 * Helper function.
+	 * Helper function
 	 *
-	 * @param {mixed} Element ID or array of element IDs.
-	 * @returns {mixed} Instance or Array of Instances of elements.
-	 * @TODO Test!
+	 * @param {mixed} arg String or Array of element IDs.
+	 * @returns {mixed} instances Instance or Array of Instances of elements.
 	 */
-	$=function(args)
+	$=function(arg)
 	{
-		switch(typeof args)
+		if (typeof arg=="object")
 		{
-		case "object":
 			var instances=[];
-			for (id in args)
+			var loop=arg.length;
+			for (i=0;i<loop;i++)
 			{
-				instances.push(document.getElementById(id));
+				instances.push(document.getElementById(arg[i]));
 			}
 			return instances;
-		default:
-			return document.getElementById(args);
 		}
+
+		return document.getElementById(arg);
 	};
 
 	/**
@@ -77,6 +76,7 @@ var aFrame=(aFrame)?aFrame:function()
 				{
 					if ($(obj))
 					{
+						// eval in a 2d array with timestamp/response!
 						eval("cache[\""+id+"\"]="+xmlHttp.responseText+";");
 						element.update(id,[["innerHTML",xmlHttp.responseText]]);
 					}
@@ -179,33 +179,34 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Creates an element.
 		 *
-		 * @param {String} Type of element to create.
-		 * @param {Array} Literal array of attributes for the new element.
-		 * @param {String} Optional target element ID.
+		 * @param {String} element Type of element to create.
+		 * @param {Array} args Literal array of attributes for the new element.
+		 * @param {String} target Optional target element ID.
 		 */
 		create:function(element,args,target)
 		{
 			if (typeof args=="object")
 			{
 				var obj=document.createElement(element);
-				for (attribute in args)
+				var loop=args.length;
+				for (i=0;i<loop;i++)
 				{
-					switch(attribute[0])
+					switch(args[i][0])
 					{
 					case "class":
-						(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
+						(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
 						break;
 					case "innerHTML":
 					case "type":
 					case "src":
-						obj.attribute[0]=attribute[1];
+						eval("obj."+args[i][0]+"='"+args[i][1]+"';");
 						break;
 					default:
-						obj.setAttribute(attribute[0],attribute[1]);
+						obj.setAttribute(args[i][0],args[i][1]);
 						break;
 					};
 				}
-				((target==undefined)||(!$(target)))?document.body.appendChild(obj):$(target).appendChild(obj);
+				(!$(target))?document.body.appendChild(obj):$(target).appendChild(obj);
 			}
 			else
 			{
@@ -367,7 +368,8 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			msg1:"Couldn't find target element.",
 			msg2:"A server error has occurred.",
-			msg3:"Expected an array."
+			msg3:"Expected an array.",
+			msg4:"The following required fields are missing or invalid:"
 		},
 
 		element:
@@ -398,6 +400,72 @@ var aFrame=(aFrame)?aFrame:function()
 			10:"October",
 			11:"November",
 			12:"December"
+		}
+	};
+	
+	/**
+	 * Form validation.
+	 */
+	validate=
+	{
+		exception:false,
+		loop:null,
+		msg:label.error.msg4,
+		required:[],
+		value:null,
+		
+		invalid:function(arg)
+		{
+			this.exception=true;
+			this.msg+=" "+arg.toString()+", ";
+		},
+	
+		fields:function(args)
+		{
+			this.required=args;
+			this.loop=required.length;
+			
+			for (i=0;i<this.loop;i++)
+			{
+				this.value=$(this.required[i][0]).value;
+				switch (this.required[i][1])
+				{
+				case "isDomain":
+					(!this.isDomain(this.value))?invalid(this.required[i][2]):void(0);
+					break;
+				case "isDomainOrIp":
+					((!this.isIpAddr(this.value))&&(!this.isDomain(this.value)))?this.invalid(required[i][2]):void(0);
+					break;
+				case "isIp":
+					(!this.isIpAddr(this.value))?this.invalid(required[i][2]):void(0);
+					break;
+				case "isInteger":
+					if (isNaN(this.value))
+					{
+						this.invalid(required[i][2]);
+					}
+					else if (required[i][3])
+					{
+						var y=required[i][3].length;
+						var exception=false;
+						for (x=0;x<y;x++)
+						{
+							exception=(parseInt(val)==parseInt(required[i][3][x]))?false:true;
+							if (!exception) { break; }
+						}
+						(exception)?invalid(required[i][2]):void(0);
+					}
+					break;
+				case "isNotEmpty":
+					(($(required[i][0]).style.display!="none") && (val=="")) ? invalid(required[i][2]) : void(0);
+					break;
+				}
+			}
+
+			// Throwing exception if an error occurred.
+			if (err) { throw msg; }
+				
+			return !err;
 		}
 	};
 
