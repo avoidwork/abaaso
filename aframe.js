@@ -187,8 +187,12 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param {Array} args Literal array of attributes for the new element.
 		 * @param {String} target Optional target element ID.
 		 */
-		create:function(element,args,target)
+		create:function(el,attributes,obj)
 		{
+			var element = el;
+			var args = attributes;
+			var target = obj;
+			
 			if (typeof args=="object")
 			{
 				var obj=document.createElement(element);
@@ -198,7 +202,7 @@ var aFrame=(aFrame)?aFrame:function()
 					switch(args[i][0])
 					{
 					case "class":
-						(this.ie)?obj.setAttribute("className",args[i][1]):href.setAttribute("class",args[i][1]);
+						(ie)?obj.setAttribute("className",args[i][1]):obj.setAttribute("class",args[i][1]);
 						break;
 					case "innerHTML":
 					case "type":
@@ -214,6 +218,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
+				alert("here");
 				throw label.error.msg3;
 			}
 		},
@@ -538,13 +543,17 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Methods
 		 */
 		$:this.parent.$,
+		create:this.parent.element.create,
+		destroy:this.parent.element.desotry,
+		error:this.parent.error,
 		position:null, //find the position; maybe put this in the element class?
+		reset:this.parent.element.reset,
+		update:this.parent.element.update,
 
 		/**
 		 * Classes
 		 */
 		calendar:this.parent.calendar,
-		element:this.parent.element,
 		fx:this.parent.fx,
 		label:this.parent.label,
 		uri:this.parent.uri,
