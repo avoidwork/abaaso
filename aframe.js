@@ -1,19 +1,16 @@
 /**
- * aFrame library
+ * aFrame
  * http://avoidwork.com/aFrame
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @version 1.0.beta
+ * @version Prototype
  */
 
-/**
- * aFrame singleton, with RESTful caching.
- */
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
 	 * Helper function
-	 *
+	 * Returns an instance, or an array of instances depending on the what is passed in.
 	 * @param {mixed} arg String or Array of element IDs.
 	 * @returns {mixed} instances Instance or Array of Instances of elements.
 	 */
@@ -34,12 +31,47 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * IE detection.
+	 * Renders a loading icon in a target element
+	 * @param {String} id Target element ID.
+	 */
+	icon=function(id)
+	{
+		if (!window["aFrame.icon"])
+		{
+			window["aFrame.icon"]=new Image();
+			window["aFrame.icon"].src="http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif";				
+		}
+		
+		if (!$(id+"_"+label.element.loading))
+		{
+			var args=
+			[
+				["alt",label.element.loading],
+				["id",id+"_"+label.element.loading],
+				["src",window["aFrame.icon"].src],
+				["class","loading"]
+			];
+
+			try
+			{
+				element.create("img",args,id);
+			}
+			catch(e)
+			{
+				error(e);
+			}
+		}
+	};
+	
+	/**
+	 * IE detection
+	 * Basic, this should be extended with a version number.
 	 */
 	ie=(document.all)?true:false;
 
 	/**
 	 * This array holds cached URI resources.
+	 * This should be checked prior to httpGet();
 	 */
 	cache=[];
 	
@@ -52,23 +84,19 @@ var aFrame=(aFrame)?aFrame:function()
 		date:new Date(),
 		pattern:new String("yyyy/mm/dd") // ISO 8601 standard, change to any localized pattern
 	};
-	
+
 	/**
-	 * Client class contains methods to retrieve data.
-	 * These methods should be executed from a try{} statement.
+	 * Class contains methods to get and post data
 	 */
 	client=
-	{
-
+	{	
 		/**
 		 * Receives and caches the URI/xmlHttp response
-		 * set attribute based on typeof maybe?
-		 *
 		 * @param {Integer} Target element ID.
 		 * @param {Object} XMLHttp object.
-		 * @TODO add a timestamp for expiration.
+		 * @returns {Mixed} Instance of URI
 		 */
-		httpGet:function(id,xmlHttp)
+		httpGet:function(xmlHttp)
 		{
 			if (xmlHttp.readyState==4)
 			{
@@ -76,9 +104,8 @@ var aFrame=(aFrame)?aFrame:function()
 				{
 					if ($(obj))
 					{
-						// eval in a 2d array with timestamp/response!
 						eval("cache[\""+id+"\"]="+xmlHttp.responseText+";");
-						element.update(id,[["innerHTML",xmlHttp.responseText]]);
+						return xmlHttp.responseText;
 					}
 					else
 					{
@@ -93,10 +120,11 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Creates an xmlHttp request for a URI.
-		 * @member client
+		 * Creates an xmlHttp request for a URI
+		 * @param {String} uri
+		 * @param {String} type 
 		 */
-		httpRequest:function(id,uri,type)
+		httpRequest:function(uri,type)
 		{
 			var xmlHttp=false;
 
@@ -121,15 +149,17 @@ var aFrame=(aFrame)?aFrame:function()
 
 			try
 			{
-				switch(operation)
+				switch(type.toLowerCase()) // excessive?
 				{
 				case "get":
-					xmlHttp.onreadystatechange=function() { client.httpGet(id,xmlHttp); };
+					xmlHttp.onreadystatechange=function() { return client.httpGet(xmlHttp); };
 					xmlHttp.open("GET",uri,true);
 					xmlHttp.send(null);
 					break;
 				case "post":
-					// @TODO finish this!
+					xmlHttp.onreadystatechange=function() { return client.httpPost(xmlHttp); };
+					xmlHttp.open("POST",uri,true);
+					xmlHttp.send(null);
 					break;
 				};
 			}
@@ -137,48 +167,22 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				error(e);
 			}
-		},
-
-		/**
-		 * Renders a loading (spinning) icon in a target element.
-		 */
-		icon: function(id)
-		{
-			if (!$(id+"_"+label.element.loading))
-			{
-				var args=
-				[
-					["alt",label.element.loading],
-					["id",id+"_"+label.element.loading],
-					["src",window["aFrame.icon"].src],
-					["class","loading"]
-				];
-
-				try
-				{
-					element.create("img",args,id);
-				}
-				catch(e)
-				{
-					error(e);
-				}
-			}
 		}
 	};
 
 	/**
-	 * CSS3 detection, kinda weak!
+	 * CSS3 detection
+	 * @TODO Make this better!
 	 */
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
 	
 	/**
-	 * Element CRUD methods.
+	 * Element CRUD methods
 	 */
 	element=
 	{
 		/**
-		 * Creates an element.
-		 *
+		 * Creates an element
 		 * @param {String} element Type of element to create.
 		 * @param {Array} args Literal array of attributes for the new element.
 		 * @param {String} target Optional target element ID.
@@ -215,8 +219,8 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Destroys an element if it exists.
-		 * @param {String} Target element ID.
+		 * Destroys an element
+		 * @param {String} id Target element ID.
 		 */
 		destroy:function(id)
 		{
@@ -224,8 +228,8 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Resets an element.
-		 * @param {String} Target element ID.
+		 * Resets an element
+		 * @param {String} id Target element ID.
 		 */
 		reset:function(id)
 		{
@@ -250,10 +254,9 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Updates an element.
-		 *
-		 * @param {Integer} Target element ID.
-		 * @param {Array} Literal array of attributes and values.
+		 * Updates an element
+		 * @param {Integer} id Target element ID.
+		 * @param {Array} args Literal array of attributes and values.
 		 */
 		update:function(id,args)
 		{
@@ -293,8 +296,8 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Error handling.
-	 *
+	 * Error handling
+	 * @param {String} args Error message to display.
 	 * @TODO Figure out what to do with this!
 	 */
 	error=function(args)
@@ -304,12 +307,14 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 	
 	/**
-	 * Various GUI effects
+	 * Class of GUI effects
 	 */
 	fx=
 	{
 		/**
-		 * Changes an element's opacity to the supplied value.
+		 * Changes an element's opacity to the supplied value
+		 * @param {Integer} opacity The opacity value to set.
+		 * @param {String} id The element ID to update.
 		 */
 		opacity:function(opacity,id)
 		{
@@ -324,7 +329,11 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Changes an element's opacity to the supplied value, spanning a supplied timeframe.
+		 * Changes an element's opacity to the supplied value, spanning a supplied time frame
+		 * @param {Integer} id
+		 * @param {Integer} start
+		 * @param {Integer} end
+		 * @param {Integer} ms
 		 */
 		opacityChange:function(id,start,end,ms)
 		{
@@ -350,7 +359,9 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Shifts an element's opacity, spanning a supplied timeframe.
+		 * Shifts an element's opacity, spanning a supplied time frame
+		 * @param {Integer} id
+		 * @param {Integer} ms
 		 */
 		opacityShift:function(id,ms)
 		{
@@ -359,11 +370,13 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 	
 	/**
-	 * Label collection / language pack.
-	 * Overload this to change languages..
+	 * Class of labels
 	 */
 	label=
 	{
+		/**
+		 * Error messages that are thrown.
+		 */
 		error:
 		{
 			msg1:"Couldn't find target element.",
@@ -372,6 +385,9 @@ var aFrame=(aFrame)?aFrame:function()
 			msg4:"The following required fields are missing or invalid:"
 		},
 
+		/**
+		 * Common element labels.
+		 */
 		element:
 		{
 			back:"Back",
@@ -386,6 +402,9 @@ var aFrame=(aFrame)?aFrame:function()
 			submit:"Submit"
 		},
 
+		/**
+		 * Months of the Year.
+		 */
 		month:
 		{
 			1:"January",
@@ -402,9 +421,37 @@ var aFrame=(aFrame)?aFrame:function()
 			12:"December"
 		}
 	};
+
+	/**
+	 * Class for URI interaction
+	 */
+	uri=
+	{
+		/**
+		 * Load a URI from local cache, or makes a server request.
+		 * @param {String} uri 
+		 * @returns {Mixed} Instance of URI.
+		 */
+		get:function(uri)
+		{
+			type=(type=="undefined")?"GET":type;
+				
+			for (var resource in cache)
+			{
+				if (resource==uri) { return cache[uri]; }
+			}
+				
+			return client.httpRequest(uri,"GET");
+		},
+		
+		post: function(uri,args)
+		{
+			void(0);
+		}
+	};
 	
 	/**
-	 * Form validation.
+	 * Class for form validation
 	 */
 	validate=
 	{
@@ -414,12 +461,20 @@ var aFrame=(aFrame)?aFrame:function()
 		required:[],
 		value:null,
 		
+		/**
+		 * Sets an exception and appends to the message displayed to the Client.
+		 */
 		invalid:function(arg)
 		{
 			this.exception=true;
 			this.msg+=" "+arg.toString()+", ";
 		},
 	
+		/**
+		 * Validates the value of elements based on the args passed in.
+		 * @param {Array} args
+		 * @returns {Boolean}
+		 */
 		fields:function(args)
 		{
 			this.required=args;
@@ -462,7 +517,6 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 			}
 
-			// Throwing exception if an error occurred.
 			if (err) { throw msg; }
 				
 			return !err;
@@ -470,28 +524,35 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Exposed to the client.
+	 * Public class
 	 */
 	constructor=
-	{
-		// Cache the AJAX loader img object here!
-			
-		// Public properties
+	{		
+		/**
+		 * Properties
+		 */
 		ie:this.parent.ie,
 		css3:this.parent.css3,
 
-		// Public methods
+		/**
+		 * Methods
+		 */
 		$:this.parent.$,
 		position:null, //find the position; maybe put this in the element class?
 
-		//Public classes
+		/**
+		 * Classes
+		 */
 		calendar:this.parent.calendar,
-		client:this.parent.client,
 		element:this.parent.element,
 		fx:this.parent.fx,
 		label:this.parent.label,
+		uri:this.parent.uri,
 		validate:this.parent.validate
 	};
 
+	/**
+	 * Exposing the public class
+	 */
 	return constructor;
 }();
