@@ -29,17 +29,17 @@ var aFrame=(aFrame)?aFrame:function()
 
 		return document.getElementById(arg);
 	};
-
+	
 	/**
 	 * Renders a loading icon in a target element
 	 * @param {String} id Target element ID.
 	 */
 	icon=function(id)
-	{
+	{		
 		if (!window["aFrame.icon"])
 		{
 			window["aFrame.icon"]=new Image();
-			window["aFrame.icon"].src="http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif";				
+			window["aFrame.icon"].src=constructor.iconUrl;				
 		}
 		
 		if (!$(id+"_"+label.element.loading))
@@ -54,7 +54,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 			try
 			{
-				element.create("img",args,id);
+				el.create("img",args,id);
 			}
 			catch(e)
 			{
@@ -175,26 +175,11 @@ var aFrame=(aFrame)?aFrame:function()
 	 * @TODO Make this better!
 	 */
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
-
-	/**
-	 * Encodes a category name to a dom friendly id
-	 * @param {String} sName The category name.
-	 * @returns {String} A DOM friendly format.
-	 */
-	domID=function(arg)
-	{
-		arg = arg.toString(); 
-		if (arg!="")
-		{
-			arg = arg.replace(/(\&|,|(\s)|\/)/gi,"");
-		}
-		return arg.toLowerCase();
-	};
 	
 	/**
 	 * Element CRUD methods
 	 */
-	element=
+	el=
 	{
 		/**
 		 * Creates an element
@@ -247,6 +232,21 @@ var aFrame=(aFrame)?aFrame:function()
 			if ($(id)) { document.body.removeChild($(id)); }
 		},
 
+		/**
+		 * Encodes a string to a DOM friendly ID
+		 * @param {String} arg The string to encode.
+		 * @returns {String}
+		 */
+		domID:function(arg)
+		{
+			arg=arg.toString(); 
+			if (arg!="")
+			{
+				arg=arg.replace(/(\&|,|(\s)|\/)/gi,"");
+			}
+			return arg.toLowerCase();
+		},
+		
 		/**
 		 * Resets an element
 		 * @param {String} id Target element ID.
@@ -323,7 +323,8 @@ var aFrame=(aFrame)?aFrame:function()
 	error=function(args)
 	{
 		var err = new Error(args);
-		alert(err.toString()); // temp!!
+		alert(err.toString());
+		//console.log(err.toString());
 	};
 	
 	/**
@@ -390,6 +391,24 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 	
 	/**
+	 * Class for integer properties and manipulation
+	 */
+	int=
+	{
+		isEven:function(arg)
+		{
+			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?false:true;
+			return arg;
+		},
+		
+		isOdd:function(arg)
+		{
+			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?true:false;
+			return arg;
+		}
+	};
+	
+	/**
 	 * Class of labels
 	 */
 	label=
@@ -439,24 +458,6 @@ var aFrame=(aFrame)?aFrame:function()
 			10:"October",
 			11:"November",
 			12:"December"
-		}
-	};
-	
-	/**
-	 * Class for number properties and manipulation
-	 */
-	number=
-	{
-		isEven:function(arg)
-		{
-			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?false:true;
-			return arg;
-		},
-		
-		isOdd:function(arg)
-		{
-			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?true:false;
-			return arg;
 		}
 	};
 
@@ -563,6 +564,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * Public class
+	 * @constructor
 	 */
 	constructor=
 	{		
@@ -571,34 +573,37 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		ie:this.parent.ie,
 		css3:this.parent.css3,
+		iconUrl:"http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif",
 
 		/**
 		 * Methods
 		 */
 		$:this.parent.$,
-		create:this.parent.element.create,
-		destroy:this.parent.element.desotry,
-		domID:this.parent.domID,
+		create:this.parent.el.create,
+		destroy:this.parent.el.destroy,
+		domID:this.parent.el.domID,
 		error:this.parent.error,
 		icon:this.parent.icon,
-		isEven:this.parent.number.isEven,
-		isOdd:this.parent.number.isOdd,
 		position:null, //find the position; maybe put this in the element class?
-		reset:this.parent.element.reset,
-		update:this.parent.element.update,
+		reset:this.parent.el.reset,
+		update:this.parent.el.update,
 
 		/**
 		 * Classes
 		 */
 		calendar:this.parent.calendar,
+		el:this.parent.el,
 		fx:this.parent.fx,
+		int:this.parent.int,
 		label:this.parent.label,
 		uri:this.parent.uri,
 		validate:this.parent.validate
 	};
 
-	/**
-	 * Exposing the public class
-	 */
 	return constructor;
 }();
+
+/**
+ * Extending standard objects
+ */
+String.prototype.domID=function() { return aFrame.domID(this); };
