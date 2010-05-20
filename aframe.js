@@ -175,6 +175,21 @@ var aFrame=(aFrame)?aFrame:function()
 	 * @TODO Make this better!
 	 */
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
+
+	/**
+	 * Encodes a category name to a dom friendly id
+	 * @param {String} sName The category name.
+	 * @returns {String} A DOM friendly format.
+	 */
+	domID=function(arg)
+	{
+		arg = arg.toString(); 
+		if (arg!="")
+		{
+			arg = arg.replace(/(\&|,|(\s)|\/)/gi,"");
+		}
+		return arg.toLowerCase();
+	};
 	
 	/**
 	 * Element CRUD methods
@@ -299,7 +314,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 		}
 	};
-
+	
 	/**
 	 * Error handling
 	 * @param {String} args Error message to display.
@@ -426,6 +441,24 @@ var aFrame=(aFrame)?aFrame:function()
 			12:"December"
 		}
 	};
+	
+	/**
+	 * Class for number properties and manipulation
+	 */
+	number=
+	{
+		isEven:function(arg)
+		{
+			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?false:true;
+			return arg;
+		},
+		
+		isOdd:function(arg)
+		{
+			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?true:false;
+			return arg;
+		}
+	};
 
 	/**
 	 * Class for URI interaction
@@ -545,7 +578,11 @@ var aFrame=(aFrame)?aFrame:function()
 		$:this.parent.$,
 		create:this.parent.element.create,
 		destroy:this.parent.element.desotry,
+		domID:this.parent.domID,
 		error:this.parent.error,
+		icon:this.parent.icon,
+		isEven:this.parent.number.isEven,
+		isOdd:this.parent.number.isOdd,
 		position:null, //find the position; maybe put this in the element class?
 		reset:this.parent.element.reset,
 		update:this.parent.element.update,
