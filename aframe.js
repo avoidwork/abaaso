@@ -20,7 +20,7 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			var instances=[];
 			var loop=arg.length;
-			for (i=0;i<loop;i++)
+			for (var i=0;i<loop;i++)
 			{
 				instances.push(document.getElementById(arg[i]));
 			}
@@ -29,19 +29,19 @@ var aFrame=(aFrame)?aFrame:function()
 
 		return document.getElementById(arg);
 	};
-	
+
 	/**
 	 * Renders a loading icon in a target element
 	 * @param {String} id Target element ID.
 	 */
 	icon=function(id)
-	{		
+	{
 		if (!window["aFrame.icon"])
 		{
 			window["aFrame.icon"]=new Image();
-			window["aFrame.icon"].src=constructor.iconUrl;				
+			window["aFrame.icon"].src=constructor.iconUrl;
 		}
-		
+
 		if (!$(id+"_"+label.element.loading))
 		{
 			var args=
@@ -62,7 +62,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 		}
 	};
-	
+
 	/**
 	 * IE detection
 	 * Basic, this should be extended with a version number.
@@ -74,7 +74,7 @@ var aFrame=(aFrame)?aFrame:function()
 	 * This should be checked prior to httpGet();
 	 */
 	cache=[];
-	
+
 	/**
 	 * Calendar class will render a calendar, and act as a date picker.
 	 */
@@ -89,7 +89,7 @@ var aFrame=(aFrame)?aFrame:function()
 	 * Class contains methods to get and post data
 	 */
 	client=
-	{	
+	{
 		/**
 		 * Receives and caches the URI/xmlHttp response
 		 * @param {Integer} Target element ID.
@@ -122,7 +122,8 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Creates an xmlHttp request for a URI
 		 * @param {String} uri
-		 * @param {String} type 
+		 * @param {String} type
+		 * @TODO Complete the POST portion
 		 */
 		httpRequest:function(uri,type)
 		{
@@ -175,7 +176,7 @@ var aFrame=(aFrame)?aFrame:function()
 	 * @TODO Make this better!
 	 */
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
-	
+
 	/**
 	 * Element CRUD methods
 	 */
@@ -186,18 +187,15 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param {String} element Type of element to create.
 		 * @param {Array} args Literal array of attributes for the new element.
 		 * @param {String} target Optional target element ID.
+		 * @TODO Fix this!
 		 */
-		create:function(el,attributes,obj)
+		create:function(element,args,target)
 		{
-			var element = el;
-			var args = attributes;
-			var target = obj;
-			
 			if (typeof args=="object")
 			{
 				var obj=document.createElement(element);
 				var loop=args.length;
-				for (i=0;i<loop;i++)
+				for (var i=0;i<loop;i++)
 				{
 					switch(args[i][0])
 					{
@@ -218,7 +216,6 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				alert("here");
 				throw label.error.msg3;
 			}
 		},
@@ -229,7 +226,10 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		destroy:function(id)
 		{
-			if ($(id)) { document.body.removeChild($(id)); }
+			if ($(id))
+			{
+				document.body.removeChild($(id));
+			}
 		},
 
 		/**
@@ -237,16 +237,12 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param {String} arg The string to encode.
 		 * @returns {String}
 		 */
-		domID:function(arg)
+		domID:function(args)
 		{
-			arg=arg.toString(); 
-			if (arg!="")
-			{
-				arg=arg.replace(/(\&|,|(\s)|\/)/gi,"");
-			}
-			return arg.toLowerCase();
+			//args=("id" in args)?args.id:args;
+			return args.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 		},
-		
+
 		/**
 		 * Resets an element
 		 * @param {String} id Target element ID.
@@ -255,15 +251,14 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if ($(id))
 			{
-				var element=$(id);
-				switch(typeof element)
+				switch(typeof $(id))
 				{
 				case "form":
 					$(id).reset();
 					break;
 				case "object":
 				default:
-					element.update(id,[["innerHTML",""]]);
+					$(id).update(id,[["innerHTML",""]]);
 					break;
 				}
 			}
@@ -284,21 +279,22 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				if (typeof args=="object")
 				{
-					var obj=$(id);
-					for (attribute in args)
+					var loop=args.length;
+					for (var i=0;i<loop;i++)
+					//for (attribute in args)
 					{
-						switch(attribute[0])
+						switch(args[i][0])
 						{
 						case "class":
-							(this.ie)?obj.setAttribute("className",attribute[1]):href.setAttribute("class",attribute[1]);
+							(ie)?$(id).setAttribute("className", args[i][1]):$(id).setAttribute("class", args[i][1]);
 							break;
 						case "innerHTML":
 						case "type":
 						case "src":
-							obj.attribute[0]=attribute[1];
+							$(id).args[i][0]=args[i][1];
 							break;
 						default:
-							obj.setAttribute(attribute[0],attribute[1]);
+							$(id).setAttribute(args[i][0] ,args[i][1]);
 							break;
 						};
 					}
@@ -314,7 +310,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 		}
 	};
-	
+
 	/**
 	 * Error handling
 	 * @param {String} args Error message to display.
@@ -326,7 +322,7 @@ var aFrame=(aFrame)?aFrame:function()
 		alert(err.toString());
 		//console.log(err.toString());
 	};
-	
+
 	/**
 	 * Class of GUI effects
 	 */
@@ -341,11 +337,10 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if ($(id))
 			{
-				obj=$(id);
-				obj.style.opacity=(opacity/100);
-				obj.style.MozOpacity=(opacity/100);
-				obj.style.KhtmlOpacity=(opacity/100);
-				obj.style.filter="alpha(opacity="+opacity+")";
+				$(id).style.opacity=(opacity/100);
+				$(id).style.MozOpacity=(opacity/100);
+				$(id).style.KhtmlOpacity=(opacity/100);
+				$(id).style.filter="alpha(opacity="+opacity+")";
 			}
 		},
 
@@ -363,7 +358,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 			if (start>end)
 			{
-				for (i=start;i>=end;i--)
+				for (var i=start;i>=end;i--)
 				{
 					setTimeout("aFrame.fx.opacity("+i+",'"+id+"')",(timer*speed));
 					timer++;
@@ -371,7 +366,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else if (start<end)
 			{
-				for (i=start;i<=end;i++)
+				for (var i=start;i<=end;i++)
 				{
 					setTimeout("aFrame.fx.opacity("+i+",'"+id+"')",(timer*speed));
 					timer++;
@@ -389,25 +384,25 @@ var aFrame=(aFrame)?aFrame:function()
 			($(id).style.opacity==0)?aFrame.fx.opacityChange(id,0,100,ms):aFrame.fx.opacityChange(id,100,0,ms);
 		}
 	};
-	
+
 	/**
 	 * Class for integer properties and manipulation
 	 */
-	int=
+	number=
 	{
 		isEven:function(arg)
 		{
 			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?false:true;
 			return arg;
 		},
-		
+
 		isOdd:function(arg)
 		{
 			arg=(((parseInt(arg)/2).toString().indexOf("."))>-1)?true:false;
 			return arg;
 		}
 	};
-	
+
 	/**
 	 * Class of labels
 	 */
@@ -468,27 +463,28 @@ var aFrame=(aFrame)?aFrame:function()
 	{
 		/**
 		 * Load a URI from local cache, or makes a server request.
-		 * @param {String} uri 
+		 * @param {String} uri
 		 * @returns {Mixed} Instance of URI.
+		 * @TODO Fix the for loop!
 		 */
 		get:function(uri)
 		{
-			type=(type=="undefined")?"GET":type;
-				
 			for (var resource in cache)
 			{
-				if (resource==uri) { return cache[uri]; }
+				if (resource==uri)
+				{
+					return cache[uri];
+				}
 			}
-				
 			return client.httpRequest(uri,"GET");
 		},
-		
+
 		post: function(uri,args)
 		{
 			void(0);
 		}
 	};
-	
+
 	/**
 	 * Class for form validation
 	 */
@@ -499,7 +495,7 @@ var aFrame=(aFrame)?aFrame:function()
 		msg:label.error.msg4,
 		required:[],
 		value:null,
-		
+
 		/**
 		 * Sets an exception and appends to the message displayed to the Client.
 		 */
@@ -508,7 +504,7 @@ var aFrame=(aFrame)?aFrame:function()
 			this.exception=true;
 			this.msg+=" "+arg.toString()+", ";
 		},
-	
+
 		/**
 		 * Validates the value of elements based on the args passed in.
 		 * @param {Array} args
@@ -518,8 +514,8 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			this.required=args;
 			this.loop=required.length;
-			
-			for (i=0;i<this.loop;i++)
+
+			for (var i=0;i<this.loop;i++)
 			{
 				this.value=$(this.required[i][0]).value;
 				switch (this.required[i][1])
@@ -557,7 +553,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 
 			if (err) { throw msg; }
-				
+
 			return !err;
 		}
 	};
@@ -567,7 +563,7 @@ var aFrame=(aFrame)?aFrame:function()
 	 * @constructor
 	 */
 	constructor=
-	{		
+	{
 		/**
 		 * Properties
 		 */
@@ -594,8 +590,8 @@ var aFrame=(aFrame)?aFrame:function()
 		calendar:this.parent.calendar,
 		el:this.parent.el,
 		fx:this.parent.fx,
-		int:this.parent.int,
 		label:this.parent.label,
+		number:this.parent.number,
 		uri:this.parent.uri,
 		validate:this.parent.validate
 	};
@@ -604,6 +600,20 @@ var aFrame=(aFrame)?aFrame:function()
 }();
 
 /**
+ * Registering a global helper
+ */
+var $=function(args)
+{
+	return aFrame.$(args);
+};
+
+/**
  * Extending standard objects
  */
+Number.prototype.isEven=function() { return aFrame.number.isEven(this); };
+Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
+Object.prototype.destroy=function() { return aFrame.destroy(this.id); };
+Object.prototype.domID=function() { return aFrame.domID(this.id); };
+Object.prototype.reset=function() { return aFrame.domID(this.id); };
+Object.prototype.update=function() { return aFrame.domID(this.id, args); };
 String.prototype.domID=function() { return aFrame.domID(this); };
