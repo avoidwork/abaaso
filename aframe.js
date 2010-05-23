@@ -2,6 +2,9 @@
  * aFrame
  * http://avoidwork.com/aFrame
  *
+ * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
+ * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
+ *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @version Prototype
  */
@@ -34,7 +37,7 @@ var aFrame=(aFrame)?aFrame:function()
 	 * Renders a loading icon in a target element
 	 * @param {String} id Target element ID.
 	 */
-	icon=function(id)
+	icon=function(el)
 	{
 		if (!window["aFrame.icon"])
 		{
@@ -42,19 +45,19 @@ var aFrame=(aFrame)?aFrame:function()
 			window["aFrame.icon"].src=constructor.iconUrl;
 		}
 
-		if (!$(id+"_"+label.element.loading))
+		if (!$(el+"_"+label.element.loading.toLocaleLowerCase()))
 		{
 			var args=
 			[
 				["alt",label.element.loading],
-				["id",id+"_"+label.element.loading],
+				["id",el+"_"+label.element.loading.toLocaleLowerCase()],
 				["src",window["aFrame.icon"].src],
 				["class","loading"]
 			];
 
 			try
 			{
-				el.create("img",args,id);
+				element.create("img",args,el);
 			}
 			catch(e)
 			{
@@ -65,7 +68,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * IE detection
-	 * Basic, this should be extended with a version number.
+	 * @TODO This should be extended with a version number.
 	 */
 	ie=(document.all)?true:false;
 
@@ -178,41 +181,40 @@ var aFrame=(aFrame)?aFrame:function()
 	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
 
 	/**
-	 * Element CRUD methods
+	 * Class for HTML element CRUD, etc.
 	 */
-	el=
+	element=
 	{
 		/**
 		 * Creates an element
-		 * @param {String} element Type of element to create.
+		 * @param {String} type Type of element to create.
 		 * @param {Array} args Literal array of attributes for the new element.
 		 * @param {String} target Optional target element ID.
-		 * @TODO Fix this!
 		 */
-		create:function(element,args,target)
+		create:function(type,args,target)
 		{
 			if (typeof args=="object")
 			{
-				var obj=document.createElement(element);
+				var el=document.createElement(type);
 				var loop=args.length;
 				for (var i=0;i<loop;i++)
 				{
 					switch(args[i][0])
 					{
 					case "class":
-						(ie)?obj.setAttribute("className",args[i][1]):obj.setAttribute("class",args[i][1]);
+						(ie)?el.setAttribute("className",args[i][1]):el.setAttribute("class",args[i][1]);
 						break;
 					case "innerHTML":
 					case "type":
 					case "src":
-						eval("obj."+args[i][0]+"='"+args[i][1]+"';");
+						eval("el."+args[i][0]+"='"+args[i][1]+"';");
 						break;
 					default:
-						obj.setAttribute(args[i][0],args[i][1]);
+						el.setAttribute(args[i][0],args[i][1]);
 						break;
 					};
 				}
-				(!$(target))?document.body.appendChild(obj):$(target).appendChild(obj);
+				($(target))?$(target).appendChild(el):document.body.appendChild(el);
 			}
 			else
 			{
@@ -222,30 +224,30 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Destroys an element
-		 * @param {String} id Target element ID.
+		 * @param {String} obj Target
 		 */
-		destroy:function(id)
+		destroy:function(obj)
 		{
-			if ($(id))
+			if ($(obj))
 			{
-				document.body.removeChild($(id));
+				document.body.removeChild($(obj));
 			}
 		},
 
 		/**
 		 * Encodes a string to a DOM friendly ID
 		 * @param {String} arg The string to encode.
-		 * @returns {String}
+		 * @returns {String} Returns a lowercase stripped string.
 		 */
 		domID:function(args)
 		{
-			//args=("id" in args)?args.id:args;
 			return args.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 		},
 
 		/**
 		 * Resets an element
 		 * @param {String} id Target element ID.
+		 * @TODO switch this to if ("attribute" in $var) maybe...
 		 */
 		reset:function(id)
 		{
@@ -259,7 +261,6 @@ var aFrame=(aFrame)?aFrame:function()
 				case "object":
 				default:
 					$(id).update(id,[["innerHTML",""]]);
-					break;
 				}
 			}
 			else
@@ -269,32 +270,31 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Updates an element
-		 * @param {Integer} id Target element ID.
+		 * Updates an element or object
+		 * @param {Integer} obj Target
 		 * @param {Array} args Literal array of attributes and values.
 		 */
-		update:function(id,args)
+		update:function(obj,args)
 		{
-			if ($(id))
+			if ($(obj))
 			{
 				if (typeof args=="object")
 				{
 					var loop=args.length;
 					for (var i=0;i<loop;i++)
-					//for (attribute in args)
 					{
 						switch(args[i][0])
 						{
 						case "class":
-							(ie)?$(id).setAttribute("className", args[i][1]):$(id).setAttribute("class", args[i][1]);
+							(ie)?$(obj).setAttribute("className", args[i][1]):$(obj).setAttribute("class", args[i][1]);
 							break;
 						case "innerHTML":
 						case "type":
 						case "src":
-							$(id).args[i][0]=args[i][1];
+							eval("obj."+args[i][0]+"='"+args[i][1]+"';");
 							break;
 						default:
-							$(id).setAttribute(args[i][0] ,args[i][1]);
+							$(obj).setAttribute(args[i][0] ,args[i][1]);
 							break;
 						};
 					}
@@ -319,8 +319,8 @@ var aFrame=(aFrame)?aFrame:function()
 	error=function(args)
 	{
 		var err = new Error(args);
+		//(console)?console.log(err.toString()):alert(err.toString());
 		alert(err.toString());
-		//console.log(err.toString());
 	};
 
 	/**
@@ -413,7 +413,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			msg1:"Couldn't find target element.",
+			msg1:"Target element does not exist.",
 			msg2:"A server error has occurred.",
 			msg3:"Expected an array.",
 			msg4:"The following required fields are missing or invalid:"
@@ -575,14 +575,14 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Methods
 		 */
 		$:this.parent.$,
-		create:this.parent.el.create,
-		destroy:this.parent.el.destroy,
-		domID:this.parent.el.domID,
+		create:this.parent.element.create,
+		destroy:this.parent.element.destroy,
+		domID:this.parent.element.domID,
 		error:this.parent.error,
 		icon:this.parent.icon,
 		position:null, //find the position; maybe put this in the element class?
-		reset:this.parent.el.reset,
-		update:this.parent.el.update,
+		reset:this.parent.element.reset,
+		update:this.parent.element.update,
 
 		/**
 		 * Classes
@@ -602,10 +602,7 @@ var aFrame=(aFrame)?aFrame:function()
 /**
  * Registering a global helper
  */
-var $=function(args)
-{
-	return aFrame.$(args);
-};
+var $=function(args) { return aFrame.$(args); };
 
 /**
  * Extending standard objects
@@ -615,5 +612,5 @@ Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
 Object.prototype.destroy=function() { return aFrame.destroy(this.id); };
 Object.prototype.domID=function() { return aFrame.domID(this.id); };
 Object.prototype.reset=function() { return aFrame.domID(this.id); };
-Object.prototype.update=function() { return aFrame.domID(this.id, args); };
+Object.prototype.update=function(args) { return aFrame.domID(this.id, args); };
 String.prototype.domID=function() { return aFrame.domID(this); };
