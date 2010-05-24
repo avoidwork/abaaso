@@ -12,69 +12,9 @@
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
-	 * Helper function
-	 * Returns an instance, or an array of instances depending on the what is passed in.
-	 * @param {mixed} arg String or Array of element IDs.
-	 * @returns {mixed} instances Instance or Array of Instances of elements.
-	 */
-	$=function(arg)
-	{
-		if (typeof arg=="object")
-		{
-			var instances=[];
-			var loop=arg.length;
-			for (var i=0;i<loop;i++)
-			{
-				instances.push(document.getElementById(arg[i]));
-			}
-			return instances;
-		}
-
-		return document.getElementById(arg);
-	};
-
-	/**
-	 * Renders a loading icon in a target element
-	 * @param {String} id Target element ID.
-	 */
-	icon=function(el)
-	{
-		if (!window["aFrame.icon"])
-		{
-			window["aFrame.icon"]=new Image();
-			window["aFrame.icon"].src=constructor.iconUrl;
-		}
-
-		if (!$(el+"_"+label.element.loading.toLocaleLowerCase()))
-		{
-			var args=
-			[
-				["alt",label.element.loading],
-				["id",el+"_"+label.element.loading.toLocaleLowerCase()],
-				["src",window["aFrame.icon"].src],
-				["class","loading"]
-			];
-
-			try
-			{
-				element.create("img",args,el);
-			}
-			catch(e)
-			{
-				error(e);
-			}
-		}
-	};
-
-	/**
-	 * IE detection
-	 * @TODO This should be extended with a version number.
-	 */
-	ie=(document.all)?true:false;
-
-	/**
 	 * This array holds cached URI resources.
 	 * This should be checked prior to httpGet();
+	 * @TODO Set a global timeout value, 0 or Xms before a cache item expires.
 	 */
 	cache=[];
 
@@ -89,10 +29,40 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Class contains methods to get and post data
+	 * Class contains methods and properties for client interaction
 	 */
 	client=
 	{
+		/**
+		 * Public properties
+		 */
+		css3:((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
+		ie:(document.all)?true:false,
+		firefox:null,
+		opera:null,
+		safari:null,
+		version:null,
+
+		/**
+		* Helper function
+		 * @param {mixed} arg String or Array of element IDs.
+		* @returns {mixed} instances Instance or Array of Instances of elements.
+		 */
+		$:function(arg)
+		{
+			if (typeof arg=="object")
+			{
+				var instances=[];
+				var loop=arg.length;
+				for (var i=0;i<loop;i++)
+				{
+					instances.push(document.getElementById(arg[i]));
+				}
+				return instances;
+			}
+			return document.getElementById(arg);
+		},
+
 		/**
 		 * Receives and caches the URI/xmlHttp response
 		 * @param {Integer} Target element ID.
@@ -171,14 +141,41 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				error(e);
 			}
+		},
+
+		/**
+		 * Renders a loading icon in a target element
+		 * @param {String} id Target element ID.
+		*/
+		icon:function(el)
+		{
+			if (!window["aFrame.icon"])
+			{
+				window["aFrame.icon"]=new Image();
+				window["aFrame.icon"].src=constructor.iconUrl;
+			}
+
+			if (!$(el+"_"+label.element.loading.toLocaleLowerCase()))
+			{
+				var args=
+				[
+					["alt",label.element.loading],
+					["id",el+"_"+label.element.loading.toLocaleLowerCase()],
+					["src",window["aFrame.icon"].src],
+					["class","loading"]
+				];
+
+				try
+				{
+					element.create("img",args,el);
+				}
+				catch(e)
+				{
+					error(e);
+				}
+			}
 		}
 	};
-
-	/**
-	 * CSS3 detection
-	 * @TODO Make this better!
-	 */
-	css3=((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false;
 
 	/**
 	 * Class for HTML element CRUD, etc.
@@ -226,11 +223,11 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Destroys an element
 		 * @param {String} obj Target
 		 */
-		destroy:function(obj)
+		destroy:function(el)
 		{
-			if ($(obj))
+			if ($(el))
 			{
-				document.body.removeChild($(obj));
+				document.body.removeChild($(el));
 			}
 		},
 
@@ -270,13 +267,13 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Updates an element or object
+		 * Updates an element
 		 * @param {Integer} obj Target
 		 * @param {Array} args Literal array of attributes and values.
 		 */
-		update:function(obj,args)
+		update:function(el,args)
 		{
-			if ($(obj))
+			if ($(el))
 			{
 				if (typeof args=="object")
 				{
@@ -286,15 +283,15 @@ var aFrame=(aFrame)?aFrame:function()
 						switch(args[i][0])
 						{
 						case "class":
-							(ie)?$(obj).setAttribute("className", args[i][1]):$(obj).setAttribute("class", args[i][1]);
+							(ie)?$(el).setAttribute("className", args[i][1]):$(el).setAttribute("class", args[i][1]);
 							break;
 						case "innerHTML":
 						case "type":
 						case "src":
-							eval("obj."+args[i][0]+"='"+args[i][1]+"';");
+							eval("el."+args[i][0]+"='"+args[i][1]+"';");
 							break;
 						default:
-							$(obj).setAttribute(args[i][0] ,args[i][1]);
+							$(el).setAttribute(args[i][0] ,args[i][1]);
 							break;
 						};
 					}
@@ -501,8 +498,8 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		invalid:function(arg)
 		{
-			this.exception=true;
-			this.msg+=" "+arg.toString()+", ";
+			exception=true;
+			msg+=" "+arg.toString()+", ";
 		},
 
 		/**
@@ -512,33 +509,33 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		fields:function(args)
 		{
-			this.required=args;
-			this.loop=required.length;
+			required=args;
+			loop=required.length;
 
 			for (var i=0;i<this.loop;i++)
 			{
-				this.value=$(this.required[i][0]).value;
-				switch (this.required[i][1])
+				value=$(required[i][0]).value;
+				switch (required[i][1])
 				{
 				case "isDomain":
-					(!this.isDomain(this.value))?invalid(this.required[i][2]):void(0);
+					(!isDomain(value))?invalid(required[i][2]):void(0);
 					break;
 				case "isDomainOrIp":
-					((!this.isIpAddr(this.value))&&(!this.isDomain(this.value)))?this.invalid(required[i][2]):void(0);
+					((!isIpAddr(value))&&(!isDomain(value)))?invalid(required[i][2]):void(0);
 					break;
 				case "isIp":
-					(!this.isIpAddr(this.value))?this.invalid(required[i][2]):void(0);
+					(!isIpAddr(value))?invalid(required[i][2]):void(0);
 					break;
 				case "isInteger":
-					if (isNaN(this.value))
+					if (isNaN(value))
 					{
-						this.invalid(required[i][2]);
+						invalid(required[i][2]);
 					}
 					else if (required[i][3])
 					{
 						var y=required[i][3].length;
 						var exception=false;
-						for (x=0;x<y;x++)
+						for (var x=0;x<y;x++)
 						{
 							exception=(parseInt(val)==parseInt(required[i][3][x]))?false:true;
 							if (!exception) { break; }
@@ -567,40 +564,47 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Properties
 		 */
-		ie:this.parent.ie,
-		css3:this.parent.css3,
-		iconUrl:"http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif",
+		ie:client.ie,
+		css3:client.css3,
+		iconUrl:"http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif", // Default, change this
 
 		/**
 		 * Methods
 		 */
-		$:this.parent.$,
-		create:this.parent.element.create,
-		destroy:this.parent.element.destroy,
-		domID:this.parent.element.domID,
-		error:this.parent.error,
-		icon:this.parent.icon,
+		$:client.$,
+		create:element.create,
+		destroy:element.destroy,
+		domID:element.domID,
+		error:error,
+		icon:client.icon,
 		position:null, //find the position; maybe put this in the element class?
-		reset:this.parent.element.reset,
-		update:this.parent.element.update,
+		reset:element.reset,
+		update:element.update,
 
 		/**
 		 * Classes
 		 */
-		calendar:this.parent.calendar,
-		el:this.parent.el,
-		fx:this.parent.fx,
-		label:this.parent.label,
-		number:this.parent.number,
-		uri:this.parent.uri,
-		validate:this.parent.validate
+		calendar:calendar,
+		el:element,
+		element:element,
+		fx:fx,
+		label:label,
+		number:number,
+		uri:uri,
+		validate:validate
 	};
+
+	/**
+	 * Global Methods
+	 */
+	$=client.$;
+	ie=client.ie;
 
 	return constructor;
 }();
 
 /**
- * Registering a global helper
+ * Registering a Global Helper
  */
 var $=function(args) { return aFrame.$(args); };
 
