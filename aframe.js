@@ -128,6 +128,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 				var datePrev= new Date;
 				var dateNext=new Date;
+				var dateLabel=null;
 				var loop=dateDays(dateStamp.getMonth(), dateStamp.getFullYear());
 
 				switch (dateCur.getMonth())
@@ -166,12 +167,13 @@ var aFrame=(aFrame)?aFrame:function()
 					break;
 				}
 
+				eval("dateLabel=label.month."+dateStamp.getMonth()+";");
 				element.create("div", ["id","calendarTop"], targetEl);
 				(clear)?element.create("a", [["id","calendarClear"], ["innerHTML", label.element.clear], ["onclick","aFrame.reset('"+element+"');aFrame.destroy('"+targetEl+"')"]], "calendarTop"):void(0);
 				element.create("a", [["id","calendarClose"], ["innerHTML", label.element.close], ["onclick","aFrame.destroy('"+targetEl+"')"]], "calendarTop");
 				element.create("div", [["id","calendarHeader"]], targetEl);
 				element.create("a", [["id","calendarPrev"], ["innerHTML","&lt;"], ["onclick","aFrame.calendar.renderCalendar('"+targetEl+"','"+datePrev.toDateString()+"','"+formEl+"');"]], "calendarHeader");
-				element.create("span", [["id","calendarMonth"], ["innerHTML", (label.month.(dateStamp.getMonth())+" "+dateStamp.getFullYear())]], "calendarHeader");
+				element.create("span", [["id","calendarMonth"], ["innerHTML", dateLabel+" "+dateStamp.getFullYear().toString()]], "calendarHeader");
 				element.create("a", [["id","calendarNext"], ["innerHTML","&gt;"], ["onclick","aFrame.calendar.renderCalendar('"+targetEl+"','"+dateNext.toDateString()+"','"+formEl+"');"]], "calendarHeader");
 				element.create("div"[["id","calendarDays"]], targetEl);
 
