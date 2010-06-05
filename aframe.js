@@ -5,60 +5,123 @@
  * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
  * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
  *
+ * Copyright (c) 2010, avoidwork inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 	* Redistributions of source code must retain the above copyright
+ * 	  notice, this list of conditions and the following disclaimer.
+ * 	* Redistributions in binary form must reproduce the above copyright
+ * 	  notice, this list of conditions and the following disclaimer in the
+ * 	  documentation and/or other materials provided with the distribution.
+ * 	* Neither the name of avoidwork inc. nor the
+ * 	  names of its contributors may be used to endorse or promote products
+ * 	  derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @copyright 2010
  * @version Prototype
  */
 
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
-	 * Class of cached items[], and time in ms to hold items (0=infinity).
-	 * This should be checked prior to httpGet();
+	 * Class for RESTful AJAX interaction
 	 */
-	cache=
+	ajax=
 	{
-		time:0,
-		items:[],
-
 		/**
-		 * Returns an the cached response from the URI.
-		 * @param args {string}
-		 * @returns {string}
+		 * Makes a POST to the URI with the supplied args.
+		 * @param uri {string} URI to GET from local cache or the resource.
+		 * @returns {string} Cached response from URI.
 		 */
-		getItem:function(arg)
+		del:function(uri)
 		{
-			for (var resource in cache.items)
-			{
-				if (resource==arg)
-				{
-					return cache.items[arg];
-				}
-			}
-			return "";
+			return client.httpRequest(uri, "DELETE");
 		},
 
 		/**
-		 * Sets the time in milliseconds to hold a URI/URL response, if ms is supplied; and returns the value of cache.time.
-		 * @param ms {integer} Optional milliseconds.
-		 * @returns {integer} cache.time
+		 * Makes a GET to the URI.
+		 * @param uri {string} URI to GET from local cache or the resource.
+		 * @returns {string} Cached response from URI.
 		 */
-		getSetTime:function(ms)
+		get:function(uri)
 		{
-			if (ms!==undefined)
+			if (!isnull(cache.get(uri))) { return cache.get(uri); }
+			return client.httpRequest(uri, "GET");
+		},
+
+		/**
+		 * Makes a POST to the URI with the supplied args.
+		 * @param uri {string} URI to GET from local cache or the resource.
+		 * @param {args} POST variables to include.
+		 * @returns {string} Cached response from URI.
+		 */
+		post: function(uri, args)
+		{
+			return client.httpRequest(uri, "POST", args);
+		}
+	};
+
+	/**
+	 * Class of cached items[], and time in ms to hold items (0=infinity).
+	 */
+	cache=
+	{
+		ms:0,
+		items:[],
+
+		/**
+		 * Returns the cached response from the URI.
+		 * @param args {string}
+		 * @returns {mixed} Returns the URI response as a string, or null.
+		 */
+		get:function(arg)
+		{
+			for (var i in this.items)
 			{
-				cache.time=(!isNaN(ms))?ms:0;
+				if ((this.items[i].uri==arg)&&(this.ms===0)) // add a datediff comparison for this.ms!
+				{
+					return this.items[i].response;
+				}
 			}
-			return cache.time;
+			return null;
+		},
+
+		set:function(uri, response)
+		{
+			for (var i in this.items)
+			{
+				if (this.items[i].uri==uri)
+				{
+					this.items[i].response=response;
+					this.items[i].timestamp=new Date();
+					return;
+				}
+			}
+			var obj={uri:uri, response:xmlHttp.responseText, timestamp:new Date()};
+			this.items.push(obj);
 		}
 	};
 
 	/**
 	 * Class provites a calendar via the create() function.
-	 * @TODO Make the formEl parameter optional.
+	 * @TODO Make the form parameter optional.
 	 */
 	calendar=
 	{
+		// Current date
 		dateCur:new Date(),
 
 		// ISO 8601 standard, change to any localized pattern
@@ -66,35 +129,30 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Creates a calendar in the window.
-		 * @param initEl {string} Element that called this function.
-		 * @param formEl {string} Form element that will receive the calendar value.
+		 * @param id {string} Object.id value that called this function.
+		 * @param form {string} Form element that will receive the calendar value.
 		 * @param clear {boolean} Optional boolean for displaying optional Clear anchor in calendar header.
 		 */
-		create: function(initEl, formEl, clear)
+		create: function(id, form, clear)
 		{
 			var args=null;
 			clear=(clear===undefined)?false:validate.bool(clear);
-			var dateStamp=($(formEl).value!="")?new Date($(formEl).value):new Date();
-			var pos=element.position(initEl);
+			var dateStamp=($(form).value!="")?new Date($(form).value):new Date();
+			var pos=element.position(id);
 
-			$(initEl).blur();
+			$(id).blur();
+			if ($(form).value=="Invalid Date") { $(form).reset(); }
+			if ($("aFrame.calendar")) { el.destroy("aFrame.calendar"); }
 
-			if ($(formEl).value=="Invalid Date")
+			el.create("div", [
+					["id", "aFrame.calendar"],
+					["opacity", 0],
+					["style","top:"+pos[1]+"px;left:"+pos[0]+"px;"]
+				]);
+
+			if (this.renderCalendar("aFrame.calendar", dateStamp, form, clear))
 			{
-				$(formEl).reset();
-			}
-
-			if ($("aFrame.calendar"))
-			{
-				el.destroy("aFrame.calendar");
-			}
-
-			el.create("div", [["id", "aFrame.calendar"],["style","top:"+pos[1]+"px;left:"+pos[0]+"px;"]]);
-			fx.opacity(0, "aFrame.calendar");
-
-			if (renderCalendar("aFrame.calendar", dateStamp, formEl, clear))
-			{
-				fx.opacityShift("aFrame.calendar", 100);
+				fx.opacityShift("aFrame.calendar", 300);
 			}
 			else
 			{
@@ -121,7 +179,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		dateOutput: function(dateStamp)
 		{
-			var output=calendar.pattern;
+			var output=this.pattern;
 			var outputDate=new Date(dateStamp);
 
 			output=output.replace(/dd/,outputDate.getDate());
@@ -133,12 +191,13 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Renders a "day" div in the calendar.
-		 * @param targetEl {string}
-		 * @param dateStamp {date}
-		 * @param formEl {string}
+		 * @param id {string} Object.id value
+		 * @param dateStamp {date} Date string.
+		 * @param obj {string} Object to be updated onclick.
 		 * @returns {boolean}
+		 * @TODO refactor the update to use el.listener().
 		 */
-		renderDay: function(targetEl, dateStamp, formEl)
+		renderDay: function(id, dateStamp, obj)
 		{
 			try
 			{
@@ -147,10 +206,10 @@ var aFrame=(aFrame)?aFrame:function()
 				if (!isNaN(dateStamp.getYear()))
 				{
 					var args=[
-						["id","href_day_"+dateStamp.getDate()],
-						["onclick", ("aFrame.update('"+formEl+"','"+dateOutput(dateStamp.toDateString())+"');aFrame.destroy('aFrame.calendar');")],
-						[innerHTML, dateStamp.getDate()]
-					];
+							["id","href_day_"+this.dateStamp.getDate()],
+							["onclick", "aFrame.update('"+obj+"','"+this.dateOutput(dateStamp.toDateString())+"');aFrame.destroy('aFrame.calendar');"],
+							[innerHTML, dateStamp.getDate()]
+						];
 
 					if ((dateStamp.getDate()==dateCur.getDate())&&(dateStamp.getMonth()==dateCur.getMonth())&&(dateStamp.getFullYear()==dateCur.getFullYear()))
 					{
@@ -161,13 +220,18 @@ var aFrame=(aFrame)?aFrame:function()
 						args.push(["class", "weekend"]);
 					}
 
-					element.create("div", [["id","div_day_"+dateStamp.getDate()],["class","day"]], targetEl);
-					element.create("a", args, "div_day_"+dateStamp.getDate());
+					el.create("div", [
+							["id","div_day_"+dateStamp.getDate()],
+							["class","day"]
+						], id);
+
+					el.create("a", args, "div_day_"+dateStamp.getDate());
 				}
 				else
 				{
-					element.create("div", [["class","day"]], targetEl);
+					el.create("div", [["class","day"]], id);
 				}
+
 				return true;
 			}
 			catch (e)
@@ -179,26 +243,26 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Renders the calendar in the target element.
-		 * @param targetEl {string} Target element.
+		 * @param id {string} Target object.id value.
 		 * @param dateStamp {string} Date to work with.
-		 * @param formEl {string} Form element to update.
+		 * @param obj {string} Object to update.
 		 * @param clear {boolean} Value reflects displaying the Clear option in the Calendar Header.
 		 * @returns {boolean}
 		 */
-		renderCalendar: function(targetEl, dateStamp, formEl, clear)
+		renderCalendar: function(id, dateStamp, obj, clear)
 		{
 			try
 			{
 				dateStamp=new Date(dateStamp);
 
-				if ($(targetEl))
+				if ($(id))
 				{
-					$(targetEl).reset();
+					$(id).reset();
 
 					var datePrev=new Date();
 					var dateNext=new Date();
 					var dateLabel=null;
-					var loop=dateDays(dateStamp.getMonth(), dateStamp.getFullYear());
+					var loop=this.dateDays(dateStamp.getMonth(), dateStamp.getFullYear());
 
 					switch (dateCur.getMonth())
 					{
@@ -237,24 +301,52 @@ var aFrame=(aFrame)?aFrame:function()
 					}
 
 					eval("dateLabel=label.month."+dateStamp.getMonth()+";");
-					element.create("div", ["id","calendarTop"], targetEl);
+					el.create("div", [["id", "calendarTop"]], id);
 
 					if (clear)
 					{
-						element.create("a", [["id","calendarClear"], ["innerHTML", label.element.clear], ["onclick","aFrame.reset('"+element+"');aFrame.destroy('"+targetEl+"')"]], "calendarTop");
+						el.create("a", [
+								["id", "calendarClear"],
+								["innerHTML", label.common.clear],
+								["listener", "click", "aFrame.reset('"+obj+"');aFrame.destroy('"+id+"')"]
+							], "calendarTop");
 					}
 
-					element.create("a", [["id","calendarClose"], ["innerHTML", label.element.close], ["onclick","aFrame.destroy('"+targetEl+"')"]], "calendarTop");
-					element.create("div", [["id","calendarHeader"]], targetEl);
-					element.create("a", [["id","calendarPrev"], ["innerHTML","&lt;"], ["onclick","aFrame.calendar.renderCalendar('"+targetEl+"','"+datePrev.toDateString()+"','"+formEl+"');"]], "calendarHeader");
-					element.create("span", [["id","calendarMonth"], ["innerHTML", dateLabel+" "+dateStamp.getFullYear().toString()]], "calendarHeader");
-					element.create("a", [["id","calendarNext"], ["innerHTML","&gt;"], ["onclick","aFrame.calendar.renderCalendar('"+targetEl+"','"+dateNext.toDateString()+"','"+formEl+"');"]], "calendarHeader");
-					element.create("div"[["id","calendarDays"]], targetEl);
+					el.create("a", [
+							["id", "calendarClose"],
+							["innerHTML", label.common.close],
+							["listener", "click", "aFrame.destroy('"+id+"')"]
+						], "calendarTop");
+
+					el.create("div", [
+							["id", "calendarHeader"]
+						], id);
+
+					el.create("a", [
+							["id", "calendarPrev"],
+							["innerHTML", "&lt;"],
+							["listener", "click", "aFrame.calendar.renderCalendar('"+id+"','"+datePrev.toDateString()+"','"+obj+"');"]
+						], "calendarHeader");
+
+					el.create("span", [
+							["id", "calendarMonth"],
+							["innerHTML", dateLabel+" "+dateStamp.getFullYear().toString()]
+						], "calendarHeader");
+
+					el.create("a", [
+							["id", "calendarNext"],
+							["innerHTML", "&gt;"],
+							["listener", "click", "aFrame.calendar.renderCalendar('"+id+"','"+dateNext.toDateString()+"','"+obj+"');"]
+						], "calendarHeader");
+
+					el.create("div", [
+							["id", "calendarDays"]
+						], id);
 
 					for (var i=1;i<=loop;i++)
 					{
 						dateStamp.setDate(i);
-						renderDay("calendarDays", dateStamp, formEl);
+						this.renderDay("calendarDays", dateStamp, obj);
 					}
 
 					return true;
@@ -280,16 +372,16 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Public properties
 		 */
-		css3:((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
+		css3:((!document.all) || (navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
 		ie:(document.all)?true:false,
-		firefox:null,
-		opera:null,
-		safari:null,
-		version:null,
+		firefox:(navigator.appName.toLowerCase().indexOf("firefox"))?true:false,
+		opera:(navigator.appName.toLowerCase().indexOf("opera"))?true:false,
+		safari:(navigator.appName.toLowerCase().indexOf("safari"))?true:false,
+		version:navigator.appVersion,
 
 		/**
 		 * Returns an instance or array of instances.
-		 * @param arg {mixed} String or Array of element IDs.
+		 * @param arg {mixed} String or Array of object.id values.
 		 * @returns {mixed} instances Instance or Array of Instances of elements.
 		 */
 		$:function(arg)
@@ -325,15 +417,16 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Receives and caches the URI/xmlHttp response.
 		 * @param xmlHttp {object} XMLHttp object.
+		 * @param uri {string} The URI.value to cache.
 		 * @returns {string} Instance of URI
 		 */
-		httpGet:function(xmlHttp)
+		httpGet:function(xmlHttp, uri)
 		{
 			if (xmlHttp.readyState==4)
 			{
 				if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
 				{
-					eval("cache.items[\""+id+"\"]="+xmlHttp.responseText+";");
+					cache.set(uri, xmlHttp.responseText);
 					return xmlHttp.responseText;
 				}
 				else
@@ -370,22 +463,19 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 			}
 
-			if (!xmlHttp)
-			{
-				return false;
-			}
+			if (!xmlHttp) { return false; }
 
 			try
 			{
-				switch(type.toLowerCase()) // excessive?
+				switch(type.toLowerCase())
 				{
 				case "get":
-					xmlHttp.onreadystatechange=function() { return client.httpGet(xmlHttp); };
+					xmlHttp.onreadystatechange=function() { return client.httpGet(xmlHttp, uri); };
 					xmlHttp.open("GET",uri,true);
 					xmlHttp.send(null);
 					break;
 				case "post":
-					xmlHttp.onreadystatechange=function() { return client.httpPost(xmlHttp); };
+					xmlHttp.onreadystatechange=function() { return client.httpPost(xmlHttp, uri); };
 					xmlHttp.open("POST",uri,true);
 					xmlHttp.send(null);
 					break;
@@ -400,26 +490,26 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Renders a loading icon in a target element.
 		 * Loads the constructor.iconUrl uri into the aFrame.icon object.
-		 * @param el {string} Target element ID.
+		 * @param id {string} Target object.id value.
 		 */
-		icon:function(targetEl)
+		icon:function(id)
 		{
 			if (!window["aFrame.icon"])
 			{
 				window["aFrame.icon"]=new Image();
-				window["aFrame.icon"].src=pub.iconUrl;
+				window["aFrame.icon"].src=aFrame.iconUrl;
 			}
 
-			if (!$(targetEl+"_"+label.common.loading.toLocaleLowerCase()))
+			if (!$(id+"_"+label.common.loading.toLocaleLowerCase()))
 			{
 				try
 				{
 					el.create("img", [
 							["alt", label.common.loading],
-							["id", targetEl+"_"+label.common.loading.toLocaleLowerCase()],
+							["id", id+"_"+label.common.loading.toLocaleLowerCase()],
 							["src", window["aFrame.icon"].src],
 							["class", "loading"]
-						], targetEl);
+						], id);
 				}
 				catch(e)
 				{
@@ -438,51 +528,15 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Creates an element in document.body or a target element.
 		 * @param type {string} Type of element to create.
 		 * @param args {Array} Literal array of attributes for the new element.
-		 * @param targetEl {string} Optional target element ID.
+		 * @param id {string} Optional target object.id value.
 		 */
-		create:function(type, args, targetEl)
+		create:function(type, args, id)
 		{
 			if (typeof args=="object")
 			{
 				var obj=document.createElement(type);
-				var loop=args.length;
-
-				if ($(targetEl))
-				{
-					$(targetEl).appendChild(obj);
-				}
-				else
-				{
-					document.body.appendChild(obj);
-				}
-
-				for (var i=0;i<loop;i++)
-				{
-					switch(args[i][0])
-					{
-					case "class":
-						if (client.ie)
-						{
-							obj.setAttribute("className",args[i][1]);
-						}
-						else
-						{
-							obj.setAttribute("class",args[i][1]);
-						}
-						break;
-					case "innerHTML":
-					case "type":
-					case "src":
-						eval("obj."+args[i][0]+"='"+args[i][1]+"';");
-						break;
-					case "event":
-						if (obj.id) { el.event(obj.id, args[i][1], args[i][2]); }
-						break;
-					default:
-						obj.setAttribute(args[i][0],args[i][1]);
-						break;
-					}
-				}
+				this.update(obj, args);
+				($(id))?$(id).appendChild(obj):document.body.appendChild(obj);
 			}
 			else
 			{
@@ -492,59 +546,58 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Destroys an element.
-		 * @param arg {string} Target element to remove.
+		 * @param id {string} Target object.id value.
 		 */
-		destroy:function(arg)
+		destroy:function(id)
 		{
-			if ($(arg))
-			{
-				document.body.removeChild($(arg));
-			}
+			if ($(id)) { document.body.removeChild($(arg)); }
 		},
 
 		/**
 		 * Encodes a string to a DOM friendly ID.
-		 * @param arg {string} The string to encode.
+		 * @param id {string} The object.id value to encode.
 		 * @returns {string} Returns a lowercase stripped string.
 		 */
-		domID:function(arg)
+		domID:function(id)
 		{
-			return arg.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+			return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 		},
 
 		/**
-		 * Adds an Event Listener to an Element.
-		 * @param targetEl {string} Target element ID.
+		 * Adds an event to the target element.
+		 * @param id {string} The target object.id value.
+		 * @param arg {string} The name of the event to add to the object.
+		 */
+		event:function(id, arg)
+		{
+			this.update(id, [["event", arg]]);
+		},
+
+		/**
+		 * Adds an event listener  to the target element.
+		 * @param id {string} Target object.id value.
 		 * @param type {string} Event type.
 		 * @param handler {mixed} Expecting a function.
 		 */
-		event:function(targetEl, type, handler)
+		listener:function(id, type, handler)
 		{
-			if ($(targetEl).addEventListener)
-			{
-				eval("$(targetEl)."+type+"="+handler);
-				//$(targetEl).addEventListener(type, handler, false);
-			}
-			else if ($(targetEl).attachEvent)
-			{
-				$(targetEl).attachEvent('on' + type, handler);
-			}
+			this.update(id, [["listener", type, handler]]);
 		},
 
 		/**
 		 * Finds the position of an element
-		 * @param el {string} The element id to get
+		 * @param id {string} Target object.id value.
 		 * @TODO Fix this!
 		 */
-		position: function(targetEl)
+		position: function(id)
 		{
 			var curleft=0;
 			var curtop=0;
 
-			if ($(targetEl).offsetParent)
+			if ($(id).offsetParent)
 			{
-				curleft=$(targetEl).offsetLeft;
-				curtop=$(targetEl).offsetTop;
+				curleft=$(id).offsetLeft;
+				curtop=$(id).offsetTop;
 				/*while (targetEl=$(targetEl).offsetParent)
 				{
 					curleft+=targetEl.offsetLeft;
@@ -556,22 +609,16 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Resets an element
-		 * @param arg {string} Target element ID.
+		 * Resets an object.
+		 * @param id {string} Target object.id value.
 		 * @TODO switch this to if ("attribute" in $var) maybe...
 		 */
-		reset:function(arg)
+		reset:function(id)
 		{
-			if ($(arg))
+			if ($(id))
 			{
-				if (typeof $(arg)=="form")
-				{
-					$(arg).reset();
-				}
-				else
-				{
-					$(arg).update([["innerHTML",""]]);
-				}
+				if (typeof $(id)=="form") { $(id).reset(); }
+				else { this.update(id, [["innerHTML", ""]]); }
 			}
 			else
 			{
@@ -580,13 +627,14 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Updates an element
-		 * @param targetEl {string} Target element ID.
+		 * Updates an object
+		 * @param obj {mixed} An instance of an object, or a target object.id value.
 		 * @param args {Array} Literal array of attributes and values.
 		 */
-		update:function(targetEl, args)
+		update:function(obj, args)
 		{
-			if ($(targetEl))
+			obj=(typeof obj=="object")?obj:$(obj);
+			if (obj!==undefined)
 			{
 				if (typeof args=="object")
 				{
@@ -596,22 +644,24 @@ var aFrame=(aFrame)?aFrame:function()
 						switch(args[i][0])
 						{
 						case "class":
-							if (client.ie)
-							{
-								$(targetEl).setAttribute("className", args[i][1]);
-							}
-							else
-							{
-								$(targetEl).setAttribute("class", args[i][1]);
-							}
+							(client.ie)?obj.setAttribute("className", args[i][1]):obj.setAttribute("class", args[i][1]);
+							break;
+						case "event":
+							alert("add an event here!");
 							break;
 						case "innerHTML":
 						case "type":
 						case "src":
-							eval("$(targetEl)."+args[i][0]+"='"+args[i][1]+"';");
+							eval("obj."+args[i][0]+"='"+args[i][1]+"';");
+							break;
+						case "listener":
+							(obj.addEventListener)?obj.addEventListener(args[i][1], args[i][2], false):obj.attachEvent("on"+args[i][1], args[i][2]);
+							break;
+						case "opacity":
+							fx.opacity(obj, args[i][1]);
 							break;
 						default:
-							$(targetEl).setAttribute(args[i][0] , args[i][1]);
+							obj.setAttribute(args[i][0] , args[i][1]);
 							break;
 						}
 					}
@@ -630,35 +680,44 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * Class of GUI effects
+	 * @TODO emulate a fall and maybe a collision?
 	 */
 	fx=
 	{
 		/**
-		 * Changes an element's opacity to the supplied value
+		 * Changes an element's opacity to the supplied value.
+		 * @param obj {mixed} Instance of an object, or the target object.id value.
 		 * @param opacity {integer} The opacity value to set.
-		 * @param obj {targetEl} The element ID to update.
 		 */
-		opacity:function(opacity, targetEl)
+		opacity:function(obj, opacity)
 		{
-			if ($(targetEl))
+			try
 			{
-				var style = $(targetEl).style;
-				style.opacity=(opacity/100);
-				style.MozOpacity=(opacity/100);
-				style.KhtmlOpacity=(opacity/100);
-				style.filter="alpha(opacity="+opacity+")";
+				obj=(typeof obj=="object")?obj:$(obj);
+				if (obj!=undefined)
+				{
+					obj.style.opacity=(opacity/100);
+					obj.style.MozOpacity=(opacity/100);
+					obj.style.KhtmlOpacity=(opacity/100);
+					obj.style.filter="alpha(opacity="+opacity+")";
+				}
+			}
+			catch (e)
+			{
+				error(e);
 			}
 		},
 
 		/**
-		 * Changes an element's opacity to the supplied value, spanning a supplied time frame.
-		 * @param obj {string}
-		 * @param start {integer}
-		 * @param end {integer}
-		 * @param ms {integer}
+		 * Changes an object's opacity from the start value to the end value, transition speed is based on the ms argument.
+		 * @param id {string} Target object.id value.
+		 * @param start {integer} Opacity start value.
+		 * @param end {integer} Opacity end value.
+		 * @param ms {integer} Milliseconds for transition to take.
 		 */
-		opacityChange:function(obj, start, end, ms)
+		opacityChange:function(id, start, end, ms)
 		{
+			var fn=null;
 			var speed=Math.round(ms/100);
 			var timer=0;
 			var i=null;
@@ -667,35 +726,28 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				for (i=start;i>=end;i--)
 				{
-					setTimeout("aFrame.fx.opacity("+i+",'"+obj+"')",(timer*speed));
+					setTimeout("$(\""+id+"\").opacity("+i+")", (timer*speed));
 					timer++;
 				}
 			}
-			else if (start<end)
+			else
 			{
 				for (i=start;i<=end;i++)
 				{
-					setTimeout("aFrame.fx.opacity("+i+",'"+obj+"')",(timer*speed));
+					setTimeout("$(\""+id+"\").opacity("+i+")", (timer*speed));
 					timer++;
 				}
 			}
 		},
 
 		/**
-		 * Shifts an element's opacity, spanning a supplied time frame
-		 * @param el {string} Target element ID.
-		 * @param ms {integer}
+		 * Shifts an obect's opacity, transition speed is based on the ms argument.
+		 * @param id {string} Target object.id value.
+		 * @param ms {integer} Milliseconds for transition to take.
 		 */
-		opacityShift:function(obj, ms)
+		opacityShift:function(id, ms)
 		{
-			if ($(obj).style.opacity===0)
-			{
-				aFrame.fx.opacityChange(obj, 0, 100, ms);
-			}
-			else
-			{
-				aFrame.fx.opacityChange(obj, 100, 0, ms);
-			}
+			(parseInt($(id).style.opacity)===0)?this.opacityChange(id, 0, 100, ms):this.opacityChange(id, 100, 0, ms);
 		}
 	};
 
@@ -707,23 +759,21 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Returns true if the number is even.
 		 * @param arg {integer}
-		 * @returns {Boolean}
+		 * @returns {boolean}
 		 */
 		isEven:function(arg)
 		{
-			arg=(((arg/2).toString().indexOf("."))>-1)?false:true;
-			return arg;
+			return (((parseInt(arg)/2).toString().indexOf("."))>-1)?false:true;
 		},
 
 		/**
 		 * Returns true if the number is odd.
 		 * @param arg {integer}
-		 * @returns {Boolean}
+		 * @returns {boolean}
 		 */
 		isOdd:function(arg)
 		{
-			arg=(((arg/2).toString().indexOf("."))>-1)?true:false;
-			return arg;
+			return (((parseInt(arg)/2).toString().indexOf("."))>-1)?true:false;
 		}
 	};
 
@@ -737,11 +787,11 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			msg1:"Target element does not exist.",
+			msg1:"Could not find target element.",
 			msg2:"A server error has occurred.",
 			msg3:"Expected an array.",
 			msg4:"The following required fields are missing or invalid:",
-			msg5:"Could not create object."
+			msg5:"Could not create element."
 		},
 
 		/**
@@ -780,42 +830,6 @@ var aFrame=(aFrame)?aFrame:function()
 			"10":"October",
 			"11":"November",
 			"12":"December"
-		}
-	};
-
-	/**
-	 * Class for URI interaction
-	 */
-	uri=
-	{
-		/**
-		 * Load a URI from local cache, or makes a server request.
-		 * @param uri {string}
-		 * @returns {mixed} Instance of URI.
-		 * @TODO Fix the for loop!
-		 */
-		get:function(uri)
-		{
-			for (var resource in cache)
-			{
-				if (resource==uri)
-				{
-					return cache[uri];
-				}
-			}
-			return client.httpRequest(uri, "GET");
-		},
-
-		post: function(uri,args)
-		{
-			for (var resource in cache)
-			{
-				if (resource==uri)
-				{
-					return cache[uri];
-				}
-			}
-			return client.httpRequest(uri, "POST");
 		}
 	};
 
@@ -913,23 +927,19 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Public class
-	 * @constructor
+	 * Public class returned to the client.
 	 */
 	pub=
 	{
 		/**
 		 * Properties
 		 */
-		ie:client.ie,
-		css3:client.css3,
 		iconUrl:"http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif", // Set this to your own icon/url
 
 		/**
 		 * Methods
 		 */
 		$:client.$,
-		cacheTime:cache.getSetTime,
 		create:el.create,
 		destroy:el.destroy,
 		domID:el.domID,
@@ -942,13 +952,14 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Classes
 		 */
+		ajax:ajax,
+		cache:cache,
 		calendar:calendar,
 		client:client,
 		el:el,
 		fx:fx,
 		label:label,
 		number:number,
-		uri:uri,
 		validate:validate
 	};
 
@@ -956,11 +967,10 @@ var aFrame=(aFrame)?aFrame:function()
 	var $=function(arg) { return client.$(arg); };
 	var error=client.error;
 
-	// Exposing the public class to the client
 	return pub;
 }();
 
-// Declaring a document scope helper function
+// Declaring a document scope global helper
 var $=function(arg) { return aFrame.$(arg); };
 
 // Prototyping standard objects with aFrame
@@ -968,6 +978,8 @@ Number.prototype.isEven=function() { return aFrame.number.isEven(this); };
 Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
 Object.prototype.destroy=function() { return aFrame.destroy(this.id); };
 Object.prototype.domID=function() { return aFrame.domID(this.id); };
+Object.prototype.opacity=function(arg) { return aFrame.fx.opacity(this.id, arg); };
+Object.prototype.opacityShift=function(arg) { return aFrame.fx.opacityShift(this.id, arg); };
 Object.prototype.reset=function() { return aFrame.reset(this.id); };
 Object.prototype.update=function(args) { return aFrame.update(this.id, args); };
 String.prototype.domID=function() { return aFrame.domID(this); };
