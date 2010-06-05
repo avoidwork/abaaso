@@ -694,7 +694,7 @@ var aFrame=(aFrame)?aFrame:function()
 			try
 			{
 				obj=(typeof obj=="object")?obj:$(obj);
-				if (obj!=undefined)
+				if (obj!==undefined)
 				{
 					obj.style.opacity=(opacity/100);
 					obj.style.MozOpacity=(opacity/100);
