@@ -42,35 +42,40 @@ var aFrame=(aFrame)?aFrame:function()
 	ajax=
 	{
 		/**
-		 * Makes a POST to the URI with the supplied args.
+		 * Makes a DELETE to the URI with the supplied args.
 		 * @param uri {string} URI to GET from local cache or the resource.
+		 * @param handler {function} A handler function to execute once a response has been received.
 		 * @returns {string} Cached response from URI.
 		 */
-		del:function(uri)
+		del:function(uri, handler)
 		{
-			return client.httpRequest(uri, "DELETE");
+			return client.httpRequest(uri, handler, "DELETE");
 		},
 
 		/**
 		 * Makes a GET to the URI.
 		 * @param uri {string} URI to GET from local cache or the resource.
-		 * @returns {string} Cached response from URI.
+		 * @param handler {function} A handler function to execute once a response has been received.
 		 */
-		get:function(uri)
+		get:function(uri, handler)
 		{
-			if (!isnull(cache.get(uri))) { return cache.get(uri); }
-			return client.httpRequest(uri, "GET");
+			if (!cache.get(uri))
+			{
+				handler(cache.get(uri));
+			}
+			client.httpRequest(uri, handler, "GET");
 		},
 
 		/**
 		 * Makes a POST to the URI with the supplied args.
 		 * @param uri {string} URI to GET from local cache or the resource.
 		 * @param {args} POST variables to include.
+		 * @param handler {function} A handler function to execute once a response has been received.
 		 * @returns {string} Cached response from URI.
 		 */
-		post: function(uri, args)
+		post: function(uri, handler, args)
 		{
-			return client.httpRequest(uri, "POST", args);
+			return client.httpRequest(uri, handler, "POST", args);
 		}
 	};
 
@@ -110,7 +115,7 @@ var aFrame=(aFrame)?aFrame:function()
 					return;
 				}
 			}
-			var obj={uri:uri, response:xmlHttp.responseText, timestamp:new Date()};
+			var obj={uri:uri, response:response, timestamp:new Date()};
 			this.items.push(obj);
 		}
 	};
@@ -418,16 +423,17 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Receives and caches the URI/xmlHttp response.
 		 * @param xmlHttp {object} XMLHttp object.
 		 * @param uri {string} The URI.value to cache.
+		 * @param handler {function} A handler function to execute once a response has been received.
 		 * @returns {string} Instance of URI
 		 */
-		httpGet:function(xmlHttp, uri)
+		httpGet:function(xmlHttp, uri, handler)
 		{
 			if (xmlHttp.readyState==4)
 			{
 				if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
 				{
 					cache.set(uri, xmlHttp.responseText);
-					return xmlHttp.responseText;
+					handler(xmlHttp.responseText);
 				}
 				else
 				{
@@ -439,10 +445,12 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Creates an xmlHttp request for a URI.
 		 * @param uri {string} The resource to interact with.
+		 * @param handler {function} A handler function to execute once a response has been received.
 		 * @param type {string} The type of interaction.
+		 * @param args {mixed} POST data to append to the HTTP query.
 		 * @TODO Complete the POST portion
 		 */
-		httpRequest:function(uri, type)
+		httpRequest:function(uri, handler, type, args)
 		{
 			var xmlHttp=false;
 
@@ -470,13 +478,13 @@ var aFrame=(aFrame)?aFrame:function()
 				switch(type.toLowerCase())
 				{
 				case "get":
-					xmlHttp.onreadystatechange=function() { return client.httpGet(xmlHttp, uri); };
-					xmlHttp.open("GET",uri,true);
+					xmlHttp.onreadystatechange=function() { client.httpGet(xmlHttp, uri, handler); };
+					xmlHttp.open("GET",uri, true);
 					xmlHttp.send(null);
 					break;
 				case "post":
-					xmlHttp.onreadystatechange=function() { return client.httpPost(xmlHttp, uri); };
-					xmlHttp.open("POST",uri,true);
+					xmlHttp.onreadystatechange=function() { client.httpPost(xmlHttp, uri, handler); };
+					xmlHttp.open("POST",uri, true);
 					xmlHttp.send(null);
 					break;
 				}
@@ -634,7 +642,7 @@ var aFrame=(aFrame)?aFrame:function()
 		update:function(obj, args)
 		{
 			obj=(typeof obj=="object")?obj:$(obj);
-			if (obj!==undefined)
+			if ((obj!==undefined)&&(obj!=null))
 			{
 				if (typeof args=="object")
 				{
@@ -787,11 +795,11 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			msg1:"Could not find target element.",
-			msg2:"A server error has occurred.",
-			msg3:"Expected an array.",
+			msg1:"Could not find object",
+			msg2:"A server error has occurred",
+			msg3:"Expected an array",
 			msg4:"The following required fields are missing or invalid:",
-			msg5:"Could not create element."
+			msg5:"Could not create object"
 		},
 
 		/**
