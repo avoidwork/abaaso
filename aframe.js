@@ -374,9 +374,9 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		css3:((!document.all) || (navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
 		ie:(document.all)?true:false,
-		firefox:(navigator.appName.toLowerCase().indexOf("firefox"))?true:false,
-		opera:(navigator.appName.toLowerCase().indexOf("opera"))?true:false,
-		safari:(navigator.appName.toLowerCase().indexOf("safari"))?true:false,
+		firefox:(navigator.appName.toLowerCase().indexOf("firefox")>-1)?true:false,
+		opera:(navigator.appName.toLowerCase().indexOf("opera")>-1)?true:false,
+		safari:(navigator.appName.toLowerCase().indexOf("safari")>-1)?true:false,
 		version:navigator.appVersion,
 
 		/**
