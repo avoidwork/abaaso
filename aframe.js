@@ -101,9 +101,14 @@ var aFrame=(aFrame)?aFrame:function()
 					return this.items[i].response;
 				}
 			}
-			return null;
+			return false;
 		},
 
+		/**
+		 * Commits, or updates an item in cache.items
+		 * @param args {string}
+		 * @returns {mixed} Returns the URI response as a string, or null.
+		 */
 		set:function(uri, response)
 		{
 			for (var i in this.items)
@@ -115,8 +120,7 @@ var aFrame=(aFrame)?aFrame:function()
 					return;
 				}
 			}
-			var obj={uri:uri, response:response, timestamp:new Date()};
-			this.items.push(obj);
+			this.items.push({uri:uri, response:response, timestamp:new Date()});
 		}
 	};
 
