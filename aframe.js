@@ -89,7 +89,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Returns the cached response from the URI.
-		 * @param args {string}
+		 * @param args {string} The URI/Identifier for the resource to retrieve from cache.
 		 * @returns {mixed} Returns the URI response as a string, or null.
 		 */
 		get:function(arg)
