@@ -1,10 +1,4 @@
 /**
- * aFrame
- * http://avoidwork.com/aFrame
- *
- * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
- * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
- *
  * Copyright (c) 2010, avoidwork inc.
  * All rights reserved.
  *
@@ -29,11 +23,18 @@
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * aFrame <http://avoidwork.com/aFrame>
  *
+ * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
+ * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
+ *
+ * @constructor
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @version Prototype
  */
-
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
@@ -59,7 +60,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		get:function(uri, handler)
 		{
-			if (!cache.get(uri))
+			if (cache.get(uri))
 			{
 				handler(cache.get(uri));
 			}
@@ -76,6 +77,18 @@ var aFrame=(aFrame)?aFrame:function()
 		post: function(uri, handler, args)
 		{
 			return client.httpRequest(uri, handler, "POST", args);
+		},
+
+		/**
+		 * Makes an UPDATE to the URI with the supplied args.
+		 * @param uri {string} URI to GET from local cache or the resource.
+		 * @param {args} POST variables to include.
+		 * @param handler {function} A handler function to execute once a response has been received.
+		 * @returns {string} Cached response from URI.
+		 */
+		update: function(uri, handler, args)
+		{
+			return client.httpRequest(uri, handler, "UPDATE", args);
 		}
 	};
 
@@ -94,9 +107,10 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		get:function(arg)
 		{
-			for (var i in this.items)
+			var loop=this.items.length;
+			for (var i=0;i<loop;i++)
 			{
-				if ((this.items[i].uri==arg)&&(this.ms===0)) // add a datediff comparison for this.ms!
+				if ((this.items[i].uri==arg)&&((this.ms===0)||((new Date()-this.items[i].timestamp)<this.ms)))
 				{
 					return this.items[i].response;
 				}
@@ -111,7 +125,8 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		set:function(uri, response)
 		{
-			for (var i in this.items)
+			var loop=this.items.length;
+			for (var i=0;i<loop;i++)
 			{
 				if (this.items[i].uri==uri)
 				{
@@ -390,20 +405,21 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Returns an instance or array of instances.
-		 * @param arg {mixed} String or Array of object.id values.
+		 * @param arg {string} Comma delimited string of IDs to return instances of.
 		 * @returns {mixed} instances Instance or Array of Instances of elements.
 		 */
 		$:function(arg)
 		{
 			if (arg!==undefined)
 			{
-				if (typeof arg=="object")
+				arg=(arg.toString().indexOf(",")>-1)?arg.split(","):arg;
+				if (arg instanceof Array)
 				{
 					var instances=[];
 					var loop=arg.length;
 					for (var i=0;i<loop;i++)
 					{
-						instances.push(document.getElementById(arg[i].toString()));
+						instances.push($(arg[i].toString()));
 					}
 					return instances;
 				}
@@ -419,7 +435,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:function(arg)
 		{
-			var err = new Error(arg);
+			var err=new Error(arg);
 			alert(err.toString());
 		},
 
@@ -434,7 +450,7 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			if (xmlHttp.readyState==4)
 			{
-				if ((xmlHttp.status==200)&&(xmlHttp.responseText!=""))
+				if ((xmlHttp.status==200)&&(typeof xmlHttp.responseText!=""))
 				{
 					cache.set(uri, xmlHttp.responseText);
 					handler(xmlHttp.responseText);
@@ -475,27 +491,28 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 			}
 
-			if (!xmlHttp) { return false; }
-
-			try
+			if (xmlHttp)
 			{
-				switch(type.toLowerCase())
+				try
 				{
-				case "get":
-					xmlHttp.onreadystatechange=function() { client.httpGet(xmlHttp, uri, handler); };
-					xmlHttp.open("GET",uri, true);
-					xmlHttp.send(null);
-					break;
-				case "post":
-					xmlHttp.onreadystatechange=function() { client.httpPost(xmlHttp, uri, handler); };
-					xmlHttp.open("POST",uri, true);
-					xmlHttp.send(null);
-					break;
+					switch(type.toLowerCase())
+					{
+					case "get":
+						xmlHttp.onreadystatechange=function() { client.httpGet(xmlHttp, uri, handler); };
+						xmlHttp.open("GET",uri, true);
+						xmlHttp.send(null);
+						break;
+					case "post":
+						xmlHttp.onreadystatechange=function() { client.httpPost(xmlHttp, uri, handler); };
+						xmlHttp.open("POST",uri, true);
+						xmlHttp.send(null);
+						break;
+					}
 				}
-			}
-			catch(e3)
-			{
-				error(e3);
+				catch(e3)
+				{
+					error(e3);
+				}
 			}
 		},
 
@@ -544,7 +561,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		create:function(type, args, id)
 		{
-			if (typeof args=="object")
+			if (args instanceof Array)
 			{
 				var obj=document.createElement(type);
 				this.update(obj, args);
@@ -648,7 +665,7 @@ var aFrame=(aFrame)?aFrame:function()
 			obj=(typeof obj=="object")?obj:$(obj);
 			if ((obj!==undefined)&&(obj!=null))
 			{
-				if (typeof args=="object")
+				if (args instanceof Array)
 				{
 					var loop=args.length;
 					for (var i=0;i<loop;i++)
@@ -786,6 +803,38 @@ var aFrame=(aFrame)?aFrame:function()
 		isOdd:function(arg)
 		{
 			return (((parseInt(arg)/2).toString().indexOf("."))>-1)?true:false;
+		}
+	};
+
+	/**
+	 * JSON decoding and encoding.
+	 */
+	json=
+	{
+		/**
+		 * Decodes the argument into an object.
+		 * @param arg {string} The string to parse.
+		 */
+		decode:function(arg)
+		{
+			if (window.JSON)
+			{
+				return JSON.parse(arg);
+			}
+			return eval("("+arg+")");
+		},
+
+		/**
+		 * Encodes a string, array or object to a JSON string.
+		 * @param arg {mixed} The entity to encode.
+		 */
+		encode:function(arg)
+		{
+			if (window.JSON)
+			{
+				return JSON.stringify(arg);
+			}
+			throw "Not implemented";
 		}
 	};
 
