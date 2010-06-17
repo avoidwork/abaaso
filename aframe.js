@@ -46,11 +46,10 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Makes a DELETE to the URI with the supplied args.
 		 * @param uri {string} URI to GET from local cache or the resource.
 		 * @param handler {function} A handler function to execute once a response has been received.
-		 * @returns {string} Cached response from URI.
 		 */
 		del:function(uri, handler)
 		{
-			return client.httpRequest(uri, handler, "DELETE");
+			client.httpRequest(uri, handler, "DELETE");
 		},
 
 		/**
@@ -69,31 +68,29 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Makes a POST to the URI with the supplied args.
-		 * @param uri {string} URI to GET from local cache or the resource.
-		 * @param {args} POST variables to include.
+		 * @param uri {string} URI to POST to.
 		 * @param handler {function} A handler function to execute once a response has been received.
-		 * @returns {string} Cached response from URI.
+		 * @param {args} POST variables to include.
 		 */
 		post: function(uri, handler, args)
 		{
-			return client.httpRequest(uri, handler, "POST", args);
+			client.httpRequest(uri, handler, "POST", args);
 		},
 
 		/**
 		 * Makes an UPDATE to the URI with the supplied args.
-		 * @param uri {string} URI to GET from local cache or the resource.
-		 * @param {args} POST variables to include.
+		 * @param uri {string} URI to UPDATE.
 		 * @param handler {function} A handler function to execute once a response has been received.
-		 * @returns {string} Cached response from URI.
+		 * @param {args} POST variables to include.
 		 */
 		update: function(uri, handler, args)
 		{
-			return client.httpRequest(uri, handler, "UPDATE", args);
+			client.httpRequest(uri, handler, "UPDATE", args);
 		}
 	};
 
 	/**
-	 * Class of cached items[], and time in ms to hold items (0=infinity).
+	 * Class of cached items, with a configurable timeout in ms to hold items.
 	 */
 	cache=
 	{
@@ -101,9 +98,9 @@ var aFrame=(aFrame)?aFrame:function()
 		items:[],
 
 		/**
-		 * Returns the cached response from the URI.
-		 * @param args {string} The URI/Identifier for the resource to retrieve from cache.
-		 * @returns {mixed} Returns the URI response as a string, or null.
+		 * Returns the cached response from the URI, or False
+		 * @param arg {string} The URI/Identifier for the resource to retrieve from cache.
+		 * @returns {mixed} Returns the URI response as a string, or False.
 		 */
 		get:function(arg)
 		{
@@ -120,8 +117,8 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Commits, or updates an item in cache.items
-		 * @param args {string}
-		 * @returns {mixed} Returns the URI response as a string, or null.
+		 * @param uri {string} The URI to set or update.
+		 * @param response {string} The URI response.
 		 */
 		set:function(uri, response)
 		{
@@ -141,7 +138,6 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * Class provites a calendar via the create() function.
-	 * @TODO Make the form parameter optional.
 	 */
 	calendar=
 	{
@@ -165,8 +161,16 @@ var aFrame=(aFrame)?aFrame:function()
 			var pos=element.position(id);
 
 			$(id).blur();
-			if ($(form).value=="Invalid Date") { $(form).reset(); }
-			if ($("aFrame.calendar")) { el.destroy("aFrame.calendar"); }
+
+			if ($(form).value=="Invalid Date")
+			{
+				$(form).reset();
+			}
+
+			if ($("aFrame.calendar"))
+			{
+				el.destroy("aFrame.calendar");
+			}
 
 			el.create("div", [
 					["id", "aFrame.calendar"],
@@ -217,7 +221,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Renders a "day" div in the calendar.
 		 * @param id {string} Object.id value
 		 * @param dateStamp {date} Date string.
-		 * @param obj {string} Object to be updated onclick.
+		 * @param obj {string} Optional object to be updated on click.
 		 * @returns {boolean}
 		 * @TODO refactor the update to use el.listener().
 		 */
@@ -396,7 +400,7 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Public properties
 		 */
-		css3:((!document.all) || (navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
+		css3:((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
 		ie:(document.all)?true:false,
 		firefox:(navigator.appName.toLowerCase().indexOf("firefox")>-1)?true:false,
 		opera:(navigator.appName.toLowerCase().indexOf("opera")>-1)?true:false,
@@ -440,11 +444,10 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Receives and caches the URI/xmlHttp response.
+		 * Receives and caches the URI response.
 		 * @param xmlHttp {object} XMLHttp object.
 		 * @param uri {string} The URI.value to cache.
 		 * @param handler {function} A handler function to execute once a response has been received.
-		 * @returns {string} Instance of URI
 		 */
 		httpGet:function(xmlHttp, uri, handler)
 		{
@@ -575,11 +578,15 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Destroys an element.
-		 * @param id {string} Target object.id value.
+		 * @param args {string} Comma delimited string of target object.id values.
+		 * @TODO make this array friendly!
 		 */
 		destroy:function(id)
 		{
-			if ($(id)) { document.body.removeChild($(arg)); }
+			if ($(id))
+			{
+				document.body.removeChild($(arg));
+			}
 		},
 
 		/**
@@ -606,7 +613,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Adds an event listener  to the target element.
 		 * @param id {string} Target object.id value.
 		 * @param type {string} Event type.
-		 * @param handler {mixed} Expecting a function.
+		 * @param handler {mixed} A handler function to execute.
 		 */
 		listener:function(id, type, handler)
 		{
@@ -770,7 +777,7 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Shifts an obect's opacity, transition speed is based on the ms argument.
+		 * Shifts an object's opacity, transition speed is based on the ms argument.
 		 * @param id {string} Target object.id value.
 		 * @param ms {integer} Milliseconds for transition to take.
 		 */
@@ -781,7 +788,7 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Class for integer properties and manipulation.
+	 * Class for number properties and manipulation.
 	 */
 	number=
 	{
@@ -867,9 +874,11 @@ var aFrame=(aFrame)?aFrame:function()
 			cont:"Continue",
 			del:"Delete",
 			edit:"Edit",
+			gen:"Generate",
 			loading:"Loading",
 			next:"Next",
 			login:"Login",
+			ran:"Random",
 			save:"Save",
 			submit:"Submit"
 		},
@@ -984,11 +993,20 @@ var aFrame=(aFrame)?aFrame:function()
 			if (err) { throw msg; }
 
 			return !err;
+		},
+
+		/**
+		 * Validates all fields in the target form based on a typeof detection and length requirement of 1.
+		 * @param arg {String} The target object.id value.
+		 * @returns {Boolean}
+		 */
+		form:function(arg) {
+			void(0);
 		}
 	};
 
 	/**
-	 * Public class returned to the client.
+	 * Public class returned to the client
 	 */
 	pub=
 	{
@@ -1025,22 +1043,70 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	// Declaring private global instances
-	var $=function(arg) { return client.$(arg); };
+	var $=function(arg)
+	{
+		return client.$(arg);
+	};
+
 	var error=client.error;
 
 	return pub;
 }();
 
 // Declaring a document scope global helper
-var $=function(arg) { return aFrame.$(arg); };
+var $=function(arg)
+{
+	return aFrame.$(arg);
+};
 
 // Prototyping standard objects with aFrame
-Number.prototype.isEven=function() { return aFrame.number.isEven(this); };
-Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
-Object.prototype.destroy=function() { return aFrame.destroy(this.id); };
-Object.prototype.domID=function() { return aFrame.domID(this.id); };
-Object.prototype.opacity=function(arg) { return aFrame.fx.opacity(this.id, arg); };
-Object.prototype.opacityShift=function(arg) { return aFrame.fx.opacityShift(this.id, arg); };
-Object.prototype.reset=function() { return aFrame.reset(this.id); };
-Object.prototype.update=function(args) { return aFrame.update(this.id, args); };
-String.prototype.domID=function() { return aFrame.domID(this); };
+Number.prototype.isEven=function()
+{
+	return aFrame.number.isEven(this);
+};
+
+Number.prototype.isOdd=function()
+{
+	return aFrame.number.isOdd(this);
+};
+
+Object.prototype.destroy=function()
+{
+	return aFrame.destroy(this.id);
+};
+
+Object.prototype.domID=function()
+{
+	return aFrame.domID(this.id);
+};
+
+Object.prototype.get=function(arg)
+{
+	aFrame.ajax.get(arg, function(){
+		aFrame.el.update(this.id, [["innerHTML", arguments[0]]]);
+	});
+};
+
+Object.prototype.opacity=function(arg)
+{
+	return aFrame.fx.opacity(this.id, arg);
+};
+
+Object.prototype.opacityShift=function(arg)
+{
+	return aFrame.fx.opacityShift(this.id, arg);
+};
+
+Object.prototype.reset=function()
+{
+	return aFrame.reset(this.id);
+};
+
+Object.prototype.update=function(args)
+{
+	return aFrame.update(this.id, args);
+};
+
+String.prototype.domID=function() {
+	return aFrame.domID(this);
+};
