@@ -90,12 +90,15 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Class of cached items, with a configurable timeout in ms to hold items.
+	 * Class of cached items, with methods to get and set.
 	 */
 	cache=
 	{
-		ms:0,
+		// Array of cached uri responses.
 		items:[],
+
+		// Default timeout value (0 = inifity).
+		ms:0,
 
 		/**
 		 * Returns the cached response from the URI, or False
@@ -107,7 +110,7 @@ var aFrame=(aFrame)?aFrame:function()
 			var loop=this.items.length;
 			for (var i=0;i<loop;i++)
 			{
-				if ((this.items[i].uri==arg)&&((this.ms===0)||((new Date()-this.items[i].timestamp)<this.ms)))
+				if ((this.items[i].uri==arg)&&((pub.ms===0)||((new Date()-this.items[i].timestamp)<pub.ms)))
 				{
 					return this.items[i].response;
 				}
@@ -1012,8 +1015,10 @@ var aFrame=(aFrame)?aFrame:function()
 	{
 		/**
 		 * Properties
+		 * iconUrl should be changed the url of your default loader icon.
 		 */
-		iconUrl:"http://farm5.static.flickr.com/4065/4474242391_d5ca519f5e_o.gif", // Set this to your own icon/url
+		iconUrl:"http://farm5.static.flickr.com/4042/4714861874_2d574de7b1_o.gif",
+		ms:cache.ms,
 
 		/**
 		 * Methods
