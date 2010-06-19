@@ -628,7 +628,8 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Returns the ID of the element that triggered the event.
 		 * @param e {event} The event arguement sent to the listener.
-		 * @param obj {object} The element/object that triggered the event.
+		 * @param obj {object} The element whose listener called this function.
+		 * @returns {string} The id of the element that triggered the event.
 		 */
 		eventID:function(e, obj)
 		{
