@@ -97,7 +97,7 @@ var aFrame=(aFrame)?aFrame:function()
 		// Array of cached uri responses.
 		items:[],
 
-		// Default timeout value (0 = inifity).
+		// Default timeout value (0 = infinity).
 		ms:0,
 
 		/**
@@ -403,12 +403,13 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Public properties
 		 */
-		css3:((!document.all)||(navigator.appVersion.indexOf("MSIE 9")>-1))?true:false,
-		ie:(document.all)?true:false,
-		firefox:(navigator.appName.toLowerCase().indexOf("firefox")>-1)?true:false,
-		opera:(navigator.appName.toLowerCase().indexOf("opera")>-1)?true:false,
-		safari:(navigator.appName.toLowerCase().indexOf("safari")>-1)?true:false,
-		version:navigator.appVersion,
+		css3:null,
+		chrome:(navigator.userAgent.toLowerCase().indexOf("chrom")>-1)?true:false,
+		firefox:(navigator.userAgent.toLowerCase().indexOf("firefox")>-1)?true:false,
+		ie:(navigator.userAgent.toLowerCase().indexOf("msie")>-1)?true:false,
+		opera:(navigator.userAgent.toLowerCase().indexOf("opera")>-1)?true:false,
+		safari:(navigator.userAgent.toLowerCase().indexOf("safari")>-1)?true:false,
+		version:(navigator.userAgent.toLowerCase().indexOf("msie")>-1)?parseInt(navigator.userAgent.toString().replace(/(.*MSIE|;.*)/gi, "")):parseInt(navigator.appVersion),
 
 		/**
 		 * Returns an instance or array of instances.
@@ -436,14 +437,26 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Error handling.
-		 * @param arg {string} Error message to display.
-		 * @TODO Figure out what to do with this!
+		 * Returns a boolean representing CSS3 support in the client.
+		 * @returns {boolean} A boolean representing CSS3 support.
 		 */
-		error:function(arg)
+		css3Support:function()
 		{
-			var err=new Error(arg);
-			alert(err.toString());
+			if ((this.chrome)||(this.safari)) { return true; }
+			if ((this.firefox)&&(this.version>4)) { return true; }
+			if ((this.ie)&&(this.version>8)) { return true; }
+			if ((this.opera)&&(this.version>8)) { return true; }
+			return false;
+		},
+
+		/**
+		 * Error handling.
+		 * @param e {mixed} Error object or message to display.
+		 */
+		error:function(e)
+		{
+			var err=new Error(e);
+			($("console"))?console.log(err.description):alert(err.description);
 		},
 
 		/**
@@ -683,7 +696,7 @@ var aFrame=(aFrame)?aFrame:function()
 						switch(args[i][0])
 						{
 						case "class":
-							(client.ie)?obj.setAttribute("className", args[i][1]):obj.setAttribute("class", args[i][1]);
+							((client.ie)&&(client.version<8))?obj.setAttribute("className", args[i][1]):obj.setAttribute("class", args[i][1]);
 							break;
 						case "event":
 							alert("add an event here!");
@@ -691,7 +704,7 @@ var aFrame=(aFrame)?aFrame:function()
 						case "innerHTML":
 						case "type":
 						case "src":
-							eval("obj."+args[i][0]+"='"+args[i][1]+"';");
+							obj[args[i][0]]=args[i][1];
 							break;
 						case "listener":
 							(obj.addEventListener)?obj.addEventListener(args[i][1], args[i][2], false):obj.attachEvent("on"+args[i][1], args[i][2]);
@@ -727,23 +740,26 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Changes an element's opacity to the supplied value.
 		 * @param obj {mixed} Instance of an object, or the target object.id value.
 		 * @param opacity {integer} The opacity value to set.
+		 * @returns {integer} The opacity value of the element.
 		 */
 		opacity:function(obj, opacity)
 		{
-			try
+			obj=(typeof obj=="object")?obj:$(obj);
+			if (obj!==undefined)
 			{
-				obj=(typeof obj=="object")?obj:$(obj);
-				if (obj!==undefined)
+				if (opacity!==undefined)
 				{
-					obj.style.opacity=(opacity/100);
-					obj.style.MozOpacity=(opacity/100);
-					obj.style.KhtmlOpacity=(opacity/100);
-					obj.style.filter="alpha(opacity="+opacity+")";
+					(client.ie)?obj.style.filter="alpha(opacity="+opacity+")":obj.style.opacity=(opacity/100);
+					return parseInt(opacity);
+				}
+				else
+				{
+					return (client.ie)?parseInt(obj.style.filter.toString().replace(/(.*\=|\))/gi, "")):parseInt(obj.style.opacity);
 				}
 			}
-			catch (e)
+			else
 			{
-				error(e);
+				return null;
 			}
 		},
 
@@ -786,7 +802,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		opacityShift:function(id, ms)
 		{
-			(parseInt($(id).style.opacity)===0)?this.opacityChange(id, 0, 100, ms):this.opacityChange(id, 100, 0, ms);
+			($(id).opacity()===0)?this.opacityChange(id, 0, 100, ms):this.opacityChange(id, 100, 0, ms);
 		}
 	};
 
@@ -1048,70 +1064,34 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	// Declaring private global instances
-	var $=function(arg)
-	{
-		return client.$(arg);
-	};
-
+	var $=function(arg) { return client.$(arg); };
 	var error=client.error;
 
+	// Setting client.css3 property
+	pub.client.css3=client.css3Support();
+
+	// Returning pub{} to the client.
 	return pub;
 }();
 
 // Declaring a document scope global helper
-var $=function(arg)
-{
-	return aFrame.$(arg);
-};
+var $=function(arg) { return aFrame.$(arg); };
 
 // Prototyping standard objects with aFrame
-Number.prototype.isEven=function()
-{
-	return aFrame.number.isEven(this);
-};
-
-Number.prototype.isOdd=function()
-{
-	return aFrame.number.isOdd(this);
-};
-
-Object.prototype.destroy=function()
-{
-	return aFrame.destroy(this.id);
-};
-
-Object.prototype.domID=function()
-{
-	return aFrame.domID(this.id);
-};
-
-Object.prototype.get=function(arg)
+Element.prototype.destroy=function() { return aFrame.destroy(this.id); };
+Element.prototype.domID=function() { return aFrame.domID(this.id); };
+Element.prototype.get=function(arg)
 {
 	aFrame.ajax.get(arg, function(){
 		aFrame.el.update(this.id, [["innerHTML", arguments[0]]]);
 	});
 };
+Element.prototype.opacity=function(arg) { return aFrame.fx.opacity(this, arg); };
+Element.prototype.opacityShift=function(arg) { return aFrame.fx.opacityShift(this.id, arg); };
+Element.prototype.reset=function() { return aFrame.reset(this.id); };
+Element.prototype.update=function(args) { return aFrame.update(this.id, args); };
 
-Object.prototype.opacity=function(arg)
-{
-	return aFrame.fx.opacity(this.id, arg);
-};
+Number.prototype.isEven=function() { return aFrame.number.isEven(this); };
+Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
 
-Object.prototype.opacityShift=function(arg)
-{
-	return aFrame.fx.opacityShift(this.id, arg);
-};
-
-Object.prototype.reset=function()
-{
-	return aFrame.reset(this.id);
-};
-
-Object.prototype.update=function(args)
-{
-	return aFrame.update(this.id, args);
-};
-
-String.prototype.domID=function() {
-	return aFrame.domID(this);
-};
+String.prototype.domID=function() { return aFrame.domID(this); };
