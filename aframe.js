@@ -885,11 +885,11 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			msg1:"Could not find object",
-			msg2:"A server error has occurred",
-			msg3:"Expected an array",
-			msg4:"The following required fields are missing or invalid:",
-			msg5:"Could not create object"
+			msg1:"Could not find element.",
+			msg2:"A server error has occurred.",
+			msg3:"Expected an array.",
+			msg4:"The following required fields are invalid: ",
+			msg5:"Could not create element."
 		},
 
 		/**
@@ -1089,20 +1089,15 @@ var aFrame=(aFrame)?aFrame:function()
 var $=function(arg) { return aFrame.$(arg); };
 
 // Prototyping standard objects with aFrame
-Element.prototype.destroy=function() { return aFrame.destroy(this.id); };
+Element.prototype.event=function(args) { aFrame.el.event(this.id, args); };
+Element.prototype.destroy=function() { aFrame.destroy(this.id); };
 Element.prototype.domID=function() { return aFrame.domID(this.id); };
-Element.prototype.get=function(arg)
-{
-	aFrame.ajax.get(arg, function(){
-		aFrame.el.update(this.id, [["innerHTML", arguments[0]]]);
-	});
-};
+Element.prototype.get=function(arg) { aFrame.ajax.get(arg, function(){ aFrame.el.update(this.id, [["innerHTML", arguments[0]]]); }); };
+Element.prototype.listener=function(target, handler) { aFrame.el.listener(this.id, target, handler); };
 Element.prototype.opacity=function(arg) { return aFrame.fx.opacity(this, arg); };
-Element.prototype.opacityShift=function(arg) { return aFrame.fx.opacityShift(this.id, arg); };
-Element.prototype.reset=function() { return aFrame.reset(this.id); };
-Element.prototype.update=function(args) { return aFrame.update(this.id, args); };
-
+Element.prototype.opacityShift=function(arg) { aFrame.fx.opacityShift(this.id, arg); };
+Element.prototype.reset=function() { aFrame.reset(this.id); };
+Element.prototype.update=function(args) { aFrame.update(this.id, args); };
 Number.prototype.isEven=function() { return aFrame.number.isEven(this); };
 Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
-
 String.prototype.domID=function() { return aFrame.domID(this); };
