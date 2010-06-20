@@ -33,7 +33,7 @@
  *
  * @constructor
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @version Prototype
+ * @version Alpha
  */
 var aFrame=(aFrame)?aFrame:function()
 {
@@ -1064,7 +1064,6 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Classes
 		 */
 		ajax:ajax,
-		cache:cache,
 		calendar:calendar,
 		client:client,
 		el:el,
