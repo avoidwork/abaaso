@@ -38,7 +38,7 @@
 var aFrame=(aFrame)?aFrame:function()
 {
 	/**
-	 * Class for RESTful AJAX interaction
+	 * Class of RESTful AJAX methods.
 	 */
 	ajax=
 	{
@@ -83,6 +83,85 @@ var aFrame=(aFrame)?aFrame:function()
 		post: function(uri, handler, args)
 		{
 			client.httpRequest(uri, handler, "POST", args);
+		}
+	};
+
+	/**
+	 * Class of Array methods.
+	 */
+	array=
+	{
+		/**
+		 ** Loops the length of an array looking for the index of the arg(s).
+		 * Finds the index of arg(s) in instance.
+		 * @param instance {array} An instance of the array to search.
+		 * @param arg {string} Comma delimited string of search values.
+		 * @returns {mixed} Integer or an array of integers representing the location of the arg(s).
+		 */
+		contains:function(instance, arg)
+		{
+			try
+			{
+				arg=(arg.toString().indexOf(",")>-1)?arg.split(","):arg;
+				if (arg instanceof Array)
+				{
+					var indexes=[];
+					var i=args.length;
+					while (i--)
+					{
+						indexes[i]=instance.index(arg[i]);
+					}
+					return indexes;
+				}
+				else
+				{
+					return indexes.index(arg);
+				}
+			}
+			catch (e)
+			{
+				error(e);
+			}
+		},
+
+		/**
+		 * Finds the index of arg in instance. Use contains() for multiple arguments.
+		 * @param instance {mixed} The entity to search.
+		 * @param arg {mixed} The argument to find (string or integer).
+		 * @returns {integer} The position of item in ar.
+		 */
+		index:function(instance, arg)
+		{
+			if (instance instanceof Array)
+			{
+				var i=instance.length;
+				while (i--)
+				{
+					if (instance[i]==arg)
+					{
+						return i;
+					}
+				}
+				return -1;
+			}
+			else
+			{
+				throw label.error.msg8
+			}
+		},
+
+		/**
+		 * Removes arg from instance without destroying and re-creating instance.
+		 * @param instance {array} An instance of the array to use.
+		 * @param start {integer} The starting position.
+		 * @param end {integer} The ending position (optional).
+		 * @returns {array} A scrubbed array.
+		 */
+		remove:function(instance, start, end)
+		{
+			var remaining=instance.slice((end||start)+1||instance.length);
+			instance.length=(start<0)?(instance.length+start):start;
+			return instance.push.apply(instance, remaining);
 		}
 	};
 
@@ -399,31 +478,6 @@ var aFrame=(aFrame)?aFrame:function()
 		version:(navigator.userAgent.toLowerCase().indexOf("msie")>-1)?parseInt(navigator.userAgent.toString().replace(/(.*MSIE|;.*)/gi, "")):parseInt(navigator.appVersion),
 
 		/**
-		 * Returns an instance or array of instances.
-		 * @param arg {string} Comma delimited string of IDs to return instances of.
-		 * @returns {mixed} instances Instance or Array of Instances of elements.
-		 */
-		$:function(arg)
-		{
-			if (arg!==undefined)
-			{
-				arg=(arg.toString().indexOf(",")>-1)?arg.split(","):arg;
-				if (arg instanceof Array)
-				{
-					var instances=[];
-					var i=arg.length;
-					while (i--)
-					{
-						instances.push($(arg[i].toString()));
-					}
-					return instances;
-				}
-				return document.getElementById(arg.toString());
-			}
-			return null;
-		},
-
-		/**
 		 * Returns a boolean representing CSS3 support in the client.
 		 * @returns {boolean} A boolean representing CSS3 support.
 		 */
@@ -434,16 +488,6 @@ var aFrame=(aFrame)?aFrame:function()
 			if ((this.ie)&&(this.version>8)) { return true; }
 			if ((this.opera)&&(this.version>8)) { return true; }
 			return false;
-		},
-
-		/**
-		 * Error handling.
-		 * @param e {mixed} Error object or message to display.
-		 */
-		error:function(e)
-		{
-			var err=new Error(e);
-			($("console"))?console.log(err.description):alert(err.description);
 		},
 
 		/**
@@ -612,6 +656,16 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
+		 * Opens a local database.
+		 * @param arg {string} The database.id to open.
+		 * @returns {object} The database.
+		 */
+		open:function(arg)
+		{
+			void(0);
+		},
+
+		/**
 		 * Executes a query in a transaction with exception handling.
 		 * @param db {string} The local database to run the query against.
 		 * @param arg {string} The query to run.
@@ -660,48 +714,27 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Destroys an element.
+		 * Destroys an element(s).
 		 * @param arg {string} Comma delimited string of target element.id values.
 		 */
 		destroy:function(arg)
 		{
 			try
 			{
-				if ($(arg))
+				var args=arg.split(",");
+				var i=args.length;
+				while (i--)
 				{
-					var instance=$(arg);
-					if (instance instanceof Array)
+					if ($(args[i]))
 					{
-						var i=instance.length;
-						while (i--)
-						{
-							document.body.removeChild(instance[i]);
-						}
+						document.body.removeChild(args[i]);
 					}
-					else
-					{
-						document.body.removeChild(instance);
-					}
-				}
-				else
-				{
-					throw label.error.msg1;
 				}
 			}
 			catch (e)
 			{
 				error(e);
 			}
-		},
-
-		/**
-		 * Encodes a string to a DOM friendly ID.
-		 * @param id {string} The object.id value to encode.
-		 * @returns {string} Returns a lowercase stripped string.
-		 */
-		domID:function(id)
-		{
-			return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 		},
 
 		/**
@@ -973,14 +1006,16 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			msg1:"Could not find element.",
+			msg1:"Could not find the Element.",
 			msg2:"A server error has occurred.",
-			msg3:"Expected an array.",
+			msg3:"Expected an Array.",
 			msg4:"The following required fields are invalid: ",
-			msg5:"Could not create element.",
+			msg5:"Could not create the Element.",
 			msg6:"Client does not support local database storage.",
-			msg7:"Failed to open the database, possibly exceeded domain quota.",
-			msg8:"Possible SQL injection in database transaction, use the &#63; placeholder."
+			msg7:"Failed to open the Database, possibly exceeded Domain quota.",
+			msg8:"Possible SQL injection in database transaction, use the &#63; placeholder.",
+			msg9:"Expected an Object.",
+			msg10:"Expected an Array or Object."
 		},
 
 		/**
@@ -1021,6 +1056,63 @@ var aFrame=(aFrame)?aFrame:function()
 			"10":"October",
 			"11":"November",
 			"12":"December"
+		}
+	};
+
+	/**
+	 * Class of string methods
+	 */
+	string=
+	{
+		/**
+		 * Encodes a string to a DOM friendly ID.
+		 * @param id {string} The object.id value to encode.
+		 * @returns {string} Returns a lowercase stripped string.
+		 */
+		domID:function(id)
+		{
+			return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+		}
+	};
+
+	/**
+	 * Class of utility functions.
+	 */
+	utility=
+	{
+		/**
+		 * Returns an instance or array of instances.
+		 * @param arg {string} Comma delimited string of target element.id values.
+		 * @returns {mixed} instances Instance or Array of Instances of elements.
+		 */
+		$:function(arg)
+		{
+			if (arg!==undefined)
+			{
+				arg=(arg.toString().indexOf(",")>-1)?arg.split(","):arg;
+				if (arg instanceof Array)
+				{
+					var instances=[];
+					var i=arg.length;
+					while (i--)
+					{
+						instances.push($(arg[i].toString()));
+					}
+					return instances;
+				}
+				return document.getElementById(arg.toString());
+			}
+			return null;
+		},
+
+		/**
+		 * Error handling.
+		 * @param e {mixed} Error object or message to display.
+		 */
+		error:function(e)
+		{
+			var err=new Error(e);
+			($("console"))?console.log(err.description):alert(err.description);
 		}
 	};
 
@@ -1141,10 +1233,10 @@ var aFrame=(aFrame)?aFrame:function()
 		/**
 		 * Methods
 		 */
-		$:client.$,
+		$:utility.$,
 		create:el.create,
 		destroy:el.destroy,
-		domID:el.domID,
+		domID:string.domID,
 		error:client.error,
 		icon:client.icon,
 		position:el.position,
@@ -1155,6 +1247,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 * Classes
 		 */
 		ajax:ajax,
+		array:array,
 		calendar:calendar,
 		client:client,
 		database:database,
@@ -1162,12 +1255,13 @@ var aFrame=(aFrame)?aFrame:function()
 		fx:fx,
 		label:label,
 		number:number,
+		string:string,
 		validate:validate
 	};
 
 	// Declaring private global instances
-	var $=function(arg) { return client.$(arg); };
-	var error=client.error;
+	var $=function(arg) { return utility.$(arg); };
+	var error=utility.error;
 
 	// Setting client.css3 property
 	pub.client.css3=client.css3Support();
@@ -1180,6 +1274,9 @@ var aFrame=(aFrame)?aFrame:function()
 var $=function(arg) { return aFrame.$(arg); };
 
 // Prototyping standard objects with aFrame
+Array.prototype.contains=function(arg) { aFrame.array.contains(this, arg); };
+Array.prototype.index=function(arg) { aFrame.array.index(this, arg); };
+Array.prototype.remove=function(arg) { aFrame.array.remove(this, arg); };
 Element.prototype.event=function(args) { aFrame.el.event(this.id, args); };
 Element.prototype.destroy=function() { aFrame.destroy(this.id); };
 Element.prototype.domID=function() { return aFrame.domID(this.id); };
