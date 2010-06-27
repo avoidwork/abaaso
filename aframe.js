@@ -107,8 +107,8 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		get:function(arg)
 		{
-			var loop=this.items.length;
-			for (var i=0;i<loop;i++)
+			var i=this.items.length;
+			while (i--)
 			{
 				if ((this.items[i].uri==arg)&&((pub.ms===0)||((new Date()-this.items[i].timestamp)<pub.ms)))
 				{
@@ -125,8 +125,8 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		set:function(uri, response)
 		{
-			var loop=this.items.length;
-			for (var i=0;i<loop;i++)
+			var i=this.items.length;
+			while (i--)
 			{
 				if (this.items[i].uri==uri)
 				{
@@ -212,11 +212,9 @@ var aFrame=(aFrame)?aFrame:function()
 		{
 			var output=this.pattern;
 			var outputDate=new Date(dateStamp);
-
 			output=output.replace(/dd/,outputDate.getDate());
 			output=output.replace(/mm/,outputDate.getMonth()+1);
 			output=output.replace(/yyyy/,outputDate.getFullYear());
-
 			return output;
 		},
 
@@ -226,7 +224,6 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param dateStamp {date} Date string.
 		 * @param obj {string} Optional object to be updated on click.
 		 * @returns {boolean}
-		 * @TODO refactor the update to use el.listener().
 		 */
 		renderDay: function(id, dateStamp, obj)
 		{
@@ -238,8 +235,8 @@ var aFrame=(aFrame)?aFrame:function()
 				{
 					var args=[
 							["id","href_day_"+this.dateStamp.getDate()],
-							["onclick", "aFrame.update('"+obj+"','"+this.dateOutput(dateStamp.toDateString())+"');aFrame.destroy('aFrame.calendar');"],
-							[innerHTML, dateStamp.getDate()]
+							["listener", "click", "aFrame.update('"+obj+"','"+this.dateOutput(dateStamp.toDateString())+"');aFrame.destroy('aFrame.calendar');"],
+							["innerHTML", dateStamp.getDate()]
 						];
 
 					if ((dateStamp.getDate()==dateCur.getDate())&&(dateStamp.getMonth()==dateCur.getMonth())&&(dateStamp.getFullYear()==dateCur.getFullYear()))
@@ -262,13 +259,10 @@ var aFrame=(aFrame)?aFrame:function()
 				{
 					el.create("div", [["class","day"]], id);
 				}
-
-				return true;
 			}
 			catch (e)
 			{
 				error(e);
-				return false;
 			}
 		},
 
@@ -278,7 +272,6 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param dateStamp {string} Date to work with.
 		 * @param obj {string} Object to update.
 		 * @param clear {boolean} Value reflects displaying the Clear option in the Calendar Header.
-		 * @returns {boolean}
 		 */
 		renderCalendar: function(id, dateStamp, obj, clear)
 		{
@@ -379,18 +372,15 @@ var aFrame=(aFrame)?aFrame:function()
 						dateStamp.setDate(i);
 						this.renderDay("calendarDays", dateStamp, obj);
 					}
-
-					return true;
 				}
 				else
 				{
-					return false;
+					throw label.error.msg1;
 				}
 			}
 			catch(e)
 			{
 				error(e);
-				return false;
 			}
 		}
 	};
@@ -424,8 +414,8 @@ var aFrame=(aFrame)?aFrame:function()
 				if (arg instanceof Array)
 				{
 					var instances=[];
-					var loop=arg.length;
-					for (var i=0;i<loop;i++)
+					var i=arg.length;
+					while (i--)
 					{
 						instances.push($(arg[i].toString()));
 					}
@@ -456,6 +446,7 @@ var aFrame=(aFrame)?aFrame:function()
 		error:function(e)
 		{
 			var err=new Error(e);
+			//(console!==undefined)?:;
 			($("console"))?console.log(err.description):alert(err.description);
 		},
 
@@ -568,6 +559,75 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
+	 * Class for contains methods for local databases.
+	 */
+	database=
+	{
+		/**
+		 * Creates a local database if the client supports this feature.
+		 * @param id {string} The id of the database to create.
+		 * @param version {string} The version of the database to create.
+		 * @param name {string} The name of the database to create.
+		 * @param size {integer} The size of the database to create in bytes.
+		 * @returns {object} A local database,
+		 */
+		create:function(id, version, name, size)
+		{
+			try
+			{
+				if (window.openDatabase)
+				{
+					var db=(size===undefined)?openDatabase(id, version, name):openDatabase(id, version, name, size);
+					if (db)
+					{
+						return db;
+					}
+					throw label.error.msg7;
+				}
+				else
+				{
+					throw label.error.msg6;
+				}
+			}
+			catch (e)
+			{
+				error(e);
+			}
+		},
+
+		/**
+		 * Destroys the local database.
+		 * @param arg {string} The name of the database to destroy.
+		 */
+		destroy:function(arg)
+		{
+			el.destroy(arg);
+		},
+
+		/**
+		 * Executes a query in a transaction with exception handling.
+		 * @param db {string} The local database to run the query against.
+		 * @param arg {string} The query to run.
+		 * @param handler {mixed} The transaction handler referenced in arg.
+		 */
+		query:function(db, arg, handler)
+		{
+			try
+			{
+				if (arg.indexOf("?")==-1)
+				{
+					error(label.error.msg8);
+				}
+				(db)?db.transaction(function(handler){handler.executeSql(arg);}):error(label.error.msg7);
+			}
+			catch (e)
+			{
+				error(e);
+			}
+		}
+	};
+
+	/**
 	 * Class for HTML element CRUD, etc.
 	 */
 	el=
@@ -594,14 +654,36 @@ var aFrame=(aFrame)?aFrame:function()
 
 		/**
 		 * Destroys an element.
-		 * @param args {string} Comma delimited string of target object.id values.
-		 * @TODO make this array friendly!
+		 * @param arg {string} Comma delimited string of target element.id values.
 		 */
-		destroy:function(id)
+		destroy:function(arg)
 		{
-			if ($(id))
+			try
 			{
-				document.body.removeChild($(arg));
+				if ($(arg))
+				{
+					var instance=$(arg);
+					if (instance instanceof Array)
+					{
+						var i=instance.length;
+						while (i--)
+						{
+							document.body.removeChild(instance[i]);
+						}
+					}
+					else
+					{
+						document.body.removeChild(instance);
+					}
+				}
+				else
+				{
+					throw label.error.msg1;
+				}
+			}
+			catch (e)
+			{
+				error(e);
 			}
 		},
 
@@ -620,7 +702,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param id {string} The target object.id value.
 		 * @param arg {string} The name of the event to add to the object.
 		 */
-		event:function(id, arg)
+		event:function(id, type, fn)
 		{
 			this.update(id, [["event", arg]]);
 		},
@@ -701,8 +783,8 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				if (args instanceof Array)
 				{
-					var loop=args.length;
-					for (var i=0;i<loop;i++)
+					var i=args.length;
+					while(i--)
 					{
 						switch(args[i][0])
 						{
@@ -743,7 +825,6 @@ var aFrame=(aFrame)?aFrame:function()
 
 	/**
 	 * Class of GUI effects
-	 * @TODO emulate a fall and maybe a collision?
 	 */
 	fx=
 	{
@@ -871,7 +952,7 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				return JSON.stringify(arg);
 			}
-			throw "Not implemented";
+			throw label.error.msg6;
 		}
 	};
 
@@ -889,7 +970,10 @@ var aFrame=(aFrame)?aFrame:function()
 			msg2:"A server error has occurred.",
 			msg3:"Expected an array.",
 			msg4:"The following required fields are invalid: ",
-			msg5:"Could not create element."
+			msg5:"Could not create element.",
+			msg6:"Client does not support local database storage.",
+			msg7:"Failed to open the database, possibly exceeded domain quota.",
+			msg8:"Possible SQL injection in database transaction, use the &#63; placeholder."
 		},
 
 		/**
@@ -1066,6 +1150,7 @@ var aFrame=(aFrame)?aFrame:function()
 		ajax:ajax,
 		calendar:calendar,
 		client:client,
+		database:database,
 		el:el,
 		fx:fx,
 		label:label,
