@@ -43,8 +43,8 @@ var aFrame=(aFrame)?aFrame:function()
 	ajax=
 	{
 		/**
-		 * Makes a DELETE to the URI with the supplied args.
-		 * @param uri {string} URI to GET from local cache or the resource.
+		 * Sends an HTTP DELETE to the URI.
+		 * @param uri {string} URI submit to.
 		 * @param handler {function} A handler function to execute once a response has been received.
 		 */
 		del:function(uri, handler)
@@ -53,39 +53,36 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
-		 * Makes a GET to the URI.
-		 * @param uri {string} URI to GET from local cache or the resource.
+		 * Sends an HTTP GET to the URI.
+		 * @param uri {string} URI submit to.
 		 * @param handler {function} A handler function to execute once a response has been received.
 		 */
 		get:function(uri, handler)
 		{
-			if (cache.get(uri))
-			{
-				handler(cache.get(uri));
-			}
-			client.httpRequest(uri, handler, "GET");
+			var response=cache.get(uri);
+			(response!=false)?handler(response):client.httpRequest(uri, handler, "GET");
 		},
 
 		/**
-		 * Makes a POST to the URI with the supplied args.
-		 * @param uri {string} URI to POST to.
+		 * Sends an HTTP PUT to the URI.
+		 * @param uri {string} URI submit to.
+		 * @param handler {function} A handler function to execute once a response has been received.
+		 * @param {args} PUT variables to include.
+		 */
+		put: function(uri, handler, args)
+		{
+			client.httpRequest(uri, handler, "PUT", args);
+		},
+
+		/**
+		 * Sends an HTTP POST to the URI.
+		 * @param uri {string} URI submit to.
 		 * @param handler {function} A handler function to execute once a response has been received.
 		 * @param {args} POST variables to include.
 		 */
 		post: function(uri, handler, args)
 		{
 			client.httpRequest(uri, handler, "POST", args);
-		},
-
-		/**
-		 * Makes an UPDATE to the URI with the supplied args.
-		 * @param uri {string} URI to UPDATE.
-		 * @param handler {function} A handler function to execute once a response has been received.
-		 * @param {args} POST variables to include.
-		 */
-		update: function(uri, handler, args)
-		{
-			client.httpRequest(uri, handler, "UPDATE", args);
 		}
 	};
 
@@ -446,39 +443,15 @@ var aFrame=(aFrame)?aFrame:function()
 		error:function(e)
 		{
 			var err=new Error(e);
-			//(console!==undefined)?:;
 			($("console"))?console.log(err.description):alert(err.description);
 		},
 
 		/**
-		 * Receives and caches the URI response.
-		 * @param xmlHttp {object} XMLHttp object.
-		 * @param uri {string} The URI.value to cache.
-		 * @param handler {function} A handler function to execute once a response has been received.
-		 */
-		httpGet:function(xmlHttp, uri, handler)
-		{
-			if (xmlHttp.readyState==4)
-			{
-				if ((xmlHttp.status==200)&&(typeof xmlHttp.responseText!=""))
-				{
-					cache.set(uri, xmlHttp.responseText);
-					handler(xmlHttp.responseText);
-				}
-				else
-				{
-					throw label.error.msg2;
-				}
-			}
-		},
-
-		/**
-		 * Creates an xmlHttp request for a URI.
+		 * Creates an xmlHttp request to a URI.
 		 * @param uri {string} The resource to interact with.
-		 * @param handler {function} A handler function to execute once a response has been received.
-		 * @param type {string} The type of interaction.
-		 * @param args {mixed} POST data to append to the HTTP query.
-		 * @TODO Complete the POST portion
+		 * @param handler {function} A handler function to execute when an appropriate  response been received.
+		 * @param type {string} The type of request.
+		 * @param args {mixed} Data to append to the HTTP request.
 		 */
 		httpRequest:function(uri, handler, type, args)
 		{
@@ -507,21 +480,55 @@ var aFrame=(aFrame)?aFrame:function()
 				{
 					switch(type.toLowerCase())
 					{
-					case "get":
-						xmlHttp.onreadystatechange=function() { client.httpGet(xmlHttp, uri, handler); };
-						xmlHttp.open("GET",uri, true);
-						xmlHttp.send(null);
-						break;
-					case "post":
-						xmlHttp.onreadystatechange=function() { client.httpPost(xmlHttp, uri, handler); };
-						xmlHttp.open("POST",uri, true);
-						xmlHttp.send(null);
-						break;
+						case "delete":
+						case "get":
+							xmlHttp.onreadystatechange=function() { client.httpResponse(xmlHttp, uri, handler); };
+							(type.toLowerCase()=="delete")?xmlHttp.open("DELETE", uri, true):xmlHttp.open("GET", uri, true);
+							xmlHttp.send(null);
+							break;
+						case "post":
+						case "put":
+							xmlHttp.onreadystatechange=function() { client.httpResponse(xmlHttp, uri, handler); };
+							(type.toLowerCase()=="post")?xmlHttp.open("POST", uri, true):xmlHttp.open("PUT", uri, true);
+							if (xmlHttp.overrideMimeType)
+							{
+								xmlHttp.overrideMimeType("text/html");
+							}
+							xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+							xmlHttp.setRequestHeader("Content-length", args.length);
+							xmlHttp.setRequestHeader("Connection", "close");
+							xmlHttp.send(args);
+							break;
 					}
 				}
 				catch(e3)
 				{
 					error(e3);
+				}
+			}
+		},
+
+		/**
+		 * Receives and caches the URI response.
+		 * @param xmlHttp {object} XMLHttp object.
+		 * @param uri {string} The URI.value to cache.
+		 * @param handler {function} A handler function to execute once a response has been received.
+		 */
+		httpResponse:function(xmlHttp, uri, handler)
+		{
+			if (xmlHttp.readyState==4)
+			{
+				if (((xmlHttp.status==200)||(xmlHttp.status==201)||(xmlHttp.status==204))&&(typeof xmlHttp.responseText!=""))
+				{
+					if (xmlHttp.status==200)
+					{
+						cache.set(uri, xmlHttp.responseText);
+					}
+					handler(xmlHttp.responseText);
+				}
+				else
+				{
+					throw label.error.msg2;
 				}
 			}
 		},
