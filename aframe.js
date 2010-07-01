@@ -100,27 +100,20 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		contains:function(instance, arg)
 		{
-			try
+			arg=(arg.toString().indexOf(",")>-1)?arg.split(","):arg;
+			if (arg instanceof Array)
 			{
-				arg=(arg.toString().indexOf(",")>-1)?arg.split(","):arg;
-				if (arg instanceof Array)
+				var indexes=[];
+				var i=args.length;
+				while (i--)
 				{
-					var indexes=[];
-					var i=args.length;
-					while (i--)
-					{
-						indexes[i]=instance.index(arg[i]);
-					}
-					return indexes;
+					indexes[i]=instance.index(arg[i]);
 				}
-				else
-				{
-					return indexes.index(arg);
-				}
+				return indexes;
 			}
-			catch (e)
+			else
 			{
-				error(e);
+				return indexes.index(arg);
 			}
 		},
 
@@ -244,7 +237,7 @@ var aFrame=(aFrame)?aFrame:function()
 
 			if ($(form).value=="Invalid Date")
 			{
-				$(form).reset();
+				$(form).clear();
 			}
 
 			if ($("aFrame.calendar"))
@@ -304,42 +297,35 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		renderDay: function(id, dateStamp, obj)
 		{
-			try
+			dateStamp=new Date(dateStamp);
+
+			if (!isNaN(dateStamp.getYear()))
 			{
-				dateStamp=new Date(dateStamp);
+				var args=[
+						["id","href_day_"+this.dateStamp.getDate()],
+						["listener", "click", "aFrame.update('"+obj+"','"+this.dateOutput(dateStamp.toDateString())+"');aFrame.destroy('aFrame.calendar');"],
+						["innerHTML", dateStamp.getDate()]
+					];
 
-				if (!isNaN(dateStamp.getYear()))
+				if ((dateStamp.getDate()==dateCur.getDate())&&(dateStamp.getMonth()==dateCur.getMonth())&&(dateStamp.getFullYear()==dateCur.getFullYear()))
 				{
-					var args=[
-							["id","href_day_"+this.dateStamp.getDate()],
-							["listener", "click", "aFrame.update('"+obj+"','"+this.dateOutput(dateStamp.toDateString())+"');aFrame.destroy('aFrame.calendar');"],
-							["innerHTML", dateStamp.getDate()]
-						];
-
-					if ((dateStamp.getDate()==dateCur.getDate())&&(dateStamp.getMonth()==dateCur.getMonth())&&(dateStamp.getFullYear()==dateCur.getFullYear()))
-					{
-						args.push(["class", "current"]);
-					}
-					else if ((dateStamp.getDay()===0)||(dateStamp.getDay()==6))
-					{
-						args.push(["class", "weekend"]);
-					}
-
-					el.create("div", [
-							["id","div_day_"+dateStamp.getDate()],
-							["class","day"]
-						], id);
-
-					el.create("a", args, "div_day_"+dateStamp.getDate());
+					args.push(["class", "current"]);
 				}
-				else
+				else if ((dateStamp.getDay()===0)||(dateStamp.getDay()==6))
 				{
-					el.create("div", [["class","day"]], id);
+					args.push(["class", "weekend"]);
 				}
+
+				el.create("div", [
+						["id","div_day_"+dateStamp.getDate()],
+						["class","day"]
+					], id);
+
+				el.create("a", args, "div_day_"+dateStamp.getDate());
 			}
-			catch (e)
+			else
 			{
-				error(e);
+				el.create("div", [["class","day"]], id);
 			}
 		},
 
@@ -352,21 +338,19 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		renderCalendar: function(id, dateStamp, obj, clear)
 		{
-			try
+			dateStamp=new Date(dateStamp);
+
+			if ($(id))
 			{
-				dateStamp=new Date(dateStamp);
+				$(id).clear();
 
-				if ($(id))
+				var datePrev=new Date();
+				var dateNext=new Date();
+				var dateLabel=null;
+				var loop=this.dateDays(dateStamp.getMonth(), dateStamp.getFullYear());
+
+				switch (dateCur.getMonth())
 				{
-					$(id).reset();
-
-					var datePrev=new Date();
-					var dateNext=new Date();
-					var dateLabel=null;
-					var loop=this.dateDays(dateStamp.getMonth(), dateStamp.getFullYear());
-
-					switch (dateCur.getMonth())
-					{
 					case 0:
 						datePrev.setDate(1);
 						datePrev.setMonth(11);
@@ -399,65 +383,60 @@ var aFrame=(aFrame)?aFrame:function()
 						dateNext.setMonth(dateStamp.getMonth()+1);
 						dateNext.setFullYear(dateStamp.getFullYear());
 						break;
-					}
-
-					eval("dateLabel=label.month."+dateStamp.getMonth()+";");
-					el.create("div", [["id", "calendarTop"]], id);
-
-					if (clear)
-					{
-						el.create("a", [
-								["id", "calendarClear"],
-								["innerHTML", label.common.clear],
-								["listener", "click", "aFrame.reset('"+obj+"');aFrame.destroy('"+id+"')"]
-							], "calendarTop");
-					}
-
-					el.create("a", [
-							["id", "calendarClose"],
-							["innerHTML", label.common.close],
-							["listener", "click", "aFrame.destroy('"+id+"')"]
-						], "calendarTop");
-
-					el.create("div", [
-							["id", "calendarHeader"]
-						], id);
-
-					el.create("a", [
-							["id", "calendarPrev"],
-							["innerHTML", "&lt;"],
-							["listener", "click", "aFrame.calendar.renderCalendar('"+id+"','"+datePrev.toDateString()+"','"+obj+"');"]
-						], "calendarHeader");
-
-					el.create("span", [
-							["id", "calendarMonth"],
-							["innerHTML", dateLabel+" "+dateStamp.getFullYear().toString()]
-						], "calendarHeader");
-
-					el.create("a", [
-							["id", "calendarNext"],
-							["innerHTML", "&gt;"],
-							["listener", "click", "aFrame.calendar.renderCalendar('"+id+"','"+dateNext.toDateString()+"','"+obj+"');"]
-						], "calendarHeader");
-
-					el.create("div", [
-							["id", "calendarDays"]
-						], id);
-
-					for (var i=1;i<=loop;i++)
-					{
-						dateStamp.setDate(i);
-						this.renderDay("calendarDays", dateStamp, obj);
-					}
 				}
-				else
+
+				eval("dateLabel=label.month."+dateStamp.getMonth()+";");
+				el.create("div", [["id", "calendarTop"]], id);
+
+				if (clear)
 				{
-					throw label.error.elementNotFound;
+					el.create("a", [
+							["id", "calendarClear"],
+							["innerHTML", label.common.clear],
+							["listener", "click", "aFrame.clear('"+obj+"');aFrame.destroy('"+id+"')"]
+						], "calendarTop");
+				}
+
+				el.create("a", [
+						["id", "calendarClose"],
+						["innerHTML", label.common.close],
+						["listener", "click", "aFrame.destroy('"+id+"')"]
+					], "calendarTop");
+
+				el.create("div", [
+						["id", "calendarHeader"]
+					], id);
+
+				el.create("a", [
+						["id", "calendarPrev"],
+						["innerHTML", "&lt;"],
+						["listener", "click", "aFrame.calendar.renderCalendar('"+id+"','"+datePrev.toDateString()+"','"+obj+"');"]
+					], "calendarHeader");
+
+				el.create("span", [
+						["id", "calendarMonth"],
+						["innerHTML", dateLabel+" "+dateStamp.getFullYear().toString()]
+					], "calendarHeader");
+
+				el.create("a", [
+						["id", "calendarNext"],
+						["innerHTML", "&gt;"],
+						["listener", "click", "aFrame.calendar.renderCalendar('"+id+"','"+dateNext.toDateString()+"','"+obj+"');"]
+					], "calendarHeader");
+
+				el.create("div", [
+						["id", "calendarDays"]
+					], id);
+
+				for (var i=1;i<=loop;i++)
+				{
+					dateStamp.setDate(i);
+					this.renderDay("calendarDays", dateStamp, obj);
 				}
 			}
-			catch(e)
+			else
 			{
-				error(e);
+				throw label.error.elementNotFound;
 			}
 		}
 	};
@@ -593,19 +572,12 @@ var aFrame=(aFrame)?aFrame:function()
 
 			if (!$(id+"_"+label.common.loading.toLocaleLowerCase()))
 			{
-				try
-				{
-					el.create("img", [
-							["alt", label.common.loading],
-							["id", id+"_"+label.common.loading.toLocaleLowerCase()],
-							["src", window["aFrame.icon"].src],
-							["class", "loading"]
-						], id);
-				}
-				catch(e)
-				{
-					error(e);
-				}
+				el.create("img", [
+						["alt", label.common.loading],
+						["id", id+"_"+label.common.loading.toLocaleLowerCase()],
+						["src", window["aFrame.icon"].src],
+						["class", "loading"]
+					], id);
 			}
 		}
 	};
@@ -625,25 +597,18 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		create:function(id, version, name, size)
 		{
-			try
+			if (window.openDatabase)
 			{
-				if (window.openDatabase)
+				var db=(size===undefined)?openDatabase(id, version, name):openDatabase(id, version, name, size);
+				if (db)
 				{
-					var db=(size===undefined)?openDatabase(id, version, name):openDatabase(id, version, name, size);
-					if (db)
-					{
-						return db;
-					}
-					throw label.error.databaseNotOpen;
+					return db;
 				}
-				else
-				{
-					throw label.error.databaseNotSupported;
-				}
+				throw label.error.databaseNotOpen;
 			}
-			catch (e)
+			else
 			{
-				error(e);
+				throw label.error.databaseNotSupported;
 			}
 		},
 
@@ -674,18 +639,11 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		query:function(db, arg, handler)
 		{
-			try
+			if (arg.indexOf("?")==-1)
 			{
-				if (arg.indexOf("?")==-1)
-				{
-					error(label.error.databaseWarnInjection);
-				}
-				(db)?db.transaction(function(handler){handler.executeSql(arg);}):error(label.error.databaseNotOpen);
+				error(label.error.databaseWarnInjection);
 			}
-			catch (e)
-			{
-				error(e);
-			}
+			(db)?db.transaction(function(handler){handler.executeSql(arg);}):error(label.error.databaseNotOpen);
 		}
 	};
 
@@ -720,21 +678,14 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		destroy:function(arg)
 		{
-			try
+			var args=arg.split(",");
+			var i=args.length;
+			while (i--)
 			{
-				var args=arg.split(",");
-				var i=args.length;
-				while (i--)
+				if ($(args[i]))
 				{
-					if ($(args[i]))
-					{
-						document.body.removeChild(args[i]);
-					}
+					document.body.removeChild(args[i]);
 				}
-			}
-			catch (e)
-			{
-				error(e);
 			}
 		},
 
@@ -799,12 +750,19 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param id {string} Target object.id value.
 		 * @TODO switch this to if ("attribute" in $var) maybe...
 		 */
-		reset:function(id)
+		clear:function(id)
 		{
 			if ($(id))
 			{
-				if (typeof $(id)=="form") { $(id).reset(); }
-				else { this.update(id, [["innerHTML", ""]]); }
+				switch (typeof $(id))
+				{
+					case "form":
+						$(id).clear();
+						break;
+					default:
+						this.update(id, [["innerHTML", ""]]);
+						break;
+				}
 			}
 			else
 			{
@@ -1007,8 +965,8 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			databaseNotSupported:"Client does not support local database storage.",
 			databaseNotOpen:"Failed to open the Database, possibly exceeded Domain quota.",
+			databaseNotSupported:"Client does not support local database storage.",
 			databaseWarnInjection:"Possible SQL injection in database transaction, use the &#63; placeholder.",
 			elementNotCreated:"Could not create the Element.",
 			elementNotFound:"Could not find the Element.",
@@ -1241,7 +1199,7 @@ var aFrame=(aFrame)?aFrame:function()
 		error:client.error,
 		icon:client.icon,
 		position:el.position,
-		reset:el.reset,
+		clear:el.clear,
 		update:el.update,
 
 		/**
@@ -1285,7 +1243,7 @@ Element.prototype.get=function(arg) { aFrame.ajax.get(arg, function(){ aFrame.el
 Element.prototype.listener=function(target, handler) { aFrame.el.listener(this.id, target, handler); };
 Element.prototype.opacity=function(arg) { return aFrame.fx.opacity(this, arg); };
 Element.prototype.opacityShift=function(arg) { aFrame.fx.opacityShift(this.id, arg); };
-Element.prototype.reset=function() { aFrame.reset(this.id); };
+Element.prototype.clear=function() { aFrame.clear(this.id); };
 Element.prototype.update=function(args) { aFrame.update(this.id, args); };
 Number.prototype.isEven=function() { return aFrame.number.isEven(this); };
 Number.prototype.isOdd=function() { return aFrame.number.isOdd(this); };
