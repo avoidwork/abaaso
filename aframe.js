@@ -129,6 +129,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param instance {mixed} The entity to search.
 		 * @param arg {mixed} The argument to find (string or integer).
 		 * @returns {integer} The position of item in ar.
+		 * @TODO make this accept comma delimited args
 		 */
 		index:function(instance, arg)
 		{
@@ -146,7 +147,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw label.error.msg8
+				throw label.error.databaseWarnInjection
 			}
 		},
 
@@ -264,7 +265,7 @@ var aFrame=(aFrame)?aFrame:function()
 			else
 			{
 				$("aFrame.calendar").destroy();
-				throw label.error.msg5;
+				throw label.error.elementNotCreated;
 			}
 		},
 
@@ -451,7 +452,7 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 				else
 				{
-					throw label.error.msg1;
+					throw label.error.elementNotFound;
 				}
 			}
 			catch(e)
@@ -572,7 +573,7 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 				else
 				{
-					throw label.error.msg2;
+					throw label.error.serverError;
 				}
 			}
 		},
@@ -633,11 +634,11 @@ var aFrame=(aFrame)?aFrame:function()
 					{
 						return db;
 					}
-					throw label.error.msg7;
+					throw label.error.databaseNotOpen;
 				}
 				else
 				{
-					throw label.error.msg6;
+					throw label.error.databaseNotSupported;
 				}
 			}
 			catch (e)
@@ -677,9 +678,9 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				if (arg.indexOf("?")==-1)
 				{
-					error(label.error.msg8);
+					error(label.error.databaseWarnInjection);
 				}
-				(db)?db.transaction(function(handler){handler.executeSql(arg);}):error(label.error.msg7);
+				(db)?db.transaction(function(handler){handler.executeSql(arg);}):error(label.error.databaseNotOpen);
 			}
 			catch (e)
 			{
@@ -709,7 +710,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw label.error.msg3;
+				throw label.error.expectedArray;
 			}
 		},
 
@@ -807,7 +808,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				throw label.error.msg1;
+				throw label.error.elementNotFound;
 			}
 		},
 
@@ -853,12 +854,12 @@ var aFrame=(aFrame)?aFrame:function()
 				}
 				else
 				{
-					throw label.error.msg3;
+					throw label.error.expectedArray;
 				}
 			}
 			else
 			{
-				throw label.error.msg1;
+				throw label.error.elementNotFound;
 			}
 		}
 	};
@@ -992,7 +993,7 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				return JSON.stringify(arg);
 			}
-			throw label.error.msg6;
+			throw label.error.databaseNotSupported;
 		}
 	};
 
@@ -1006,16 +1007,16 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		error:
 		{
-			msg1:"Could not find the Element.",
-			msg2:"A server error has occurred.",
-			msg3:"Expected an Array.",
-			msg4:"The following required fields are invalid: ",
-			msg5:"Could not create the Element.",
-			msg6:"Client does not support local database storage.",
-			msg7:"Failed to open the Database, possibly exceeded Domain quota.",
-			msg8:"Possible SQL injection in database transaction, use the &#63; placeholder.",
-			msg9:"Expected an Object.",
-			msg10:"Expected an Array or Object."
+			databaseNotSupported:"Client does not support local database storage.",
+			databaseNotOpen:"Failed to open the Database, possibly exceeded Domain quota.",
+			databaseWarnInjection:"Possible SQL injection in database transaction, use the &#63; placeholder.",
+			elementNotCreated:"Could not create the Element.",
+			elementNotFound:"Could not find the Element.",
+			expectedArray:"Expected an Array.",
+			expectedArrayObject:"Expected an Array or Object.",
+			expectedObject:"Expected an Object.",
+			invalidFields:"The following required fields are invalid: ",
+			serverError:"A server error has occurred."
 		},
 
 		/**
@@ -1123,7 +1124,7 @@ var aFrame=(aFrame)?aFrame:function()
 	{
 		exception:false,
 		loop:null,
-		msg:label.error.msg4,
+		msg:label.error.invalidFields,
 		required:[],
 		value:null,
 
