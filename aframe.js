@@ -476,6 +476,7 @@ var aFrame=(aFrame)?aFrame:function()
 		 * @param handler {function} A handler function to execute when an appropriate  response been received.
 		 * @param type {string} The type of request.
 		 * @param args {mixed} Data to append to the HTTP request.
+		 * @TODO detect if the URI doesn't match the domain/origin, and add to the head tag if that's the case instead of XMLHttpRequest!
 		 */
 		httpRequest:function(uri, handler, type, args)
 		{
@@ -540,20 +541,27 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		httpResponse:function(xmlHttp, uri, handler)
 		{
-			if (xmlHttp.readyState==4)
+			try
 			{
-				if (((xmlHttp.status==200)||(xmlHttp.status==201)||(xmlHttp.status==204))&&(typeof xmlHttp.responseText!=""))
+				if (xmlHttp.readyState==4)
 				{
-					if (xmlHttp.status==200)
+					if (((xmlHttp.status==200)||(xmlHttp.status==201)||(xmlHttp.status==204))&&(typeof xmlHttp.responseText!=""))
 					{
-						cache.set(uri, xmlHttp.responseText);
+						if (xmlHttp.status==200)
+						{
+							cache.set(uri, xmlHttp.responseText);
+						}
+						handler(xmlHttp.responseText);
 					}
-					handler(xmlHttp.responseText);
+					else
+					{
+						throw label.error.serverError;
+					}
 				}
-				else
-				{
-					throw label.error.serverError;
-				}
+			}
+			catch (e)
+			{
+				error(e);
 			}
 		},
 
@@ -752,21 +760,28 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		clear:function(id)
 		{
-			if ($(id))
+			try
 			{
-				switch (typeof $(id))
+				if ($(id))
 				{
-					case "form":
-						$(id).clear();
-						break;
-					default:
-						this.update(id, [["innerHTML", ""]]);
-						break;
+					switch (typeof $(id))
+					{
+						case "form":
+							$(id).reset();
+							break;
+						default:
+							this.update(id, [["innerHTML", ""]]);
+							break;
+					}
+				}
+				else
+				{
+					throw label.error.elementNotFound;
 				}
 			}
-			else
+			catch (e)
 			{
-				throw label.error.elementNotFound;
+				error(e);
 			}
 		},
 
@@ -1019,22 +1034,6 @@ var aFrame=(aFrame)?aFrame:function()
 	};
 
 	/**
-	 * Class of string methods
-	 */
-	string=
-	{
-		/**
-		 * Encodes a string to a DOM friendly ID.
-		 * @param id {string} The object.id value to encode.
-		 * @returns {string} Returns a lowercase stripped string.
-		 */
-		domID:function(id)
-		{
-			return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
-		}
-	};
-
-	/**
 	 * Class of utility functions.
 	 */
 	utility=
@@ -1065,13 +1064,23 @@ var aFrame=(aFrame)?aFrame:function()
 		},
 
 		/**
+		 * Encodes a string to a DOM friendly ID.
+		 * @param id {string} The object.id value to encode.
+		 * @returns {string} Returns a lowercase stripped string.
+		 */
+		domID:function(id)
+		{
+			return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+		},
+
+		/**
 		 * Error handling.
 		 * @param e {mixed} Error object or message to display.
 		 */
 		error:function(e)
 		{
 			var err=new Error(e);
-			($("console"))?console.log(err.description):alert(err.description);
+			((console)||$("console"))?console.error(err):alert(err.description);
 		}
 	};
 
@@ -1195,7 +1204,7 @@ var aFrame=(aFrame)?aFrame:function()
 		$:utility.$,
 		create:el.create,
 		destroy:el.destroy,
-		domID:string.domID,
+		domID:utility.domID,
 		error:client.error,
 		icon:client.icon,
 		position:el.position,
@@ -1214,7 +1223,6 @@ var aFrame=(aFrame)?aFrame:function()
 		fx:fx,
 		label:label,
 		number:number,
-		string:string,
 		validate:validate
 	};
 
