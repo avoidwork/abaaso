@@ -113,7 +113,7 @@ var aFrame=(aFrame)?aFrame:function()
 			}
 			else
 			{
-				return indexes.index(arg);
+				return instance.index(arg);
 			}
 		},
 
@@ -126,21 +126,28 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		index:function(instance, arg)
 		{
-			if (instance instanceof Array)
+			try
 			{
-				var i=instance.length;
-				while (i--)
+				if (instance instanceof Array)
 				{
-					if (instance[i]==arg)
+					var i=instance.length;
+					while (i--)
 					{
-						return i;
+						if (instance[i]==arg)
+						{
+							return i;
+						}
 					}
+					return -1;
 				}
-				return -1;
+				else
+				{
+					throw label.error.expectedArray;
+				}
 			}
-			else
+			catch (e)
 			{
-				throw label.error.databaseWarnInjection
+				error(e);
 			}
 		},
 
@@ -153,9 +160,16 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		remove:function(instance, start, end)
 		{
-			var remaining=instance.slice((end||start)+1||instance.length);
-			instance.length=(start<0)?(instance.length+start):start;
-			return instance.push.apply(instance, remaining);
+			try
+			{
+				var remaining=instance.slice((end||start)+1||instance.length);
+				instance.length=(start<0)?(instance.length+start):start;
+				return instance.push.apply(instance, remaining);
+			}
+			catch (e)
+			{
+				error(e);
+			}
 		}
 	};
 
@@ -605,18 +619,25 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		create:function(id, version, name, size)
 		{
-			if (window.openDatabase)
+			try
 			{
-				var db=(size===undefined)?openDatabase(id, version, name):openDatabase(id, version, name, size);
-				if (db)
+				if (window.openDatabase)
 				{
-					return db;
+					var db=(size===undefined)?window.openDatabase(id, version, name):window.openDatabase(id, version, name, size);
+					if (db)
+					{
+						return db;
+					}
+					throw label.error.databaseNotOpen;
 				}
-				throw label.error.databaseNotOpen;
+				else
+				{
+					throw label.error.databaseNotSupported;
+				}
 			}
-			else
+			catch (e)
 			{
-				throw label.error.databaseNotSupported;
+				error(e);
 			}
 		},
 
@@ -647,11 +668,27 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		query:function(db, arg, handler)
 		{
-			if (arg.indexOf("?")==-1)
+			try
 			{
-				error(label.error.databaseWarnInjection);
+				if (arg.indexOf("?")==-1)
+				{
+					throw label.error.databaseWarnInjection;
+				}
+				if (db)
+				{
+					db.transaction(function(handler) {
+						handler.executeSql(arg);
+					});
+				}
+				else
+				{
+					throw label.error.databaseNotOpen;
+				}
 			}
-			(db)?db.transaction(function(handler){handler.executeSql(arg);}):error(label.error.databaseNotOpen);
+			catch (e)
+			{
+				error(e);
+			}
 		}
 	};
 
@@ -668,15 +705,22 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		create:function(type, args, id)
 		{
-			if (args instanceof Array)
+			try
 			{
-				var obj=document.createElement(type);
-				this.update(obj, args);
-				($(id))?$(id).appendChild(obj):document.body.appendChild(obj);
+				if (args instanceof Array)
+				{
+					var obj=document.createElement(type);
+					this.update(obj, args);
+					($(id))?$(id).appendChild(obj):document.body.appendChild(obj);
+				}
+				else
+				{
+					throw label.error.expectedArray;
+				}
 			}
-			else
+			catch (e)
 			{
-				throw label.error.expectedArray;
+				error(e);
 			}
 		},
 
@@ -792,47 +836,54 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		update:function(obj, args)
 		{
-			obj=(typeof obj=="object")?obj:$(obj);
-			if ((obj!==undefined)&&(obj!=null))
+			try
 			{
-				if (args instanceof Array)
+				obj=(typeof obj=="object")?obj:$(obj);
+				if ((obj!==undefined)&&(obj!=null))
 				{
-					var i=args.length;
-					while(i--)
+					if (args instanceof Array)
 					{
-						switch(args[i][0])
+						var i=args.length;
+						while(i--)
 						{
-						case "class":
-							((client.ie)&&(client.version<8))?obj.setAttribute("className", args[i][1]):obj.setAttribute("class", args[i][1]);
-							break;
-						case "event":
-							alert("add an event here!");
-							break;
-						case "innerHTML":
-						case "type":
-						case "src":
-							obj[args[i][0]]=args[i][1];
-							break;
-						case "listener":
-							(obj.addEventListener)?obj.addEventListener(args[i][1], args[i][2], false):obj.attachEvent("on"+args[i][1], args[i][2]);
-							break;
-						case "opacity":
-							fx.opacity(obj, args[i][1]);
-							break;
-						default:
-							obj.setAttribute(args[i][0] , args[i][1]);
-							break;
+							switch(args[i][0])
+							{
+							case "class":
+								((client.ie)&&(client.version<8))?obj.setAttribute("className", args[i][1]):obj.setAttribute("class", args[i][1]);
+								break;
+							case "event":
+								alert("add an event here!");
+								break;
+							case "innerHTML":
+							case "type":
+							case "src":
+								obj[args[i][0]]=args[i][1];
+								break;
+							case "listener":
+								(obj.addEventListener)?obj.addEventListener(args[i][1], args[i][2], false):obj.attachEvent("on"+args[i][1], args[i][2]);
+								break;
+							case "opacity":
+								fx.opacity(obj, args[i][1]);
+								break;
+							default:
+								obj.setAttribute(args[i][0] , args[i][1]);
+								break;
+							}
 						}
+					}
+					else
+					{
+						throw label.error.expectedArray;
 					}
 				}
 				else
 				{
-					throw label.error.expectedArray;
+					throw label.error.elementNotFound;
 				}
 			}
-			else
+			catch (e)
 			{
-				throw label.error.elementNotFound;
+				error(e);
 			}
 		}
 	};
@@ -949,11 +1000,18 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		decode:function(arg)
 		{
-			if (window.JSON)
+			try
 			{
-				return JSON.parse(arg);
+				if (window.JSON)
+				{
+					return JSON.parse(arg);
+				}
+				return eval("("+arg+")");
 			}
-			return eval("("+arg+")");
+			catch (e)
+			{
+				error(e);
+			}
 		},
 
 		/**
@@ -962,11 +1020,18 @@ var aFrame=(aFrame)?aFrame:function()
 		 */
 		encode:function(arg)
 		{
-			if (window.JSON)
+			try
 			{
-				return JSON.stringify(arg);
+				if (window.JSON)
+				{
+					return JSON.stringify(arg);
+				}
+				throw label.error.databaseNotSupported;
 			}
-			throw label.error.databaseNotSupported;
+			catch (e)
+			{
+				error(e);
+			}
 		}
 	};
 
@@ -1080,7 +1145,18 @@ var aFrame=(aFrame)?aFrame:function()
 		error:function(e)
 		{
 			var err=new Error(e);
-			((console)||$("console"))?console.error(err):alert(err.description);
+			if (client.ie)
+			{
+				alert(err.description);
+			}
+			else if (console)
+			{
+				console.error(err);
+			}
+			else
+			{
+				alert(err.description);
+			}
 		}
 	};
 
