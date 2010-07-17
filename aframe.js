@@ -60,7 +60,7 @@ var aFrame=(aFrame)?aFrame:function()
 		get:function(uri, handler)
 		{
 			var response=cache.get(uri);
-			(response!=false)?handler(response):client.httpRequest(uri, handler, "GET");
+			(!response)?client.httpRequest(uri, handler, "GET"):handler(response);
 		},
 
 		/**
