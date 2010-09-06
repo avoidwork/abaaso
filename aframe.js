@@ -269,9 +269,9 @@ var aFrame=(aFrame)?aFrame:function()
 
 				var args=[["id", "aFrame_calendar"], ["opacity", 0]];
 
-				calendar.date.clear=((destination!==undefined)&&(clear===undefined))?false:validate.bool(clear);
-				calendar.date.destination=((destination!==undefined)&&($(destination)))?destination:null;
-				calendar.date.current=((destination!==undefined)&&($(destination).value!=""))?new Date($(destination).value):this.date.current;
+				this.date.clear=((destination!==undefined)&&(clear===undefined))?false:validate.bool(clear);
+				this.date.destination=((destination!==undefined)&&($(destination)))?destination:null;
+				this.date.current=((destination!==undefined)&&($(destination).value!=""))?new Date($(destination).value):this.date.current;
 
 				$(target).blur();
 
@@ -290,7 +290,7 @@ var aFrame=(aFrame)?aFrame:function()
 					el.create("div", args, target);
 				}
 
-				if (calendar.render("aFrame_calendar", calendar.date.current))
+				if (this.render("aFrame_calendar", this.date.current))
 				{
 					fx.opacityShift("aFrame_calendar", 300);
 				}
@@ -323,16 +323,16 @@ var aFrame=(aFrame)?aFrame:function()
 						["innerHTML", dateStamp.getDate()]
 					];
 
-				if (calendar.date.destination!==undefined)
+				if (this.date.destination!==undefined)
 				{
 					args.push(["listener", "click", function(e) {
 							var scope=window.aFrame;
-							scope.update(scope.calendar.date.destination, 'the value here');
+							scope.update.call(scope.calendar, scope.calendar.date.destination, 'the value here');
 							scope.destroy("aFrame_calendar");
 							}]);
 				}
 
-				if ((dateStamp.getDate()==calendar.date.current.getDate())&&(dateStamp.getMonth()==calendar.date.current.getMonth())&&(dateStamp.getFullYear()==calendar.date.current.getFullYear()))
+				if ((dateStamp.getDate()==this.date.current.getDate())&&(dateStamp.getMonth()==this.date.current.getMonth())&&(dateStamp.getFullYear()==this.date.current.getFullYear()))
 				{
 					args.push(["class", "current"]);
 				}
@@ -394,44 +394,44 @@ var aFrame=(aFrame)?aFrame:function()
 			{
 				$(target).clear();
 
-				calendar.date.current=new Date(dateStamp);
-				calendar.date.previous=new Date(dateStamp);
-				calendar.date.next=new Date(dateStamp);
-				calendar.date.days=this.days(this.date.current.getMonth(), this.date.current.getFullYear());
+				this.date.current=new Date(dateStamp);
+				this.date.previous=new Date(dateStamp);
+				this.date.next=new Date(dateStamp);
+				this.date.days=this.days(this.date.current.getMonth(), this.date.current.getFullYear());
 
-				switch (calendar.date.current.getMonth())
+				switch (this.date.current.getMonth())
 				{
 					case 0:
-						calendar.date.previous.setMonth(11);
-						calendar.date.previous.setFullYear(calendar.date.current.getFullYear()-1);
-						calendar.date.next.setMonth(calendar.date.current.getMonth()+1);
-						calendar.date.next.setFullYear(calendar.date.current.getFullYear());
+						this.date.previous.setMonth(11);
+						this.date.previous.setFullYear(this.date.current.getFullYear()-1);
+						this.date.next.setMonth(this.date.current.getMonth()+1);
+						this.date.next.setFullYear(this.date.current.getFullYear());
 						break;
 					case 10:
-						calendar.date.previous.setMonth(calendar.date.current.getMonth()-1);
-						calendar.date.previous.setFullYear(calendar.date.current.getFullYear());
-						calendar.date.next.setMonth(calendar.date.current.getMonth()+1);
-						calendar.date.next.setFullYear(calendar.date.current.getFullYear());
+						this.date.previous.setMonth(this.date.current.getMonth()-1);
+						this.date.previous.setFullYear(this.date.current.getFullYear());
+						this.date.next.setMonth(this.date.current.getMonth()+1);
+						this.date.next.setFullYear(this.date.current.getFullYear());
 						break;
 					case 11:
-						calendar.date.previous.setMonth(calendar.date.current.getMonth()-1);
-						calendar.date.previous.setFullYear(calendar.date.current.getFullYear());
-						calendar.date.next.setMonth(0);
-						calendar.date.next.setFullYear(calendar.date.current.getFullYear()+1);
+						this.date.previous.setMonth(this.date.current.getMonth()-1);
+						this.date.previous.setFullYear(this.date.current.getFullYear());
+						this.date.next.setMonth(0);
+						this.date.next.setFullYear(this.date.current.getFullYear()+1);
 						break;
 					default:
-						calendar.date.previous.setMonth(calendar.date.current.getMonth()-1);
-						calendar.date.previous.setFullYear(calendar.date.current.getFullYear());
-						calendar.date.next.setMonth(calendar.date.current.getMonth()+1);
-						calendar.date.next.setFullYear(calendar.date.current.getFullYear());
+						this.date.previous.setMonth(this.date.current.getMonth()-1);
+						this.date.previous.setFullYear(this.date.current.getFullYear());
+						this.date.next.setMonth(this.date.current.getMonth()+1);
+						this.date.next.setFullYear(this.date.current.getFullYear());
 						break;
 				}
 
-				calendar.date.label=label.months[(dateStamp.getMonth()+1).toString()];
+				this.date.label=label.months[(this.date.current.getMonth()+1).toString()];
 
 				el.create("div", [["id", "calendarTop"]], target);
 
-				if (calendar.date.clear)
+				if (this.date.clear)
 				{
 					el.create("a", [
 							["id", "calendarClear"],
@@ -461,13 +461,13 @@ var aFrame=(aFrame)?aFrame:function()
 						["innerHTML", "&lt;"],
 						["listener", "click", function(e) {
 							var scope=window.aFrame.calendar;
-							scope.render("aFrame_calendar", scope.date.previous);
+							scope.render.call(scope, "aFrame_calendar", scope.date.previous);
 							}]
 					], "calendarHeader");
 
 				el.create("span", [
 						["id", "calendarMonth"],
-						["innerHTML", calendar.date.label+" "+dateStamp.getFullYear().toString()]
+						["innerHTML", this.date.label+" "+dateStamp.getFullYear().toString()]
 					], "calendarHeader");
 
 				el.create("a", [
@@ -475,7 +475,7 @@ var aFrame=(aFrame)?aFrame:function()
 						["innerHTML", "&gt;"],
 						["listener", "click", function(e) {
 							var scope=window.aFrame.calendar;
-							scope.render("aFrame_calendar", scope.date.next);
+							scope.render.call(scope, "aFrame_calendar", scope.date.next);
 							}]
 					], "calendarHeader");
 
@@ -489,13 +489,13 @@ var aFrame=(aFrame)?aFrame:function()
 
 				for (i=1;i<=loop;i++)
 				{
-					calendar.day("calendarDays", null);
+					this.day("calendarDays", null);
 				}
 
-				loop=calendar.date.days;
+				loop=this.date.days;
 				for (var i=1;i<=loop;i++)
 				{
-					calendar.day("calendarDays", dateStamp.setDate(i));
+					this.day("calendarDays", dateStamp.setDate(i));
 				}
 
 				return true;
