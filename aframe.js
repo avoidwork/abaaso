@@ -35,13 +35,13 @@
  * @constructor
  * @version Alpha
  */
-var aFrame = (aFrame) ? aFrame : function() {
+var aFrame = function () {
 	/**
 	 * RESTful AJAX methods
 	 *
 	 * @class
 	 */
-	ajax = {
+	var ajax = {
 		/**
 		 * Sends a DELETE to the URI
 		 *
@@ -91,7 +91,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	array = {
+	var array = {
 		/**
 		 * Finds the index of arg(s) in instance
 		 *
@@ -115,6 +115,29 @@ var aFrame = (aFrame) ? aFrame : function() {
 				}
 				else {
 					return instance.index(arg);
+				}
+			}
+			catch (e) {
+				error(e);
+			}
+		},
+
+		/**
+		 * Iterates an Array and executes a handler on each key
+		 *
+		 * @param instance {array} The array to iterate
+		 * @param handler {function} The function to perform on each key
+		 */
+		execute : function(instance, handler) {
+			try {
+				if (!instance instanceof Array) {
+					throw label.error.expectedArray;
+				}
+
+				var i = this.instance.length;
+
+				while (i--) {
+					handler(instance[i]);
 				}
 			}
 			catch (e) {
@@ -153,29 +176,6 @@ var aFrame = (aFrame) ? aFrame : function() {
 		},
 
 		/**
-		 * Iterates an Array and executes a handler on each key
-		 *
-		 * @param instance {array} The array to iterate
-		 * @param handler {function} The function to perform on each key
-		 */
-		iterate : function(instance, handler) {
-			try {
-				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
-				}
-
-				var i = this.instance.length;
-
-				while (i--) {
-					handler(instance[i]);
-				}
-			}
-			catch (e) {
-				error(e);
-			}
-		},
-
-		/**
 		 * Removes arg from instance without destroying and re-creating instance
 		 *
 		 * @param instance {array} An instance of the array to use
@@ -201,7 +201,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 * @class
 	 * @todo determine if this can be done with an associative Array better
 	 */
-	cache = {
+	var cache = {
 		/**
 		 * Array of responses
 		 * @private
@@ -260,7 +260,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 * @class
 	 * @todo finish refactoring the date picker, it's broken right now
 	 */
-	calendar = {
+	var calendar = {
 		/**
 		 * Used to render the calendar
 		 */
@@ -519,7 +519,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	client = {
+	var client = {
 		/**
 		 * Public properties
 		 */
@@ -651,7 +651,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	database = {
+	var database = {
 		/**
 		 * Creates a local database if the client supports this feature
 		 *
@@ -734,7 +734,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	el = {
+	var el = {
 		/**
 		 * Creates an element in document.body or a target element
 		 *
@@ -920,7 +920,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	fx = {
+	var fx = {
 		/**
 		 * Changes an element's opacity to the supplied value
 		 *
@@ -989,7 +989,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	number = {
+	var number = {
 		/**
 		 * Returns true if the number is even
 		 *
@@ -1016,7 +1016,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	json = {
+	var json = {
 		/**
 		 * Decodes the argument into an object
 		 *
@@ -1059,7 +1059,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	 *
 	 * @class
 	 */
-	label = {
+	var label = {
 		/**
 		 * Error messages
 		 */
@@ -1119,7 +1119,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	/**
 	 * Utility methods
 	 */
-	utility = {
+	var utility = {
 		/**
 		 * Returns an instance or array of instances
 		 *
@@ -1180,7 +1180,7 @@ var aFrame = (aFrame) ? aFrame : function() {
 	/**
 	 * Form validation
 	 */
-	validate=
+	var validate=
 	{
 		exception:false,
 		loop:null,
@@ -1284,18 +1284,17 @@ var aFrame = (aFrame) ? aFrame : function() {
 	};
 
 	/**
-	 * Public class
-	 *
+	 * @constructor
 	 * @class
 	 * @todo remove this probably
 	 */
-	pub=
-	{
+	var constructor = {
 		/**
 		 * Properties
 		 */
 		iconUrl : null,
 		ms : cache.ms,
+		ready : true,
 
 		/**
 		 * Methods
@@ -1334,12 +1333,12 @@ var aFrame = (aFrame) ? aFrame : function() {
 	/**
 	 * Setting client.css3 property
 	 */
-	pub.client.css3 = client.css3Support();
+	constructor.client.css3 = client.css3Support();
 
 	/**
 	 * Exposing pub{} to the client
 	 */
-	return pub;
+	return constructor;
 }();
 
 /**
