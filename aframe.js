@@ -1316,7 +1316,6 @@ var aFrame = function() {
 		client : client,
 		database : database,
 		el : el,
-		error : error,
 		fx : fx,
 		json : json,
 		label : label,
