@@ -1312,7 +1312,6 @@ var aFrame = function() {
 		 */
 		ajax : ajax,
 		array : array,
-		cache : cache,
 		calendar : calendar,
 		client : client,
 		database : database,
