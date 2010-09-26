@@ -32,10 +32,9 @@
  * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @constructor
  * @version Alpha
  */
-var aFrame = function () {
+var aFrame = function() {
 	/**
 	 * RESTful AJAX methods
 	 *
@@ -1286,7 +1285,6 @@ var aFrame = function () {
 	/**
 	 * @constructor
 	 * @class
-	 * @todo remove this probably
 	 */
 	var constructor = {
 		/**
@@ -1314,11 +1312,14 @@ var aFrame = function () {
 		 */
 		ajax : ajax,
 		array : array,
+		cache : cache,
 		calendar : calendar,
 		client : client,
 		database : database,
 		el : el,
+		error : error,
 		fx : fx,
+		json : json,
 		label : label,
 		number : number,
 		validate : validate
@@ -1336,7 +1337,7 @@ var aFrame = function () {
 	constructor.client.css3 = client.css3Support();
 
 	/**
-	 * Exposing pub{} to the client
+	 * Exposing constructor to the client
 	 */
 	return constructor;
 }();
