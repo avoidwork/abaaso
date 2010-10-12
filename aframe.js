@@ -1116,6 +1116,44 @@ var aFrame = function() {
 	};
 
 	/**
+	 * Observer for events
+	 */
+	var observer = {
+		/**
+		 * Array of event listeners
+		 */
+		listeners : [],
+
+		/**
+		 * Add a listener
+		 *
+		 * @param id {string} The object.id value
+		 * @param event {string} The event to listen to
+		 * @param handler {function} The event handler
+		 */
+		add : function(id, event, handler) {
+
+		},
+
+		/**
+		 * Fires an event
+		 */
+		fire : function(args) {
+
+		},
+
+		/**
+		 * Removes a listener
+		 *
+		 * @param id {string} The object.id value
+		 * @param event {string} The event to listen to
+		 */
+		remove : function(id, event) {
+
+		}
+	};
+
+	/**
 	 * Utility methods
 	 */
 	var utility = {
