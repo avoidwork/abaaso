@@ -103,8 +103,8 @@ var aFrame = function() {
 				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
 
 				if (arg instanceof Array) {
-					var indexes = [];
-					var i = args.length;
+					var indexes	= [];
+					var i		= args.length;
 
 					while (i--) {
 						indexes[i] = instance.index(arg[i]);
@@ -241,8 +241,8 @@ var aFrame = function() {
 
 			while (i--) {
 				if (this.items[i].uri == uri) {
-					this.items[i].response = response;
-					this.items[i].timestamp = new Date();
+					this.items[i].response	= response;
+					this.items[i].timestamp	= new Date();
 					return;
 				}
 			}
@@ -264,14 +264,14 @@ var aFrame = function() {
 		 * Used to render the calendar
 		 */
 		date : {
-			current : new Date(),
-			previous : new Date(),
-			next : new Date(),
-			clear : null,
-			days : null,
-			destination : null,
-			label : null,
-			pattern : "yyyy/mm/dd"
+			current		: new Date(),
+			previous	: new Date(),
+			next		: new Date(),
+			clear		: null,
+			days		: null,
+			destination	: null,
+			label		: null,
+			pattern		: "yyyy/mm/dd"
 		},
 
 		/**
@@ -292,9 +292,9 @@ var aFrame = function() {
 					["opacity", 0]
 				];
 
-				this.date.clear = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
-				this.date.destination = ((destination !== undefined) && ($(destination))) ? destination : null;
-				this.date.current = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : this.date.current;
+				this.date.clear 		= ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
+				this.date.destination	= ((destination !== undefined) && ($(destination))) ? destination : null;
+				this.date.current		= ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : this.date.current;
 
 				$(target).blur();
 				((destination !== undefined) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
@@ -382,8 +382,8 @@ var aFrame = function() {
 		 * @returns {string} Date object value in the date.pattern format
 		 */
 		format : function(dateStamp) {
-			var output = calendar.date.pattern;
-			var outputDate = new Date(dateStamp);
+			var output		= calendar.date.pattern;
+			var outputDate	= new Date(dateStamp);
 
 			output = output.replace(/dd/,outputDate.getDate());
 			output = output.replace(/mm/,outputDate.getMonth()+1);
@@ -402,10 +402,10 @@ var aFrame = function() {
 			if ($(target)) {
 				$(target).clear();
 
-				this.date.current = new Date(dateStamp);
-				this.date.previous = new Date(dateStamp);
-				this.date.next = new Date(dateStamp);
-				this.date.days = this.days(this.date.current.getMonth(), this.date.current.getFullYear());
+				this.date.current	= new Date(dateStamp);
+				this.date.previous	= new Date(dateStamp);
+				this.date.next		= new Date(dateStamp);
+				this.date.days		= this.days(this.date.current.getMonth(), this.date.current.getFullYear());
 
 				switch (this.date.current.getMonth())
 				{
@@ -481,7 +481,7 @@ var aFrame = function() {
 					["id", "calendarNext"],
 					["innerHTML", "&gt;"],
 					["listener", "click", function(e) {
-						var scope=window.aFrame.calendar;
+						var scope = window.aFrame.calendar;
 						scope.render.call(scope, "aFrame_calendar", scope.date.next);
 						}]
 				], "calendarHeader");
@@ -522,13 +522,13 @@ var aFrame = function() {
 		/**
 		 * Public properties
 		 */
-		css3 : null,
-		chrome : (navigator.userAgent.toLowerCase().indexOf("chrom") > -1) ? true : false,
+		css3	: null,
+		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrom") > -1) ? true : false,
 		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
-		ie : (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
-		opera : (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
-		safari : (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
-		version : (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "")) : parseInt(navigator.appVersion),
+		ie		: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
+		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
+		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
+		version	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "")) : parseInt(navigator.appVersion),
 
 		/**
 		 * Returns a boolean representing CSS3 support in the client
@@ -763,10 +763,9 @@ var aFrame = function() {
 		 * @param arg {string} Comma delimited string of target element.id values
 		 */
 		destroy : function(arg) {
-			try
-			{
-				var args = arg.split(",");
-				var i = args.length;
+			try {
+				var args	= arg.split(",");
+				var i		= args.length;
 
 				while (i--) {
 					var instance = $(args[i]);
@@ -782,10 +781,12 @@ var aFrame = function() {
 		 * Adds an event to the target element
 		 *
 		 * @param id {string} The target object.id value
-		 * @param arg {string} The name of the event to add to the object
+		 * @param event {string} The name of the event to listen for
+		 * @param handler {function} The event handler
 		 */
-		event : function(id, type, fn) {
-			this.update(id, [["event", arg]]);
+
+		event : function(id, event, handler) {
+			observer.add(id, event, handler);
 		},
 
 		/**
@@ -1122,7 +1123,7 @@ var aFrame = function() {
 		/**
 		 * Array of event listeners
 		 */
-		listeners : [],
+		register : [],
 
 		/**
 		 * Add a listener
@@ -1132,13 +1133,17 @@ var aFrame = function() {
 		 * @param handler {function} The event handler
 		 */
 		add : function(id, event, handler) {
-
+			this.register.push({
+				object	: id,
+				event	: event,
+				handler	: hander
+			});
 		},
 
 		/**
 		 * Fires an event
 		 */
-		fire : function(args) {
+		fire : function(event, scope) {
 
 		},
 
@@ -1149,7 +1154,10 @@ var aFrame = function() {
 		 * @param event {string} The event to listen to
 		 */
 		remove : function(id, event) {
-
+			this.register.remove({
+				object	: id,
+				event	: event
+			});
 		}
 	};
 
