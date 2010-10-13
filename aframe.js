@@ -1133,17 +1133,16 @@ var aFrame = function() {
 		 * @param handler {function} The event handler
 		 */
 		add : function(id, event, handler) {
-			this.register.push({
-				object	: id,
-				event	: event,
-				handler	: hander
-			});
+			this.register[id][event].push(handler);
 		},
 
 		/**
 		 * Fires an event
+		 *
+		 * @param scope {string} The object for the registered event
+		 * @param event {string} The event being fired
 		 */
-		fire : function(event, scope) {
+		fire : function(scope, event) {
 
 		},
 
@@ -1376,6 +1375,11 @@ var aFrame = function() {
 	 * Setting client.css3 property
 	 */
 	constructor.client.css3 = client.css3Support();
+
+	/**
+	 * Firing the onReady event
+	 */
+	observer.fire("aFrame", "onReady");
 
 	/**
 	 * Exposing constructor to the client
