@@ -1064,55 +1064,55 @@ var aFrame = function() {
 		 * Error messages
 		 */
 		error : {
-			databaseNotOpen : "Failed to open the Database, possibly exceeded Domain quota.",
-			databaseNotSupported : "Client does not support local database storage.",
-			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder.",
-			elementNotCreated : "Could not create the Element.",
-			elementNotFound : "Could not find the Element.",
-			expectedArray : "Expected an Array.",
-			expectedArrayObject : "Expected an Array or Object.",
-			expectedObject : "Expected an Object.",
-			invalidDate : "Invalid Date",
-			invalidFields : "The following required fields are invalid: ",
-			serverError : "A server error has occurred."
+			databaseNotOpen 		: "Failed to open the Database, possibly exceeded Domain quota.",
+			databaseNotSupported	: "Client does not support local database storage.",
+			databaseWarnInjection	: "Possible SQL injection in database transaction, use the &#63; placeholder.",
+			elementNotCreated		: "Could not create the Element.",
+			elementNotFound 		: "Could not find the Element.",
+			expectedArray			: "Expected an Array.",
+			expectedArrayObject		: "Expected an Array or Object.",
+			expectedObject			: "Expected an Object.",
+			invalidDate 			: "Invalid Date",
+			invalidFields			: "The following required fields are invalid: ",
+			serverError 			: "A server error has occurred."
 		},
 
 		/**
 		 * Common labels
 		 */
 		common : {
-			back : "Back",
-			cancel : "Cancel",
-			clear : "Clear",
-			close : "Close",
-			cont : "Continue",
-			del : "Delete",
-			edit : "Edit",
-			gen : "Generate",
-			loading : "Loading",
-			next : "Next",
-			login : "Login",
-			ran : "Random",
-			save : "Save",
-			submit : "Submit"
+			back 		: "Back",
+			cancel 		: "Cancel",
+			clear 		: "Clear",
+			close 		: "Close",
+			cont 		: "Continue",
+			del 		: "Delete",
+			edit 		: "Edit",
+			gen 		: "Generate",
+			loading 	: "Loading",
+			next 		: "Next",
+			login 		: "Login",
+			ran 		: "Random",
+			save 		: "Save",
+			submit 		: "Submit"
 		},
 
 		/**
 		 * Months
 		 */
 		months : {
-			"1" : "January",
-			"2" : "February",
-			"3" : "March",
-			"4" : "April",
-			"5" : "May",
-			"6" : "June",
-			"7" : "July",
-			"8" : "August",
-			"9" : "September",
-			"10" : "October",
-			"11" : "November",
-			"12" : "December"
+			"1" 	: "January",
+			"2" 	: "February",
+			"3" 	: "March",
+			"4" 	: "April",
+			"5" 	: "May",
+			"6" 	: "June",
+			"7" 	: "July",
+			"8" 	: "August",
+			"9" 	: "September",
+			"10"	: "October",
+			"11"	: "November",
+			"12"	: "December"
 		}
 	};
 
@@ -1176,8 +1176,8 @@ var aFrame = function() {
 				arg = (arg.indexOf(",") > -1) ? arg.split(",") : arg;
 
 				if (arg instanceof Array) {
-					var instances = [];
-					var i = arg.length;
+					var instances	= [];
+					var i			= arg.length;
 
 					while (i--) {
 						instances.push($(arg[i]));
@@ -1225,13 +1225,12 @@ var aFrame = function() {
 	/**
 	 * Form validation
 	 */
-	var validate=
-	{
-		exception:false,
-		loop:null,
-		msg:label.error.invalidFields,
-		required:[],
-		value:null,
+	var validate = {
+		exception	: false,
+		loop		: null,
+		msg			: label.error.invalidFields,
+		required	: [],
+		value		: null,
 
 		/**
 		 * Returns the supplied argument, or false
@@ -1268,12 +1267,11 @@ var aFrame = function() {
 		 * @param args {Array}
 		 * @returns {Boolean}
 		 */
-		fields:function(args)
-		{
-			required=args;
-			loop=required.length;
+		fields : function(args) {
+			required	= args;
+			loop		= required.length;
 
-			for (var i=0;i<this.loop;i++)
+			for (var i = 0; i < this.loop; i++)
 			{
 				value=$(required[i][0]).value;
 				switch (required[i][1])
@@ -1323,7 +1321,7 @@ var aFrame = function() {
 		 * @param arg {String} The target object.id value.
 		 * @returns {Boolean}
 		 */
-		form:function(arg) {
+		form : function(arg) {
 			void(0);
 		}
 	};
@@ -1336,44 +1334,43 @@ var aFrame = function() {
 		/**
 		 * Properties
 		 */
-		iconUrl : null,
-		ms : cache.ms,
-		ready : true,
+		iconUrl		: null,
+		ms			: cache.ms,
 
 		/**
 		 * Methods
 		 */
-		$ : utility.$,
-		create : el.create,
-		destroy : el.destroy,
-		domID : utility.domID,
-		error : utility.error,
-		icon : client.icon,
-		position : el.position,
-		clear : el.clear,
-		update : el.update,
+		$			: utility.$,
+		create		: el.create,
+		destroy		: el.destroy,
+		domID		: utility.domID,
+		error		: utility.error,
+		icon		: client.icon,
+		position	: el.position,
+		clear		: el.clear,
+		update		: el.update,
 
 		/**
 		 * Classes
 		 */
-		ajax : ajax,
-		array : array,
-		calendar : calendar,
-		client : client,
-		database : database,
-		el : el,
-		fx : fx,
-		json : json,
-		label : label,
-		number : number,
-		validate : validate
+		ajax		: ajax,
+		array		: array,
+		calendar	: calendar,
+		client		: client,
+		database	: database,
+		el			: el,
+		fx			: fx,
+		json		: json,
+		label		: label,
+		number		: number,
+		validate	: validate
 	};
 
 	/**
 	 * Declaring private global instances
 	 */
-	var $ = utility.$;
-	var error = utility.error;
+	var $		= utility.$;
+	var error	= utility.error;
 
 	/**
 	 * Setting client.css3 property
