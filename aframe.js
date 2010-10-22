@@ -1139,11 +1139,16 @@ var aFrame = function() {
 		/**
 		 * Fires an event
 		 *
-		 * @param scope {string} The object for the registered event
+		 * @param id {string} The object for the registered event
 		 * @param event {string} The event being fired
 		 */
-		fire : function(scope, event) {
+		fire : function(id, event) {
+			var listeners	= this.register[id][event];
+			var loop		= listeners.length;
 
+			for (var i = 0; i < loop; i++) {
+				//listeners[i].call(id, ;
+			}
 		},
 
 		/**
