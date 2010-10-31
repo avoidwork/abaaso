@@ -1112,10 +1112,9 @@ var aFrame = function(){
 		 * @param fn {function} The event handler
 		 */
 		add : function(id, event, fn) {
-			var o = aFrame.observer;
-			(o.listeners[id] === undefined) ? o.listeners[id] = [] : void(0);
-			(o.listeners[id][event] === undefined) ? o.listeners[id][event] = [] : void(0);
-			o.listeners[id][event].push(fn);
+			(observer.listeners[id] === undefined) ? observer.listeners[id] = [] : void(0);
+			(observer.listeners[id][event] === undefined) ? observer.listeners[id][event] = [] : void(0);
+			observer.listeners[id][event].push(fn);
 		},
 
 		/**
@@ -1125,8 +1124,7 @@ var aFrame = function(){
 		 * @param event {string} The event being fired
 		 */
 		fire : function(id, event) {
-			var	o		= aFrame.observer,
-				listeners	= (o.listeners[id] !== undefined) ? ((o.listeners[id][event] !== undefined) ? o.listeners[id][event] : []) : [],
+			var	listeners	= (observer.listeners[id] !== undefined) ? ((observer.listeners[id][event] !== undefined) ? observer.listeners[id][event] : []) : [],
 				loop		= listeners.length,
 				i		= null;
 
@@ -1136,13 +1134,12 @@ var aFrame = function(){
 		},
 
 		/**
-		 * Removes a listener
+		 * Removes an event's listeners
 		 *
 		 * @param event {string} The event to remove
 		 */
 		remove : function(id, event) {
-			var o = aFrame.observer;
-			(o.listeners[id][event] !== undefined) ? o.listeners[id].remove(event) : void(0);
+			(observer.listeners[id][event] !== undefined) ? observer.listeners[id].remove(event) : void(0);
 		}
 	};
 
@@ -1358,11 +1355,15 @@ var aFrame = function(){
 		client		: client,
 		database	: database,
 		el		: el,
+		event		: {
+			add	: observer.add,
+			fire	: observer.fire,
+			remove	: observer.remove
+		},
 		fx		: fx,
 		json		: json,
 		label		: label,
 		number		: number,
-		observer	: observer,
 		spinner		: {
 			create	: client.spinner,
 			url	: null
