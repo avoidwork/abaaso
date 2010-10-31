@@ -791,16 +791,16 @@ var aFrame = function(){
 		 */
 		position : function(id) {
 			var	left	= null,
-				top		= null,
-				obj		= $(id);
+				top	= null,
+				obj	= $(id);
 
 			if (obj.offsetParent) {
 				left	= obj.offsetLeft;
-				top		= obj.offsetTop;
+				top	= obj.offsetTop;
 
 				while (obj = obj.offsetParent) {
 					left	+= obj.offsetLeft;
-					top		+= obj.offsetTop;
+					top	+= obj.offsetTop;
 				}
 			}
 
@@ -927,10 +927,10 @@ var aFrame = function(){
 		 * @param ms {integer} Milliseconds for transition to take
 		 */
 		opacityChange : function(id, start, end, ms) {
-			var	fn		= null,
+			var	fn	= null,
 				speed	= Math.round(ms/100),
 				timer	= 0,
-				i		= null;
+				i	= null;
 
 			if (start > end) {
 				for (i = start; i >= end; i--) {
@@ -1112,9 +1112,10 @@ var aFrame = function(){
 		 * @param fn {function} The event handler
 		 */
 		add : function(id, event, fn) {
-			(this.listeners[id] === undefined) ? this.listeners[id] = [] : void(0);
-			(this.listeners[id][event] === undefined) ? this.listeners[id][event] = [] : void(0);
-			this.listeners[id][event].push(fn);
+			var o = aFrame.observer;
+			(o.listeners[id] === undefined) ? o.listeners[id] = [] : void(0);
+			(o.listeners[id][event] === undefined) ? o.listeners[id][event] = [] : void(0);
+			o.listeners[id][event].push(fn);
 		},
 
 		/**
@@ -1124,12 +1125,13 @@ var aFrame = function(){
 		 * @param event {string} The event being fired
 		 */
 		fire : function(id, event) {
-			var listeners	= (this.listeners[id] !== undefined) ? ((this.listeners[id][event] !== undefined) ? this.listeners[id][event] : []) : [],
-			    loop		= listeners.length,
-				i			= null;
+			var	o		= aFrame.observer,
+				listeners	= (o.listeners[id] !== undefined) ? ((o.listeners[id][event] !== undefined) ? o.listeners[id][event] : []) : [],
+				loop		= listeners.length,
+				i		= null;
 
 			for (i = 0; i < loop; i++) {
-				(function(){listeners[i];}());
+				listeners[i]();
 			}
 		},
 
@@ -1139,7 +1141,8 @@ var aFrame = function(){
 		 * @param event {string} The event to remove
 		 */
 		remove : function(id, event) {
-			(this.listeners[id][event] !== undefined) ? this.listeners[id].remove(event) : void(0);
+			var o = aFrame.observer;
+			(o.listeners[id][event] !== undefined) ? o.listeners[id].remove(event) : void(0);
 		}
 	};
 
@@ -1162,7 +1165,7 @@ var aFrame = function(){
 
 				if (arg instanceof Array) {
 					var instances	= [];
-					var i			= arg.length;
+					var i		= arg.length;
 
 					while (i--) {
 						instances.push($(arg[i]));
@@ -1216,7 +1219,7 @@ var aFrame = function(){
 	var validate = {
 		exception	: false,
 		loop		: null,
-		msg			: label.error.invalidFields,
+		msg		: label.error.invalidFields,
 		required	: [],
 		value		: null,
 
@@ -1329,20 +1332,21 @@ var aFrame = function(){
 		/**
 		 * Properties
 		 */
-		ms			: cache.ms,
+		ms		: cache.ms,
 
 		/**
 		 * Methods
 		 */
-		$			: utility.$,
-		add			: observer.add,
+		$		: utility.$,
 		clear		: el.clear,
 		create		: el.create,
 		destroy		: el.destroy,
 		domID		: utility.domID,
 		error		: utility.error,
+		fire		: observer.fire,
 		position	: el.position,
-		remove		: observer.remove,
+		on		: observer.add,
+		un		: observer.remove,
 		update		: el.update,
 
 		/**
@@ -1353,15 +1357,15 @@ var aFrame = function(){
 		calendar	: calendar,
 		client		: client,
 		database	: database,
-		el			: el,
-		fx			: fx,
+		el		: el,
+		fx		: fx,
 		json		: json,
 		label		: label,
 		number		: number,
 		observer	: observer,
 		spinner		: {
 			create	: client.spinner,
-			url		: null
+			url	: null
 		},
 		validate	: validate
 	};
@@ -1441,5 +1445,8 @@ String.prototype.domID = function() {
 
 /**
  * Firing the ready event
+ * @todo tweak this so it's not window.onload!
  */
-aFrame.observer.fire("aFrame", "ready");
+window.onload = function() {
+	aFrame.fire("aFrame", "ready");
+};
