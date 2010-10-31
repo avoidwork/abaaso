@@ -1125,7 +1125,7 @@ var aFrame = function(){
 		 */
 		fire : function(id, event) {
 			var listeners	= (this.listeners[id] !== undefined) ? ((this.listeners[id][event] !== undefined) ? this.listeners[id][event] : []) : [],
-			    loop		= listeners.length
+			    loop		= listeners.length,
 				i			= null;
 
 			for (i = 0; i < loop; i++) {
