@@ -1,44 +1,29 @@
 /**
- * Copyright (c) 2010, avoidwork inc.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 	* Redistributions of source code must retain the above copyright
- * 	  notice, this list of conditions and the following disclaimer.
- * 	* Redistributions in binary form must reproduce the above copyright
- * 	  notice, this list of conditions and the following disclaimer in the
- * 	  documentation and/or other materials provided with the distribution.
- * 	* Neither the name of avoidwork inc. nor the
- * 	  names of its contributors may be used to endorse or promote products
- * 	  derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
-/**
- * aFrame <http://avoidwork.com/aFrame>
+ * aFrame
  *
  * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
  * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
+ * @copyright Copyright (c) 2010, avoidwork inc.
+ * @license http://en.wikipedia.org/wiki/BSD_licenses#3-clause_license_.28.22New_BSD_License.22.29
+ * @link http://avoidwork.com/products/aframe aFrame
  * @version Alpha
  */
-var aFrame = function() {
+
+/**
+ * aFrame JavaScript framework
+ *
+ * @class
+ * @final
+ * @namespace
+ */
+var aFrame = function(){
 	/**
 	 * RESTful AJAX methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var ajax = {
 		/**
@@ -89,6 +74,7 @@ var aFrame = function() {
 	 * Array methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var array = {
 		/**
@@ -198,6 +184,8 @@ var aFrame = function() {
 	 * RESTful properties and methods
 	 *
 	 * @class
+	 * @private
+	 * @final
 	 * @todo determine if this can be done with an associative Array better
 	 */
 	var cache = {
@@ -257,6 +245,7 @@ var aFrame = function() {
 	 * Override aFrame.calendar.date.pattern to change the localized pattern from ISO 8601
 	 *
 	 * @class
+	 * @final
 	 * @todo finish refactoring the date picker, it's broken right now
 	 */
 	var calendar = {
@@ -517,31 +506,24 @@ var aFrame = function() {
 	 * Client properties and methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var client = {
 		/**
 		 * Public properties
 		 */
-		css3	: null,
+		css3	: (function(){
+					if ((this.chrome) || (this.safari)) { return true; }
+					if ((this.firefox) && (this.version > 4)) { return true; }
+					if ((this.ie) && (this.version > 8)) { return true; }
+					if ((this.opera) && (this.version > 8)) { return true; }
+					return false;}),
 		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrom") > -1) ? true : false,
 		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
 		ie		: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
 		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
 		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
 		version	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "")) : parseInt(navigator.appVersion),
-
-		/**
-		 * Returns a boolean representing CSS3 support in the client
-		 *
-		 * @returns {boolean} A boolean representing CSS3 support
-		 */
-		css3Support : function() {
-			if ((this.chrome) || (this.safari)) { return true; }
-			if ((this.firefox) && (this.version > 4)) { return true; }
-			if ((this.ie) && (this.version > 8)) { return true; }
-			if ((this.opera) && (this.version > 8)) { return true; }
-			return false;
-		},
 
 		/**
 		 * Creates an xmlHttp request to a URI
@@ -628,18 +610,18 @@ var aFrame = function() {
 		 *
 		 * @param id {string} Target object.id value
 		 */
-		icon : function(id) {
-			if (!window["aFrame.icon"]) {
-				window["aFrame.icon"] = new Image();
-				window["aFrame.icon"].src = aFrame.iconUrl;
+		spinner : function(id) {
+			if (!window["aFrame_spinner"]) {
+				window["aFrame_spinner"] = new Image();
+				window["aFrame_spinner"].src = aFrame.spinner_url;
 			}
 
 			if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
 				el.create("img", [
 					["alt", label.common.loading],
 					["id", id + "_" + label.common.loading.toLocaleLowerCase()],
-					["src", window["aFrame.icon"].src],
-					["class", "loading"]
+					["src", window["aFrame_spinner"].src],
+					["class", "spinner"]
 				], id);
 			}
 		}
@@ -649,6 +631,7 @@ var aFrame = function() {
 	 * Database methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var database = {
 		/**
@@ -732,6 +715,7 @@ var aFrame = function() {
 	 * Element methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var el = {
 		/**
@@ -778,18 +762,6 @@ var aFrame = function() {
 		},
 
 		/**
-		 * Adds an event to the target element
-		 *
-		 * @param id {string} The target object.id value
-		 * @param event {string} The name of the event to listen for
-		 * @param handler {function} The event handler
-		 */
-
-		event : function(id, event, handler) {
-			observer.add(id, event, handler);
-		},
-
-		/**
 		 * Returns the ID of the element that triggered the event
 		 *
 		 * @param e {event} The event arguement sent to the listener
@@ -818,17 +790,17 @@ var aFrame = function() {
 		 * @returns {array} An array containing the render position of the element
 		 */
 		position : function(id) {
-			var left = null;
-			var top = null;
-			var obj = $(id);
+			var	left	= null,
+				top		= null,
+				obj		= $(id);
 
 			if (obj.offsetParent) {
-				left = obj.offsetLeft;
-				top = obj.offsetTop;
+				left	= obj.offsetLeft;
+				top		= obj.offsetTop;
 
 				while (obj = obj.offsetParent) {
-					left += obj.offsetLeft;
-					top += obj.offsetTop;
+					left	+= obj.offsetLeft;
+					top		+= obj.offsetTop;
 				}
 			}
 
@@ -919,6 +891,7 @@ var aFrame = function() {
 	 * Effects methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var fx = {
 		/**
@@ -954,10 +927,10 @@ var aFrame = function() {
 		 * @param ms {integer} Milliseconds for transition to take
 		 */
 		opacityChange : function(id, start, end, ms) {
-			var fn = null;
-			var speed = Math.round(ms/100);
-			var timer = 0;
-			var i = null;
+			var	fn		= null,
+				speed	= Math.round(ms/100),
+				timer	= 0,
+				i		= null;
 
 			if (start > end) {
 				for (i = start; i >= end; i--) {
@@ -988,6 +961,7 @@ var aFrame = function() {
 	 * Number methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var number = {
 		/**
@@ -996,7 +970,7 @@ var aFrame = function() {
 		 * @param arg {integer}
 		 * @returns {boolean}
 		 */
-		isEven : function(arg) {
+		even : function(arg) {
 			return (((parseInt(arg) / 2).toString().indexOf(".")) > -1) ? false : true;
 		},
 
@@ -1006,7 +980,7 @@ var aFrame = function() {
 		 * @param arg {integer}
 		 * @returns {boolean}
 		 */
-		isOdd : function(arg) {
+		odd : function(arg) {
 			return (((parseInt(arg) / 2).toString().indexOf(".")) > -1) ? true : false;
 		}
 	};
@@ -1015,6 +989,7 @@ var aFrame = function() {
 	 * JSON methods
 	 *
 	 * @class
+	 * @final
 	 */
 	var json = {
 		/**
@@ -1058,6 +1033,7 @@ var aFrame = function() {
 	 * Labels
 	 *
 	 * @class
+	 * @final
 	 */
 	var label = {
 		/**
@@ -1118,55 +1094,60 @@ var aFrame = function() {
 
 	/**
 	 * Observer for events
+	 *
+	 * @class
+	 * @final
 	 */
 	var observer = {
 		/**
 		 * Array of event listeners
 		 */
-		register : [],
+		listeners : {},
 
 		/**
 		 * Add a listener
 		 *
-		 * @param id {string} The object.id value
 		 * @param event {string} The event to listen to
-		 * @param handler {function} The event handler
+		 * @param id {string} The obj.id value firing the event
+		 * @param fn {function} The event handler
 		 */
-		add : function(id, event, handler) {
-			this.register[id][event].push(handler);
+		add : function(fn, id, event) {
+			event = event || 'all';
+	        (this.listeners[id][event] === "undefined") ? (this.listeners[id][event] = []) : void(0);
+	        this.listeners[id][event].push(fn);
 		},
 
 		/**
 		 * Fires an event
 		 *
-		 * @param id {string} The object for the registered event
+		 * @param id {string} The object.id value the event is registered to
 		 * @param event {string} The event being fired
 		 */
 		fire : function(id, event) {
-			var listeners	= this.register[id][event];
-			var loop		= listeners.length;
+			var listeners	= (this.listeners[id][event] !== undefined) ? this.events.listeners[event] : [],
+			    loop		= listeners.length
+				i			= null;
 
-			for (var i = 0; i < loop; i++) {
-				//listeners[i].call(id, ;
+			for (i = 0; i < loop; i++) {
+				(function(){listeners[i];}());
 			}
 		},
 
 		/**
 		 * Removes a listener
 		 *
-		 * @param id {string} The object.id value
-		 * @param event {string} The event to listen to
+		 * @param event {string} The event to remove
 		 */
 		remove : function(id, event) {
-			this.register.remove({
-				object	: id,
-				event	: event
-			});
+			(this.listeners[id][event] !== undefined) ? this.listeners.id.remove(event) : void(0);
 		}
 	};
 
 	/**
 	 * Utility methods
+	 *
+	 * @class
+	 * @final
 	 */
 	var utility = {
 		/**
@@ -1228,6 +1209,9 @@ var aFrame = function() {
 
 	/**
 	 * Form validation
+	 *
+	 * @class
+	 * @final
 	 */
 	var validate = {
 		exception	: false,
@@ -1242,8 +1226,7 @@ var aFrame = function() {
 		 * @param arg {boolean}
 		 * @returns {boolean}
 		 */
-		bool:function(arg)
-		{
+		bool:function(arg) {
 			switch(arg)
 			{
 				case true:
@@ -1259,8 +1242,7 @@ var aFrame = function() {
 		 *
 		 * @param args {string}
 		 */
-		invalid:function(arg)
-		{
+		invalid:function(arg) {
 			exception=true;
 			msg+=" "+arg.toString()+", ";
 		},
@@ -1272,51 +1254,51 @@ var aFrame = function() {
 		 * @returns {Boolean}
 		 */
 		fields : function(args) {
-			required	= args;
-			loop		= required.length;
+			try {
+				required	= args;
+				loop		= required.length;
 
-			for (var i = 0; i < this.loop; i++)
-			{
-				value=$(required[i][0]).value;
-				switch (required[i][1])
-				{
-				case "isDomain":
-					if (!isDomain(value)) { invalid(required[i][2]); }
-					break;
-				case "isDomainOrIp":
-					if ((!isIpAddr(value))&&(!isDomain(value))) { invalid(required[i][2]); }
-					break;
-				case "isIp":
-					if (!isIpAddr(value)) { invalid(required[i][2]); }
-					break;
-				case "isInteger":
-					if (isNaN(value))
-					{
-						invalid(required[i][2]);
-					}
-					else if (required[i][3])
-					{
-						var y=required[i][3].length;
-						var exception=false;
-
-						for (var x=0;x<y;x++)
-						{
-							exception=(value==required[i][3][x])?false:true;
-							if (!exception) { break; }
+				for (var i = 0; i < this.loop; i++) {
+					value=$(required[i][0]).value;
+					switch (required[i][1]) {
+					case "isDomain":
+						if (!isDomain(value)) { invalid(required[i][2]); }
+						break;
+					case "isDomainOrIp":
+						if ((!isIpAddr(value))&&(!isDomain(value))) { invalid(required[i][2]); }
+						break;
+					case "isIp":
+						if (!isIpAddr(value)) { invalid(required[i][2]); }
+						break;
+					case "isInteger":
+						if (isNaN(value)) {
+							invalid(required[i][2]);
 						}
+						else if (required[i][3]) {
+							var y=required[i][3].length;
+							var exception=false;
 
-						if (exception) { invalid(required[i][2]); }
+							for (var x=0;x<y;x++) {
+								exception=(value==required[i][3][x])?false:true;
+								if (!exception) { break; }
+							}
+
+							if (exception) { invalid(required[i][2]); }
+						}
+						break;
+					case "isNotEmpty":
+						if (($(required[i][0]).style.display!="none")&&(value=="")) { invalid(required[i][2]); }
+						break;
 					}
-					break;
-				case "isNotEmpty":
-					if (($(required[i][0]).style.display!="none")&&(value=="")) { invalid(required[i][2]); }
-					break;
 				}
+
+				if (err) { throw msg; }
+
+				return !err;
 			}
-
-			if (err) { throw msg; }
-
-			return !err;
+			catch (e) {
+				error(e);
+			}
 		},
 
 		/**
@@ -1331,27 +1313,34 @@ var aFrame = function() {
 	};
 
 	/**
+	 * Declaring private global instances
+	 */
+	var $		= utility.$;
+	var error	= utility.error;
+
+	/**
+	 * Returned to the client
+	 *
 	 * @constructor
 	 * @class
+	 * @final
 	 */
-	var constructor = {
+	return {
 		/**
 		 * Properties
 		 */
-		iconUrl		: null,
 		ms			: cache.ms,
 
 		/**
 		 * Methods
 		 */
 		$			: utility.$,
+		clear		: el.clear,
 		create		: el.create,
 		destroy		: el.destroy,
 		domID		: utility.domID,
 		error		: utility.error,
-		icon		: client.icon,
 		position	: el.position,
-		clear		: el.clear,
 		update		: el.update,
 
 		/**
@@ -1367,33 +1356,17 @@ var aFrame = function() {
 		json		: json,
 		label		: label,
 		number		: number,
+		observer	: observer,
+		spinner		: {
+			create	: client.spinner,
+			url		: null
+		},
 		validate	: validate
 	};
-
-	/**
-	 * Declaring private global instances
-	 */
-	var $		= utility.$;
-	var error	= utility.error;
-
-	/**
-	 * Setting client.css3 property
-	 */
-	constructor.client.css3 = client.css3Support();
-
-	/**
-	 * Firing the onReady event
-	 */
-	observer.fire("aFrame", "onReady");
-
-	/**
-	 * Exposing constructor to the client
-	 */
-	return constructor;
 }();
 
 /**
- * Declaring a document scope global helper
+ * Declaring a global helper
  */
 var $ = function(arg) {
 	return aFrame.$(arg);
@@ -1452,14 +1425,21 @@ Element.prototype.update = function(args) {
 	aFrame.update(this.id, args);
 };
 
-Number.prototype.isEven = function() {
-	return aFrame.number.isEven(this);
+Number.prototype.even = function() {
+	return aFrame.number.even(this);
 };
 
-Number.prototype.isOdd = function() {
-	return aFrame.number.isOdd(this);
+Number.prototype.odd = function() {
+	return aFrame.number.odd(this);
 };
 
 String.prototype.domID = function() {
 	return aFrame.domID(this);
 };
+
+aFrame.event = new aFrame.observer();
+
+/**
+ * Firing the ready event
+ */
+aFrame.observer.fire("aFrame", "ready");
