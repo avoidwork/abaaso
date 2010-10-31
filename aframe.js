@@ -1107,13 +1107,13 @@ var aFrame = function(){
 		/**
 		 * Add a listener
 		 *
+		 * @param id {string} The obj firing the event
 		 * @param event {string} The event to listen to
-		 * @param id {string} The obj.id value firing the event
 		 * @param fn {function} The event handler
 		 */
-		add : function(fn, id, event) {
-			event = event || 'all';
-	        (this.listeners[id][event] === "undefined") ? (this.listeners[id][event] = []) : void(0);
+		add : function(id, event, fn) {
+	        (this.listeners[id] === undefined) ? this.listeners[id] = [] : void(0);
+			(this.listeners[id][event] === undefined) ? this.listeners[id][event] = [] : void(0);
 	        this.listeners[id][event].push(fn);
 		},
 
@@ -1124,7 +1124,7 @@ var aFrame = function(){
 		 * @param event {string} The event being fired
 		 */
 		fire : function(id, event) {
-			var listeners	= (this.listeners[id][event] !== undefined) ? this.events.listeners[event] : [],
+			var listeners	= (this.listeners[id] !== undefined) ? ((this.listeners[id][event] !== undefined) ? this.listeners[id][event] : []) : [],
 			    loop		= listeners.length
 				i			= null;
 
@@ -1139,7 +1139,7 @@ var aFrame = function(){
 		 * @param event {string} The event to remove
 		 */
 		remove : function(id, event) {
-			(this.listeners[id][event] !== undefined) ? this.listeners.id.remove(event) : void(0);
+			(this.listeners[id][event] !== undefined) ? this.listeners[id].remove(event) : void(0);
 		}
 	};
 
@@ -1335,12 +1335,14 @@ var aFrame = function(){
 		 * Methods
 		 */
 		$			: utility.$,
+		add			: observer.add,
 		clear		: el.clear,
 		create		: el.create,
 		destroy		: el.destroy,
 		domID		: utility.domID,
 		error		: utility.error,
 		position	: el.position,
+		remove		: observer.remove,
 		update		: el.update,
 
 		/**
@@ -1436,8 +1438,6 @@ Number.prototype.odd = function() {
 String.prototype.domID = function() {
 	return aFrame.domID(this);
 };
-
-aFrame.event = new aFrame.observer();
 
 /**
  * Firing the ready event
