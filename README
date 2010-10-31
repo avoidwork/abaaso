@@ -1,0 +1,9 @@
+aFrame JavaScript Framework
+
+"An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
+
+aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
+This framework is under constant revision, with the intention of being a resource for the rapid prototyping and deployment of pure
+JavaScript applications.
+
+It is available for download http://avoidwork.com & http://github.com/avoidwork/aframe/
