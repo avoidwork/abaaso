@@ -1112,9 +1112,9 @@ var aFrame = function(){
 		 * @param fn {function} The event handler
 		 */
 		add : function(id, event, fn) {
-	        (this.listeners[id] === undefined) ? this.listeners[id] = [] : void(0);
+			(this.listeners[id] === undefined) ? this.listeners[id] = [] : void(0);
 			(this.listeners[id][event] === undefined) ? this.listeners[id][event] = [] : void(0);
-	        this.listeners[id][event].push(fn);
+			this.listeners[id][event].push(fn);
 		},
 
 		/**
