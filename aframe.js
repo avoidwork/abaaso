@@ -1320,6 +1320,7 @@ var aFrame = function(){
 		 * Properties
 		 */
 		ms		: cache.ms,
+		ready	: false,
 
 		/**
 		 * Methods
@@ -1436,8 +1437,30 @@ String.prototype.domID = function() {
 
 /**
  * Firing the ready event
- * @todo tweak this so it's not window.onload!
  */
-window.onload = function() {
-	aFrame.fire("aFrame", "ready");
-};
+if ((aFrame.client.chrome) || (aFrame.client.firefox)) {
+	window.addEventListener("DOMContentLoaded", function(){
+		aFrame.ready = true;
+		aFrame.fire("aFrame", "ready");
+	}, false);
+}
+else if (aFrame.client.safari) {
+	aFrame.ready = setInterval(function(){
+		if (/loaded|complete/.test(document.readyState)) {
+			clearInterval(aFrame.ready);
+			aFrame.ready = true;
+			aFrame.fire("aFrame", "ready");
+		}}, 10);
+}
+else {
+	window.onload = function() {
+		aFrame.ready = setInterval(function(){
+			if (!aFrame.ready) {
+				if (document.getElementById) {
+					clearInterval(aFrame.ready);
+					aFrame.ready = true;
+					aFrame.fire("aFrame", "ready");
+				}
+			}}, 10);
+	}
+}
