@@ -1120,7 +1120,7 @@ var aFrame = function(){
 				i		= null;
 
 			for (i = 0; i < loop; i++) {
-				listeners[i][fn]();
+				listeners[i]['fn']();
 			}
 		},
 
