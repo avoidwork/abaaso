@@ -15,7 +15,6 @@
  * aFrame JavaScript framework
  *
  * @class
- * @final
  * @namespace
  */
 var aFrame = function(){
@@ -23,7 +22,6 @@ var aFrame = function(){
 	 * RESTful AJAX methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var ajax = {
 		/**
@@ -74,7 +72,6 @@ var aFrame = function(){
 	 * Array methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var array = {
 		/**
@@ -181,11 +178,10 @@ var aFrame = function(){
 	};
 
 	/**
-	 * RESTful properties and methods
+	 * Cache for RESTful behavior
 	 *
 	 * @class
 	 * @private
-	 * @final
 	 * @todo determine if this can be done with an associative Array better
 	 */
 	var cache = {
@@ -245,8 +241,7 @@ var aFrame = function(){
 	 * Override aFrame.calendar.date.pattern to change the localized pattern from ISO 8601
 	 *
 	 * @class
-	 * @final
-	 * @todo finish refactoring the date picker, it's broken right now
+	 * @todo refactor for the observer, finish refactoring the date picker, it's broken right now
 	 */
 	var calendar = {
 		/**
@@ -506,7 +501,6 @@ var aFrame = function(){
 	 * Client properties and methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var client = {
 		/**
@@ -631,7 +625,6 @@ var aFrame = function(){
 	 * Database methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var database = {
 		/**
@@ -715,7 +708,6 @@ var aFrame = function(){
 	 * Element methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var el = {
 		/**
@@ -891,7 +883,6 @@ var aFrame = function(){
 	 * Effects methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var fx = {
 		/**
@@ -961,7 +952,6 @@ var aFrame = function(){
 	 * Number methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var number = {
 		/**
@@ -989,7 +979,6 @@ var aFrame = function(){
 	 * JSON methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var json = {
 		/**
@@ -1030,10 +1019,11 @@ var aFrame = function(){
 	};
 
 	/**
-	 * Labels
+	 * Labels for localization
+	 *
+	 * Overload this with another language pack
 	 *
 	 * @class
-	 * @final
 	 */
 	var label = {
 		/**
@@ -1096,7 +1086,6 @@ var aFrame = function(){
 	 * Observer for events
 	 *
 	 * @class
-	 * @final
 	 */
 	var observer = {
 		/**
@@ -1107,39 +1096,44 @@ var aFrame = function(){
 		/**
 		 * Add a listener
 		 *
-		 * @param id {string} The obj firing the event
+		 * @param obj {string} The obj.id value firing the event
 		 * @param event {string} The event to listen to
-		 * @param fn {function} The event handler
+		 * @param handler {function} The event handler
+		 * @param id {string} [Optional] An identifier for the handler
 		 */
-		add : function(id, event, fn) {
-			(observer.listeners[id] === undefined) ? observer.listeners[id] = [] : void(0);
-			(observer.listeners[id][event] === undefined) ? observer.listeners[id][event] = [] : void(0);
-			observer.listeners[id][event].push(fn);
+		add : function(obj, event, handler, id) {
+			id = id || null;
+			(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
+			(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
+			observer.listeners[obj][event].push({name: id, fn: handler});
 		},
 
 		/**
 		 * Fires an event
 		 *
-		 * @param id {string} The object.id value the event is registered to
+		 * @param obj {string} The object.id value the event is registered to
 		 * @param event {string} The event being fired
 		 */
-		fire : function(id, event) {
-			var	listeners	= (observer.listeners[id] !== undefined) ? ((observer.listeners[id][event] !== undefined) ? observer.listeners[id][event] : []) : [],
+		fire : function(obj, event) {
+			var	listeners	= (observer.listeners[obj] !== undefined) ? ((observer.listeners[obj][event] !== undefined) ? observer.listeners[obj][event] : []) : [],
 				loop		= listeners.length,
 				i		= null;
 
 			for (i = 0; i < loop; i++) {
-				listeners[i]();
+				listeners[i][fn]();
 			}
 		},
 
 		/**
-		 * Removes an event's listeners
+		 * Removes an event listener, or listeners
 		 *
-		 * @param event {string} The event to remove
+		 * @param obj {string} The obj.id value firing the event
+		 * @param event {string} The event
+		 * @param event {string} [Optional] The handler
+		 * @todo Make the .remove() functional!
 		 */
-		remove : function(id, event) {
-			(observer.listeners[id][event] !== undefined) ? observer.listeners[id].remove(event) : void(0);
+		remove : function(obj, event, handler) {
+			(observer.listeners[obj][event] !== undefined) ? ((handler !== undefined) ? observer.listeners[obj][event]['fn'].remove(handler) : observer.listeners[obj].remove(event)) : void(0);
 		}
 	};
 
@@ -1147,7 +1141,6 @@ var aFrame = function(){
 	 * Utility methods
 	 *
 	 * @class
-	 * @final
 	 */
 	var utility = {
 		/**
@@ -1211,7 +1204,6 @@ var aFrame = function(){
 	 * Form validation
 	 *
 	 * @class
-	 * @final
 	 */
 	var validate = {
 		exception	: false,
@@ -1322,8 +1314,6 @@ var aFrame = function(){
 	 * Returned to the client
 	 *
 	 * @constructor
-	 * @class
-	 * @final
 	 */
 	return {
 		/**
