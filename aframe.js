@@ -31,7 +31,12 @@ var aFrame = function(){
 		 * @param handler {function} A handler function to execute once a response has been received
 		 */
 		del : function(uri, handler) {
-			client.request(uri, handler, "DELETE");
+			try {
+				client.request(uri, handler, "DELETE");
+			}
+			catch (e) {
+				error(e);
+			}
 		},
 
 		/**
@@ -41,8 +46,13 @@ var aFrame = function(){
 		 * @param handler {function} A handler function to execute once a response has been received
 		 */
 		get : function(uri, handler) {
-			var response = cache.get(uri);
-			(!response) ? client.request(uri, handler, "GET") : handler(response);
+			try {
+				var response = cache.get(uri);
+				(!response) ? client.request(uri, handler, "GET") : handler(response);
+			}
+			catch (e) {
+				error(e);
+			}
 		},
 
 		/**
@@ -53,7 +63,12 @@ var aFrame = function(){
 		 * @param {args} PUT variables to include
 		 */
 		put : function(uri, handler, args) {
-			client.request(uri, handler, "PUT", args);
+			try {
+				client.request(uri, handler, "PUT", args);
+			}
+			catch (e) {
+				error(e);
+			}
 		},
 
 		/**
@@ -64,7 +79,12 @@ var aFrame = function(){
 		 * @param {args} POST variables to include
 		 */
 		post : function(uri, handler, args) {
-			client.request(uri, handler, "POST", args);
+			try {
+				client.request(uri, handler, "POST", args);
+			}
+			catch (e) {
+				error(e);
+			}
 		}
 	};
 
@@ -101,6 +121,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -154,6 +175,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
+				return -1;
 			}
 		},
 
@@ -173,6 +195,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		}
 	};
@@ -203,15 +226,21 @@ var aFrame = function(){
 		 * @returns {mixed} Returns the URI response as a string or false
 		 */
 		get : function(arg) {
-			var i = this.items.length;
+			try {
+				var i = this.items.length;
 
-			while (i--) {
-				if ((this.items[i].uri == arg) && ((pub.ms === 0) || ((new Date() - this.items[i].timestamp) < pub.ms))) {
-					return this.items[i].response;
+				while (i--) {
+					if ((this.items[i].uri == arg) && ((pub.ms === 0) || ((new Date() - this.items[i].timestamp) < pub.ms))) {
+						return this.items[i].response;
+					}
 				}
-			}
 
-			return false;
+				return false;
+			}
+			catch (e) {
+				error(e);
+				return false;
+			}
 		},
 
 		/**
@@ -221,17 +250,22 @@ var aFrame = function(){
 		 * @param response {string} The URI response
 		 */
 		set : function(uri, response) {
-			var i = this.items.length;
+			try {
+				var i = this.items.length;
 
-			while (i--) {
-				if (this.items[i].uri == uri) {
-					this.items[i].response	= response;
-					this.items[i].timestamp	= new Date();
-					return;
+				while (i--) {
+					if (this.items[i].uri == uri) {
+						this.items[i].response	= response;
+						this.items[i].timestamp	= new Date();
+						return;
+					}
 				}
-			}
 
-			this.items.push({uri:uri, response:response, timestamp:new Date()});
+				this.items.push({uri:uri, response:response, timestamp:new Date()});
+			}
+			catch (e) {
+				error(e);
+			}
 		}
 	};
 
@@ -313,38 +347,43 @@ var aFrame = function(){
 		 * @param dateStamp {date} Date object
 		 */
 		day : function(target, dateStamp) {
-			dateStamp = (dateStamp != null) ? new Date(dateStamp) : null;
+			try {
+				dateStamp = (dateStamp != null) ? new Date(dateStamp) : null;
 
-			if ((dateStamp != null) && (!isNaN(dateStamp.getYear()))) {
-				var args=[
-					["id","href_day_" + dateStamp.getDate()],
-					["innerHTML", dateStamp.getDate()]
-				];
+				if ((dateStamp != null) && (!isNaN(dateStamp.getYear()))) {
+					var args=[
+						["id","href_day_" + dateStamp.getDate()],
+						["innerHTML", dateStamp.getDate()]
+					];
 
-				if (this.date.destination !== undefined) {
-					args.push(["listener", "click", function(e) {
-						var scope = window.aFrame;
-						scope.update.call(scope.calendar, scope.calendar.date.destination, 'the value here');
-						scope.destroy("aFrame_calendar");
-					}]);
+					if (this.date.destination !== undefined) {
+						args.push(["listener", "click", function(e) {
+							var scope = window.aFrame;
+							scope.update.call(scope.calendar, scope.calendar.date.destination, 'the value here');
+							scope.destroy("aFrame_calendar");
+						}]);
+					}
+
+					if ((dateStamp.getDate() == this.date.current.getDate()) && (dateStamp.getMonth() == this.date.current.getMonth()) && (dateStamp.getFullYear() == this.date.current.getFullYear())) {
+						args.push(["class", "current"]);
+					}
+					else if ((dateStamp.getDay() === 0) || (dateStamp.getDay() == 6)) {
+						args.push(["class", "weekend"]);
+					}
+
+					el.create("div", [
+						["id","div_day_" + dateStamp.getDate()],
+						["class","day"]
+					], target);
+
+					el.create("a", args, "div_day_" + dateStamp.getDate());
 				}
-
-				if ((dateStamp.getDate() == this.date.current.getDate()) && (dateStamp.getMonth() == this.date.current.getMonth()) && (dateStamp.getFullYear() == this.date.current.getFullYear())) {
-					args.push(["class", "current"]);
+				else {
+					el.create("div", [["class","day"]], target);
 				}
-				else if ((dateStamp.getDay() === 0) || (dateStamp.getDay() == 6)) {
-					args.push(["class", "weekend"]);
-				}
-
-				el.create("div", [
-					["id","div_day_" + dateStamp.getDate()],
-					["class","day"]
-				], target);
-
-				el.create("a", args, "div_day_" + dateStamp.getDate());
 			}
-			else {
-				el.create("div", [["class","day"]], target);
+			catch (e) {
+				error(e);
 			}
 		},
 
@@ -356,7 +395,13 @@ var aFrame = function(){
 		 * @returns {integer}
 		 */
 		days : function(month, year) {
-			return (32 - new Date(year, month, 32).getDate());
+			try {
+				return (32 - new Date(year, month, 32).getDate());
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -366,14 +411,20 @@ var aFrame = function(){
 		 * @returns {string} Date object value in the date.pattern format
 		 */
 		format : function(dateStamp) {
-			var output		= calendar.date.pattern;
-			var outputDate	= new Date(dateStamp);
+			try {
+				var output		= calendar.date.pattern;
+				var outputDate	= new Date(dateStamp);
 
-			output = output.replace(/dd/,outputDate.getDate());
-			output = output.replace(/mm/,outputDate.getMonth()+1);
-			output = output.replace(/yyyy/,outputDate.getFullYear());
+				output = output.replace(/dd/,outputDate.getDate());
+				output = output.replace(/mm/,outputDate.getMonth()+1);
+				output = output.replace(/yyyy/,outputDate.getFullYear());
 
-			return output;
+				return output;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -383,116 +434,122 @@ var aFrame = function(){
 		 * @param dateStamp {mixed} Date to work with
 		 */
 		render : function(target, dateStamp) {
-			if ($(target)) {
-				$(target).clear();
+			try {
+				if ($(target)) {
+					$(target).clear();
 
-				this.date.current	= new Date(dateStamp);
-				this.date.previous	= new Date(dateStamp);
-				this.date.next		= new Date(dateStamp);
-				this.date.days		= this.days(this.date.current.getMonth(), this.date.current.getFullYear());
+					this.date.current	= new Date(dateStamp);
+					this.date.previous	= new Date(dateStamp);
+					this.date.next		= new Date(dateStamp);
+					this.date.days		= this.days(this.date.current.getMonth(), this.date.current.getFullYear());
 
-				switch (this.date.current.getMonth())
-				{
-					case 0:
-						this.date.previous.setMonth(11);
-						this.date.previous.setFullYear(this.date.current.getFullYear()-1);
-						this.date.next.setMonth(this.date.current.getMonth()+1);
-						this.date.next.setFullYear(this.date.current.getFullYear());
-						break;
-					case 10:
-						this.date.previous.setMonth(this.date.current.getMonth()-1);
-						this.date.previous.setFullYear(this.date.current.getFullYear());
-						this.date.next.setMonth(this.date.current.getMonth()+1);
-						this.date.next.setFullYear(this.date.current.getFullYear());
-						break;
-					case 11:
-						this.date.previous.setMonth(this.date.current.getMonth()-1);
-						this.date.previous.setFullYear(this.date.current.getFullYear());
-						this.date.next.setMonth(0);
-						this.date.next.setFullYear(this.date.current.getFullYear()+1);
-						break;
-					default:
-						this.date.previous.setMonth(this.date.current.getMonth()-1);
-						this.date.previous.setFullYear(this.date.current.getFullYear());
-						this.date.next.setMonth(this.date.current.getMonth()+1);
-						this.date.next.setFullYear(this.date.current.getFullYear());
-						break;
-				}
+					switch (this.date.current.getMonth())
+					{
+						case 0:
+							this.date.previous.setMonth(11);
+							this.date.previous.setFullYear(this.date.current.getFullYear()-1);
+							this.date.next.setMonth(this.date.current.getMonth()+1);
+							this.date.next.setFullYear(this.date.current.getFullYear());
+							break;
+						case 10:
+							this.date.previous.setMonth(this.date.current.getMonth()-1);
+							this.date.previous.setFullYear(this.date.current.getFullYear());
+							this.date.next.setMonth(this.date.current.getMonth()+1);
+							this.date.next.setFullYear(this.date.current.getFullYear());
+							break;
+						case 11:
+							this.date.previous.setMonth(this.date.current.getMonth()-1);
+							this.date.previous.setFullYear(this.date.current.getFullYear());
+							this.date.next.setMonth(0);
+							this.date.next.setFullYear(this.date.current.getFullYear()+1);
+							break;
+						default:
+							this.date.previous.setMonth(this.date.current.getMonth()-1);
+							this.date.previous.setFullYear(this.date.current.getFullYear());
+							this.date.next.setMonth(this.date.current.getMonth()+1);
+							this.date.next.setFullYear(this.date.current.getFullYear());
+							break;
+					}
 
-				this.date.label = label.months[(this.date.current.getMonth()+1).toString()];
+					this.date.label = label.months[(this.date.current.getMonth()+1).toString()];
 
-				el.create("div", [["id", "calendarTop"]], target);
+					el.create("div", [["id", "calendarTop"]], target);
 
-				if (this.date.clear) {
+					if (this.date.clear) {
+						el.create("a", [
+							["id", "calendarClear"],
+							["innerHTML", label.common.clear],
+							["listener", "click", function(e) {
+								var scope=window.aFrame;
+								(scope.calendar.date.destination!="")?scope.el.clear(scope.calendar.date.destination):void(0);
+								scope.el.destroy("aFrame_calendar");
+								}]
+						], "calendarTop");
+					}
+
 					el.create("a", [
-						["id", "calendarClear"],
-						["innerHTML", label.common.clear],
+						["id", "calendarClose"],
+						["innerHTML", label.common.close],
 						["listener", "click", function(e) {
-							var scope=window.aFrame;
-							(scope.calendar.date.destination!="")?scope.el.clear(scope.calendar.date.destination):void(0);
-							scope.el.destroy("aFrame_calendar");
+							window.aFrame.destroy("aFrame_calendar");
 							}]
 					], "calendarTop");
+
+					el.create("div", [
+						["id", "calendarHeader"]
+					], target);
+
+					el.create("a", [
+						["id", "calendarPrev"],
+						["innerHTML", "&lt;"],
+						["listener", "click", function(e) {
+							var scope=window.aFrame.calendar;
+							scope.render.call(scope, "aFrame_calendar", scope.date.previous);
+							}]
+					], "calendarHeader");
+
+					el.create("span", [
+						["id", "calendarMonth"],
+						["innerHTML", this.date.label+" "+dateStamp.getFullYear().toString()]
+					], "calendarHeader");
+
+					el.create("a", [
+						["id", "calendarNext"],
+						["innerHTML", "&gt;"],
+						["listener", "click", function(e) {
+							var scope = window.aFrame.calendar;
+							scope.render.call(scope, "aFrame_calendar", scope.date.next);
+							}]
+					], "calendarHeader");
+
+					el.create("div", [
+						["id", "calendarDays"]
+					], target);
+
+
+					dateStamp.setDate(1);
+
+					var loop = dateStamp.getDay();
+
+					for (var i=1; i<=loop; i++) {
+						this.day("calendarDays", null);
+					}
+
+					loop = this.date.days;
+
+					for (var i=1; i<=loop; i++) {
+						this.day("calendarDays", dateStamp.setDate(i));
+					}
+
+					return true;
 				}
-
-				el.create("a", [
-					["id", "calendarClose"],
-					["innerHTML", label.common.close],
-					["listener", "click", function(e) {
-						window.aFrame.destroy("aFrame_calendar");
-						}]
-				], "calendarTop");
-
-				el.create("div", [
-					["id", "calendarHeader"]
-				], target);
-
-				el.create("a", [
-					["id", "calendarPrev"],
-					["innerHTML", "&lt;"],
-					["listener", "click", function(e) {
-						var scope=window.aFrame.calendar;
-						scope.render.call(scope, "aFrame_calendar", scope.date.previous);
-						}]
-				], "calendarHeader");
-
-				el.create("span", [
-					["id", "calendarMonth"],
-					["innerHTML", this.date.label+" "+dateStamp.getFullYear().toString()]
-				], "calendarHeader");
-
-				el.create("a", [
-					["id", "calendarNext"],
-					["innerHTML", "&gt;"],
-					["listener", "click", function(e) {
-						var scope = window.aFrame.calendar;
-						scope.render.call(scope, "aFrame_calendar", scope.date.next);
-						}]
-				], "calendarHeader");
-
-				el.create("div", [
-					["id", "calendarDays"]
-				], target);
-
-
-				dateStamp.setDate(1);
-
-				var loop = dateStamp.getDay();
-
-				for (var i=1; i<=loop; i++) {
-					this.day("calendarDays", null);
+				else {
+					throw label.error.elementNotFound;
 				}
-
-				loop = this.date.days;
-
-				for (var i=1; i<=loop; i++) {
-					this.day("calendarDays", dateStamp.setDate(i));
-				}
-
-				return true;
 			}
-			else {
-				throw label.error.elementNotFound;
+			catch (e) {
+				error(e);
+				return false;
 			}
 		}
 	};
@@ -605,18 +662,23 @@ var aFrame = function(){
 		 * @param id {string} Target object.id value
 		 */
 		spinner : function(id) {
-			if (!window["aFrame_spinner"]) {
-				window["aFrame_spinner"] = new Image();
-				window["aFrame_spinner"].src = aFrame.spinner_url;
-			}
+			try {
+				if (!window["aFrame_spinner"]) {
+					window["aFrame_spinner"] = new Image();
+					window["aFrame_spinner"].src = aFrame.spinner_url;
+				}
 
-			if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
-				el.create("img", [
-					["alt", label.common.loading],
-					["id", id + "_" + label.common.loading.toLocaleLowerCase()],
-					["src", window["aFrame_spinner"].src],
-					["class", "spinner"]
-				], id);
+				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
+					el.create("img", [
+						["alt", label.common.loading],
+						["id", id + "_" + label.common.loading.toLocaleLowerCase()],
+						["src", window["aFrame_spinner"].src],
+						["class", "spinner"]
+					], id);
+				}
+			}
+			catch (e) {
+				error(e);
 			}
 		}
 	};
@@ -653,6 +715,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -893,19 +956,25 @@ var aFrame = function(){
 		 * @returns {integer} The opacity value of the element
 		 */
 		opacity : function(obj, opacity) {
-			obj = (typeof obj == "object") ? obj : $(obj);
+			try {
+				obj = (typeof obj == "object") ? obj : $(obj);
 
-			if (obj !== undefined) {
-				if (opacity !== undefined) {
-					(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (opacity/100);
-					return parseInt(opacity);
+				if (obj !== undefined) {
+					if (opacity !== undefined) {
+						(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (opacity/100);
+						return parseInt(opacity);
+					}
+					else {
+						return (client.ie) ? parseInt(obj.style.filter.toString().replace(/(.*\=|\))/gi, "")) : parseInt(obj.style.opacity);
+					}
 				}
 				else {
-					return (client.ie) ? parseInt(obj.style.filter.toString().replace(/(.*\=|\))/gi, "")) : parseInt(obj.style.opacity);
+					return undefined;
 				}
 			}
-			else {
-				return null;
+			catch (e) {
+				error(e);
+				return undefined;
 			}
 		},
 
@@ -918,22 +987,27 @@ var aFrame = function(){
 		 * @param ms {integer} Milliseconds for transition to take
 		 */
 		opacityChange : function(id, start, end, ms) {
-			var	fn	= null,
-				speed	= Math.round(ms/100),
-				timer	= 0,
-				i	= null;
+			try {
+				var	fn	= null,
+					speed	= Math.round(ms/100),
+					timer	= 0,
+					i	= null;
 
-			if (start > end) {
-				for (i = start; i >= end; i--) {
-					setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
-					timer++;
+				if (start > end) {
+					for (i = start; i >= end; i--) {
+						setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+						timer++;
+					}
+				}
+				else {
+					for (i = start; i <= end; i++) {
+						setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+						timer++;
+					}
 				}
 			}
-			else {
-				for (i = start; i <= end; i++) {
-					setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
-					timer++;
-				}
+			catch (e) {
+				error(e);
 			}
 		},
 
@@ -961,7 +1035,13 @@ var aFrame = function(){
 		 * @returns {boolean}
 		 */
 		even : function(arg) {
-			return (((parseInt(arg) / 2).toString().indexOf(".")) > -1) ? false : true;
+			try {
+				return (((parseInt(arg) / 2).toString().indexOf(".")) > -1) ? false : true;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -971,7 +1051,13 @@ var aFrame = function(){
 		 * @returns {boolean}
 		 */
 		odd : function(arg) {
-			return (((parseInt(arg) / 2).toString().indexOf(".")) > -1) ? true : false;
+			try {
+				return (((parseInt(arg) / 2).toString().indexOf(".")) > -1) ? true : false;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		}
 	};
 
@@ -996,6 +1082,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -1014,6 +1101,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		}
 	};
@@ -1091,21 +1179,27 @@ var aFrame = function(){
 		/**
 		 * Array of event listeners
 		 */
-		listeners : {},
+		listeners : [],
 
 		/**
-		 * Add a listener
+		 * Adds a listener to an object on an event
 		 *
 		 * @param obj {string} The obj.id value firing the event
 		 * @param event {string} The event to listen to
 		 * @param handler {function} The event handler
-		 * @param id {string} [Optional] An identifier for the handler
+		 * @param id {string} [Optional] An identifier for the handler, allowing remove() and replace()
 		 */
 		add : function(obj, event, handler, id) {
-			id = id || null;
-			(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
-			(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
-			observer.listeners[obj][event].push({name: id, fn: handler});
+			try {
+				id = id || null;
+				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
+				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
+				(observer.listeners[obj][event]['active'] === undefined) ? observer.listeners[obj][event]['active'] = [] : void(0);
+				(id != null) ? observer.listeners[obj][event]['active'][id] = {fn : handler} : observer.listeners[obj][event]['active'].push({fn : handler});
+			}
+			catch (e) {
+				error(e);
+			}
 		},
 
 		/**
@@ -1115,12 +1209,15 @@ var aFrame = function(){
 		 * @param event {string} The event being fired
 		 */
 		fire : function(obj, event) {
-			var	listeners	= (observer.listeners[obj] !== undefined) ? ((observer.listeners[obj][event] !== undefined) ? observer.listeners[obj][event] : []) : [],
-				loop		= listeners.length,
-				i		= null;
+			try {
+				var listeners = (observer.listeners[obj] !== undefined) ? ((observer.listeners[obj][event] !== undefined) ? ((observer.listeners[obj][event]['active'] !== undefined) ? observer.listeners[obj][event]['active'] : []) : []) : [];
 
-			for (i = 0; i < loop; i++) {
-				listeners[i]['fn']();
+				for (var i in listeners) {
+					(listeners[i]['fn']) ? listeners[i]['fn']() : void(0);
+				}
+			}
+			catch (e) {
+				error(e);
 			}
 		},
 
@@ -1129,11 +1226,48 @@ var aFrame = function(){
 		 *
 		 * @param obj {string} The obj.id value firing the event
 		 * @param event {string} The event
-		 * @param event {string} [Optional] The handler
+		 * @param listener {mixed} [Optional] The listener id or function
 		 * @todo Make the .remove() functional!
 		 */
-		remove : function(obj, event, handler) {
-			(observer.listeners[obj][event] !== undefined) ? ((handler !== undefined) ? observer.listeners[obj][event]['fn'].remove(handler) : observer.listeners[obj].remove(event)) : void(0);
+		remove : function(obj, event, listener) {
+			try {
+				(observer.listeners[obj][event] !== undefined) ? ((listener !== undefined) ? observer.listeners[obj][event].remove(listener) : observer.listeners[obj].remove(event)) : void(0);
+			}
+			catch (e) {
+				error (e);
+			}
+		},
+
+		/**
+		 * Replaces an active listener, moving it to the standby collection
+		 *
+		 * @param obj {string} The obj.id value firing the event
+		 * @param event {string} The event to listen to
+		 * @param handler {function} The event handler
+		 * @param id {string} [Optional] An identifier for the handler
+		 * @todo complete this!
+		 */
+		replace : function(obj, event, id, handler) {
+			try {
+				id    = id || (function(){return;});
+				var l = null;
+
+				(observer.listeners[obj] === undefined) ? (function(){return;}) : void(0);
+				(observer.listeners[obj][event] === undefined) ? (function(){return;}) : void(0);
+				(observer.listeners[obj][event]['active'] === undefined) ? (function(){return;}) : void(0);
+
+				l     = (observer.listeners[obj][event]['active'][id] !== undefined) ? observer.listeners[obj][event]['active'][id] : (function(){return;});
+
+				// Pushing the listener into the standby collection
+				(observer.listeners[obj][event]['standby'] === undefined) ? observer.listeners[obj][event]['standby'] = [] : void(0);
+				observer.listeners[obj][event]['standby'].push(l);
+
+				// Removing the listener from the active collection
+				observer.remove(obj, event, id);
+			}
+			catch (e) {
+				error(e);
+			}
 		}
 	};
 
@@ -1151,20 +1285,25 @@ var aFrame = function(){
 		 */
 		$ : function(arg) {
 			if (arg !== undefined) {
-				arg = (arg.indexOf(",") > -1) ? arg.split(",") : arg;
+				try {
+					arg = (arg.indexOf(",") > -1) ? arg.split(",") : arg;
 
-				if (arg instanceof Array) {
-					var instances	= [];
-					var i		= arg.length;
+					if (arg instanceof Array) {
+						var instances	= [];
+						var i		= arg.length;
 
-					while (i--) {
-						instances.push($(arg[i]));
+						while (i--) {
+							instances.push($(arg[i]));
+						}
+
+						return instances;
 					}
 
-					return instances;
+					return document.getElementById(arg.toString());
 				}
-
-				return document.getElementById(arg.toString());
+				catch (e) {
+					error(e);
+				}
 			}
 
 			return null;
@@ -1177,7 +1316,13 @@ var aFrame = function(){
 		 * @returns {string} Returns a lowercase stripped string
 		 */
 		domID : function(id) {
-			return id.replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+			try {
+				return id.replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -1187,16 +1332,7 @@ var aFrame = function(){
 		 */
 		error : function(e) {
 			var err = new Error(e);
-
-			if (client.ie) {
-				alert(err.description);
-			}
-			else if (console) {
-				console.error(err);
-			}
-			else {
-				alert(err.description);
-			}
+			((client.ie) || (!console)) ? alert(err.description) : console.error(err);
 		}
 	};
 
@@ -1349,7 +1485,8 @@ var aFrame = function(){
 		event		: {
 			add	: observer.add,
 			fire	: observer.fire,
-			remove	: observer.remove
+			remove	: observer.remove,
+			replace	: observer.replace
 		},
 		fx		: fx,
 		json		: json,
