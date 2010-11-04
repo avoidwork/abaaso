@@ -1525,7 +1525,7 @@ var aFrame = function(){
 		client		: client,
 		database	: database,
 		el		: el,
-		listener		: {
+		listener	: {
 			add	: observer.add,
 			remove	: observer.remove,
 			replace	: observer.replace
