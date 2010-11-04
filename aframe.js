@@ -189,6 +189,7 @@ var aFrame = function(){
 		 */
 		remove : function(instance, start, end) {
 			try {
+				start = start || 0;
 				var remaining = instance.slice((end || start)+1 || instance.length);
 				instance.length = (start < 0) ? (instance.length + start) : start;
 				return instance.push.apply(instance, remaining);
@@ -1126,7 +1127,7 @@ var aFrame = function(){
 			expectedArray			: "Expected an Array.",
 			expectedArrayObject		: "Expected an Array or Object.",
 			expectedObject			: "Expected an Object.",
-			invalidArguments		: "One or more arguments was invalid",
+			invalidArguments		: "One or more arguments is invalid",
 			invalidDate 			: "Invalid Date",
 			invalidFields			: "The following required fields are invalid: ",
 			serverError 			: "A server error has occurred."
@@ -1235,16 +1236,19 @@ var aFrame = function(){
 		 * @param obj {string} The obj.id value firing the event
 		 * @param event {string} The event
 		 * @param listener {mixed} [Optional] The listener id or function
-		 * @todo Make the .remove() functional!
 		 */
 		remove : function(obj, event, listener) {
 			try {
-				if ((obj === undefined) || (event === undefined) || (listener === undefined)) {
+				if ((obj === undefined) || (event === undefined) || (observer.listeners[obj] === undefined) || (observer.listeners[obj][event] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				(observer.listeners[obj] === undefined) ? (function(){return;}) : void(0);
-				(observer.listeners[obj][event] !== undefined) ? ((listener !== undefined) ? observer.listeners[obj][event].remove(listener) : observer.listeners[obj].remove(event)) : void(0);
+				if (listener === undefined) {
+					delete observer.listeners[obj][event];
+				}
+				else if ((listener !== undefined) && (typeof listener == String) && (observer.listeners[obj][event][listener] !== undefined)) {
+					delete observer.listeners[obj][event][listener];
+				}
 			}
 			catch (e) {
 				error (e);
@@ -1345,8 +1349,12 @@ var aFrame = function(){
 		 * @param e {mixed} Error object or message to display.
 		 */
 		error : function(e) {
+			(error.list === undefined) ? error.list = [] : void(0);
+
 			var err = new Error(e);
 			((client.ie) || (!console)) ? alert(err.description) : console.error(err);
+
+			error.list.push(e);
 		}
 	};
 
@@ -1593,6 +1601,7 @@ if ((aFrame.client.chrome) || (aFrame.client.firefox)) {
 	window.addEventListener("DOMContentLoaded", function(){
 		aFrame.ready = true;
 		aFrame.fire("aFrame", "ready");
+		aFrame.un("aFrame", "ready");
 	}, false);
 }
 else if (aFrame.client.safari) {
@@ -1601,6 +1610,7 @@ else if (aFrame.client.safari) {
 			clearInterval(aFrame.ready);
 			aFrame.ready = true;
 			aFrame.fire("aFrame", "ready");
+			aFrame.un("aFrame", "ready");
 		}}, 10);
 }
 else {
@@ -1611,6 +1621,7 @@ else {
 					clearInterval(aFrame.ready);
 					aFrame.ready = true;
 					aFrame.fire("aFrame", "ready");
+					aFrame.un("aFrame", "ready");
 				}
 			}}, 10);
 	}
