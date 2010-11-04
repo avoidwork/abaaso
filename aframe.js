@@ -1187,15 +1187,14 @@ var aFrame = function(){
 		 * @param obj {string} The obj.id value firing the event
 		 * @param event {string} The event to listen to
 		 * @param handler {function} The event handler
-		 * @param id {string} [Optional] An identifier for the handler, allowing remove() and replace()
+		 * @param id {string} [Optional] An identifier for the listener, allowing remove() and replace()
 		 */
 		add : function(obj, event, handler, id) {
 			try {
-				id = id || null;
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]['active'] === undefined) ? observer.listeners[obj][event]['active'] = [] : void(0);
-				(id != null) ? observer.listeners[obj][event]['active'][id] = {fn : handler} : observer.listeners[obj][event]['active'].push({fn : handler});
+				(id !== undefined) ? observer.listeners[obj][event]['active'][id] = {fn : handler} : observer.listeners[obj][event]['active'].push({fn : handler});
 			}
 			catch (e) {
 				error(e);
