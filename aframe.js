@@ -1126,6 +1126,7 @@ var aFrame = function(){
 			expectedArray			: "Expected an Array.",
 			expectedArrayObject		: "Expected an Array or Object.",
 			expectedObject			: "Expected an Object.",
+			invalidArguments		: "One or more arguments was invalid",
 			invalidDate 			: "Invalid Date",
 			invalidFields			: "The following required fields are invalid: ",
 			serverError 			: "A server error has occurred."
@@ -1182,7 +1183,7 @@ var aFrame = function(){
 		listeners : [],
 
 		/**
-		 * Adds a listener to an object on an event
+		 * Adds a listener to an object
 		 *
 		 * @param obj {string} The obj.id value firing the event
 		 * @param event {string} The event to listen to
@@ -1191,6 +1192,10 @@ var aFrame = function(){
 		 */
 		add : function(obj, event, handler, id) {
 			try {
+				if ((obj === undefined) || (event === undefined) || (handler === undefined) || (!handler instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
+
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]['active'] === undefined) ? observer.listeners[obj][event]['active'] = [] : void(0);
@@ -1209,6 +1214,10 @@ var aFrame = function(){
 		 */
 		fire : function(obj, event) {
 			try {
+				if ((obj === undefined) || (event === undefined)) {
+					throw label.error.invalidArguments;
+				}
+
 				var listeners = (observer.listeners[obj] !== undefined) ? ((observer.listeners[obj][event] !== undefined) ? ((observer.listeners[obj][event]['active'] !== undefined) ? observer.listeners[obj][event]['active'] : []) : []) : [];
 
 				for (var i in listeners) {
@@ -1230,6 +1239,11 @@ var aFrame = function(){
 		 */
 		remove : function(obj, event, listener) {
 			try {
+				if ((obj === undefined) || (event === undefined) || (listener === undefined)) {
+					throw label.error.invalidArguments;
+				}
+
+				(observer.listeners[obj] === undefined) ? (function(){return;}) : void(0);
 				(observer.listeners[obj][event] !== undefined) ? ((listener !== undefined) ? observer.listeners[obj][event].remove(listener) : observer.listeners[obj].remove(event)) : void(0);
 			}
 			catch (e) {
@@ -1248,14 +1262,15 @@ var aFrame = function(){
 		 */
 		replace : function(obj, event, id, handler) {
 			try {
-				id    = id || (function(){return;});
-				var l = null;
+				if ((obj === undefined) || (event === undefined) || (id === undefined) || (handler === undefined) || (!handler instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
 
 				(observer.listeners[obj] === undefined) ? (function(){return;}) : void(0);
 				(observer.listeners[obj][event] === undefined) ? (function(){return;}) : void(0);
 				(observer.listeners[obj][event]['active'] === undefined) ? (function(){return;}) : void(0);
 
-				l     = (observer.listeners[obj][event]['active'][id] !== undefined) ? observer.listeners[obj][event]['active'][id] : (function(){return;});
+				var l = (observer.listeners[obj][event]['active'][id] !== undefined) ? observer.listeners[obj][event]['active'][id] : (function(){return;});
 
 				// Pushing the listener into the standby collection
 				(observer.listeners[obj][event]['standby'] === undefined) ? observer.listeners[obj][event]['standby'] = [] : void(0);
