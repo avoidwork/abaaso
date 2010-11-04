@@ -2,7 +2,8 @@
  * aFrame
  *
  * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
- * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript web applications.
+ *
+ * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript web applications.
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @copyright Copyright (c) 2010, avoidwork inc.
@@ -1186,14 +1187,17 @@ var aFrame = function(){
 		/**
 		 * Adds a listener to an object
 		 *
-		 * @param obj {string} The obj.id value firing the event
-		 * @param event {string} The event to listen to
+		 * @param obj {string} The object firing the event
+		 * @param event {string} The event being fired
 		 * @param handler {function} The event handler
-		 * @param id {string} [Optional] An identifier for the listener, allowing remove() and replace()
+		 * @param id {string} [Optional / Recommended] The identifier for the listener
 		 */
 		add : function(obj, event, handler, id) {
 			try {
-				if ((obj === undefined) || (event === undefined) || (handler === undefined) || (!handler instanceof Function)) {
+				if ((obj === undefined)
+					|| (event === undefined)
+					|| (handler === undefined)
+					|| (!handler instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1210,12 +1214,13 @@ var aFrame = function(){
 		/**
 		 * Fires an event
 		 *
-		 * @param obj {string} The object.id value the event is registered to
+		 * @param obj {string} The object firing the event
 		 * @param event {string} The event being fired
 		 */
 		fire : function(obj, event) {
 			try {
-				if ((obj === undefined) || (event === undefined)) {
+				if ((obj === undefined)
+					|| (event === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1233,21 +1238,26 @@ var aFrame = function(){
 		/**
 		 * Removes an event listener, or listeners
 		 *
-		 * @param obj {string} The obj.id value firing the event
-		 * @param event {string} The event
-		 * @param listener {mixed} [Optional] The listener id or function
+		 * @param obj {string} The object firing the event
+		 * @param event {string} The event being fired
+		 * @param id {string} [Optional] The identifier for the listener
 		 */
-		remove : function(obj, event, listener) {
+		remove : function(obj, event, id) {
 			try {
-				if ((obj === undefined) || (event === undefined) || (observer.listeners[obj] === undefined) || (observer.listeners[obj][event] === undefined)) {
+				if ((obj === undefined)
+					|| (event === undefined)
+					|| (observer.listeners[obj] === undefined)
+					|| (observer.listeners[obj][event] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				if (listener === undefined) {
+				if (id === undefined) {
 					delete observer.listeners[obj][event];
 				}
-				else if ((listener !== undefined) && (typeof listener == String) && (observer.listeners[obj][event][listener] !== undefined)) {
-					delete observer.listeners[obj][event][listener];
+				else if ((id !== undefined)
+						 && (typeof id == String)
+						 && (observer.listeners[obj][event][id] !== undefined)) {
+					delete observer.listeners[obj][event][id];
 				}
 			}
 			catch (e) {
@@ -1258,30 +1268,41 @@ var aFrame = function(){
 		/**
 		 * Replaces an active listener, moving it to the standby collection
 		 *
-		 * @param obj {string} The obj.id value firing the event
-		 * @param event {string} The event to listen to
-		 * @param handler {function} The event handler
-		 * @param id {string} [Optional] An identifier for the handler
-		 * @todo complete this!
+		 * @param obj {string} The object firing the event
+		 * @param event {string} The event
+		 * @param id {string} The identifier for the listener
+		 * @param handler {mixed} The standby handler (string), or the new event handler (function)
 		 */
 		replace : function(obj, event, id, handler) {
 			try {
-				if ((obj === undefined) || (event === undefined) || (id === undefined) || (handler === undefined) || (!handler instanceof Function)) {
+				if ((obj === undefined)
+					|| (event === undefined)
+					|| (id === undefined)
+					|| (observer.listeners[obj] === undefined)
+					|| (observer.listeners[obj][event] === undefined)
+					|| (observer.listeners[obj][event]["active"] === undefined)
+					|| (observer.listeners[obj][event]["active"][id] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				(observer.listeners[obj] === undefined) ? (function(){return;}) : void(0);
-				(observer.listeners[obj][event] === undefined) ? (function(){return;}) : void(0);
-				(observer.listeners[obj][event]['active'] === undefined) ? (function(){return;}) : void(0);
+				(observer.listeners[obj][event]["standby"] === undefined) ? observer.listeners[obj][event]["standby"] = [] : void(0);
 
-				var l = (observer.listeners[obj][event]['active'][id] !== undefined) ? observer.listeners[obj][event]['active'][id] : (function(){return;});
+				if (typeof(handler) == "string")
+				{
+					if ((observer.listeners[obj][event]["standby"][handler] === undefined)
+						|| (observer.listeners[obj][event]["standby"][handler]["fn"] === undefined)) {
+						throw label.error.invalidArguments;
+					}
+					else {
+						handler = observer.listeners[obj][event]["standby"][handler]["fn"];
+					}
+				}
+				else if ((handler instanceof Function) === false) {
+					throw label.error.invalidArguments;
+				}
 
-				// Pushing the listener into the standby collection
-				(observer.listeners[obj][event]['standby'] === undefined) ? observer.listeners[obj][event]['standby'] = [] : void(0);
-				observer.listeners[obj][event]['standby'].push(l);
-
-				// Removing the listener from the active collection
-				observer.remove(obj, event, id);
+				observer.listeners[obj][event]["standby"][id] = {fn : observer.listeners[obj][event]["active"][id]["fn"]};
+				observer.listeners[obj][event]["active"][id] = {fn : handler};
 			}
 			catch (e) {
 				error(e);
