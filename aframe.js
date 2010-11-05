@@ -1270,14 +1270,16 @@ var aFrame = function(){
 		 *
 		 * @param obj {string} The object firing the event
 		 * @param event {string} The event
-		 * @param id {string} The identifier for the listener
+		 * @param id {string} The identifier for the active listener
+		 * @param sId {string} The identifier for the new standby listener
 		 * @param handler {mixed} The standby handler (string), or the new event handler (function)
 		 */
-		replace : function(obj, event, id, handler) {
+		replace : function(obj, event, id, sId, handler) {
 			try {
 				if ((obj === undefined)
 					|| (event === undefined)
 					|| (id === undefined)
+					|| (sId === undefined)
 					|| (observer.listeners[obj] === undefined)
 					|| (observer.listeners[obj][event] === undefined)
 					|| (observer.listeners[obj][event]["active"] === undefined)
@@ -1301,7 +1303,7 @@ var aFrame = function(){
 					throw label.error.invalidArguments;
 				}
 
-				observer.listeners[obj][event]["standby"][id] = {fn : observer.listeners[obj][event]["active"][id]["fn"]};
+				observer.listeners[obj][event]["standby"][sId] = {fn : observer.listeners[obj][event]["active"][id]["fn"]};
 				observer.listeners[obj][event]["active"][id] = {fn : handler};
 			}
 			catch (e) {
