@@ -1194,22 +1194,22 @@ var aFrame = function(){
 		 *
 		 * @param obj {string} The object firing the event
 		 * @param event {string} The event being fired
-		 * @param handler {function} The event handler
+		 * @param listener {function} The event listener
 		 * @param id {string} [Optional / Recommended] The identifier for the listener
 		 */
-		add : function(obj, event, handler, id) {
+		add : function(obj, event, listener, id) {
 			try {
 				if ((obj === undefined)
 				    || (event === undefined)
-				    || (handler === undefined)
-				    || (!handler instanceof Function)) {
+				    || (listener === undefined)
+				    || (!listener instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
-				(observer.listeners[obj][event]['active'] === undefined) ? observer.listeners[obj][event]['active'] = [] : void(0);
-				(id !== undefined) ? observer.listeners[obj][event]['active'][id] = {'fn' : handler} : observer.listeners[obj][event]['active'].push({'fn' : handler});
+				(observer.listeners[obj][event]["active"] === undefined) ? observer.listeners[obj][event]["active"] = [] : void(0);
+				(id !== undefined) ? observer.listeners[obj][event]["active"][id] = {"fn" : listener} : observer.listeners[obj][event]["active"].push({"fn" : listener});
 			}
 			catch (e) {
 				error(e);
@@ -1231,11 +1231,11 @@ var aFrame = function(){
 
 				var listeners = (observer.listeners[obj] !== undefined) ?
 					((observer.listeners[obj][event] !== undefined) ?
-					 ((observer.listeners[obj][event]['active'] !== undefined) ?
-					  observer.listeners[obj][event]['active'] : []) : []) : [];
+					 ((observer.listeners[obj][event]["active"] !== undefined) ?
+					  observer.listeners[obj][event]["active"] : []) : []) : [];
 
 				for (var i in listeners) {
-					(listeners[i]['fn']) ? listeners[i]['fn']() : void(0);
+					(listeners[i]["fn"]) ? listeners[i]["fn"]() : void(0);
 				}
 			}
 			catch (e) {
@@ -1301,9 +1301,9 @@ var aFrame = function(){
 		 * @param event {string} The event
 		 * @param id {string} The identifier for the active listener
 		 * @param sId {string} The identifier for the new standby listener
-		 * @param handler {mixed} The standby handler (string), or the new event handler (function)
+		 * @param listener {mixed} The standby id (string), or the new event listener (function)
 		 */
-		replace : function(obj, event, id, sId, handler) {
+		replace : function(obj, event, id, sId, listener) {
 			try {
 				if ((obj === undefined)
 				    || (event === undefined)
@@ -1318,22 +1318,22 @@ var aFrame = function(){
 
 				(observer.listeners[obj][event]["standby"] === undefined) ? observer.listeners[obj][event]["standby"] = [] : void(0);
 
-				if (typeof(handler) == "string")
+				if (typeof(listener) == "string")
 				{
-					if ((observer.listeners[obj][event]["standby"][handler] === undefined)
-					    || (observer.listeners[obj][event]["standby"][handler]["fn"] === undefined)) {
+					if ((observer.listeners[obj][event]["standby"][listener] === undefined)
+					    || (observer.listeners[obj][event]["standby"][listener]["fn"] === undefined)) {
 						throw label.error.invalidArguments;
 					}
 					else {
-						handler = observer.listeners[obj][event]["standby"][handler]["fn"];
+						listener = observer.listeners[obj][event]["standby"][listener]["fn"];
 					}
 				}
-				else if ((handler instanceof Function) === false) {
+				else if (!listener instanceof Function) {
 					throw label.error.invalidArguments;
 				}
 
-				observer.listeners[obj][event]["standby"][sId] = {fn : observer.listeners[obj][event]["active"][id]["fn"]};
-				observer.listeners[obj][event]["active"][id]   = {fn : handler};
+				observer.listeners[obj][event]["standby"][sId] = {"fn" : observer.listeners[obj][event]["active"][id]["fn"]};
+				observer.listeners[obj][event]["active"][id]   = {"fn" : listener};
 			}
 			catch (e) {
 				error(e);
