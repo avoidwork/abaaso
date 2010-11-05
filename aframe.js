@@ -303,7 +303,9 @@ var aFrame = function(){
 		 */
 		create : function(target, destination, clear) {
 			try {
-				if ((!$(target)) || ((destination !== undefined) && (!$(destination)))) {
+				if ((!$(target))
+				    || ((destination !== undefined)
+					&& (!$(destination)))) {
 					throw label.error.elementNotFound;
 				}
 
@@ -312,9 +314,9 @@ var aFrame = function(){
 					["opacity", 0]
 				];
 
-				this.date.clear 		= ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
+				this.date.clear 	= ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
 				this.date.destination	= ((destination !== undefined) && ($(destination))) ? destination : null;
-				this.date.current		= ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : this.date.current;
+				this.date.current	= ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : this.date.current;
 
 				$(target).blur();
 				((destination !== undefined) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
@@ -566,14 +568,14 @@ var aFrame = function(){
 		 * Public properties
 		 */
 		css3	: (function(){
-					if ((this.chrome) || (this.safari)) { return true; }
-					if ((this.firefox) && (this.version > 4)) { return true; }
-					if ((this.ie) && (this.version > 8)) { return true; }
-					if ((this.opera) && (this.version > 8)) { return true; }
-					return false;}),
+				if ((this.chrome) || (this.safari)) { return true; }
+				if ((this.firefox) && (this.version > 4)) { return true; }
+				if ((this.ie) && (this.version > 8)) { return true; }
+				if ((this.opera) && (this.version > 8)) { return true; }
+				return false;}),
 		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrom") > -1) ? true : false,
 		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
-		ie		: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
+		ie	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
 		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
 		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
 		version	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "")) : parseInt(navigator.appVersion),
@@ -642,7 +644,10 @@ var aFrame = function(){
 		response : function(xmlHttp, uri, handler) {
 			try {
 				if (xmlHttp.readyState == 4) {
-					if (((xmlHttp.status == 200) || (xmlHttp.status == 201) || (xmlHttp.status == 204)) && (typeof xmlHttp.responseText != "")) {
+					if (((xmlHttp.status == 200)
+					     || (xmlHttp.status == 201)
+					     || (xmlHttp.status == 204))
+					    && (typeof xmlHttp.responseText != "")) {
 						if (xmlHttp.status == 200) {
 							cache.set(uri, xmlHttp.responseText);
 						}
@@ -1121,8 +1126,8 @@ var aFrame = function(){
 		 */
 		error : {
 			databaseNotOpen 		: "Failed to open the Database, possibly exceeded Domain quota.",
-			databaseNotSupported	: "Client does not support local database storage.",
-			databaseWarnInjection	: "Possible SQL injection in database transaction, use the &#63; placeholder.",
+			databaseNotSupported		: "Client does not support local database storage.",
+			databaseWarnInjection		: "Possible SQL injection in database transaction, use the &#63; placeholder.",
 			elementNotCreated		: "Could not create the Element.",
 			elementNotFound 		: "Could not find the Element.",
 			expectedArray			: "Expected an Array.",
@@ -1195,9 +1200,9 @@ var aFrame = function(){
 		add : function(obj, event, handler, id) {
 			try {
 				if ((obj === undefined)
-					|| (event === undefined)
-					|| (handler === undefined)
-					|| (!handler instanceof Function)) {
+				    || (event === undefined)
+				    || (handler === undefined)
+				    || (!handler instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1220,11 +1225,14 @@ var aFrame = function(){
 		fire : function(obj, event) {
 			try {
 				if ((obj === undefined)
-					|| (event === undefined)) {
+				    || (event === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				var listeners = (observer.listeners[obj] !== undefined) ? ((observer.listeners[obj][event] !== undefined) ? ((observer.listeners[obj][event]['active'] !== undefined) ? observer.listeners[obj][event]['active'] : []) : []) : [];
+				var listeners = (observer.listeners[obj] !== undefined) ?
+					((observer.listeners[obj][event] !== undefined) ?
+					 ((observer.listeners[obj][event]['active'] !== undefined) ?
+					  observer.listeners[obj][event]['active'] : []) : []) : [];
 
 				for (var i in listeners) {
 					(listeners[i]['fn']) ? listeners[i]['fn']() : void(0);
@@ -1244,7 +1252,7 @@ var aFrame = function(){
 		list : function(obj, event) {
 			try {
 				if ((obj === undefined)
-					|| (event === undefined)) {
+				    || (event === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1276,8 +1284,8 @@ var aFrame = function(){
 					delete observer.listeners[obj][event];
 				}
 				else if ((id !== undefined)
-						 && (typeof id == String)
-						 && (observer.listeners[obj][event][id] !== undefined)) {
+					 && (typeof id == String)
+					 && (observer.listeners[obj][event][id] !== undefined)) {
 					delete observer.listeners[obj][event][id];
 				}
 			}
@@ -1313,7 +1321,7 @@ var aFrame = function(){
 				if (typeof(handler) == "string")
 				{
 					if ((observer.listeners[obj][event]["standby"][handler] === undefined)
-						|| (observer.listeners[obj][event]["standby"][handler]["fn"] === undefined)) {
+					    || (observer.listeners[obj][event]["standby"][handler]["fn"] === undefined)) {
 						throw label.error.invalidArguments;
 					}
 					else {
@@ -1325,7 +1333,7 @@ var aFrame = function(){
 				}
 
 				observer.listeners[obj][event]["standby"][sId] = {fn : observer.listeners[obj][event]["active"][id]["fn"]};
-				observer.listeners[obj][event]["active"][id] = {fn : handler};
+				observer.listeners[obj][event]["active"][id]   = {fn : handler};
 			}
 			catch (e) {
 				error(e);
