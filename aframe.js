@@ -1236,6 +1236,27 @@ var aFrame = function(){
 		},
 
 		/**
+		 * Lists the active and standby listeners for an object event
+		 *
+		 * @param obj {string} The object firing the event
+		 * @param event {string} The event being fired
+		 */
+		list : function(obj, event) {
+			try {
+				if ((obj === undefined)
+					|| (event === undefined)) {
+					throw label.error.invalidArguments;
+				}
+
+				return (observer.listeners[obj] !== undefined) ? ((observer.listeners[obj][event] !== undefined) ? observer.listeners[obj][event] : []) : [];
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Removes an event listener, or listeners
 		 *
 		 * @param obj {string} The object firing the event
@@ -1529,6 +1550,7 @@ var aFrame = function(){
 		el		: el,
 		listener	: {
 			add	: observer.add,
+			list	: observer.list,
 			remove	: observer.remove,
 			replace	: observer.replace
 		},
