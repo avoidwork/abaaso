@@ -1209,7 +1209,7 @@ var aFrame = function(){
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]['active'] === undefined) ? observer.listeners[obj][event]['active'] = [] : void(0);
-				(id !== undefined) ? observer.listeners[obj][event]['active'][id] = {fn : handler} : observer.listeners[obj][event]['active'].push({fn : handler});
+				(id !== undefined) ? observer.listeners[obj][event]['active'][id] = {'fn' : handler} : observer.listeners[obj][event]['active'].push({'fn' : handler});
 			}
 			catch (e) {
 				error(e);
@@ -1274,9 +1274,9 @@ var aFrame = function(){
 		remove : function(obj, event, id) {
 			try {
 				if ((obj === undefined)
-					|| (event === undefined)
-					|| (observer.listeners[obj] === undefined)
-					|| (observer.listeners[obj][event] === undefined)) {
+				    || (event === undefined)
+				    || (observer.listeners[obj] === undefined)
+				    || (observer.listeners[obj][event] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1306,13 +1306,13 @@ var aFrame = function(){
 		replace : function(obj, event, id, sId, handler) {
 			try {
 				if ((obj === undefined)
-					|| (event === undefined)
-					|| (id === undefined)
-					|| (sId === undefined)
-					|| (observer.listeners[obj] === undefined)
-					|| (observer.listeners[obj][event] === undefined)
-					|| (observer.listeners[obj][event]["active"] === undefined)
-					|| (observer.listeners[obj][event]["active"][id] === undefined)) {
+				    || (event === undefined)
+				    || (id === undefined)
+				    || (sId === undefined)
+				    || (observer.listeners[obj] === undefined)
+				    || (observer.listeners[obj][event] === undefined)
+				    || (observer.listeners[obj][event]["active"] === undefined)
+				    || (observer.listeners[obj][event]["active"][id] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
