@@ -637,13 +637,20 @@ var aFrame = function(){
 		/**
 		 * Receives and caches the URI response
 		 *
+		 * Headers are cached, if an expiration is set it will be used to control the local cache
+		 *
 		 * @param xmlHttp {object} XMLHttp object
 		 * @param uri {string} The URI.value to cache
 		 * @param handler {function} A handler function to execute once a response has been received
 		 */
 		response : function(xmlHttp, uri, handler) {
 			try {
-				if (xmlHttp.readyState == 4) {
+				var headers = null;
+
+				if (xmlHttp.readyState == 2) {
+					headers = xmlHttp.getAllResponseHeaders();
+				}
+				else if (xmlHttp.readyState == 4) {
 					if (((xmlHttp.status == 200)
 					     || (xmlHttp.status == 201)
 					     || (xmlHttp.status == 204))
