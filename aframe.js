@@ -33,6 +33,11 @@ var aFrame = function(){
 		 */
 		del : function(uri, handler) {
 			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
+
 				client.request(uri, handler, "DELETE");
 			}
 			catch (e) {
@@ -48,6 +53,11 @@ var aFrame = function(){
 		 */
 		get : function(uri, handler) {
 			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
+
 				var response = cache.get(uri);
 				(!response) ? client.request(uri, handler, "GET") : handler(response);
 			}
@@ -65,6 +75,12 @@ var aFrame = function(){
 		 */
 		put : function(uri, handler, args) {
 			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)
+				    || (args == "")) {
+					throw label.error.invalidArguments;
+				}
+
 				client.request(uri, handler, "PUT", args);
 			}
 			catch (e) {
@@ -81,6 +97,12 @@ var aFrame = function(){
 		 */
 		post : function(uri, handler, args) {
 			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)
+				    || (args == "")) {
+					throw label.error.invalidArguments;
+				}
+				
 				client.request(uri, handler, "POST", args);
 			}
 			catch (e) {
