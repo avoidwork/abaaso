@@ -242,9 +242,12 @@ var aFrame = function(){
 							 && (new Date(this.items[uri]["headers"].Expires) < new Date())
 							 && (expire))
 						    || ((this.ms > 0)
+							 && (expire)
 							 && (this.items[uri]["headers"].Date !== undefined)
-							 && (new Date(this.items[uri]["headers"].Date).setMilliseconds(new Date(this.items[uri]["headers"].Date).getMilliseconds() + this.ms) > new Date())
-							 && (expire))) {
+							 && (new Date(this.items[uri]["headers"].Date).setMilliseconds(new Date(this.items[uri]["headers"].Date).getMilliseconds() + this.ms) > new Date()))
+						    || ((this.ms > 0)
+							&& (expire)
+							&& (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + this.ms) > new Date()))) {
 							delete this.items[uri];
 							return false;
 						}
@@ -663,9 +666,10 @@ var aFrame = function(){
 
 					for (i = 0; i < loop; i++) {
 						if (headers[i] != "") {
-							var header = new String(headers[i]);
-							var value  = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
-							header = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+							var header    = new String(headers[i]),
+							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+
+							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 							items[header] = value;
 						}
 					}
@@ -678,6 +682,7 @@ var aFrame = function(){
 					     || (xmlHttp.status == 204))
 					    && (typeof xmlHttp.responseText != "")) {
 						if (xmlHttp.status == 200) {
+							cache.set(uri, "epoch", new Date());
 							cache.set(uri, "response", xmlHttp.responseText);
 						}
 
