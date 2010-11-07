@@ -207,12 +207,10 @@ var aFrame = function(){
 	 *
 	 * @class
 	 * @private
-	 * @todo determine if this can be done with an associative Array better
 	 */
 	var cache = {
 		/**
-		 * Array of responses
-		 * @private
+		 * Array of URIs
 		 */
 		items : [],
 
@@ -222,34 +220,40 @@ var aFrame = function(){
 		ms : 0,
 
 		/**
-		 * Returns the cached response from the URI or false
+		 * Returns the cached object {headers, response} of the URI or false
 		 *
 		 * @param uri {string} The URI/Identifier for the resource to retrieve from cache
-		 * @returns {mixed} Returns the URI response or false
+		 * @param expire {boolean} [Optional] If 'false' the URI will not expire
+		 * @returns {mixed} Returns the URI object {headers, response} or false
 		 */
-		get : function(uri) {
+		get : function(uri, expire) {
 			try {
+				expire = (expire === false) ? false : true;
+
 				if (this.items[uri] === undefined) {
 					return false;
 				}
 				else {
 					if (this.items[uri]["headers"] !== undefined) {
 						if (((this.items[uri]["headers"].Pragma !== undefined)
-						    && (this.items[uri]["headers"].Pragma == "no-cache"))
+						    && (this.items[uri]["headers"].Pragma == "no-cache")
+						    && (expire))
 						    || ((this.items[uri]["headers"].Expires !== undefined)
-							 && (new Date(this.items[uri]["headers"].Expires) < new Date()))
+							 && (new Date(this.items[uri]["headers"].Expires) < new Date())
+							 && (expire))
 						    || ((this.ms > 0)
 							 && (this.items[uri]["headers"].Date !== undefined)
-							 && (new Date(this.items[uri]["headers"].Date).setMilliseconds(new Date(this.items[uri]["headers"].Date).getMilliseconds() + this.ms) > new Date()))) {
+							 && (new Date(this.items[uri]["headers"].Date).setMilliseconds(new Date(this.items[uri]["headers"].Date).getMilliseconds() + this.ms) > new Date())
+							 && (expire))) {
 							delete this.items[uri];
 							return false;
 						}
 						else {
-							return this.items[uri].response;
+							return this.items[uri];
 						}
 					}
 					else {
-						return this.items[uri].response;
+						return this.items[uri];
 					}
 				}
 			}
@@ -677,7 +681,8 @@ var aFrame = function(){
 							cache.set(uri, "response", xmlHttp.responseText);
 						}
 
-						handler(xmlHttp.responseText);
+						uri = cache.get(uri, false);
+						handler(uri);
 					}
 					else {
 						throw label.error.serverError;
