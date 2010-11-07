@@ -224,20 +224,34 @@ var aFrame = function(){
 		/**
 		 * Returns the cached response from the URI or false
 		 *
-		 * @param arg {string} The URI/Identifier for the resource to retrieve from cache
-		 * @returns {mixed} Returns the URI response as a string or false
+		 * @param uri {string} The URI/Identifier for the resource to retrieve from cache
+		 * @returns {mixed} Returns the URI response or false
 		 */
-		get : function(arg) {
+		get : function(uri) {
 			try {
-				var i = this.items.length;
-
-				while (i--) {
-					if ((this.items[i].uri == arg) && ((pub.ms === 0) || ((new Date() - this.items[i].timestamp) < pub.ms))) {
-						return this.items[i].response;
+				if (this.items[uri] === undefined) {
+					return false;
+				}
+				else {
+					if (this.items[uri]["headers"] !== undefined) {
+						if (((this.items[uri]["headers"].Pragma !== undefined)
+						    && (this.items[uri]["headers"].Pragma == "no-cache"))
+						    || ((this.items[uri]["headers"].Expires !== undefined)
+							 && (new Date(this.items[uri]["headers"].Expires) < new Date()))
+						    || ((this.ms > 0)
+							 && (this.items[uri]["headers"].Date !== undefined)
+							 && (new Date(this.items[uri]["headers"].Date).setMilliseconds(new Date(this.items[uri]["headers"].Date).getMilliseconds() + this.ms) > new Date()))) {
+							delete this.items[uri];
+							return false;
+						}
+						else {
+							return this.items[uri].response;
+						}
+					}
+					else {
+						return this.items[uri].response;
 					}
 				}
-
-				return false;
 			}
 			catch (e) {
 				error(e);
@@ -246,24 +260,16 @@ var aFrame = function(){
 		},
 
 		/**
-		 * Commits, or updates an item in cache.items
+		 * Sets, or updates an item in cache.items
 		 *
 		 * @param uri {string} The URI to set or update
-		 * @param response {string} The URI response
+		 * @param property {string} The property of the cached URI to set
+		 * @param value {mixed} The value to set
 		 */
-		set : function(uri, response) {
+		set : function(uri, property, value) {
 			try {
-				var i = this.items.length;
-
-				while (i--) {
-					if (this.items[i].uri == uri) {
-						this.items[i].response	= response;
-						this.items[i].timestamp	= new Date();
-						return;
-					}
-				}
-
-				this.items.push({uri:uri, response:response, timestamp:new Date()});
+				(this.items[uri] === undefined) ? this.items[uri] = {} : void(0);
+				this.items[uri][property] = value;
 			}
 			catch (e) {
 				error(e);
@@ -645,10 +651,22 @@ var aFrame = function(){
 		 */
 		response : function(xmlHttp, uri, handler) {
 			try {
-				var headers = null;
-
 				if (xmlHttp.readyState == 2) {
-					headers = xmlHttp.getAllResponseHeaders();
+					var headers = xmlHttp.getAllResponseHeaders().split("\n"),
+					    i       = null,
+					    loop    = headers.length,
+					    items   = {};
+
+					for (i = 0; i < loop; i++) {
+						if (headers[i] != "") {
+							var header = new String(headers[i]);
+							var value  = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+							header = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+							items[header] = value;
+						}
+					}
+
+					cache.set(uri, "headers", items);
 				}
 				else if (xmlHttp.readyState == 4) {
 					if (((xmlHttp.status == 200)
@@ -656,8 +674,9 @@ var aFrame = function(){
 					     || (xmlHttp.status == 204))
 					    && (typeof xmlHttp.responseText != "")) {
 						if (xmlHttp.status == 200) {
-							cache.set(uri, xmlHttp.responseText);
+							cache.set(uri, "response", xmlHttp.responseText);
 						}
+
 						handler(xmlHttp.responseText);
 					}
 					else {
