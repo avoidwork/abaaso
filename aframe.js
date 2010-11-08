@@ -102,7 +102,7 @@ var aFrame = function(){
 				    || (args == "")) {
 					throw label.error.invalidArguments;
 				}
-				
+
 				client.request(uri, handler, "POST", args);
 			}
 			catch (e) {
@@ -256,20 +256,20 @@ var aFrame = function(){
 					return false;
 				}
 				else {
-					if (this.items[uri]["headers"] !== undefined) {
-						if (((this.items[uri]["headers"].Pragma !== undefined)
-						    && (this.items[uri]["headers"].Pragma == "no-cache")
+					if (this.items[uri].headers !== undefined) {
+						if (((this.items[uri].headers.Pragma !== undefined)
+						    && (this.items[uri].headers.Pragma == "no-cache")
 						    && (expire))
-						    || ((this.items[uri]["headers"].Expires !== undefined)
-							 && (new Date(this.items[uri]["headers"].Expires) < new Date())
+						    || ((this.items[uri].headers.Expires !== undefined)
+							 && (new Date(this.items[uri].headers.Expires) < new Date())
 							 && (expire))
 						    || ((this.ms > 0)
 							 && (expire)
-							 && (this.items[uri]["headers"].Date !== undefined)
-							 && (new Date(this.items[uri]["headers"].Date).setMilliseconds(new Date(this.items[uri]["headers"].Date).getMilliseconds() + this.ms) > new Date()))
+							 && (this.items[uri].headers.Date !== undefined)
+							 && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + this.ms) > new Date()))
 						    || ((this.ms > 0)
-							&& (expire)
-							&& (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + this.ms) > new Date()))) {
+							 && (expire)
+							 && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + this.ms) > new Date()))) {
 							delete this.items[uri];
 							return false;
 						}
