@@ -284,7 +284,7 @@ var aFrame = function(){
 			}
 			catch (e) {
 				error(e);
-				return false;
+				return undefined;
 			}
 		},
 
@@ -1588,7 +1588,7 @@ var aFrame = function(){
 		 * Properties
 		 */
 		ms		: cache.ms,
-		ready	: false,
+		ready		: false,
 
 		/**
 		 * Methods
@@ -1611,7 +1611,15 @@ var aFrame = function(){
 		ajax		: ajax,
 		array		: array,
 		calendar	: calendar,
-		client		: client,
+		client		: {
+			css3	: client.css3,
+			chrome	: client.chrome,
+			firefox : client.firefox,
+			ie	: client.ie,
+			opera	: client.opera,
+			safari	: client.safari,
+			version	: client.version
+		},
 		database	: database,
 		el		: el,
 		listener	: {
