@@ -20,98 +20,6 @@
  */
 var aFrame = function(){
 	/**
-	 * RESTful AJAX methods
-	 *
-	 * @class
-	 */
-	var ajax = {
-		/**
-		 * Sends a DELETE to the URI
-		 *
-		 * @param uri {string} URI to submit to
-		 * @param handler {function} A handler function to execute once a response has been received
-		 */
-		del : function(uri, handler) {
-			try {
-				if ((uri == "")
-				    || (!handler instanceof Function)) {
-					throw label.error.invalidArguments;
-				}
-
-				client.request(uri, handler, "DELETE");
-			}
-			catch (e) {
-				error(e);
-			}
-		},
-
-		/**
-		 * Sends a GET to the URI
-		 *
-		 * @param uri {string} URI to submit to
-		 * @param handler {function} A handler function to execute once a response has been received
-		 */
-		get : function(uri, handler) {
-			try {
-				if ((uri == "")
-				    || (!handler instanceof Function)) {
-					throw label.error.invalidArguments;
-				}
-
-				var response = cache.get(uri);
-				(!response) ? client.request(uri, handler, "GET") : handler(response);
-			}
-			catch (e) {
-				error(e);
-			}
-		},
-
-		/**
-		 * Sends a PUT to the URI
-		 *
-		 * @param uri {string} URI submit to
-		 * @param handler {function} A handler function to execute once a response has been received
-		 * @param {args} PUT variables to include
-		 */
-		put : function(uri, handler, args) {
-			try {
-				if ((uri == "")
-				    || (!handler instanceof Function)
-				    || (args == "")) {
-					throw label.error.invalidArguments;
-				}
-
-				client.request(uri, handler, "PUT", args);
-			}
-			catch (e) {
-				error(e);
-			}
-		},
-
-		/**
-		 * Sends a POST to the URI
-		 *
-		 * @param uri {string} URI submit to
-		 * @param handler {function} A handler function to execute once a response has been received
-		 * @param {args} POST variables to include
-		 */
-		post : function(uri, handler, args) {
-			try {
-				if ((uri == "")
-				    || (!handler instanceof Function)
-				    || (args == "")) {
-					throw label.error.invalidArguments;
-				}
-
-				client.request(uri, handler, "POST", args);
-			}
-			catch (e) {
-				error(e);
-			}
-		}
-	};
-
-	/**
 	 * Array methods
 	 *
 	 * @class
@@ -237,11 +145,6 @@ var aFrame = function(){
 		items : [],
 
 		/**
-		 * Default timeout (0 = infinity)
-		 */
-		ms : 0,
-
-		/**
 		 * Returns the cached object {headers, response} of the URI or false
 		 *
 		 * @param uri {string} The URI/Identifier for the resource to retrieve from cache
@@ -263,13 +166,13 @@ var aFrame = function(){
 						    || ((this.items[uri].headers.Expires !== undefined)
 							 && (new Date(this.items[uri].headers.Expires) < new Date())
 							 && (expire))
-						    || ((this.ms > 0)
+						    || ((client.ms > 0)
 							 && (expire)
 							 && (this.items[uri].headers.Date !== undefined)
-							 && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + this.ms) > new Date()))
-						    || ((this.ms > 0)
+							 && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
+						    || ((client.ms > 0)
 							 && (expire)
-							 && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + this.ms) > new Date()))) {
+							 && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date()))) {
 							delete this.items[uri];
 							return false;
 						}
@@ -611,9 +514,95 @@ var aFrame = function(){
 		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrom") > -1) ? true : false,
 		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
 		ie	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
+		ms	: 0,
 		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
 		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
 		version	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "")) : parseInt(navigator.appVersion),
+
+		/**
+		 * Sends a DELETE to the URI
+		 *
+		 * @param uri {string} URI to submit to
+		 * @param handler {function} A handler function to execute once a response has been received
+		 */
+		del : function(uri, handler) {
+			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
+
+				client.request(uri, handler, "DELETE");
+			}
+			catch (e) {
+				error(e);
+			}
+		},
+
+		/**
+		 * Sends a GET to the URI
+		 *
+		 * @param uri {string} URI to submit to
+		 * @param handler {function} A handler function to execute once a response has been received
+		 */
+		get : function(uri, handler) {
+			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
+
+				var response = cache.get(uri);
+				(!response) ? client.request(uri, handler, "GET") : handler(response);
+			}
+			catch (e) {
+				error(e);
+			}
+		},
+
+		/**
+		 * Sends a PUT to the URI
+		 *
+		 * @param uri {string} URI submit to
+		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param {args} PUT variables to include
+		 */
+		put : function(uri, handler, args) {
+			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)
+				    || (args == "")) {
+					throw label.error.invalidArguments;
+				}
+
+				client.request(uri, handler, "PUT", args);
+			}
+			catch (e) {
+				error(e);
+			}
+		},
+
+		/**
+		 * Sends a POST to the URI
+		 *
+		 * @param uri {string} URI submit to
+		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param {args} POST variables to include
+		 */
+		post : function(uri, handler, args) {
+			try {
+				if ((uri == "")
+				    || (!handler instanceof Function)
+				    || (args == "")) {
+					throw label.error.invalidArguments;
+				}
+
+				client.request(uri, handler, "POST", args);
+			}
+			catch (e) {
+				error(e);
+			}
+		},
 
 		/**
 		 * Creates an xmlHttp request to a URI
@@ -1587,7 +1576,6 @@ var aFrame = function(){
 		/**
 		 * Properties
 		 */
-		ms		: cache.ms,
 		ready		: false,
 
 		/**
@@ -1596,11 +1584,15 @@ var aFrame = function(){
 		$		: utility.$,
 		clear		: el.clear,
 		create		: el.create,
+		del		: client.del,
 		destroy		: el.destroy,
 		domID		: utility.domID,
 		error		: utility.error,
 		fire		: observer.fire,
+		get		: client.get,
 		position	: el.position,
+		post		: client.post,
+		put		: client.put,
 		on		: observer.add,
 		un		: observer.remove,
 		update		: el.update,
@@ -1608,17 +1600,23 @@ var aFrame = function(){
 		/**
 		 * Classes
 		 */
-		ajax		: ajax,
 		array		: array,
 		calendar	: calendar,
 		client		: {
+			// Properties
 			css3	: client.css3,
 			chrome	: client.chrome,
 			firefox : client.firefox,
 			ie	: client.ie,
+			ms	: client.ms,
 			opera	: client.opera,
 			safari	: client.safari,
-			version	: client.version
+			version	: client.version,
+			// Methods
+			del	: client.del,
+			get	: client.get,
+			post	: client.post,
+			put	: client.put
 		},
 		database	: database,
 		el		: el,
@@ -1675,13 +1673,9 @@ Element.prototype.domID = function() {
 };
 
 Element.prototype.get = function(arg) {
-	aFrame.ajax.get(arg, function() {
+	aFrame.get(arg, function() {
 		aFrame.el.update(this.id, [["innerHTML", arguments[0]]]);
 	});
-};
-
-Element.prototype.listener = function(target, handler) {
-	aFrame.el.listener(this.id, target, handler);
 };
 
 Element.prototype.opacity = function(arg) {
