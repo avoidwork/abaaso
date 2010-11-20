@@ -252,9 +252,9 @@ var aFrame = function(){
 					["opacity", 0]
 				];
 
-				this.date.clear 	= ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
-				this.date.destination	= ((destination !== undefined) && ($(destination))) ? destination : null;
-				this.date.current	= ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : this.date.current;
+				calendar.date.clear 		= ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
+				calendar.date.destination	= ((destination !== undefined) && ($(destination))) ? destination : null;
+				calendar.date.current		= ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : calendar.date.current;
 
 				$(target).blur();
 				((destination !== undefined) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
@@ -287,6 +287,7 @@ var aFrame = function(){
 		 *
 		 * @param target {string} Object.id value
 		 * @param dateStamp {date} Date object
+		 * @todo finish this!
 		 */
 		day : function(target, dateStamp) {
 			try {
@@ -298,10 +299,9 @@ var aFrame = function(){
 						["innerHTML", dateStamp.getDate()]
 					];
 
-					if (this.date.destination !== undefined) {
+					if (calendar.date.destination !== undefined) {
 						args.push(["listener", "click", function(e) {
-							var scope = window.aFrame;
-							scope.update.call(scope.calendar, scope.calendar.date.destination, 'the value here');
+							aFrame.update.call(aFrame.calendar.date.destination, 'the value here');
 							scope.destroy("aFrame_calendar");
 						}]);
 					}
@@ -354,7 +354,7 @@ var aFrame = function(){
 		 */
 		format : function(dateStamp) {
 			try {
-				var output		= calendar.date.pattern;
+				var output	= calendar.date.pattern;
 				var outputDate	= new Date(dateStamp);
 
 				output = output.replace(/dd/,outputDate.getDate());
@@ -380,51 +380,52 @@ var aFrame = function(){
 				if ($(target)) {
 					$(target).clear();
 
-					this.date.current	= new Date(dateStamp);
-					this.date.previous	= new Date(dateStamp);
-					this.date.next		= new Date(dateStamp);
-					this.date.days		= this.days(this.date.current.getMonth(), this.date.current.getFullYear());
+					var c = calendar;
+
+					c.date.current	= new Date(dateStamp);
+					c.date.previous	= new Date(dateStamp);
+					c.date.next	= new Date(dateStamp);
+					c.date.days	= c.days(c.date.current.getMonth(), c.date.current.getFullYear());
 
 					switch (this.date.current.getMonth())
 					{
 						case 0:
-							this.date.previous.setMonth(11);
-							this.date.previous.setFullYear(this.date.current.getFullYear()-1);
-							this.date.next.setMonth(this.date.current.getMonth()+1);
-							this.date.next.setFullYear(this.date.current.getFullYear());
+							c.date.previous.setMonth(11);
+							c.date.previous.setFullYear(c.date.current.getFullYear()-1);
+							c.date.next.setMonth(c.date.current.getMonth()+1);
+							c.date.next.setFullYear(c.date.current.getFullYear());
 							break;
 						case 10:
-							this.date.previous.setMonth(this.date.current.getMonth()-1);
-							this.date.previous.setFullYear(this.date.current.getFullYear());
-							this.date.next.setMonth(this.date.current.getMonth()+1);
-							this.date.next.setFullYear(this.date.current.getFullYear());
+							c.date.previous.setMonth(c.date.current.getMonth()-1);
+							c.date.previous.setFullYear(c.date.current.getFullYear());
+							c.date.next.setMonth(c.date.current.getMonth()+1);
+							c.date.next.setFullYear(c.date.current.getFullYear());
 							break;
 						case 11:
-							this.date.previous.setMonth(this.date.current.getMonth()-1);
-							this.date.previous.setFullYear(this.date.current.getFullYear());
-							this.date.next.setMonth(0);
-							this.date.next.setFullYear(this.date.current.getFullYear()+1);
+							c.date.previous.setMonth(c.date.current.getMonth()-1);
+							c.date.previous.setFullYear(c.date.current.getFullYear());
+							c.date.next.setMonth(0);
+							c.date.next.setFullYear(c.date.current.getFullYear()+1);
 							break;
 						default:
-							this.date.previous.setMonth(this.date.current.getMonth()-1);
-							this.date.previous.setFullYear(this.date.current.getFullYear());
-							this.date.next.setMonth(this.date.current.getMonth()+1);
-							this.date.next.setFullYear(this.date.current.getFullYear());
+							c.date.previous.setMonth(c.date.current.getMonth()-1);
+							c.date.previous.setFullYear(c.date.current.getFullYear());
+							c.date.next.setMonth(c.date.current.getMonth()+1);
+							c.date.next.setFullYear(c.date.current.getFullYear());
 							break;
 					}
 
-					this.date.label = label.months[(this.date.current.getMonth()+1).toString()];
+					c.date.label = label.months[(c.date.current.getMonth()+1).toString()];
 
 					el.create("div", [["id", "calendarTop"]], target);
 
-					if (this.date.clear) {
+					if (c.date.clear) {
 						el.create("a", [
 							["id", "calendarClear"],
 							["innerHTML", label.common.clear],
 							["listener", "click", function(e) {
-								var scope=window.aFrame;
-								(scope.calendar.date.destination!="")?scope.el.clear(scope.calendar.date.destination):void(0);
-								scope.el.destroy("aFrame_calendar");
+								(aFrame.calendar.date.destination != "") ? aFrame.clear(aFrame.calendar.date.destination) : void(0);
+								aFrame.destroy("aFrame_calendar");
 								}]
 						], "calendarTop");
 					}
@@ -433,7 +434,7 @@ var aFrame = function(){
 						["id", "calendarClose"],
 						["innerHTML", label.common.close],
 						["listener", "click", function(e) {
-							window.aFrame.destroy("aFrame_calendar");
+							aFrame.destroy("aFrame_calendar");
 							}]
 					], "calendarTop");
 
@@ -445,22 +446,20 @@ var aFrame = function(){
 						["id", "calendarPrev"],
 						["innerHTML", "&lt;"],
 						["listener", "click", function(e) {
-							var scope=window.aFrame.calendar;
-							scope.render.call(scope, "aFrame_calendar", scope.date.previous);
+							aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.previous);
 							}]
 					], "calendarHeader");
 
 					el.create("span", [
 						["id", "calendarMonth"],
-						["innerHTML", this.date.label+" "+dateStamp.getFullYear().toString()]
+						["innerHTML", c.date.label+" "+dateStamp.getFullYear().toString()]
 					], "calendarHeader");
 
 					el.create("a", [
 						["id", "calendarNext"],
 						["innerHTML", "&gt;"],
 						["listener", "click", function(e) {
-							var scope = window.aFrame.calendar;
-							scope.render.call(scope, "aFrame_calendar", scope.date.next);
+							aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.next);
 							}]
 					], "calendarHeader");
 
@@ -474,13 +473,13 @@ var aFrame = function(){
 					var loop = dateStamp.getDay();
 
 					for (var i=1; i<=loop; i++) {
-						this.day("calendarDays", null);
+						c.day("calendarDays", null);
 					}
 
-					loop = this.date.days;
+					loop = c.date.days;
 
 					for (var i=1; i<=loop; i++) {
-						this.day("calendarDays", dateStamp.setDate(i));
+						c.day("calendarDays", dateStamp.setDate(i));
 					}
 
 					return true;
