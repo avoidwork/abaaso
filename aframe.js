@@ -268,16 +268,6 @@ var aFrame = function(){
 				if ((dateStamp != null)
 				     && (!isNaN(dateStamp.getYear()))) {
 					var args = {id: "href_day_" + dateStamp.getDate(), innerHTML: dateStamp.getDate()};
-
-					if (calendar.date.destination !== undefined) {
-						args.listener = {
-							click: function(e) {
-								aFrame.update(aFrame.calendar.date.destination, 'the value here');
-								scope.destroy("aFrame_calendar");
-							}
-						};
-					}
-
 					args.class = ((dateStamp.getDate() == calendar.date.current.getDate())
 					  && (dateStamp.getMonth() == calendar.date.current.getMonth())
 					  && (dateStamp.getFullYear() == calendar.date.current.getFullYear())) ?
@@ -285,6 +275,13 @@ var aFrame = function(){
 
 					el.create("div", {id: "div_day_" + dateStamp.getDate(), class: "day"}, target);
 					el.create("a", args, "div_day_" + dateStamp.getDate());
+
+					if (calendar.date.destination !== undefined) {
+						aFrame.on("href_day_" + dateStamp.getDate(), "click", function() {
+							aFrame.update(aFrame.calendar.date.destination, 'the value here');
+							aFrame.destroy("aFrame_calendar");
+							});
+					}
 				}
 				else {
 					el.create("div", {class: "day"}, target);
@@ -384,43 +381,31 @@ var aFrame = function(){
 					el.create("div", {id: "calendarTop"}, target);
 
 					if (c.date.clear) {
-						el.create("a", {
-							id: "calendarClear",
-							innerHTML: label.common.clear,
-							listener: {click: function(e) {
-								(aFrame.calendar.date.destination != "") ? aFrame.clear(aFrame.calendar.date.destination) : void(0);
-								aFrame.destroy("aFrame_calendar");
-								}}
-							}, "calendarTop");
+						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
+						aFrame.on("calendarClear", "click", function(e) {
+							(aFrame.calendar.date.destination != "") ? aFrame.clear(aFrame.calendar.date.destination) : void(0);
+							aFrame.destroy("aFrame_calendar");
+							});
 					}
 
-					el.create("a", {
-						id: "calendarClose",
-						innerHTML: label.common.close,
-						listener: {click: function(e) {
-							aFrame.destroy("aFrame_calendar");
-							}}
-						}, "calendarTop");
+					el.create("a", {id: "calendarClose", innerHTML: label.common.close}, "calendarTop");
+					aFrame.on("calendarClose", "click", function(e) {
+						aFrame.destroy("aFrame_calendar");
+						});
 
 					el.create("div", {id: "calendarHeader"}, target);
 
-					el.create("a", {
-						id: "calendarPrev",
-						innerHTML: "&lt;",
-						listener: {click: function(e) {
-							aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.previous);
-							}}
-						}, "calendarHeader");
+					el.create("a", {id: "calendarPrev", innerHTML: "&lt;"}, "calendarHeader");
+					aFrame.on("calendarPrev", "click", function(e) {
+						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.previous);
+						});
 
 					el.create("span", {id: "calendarMonth", innerHTML: c.date.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
 
-					el.create("a", {
-						id: "calendarNext",
-						innerHTML: "&gt;",
-						listener: {click: function(e) {
-							aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.next);
-							}}
-						}, "calendarHeader");
+					el.create("a", {id: "calendarNext", innerHTML: "&gt;"}, "calendarHeader");
+					aFrame.on("calendarNext", "click", function(e) {
+						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.next);
+						});
 
 					el.create("div", {id: "calendarDays"}, target);
 
@@ -896,33 +881,20 @@ var aFrame = function(){
 
 				obj = (typeof obj == "object") ? obj : $(obj);
 
-				if (obj !== undefined) {
+				if (obj) {
 					for (var i in args) {
 						switch(i) {
 							case "class":
 								((client.ie) && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
 								break;
-
 							case "innerHTML":
 							case "type":
 							case "src":
 								obj[i] = args[i];
 								break;
-
-							case "listener":
-								var event   = null,
-								    handler = null;
-								for (var x in args[i]) {
-									event = x;
-									handler = args[i][x];
-								}
-								aFrame.on(obj.id, event, handler);
-								break;
-
 							case "opacity":
 								obj.opacity(args[i]);
 								break;
-
 							default:
 								obj.setAttribute(i, args[i]);
 								break;
@@ -1192,7 +1164,7 @@ var aFrame = function(){
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]["active"] === undefined) ? observer.listeners[obj][event]["active"] = [] : void(0);
 				(id !== undefined) ? observer.listeners[obj][event]["active"][id] = {"fn" : listener} : observer.listeners[obj][event]["active"].push({"fn" : listener});
-				($(obj)) ? (($(obj).addEventListener) ? $(obj).addEventListener(event, aFrame.fire(obj, event), false) : $(obj).attachEvent("on" + event, aFrame.fire(obj, event))) : void(0);
+				($(obj)) ? (($(obj).addEventListener) ? $(obj).addEventListener(event, function(){aFrame.fire(obj, event);}, false) : $(obj).attachEvent("on" + event, function(){aFrame.fire(obj, event);})) : void(0);
 			}
 			catch (e) {
 				error(e);
