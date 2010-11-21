@@ -259,7 +259,6 @@ var aFrame = function(){
 		 *
 		 * @param target {string} Object.id value
 		 * @param dateStamp {date} Date object
-		 * @todo finish this!
 		 */
 		day : function(target, dateStamp) {
 			try {
@@ -276,11 +275,16 @@ var aFrame = function(){
 					el.create("div", {id: "div_day_" + dateStamp.getDate(), class: "day"}, target);
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 
-					if (calendar.date.destination !== undefined) {
+					if (calendar.date.destination !== null) {
 						aFrame.on("href_day_" + dateStamp.getDate(), "click", function() {
-							aFrame.update(aFrame.calendar.date.destination, 'the value here');
+							var date = new Date(aFrame.calendar.date.current),
+							    day  = this.innerHTML.match(/^\d{1,2}$/);
+
+							date.setDate(day[0]);
+							aFrame.calendar.date.current = date;
+							($(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).update(aFrame.calendar.output(date)) : void(0);
 							aFrame.destroy("aFrame_calendar");
-							});
+							}, "href_day_" + dateStamp.getDate());
 					}
 				}
 				else {
@@ -382,8 +386,9 @@ var aFrame = function(){
 
 					if (c.date.clear) {
 						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
-						aFrame.on("calendarClear", "click", function(e) {
-							(aFrame.calendar.date.destination != "") ? aFrame.clear(aFrame.calendar.date.destination) : void(0);
+						aFrame.on("calendarClear", "click", function() {
+							((aFrame.calendar.date.destination != null)
+							  && $(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).clear() : void(0);
 							aFrame.destroy("aFrame_calendar");
 							});
 					}
@@ -1149,9 +1154,10 @@ var aFrame = function(){
 		 * @param obj {string} The object firing the event
 		 * @param event {string} The event being fired
 		 * @param listener {function} The event listener
-		 * @param id {string} [Optional / Recommended] The identifier for the listener
+		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
+		 * @param id {string} [Optional / Recommended] The id for the listener
 		 */
-		add : function(obj, event, listener, id) {
+		add : function(obj, event, listener, scope, id) {
 			try {
 				if ((obj === undefined)
 				    || (event === undefined)
@@ -1160,11 +1166,22 @@ var aFrame = function(){
 					throw label.error.invalidArguments;
 				}
 
+				var item = {};
+				item.fn  = listener;
+				(scope !== undefined) ? item.scope = scope : void(0);
+
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]["active"] === undefined) ? observer.listeners[obj][event]["active"] = [] : void(0);
-				(id !== undefined) ? observer.listeners[obj][event]["active"][id] = {"fn" : listener} : observer.listeners[obj][event]["active"].push({"fn" : listener});
-				($(obj)) ? (($(obj).addEventListener) ? $(obj).addEventListener(event, function(){aFrame.fire(obj, event);}, false) : $(obj).attachEvent("on" + event, function(){aFrame.fire(obj, event);})) : void(0);
+
+				(id !== undefined) ?
+				 observer.listeners[obj][event]["active"][id] = item :
+				 observer.listeners[obj][event]["active"].push(item);
+
+				($(obj)) ? (($(obj).addEventListener) ?
+					    $(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
+					    $(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+				 : void(0);
 			}
 			catch (e) {
 				error(e);
@@ -1190,7 +1207,16 @@ var aFrame = function(){
 					  observer.listeners[obj][event]["active"] : []) : []) : [];
 
 				for (var i in listeners) {
-					(listeners[i]["fn"]) ? listeners[i]["fn"]() : void(0);
+					if (listeners[i].fn) {
+						if (listeners[i].scope !== undefined) {
+							var scope = ($(listeners[i].scope)) ? $(listeners[i].scope) : listeners[i].scope,
+							    fn    = listeners[i]["fn"];
+							fn.call(scope);
+						}
+						else {
+							listeners[i]["fn"]();
+						}
+					}
 				}
 			}
 			catch (e) {
