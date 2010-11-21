@@ -1103,9 +1103,10 @@ var aFrame = function(){
 			elementNotFound       : "Could not find the Element.",
 			expectedArray         : "Expected an Array.",
 			expectedArrayObject   : "Expected an Array or Object.",
+			expectedBoolean       : "Expected a Boolean value.",
 			expectedObject        : "Expected an Object.",
-			invalidArguments      : "One or more arguments is invalid",
-			invalidDate           : "Invalid Date",
+			invalidArguments      : "One or more arguments is invalid.",
+			invalidDate           : "Invalid Date.",
 			invalidFields         : "The following required fields are invalid: ",
 			serverError           : "A server error has occurred."
 		},
@@ -1401,16 +1402,19 @@ var aFrame = function(){
 	};
 
 	/**
-	 * Form validation
+	 * Validation methods and patterns
 	 *
 	 * @class
 	 */
 	var validate = {
-		exception	: false,
-		loop		: null,
-		msg		: label.error.invalidFields,
-		required	: [],
-		value		: null,
+		pattern : {
+			domain : x,
+			ip     : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
+			email  : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
+			number : x,
+			phone  : /^(([0-9]{1})*[- .(]*([0-9a-zA-Z]{3})*[- .)]*[0-9a-zA-Z]{3}[- .]*[0-9a-zA-Z]{4})+$/,
+			string : x
+		},
 
 		/**
 		 * Returns the supplied argument, or false
@@ -1418,89 +1422,61 @@ var aFrame = function(){
 		 * @param arg {boolean}
 		 * @returns {boolean}
 		 */
-		bool:function(arg) {
-			switch(arg)
-			{
-				case true:
-				case false:
-					return arg;
-				default:
-					return false;
-			}
-		},
-
-		/**
-		 * Sets an exception and appends to the message displayed to the Client
-		 *
-		 * @param args {string}
-		 */
-		invalid:function(arg) {
-			exception=true;
-			msg+=" "+arg.toString()+", ";
-		},
-
-		/**
-		 * Validates the value of elements based on the args passed in
-		 *
-		 * @param args {Array}
-		 * @returns {Boolean}
-		 */
-		fields : function(args) {
+		bool : function(arg) {
 			try {
-				required	= args;
-				loop		= required.length;
-
-				for (var i = 0; i < this.loop; i++) {
-					value=$(required[i][0]).value;
-					switch (required[i][1]) {
-					case "isDomain":
-						if (!isDomain(value)) { invalid(required[i][2]); }
-						break;
-					case "isDomainOrIp":
-						if ((!isIpAddr(value))&&(!isDomain(value))) { invalid(required[i][2]); }
-						break;
-					case "isIp":
-						if (!isIpAddr(value)) { invalid(required[i][2]); }
-						break;
-					case "isInteger":
-						if (isNaN(value)) {
-							invalid(required[i][2]);
-						}
-						else if (required[i][3]) {
-							var y=required[i][3].length;
-							var exception=false;
-
-							for (var x=0;x<y;x++) {
-								exception=(value==required[i][3][x])?false:true;
-								if (!exception) { break; }
-							}
-
-							if (exception) { invalid(required[i][2]); }
-						}
-						break;
-					case "isNotEmpty":
-						if (($(required[i][0]).style.display!="none")&&(value=="")) { invalid(required[i][2]); }
-						break;
-					}
+				switch (arg) {
+					case true:
+					case false:
+						return arg;
+					default:
+						return false;
 				}
-
-				if (err) { throw msg; }
-
-				return !err;
 			}
 			catch (e) {
 				error(e);
+				return false;
 			}
 		},
 
 		/**
-		 * Validates all fields in the target form based on a typeof detection and length requirement of 1
+		 * Validates args based on the type or pattern specified
 		 *
-		 * @param arg {String} The target object.id value.
-		 * @returns {Boolean}
+		 * @param args {object} An object to test {id: [test || pattern]}
+		 * @returns {object} An object containing validation status and invalid instances
 		 */
-		form : function(arg) {
-			void(0);
+		test : function(args) {
+			try {
+				var exception = false,
+				    invalid   = [],
+				    msg       = label.error.invalidFields,
+				    v         = validate,
+				    value     = null;
+
+				for (var i in args) {
+					value = ($(i).value) ? $(i).value : $(i).innerHTML;
+					switch (args[i]) {
+						case "domainip":
+							if ((!value.test(validate.pattern.domain))
+							    || (!value.test(validate.pattern.ip))) {
+								invalid.push(i);
+								exception = true;
+							}
+							break;
+						default:
+							if (!value.test(validate.pattern[args[i]])) {
+								invalid.push(i);
+								exception = true;
+							}
+							break;
+					}
+				}
+
+				return {pass: !exception, invalid: invalid};
+			}
+			catch (e) {
+				error(e);
+				return {pass: false, invalid: {}};
+			}
 		}
 	};
 
