@@ -1407,13 +1407,16 @@ var aFrame = function(){
 	 * @class
 	 */
 	var validate = {
+		/**
+		 * Regular expression patterns to test against
+		 */
 		pattern : {
-			domain : x,
+			domain : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
 			ip     : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
 			email  : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
-			number : x,
+			number : /^(\d+)$/,
 			phone  : /^(([0-9]{1})*[- .(]*([0-9a-zA-Z]{3})*[- .)]*[0-9a-zA-Z]{3}[- .]*[0-9a-zA-Z]{4})+$/,
-			string : x
+			string : /^(\w+)$/
 		},
 
 		/**
@@ -1448,8 +1451,6 @@ var aFrame = function(){
 			try {
 				var exception = false,
 				    invalid   = [],
-				    msg       = label.error.invalidFields,
-				    v         = validate,
 				    value     = null;
 
 				for (var i in args) {
@@ -1463,7 +1464,8 @@ var aFrame = function(){
 							}
 							break;
 						default:
-							if (!value.test(validate.pattern[args[i]])) {
+							var pattern = (validate.pattern[args[i]]) ? validate.pattern[args[i]] : args[i];
+							if (!value.test(pattern)) {
 								invalid.push(i);
 								exception = true;
 							}
