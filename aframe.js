@@ -1270,16 +1270,17 @@ var aFrame = function(){
 				    || (event === undefined)
 				    || (observer.listeners[obj] === undefined)
 				    || (observer.listeners[obj][event] === undefined)) {
-					throw label.error.invalidArguments;
+					return;
 				}
-
-				if (id === undefined) {
-					delete observer.listeners[obj][event];
-				}
-				else if ((id !== undefined)
-					 && (typeof id == String)
-					 && (observer.listeners[obj][event][id] !== undefined)) {
-					delete observer.listeners[obj][event][id];
+				else {
+					if (id === undefined) {
+						delete observer.listeners[obj][event];
+					}
+					else if ((id !== undefined)
+						 && (typeof id == String)
+						 && (observer.listeners[obj][event][id] !== undefined)) {
+						delete observer.listeners[obj][event][id];
+					}
 				}
 			}
 			catch (e) {
