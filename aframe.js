@@ -192,21 +192,21 @@ var aFrame = function(){
 	 * Override aFrame.calendar.date.pattern to change the localized pattern from ISO 8601
 	 *
 	 * @class
-	 * @todo refactor for the observer, finish refactoring the date picker, it's broken right now
+	 * @todo finish refactoring the date picker, it's broken right now
 	 */
 	var calendar = {
 		/**
-		 * Used to render the calendar
+		 * Tracking object used to render the calendar
 		 */
 		date : {
-			current		: new Date(),
-			previous	: new Date(),
-			next		: new Date(),
-			clear		: null,
-			days		: null,
-			destination	: null,
-			label		: null,
-			pattern		: "yyyy/mm/dd"
+			current     : new Date(),
+			previous    : new Date(),
+			next        : new Date(),
+			clear       : null,
+			days        : null,
+			destination : null,
+			label       : null,
+			pattern     : "yyyy/mm/dd"
 		},
 
 		/**
@@ -224,19 +224,12 @@ var aFrame = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {
-					id: "aFrame_calendar",
-					opacity: 0
-					};
-
+				var args = {id: "aFrame_calendar", opacity: 0};
 				calendar.date.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
 				calendar.date.destination = ((destination !== undefined) && ($(destination))) ? destination : null;
 				calendar.date.current     = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : calendar.date.current;
-
 				$(target).blur();
-
 				((destination !== undefined) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
-
 				($("aFrame_calendar")) ? el.destroy("aFrame_calendar") : void(0);
 
 				if (destination !== undefined) {
@@ -274,10 +267,7 @@ var aFrame = function(){
 
 				if ((dateStamp != null)
 				     && (!isNaN(dateStamp.getYear()))) {
-					var args = {
-						id: "href_day_" + dateStamp.getDate(),
-						innerHTML: dateStamp.getDate()
-						};
+					var args = {id: "href_day_" + dateStamp.getDate(), innerHTML: dateStamp.getDate()};
 
 					if (calendar.date.destination !== undefined) {
 						args.listener = {
@@ -293,11 +283,7 @@ var aFrame = function(){
 					  && (dateStamp.getFullYear() == calendar.date.current.getFullYear())) ?
 						"current" : "weekend";
 
-					el.create("div", {
-						id: "div_day_" + dateStamp.getDate(),
-						class: "day"
-						}, target);
-
+					el.create("div", {id: "div_day_" + dateStamp.getDate(), class: "day"}, target);
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 				}
 				else {
@@ -361,7 +347,6 @@ var aFrame = function(){
 					$(target).clear();
 
 					var c = calendar;
-
 					c.date.current	= new Date(dateStamp);
 					c.date.previous	= new Date(dateStamp);
 					c.date.next	= new Date(dateStamp);
@@ -396,7 +381,6 @@ var aFrame = function(){
 					}
 
 					c.date.label = label.months[(c.date.current.getMonth()+1).toString()];
-
 					el.create("div", {id: "calendarTop"}, target);
 
 					if (c.date.clear) {
@@ -428,10 +412,7 @@ var aFrame = function(){
 							}}
 						}, "calendarHeader");
 
-					el.create("span", {
-						id: "calendarMonth",
-						innerHTML: c.date.label+" "+dateStamp.getFullYear().toString()
-						}, "calendarHeader");
+					el.create("span", {id: "calendarMonth", innerHTML: c.date.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
 
 					el.create("a", {
 						id: "calendarNext",
@@ -444,15 +425,12 @@ var aFrame = function(){
 					el.create("div", {id: "calendarDays"}, target);
 
 					dateStamp.setDate(1);
-
 					var loop = dateStamp.getDay();
-
 					for (var i=1; i<=loop; i++) {
 						c.day("calendarDays", null);
 					}
 
 					loop = c.date.days;
-
 					for (var i=1; i<=loop; i++) {
 						c.day("calendarDays", dateStamp.setDate(i));
 					}
@@ -613,7 +591,7 @@ var aFrame = function(){
 					case "get":
 						xmlHttp.onreadystatechange = function() { client.response(xmlHttp, uri, handler); };
 						(type.toLowerCase() == "delete") ? xmlHttp.open("DELETE", uri, true) : xmlHttp.open("GET", uri, true);
-						xmlHttp.send();
+						xmlHttp.send(null);
 						break;
 					case "post":
 					case "put":
@@ -924,17 +902,27 @@ var aFrame = function(){
 							case "class":
 								((client.ie) && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
 								break;
+
 							case "innerHTML":
 							case "type":
 							case "src":
 								obj[i] = args[i];
 								break;
+
 							case "listener":
-								aFrame.on(obj.id, i, args[i]);
+								var event   = null,
+								    handler = null;
+								for (var x in args[i]) {
+									event = x;
+									handler = args[i][x];
+								}
+								aFrame.on(obj.id, event, handler);
 								break;
+
 							case "opacity":
 								obj.opacity(args[i]);
 								break;
+
 							default:
 								obj.setAttribute(i, args[i]);
 								break;
@@ -1119,56 +1107,56 @@ var aFrame = function(){
 		 * Error messages
 		 */
 		error : {
-			databaseNotOpen 		: "Failed to open the Database, possibly exceeded Domain quota.",
-			databaseNotSupported		: "Client does not support local database storage.",
-			databaseWarnInjection		: "Possible SQL injection in database transaction, use the &#63; placeholder.",
-			elementNotCreated		: "Could not create the Element.",
-			elementNotFound 		: "Could not find the Element.",
-			expectedArray			: "Expected an Array.",
-			expectedArrayObject		: "Expected an Array or Object.",
-			expectedObject			: "Expected an Object.",
-			invalidArguments		: "One or more arguments is invalid",
-			invalidDate 			: "Invalid Date",
-			invalidFields			: "The following required fields are invalid: ",
-			serverError 			: "A server error has occurred."
+			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota.",
+			databaseNotSupported  : "Client does not support local database storage.",
+			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder.",
+			elementNotCreated     : "Could not create the Element.",
+			elementNotFound       : "Could not find the Element.",
+			expectedArray         : "Expected an Array.",
+			expectedArrayObject   : "Expected an Array or Object.",
+			expectedObject        : "Expected an Object.",
+			invalidArguments      : "One or more arguments is invalid",
+			invalidDate           : "Invalid Date",
+			invalidFields         : "The following required fields are invalid: ",
+			serverError           : "A server error has occurred."
 		},
 
 		/**
 		 * Common labels
 		 */
 		common : {
-			back 		: "Back",
-			cancel 		: "Cancel",
-			clear 		: "Clear",
-			close 		: "Close",
-			cont 		: "Continue",
-			del 		: "Delete",
-			edit 		: "Edit",
-			gen 		: "Generate",
-			loading 	: "Loading",
-			next 		: "Next",
-			login 		: "Login",
-			ran 		: "Random",
-			save 		: "Save",
-			submit 		: "Submit"
+			back    : "Back",
+			cancel  : "Cancel",
+			clear   : "Clear",
+			close   : "Close",
+			cont    : "Continue",
+			del     : "Delete",
+			edit    : "Edit",
+			gen     : "Generate",
+			loading : "Loading",
+			next    : "Next",
+			login   : "Login",
+			ran     : "Random",
+			save    : "Save",
+			submit  : "Submit"
 		},
 
 		/**
 		 * Months
 		 */
 		months : {
-			"1" 	: "January",
-			"2" 	: "February",
-			"3" 	: "March",
-			"4" 	: "April",
-			"5" 	: "May",
-			"6" 	: "June",
-			"7" 	: "July",
-			"8" 	: "August",
-			"9" 	: "September",
-			"10"	: "October",
-			"11"	: "November",
-			"12"	: "December"
+			"1"  : "January",
+			"2"  : "February",
+			"3"  : "March",
+			"4"  : "April",
+			"5"  : "May",
+			"6"  : "June",
+			"7"  : "July",
+			"8"  : "August",
+			"9"  : "September",
+			"10" : "October",
+			"11" : "November",
+			"12" : "December"
 		}
 	};
 
@@ -1200,14 +1188,11 @@ var aFrame = function(){
 					throw label.error.invalidArguments;
 				}
 
-				// Constructing the listener
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]["active"] === undefined) ? observer.listeners[obj][event]["active"] = [] : void(0);
 				(id !== undefined) ? observer.listeners[obj][event]["active"][id] = {"fn" : listener} : observer.listeners[obj][event]["active"].push({"fn" : listener});
-
-				// Registering the listener with the object
-				(($(obj) !== null) && ($(obj) !== undefined)) ? (($(obj).addEventListener) ? $(obj).addEventListener(event, aFrame.fire(obj, event), false) : $(obj).attachEvent("on" + event, aFrame.fire(obj, event))) : void(0);
+				($(obj)) ? (($(obj).addEventListener) ? $(obj).addEventListener(event, aFrame.fire(obj, event), false) : $(obj).attachEvent("on" + event, aFrame.fire(obj, event))) : void(0);
 			}
 			catch (e) {
 				error(e);
@@ -1397,13 +1382,10 @@ var aFrame = function(){
 		 * @param e {mixed} Error object or message to display.
 		 */
 		error : function(e) {
-			(error.list === undefined) ? error.list = [] : void(0);
-
 			var err = new Error(e);
 			((client.ie) || (console === undefined)) ? alert(err.description) : console.error(err);
-
-			error.list.push(e);
-			debugger;
+			(error.events === undefined) ? error.events = [] : void(0);
+			error.events.push(err);
 		}
 	};
 
