@@ -199,13 +199,13 @@ var aFrame = function(){
 		 * Tracking object used to render the calendar
 		 */
 		date : {
-			current     : new Date(),
-			previous    : new Date(),
-			next        : new Date(),
+			c           : new Date(),
 			clear       : null,
-			days        : null,
+			d           : null,
 			destination : null,
 			label       : null,
+			n           : new Date(),
+			p           : new Date(),
 			pattern     : "yyyy/mm/dd"
 		},
 
@@ -224,10 +224,13 @@ var aFrame = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {id: "aFrame_calendar", opacity: 0};
-				calendar.date.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
-				calendar.date.destination = ((destination !== undefined) && ($(destination))) ? destination : null;
-				calendar.date.current     = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : calendar.date.current;
+				var args = {id: "aFrame_calendar", opacity: 0},
+				    o    = calendar.date;
+
+				o.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
+				o.destination = ((destination !== undefined) && ($(destination))) ? destination : null;
+				o.c           = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : o.c;
+
 				$(target).blur();
 				((destination !== undefined) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
 				($("aFrame_calendar")) ? el.destroy("aFrame_calendar") : void(0);
@@ -241,7 +244,7 @@ var aFrame = function(){
 					el.create("div", args, target);
 				}
 
-				if (calendar.render("aFrame_calendar", calendar.date.current)) {
+				if (calendar.render("aFrame_calendar", o.c)) {
 					fx.opacityShift("aFrame_calendar", 300);
 				}
 				else {
@@ -262,26 +265,28 @@ var aFrame = function(){
 		 */
 		day : function(target, dateStamp) {
 			try {
-				dateStamp = (dateStamp != null) ? new Date(dateStamp) : null;
+				dateStamp = (dateStamp !== undefined) ? new Date(dateStamp) : null;
 
 				if ((dateStamp != null)
 				     && (!isNaN(dateStamp.getYear()))) {
-					var args = {id: "href_day_" + dateStamp.getDate(), innerHTML: dateStamp.getDate()};
-					args.class = ((dateStamp.getDate() == calendar.date.current.getDate())
-					  && (dateStamp.getMonth() == calendar.date.current.getMonth())
-					  && (dateStamp.getFullYear() == calendar.date.current.getFullYear())) ?
-						"current" : "weekend";
+					var o    = calendar.date.c,
+					    args = {id: "href_day_" + dateStamp.getDate(), innerHTML: dateStamp.getDate()};
+
+					args.class = ((dateStamp.getDate() == o.getDate())
+						      && (dateStamp.getMonth() == o.getMonth())
+						      && (dateStamp.getFullYear() == o.getFullYear())) ? "current" : "weekend";
 
 					el.create("div", {id: "div_day_" + dateStamp.getDate(), class: "day"}, target);
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 
 					if (calendar.date.destination !== null) {
+						aFrame.un("href_day_" + dateStamp.getDate(), "click");
 						aFrame.on("href_day_" + dateStamp.getDate(), "click", function() {
 							var date = new Date(aFrame.calendar.date.current),
 							    day  = this.innerHTML.match(/^\d{1,2}$/);
 
 							date.setDate(day[0]);
-							aFrame.calendar.date.current = date;
+							aFrame.calendar.date.c = date;
 							($(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).update(aFrame.calendar.output(date)) : void(0);
 							aFrame.destroy("aFrame_calendar");
 							}, "href_day_" + dateStamp.getDate());
@@ -347,45 +352,45 @@ var aFrame = function(){
 				if ($(target)) {
 					$(target).clear();
 
-					var c = calendar;
-					c.date.current	= new Date(dateStamp);
-					c.date.previous	= new Date(dateStamp);
-					c.date.next	= new Date(dateStamp);
-					c.date.days	= c.days(c.date.current.getMonth(), c.date.current.getFullYear());
+					var o = calendar.date;
+					o.c = new Date(dateStamp);
+					o.p = new Date(dateStamp);
+					o.n = new Date(dateStamp);
+					o.d = calendar.days(o.c.getMonth(), o.c.getFullYear());
 
-					switch (this.date.current.getMonth())
-					{
+					switch (o.c.getMonth()) {
 						case 0:
-							c.date.previous.setMonth(11);
-							c.date.previous.setFullYear(c.date.current.getFullYear()-1);
-							c.date.next.setMonth(c.date.current.getMonth()+1);
-							c.date.next.setFullYear(c.date.current.getFullYear());
+							o.p.setMonth(11);
+							o.p.setFullYear(o.c.getFullYear()-1);
+							o.n.setMonth(o.c.getMonth()+1);
+							o.n.setFullYear(o.c.getFullYear());
 							break;
 						case 10:
-							c.date.previous.setMonth(c.date.current.getMonth()-1);
-							c.date.previous.setFullYear(c.date.current.getFullYear());
-							c.date.next.setMonth(c.date.current.getMonth()+1);
-							c.date.next.setFullYear(c.date.current.getFullYear());
+							o.p.setMonth(o.c.getMonth()-1);
+							o.p.setFullYear(o.c.getFullYear());
+							o.n.setMonth(o.c.getMonth()+1);
+							o.n.setFullYear(o.c.getFullYear());
 							break;
 						case 11:
-							c.date.previous.setMonth(c.date.current.getMonth()-1);
-							c.date.previous.setFullYear(c.date.current.getFullYear());
-							c.date.next.setMonth(0);
-							c.date.next.setFullYear(c.date.current.getFullYear()+1);
+							o.p.setMonth(o.c.getMonth()-1);
+							o.p.setFullYear(o.c.getFullYear());
+							o.n.setMonth(0);
+							o.n.setFullYear(o.c.getFullYear()+1);
 							break;
 						default:
-							c.date.previous.setMonth(c.date.current.getMonth()-1);
-							c.date.previous.setFullYear(c.date.current.getFullYear());
-							c.date.next.setMonth(c.date.current.getMonth()+1);
-							c.date.next.setFullYear(c.date.current.getFullYear());
+							o.p.setMonth(o.c.getMonth()-1);
+							o.p.setFullYear(o.c.getFullYear());
+							o.n.setMonth(o.c.getMonth()+1);
+							o.n.setFullYear(o.c.getFullYear());
 							break;
 					}
 
-					c.date.label = label.months[(c.date.current.getMonth()+1).toString()];
+					o.label = label.months[(o.c.getMonth()+1).toString()];
 					el.create("div", {id: "calendarTop"}, target);
 
-					if (c.date.clear) {
+					if (o.clear) {
 						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
+						aFrame.un("calendarClear", "click");
 						aFrame.on("calendarClear", "click", function() {
 							((aFrame.calendar.date.destination != null)
 							  && $(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).clear() : void(0);
@@ -394,35 +399,42 @@ var aFrame = function(){
 					}
 
 					el.create("a", {id: "calendarClose", innerHTML: label.common.close}, "calendarTop");
-					aFrame.on("calendarClose", "click", function(e) {
+					aFrame.un("calendarClose", "click");
+					aFrame.on("calendarClose", "click", function() {
 						aFrame.destroy("aFrame_calendar");
 						});
 
 					el.create("div", {id: "calendarHeader"}, target);
 
 					el.create("a", {id: "calendarPrev", innerHTML: "&lt;"}, "calendarHeader");
-					aFrame.on("calendarPrev", "click", function(e) {
-						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.previous);
+					aFrame.un("calendarPrev", "click");
+					aFrame.on("calendarPrev", "click", function() {
+						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.p);
 						});
 
-					el.create("span", {id: "calendarMonth", innerHTML: c.date.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
+					el.create("span", {id: "calendarMonth", innerHTML: o.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
 
 					el.create("a", {id: "calendarNext", innerHTML: "&gt;"}, "calendarHeader");
-					aFrame.on("calendarNext", "click", function(e) {
-						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.next);
+					aFrame.un("calendarNext", "click");
+					aFrame.on("calendarNext", "click", function() {
+						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.n);
 						});
 
 					el.create("div", {id: "calendarDays"}, target);
 
 					dateStamp.setDate(1);
-					var loop = dateStamp.getDay();
-					for (var i=1; i<=loop; i++) {
-						c.day("calendarDays", null);
+
+					var i    = null,
+					    loop = dateStamp.getDay();
+
+					for (i = 1; i <= loop; i++) {
+						calendar.day("calendarDays");
 					}
 
-					loop = c.date.days;
-					for (var i=1; i<=loop; i++) {
-						c.day("calendarDays", dateStamp.setDate(i));
+					loop = o.d;
+
+					for (i = 1; i <= loop; i++) {
+						calendar.day("calendarDays", dateStamp.setDate(i));
 					}
 
 					return true;
