@@ -1548,16 +1548,20 @@ var aFrame = function(){
 		},
 		database	: database,
 		el		: el,
+		fx		: fx,
+		json		: json,
+		label		: label,
 		listener	: {
 			add	: observer.add,
 			list	: observer.list,
 			remove	: observer.remove,
 			replace	: observer.replace
 		},
-		fx		: fx,
-		json		: json,
-		label		: label,
-		number		: number,
+		number          : number,
+		state		: {
+			header  : null,
+			pattern : /^.*$/
+		},
 		spinner		: {
 			create	: client.spinner,
 			url	: null
