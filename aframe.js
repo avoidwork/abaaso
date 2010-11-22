@@ -1169,6 +1169,7 @@ var aFrame = function(){
 		 * @param listener {function} The event listener
 		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param id {string} [Optional / Recommended] The id for the listener
+		 * @todo Implement eventListenerList when it's supported to clean up the registration with the DOM
 		 */
 		add : function(obj, event, listener, scope, id) {
 			try {
@@ -1456,6 +1457,12 @@ var aFrame = function(){
 				for (var i in args) {
 					value = ($(i).value) ? $(i).value : $(i).innerHTML;
 					switch (args[i]) {
+						case "boolean":
+							if (!validate.bool(value)) {
+								invalid.push(i);
+								exception = true;
+							}
+							break;
 						case "domainip":
 							if ((!value.test(validate.pattern.domain))
 							    || (!value.test(validate.pattern.ip))) {
