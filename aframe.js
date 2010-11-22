@@ -33,7 +33,6 @@
  * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @class
  * @link http://avoidwork.com/products/aframe aFrame
  * @namespace
  * @version Alpha
