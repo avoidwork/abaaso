@@ -1212,8 +1212,14 @@ var aFrame = function(){
 				 observer.listeners[obj][event]["active"].push(item);
 
 				($(obj)) ? (($(obj).addEventListener) ?
-					    $(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
-					    $(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+					    (function(){
+						$(obj).removeEventListener(event, function(){ aFrame.fire(obj, event); }, false);
+						$(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false);
+						}) :
+					    (function(){
+						$(obj).detachEvent("on" + event, function(){ aFrame.fire(obj, event); });
+						$(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); });
+						}))
 				 : void(0);
 			}
 			catch (e) {
