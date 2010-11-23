@@ -1211,16 +1211,10 @@ var aFrame = function(){
 				 observer.listeners[obj][event]["active"][id] = item :
 				 observer.listeners[obj][event]["active"].push(item);
 
-				($(obj)) ? (($(obj).addEventListener) ?
-					    (function(){
-						$(obj).removeEventListener(event, function(){ aFrame.fire(obj, event); }, false);
-						$(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false);
-						}) :
-					    (function(){
-						$(obj).detachEvent("on" + event, function(){ aFrame.fire(obj, event); });
-						$(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); });
-						}))
-				 : void(0);
+ 				($(obj)) ? (($(obj).addEventListener) ?
+					    $(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
+					    $(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+				: void(0);
 			}
 			catch (e) {
 				error(e);
@@ -1302,6 +1296,10 @@ var aFrame = function(){
 				else {
 					if (id === undefined) {
 						delete observer.listeners[obj][event];
+						($(obj)) ? (($(obj).removeEventListener) ?
+							    $(obj).removeEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
+							    $(obj).removeEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+						: void(0);
 					}
 					else if ((id !== undefined)
 						 && (typeof id == String)
