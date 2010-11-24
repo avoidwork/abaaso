@@ -660,16 +660,18 @@ var aFrame = function(){
 					cache.set(uri, "headers", items);
 				}
 				else if (xmlHttp.readyState == 4) {
-					if (((xmlHttp.status == 200)
-					     || (xmlHttp.status == 201)
-					     || (xmlHttp.status == 204))
-					    && (typeof xmlHttp.responseText != "")) {
-						if (xmlHttp.status == 200) {
-							cache.set(uri, "epoch", new Date());
-							cache.set(uri, "response", xmlHttp.responseText);
+					if ((xmlHttp.status == 200)
+					    && (xmlHttp.responseText != "")) {
+						var state = null;
+						cache.set(uri, "epoch", new Date());
+						cache.set(uri, "response", xmlHttp.responseText);
+						uri = cache.get(uri, false);
+
+						if ((aFrame.state.header !== null)
+						    && (state = uri.headers.contains(aFrame.state.header)) && (state != "")) {
+							aFrame.fire("aFrame", state);
 						}
 
-						uri = cache.get(uri, false);
 						handler(uri);
 					}
 					else {
@@ -1527,69 +1529,70 @@ var aFrame = function(){
 		/**
 		 * Properties
 		 */
-		ready            : false,
+		ready		: false,
 
 		/**
 		 * Methods
 		 */
-		$                : utility.$,
-		clear            : el.clear,
-		create           : el.create,
-		del              : client.del,
-		destroy          : el.destroy,
-		domID            : utility.domID,
-		error            : utility.error,
-		fire             : observer.fire,
-		get              : client.get,
-		position         : el.position,
-		post             : client.post,
-		put              : client.put,
-		on               : observer.add,
-		un               : observer.remove,
-		update           : el.update,
+		$		: utility.$,
+		clear		: el.clear,
+		create		: el.create,
+		del		: client.del,
+		destroy		: el.destroy,
+		domID		: utility.domID,
+		error		: utility.error,
+		fire		: observer.fire,
+		get		: client.get,
+		position	: el.position,
+		post		: client.post,
+		put		: client.put,
+		on		: observer.add,
+		un		: observer.remove,
+		update		: el.update,
 
 		/**
 		 * Classes
 		 */
-		array            : array,
-		calendar         : calendar,
-		client           : {
+		array		: array,
+		calendar	: calendar,
+		client		: {
 			// Properties
-			css3     : client.css3,
-			chrome   : client.chrome,
-			firefox  : client.firefox,
-			ie       : client.ie,
-			ms       : client.ms,
-			opera    : client.opera,
-			safari   : client.safari,
-			version  : client.version,
+			css3	: client.css3,
+			chrome	: client.chrome,
+			firefox : client.firefox,
+			ie	: client.ie,
+			ms	: client.ms,
+			opera	: client.opera,
+			safari	: client.safari,
+			version	: client.version,
+
 			// Methods
-			del      : client.del,
-			get      : client.get,
-			post     : client.post,
-			put      : client.put
+			del	: client.del,
+			get	: client.get,
+			post	: client.post,
+			put	: client.put
 		},
-		database         : database,
-		el               : el,
-		fx               : fx,
-		json             : json,
-		label            : label,
-		listener         : {
-			add      : observer.add,
-			list     : observer.list,
-			remove   : observer.remove,
-			replace  : observer.replace
+		database	: database,
+		el		: el,
+		fx		: fx,
+		json		: json,
+		label		: label,
+		listener	: {
+			add	: observer.add,
+			list	: observer.list,
+			remove	: observer.remove,
+			replace	: observer.replace
 		},
-		number           : number,
-		state            : {
-			header   : null,
-			pattern  : /^.*$/
+		number          : number,
+		state		: {
+			header  : null,
+			pattern : /^.*$/
 		},
-		spinner          : {
-			create   : client.spinner,
-			url      : null
+		spinner		: {
+			create	: client.spinner,
+			url	: null
 		},
-		validate         : validate
+		validate	: validate
 	};
 }();
 
@@ -1624,7 +1627,7 @@ Element.prototype.domID = function() {
 };
 
 Element.prototype.get = function(arg) {
-	aFrame.get.call(this, arg, function() {
+	aFrame.get(arg, function() {
 		aFrame.update(this.id, {innerHTML: arguments[0]});
 	});
 };
@@ -1661,14 +1664,14 @@ String.prototype.domID = function() {
  * Firing the ready event
  */
 if ((aFrame.client.chrome) || (aFrame.client.firefox)) {
-	window.addEventListener("DOMContentLoaded", function() {
+	window.addEventListener("DOMContentLoaded", function(){
 		aFrame.ready = true;
 		aFrame.fire("aFrame", "ready");
 		aFrame.un("aFrame", "ready");
 	}, false);
 }
 else if (aFrame.client.safari) {
-	aFrame.ready = setInterval(function() {
+	aFrame.ready = setInterval(function(){
 		if (/loaded|complete/.test(document.readyState)) {
 			clearInterval(aFrame.ready);
 			aFrame.ready = true;
@@ -1678,7 +1681,7 @@ else if (aFrame.client.safari) {
 }
 else {
 	window.onload = function() {
-		aFrame.ready = setInterval(function() {
+		aFrame.ready = setInterval(function(){
 			if (!aFrame.ready) {
 				if (document.getElementById) {
 					clearInterval(aFrame.ready);
