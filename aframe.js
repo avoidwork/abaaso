@@ -662,14 +662,20 @@ var aFrame = function(){
 				else if (xmlHttp.readyState == 4) {
 					if ((xmlHttp.status == 200)
 					    && (xmlHttp.responseText != "")) {
-						var state = null;
+						var state = null,
+						        o = aFrame.state;
+
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xmlHttp.responseText);
+
 						uri = cache.get(uri, false);
 
-						if ((aFrame.state.header !== null)
-						    && (state = uri.headers.contains(aFrame.state.header)) && (state != "")) {
-							aFrame.fire("aFrame", state);
+						if ((o.header !== null)
+						    && (state = uri.headers.contains(o.header)) && (state != "")) {
+							o.previous = o.current;
+							o.current  = state.value;
+							observer.replace("aFrame", state.value, o.previous, o.current, o.current);
+							observer.fire("aFrame", state.value);
 						}
 
 						handler(uri);
@@ -1585,8 +1591,9 @@ var aFrame = function(){
 		},
 		number          : number,
 		state		: {
+			current : null,
 			header  : null,
-			pattern : /^.*$/
+			previous: null
 		},
 		spinner		: {
 			create	: client.spinner,
