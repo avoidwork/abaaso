@@ -497,7 +497,7 @@ var aFrame = function(){
 				if (this.ie) { return navigator.userAgent.replace(/(.*MSIE|;.*)/gi, ""); }
 				if (this.opera) { return navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, ""); }
 				if (this.safari) { return navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, ""); }
-				else { return navigator.appVersion; }
+				else { return parseInt(navigator.appVersion); }
 				}),
 
 		/**
