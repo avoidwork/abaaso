@@ -81,7 +81,6 @@ var aFrame = function(){
 		 * @param instance {mixed} The entity to search
 		 * @param arg {mixed} The argument to find (string or integer)
 		 * @returns {integer} The position of item in ar
-		 * @TODO make this accept comma delimited args
 		 */
 		index : function(instance, arg) {
 			try {
@@ -211,7 +210,6 @@ var aFrame = function(){
 	 * Override aFrame.calendar.date.pattern to change the localized pattern from ISO 8601
 	 *
 	 * @class
-	 * @todo finish refactoring the date picker, it's broken right now
 	 */
 	var calendar = {
 		/**
