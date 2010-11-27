@@ -16,7 +16,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL avoidwork inc. BE LIABLE FOR ANY
+ * DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
@@ -31,11 +31,15 @@
  * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
  *
  * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
+ * HATEOAS can be implemented by setting aFrame.state.header which will trigger a transition (state change) if the header is part of an xhr response.
+ * This requires standby listeners to be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
+ *
+ * See @link for the development roadmap.
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://avoidwork.com/products/aframe aFrame
  * @namespace
- * @version Alpha
+ * @version Beta
  */
 var aFrame = function(){
 	/**
