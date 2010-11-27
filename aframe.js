@@ -671,14 +671,15 @@ var aFrame = function(){
 						uri = cache.get(uri, false);
 
 						if ((o.header !== null)
-						    && (state = uri.headers.contains(o.header)) && (state != "")) {
+						    && (state = uri.headers[o.header]) && (state !== undefined)) {
 							o.previous = o.current;
-							o.current  = state.value;
-							observer.replace("aFrame", state.value, o.previous, o.current, o.current);
-							observer.fire("aFrame", state.value);
+							o.current  = state;
+							((o.previous !== null)
+							 && (o.current !== null)) ? observer.replace("aFrame", state, o.previous, o.current, o.current) : void(0);
+							observer.fire("aFrame", state);
 						}
 
-						handler(uri);
+						(handler !== undefined) ? handler(uri) : void(0);
 					}
 					else {
 						throw label.error.serverError;
