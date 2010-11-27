@@ -243,7 +243,7 @@ var aFrame = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {id: "aFrame_calendar", opacity: 0},
+				var args = {id: "aFrame_calendar"},
 				    o    = calendar.date;
 
 				o.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
@@ -251,22 +251,19 @@ var aFrame = function(){
 				o.c           = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : o.c;
 
 				$(target).blur();
-				((destination !== undefined) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
+				((o.destination !== null) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
 				($("aFrame_calendar")) ? el.destroy("aFrame_calendar") : void(0);
 
-				if (destination !== undefined) {
-					var pos = el.position(destination);
-					args.style = "top:"+pos[1]+"px;left:"+pos[0]+"px;";
+				if (o.destination !== null) {
+					var pos = el.position(target);
+					args.style = "top:" + pos[1] + "px;left:" + pos[0] + "px;z-index:9999;";
 					el.create("div", args);
 				}
 				else {
 					el.create("div", args, target);
 				}
 
-				if (calendar.render("aFrame_calendar", o.c)) {
-					fx.opacityShift("aFrame_calendar", 300);
-				}
-				else {
+				if (!calendar.render("aFrame_calendar", o.c)) {
 					$("aFrame_calendar").destroy();
 					throw label.error.elementNotCreated;
 				}
@@ -301,12 +298,13 @@ var aFrame = function(){
 					if (calendar.date.destination !== null) {
 						aFrame.un("href_day_" + dateStamp.getDate(), "click");
 						aFrame.on("href_day_" + dateStamp.getDate(), "click", function() {
-							var date = new Date(aFrame.calendar.date.current),
+							var date = new Date(aFrame.calendar.date.c),
 							    day  = this.innerHTML.match(/^\d{1,2}$/);
 
 							date.setDate(day[0]);
 							aFrame.calendar.date.c = date;
-							($(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).update(aFrame.calendar.output(date)) : void(0);
+							date = aFrame.calendar.format(date);
+							($(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).update({innerHTML: date, value: date}) : void(0);
 							aFrame.destroy("aFrame_calendar");
 							}, "href_day_" + dateStamp.getDate());
 					}
@@ -411,8 +409,11 @@ var aFrame = function(){
 						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
 						aFrame.un("calendarClear", "click");
 						aFrame.on("calendarClear", "click", function() {
-							((aFrame.calendar.date.destination != null)
-							  && $(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).clear() : void(0);
+							var o = aFrame.calendar.date;
+							((o.destination !== null) && $(o.destination)) ? $(o.destination).clear() : void(0);
+							o.c = new Date();
+							o.p = o.c;
+							o.n = o.c;
 							aFrame.destroy("aFrame_calendar");
 							});
 					}
@@ -742,6 +743,9 @@ var aFrame = function(){
 					switch (typeof $(id)) {
 						case "form":
 							$(id).reset();
+							break;
+						case "object":
+							$(id).update({innerHTML: "", value: ""});
 							break;
 						default:
 							$(id).update({innerHTML: ""});
