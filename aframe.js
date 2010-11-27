@@ -718,90 +718,6 @@ var aFrame = function(){
 	};
 
 	/**
-	 * Database methods
-	 *
-	 * @class
-	 */
-	var database = {
-		/**
-		 * Creates a local database if the client supports this feature
-		 *
-		 * @param id {string} The id of the database to create.
-		 * @param version {string} The version of the database to create.
-		 * @param name {string} The name of the database to create.
-		 * @param size {integer} The size of the database to create in bytes.
-		 * @returns {object} A local database,
-		 */
-		create : function(id, version, name, size) {
-			try {
-				if (window.openDatabase) {
-					var db = (size === undefined) ? window.openDatabase(id, version, name) : window.openDatabase(id, version, name, size);
-
-					if (db) {
-						return db;
-					}
-
-					throw label.error.databaseNotOpen;
-				}
-				else {
-					throw label.error.databaseNotSupported;
-				}
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Destroys the local database
-		 *
-		 * @param arg {string} The database.id to destroy
-		 */
-		destroy : function(arg) {
-			el.destroy(arg);
-		},
-
-		/**
-		 * Opens a local database
-		 *
-		 * @param arg {string} The database.id to open
-		 * @returns {object} The database
-		 * @todo implement this
-		 */
-		open : function(arg) {
-			void(0);
-		},
-
-		/**
-		 * Executes a query in a transaction with exception handling
-		 *
-		 * @param db {string} The local database to run the query against
-		 * @param arg {string} The query to run
-		 * @param handler {mixed} The transaction handler referenced in arg
-		 */
-		query : function(db, arg, handler) {
-			try {
-				if (arg.indexOf("?") == -1) {
-					throw label.error.databaseWarnInjection;
-				}
-
-				if (db) {
-					db.transaction(function(handler) {
-						handler.executeSql(arg);
-					});
-				}
-				else {
-					throw label.error.databaseNotOpen;
-				}
-			}
-			catch (e) {
-				error(e);
-			}
-		}
-	};
-
-	/**
 	 * Element methods
 	 *
 	 * @class
@@ -1196,33 +1112,43 @@ var aFrame = function(){
 		 * @param listener {function} The event listener
 		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param id {string} [Optional / Recommended] The id for the listener
-		 * @todo Implement eventListenerList when it's supported to clean up the registration with the DOM
+		 * @param standby {boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
 		 */
-		add : function(obj, event, listener, scope, id) {
+		add : function(obj, event, listener, scope, id, standby) {
 			try {
+				standby = ((standby !== undefined) && (standby === true)) ? true : false;
+
 				if ((obj === undefined)
 				    || (event === undefined)
 				    || (listener === undefined)
-				    || (!listener instanceof Function)) {
+				    || (!listener instanceof Function)
+				    || ((standby)
+					&& (id === undefined))) {
 					throw label.error.invalidArguments;
 				}
 
 				var item = {};
 				item.fn  = listener;
-				(scope !== undefined) ? item.scope = scope : void(0);
+				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
 
 				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
 				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
 				(observer.listeners[obj][event]["active"] === undefined) ? observer.listeners[obj][event]["active"] = [] : void(0);
 
-				(id !== undefined) ?
-				 observer.listeners[obj][event]["active"][id] = item :
-				 observer.listeners[obj][event]["active"].push(item);
+				if (!standby) {
+					(id !== undefined) ?
+					 observer.listeners[obj][event]["active"][id] = item :
+					 observer.listeners[obj][event]["active"].push(item);
 
- 				($(obj)) ? (($(obj).addEventListener) ?
-					    $(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
-					    $(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); }))
-				: void(0);
+					($(obj)) ? (($(obj).addEventListener) ?
+						    $(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
+						    $(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+					: void(0);
+				}
+				else {
+					(observer.listeners[obj][event]["standby"] === undefined) ? observer.listeners[obj][event]["standby"] = [] : void(0);
+					observer.listeners[obj][event]["standby"][id] = item;
+				}
 			}
 			catch (e) {
 				error(e);
@@ -1578,7 +1504,6 @@ var aFrame = function(){
 			post	: client.post,
 			put	: client.put
 		},
-		database	: database,
 		el		: el,
 		fx		: fx,
 		json		: json,
