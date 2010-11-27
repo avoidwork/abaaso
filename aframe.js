@@ -706,7 +706,7 @@ var aFrame = function(){
 			try {
 				if (!window["aFrame_spinner"]) {
 					window["aFrame_spinner"] = new Image();
-					window["aFrame_spinner"].src = aFrame.spinner_url;
+					window["aFrame_spinner"].src = aFrame.spinner.url;
 				}
 
 				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
@@ -1566,12 +1566,6 @@ Element.prototype.destroy = function() {
 
 Element.prototype.domID = function() {
 	return aFrame.domID(this.id);
-};
-
-Element.prototype.get = function(arg) {
-	aFrame.get(arg, function() {
-		aFrame.update(this.id, {innerHTML: arguments[0]});
-	});
 };
 
 Element.prototype.opacity = function(arg) {
