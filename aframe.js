@@ -291,11 +291,11 @@ var aFrame = function(){
 					var o    = calendar.date.c,
 					    args = {id: "href_day_" + dateStamp.getDate(), innerHTML: dateStamp.getDate()};
 
-					args.class = ((dateStamp.getDate() == o.getDate())
+					args["class"] = ((dateStamp.getDate() == o.getDate())
 						      && (dateStamp.getMonth() == o.getMonth())
 						      && (dateStamp.getFullYear() == o.getFullYear())) ? "current" : "weekend";
 
-					el.create("div", {id: "div_day_" + dateStamp.getDate(), class: "day"}, target);
+					el.create("div", {id: "div_day_" + dateStamp.getDate(), "class": "day"}, target);
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 
 					if (calendar.date.destination !== null) {
@@ -312,7 +312,7 @@ var aFrame = function(){
 					}
 				}
 				else {
-					el.create("div", {class: "day"}, target);
+					el.create("div", {"class": "day"}, target);
 				}
 			}
 			catch (e) {
@@ -479,11 +479,11 @@ var aFrame = function(){
 		 * Public properties
 		 */
 		css3	: (function(){
-				if ((client.chrome) && (parseInt(client.version) >= 6)) { return true; }
-				if ((client.firefox) && (parseInt(client.version) >= 3)) { return true; }
-				if ((client.ie) && (parseInt(client.version) >= 9)) { return true; }
-				if ((client.opera) && (parseInt(client.version >= 9))) { return true; }
-				if ((client.safari) && (parseInt(client.version >= 5))) { return true; }
+				if ((this.chrome) && (parseInt(client.version) >= 6)) { return true; }
+				if ((this.firefox) && (parseInt(client.version) >= 3)) { return true; }
+				if ((this.ie) && (parseInt(client.version) >= 9)) { return true; }
+				if ((this.opera) && (parseInt(client.version >= 9))) { return true; }
+				if ((this.safari) && (parseInt(client.version >= 5))) { return true; }
 				else { return false; }}),
 		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) ? true : false,
 		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
@@ -492,11 +492,11 @@ var aFrame = function(){
 		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
 		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
 		version	: (function(){
-				if (client.chrome) { return navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, ""); }
-				if (client.firefox) { return navigator.userAgent.replace(/(.*Firefox\/)/gi, ""); }
-				if (client.ie) { return navigator.userAgent.replace(/(.*MSIE\/|;.*)/gi, ""); }
-				if (client.opera) { return navigator.userAgent.replace(/(.*Opera\/|;.*)/gi, ""); }
-				if (client.safari) { return navigator.userAgent.replace(/(.*Safari\/|;.*)/gi, ""); }
+				if (this.chrome) { return navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, ""); }
+				if (this.firefox) { return navigator.userAgent.replace(/(.*Firefox\/)/gi, ""); }
+				if (this.ie) { return navigator.userAgent.replace(/(.*MSIE|;.*)/gi, ""); }
+				if (this.opera) { return navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, ""); }
+				if (this.safari) { return navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, ""); }
 				else { return navigator.appVersion; }
 				}),
 
@@ -716,7 +716,7 @@ var aFrame = function(){
 						alt: label.common.loading,
 						id: id + "_" + label.common.loading.toLocaleLowerCase(),
 						src: window["aFrame_spinner"].src,
-						class: "spinner"
+						"class": "spinner"
 						}, id);
 				}
 			}
@@ -1621,15 +1621,11 @@ else if (aFrame.client.safari) {
 		}}, 10);
 }
 else {
-	window.onload = function() {
-		aFrame.ready = setInterval(function(){
-			if (!aFrame.ready) {
-				if (document.getElementById) {
-					clearInterval(aFrame.ready);
-					aFrame.ready = true;
-					aFrame.fire("aFrame", "ready");
-					aFrame.un("aFrame", "ready");
-				}
-			}}, 10);
-	}
+	aFrame.ready = setInterval(function(){
+		if (document.getElementById) {
+			clearInterval(aFrame.ready);
+			aFrame.ready = true;
+			aFrame.fire("aFrame", "ready");
+			aFrame.un("aFrame", "ready");
+		}}, 10);
 }
