@@ -479,18 +479,26 @@ var aFrame = function(){
 		 * Public properties
 		 */
 		css3	: (function(){
-				if ((this.chrome) || (this.safari)) { return true; }
-				if ((this.firefox) && (this.version > 4)) { return true; }
-				if ((this.ie) && (this.version > 8)) { return true; }
-				if ((this.opera) && (this.version > 8)) { return true; }
-				return false;}),
-		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrom") > -1) ? true : false,
+				if ((client.chrome) && (parseInt(client.version) >= 6)) { return true; }
+				if ((client.firefox) && (parseInt(client.version) >= 3)) { return true; }
+				if ((client.ie) && (parseInt(client.version) >= 9)) { return true; }
+				if ((client.opera) && (parseInt(client.version >= 9))) { return true; }
+				if ((client.safari) && (parseInt(client.version >= 5))) { return true; }
+				else { return false; }}),
+		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) ? true : false,
 		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
 		ie	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
 		ms	: 0,
 		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
 		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
-		version	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "")) : parseInt(navigator.appVersion),
+		version	: (function(){
+				if (client.chrome) { return navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, ""); }
+				if (client.firefox) { return navigator.userAgent.replace(/(.*Firefox\/)/gi, ""); }
+				if (client.ie) { return navigator.userAgent.replace(/(.*MSIE\/|;.*)/gi, ""); }
+				if (client.opera) { return navigator.userAgent.replace(/(.*Opera\/|;.*)/gi, ""); }
+				if (client.safari) { return navigator.userAgent.replace(/(.*Safari\/|;.*)/gi, ""); }
+				else { return navigator.appVersion; }
+				}),
 
 		/**
 		 * Sends a DELETE to the URI
