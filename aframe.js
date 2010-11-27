@@ -588,11 +588,10 @@ var aFrame = function(){
 		/**
 		 * Creates an xmlHttp request to a URI
 		 *
-		 * @param uri {string} The resource to interact with.
-		 * @param handler {function} A handler function to execute when an appropriate  response been received.
-		 * @param type {string} The type of request.
-		 * @param args {mixed} Data to append to the HTTP request.
-		 * @todo detect if the URI doesn't match the domain/origin, and add to the head tag if that's the case instead of XMLHttpRequest!
+		 * @param uri {string} The resource to interact with
+		 * @param handler {function} A handler function to execute when an appropriate  response been received
+		 * @param type {string} The type of request
+		 * @param args {mixed} Data to append to the HTTP request
 		 */
 		request : function(uri, handler, type, args) {
 			var xmlHttp = false;
