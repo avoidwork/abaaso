@@ -26,22 +26,20 @@
  */
 
 /**
- * aFrame
+ * abaaso
  *
- * "An A-frame is a basic structure designed to bear a load in a lightweight economical manner."
- *
- * aFrame provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
- * HATEOAS can be implemented by setting aFrame.state.header which will trigger a transition (state change) if the header is part of an xhr response.
+ * abaaso provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
+ * HATEOAS can be implemented by setting abaaso.state.header which will trigger a transition (state change) if the header is part of an xhr response.
  * This requires standby listeners to be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
  *
  * See @link for the development roadmap.
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @link http://avoidwork.com/products/aframe aFrame
+ * @link http://avoidwork.com/products/abaaso abaaso
  * @namespace
  * @version Beta
  */
-var aFrame = function(){
+var abaaso = function(){
 	/**
 	 * Array methods
 	 *
@@ -211,7 +209,7 @@ var aFrame = function(){
 	/**
 	 * Calendar methods
 	 *
-	 * Override aFrame.calendar.date.pattern to change the localized pattern from ISO 8601
+	 * Override abaaso.calendar.date.pattern to change the localized pattern from ISO 8601
 	 *
 	 * @class
 	 */
@@ -245,7 +243,7 @@ var aFrame = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {id: "aFrame_calendar"},
+				var args = {id: "abaaso_calendar"},
 				    o    = calendar.date;
 
 				o.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
@@ -254,7 +252,7 @@ var aFrame = function(){
 
 				$(target).blur();
 				((o.destination !== null) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
-				($("aFrame_calendar")) ? el.destroy("aFrame_calendar") : void(0);
+				($("abaaso_calendar")) ? el.destroy("abaaso_calendar") : void(0);
 
 				if (o.destination !== null) {
 					var pos = el.position(target);
@@ -265,8 +263,8 @@ var aFrame = function(){
 					el.create("div", args, target);
 				}
 
-				if (!calendar.render("aFrame_calendar", o.c)) {
-					$("aFrame_calendar").destroy();
+				if (!calendar.render("abaaso_calendar", o.c)) {
+					$("abaaso_calendar").destroy();
 					throw label.error.elementNotCreated;
 				}
 			}
@@ -298,16 +296,16 @@ var aFrame = function(){
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 
 					if (calendar.date.destination !== null) {
-						aFrame.un("href_day_" + dateStamp.getDate(), "click");
-						aFrame.on("href_day_" + dateStamp.getDate(), "click", function() {
-							var date = new Date(aFrame.calendar.date.c),
+						abaaso.un("href_day_" + dateStamp.getDate(), "click");
+						abaaso.on("href_day_" + dateStamp.getDate(), "click", function() {
+							var date = new Date(abaaso.calendar.date.c),
 							    day  = this.innerHTML.match(/^\d{1,2}$/);
 
 							date.setDate(day[0]);
-							aFrame.calendar.date.c = date;
-							date = aFrame.calendar.format(date);
-							($(aFrame.calendar.date.destination)) ? $(aFrame.calendar.date.destination).update({innerHTML: date, value: date}) : void(0);
-							aFrame.destroy("aFrame_calendar");
+							abaaso.calendar.date.c = date;
+							date = abaaso.calendar.format(date);
+							($(abaaso.calendar.date.destination)) ? $(abaaso.calendar.date.destination).update({innerHTML: date, value: date}) : void(0);
+							abaaso.destroy("abaaso_calendar");
 							}, "href_day_" + dateStamp.getDate());
 					}
 				}
@@ -409,37 +407,37 @@ var aFrame = function(){
 
 					if (o.clear) {
 						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
-						aFrame.un("calendarClear", "click");
-						aFrame.on("calendarClear", "click", function() {
-							var o = aFrame.calendar.date;
+						abaaso.un("calendarClear", "click");
+						abaaso.on("calendarClear", "click", function() {
+							var o = abaaso.calendar.date;
 							((o.destination !== null) && $(o.destination)) ? $(o.destination).clear() : void(0);
 							o.c = new Date();
 							o.p = o.c;
 							o.n = o.c;
-							aFrame.destroy("aFrame_calendar");
+							abaaso.destroy("abaaso_calendar");
 							});
 					}
 
 					el.create("a", {id: "calendarClose", innerHTML: label.common.close}, "calendarTop");
-					aFrame.un("calendarClose", "click");
-					aFrame.on("calendarClose", "click", function() {
-						aFrame.destroy("aFrame_calendar");
+					abaaso.un("calendarClose", "click");
+					abaaso.on("calendarClose", "click", function() {
+						abaaso.destroy("abaaso_calendar");
 						});
 
 					el.create("div", {id: "calendarHeader"}, target);
 
 					el.create("a", {id: "calendarPrev", innerHTML: "&lt;"}, "calendarHeader");
-					aFrame.un("calendarPrev", "click");
-					aFrame.on("calendarPrev", "click", function() {
-						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.p);
+					abaaso.un("calendarPrev", "click");
+					abaaso.on("calendarPrev", "click", function() {
+						abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.p);
 						});
 
 					el.create("span", {id: "calendarMonth", innerHTML: o.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
 
 					el.create("a", {id: "calendarNext", innerHTML: "&gt;"}, "calendarHeader");
-					aFrame.un("calendarNext", "click");
-					aFrame.on("calendarNext", "click", function() {
-						aFrame.calendar.render("aFrame_calendar", aFrame.calendar.date.n);
+					abaaso.un("calendarNext", "click");
+					abaaso.on("calendarNext", "click", function() {
+						abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.n);
 						});
 
 					el.create("div", {id: "calendarDays"}, target);
@@ -673,7 +671,7 @@ var aFrame = function(){
 					if ((xmlHttp.status == 200)
 					    && (xmlHttp.responseText != "")) {
 						var state = null,
-						        o = aFrame.state;
+						        o = abaaso.state;
 
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xmlHttp.responseText);
@@ -685,8 +683,8 @@ var aFrame = function(){
 							o.previous = o.current;
 							o.current  = state;
 							((o.previous !== null)
-							 && (o.current !== null)) ? observer.replace("aFrame", state, o.previous, o.current, o.current) : void(0);
-							observer.fire("aFrame", state);
+							 && (o.current !== null)) ? observer.replace("abaaso", state, o.previous, o.current, o.current) : void(0);
+							observer.fire("abaaso", state);
 						}
 
 						(handler !== undefined) ? handler(uri) : void(0);
@@ -708,16 +706,16 @@ var aFrame = function(){
 		 */
 		spinner : function(id) {
 			try {
-				if (!window["aFrame_spinner"]) {
-					window["aFrame_spinner"] = new Image();
-					window["aFrame_spinner"].src = aFrame.spinner.url;
+				if (!window["abaaso_spinner"]) {
+					window["abaaso_spinner"] = new Image();
+					window["abaaso_spinner"].src = abaaso.spinner.url;
 				}
 
 				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
 					el.create("img", {
 						alt: label.common.loading,
 						id: id + "_" + label.common.loading.toLocaleLowerCase(),
-						src: window["aFrame_spinner"].src,
+						src: window["abaaso_spinner"].src,
 						"class": "spinner"
 						}, id);
 				}
@@ -1044,7 +1042,7 @@ var aFrame = function(){
 	/**
 	 * Labels for localization
 	 *
-	 * Overload this with another language pack
+	 * Override this with another language pack
 	 *
 	 * @class
 	 */
@@ -1155,8 +1153,8 @@ var aFrame = function(){
 					 observer.listeners[obj][event]["active"].push(item);
 
 					($(obj)) ? (($(obj).addEventListener) ?
-						    $(obj).addEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
-						    $(obj).attachEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+						    $(obj).addEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
+						    $(obj).attachEvent("on" + event, function(){ abaaso.fire(obj, event); }))
 					: void(0);
 				}
 				else {
@@ -1245,8 +1243,8 @@ var aFrame = function(){
 					if (id === undefined) {
 						delete observer.listeners[obj][event];
 						($(obj)) ? (($(obj).removeEventListener) ?
-							    $(obj).removeEventListener(event, function(){ aFrame.fire(obj, event); }, false) :
-							    $(obj).removeEvent("on" + event, function(){ aFrame.fire(obj, event); }))
+							    $(obj).removeEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
+							    $(obj).removeEvent("on" + event, function(){ abaaso.fire(obj, event); }))
 						: void(0);
 					}
 					else if ((id !== undefined)
@@ -1546,85 +1544,85 @@ var aFrame = function(){
  * Declaring a global helper
  */
 var $ = function(arg) {
-	return aFrame.$(arg);
+	return abaaso.$(arg);
 };
 
 /**
- * Prototyping standard objects with aFrame
+ * Prototyping standard objects with abaaso
  */
 Array.prototype.contains = function(arg) {
-	aFrame.array.contains(this, arg);
+	abaaso.array.contains(this, arg);
 };
 
 Array.prototype.index = function(arg) {
-	aFrame.array.index(this, arg);
+	abaaso.array.index(this, arg);
 };
 
 Array.prototype.remove = function(arg) {
-	aFrame.array.remove(this, arg);
+	abaaso.array.remove(this, arg);
 };
 
 Element.prototype.destroy = function() {
-	aFrame.destroy(this.id);
+	abaaso.destroy(this.id);
 };
 
 Element.prototype.domID = function() {
-	return aFrame.domID(this.id);
+	return abaaso.domID(this.id);
 };
 
 Element.prototype.opacity = function(arg) {
-	return aFrame.fx.opacity(this, arg);
+	return abaaso.fx.opacity(this, arg);
 };
 
 Element.prototype.opacityShift = function(arg) {
-	aFrame.fx.opacityShift(this.id, arg);
+	abaaso.fx.opacityShift(this.id, arg);
 };
 
 Element.prototype.clear = function() {
-	aFrame.clear(this.id);
+	abaaso.clear(this.id);
 };
 
 Element.prototype.update = function(args) {
-	aFrame.update(this.id, args);
+	abaaso.update(this.id, args);
 };
 
 Number.prototype.even = function() {
-	return aFrame.number.even(this);
+	return abaaso.number.even(this);
 };
 
 Number.prototype.odd = function() {
-	return aFrame.number.odd(this);
+	return abaaso.number.odd(this);
 };
 
 String.prototype.domID = function() {
-	return aFrame.domID(this);
+	return abaaso.domID(this);
 };
 
 /**
  * Firing the ready event
  */
-if ((aFrame.client.chrome) || (aFrame.client.firefox)) {
+if ((abaaso.client.chrome) || (abaaso.client.firefox)) {
 	window.addEventListener("DOMContentLoaded", function(){
-		aFrame.ready = true;
-		aFrame.fire("aFrame", "ready");
-		aFrame.un("aFrame", "ready");
+		abaaso.ready = true;
+		abaaso.fire("abaaso", "ready");
+		abaaso.un("abaaso", "ready");
 	}, false);
 }
-else if (aFrame.client.safari) {
-	aFrame.ready = setInterval(function(){
+else if (abaaso.client.safari) {
+	abaaso.ready = setInterval(function(){
 		if (/loaded|complete/.test(document.readyState)) {
-			clearInterval(aFrame.ready);
-			aFrame.ready = true;
-			aFrame.fire("aFrame", "ready");
-			aFrame.un("aFrame", "ready");
+			clearInterval(abaaso.ready);
+			abaaso.ready = true;
+			abaaso.fire("abaaso", "ready");
+			abaaso.un("abaaso", "ready");
 		}}, 10);
 }
 else {
-	aFrame.ready = setInterval(function(){
+	abaaso.ready = setInterval(function(){
 		if (document.getElementById) {
-			clearInterval(aFrame.ready);
-			aFrame.ready = true;
-			aFrame.fire("aFrame", "ready");
-			aFrame.un("aFrame", "ready");
+			clearInterval(abaaso.ready);
+			abaaso.ready = true;
+			abaaso.fire("abaaso", "ready");
+			abaaso.un("abaaso", "ready");
 		}}, 10);
 }

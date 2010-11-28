@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-#aFrame_calendar
+#abaaso_calendar
 {
 	background:#f5f5f5;
 	border:1px solid #e2e2e2;
@@ -11,31 +11,31 @@
 	color:#999;
 	font:12px Arial, Helvetica, sans-serif;
 }
-#aFrame_calendar a
+#abaaso_calendar a
 {
 	color:#999;
 	outline-style:none;
 	text-decoration:none;
 	cursor:pointer;
 }
-#aFrame_calendar a:hover
+#abaaso_calendar a:hover
 {
 	color:#000;
 }
-#aFrame_calendar a.current
+#abaaso_calendar a.current
 {
 	color:#09F;
 }
-#aFrame_calendar a.weekend
+#abaaso_calendar a.weekend
 {
 	color:#F00;
 }
-#aFrame_calendar div
+#abaaso_calendar div
 {
 	margin:0 0 0 0;
 	border:0px;
 }
-#aFrame_calendar div.day
+#abaaso_calendar div.day
 {
 	float:left;
 	height:24px;
@@ -44,11 +44,11 @@
 	text-align:center;
 	vertical-align:middle;
 }
-#aFrame_calendar div.day a:hover
+#abaaso_calendar div.day a:hover
 {
 	font-weight:bold;
 }
-#aFrame_calendar #calendarTop
+#abaaso_calendar #calendarTop
 {
 	text-align:right;
 	padding:1px 4px 4px 1px;
@@ -56,33 +56,33 @@
 	font-size:10px;
 	background:#e2e2e2;
 }
-#aFrame_calendar #calendarTop a
+#abaaso_calendar #calendarTop a
 {
 	margin:0 0 0 5px;
 }
-#aFrame_calendar #calendarHeader
+#abaaso_calendar #calendarHeader
 {
 	text-align:center;
 	padding:4px 0 4px 0;
 	font-weight:bold;
 }
-#aFrame_calendar #calendarHeader a
+#abaaso_calendar #calendarHeader a
 {
 	font-weight:bold;
 }
-#aFrame_calendar #calendarMonth
+#abaaso_calendar #calendarMonth
 {
 	width:120px;
 	height:24px;
 	display:inline-block;
 }
-#aFrame_calendar #calendarPrev
+#abaaso_calendar #calendarPrev
 {
 	width:24px;
 	height:24px;
 	display:inline-block;
 }
-#aFrame_calendar #calendarNext
+#abaaso_calendar #calendarNext
 {
 	width:24px;
 	height:24px;
