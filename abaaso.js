@@ -1453,8 +1453,8 @@ var abaaso = function(){
 							break;
 						default:
 							value = new String(value);
-							pattern = (pattern[args[i]]) ? pattern[args[i]] : args[i];
-							if (!pattern.test(value)) {
+							var p = (pattern[args[i]]) ? pattern[args[i]] : args[i];
+							if (!p.test(value)) {
 								invalid.push(i);
 								exception = true;
 							}
