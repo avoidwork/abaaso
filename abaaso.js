@@ -1381,12 +1381,14 @@ var abaaso = function(){
 		 * Regular expression patterns to test against
 		 */
 		pattern : {
-			domain : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
-			ip     : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
-			email  : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
-			number : /^(\d+)$/,
-			phone  : /^(([0-9]{1})*[- .(]*([0-9a-zA-Z]{3})*[- .)]*[0-9a-zA-Z]{3}[- .]*[0-9a-zA-Z]{4})+$/,
-			string : /^(\w+)$/
+			domain   : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
+			ip       : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
+			integer  : /(^-?\d\d*$)/,
+			email    : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
+			number   : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/,
+			notEmpty : /\S/,
+			phone    : /^\([1-9]\d{2}\)\s?\d{3}\-\d{4}$/,
+			string   : /\w/
 		},
 
 		/**
@@ -1428,6 +1430,12 @@ var abaaso = function(){
 					switch (args[i]) {
 						case "boolean":
 							if (!validate.bool(value)) {
+								invalid.push(i);
+								exception = true;
+							}
+							break;
+						case "date":
+							if (!new Date(value)) {
 								invalid.push(i);
 								exception = true;
 							}
