@@ -1423,6 +1423,7 @@ var abaaso = function(){
 			try {
 				var exception = false,
 				    invalid   = [],
+				    pattern   = validate.pattern,
 				    value     = null;
 
 				for (var i in args) {
@@ -1436,7 +1437,7 @@ var abaaso = function(){
 							break;
 						case "date":
 							value = new String(value);
-							if ((!validate.pattern.notEmpty.test(value))
+							if ((!pattern.notEmpty.test(value))
 							    || (!new Date(value))) {
 								invalid.push(i);
 								exception = true;
@@ -1444,15 +1445,15 @@ var abaaso = function(){
 							break;
 						case "domainip":
 							value = new String(value);
-							if ((!validate.pattern.domain.test(value))
-							    || (!validate.pattern.ip.test(value))) {
+							if ((!pattern.domain.test(value))
+							    || (!pattern.ip.test(value))) {
 								invalid.push(i);
 								exception = true;
 							}
 							break;
 						default:
 							value = new String(value);
-							var pattern = (validate.pattern[args[i]]) ? validate.pattern[args[i]] : args[i];
+							pattern = (pattern[args[i]]) ? pattern[args[i]] : args[i];
 							if (!pattern.test(value)) {
 								invalid.push(i);
 								exception = true;
