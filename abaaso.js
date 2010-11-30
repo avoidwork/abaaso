@@ -1433,15 +1433,17 @@ var abaaso = function(){
 							}
 							break;
 						case "domainip":
-							if ((!value.test(validate.pattern.domain))
-							    || (!value.test(validate.pattern.ip))) {
+							value = new String(value);
+							if ((!validate.pattern.domain.test(value))
+							    || (!validate.pattern.ip.test(value))) {
 								invalid.push(i);
 								exception = true;
 							}
 							break;
 						default:
+							value = new String(value);
 							var pattern = (validate.pattern[args[i]]) ? validate.pattern[args[i]] : args[i];
-							if (!value.test(pattern)) {
+							if (!pattern.test(value)) {
 								invalid.push(i);
 								exception = true;
 							}
