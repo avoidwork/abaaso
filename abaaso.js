@@ -1435,7 +1435,9 @@ var abaaso = function(){
 							}
 							break;
 						case "date":
-							if (!new Date(value)) {
+							value = new String(value);
+							if ((!validate.pattern.notEmpty.test(value))
+							    || (!new Date(value))) {
 								invalid.push(i);
 								exception = true;
 							}
