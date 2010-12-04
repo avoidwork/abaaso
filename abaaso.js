@@ -902,7 +902,7 @@ var abaaso = function(){
 
 				if (obj !== undefined) {
 					if (opacity !== undefined) {
-						(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (opacity/100);
+						(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (parseInt(opacity)/100);
 						return parseInt(opacity);
 					}
 					else {
@@ -1638,4 +1638,11 @@ else {
 			abaaso.fire("abaaso", "ready");
 			abaaso.un("abaaso", "ready");
 		}}, 10);
+}
+
+/**
+ * Firing the render event
+ */
+window.onload = function() {
+	abaaso.fire("abaaso", "render");
 }
