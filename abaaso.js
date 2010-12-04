@@ -1077,12 +1077,15 @@ var abaaso = function(){
 			cont    : "Continue",
 			del     : "Delete",
 			edit    : "Edit",
+			find    : "Find",
 			gen     : "Generate",
+			go      : "Go",
 			loading : "Loading",
 			next    : "Next",
 			login   : "Login",
 			ran     : "Random",
 			save    : "Save",
+			search  : "Search",
 			submit  : "Submit"
 		},
 
