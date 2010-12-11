@@ -29,7 +29,7 @@
  * abaaso
  *
  * abaaso provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
- * HATEOAS can be implemented by setting abaaso.state.header which will trigger a transition (state change) if the header is part of an xhr response.
+ * HATEOAS can be implemented by setting abaaso.state.header which will trigger a transition (state change) if the header is part of an XHR response.
  * This requires standby listeners to be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
  *
  * See @link for the development roadmap.
@@ -1502,6 +1502,12 @@ var abaaso = function(){
 		domID		: utility.domID,
 		error		: utility.error,
 		fire		: observer.fire,
+		init            : function() {
+			abaaso.ready = true;
+			abaaso.fire("abaaso", "ready");
+			abaaso.un("abaaso", "ready");
+			delete abaaso.init;
+			},
 		get		: client.get,
 		position	: el.position,
 		post		: client.post,
@@ -1615,37 +1621,32 @@ String.prototype.domID = function() {
 };
 
 /**
- * Firing the ready event
+ * Setting events
  */
 if ((abaaso.client.chrome) || (abaaso.client.firefox)) {
 	window.addEventListener("DOMContentLoaded", function(){
-		abaaso.ready = true;
-		abaaso.fire("abaaso", "ready");
-		abaaso.un("abaaso", "ready");
+		abaaso.init();
 	}, false);
 }
 else if (abaaso.client.safari) {
 	abaaso.ready = setInterval(function(){
 		if (/loaded|complete/.test(document.readyState)) {
 			clearInterval(abaaso.ready);
-			abaaso.ready = true;
-			abaaso.fire("abaaso", "ready");
-			abaaso.un("abaaso", "ready");
+			abaaso.init();
 		}}, 10);
 }
 else {
 	abaaso.ready = setInterval(function(){
 		if (document.getElementById) {
 			clearInterval(abaaso.ready);
-			abaaso.ready = true;
-			abaaso.fire("abaaso", "ready");
-			abaaso.un("abaaso", "ready");
+			abaaso.init();
 		}}, 10);
 }
 
-/**
- * Firing the render event
- */
 window.onload = function() {
 	abaaso.fire("abaaso", "render");
+}
+
+window.onresize = function() {
+	abaaso.fire("abaaso", "resize");
 }
