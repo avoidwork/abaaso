@@ -1489,6 +1489,7 @@ var abaaso = function(){
 		/**
 		 * Properties
 		 */
+		id		: 'abaaso',
 		ready		: false,
 
 		/**
@@ -1572,53 +1573,18 @@ var $ = function(arg) {
 /**
  * Prototyping standard objects with abaaso
  */
-Array.prototype.contains = function(arg) {
-	abaaso.array.contains(this, arg);
-};
-
-Array.prototype.index = function(arg) {
-	abaaso.array.index(this, arg);
-};
-
-Array.prototype.remove = function(arg) {
-	abaaso.array.remove(this, arg);
-};
-
-Element.prototype.destroy = function() {
-	abaaso.destroy(this.id);
-};
-
-Element.prototype.domID = function() {
-	return abaaso.domID(this.id);
-};
-
-Element.prototype.opacity = function(arg) {
-	return abaaso.fx.opacity(this, arg);
-};
-
-Element.prototype.opacityShift = function(arg) {
-	abaaso.fx.opacityShift(this.id, arg);
-};
-
-Element.prototype.clear = function() {
-	abaaso.clear(this.id);
-};
-
-Element.prototype.update = function(args) {
-	abaaso.update(this.id, args);
-};
-
-Number.prototype.even = function() {
-	return abaaso.number.even(this);
-};
-
-Number.prototype.odd = function() {
-	return abaaso.number.odd(this);
-};
-
-String.prototype.domID = function() {
-	return abaaso.domID(this);
-};
+Array.prototype.contains       = function(arg) { abaaso.array.contains(this, arg); };
+Array.prototype.index          = function(arg) { abaaso.array.index(this, arg); };
+Array.prototype.remove         = function(arg) { abaaso.array.remove(this, arg); };
+Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
+Element.prototype.domID        = function() { return abaaso.domID(this.id); };
+Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
+Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
+Element.prototype.clear        = function() { abaaso.clear(this.id); };
+Element.prototype.update       = function(args) { abaaso.update(this.id, args); };
+Number.prototype.even          = function() { return abaaso.number.even(this); };
+Number.prototype.odd           = function() { return abaaso.number.odd(this); };
+String.prototype.domID         = function() { return abaaso.domID(this); };
 
 /**
  * Setting events
@@ -1642,11 +1608,5 @@ else {
 			abaaso.init();
 		}}, 10);
 }
-
-window.onload = function() {
-	abaaso.fire("abaaso", "render");
-}
-
-window.onresize = function() {
-	abaaso.fire("abaaso", "resize");
-}
+window.onload   = function() { abaaso.fire("abaaso", "render"); }
+window.onresize = function() { abaaso.fire("abaaso", "resize"); }
