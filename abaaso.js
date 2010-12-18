@@ -1122,12 +1122,13 @@ var abaaso = function(){
 		/**
 		 * Adds a listener to an object
 		 *
-		 * @param obj {string} The object firing the event
+		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
 		 * @param listener {function} The event listener
 		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param id {string} [Optional / Recommended] The id for the listener
 		 * @param standby {boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
+		 * @todo make obj either a string or object instance friendly
 		 */
 		add : function(obj, event, listener, scope, id, standby) {
 			try {
@@ -1513,8 +1514,6 @@ var abaaso = function(){
 		position	: el.position,
 		post		: client.post,
 		put		: client.put,
-		on		: observer.add,
-		un		: observer.remove,
 		update		: el.update,
 
 		/**
@@ -1571,16 +1570,24 @@ var $ = function(arg) {
 };
 
 /**
+ * Putting observer methods on the singleton
+ */
+abaaso.on = function(event, listener, scope, id, standby) { abaaso.listener.add("abaaso", event, listener, scope, id, standby); };
+abaaso.un = function(event, id) { abaaso.listener.remove("abaaso", event, id); };
+
+/**
  * Prototyping standard objects with abaaso
  */
 Array.prototype.contains       = function(arg) { abaaso.array.contains(this, arg); };
 Array.prototype.index          = function(arg) { abaaso.array.index(this, arg); };
 Array.prototype.remove         = function(arg) { abaaso.array.remove(this, arg); };
+Element.prototype.clear        = function() { abaaso.clear(this.id); };
 Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
 Element.prototype.domID        = function() { return abaaso.domID(this.id); };
+Element.prototype.on           = function(event, listener, scope, id, standby) { abaaso.listener.add(this.id, event, listener, scope, id, standby); };
 Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
-Element.prototype.clear        = function() { abaaso.clear(this.id); };
+Element.prototype.un           = function(event, id) { abaaso.listener.remove(this.id, event, id); };
 Element.prototype.update       = function(args) { abaaso.update(this.id, args); };
 Number.prototype.even          = function() { return abaaso.number.even(this); };
 Number.prototype.odd           = function() { return abaaso.number.odd(this); };
@@ -1608,5 +1615,9 @@ else {
 			abaaso.init();
 		}}, 10);
 }
+
+/**
+ * Registering general Window events
+ */
 window.onload   = function() { abaaso.fire("abaaso", "render"); }
 window.onresize = function() { abaaso.fire("abaaso", "resize"); }
