@@ -1128,10 +1128,10 @@ var abaaso = function(){
 		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param id {string} [Optional / Recommended] The id for the listener
 		 * @param standby {boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
-		 * @todo make obj either a string or object instance friendly
 		 */
 		add : function(obj, event, listener, scope, id, standby) {
 			try {
+				obj     = (obj instanceof Object) ? obj.id : obj;
 				standby = ((standby !== undefined) && (standby === true)) ? true : false;
 
 				if ((obj === undefined)
@@ -1174,11 +1174,13 @@ var abaaso = function(){
 		/**
 		 * Fires an event
 		 *
-		 * @param obj {string} The object firing the event
+		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
 		 */
 		fire : function(obj, event) {
 			try {
+				obj = (obj instanceof Object) ? obj.id : obj;
+
 				if ((obj === undefined)
 				    || (event === undefined)) {
 					throw label.error.invalidArguments;
@@ -1210,11 +1212,13 @@ var abaaso = function(){
 		/**
 		 * Lists the active and standby listeners for an object event
 		 *
-		 * @param obj {string} The object firing the event
+		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
 		 */
 		list : function(obj, event) {
 			try {
+				obj = (obj instanceof Object) ? obj.id : obj;
+
 				if ((obj === undefined)
 				    || (event === undefined)) {
 					throw label.error.invalidArguments;
@@ -1231,12 +1235,14 @@ var abaaso = function(){
 		/**
 		 * Removes an event listener, or listeners
 		 *
-		 * @param obj {string} The object firing the event
+		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
 		 * @param id {string} [Optional] The identifier for the listener
 		 */
 		remove : function(obj, event, id) {
 			try {
+				obj = (obj instanceof Object) ? obj.id : obj;
+
 				if ((obj === undefined)
 				    || (event === undefined)
 				    || (observer.listeners[obj] === undefined)
@@ -1266,7 +1272,7 @@ var abaaso = function(){
 		/**
 		 * Replaces an active listener, moving it to the standby collection
 		 *
-		 * @param obj {string} The object firing the event
+		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event
 		 * @param id {string} The identifier for the active listener
 		 * @param sId {string} The identifier for the new standby listener
@@ -1274,6 +1280,8 @@ var abaaso = function(){
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
+				obj = (obj instanceof Object) ? obj.id : obj;
+
 				if ((obj === undefined)
 				    || (event === undefined)
 				    || (id === undefined)
@@ -1490,75 +1498,75 @@ var abaaso = function(){
 		/**
 		 * Properties
 		 */
-		id		: 'abaaso',
-		ready		: false,
+		id              : 'abaaso',
+		ready           : false,
 
 		/**
 		 * Methods
 		 */
-		$		: utility.$,
-		clear		: el.clear,
-		create		: el.create,
-		del		: client.del,
-		destroy		: el.destroy,
-		domID		: utility.domID,
-		error		: utility.error,
-		fire		: observer.fire,
+		$               : utility.$,
+		clear           : el.clear,
+		create          : el.create,
+		del             : client.del,
+		destroy         : el.destroy,
+		domID           : utility.domID,
+		error           : utility.error,
+		fire            : observer.fire,
 		init            : function() {
 			abaaso.ready = true;
 			abaaso.fire("abaaso", "ready");
-			abaaso.un("abaaso", "ready");
+			abaaso.un("ready");
 			delete abaaso.init;
 			},
-		get		: client.get,
-		position	: el.position,
-		post		: client.post,
-		put		: client.put,
-		update		: el.update,
+		get             : client.get,
+		position        : el.position,
+		post            : client.post,
+		put             : client.put,
+		update          : el.update,
 
 		/**
 		 * Classes
 		 */
-		array		: array,
-		calendar	: calendar,
-		client		: {
+		array           : array,
+		calendar        : calendar,
+		client          : {
 			// Properties
-			css3	: client.css3,
-			chrome	: client.chrome,
+			css3    : client.css3,
+			chrome  : client.chrome,
 			firefox : client.firefox,
-			ie	: client.ie,
-			ms	: client.ms,
-			opera	: client.opera,
-			safari	: client.safari,
-			version	: client.version,
+			ie      : client.ie,
+			ms      : client.ms,
+			opera   : client.opera,
+			safari  : client.safari,
+			version : client.version,
 
 			// Methods
-			del	: client.del,
-			get	: client.get,
-			post	: client.post,
-			put	: client.put
-		},
-		el		: el,
-		fx		: fx,
-		json		: json,
-		label		: label,
-		listener	: {
-			add	: observer.add,
-			list	: observer.list,
-			remove	: observer.remove,
-			replace	: observer.replace
-		},
+			del     : client.del,
+			get     : client.get,
+			post    : client.post,
+			put     : client.put
+			},
+		el              : el,
+		fx              : fx,
+		json            : json,
+		label           : label,
+		listener        : {
+			add     : observer.add,
+			list    : observer.list,
+			remove  : observer.remove,
+			replace : observer.replace
+			},
 		number          : number,
-		state		: {
+		state           : {
 			current : null,
 			header  : null,
 			previous: null
-		},
-		spinner		: {
-			create	: client.spinner,
-			url	: null
-		},
-		validate	: validate
+			},
+		spinner         : {
+			create  : client.spinner,
+			url     : null
+			},
+		validate        : validate
 	};
 }();
 
@@ -1572,8 +1580,8 @@ var $ = function(arg) {
 /**
  * Putting observer methods on the singleton
  */
-abaaso.on = function(event, listener, scope, id, standby) { abaaso.listener.add("abaaso", event, listener, scope, id, standby); };
-abaaso.un = function(event, id) { abaaso.listener.remove("abaaso", event, id); };
+abaaso.on = function(event, listener, scope, id, standby) { abaaso.listener.add(this, event, listener, scope, id, standby); };
+abaaso.un = function(event, id) { abaaso.listener.remove(this, event, id); };
 
 /**
  * Prototyping standard objects with abaaso
