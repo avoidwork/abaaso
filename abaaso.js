@@ -1561,26 +1561,24 @@ var abaaso = function(){
 		domID           : utility.domID,
 		error           : utility.error,
 		fire            : observer.fire,
+		get             : client.get,
 		init            : function() {
 			abaaso.ready = true;
 
-			methods = [
+			var methods = [
 				{name: "clear", fn: function() { abaaso.clear(this.id); }},
 				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
 				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.listener.add(this.id, event, listener, scope, id, standby); }},
 				{name: "un", fn: function(event, id) { abaaso.listener.remove(this.id, event, id); }}
 				];
 
-			i = methods.length;
+			var i = methods.length;
 
 			while (i--) {
 				Array.prototype[methods[i].name]   = methods[i].fn;
 				Element.prototype[methods[i].name] = methods[i].fn;
 				String.prototype[methods[i].name]  = methods[i].fn;
 			}
-
-			delete i;
-			delete methods;
 
 			Array.prototype.contains       = function(arg) { abaaso.array.contains(this, arg); };
 			Array.prototype.index          = function(arg) { abaaso.array.index(this, arg); };
@@ -1603,7 +1601,6 @@ var abaaso = function(){
 
 			delete abaaso.init;
 			},
-		get             : client.get,
 		position        : el.position,
 		post            : client.post,
 		put             : client.put,
