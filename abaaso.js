@@ -28,11 +28,16 @@
 /**
  * abaaso
  *
- * abaaso provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
- * HATEOAS can be implemented by setting abaaso.state.header which will trigger a transition (state change) if the header is part of an XHR response.
- * This requires standby listeners to be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
+ * abaaso provides a set of classes and object prototyping to ease the creation
+ * and maintenance of RESTful JavaScript applications.
  *
- * See @link for the development roadmap.
+ * HATEOAS can be implemented by setting abaaso.state.header which will trigger a
+ * transition (state change) if the header is part of an XHR response.
+ *
+ * This requires standby listeners to be created on "ready" so the observer can
+ * replace the active listeners; otherwise an exception is thrown.
+ *
+ * See @link for the development roadmap
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://avoidwork.com/products/abaaso abaaso
@@ -1534,9 +1539,7 @@ var abaaso = function(){
 		}
 	};
 
-	/**
-	 * Declaring private global instances
-	 */
+	// Declaring private global instances
 	var $     = utility.$,
 	    error = utility.error;
 
@@ -1546,15 +1549,10 @@ var abaaso = function(){
 	 * @constructor
 	 */
 	return {
-		/**
-		 * Properties
-		 */
-		id              : 'abaaso',
+		// Properties
 		ready           : false,
 
-		/**
-		 * Methods
-		 */
+		// Methods
 		$               : utility.$,
 		clear           : el.clear,
 		create          : el.create,
@@ -1602,17 +1600,22 @@ var abaaso = function(){
 
 			abaaso.fire("abaaso", "ready");
 			abaaso.un("ready");
+
 			delete abaaso.init;
 			},
 		get             : client.get,
 		position        : el.position,
 		post            : client.post,
 		put             : client.put,
+		on              : function(event, listener, scope, id, standby) {
+			abaaso.listener.add("abaaso", event, listener, scope, id, standby);
+			},
+		un              : function(event, id) {
+			abaaso.listener.remove("abaaso", event, id);
+			},
 		update          : el.update,
 
-		/**
-		 * Classes
-		 */
+		// Classes
 		array           : array,
 		calendar        : calendar,
 		client          : {
@@ -1656,20 +1659,10 @@ var abaaso = function(){
 	};
 }();
 
-/**
- * Declaring a global helper
- */
+// Declaring a global helper
 var $ = function(arg) { return abaaso.$(arg); };
 
-/**
- * Putting observer methods on the singleton
- */
-abaaso.on = function(event, listener, scope, id, standby) { abaaso.listener.add(this, event, listener, scope, id, standby); };
-abaaso.un = function(event, id) { abaaso.listener.remove(this, event, id); };
-
-/**
- * Setting events
- */
+// Registering events
 if ((abaaso.client.chrome) || (abaaso.client.firefox)) {
 	window.addEventListener("DOMContentLoaded", function(){
 		abaaso.init();
@@ -1690,8 +1683,5 @@ else {
 		}}, 10);
 }
 
-/**
- * Registering Window events
- */
 window.onload   = function() { abaaso.fire("abaaso", "render"); }
 window.onresize = function() { abaaso.fire("abaaso", "resize"); }
