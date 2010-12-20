@@ -1660,7 +1660,6 @@ Element.prototype.bounce       = function(ms, height) { abaaso.fx.bounce(this.id
 Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
 Element.prototype.domID        = function() { return abaaso.domID(this.id); };
 Element.prototype.fall         = function(pos, ms) { abaaso.fx.bounce(this.id, pos, ms); };
-Element.prototype.fire         = function(event) { abaaso.fire(this.id, event); };
 Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
 Element.prototype.slide        = function(ms, pos, elastic) { abaaso.fx.slide(this.id, ms, pos, elastic); };
