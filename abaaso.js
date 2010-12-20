@@ -336,7 +336,7 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Returns a  Date object as a string formatted as date.pattern
+		 * Returns a Date object as a string formatted as date.pattern
 		 *
 		 * @param dateStamp {object} Date object to return as a string
 		 * @returns {string} Date object value in the date.pattern format
@@ -587,12 +587,12 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Creates an xmlHttp request to a URI
+		 * Creates an XmlHttpRequest to a URI
 		 *
 		 * @param uri {string} The resource to interact with
-		 * @param handler {function} A handler function to execute when an appropriate  response been received
+		 * @param handler {function} A handler function to execute when an appropriate response been received
 		 * @param type {string} The type of request
-		 * @param args {mixed} Data to append to the HTTP request
+		 * @param args {mixed} Data to append to the request
 		 */
 		request : function(uri, handler, type, args) {
 			var xmlHttp = false;
@@ -890,6 +890,30 @@ var abaaso = function(){
 	 */
 	var fx = {
 		/**
+		 * Bounces Target at it's current position
+		 *
+		 * @param id {string} Target object.id value
+		 * @param ms {int} Milliseconds for bounce to take
+		 * @param height {int} The maximum height of the bounce
+		 * @todo implement this!
+		 */
+		bounce : function(id, ms, height) {
+			void(0);
+		},
+
+		/**
+		 * Simulates the Target falling to a position
+		 *
+		 * @param id {string} Target object.id value
+		 * @param pos {int} The X co-ordinate to end the fall
+		 * @param ms {int} Milliseconds for bounce to take
+		 * @todo implement this!
+		 */
+		fall : function (id, pos, ms) {
+			void(0);
+		},
+
+		/**
 		 * Changes an element's opacity to the supplied value
 		 *
 		 * @param obj {mixed} Instance of an object, or the target object.id value
@@ -960,6 +984,33 @@ var abaaso = function(){
 		 */
 		opacityShift : function(id, ms) {
 			($(id).opacity() === 0) ? this.opacityChange(id, 0, 100, ms) : this.opacityChange(id, 100, 0, ms);
+		},
+
+		/**
+		 * Slides an object to a position
+		 *
+		 * @param id {string} Target object.id value
+		 * @param ms {integer} Milliseconds for transition to take
+		 * @param pos {array} An array of co-ordinates [X,Y]
+		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
+		 * @todo implement this!
+		 */
+		slide : function(id, ms, pos, elastic) {
+			try {
+				if ((id === undefined)
+				    || (!$(id))
+				    || (NaN(ms))
+				    || (!pos instanceof Array)
+				    || (NaN(pos[0]))
+				    || (NaN(pos[1]))) {
+					throw label.error.invalidArguments;
+				}
+
+				elastic = elastic || 0;
+			}
+			catch (e) {
+				error(e);
+			}
 		}
 	};
 
