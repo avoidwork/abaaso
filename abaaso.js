@@ -1565,6 +1565,41 @@ var abaaso = function(){
 		fire            : observer.fire,
 		init            : function() {
 			abaaso.ready = true;
+
+			methods = [
+				{name: "clear", fn: function() { abaaso.clear(this.id); }},
+				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
+				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.listener.add(this.id, event, listener, scope, id, standby); }},
+				{name: "un", fn: function(event, id) { abaaso.listener.remove(this.id, event, id); }}
+				];
+
+			i = methods.length;
+
+			while (i--) {
+				Array.prototype[methods[i].name]   = methods[i].fn;
+				Element.prototype[methods[i].name] = methods[i].fn;
+				String.prototype[methods[i].name]  = methods[i].fn;
+			}
+
+			delete i;
+			delete methods;
+
+			Array.prototype.contains       = function(arg) { abaaso.array.contains(this, arg); };
+			Array.prototype.index          = function(arg) { abaaso.array.index(this, arg); };
+			Array.prototype.remove         = function(arg) { abaaso.array.remove(this, arg); };
+			Element.prototype.bounce       = function(ms, height) { abaaso.fx.bounce(this.id, ms, height); };
+			Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
+			Element.prototype.domID        = function() { return abaaso.domID(this.id); };
+			Element.prototype.fall         = function(pos, ms) { abaaso.fx.bounce(this.id, pos, ms); };
+			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
+			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
+			Element.prototype.slide        = function(ms, pos, elastic) { abaaso.fx.slide(this.id, ms, pos, elastic); };
+			Element.prototype.update       = function(args) { abaaso.update(this.id, args); };
+			Number.prototype.even          = function() { return abaaso.number.even(this); };
+			Number.prototype.odd           = function() { return abaaso.number.odd(this); };
+			String.prototype.domID         = function() { return abaaso.domID(this); };
+			String.prototype.trim          = function() { return this.replace(/^\s+|\s+$/g, "") };
+
 			abaaso.fire("abaaso", "ready");
 			abaaso.un("ready");
 			delete abaaso.init;
@@ -1631,43 +1666,6 @@ var $ = function(arg) { return abaaso.$(arg); };
  */
 abaaso.on = function(event, listener, scope, id, standby) { abaaso.listener.add(this, event, listener, scope, id, standby); };
 abaaso.un = function(event, id) { abaaso.listener.remove(this, event, id); };
-
-/**
- * Prototyping with abaaso
- */
-methods = [
-	{name: "clear", fn: function() { abaaso.clear(this.id); }},
-	{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
-	{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.listener.add(this.id, event, listener, scope, id, standby); }},
-	{name: "un", fn: function(event, id) { abaaso.listener.remove(this.id, event, id); }}
-	];
-
-i = methods.length;
-
-while (i--) {
-	Array.prototype[methods[i].name]   = methods[i].fn;
-	Element.prototype[methods[i].name] = methods[i].fn;
-	String.prototype[methods[i].name]  = methods[i].fn;
-}
-
-delete i;
-delete methods;
-
-Array.prototype.contains       = function(arg) { abaaso.array.contains(this, arg); };
-Array.prototype.index          = function(arg) { abaaso.array.index(this, arg); };
-Array.prototype.remove         = function(arg) { abaaso.array.remove(this, arg); };
-Element.prototype.bounce       = function(ms, height) { abaaso.fx.bounce(this.id, ms, height); };
-Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
-Element.prototype.domID        = function() { return abaaso.domID(this.id); };
-Element.prototype.fall         = function(pos, ms) { abaaso.fx.bounce(this.id, pos, ms); };
-Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
-Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
-Element.prototype.slide        = function(ms, pos, elastic) { abaaso.fx.slide(this.id, ms, pos, elastic); };
-Element.prototype.update       = function(args) { abaaso.update(this.id, args); };
-Number.prototype.even          = function() { return abaaso.number.even(this); };
-Number.prototype.odd           = function() { return abaaso.number.odd(this); };
-String.prototype.domID         = function() { return abaaso.domID(this); };
-String.prototype.trim          = function() { return this.replace(/^\s+|\s+$/g, "") };
 
 /**
  * Setting events
