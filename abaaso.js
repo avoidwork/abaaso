@@ -779,6 +779,7 @@ var abaaso = function(){
 		 * @param type {string} Type of element to create
 		 * @param args {object} Collection of properties to apply to the new element
 		 * @param id {string} [Optional] Target id value to add element to
+		 * @returns {object} The elemented that was created
 		 */
 		create : function(type, args, id) {
 			try {
@@ -787,6 +788,7 @@ var abaaso = function(){
 					(args.id === undefined) ? obj.genID() : void(0);
 					el.update(obj, args);
 					($(id)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
+					return obj;
 				}
 				else {
 					throw label.error.expectedObject;
@@ -794,6 +796,7 @@ var abaaso = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -885,6 +888,8 @@ var abaaso = function(){
 								break;
 						}
 					}
+
+					return obj;
 				}
 				else {
 					throw label.error.elementNotFound;
@@ -892,6 +897,7 @@ var abaaso = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		}
 	};
@@ -911,7 +917,7 @@ var abaaso = function(){
 		 * @todo implement this!
 		 */
 		bounce : function(id, ms, height) {
-			void(0);
+			return $(id);
 		},
 
 		/**
@@ -923,7 +929,7 @@ var abaaso = function(){
 		 * @todo implement this!
 		 */
 		fall : function (id, pos, ms) {
-			void(0);
+			return $(id);
 		},
 
 		/**
@@ -994,9 +1000,11 @@ var abaaso = function(){
 		 *
 		 * @param id {string} Target object.id value
 		 * @param ms {integer} Milliseconds for transition to take
+		 * @returns {object} Target object
 		 */
 		opacityShift : function(id, ms) {
 			($(id).opacity() === 0) ? this.opacityChange(id, 0, 100, ms) : this.opacityChange(id, 100, 0, ms);
+			return $(id);
 		},
 
 		/**
@@ -1020,9 +1028,12 @@ var abaaso = function(){
 				}
 
 				elastic = elastic || 0;
+
+				return $(id);
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		}
 	};
@@ -1192,6 +1203,7 @@ var abaaso = function(){
 		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param id {string} [Optional / Recommended] The id for the listener
 		 * @param standby {boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
+		 * @returns {object} The object
 		 */
 		add : function(obj, event, listener, scope, id, standby) {
 			try {
@@ -1229,9 +1241,12 @@ var abaaso = function(){
 					(observer.listeners[obj][event]["standby"] === undefined) ? observer.listeners[obj][event]["standby"] = [] : void(0);
 					observer.listeners[obj][event]["standby"][id] = item;
 				}
+
+				return obj;
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -1240,6 +1255,7 @@ var abaaso = function(){
 		 *
 		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
+		 * @returns {object} The object
 		 */
 		fire : function(obj, event) {
 			try {
@@ -1268,9 +1284,12 @@ var abaaso = function(){
 						}
 					}
 				}
+
+				return obj;
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -1279,6 +1298,7 @@ var abaaso = function(){
 		 *
 		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
+		 * @returns {array} The listeners for object
 		 */
 		list : function(obj, event) {
 			try {
@@ -1303,6 +1323,7 @@ var abaaso = function(){
 		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
 		 * @param id {string} [Optional] The identifier for the listener
+		 * @returns {object} The object
 		 */
 		remove : function(obj, event, id) {
 			try {
@@ -1312,7 +1333,7 @@ var abaaso = function(){
 				    || (event === undefined)
 				    || (observer.listeners[obj] === undefined)
 				    || (observer.listeners[obj][event] === undefined)) {
-					return;
+					return obj;
 				}
 				else {
 					if (id === undefined) {
@@ -1327,10 +1348,13 @@ var abaaso = function(){
 						 && (observer.listeners[obj][event][id] !== undefined)) {
 						delete observer.listeners[obj][event][id];
 					}
+
+					return obj;
 				}
 			}
 			catch (e) {
-				error (e);
+				error(e);
+				return undefined;
 			}
 		},
 
@@ -1342,6 +1366,7 @@ var abaaso = function(){
 		 * @param id {string} The identifier for the active listener
 		 * @param sId {string} The identifier for the new standby listener
 		 * @param listener {mixed} The standby id (string), or the new event listener (function)
+		 * @returns {object} The object
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
@@ -1376,9 +1401,12 @@ var abaaso = function(){
 
 				observer.listeners[obj][event]["standby"][sId] = {"fn" : observer.listeners[obj][event]["active"][id]["fn"]};
 				observer.listeners[obj][event]["active"][id]   = {"fn" : listener};
+
+				return obj;
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		}
 	};
@@ -1613,10 +1641,11 @@ var abaaso = function(){
 				{name: "clear", fn: function() {
 					this.genID();
 					abaaso.clear(this.id);
+					return this;
 					}},
 				{name: "fire", fn: function(event) {
 					this.genID();
-					abaaso.fire(this.id, event);
+					return abaaso.fire(this.id, event);
 					}},
 				{name: "genID", fn: function() {
 					return abaaso.genID(this);
@@ -1627,11 +1656,11 @@ var abaaso = function(){
 					}},
 				{name: "on", fn: function(event, listener, scope, id, standby) {
 					this.genID();
-					abaaso.on(this.id, event, listener, scope, id, standby);
+					return abaaso.on(this.id, event, listener, scope, id, standby);
 					}},
 				{name: "un", fn: function(event, id) {
 					this.genID();
-					abaaso.un(this.id, event, id);
+					return abaaso.un(this.id, event, id);
 					}}
 				];
 
