@@ -248,8 +248,9 @@ var abaaso = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {id: "abaaso_calendar"},
-				    o    = calendar.date;
+				var args = {},
+				    o    = calendar.date,
+				    obj  = null;
 
 				o.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
 				o.destination = ((destination !== undefined) && ($(destination))) ? destination : null;
@@ -257,24 +258,27 @@ var abaaso = function(){
 
 				$(target).blur();
 				((o.destination !== null) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
-				($("abaaso_calendar")) ? el.destroy("abaaso_calendar") : void(0);
 
 				if (o.destination !== null) {
 					var pos = el.position(target);
 					args.style = "top:" + pos[1] + "px;left:" + pos[0] + "px;z-index:9999;";
-					el.create("div", args);
+					obj = el.create("div", args);
 				}
 				else {
-					el.create("div", args, target);
+					obj = el.create("div", args, target);
 				}
 
-				if (!calendar.render("abaaso_calendar", o.c)) {
-					$("abaaso_calendar").destroy();
+				if (!calendar.render(obj.id, o.c)) {
+					obj.destroy();
 					throw label.error.elementNotCreated;
+				}
+				else {
+					return obj;
 				}
 			}
 			catch(e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -302,8 +306,7 @@ var abaaso = function(){
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 
 					if (calendar.date.destination !== null) {
-						$(args.id).un("click");
-						$(args.id).on("click", function() {
+						$(args.id).un("click").on("click", function() {
 							var date = new Date(abaaso.calendar.date.c),
 							    day  = this.innerHTML.match(/^\d{1,2}$/);
 
@@ -417,8 +420,7 @@ var abaaso = function(){
 
 					if (o.clear) {
 						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
-						$("calendarClear").un("click");
-						$("calendarClear").on("click", function() {
+						$("calendarClear").un("click").on("click", function() {
 							var o = abaaso.calendar.date;
 							((o.destination !== null) && $(o.destination)) ? $(o.destination).clear() : void(0);
 							o.c = new Date();
@@ -429,26 +431,17 @@ var abaaso = function(){
 					}
 
 					el.create("a", {id: "calendarClose", innerHTML: label.common.close}, "calendarTop");
-					$("calendarClose").un("click");
-					$("calendarClose").on("click", function() {
-						abaaso.destroy("abaaso_calendar");
-						});
+					$("calendarClose").un("click").on("click", function() { abaaso.destroy("abaaso_calendar"); });
 
 					el.create("div", {id: "calendarHeader"}, target);
 
 					el.create("a", {id: "calendarPrev", innerHTML: "&lt;"}, "calendarHeader");
-					$("calendarPrev").un("click");
-					$("calendarPrev").on("click", function() {
-						abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.p);
-						});
+					$("calendarPrev").un("click").on("click", function() { abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.p); });
 
 					el.create("span", {id: "calendarMonth", innerHTML: o.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
 
 					el.create("a", {id: "calendarNext", innerHTML: "&gt;"}, "calendarHeader");
-					$("calendarNext").un("click");
-					$("calendarNext").on("click", function() {
-						abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.n);
-						});
+					$("calendarNext").un("click").on("click", function() { abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.n); });
 
 					el.create("div", {id: "calendarDays"}, target);
 
@@ -1025,9 +1018,9 @@ var abaaso = function(){
 				var start = (o.opacity() === 0) ? 0 : 100,
 				    end   = (o.opacity() === 0) ? 100 : 0;
 
-				o.fire("beforeOpacityChange");
-				this.opacityChange(o.id, start, end, ms);
-				return o;
+				$(id).fire("beforeOpacityChange");
+				this.opacityChange(id, start, end, ms);
+				return $(id);
 			}
 			catch (e) {
 				error(e);
@@ -1235,10 +1228,11 @@ var abaaso = function(){
 		 */
 		add : function(obj, event, listener, scope, id, standby) {
 			try {
-				obj     = (obj instanceof Object) ? obj.id : obj;
+				var o   = (obj instanceof Object) ? obj.id : obj;
+				obj     = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
 				standby = ((standby !== undefined) && (standby === true)) ? true : false;
 
-				if ((obj === undefined)
+				if ((o === undefined)
 				    || (event === undefined)
 				    || (listener === undefined)
 				    || (!listener instanceof Function)
@@ -1251,23 +1245,23 @@ var abaaso = function(){
 				item.fn  = listener;
 				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
 
-				(observer.listeners[obj] === undefined) ? observer.listeners[obj] = [] : void(0);
-				(observer.listeners[obj][event] === undefined) ? observer.listeners[obj][event] = [] : void(0);
-				(observer.listeners[obj][event]["active"] === undefined) ? observer.listeners[obj][event]["active"] = [] : void(0);
+				(observer.listeners[o] === undefined) ? observer.listeners[o] = [] : void(0);
+				(observer.listeners[o][event] === undefined) ? observer.listeners[o][event] = [] : void(0);
+				(observer.listeners[o][event]["active"] === undefined) ? observer.listeners[o][event]["active"] = [] : void(0);
 
 				if (!standby) {
 					(id !== undefined) ?
-					 observer.listeners[obj][event]["active"][id] = item :
-					 observer.listeners[obj][event]["active"].push(item);
+					 observer.listeners[o][event]["active"][id] = item :
+					 observer.listeners[o][event]["active"].push(item);
 
-					($(obj)) ? (($(obj).addEventListener) ?
-						    $(obj).addEventListener(event, function(){ $(obj).fire(event); }, false) :
-						    $(obj).attachEvent("on" + event, function(){ $(obj).fire(event); }))
+					($(o)) ? (($(o).addEventListener) ?
+						    $(o).addEventListener(event, function(){ $(o).fire(event); }, false) :
+						    $(o).attachEvent("on" + event, function(){ $(o).fire(event); }))
 					: void(0);
 				}
 				else {
-					(observer.listeners[obj][event]["standby"] === undefined) ? observer.listeners[obj][event]["standby"] = [] : void(0);
-					observer.listeners[obj][event]["standby"][id] = item;
+					(observer.listeners[o][event]["standby"] === undefined) ? observer.listeners[o][event]["standby"] = [] : void(0);
+					observer.listeners[o][event]["standby"][id] = item;
 				}
 
 				return obj;
@@ -1287,17 +1281,19 @@ var abaaso = function(){
 		 */
 		fire : function(obj, event) {
 			try {
-				obj = (obj instanceof Object) ? obj.id : obj;
+				var o = (obj instanceof Object) ? obj.id : obj;
+				obj   = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
-				if ((obj === undefined)
+				if ((o === undefined)
+				    || (o == "")
 				    || (event === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				var listeners = (observer.listeners[obj] !== undefined) ?
-					((observer.listeners[obj][event] !== undefined) ?
-					 ((observer.listeners[obj][event]["active"] !== undefined) ?
-					  observer.listeners[obj][event]["active"] : []) : []) : [];
+				var listeners = (observer.listeners[o] !== undefined) ?
+					((observer.listeners[o][event] !== undefined) ?
+					 ((observer.listeners[o][event]["active"] !== undefined) ?
+					  observer.listeners[o][event]["active"] : []) : []) : [];
 
 				for (var i in listeners) {
 					if ((listeners[i] !== undefined)
@@ -1355,26 +1351,27 @@ var abaaso = function(){
 		 */
 		remove : function(obj, event, id) {
 			try {
-				obj = (obj instanceof Object) ? obj.id : obj;
+				var o = (obj instanceof Object) ? obj.id : obj;
+				obj   = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
-				if ((obj === undefined)
+				if ((o === undefined)
 				    || (event === undefined)
-				    || (observer.listeners[obj] === undefined)
-				    || (observer.listeners[obj][event] === undefined)) {
+				    || (observer.listeners[o] === undefined)
+				    || (observer.listeners[o][event] === undefined)) {
 					return obj;
 				}
 				else {
 					if (id === undefined) {
-						delete observer.listeners[obj][event];
-						($(obj)) ? (($(obj).removeEventListener) ?
-							    $(obj).removeEventListener(event, function(){ $(obj).fire(event); }, false) :
-							    $(obj).removeEvent("on" + event, function(){ $(obj).fire(event); }))
+						delete observer.listeners[o][event];
+						($(o)) ? (($(o).removeEventListener) ?
+							    $(o).removeEventListener(event, function(){ $(o).fire(event); }, false) :
+							    $(o).removeEvent("on" + event, function(){ $(o).fire(event); }))
 						: void(0);
 					}
 					else if ((id !== undefined)
 						 && (typeof id == String)
-						 && (observer.listeners[obj][event][id] !== undefined)) {
-						delete observer.listeners[obj][event][id];
+						 && (observer.listeners[o][event][id] !== undefined)) {
+						delete observer.listeners[o][event][id];
 					}
 
 					return obj;
@@ -1398,37 +1395,38 @@ var abaaso = function(){
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
-				obj = (obj instanceof Object) ? obj.id : obj;
+				var o = (obj instanceof Object) ? obj.id : obj;
+				obj   = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
-				if ((obj === undefined)
+				if ((o === undefined)
 				    || (event === undefined)
 				    || (id === undefined)
 				    || (sId === undefined)
-				    || (observer.listeners[obj] === undefined)
-				    || (observer.listeners[obj][event] === undefined)
-				    || (observer.listeners[obj][event]["active"] === undefined)
-				    || (observer.listeners[obj][event]["active"][id] === undefined)) {
+				    || (observer.listeners[o] === undefined)
+				    || (observer.listeners[o][event] === undefined)
+				    || (observer.listeners[o][event]["active"] === undefined)
+				    || (observer.listeners[o][event]["active"][id] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				(observer.listeners[obj][event]["standby"] === undefined) ? observer.listeners[obj][event]["standby"] = [] : void(0);
+				(observer.listeners[o][event]["standby"] === undefined) ? observer.listeners[o][event]["standby"] = [] : void(0);
 
 				if (typeof(listener) == "string")
 				{
-					if ((observer.listeners[obj][event]["standby"][listener] === undefined)
-					    || (observer.listeners[obj][event]["standby"][listener]["fn"] === undefined)) {
+					if ((observer.listeners[o][event]["standby"][listener] === undefined)
+					    || (observer.listeners[o][event]["standby"][listener]["fn"] === undefined)) {
 						throw label.error.invalidArguments;
 					}
 					else {
-						listener = observer.listeners[obj][event]["standby"][listener]["fn"];
+						listener = observer.listeners[o][event]["standby"][listener]["fn"];
 					}
 				}
 				else if (!listener instanceof Function) {
 					throw label.error.invalidArguments;
 				}
 
-				observer.listeners[obj][event]["standby"][sId] = {"fn" : observer.listeners[obj][event]["active"][id]["fn"]};
-				observer.listeners[obj][event]["active"][id]   = {"fn" : listener};
+				observer.listeners[o][event]["standby"][sId] = {"fn" : observer.listeners[o][event]["active"][id]["fn"]};
+				observer.listeners[o][event]["active"][id]   = {"fn" : listener};
 
 				return obj;
 			}
@@ -1658,7 +1656,7 @@ var abaaso = function(){
 			var obj   = (arguments[1] === undefined) ? "abaaso" : arguments[0],
 			    event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
 
-			abaaso.observer.fire(obj, event);
+			return abaaso.observer.fire(obj, event);
 			},
 		genID           : utility.genID,
 		get             : client.get,
@@ -1744,7 +1742,7 @@ var abaaso = function(){
 			    id       = (all) ? arguments[4] : arguments[3],
 			    standby  = (all) ? arguments[5] : arguments[4];
 
-			abaaso.observer.add(obj, event, listener, scope, id, standby);
+			return abaaso.observer.add(obj, event, listener, scope, id, standby);
 			},
 		un              : function() {
 			var all   = (arguments[2] !== undefined) ? true : false;
@@ -1752,7 +1750,7 @@ var abaaso = function(){
 			    event = (all) ? arguments[1] : arguments[0],
 			    id    = (all) ? arguments[2] : arguments[1];
 
-			abaaso.observer.remove(obj, event, id);
+			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
 
