@@ -1218,8 +1218,8 @@ var abaaso = function(){
 					 observer.listeners[obj][event]["active"].push(item);
 
 					($(obj)) ? (($(obj).addEventListener) ?
-						    $(obj).addEventListener(event, function(){ abaaso.observer.fire(obj, event); }, false) :
-						    $(obj).attachEvent("on" + event, function(){ abaaso.observer.fire(obj, event); }))
+						    $(obj).addEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
+						    $(obj).attachEvent("on" + event, function(){ abaaso.fire(obj, event); }))
 					: void(0);
 				}
 				else {
@@ -1315,8 +1315,8 @@ var abaaso = function(){
 					if (id === undefined) {
 						delete observer.listeners[obj][event];
 						($(obj)) ? (($(obj).removeEventListener) ?
-							    $(obj).removeEventListener(event, function(){ abaaso.observer.fire(obj, event); }, false) :
-							    $(obj).removeEvent("on" + event, function(){ abaaso.observer.fire(obj, event); }))
+							    $(obj).removeEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
+							    $(obj).removeEvent("on" + event, function(){ abaaso.fire(obj, event); }))
 						: void(0);
 					}
 					else if ((id !== undefined)
@@ -1566,14 +1566,19 @@ var abaaso = function(){
 		destroy         : el.destroy,
 		domID           : utility.domID,
 		error           : utility.error,
-		fire            : function(event) { abaaso.observer.fire("abaaso", event); },
+		fire            : function() {
+			var obj   = (arguments[1] === undefined) ? "abaaso" : arguments[0],
+			    event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
+
+			abaaso.observer.fire(obj, event);
+			},
 		get             : client.get,
 		init            : function() {
 			abaaso.ready = true;
 
 			var methods = [
 				{name: "clear", fn: function() { abaaso.clear(this.id); }},
-				{name: "fire", fn: function(event) { abaaso.observer.fire(this.id, event); }},
+				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
 				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.observer.add(this.id, event, listener, scope, id, standby); }},
 				{name: "un", fn: function(event, id) { abaaso.observer.remove(this.id, event, id); }}
 				];
