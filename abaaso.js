@@ -774,6 +774,8 @@ var abaaso = function(){
 		/**
 		 * Creates an element in document.body or a target element
 		 *
+		 *  Element.genID() is executed incase args doesn't contain an id
+		 *
 		 * @param type {string} Type of element to create
 		 * @param args {object} Collection of properties to apply to the new element
 		 * @param id {string} [Optional] Target id value to add element to
@@ -782,7 +784,7 @@ var abaaso = function(){
 			try {
 				if (args instanceof Object) {
 					var obj = document.createElement(type);
-					el.update(obj, args);
+					el.update(obj.genID(), args);
 					($(id)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
 				}
 				else {
@@ -1446,7 +1448,7 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				if (obj.id !== undefined) {
+				if (obj.id != "") {
 					return obj;
 				}
 
