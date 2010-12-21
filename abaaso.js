@@ -784,7 +784,8 @@ var abaaso = function(){
 			try {
 				if (args instanceof Object) {
 					var obj = document.createElement(type);
-					el.update(obj.genID(), args);
+					(args.id === undefined) ? obj.genID() : void(0);
+					el.update(obj, args);
 					($(id)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
 				}
 				else {
