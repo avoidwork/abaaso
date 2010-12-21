@@ -979,13 +979,23 @@ var abaaso = function(){
 
 				if (start > end) {
 					for (i = start; i >= end; i--) {
-						setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+						if (i == end) {
+							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterOpacityChange\")", (timer*speed));
+						}
+						else {
+							setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+						}
 						timer++;
 					}
 				}
 				else {
 					for (i = start; i <= end; i++) {
-						setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+						if (i == end) {
+							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterOpacityChange\")", (timer*speed));
+						}
+						else {
+							setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+						}
 						timer++;
 					}
 				}
@@ -998,13 +1008,31 @@ var abaaso = function(){
 		/**
 		 * Shifts an object's opacity, transition speed is based on the ms argument
 		 *
+		 * Events:    beforeOpacityChange    Fires before the opacityShift starts
+		 *            afterOpacityChange     Fires after the opacityShift ends
+		 *
 		 * @param id {string} Target object.id value
 		 * @param ms {integer} Milliseconds for transition to take
 		 * @returns {object} Target object
 		 */
 		opacityShift : function(id, ms) {
-			($(id).opacity() === 0) ? this.opacityChange(id, 0, 100, ms) : this.opacityChange(id, 100, 0, ms);
-			return $(id);
+			try {
+				if ($(id) === undefined) {
+					throw label.error.invalidArguments;
+				}
+
+				var o = $(id);
+				var start = (o.opacity() === 0) ? 0 : 100,
+				    end   = (o.opacity() === 0) ? 100 : 0;
+
+				o.fire("beforeOpacityChange");
+				this.opacityChange(o.id, start, end, ms);
+				return o;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -1233,8 +1261,8 @@ var abaaso = function(){
 					 observer.listeners[obj][event]["active"].push(item);
 
 					($(obj)) ? (($(obj).addEventListener) ?
-						    $(obj).addEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
-						    $(obj).attachEvent("on" + event, function(){ abaaso.fire(obj, event); }))
+						    $(obj).addEventListener(event, function(){ $(obj).fire(event); }, false) :
+						    $(obj).attachEvent("on" + event, function(){ $(obj).fire(event); }))
 					: void(0);
 				}
 				else {
@@ -1339,8 +1367,8 @@ var abaaso = function(){
 					if (id === undefined) {
 						delete observer.listeners[obj][event];
 						($(obj)) ? (($(obj).removeEventListener) ?
-							    $(obj).removeEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
-							    $(obj).removeEvent("on" + event, function(){ abaaso.fire(obj, event); }))
+							    $(obj).removeEventListener(event, function(){ $(obj).fire(event); }, false) :
+							    $(obj).removeEvent("on" + event, function(){ $(obj).fire(event); }))
 						: void(0);
 					}
 					else if ((id !== undefined)
