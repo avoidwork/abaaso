@@ -1602,6 +1602,10 @@ var abaaso = function(){
 			String.prototype.domID         = function() { return abaaso.domID(this); };
 			String.prototype.trim          = function() { return this.replace(/^\s+|\s+$/g, "") };
 
+			window.$        = function(arg) { return abaaso.$(arg); };
+			window.onload   = function() { abaaso.fire("render"); }
+			window.onresize = function() { abaaso.fire("resize"); }
+
 			abaaso.fire("ready");
 			abaaso.un("ready");
 
@@ -1663,9 +1667,6 @@ var abaaso = function(){
 	};
 }();
 
-// Declaring a global helper
-var $ = function(arg) { return abaaso.$(arg); };
-
 // Registering events
 if ((abaaso.client.chrome) || (abaaso.client.firefox)) {
 	window.addEventListener("DOMContentLoaded", function(){
@@ -1686,6 +1687,3 @@ else {
 			abaaso.init();
 		}}, 10);
 }
-
-window.onload   = function() { abaaso.fire("render"); }
-window.onresize = function() { abaaso.fire("resize"); }
