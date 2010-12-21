@@ -774,7 +774,7 @@ var abaaso = function(){
 		/**
 		 * Creates an element in document.body or a target element
 		 *
-		 *  Element.genID() is executed incase args doesn't contain an id
+		 * Element.genID() is executed incase args doesn't contain an id
 		 *
 		 * @param type {string} Type of element to create
 		 * @param args {object} Collection of properties to apply to the new element
@@ -1442,8 +1442,6 @@ var abaaso = function(){
 		 */
 		genID : function(obj) {
 			try {
-				obj = (obj instanceof Object) ? obj : $(obj);
-
 				if (obj === undefined) {
 					throw label.error.invalidArguments;
 				}
@@ -1452,8 +1450,8 @@ var abaaso = function(){
 					return obj;
 				}
 
-				var d = new Date();
-				obj.id = ((d.getTime() - d.getMilliseconds()) / 1000).toString();
+				var id = "abaaso_" + Math.floor(Math.random() * 1000000000);
+				obj.id = ($(id) === undefined) ?  id : id + Math.floor(Math.random() * 1000);
 
 				return obj;
 			}
