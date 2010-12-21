@@ -1580,7 +1580,7 @@ var abaaso = function(){
 				{name: "clear", fn: function() { abaaso.clear(this.id); }},
 				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
 				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.on(this.id, event, listener, scope, id, standby); }},
-				{name: "un", fn: function(event, id) { abaaso.observer.remove(this.id, event, id); }}
+				{name: "un", fn: function(event, id) { abaaso.un(this.id, event, id); }}
 				];
 
 			var i = methods.length;
@@ -1630,8 +1630,13 @@ var abaaso = function(){
 
 			abaaso.observer.add(obj, event, listener, scope, id, standby);
 			},
-		un              : function(event, id) {
-			abaaso.observer.remove("abaaso", event, id);
+		un              : function() {
+			var all   = (arguments[2] !== undefined) ? true : false;
+			var obj   = (all) ? arguments[0] : "abaaso",
+			    event = (all) ? arguments[1] : arguments[0],
+			    id    = (all) ? arguments[2] : arguments[1];
+
+			abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
 
