@@ -1218,8 +1218,8 @@ var abaaso = function(){
 					 observer.listeners[obj][event]["active"].push(item);
 
 					($(obj)) ? (($(obj).addEventListener) ?
-						    $(obj).addEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
-						    $(obj).attachEvent("on" + event, function(){ abaaso.fire(obj, event); }))
+						    $(obj).addEventListener(event, function(){ abaaso.observer.fire(obj, event); }, false) :
+						    $(obj).attachEvent("on" + event, function(){ abaaso.observer.fire(obj, event); }))
 					: void(0);
 				}
 				else {
@@ -1253,9 +1253,9 @@ var abaaso = function(){
 					  observer.listeners[obj][event]["active"] : []) : []) : [];
 
 				for (var i in listeners) {
-					if (listeners[i].fn) {
-						if ((listeners[i] !== undefined)
-						    && (listeners[i].scope !== undefined)) {
+					if ((listeners[i] !== undefined)
+					    && (listeners[i].fn)) {
+						if (listeners[i].scope !== undefined) {
 							var scope = ($(listeners[i].scope)) ? $(listeners[i].scope) : listeners[i].scope,
 							    fn    = listeners[i]["fn"];
 							fn.call(scope);
@@ -1315,8 +1315,8 @@ var abaaso = function(){
 					if (id === undefined) {
 						delete observer.listeners[obj][event];
 						($(obj)) ? (($(obj).removeEventListener) ?
-							    $(obj).removeEventListener(event, function(){ abaaso.fire(obj, event); }, false) :
-							    $(obj).removeEvent("on" + event, function(){ abaaso.fire(obj, event); }))
+							    $(obj).removeEventListener(event, function(){ abaaso.observer.fire(obj, event); }, false) :
+							    $(obj).removeEvent("on" + event, function(){ abaaso.observer.fire(obj, event); }))
 						: void(0);
 					}
 					else if ((id !== undefined)
