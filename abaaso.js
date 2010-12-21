@@ -1566,16 +1566,16 @@ var abaaso = function(){
 		destroy         : el.destroy,
 		domID           : utility.domID,
 		error           : utility.error,
-		fire            : observer.fire,
+		fire            : function(event) { abaaso.observer.fire("abaaso", event); },
 		get             : client.get,
 		init            : function() {
 			abaaso.ready = true;
 
 			var methods = [
 				{name: "clear", fn: function() { abaaso.clear(this.id); }},
-				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
-				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.listener.add(this.id, event, listener, scope, id, standby); }},
-				{name: "un", fn: function(event, id) { abaaso.listener.remove(this.id, event, id); }}
+				{name: "fire", fn: function(event) { abaaso.observer.fire(this.id, event); }},
+				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.observer.add(this.id, event, listener, scope, id, standby); }},
+				{name: "un", fn: function(event, id) { abaaso.observer.remove(this.id, event, id); }}
 				];
 
 			var i = methods.length;
@@ -1602,7 +1602,7 @@ var abaaso = function(){
 			String.prototype.domID         = function() { return abaaso.domID(this); };
 			String.prototype.trim          = function() { return this.replace(/^\s+|\s+$/g, "") };
 
-			abaaso.fire("abaaso", "ready");
+			abaaso.fire("ready");
 			abaaso.un("ready");
 
 			delete abaaso.init;
@@ -1611,10 +1611,10 @@ var abaaso = function(){
 		post            : client.post,
 		put             : client.put,
 		on              : function(event, listener, scope, id, standby) {
-			abaaso.listener.add("abaaso", event, listener, scope, id, standby);
+			abaaso.observer.add("abaaso", event, listener, scope, id, standby);
 			},
 		un              : function(event, id) {
-			abaaso.listener.remove("abaaso", event, id);
+			abaaso.observer.remove("abaaso", event, id);
 			},
 		update          : el.update,
 
@@ -1642,13 +1642,14 @@ var abaaso = function(){
 		fx              : fx,
 		json            : json,
 		label           : label,
-		listener        : {
+		number          : number,
+		observer        : {
 			add     : observer.add,
+			fire    : observer.fire,
 			list    : observer.list,
 			remove  : observer.remove,
 			replace : observer.replace
 			},
-		number          : number,
 		state           : {
 			current : null,
 			header  : null,
@@ -1686,5 +1687,5 @@ else {
 		}}, 10);
 }
 
-window.onload   = function() { abaaso.fire("abaaso", "render"); }
-window.onresize = function() { abaaso.fire("abaaso", "resize"); }
+window.onload   = function() { abaaso.fire("render"); }
+window.onresize = function() { abaaso.fire("resize"); }
