@@ -1579,7 +1579,7 @@ var abaaso = function(){
 			var methods = [
 				{name: "clear", fn: function() { abaaso.clear(this.id); }},
 				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
-				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.observer.add(this.id, event, listener, scope, id, standby); }},
+				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.on(this.id, event, listener, scope, id, standby); }},
 				{name: "un", fn: function(event, id) { abaaso.observer.remove(this.id, event, id); }}
 				];
 
@@ -1619,8 +1619,16 @@ var abaaso = function(){
 		position        : el.position,
 		post            : client.post,
 		put             : client.put,
-		on              : function(event, listener, scope, id, standby) {
-			abaaso.observer.add("abaaso", event, listener, scope, id, standby);
+		on              : function() {
+			var all      = (arguments[2] instanceof Function) ? true : false;
+			var obj      = (all) ? arguments[0] : "abaaso",
+			    event    = (all) ? arguments[1] : arguments[0],
+			    listener = (all) ? arguments[2] : arguments[1],
+			    scope    = (all) ? arguments[3] : arguments[2],
+			    id       = (all) ? arguments[4] : arguments[3],
+			    standby  = (all) ? arguments[5] : arguments[4];
+
+			abaaso.observer.add(obj, event, listener, scope, id, standby);
 			},
 		un              : function(event, id) {
 			abaaso.observer.remove("abaaso", event, id);
