@@ -1433,7 +1433,38 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Generates an id property if obj does not have one
+		 *
+		 * @param obj {mixed} The object to verify
+		 * @returns {object} The object
+		 */
+		genID : function(obj) {
+			try {
+				obj = (obj instanceof Object) ? obj : $(obj);
+
+				if (obj === undefined) {
+					throw label.error.invalidArguments;
+				}
+
+				if (obj.id !== undefined) {
+					return obj;
+				}
+
+				var d = new Date();
+				obj.id = ((d.getTime() - d.getMilliseconds()) / 1000).toString();
+
+				return obj;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Error handling
+		 *
+		 * History is available as error.events
 		 *
 		 * @param e {mixed} Error object or message to display.
 		 */
@@ -1572,15 +1603,32 @@ var abaaso = function(){
 
 			abaaso.observer.fire(obj, event);
 			},
+		genID           : utility.genID,
 		get             : client.get,
 		init            : function() {
 			abaaso.ready = true;
 
 			var methods = [
-				{name: "clear", fn: function() { abaaso.clear(this.id); }},
-				{name: "fire", fn: function(event) { abaaso.fire(this.id, event); }},
-				{name: "on", fn: function(event, listener, scope, id, standby) { abaaso.on(this.id, event, listener, scope, id, standby); }},
-				{name: "un", fn: function(event, id) { abaaso.un(this.id, event, id); }}
+				{name: "clear", fn: function() {
+					abaaso.genID(this);
+					abaaso.clear(this.id);
+					}},
+				{name: "fire", fn: function(event) {
+					abaaso.genID(this);
+					abaaso.fire(this.id, event);
+					}},
+				{name: "listeners", fn: function(event) {
+					abaaso.genID(this);
+					return abaaso.listeners(this.id, event);
+					}},
+				{name: "on", fn: function(event, listener, scope, id, standby) {
+					abaaso.genID(this);
+					abaaso.on(this.id, event, listener, scope, id, standby);
+					}},
+				{name: "un", fn: function(event, id) {
+					abaaso.genID(this);
+					abaaso.un(this.id, event, id);
+					}}
 				];
 
 			var i = methods.length;
@@ -1598,7 +1646,6 @@ var abaaso = function(){
 			Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
 			Element.prototype.domID        = function() { return abaaso.domID(this.id); };
 			Element.prototype.fall         = function(pos, ms) { abaaso.fx.bounce(this.id, pos, ms); };
-			Element.prototype.listeners    = function(event) { return abaaso.listeners(this.id, event); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
 			Element.prototype.slide        = function(ms, pos, elastic) { abaaso.fx.slide(this.id, ms, pos, elastic); };
