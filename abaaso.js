@@ -1610,23 +1610,26 @@ var abaaso = function(){
 
 			var methods = [
 				{name: "clear", fn: function() {
-					abaaso.genID(this);
+					this.genID();
 					abaaso.clear(this.id);
 					}},
 				{name: "fire", fn: function(event) {
-					abaaso.genID(this);
+					this.genID();
 					abaaso.fire(this.id, event);
 					}},
+				{name: "genID", fn: function() {
+					return abaaso.genID(this);
+					}},
 				{name: "listeners", fn: function(event) {
-					abaaso.genID(this);
+					this.genID();
 					return abaaso.listeners(this.id, event);
 					}},
 				{name: "on", fn: function(event, listener, scope, id, standby) {
-					abaaso.genID(this);
+					this.genID();
 					abaaso.on(this.id, event, listener, scope, id, standby);
 					}},
 				{name: "un", fn: function(event, id) {
-					abaaso.genID(this);
+					this.genID();
 					abaaso.un(this.id, event, id);
 					}}
 				];
