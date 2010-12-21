@@ -223,13 +223,13 @@ var abaaso = function(){
 		 * Tracking object used to render the calendar
 		 */
 		date : {
-			c           : new Date(),
+			c           : new Date(), // Current
 			clear       : null,
 			d           : null,
 			destination : null,
 			label       : null,
-			n           : new Date(),
-			p           : new Date(),
+			n           : new Date(), // Next
+			p           : new Date(), // Previous
 			pattern     : "yyyy/mm/dd"
 		},
 
@@ -283,6 +283,7 @@ var abaaso = function(){
 		 *
 		 * @param target {string} Object.id value
 		 * @param dateStamp {date} Date object
+		 * @todo refactor to use element.on/.un()!
 		 */
 		day : function(target, dateStamp) {
 			try {
@@ -301,17 +302,19 @@ var abaaso = function(){
 					el.create("a", args, "div_day_" + dateStamp.getDate());
 
 					if (calendar.date.destination !== null) {
-						abaaso.un("href_day_" + dateStamp.getDate(), "click");
-						abaaso.on("href_day_" + dateStamp.getDate(), "click", function() {
+						$(args.id).un("click");
+						$(args.id).on("click", function() {
 							var date = new Date(abaaso.calendar.date.c),
 							    day  = this.innerHTML.match(/^\d{1,2}$/);
 
 							date.setDate(day[0]);
 							abaaso.calendar.date.c = date;
 							date = abaaso.calendar.format(date);
+
 							($(abaaso.calendar.date.destination)) ? $(abaaso.calendar.date.destination).update({innerHTML: date, value: date}) : void(0);
+
 							abaaso.destroy("abaaso_calendar");
-							}, "href_day_" + dateStamp.getDate());
+							}, args.id);
 					}
 				}
 				else {
@@ -366,6 +369,8 @@ var abaaso = function(){
 		/**
 		 * Renders the calendar in the target element
 		 *
+		 * (Pre-registered) Events are destroyed and recreated to insure proper behavior
+		 *
 		 * @param target {string} Target object.id value
 		 * @param dateStamp {mixed} Date to work with
 		 */
@@ -412,8 +417,8 @@ var abaaso = function(){
 
 					if (o.clear) {
 						el.create("a", {id: "calendarClear", innerHTML: label.common.clear}, "calendarTop");
-						abaaso.un("calendarClear", "click");
-						abaaso.on("calendarClear", "click", function() {
+						$("calendarClear").un("click");
+						$("calendarClear").on("click", function() {
 							var o = abaaso.calendar.date;
 							((o.destination !== null) && $(o.destination)) ? $(o.destination).clear() : void(0);
 							o.c = new Date();
@@ -424,24 +429,24 @@ var abaaso = function(){
 					}
 
 					el.create("a", {id: "calendarClose", innerHTML: label.common.close}, "calendarTop");
-					abaaso.un("calendarClose", "click");
-					abaaso.on("calendarClose", "click", function() {
+					$("calendarClose").un("click");
+					$("calendarClose").on("click", function() {
 						abaaso.destroy("abaaso_calendar");
 						});
 
 					el.create("div", {id: "calendarHeader"}, target);
 
 					el.create("a", {id: "calendarPrev", innerHTML: "&lt;"}, "calendarHeader");
-					abaaso.un("calendarPrev", "click");
-					abaaso.on("calendarPrev", "click", function() {
+					$("calendarPrev").un("click");
+					$("calendarPrev").on("click", function() {
 						abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.p);
 						});
 
 					el.create("span", {id: "calendarMonth", innerHTML: o.label+" "+dateStamp.getFullYear().toString()}, "calendarHeader");
 
 					el.create("a", {id: "calendarNext", innerHTML: "&gt;"}, "calendarHeader");
-					abaaso.un("calendarNext", "click");
-					abaaso.on("calendarNext", "click", function() {
+					$("calendarNext").un("click");
+					$("calendarNext").on("click", function() {
 						abaaso.calendar.render("abaaso_calendar", abaaso.calendar.date.n);
 						});
 
@@ -1249,7 +1254,8 @@ var abaaso = function(){
 
 				for (var i in listeners) {
 					if (listeners[i].fn) {
-						if (listeners[i].scope !== undefined) {
+						if ((listeners[i] !== undefined)
+						    && (listeners[i].scope !== undefined)) {
 							var scope = ($(listeners[i].scope)) ? $(listeners[i].scope) : listeners[i].scope,
 							    fn    = listeners[i]["fn"];
 							fn.call(scope);
