@@ -1598,6 +1598,7 @@ var abaaso = function(){
 			Element.prototype.destroy      = function() { abaaso.destroy(this.id); };
 			Element.prototype.domID        = function() { return abaaso.domID(this.id); };
 			Element.prototype.fall         = function(pos, ms) { abaaso.fx.bounce(this.id, pos, ms); };
+			Element.prototype.listeners    = function(event) { return abaaso.listeners(this.id, event); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
 			Element.prototype.slide        = function(ms, pos, elastic) { abaaso.fx.slide(this.id, ms, pos, elastic); };
@@ -1615,6 +1616,13 @@ var abaaso = function(){
 			abaaso.un("ready");
 
 			delete abaaso.init;
+			},
+		listeners       : function() {
+			var all   = (arguments[1] !== undefined) ? true : false;
+			var obj   = (all) ? arguments[0] : "abaaso",
+			    event = (all) ? arguments[1] : arguments[0];
+
+			return abaaso.observer.list(obj, event);
 			},
 		position        : el.position,
 		post            : client.post,
@@ -1669,8 +1677,7 @@ var abaaso = function(){
 			add     : observer.add,
 			fire    : observer.fire,
 			list    : observer.list,
-			remove  : observer.remove,
-			replace : observer.replace
+			remove  : observer.remove
 			},
 		state           : {
 			current : null,
