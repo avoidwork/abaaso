@@ -890,7 +890,7 @@ var abaaso = function(){
 								break;
 							case "id":
 								if (observer.listeners[obj.id] !== undefined) {
-									observer.listeners[args[i]] = observer.listeners[obj.id];
+									observer.listeners[args[i]] = [].concat(observer.listeners[obj.id]);
 									delete observer.listeners[obj.id];
 								}
 							default:
