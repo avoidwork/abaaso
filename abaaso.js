@@ -907,9 +907,10 @@ var abaaso = function(){
 								obj.opacity(args[i]);
 								break;
 							case "id":
-								if (observer.listeners[obj.id] !== undefined) {
-									observer.listeners[args[i]] = [].concat(observer.listeners[obj.id]);
-									delete observer.listeners[obj.id];
+								var o = observer.listeners;
+								if (o[obj.id] !== undefined) {
+									o[args[i]] = [].concat(o[obj.id]);
+									delete o[obj.id];
 								}
 							default:
 								obj.setAttribute(i, args[i]);
