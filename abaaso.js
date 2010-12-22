@@ -1793,11 +1793,10 @@ var abaaso = function(){
 			Number.prototype.even          = function() { return abaaso.number.even(this); };
 			Number.prototype.odd           = function() { return abaaso.number.odd(this); };
 			String.prototype.domID         = function() { return abaaso.domID(this); };
-			String.prototype.trim          = function() { return this.replace(/^\s+|\s+$/g, "") };
 
 			window.$        = function(arg) { return abaaso.$(arg); };
-			window.onload   = function() { abaaso.fire("render"); }
-			window.onresize = function() { abaaso.fire("resize"); }
+			window.onload   = function() { abaaso.fire("render"); };
+			window.onresize = function() { abaaso.fire("resize"); };
 
 			abaaso.fire("ready");
 			abaaso.un("ready");
