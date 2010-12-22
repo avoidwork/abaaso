@@ -624,7 +624,7 @@ var abaaso = function(){
 			}
 
 			try {
-				uri.fire("beforeXHR");
+				new String(uri).fire("beforeXHR");
 
 				switch(type.toLowerCase()) {
 					case "delete":
@@ -687,7 +687,7 @@ var abaaso = function(){
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xmlHttp.responseText);
 
-						uri.fire("afterXHR");
+						new String(uri).fire("afterXHR");
 
 						uri = cache.get(uri, false);
 
@@ -1354,6 +1354,7 @@ var abaaso = function(){
 				obj   = ((obj instanceof Array)
 					   || (obj instanceof Object)
 					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				obj   = (obj == null) ? undefined : obj;
 
 				if ((o === undefined)
 				    || (o == "")
@@ -1380,7 +1381,7 @@ var abaaso = function(){
 					}
 				}
 
-				return obj;
+				return (obj == null) ? undefined : obj;
 			}
 			catch (e) {
 				error(e);
@@ -1746,28 +1747,42 @@ var abaaso = function(){
 
 			var methods = [
 				{name: "clear", fn: function() {
-					this.genID();
-					abaaso.clear(this.id);
+					((!this instanceof String)
+						 && ((this.id === undefined)
+						     || (this.id == ""))) ? this.genID() : void(0);
+					(!this instanceof String) ? abaaso.clear(this.id) : (this.constructor = new String(""));
 					return this;
 					}},
 				{name: "fire", fn: function(event) {
-					this.genID();
-					return abaaso.fire(this.id, event);
+					((!this instanceof String)
+						 && ((this.id === undefined)
+						     || (this.id == ""))) ? this.genID() : void(0);
+					var o = (this instanceof String) ? this.valueOf() : this.id;
+					return abaaso.fire(o, event);
 					}},
 				{name: "genID", fn: function() {
 					return abaaso.genID(this);
 					}},
 				{name: "listeners", fn: function(event) {
-					this.genID();
-					return abaaso.listeners(this.id, event);
+					((!this instanceof String)
+						 && ((this.id === undefined)
+						     || (this.id == ""))) ? this.genID() : void(0);
+					var o = (this instanceof String) ? this.valueOf() : this.id;
+					return abaaso.listeners(o, event);
 					}},
 				{name: "on", fn: function(event, listener, scope, id, standby) {
-					this.genID();
-					return abaaso.on(this.id, event, listener, scope, id, standby);
+					((!this instanceof String)
+						 && ((this.id === undefined)
+						     || (this.id == ""))) ? this.genID() : void(0);
+					var o = (this instanceof String) ? this.valueOf() : this.id;
+					return abaaso.on(o, event, listener, scope, id, standby);
 					}},
 				{name: "un", fn: function(event, id) {
-					this.genID();
-					return abaaso.un(this.id, event, id);
+					((!this instanceof String)
+						 && ((this.id === undefined)
+						     || (this.id == ""))) ? this.genID() : void(0);
+					var o = (this instanceof String) ? this.valueOf() : this.id;
+					return abaaso.un(o, event, id);
 					}}
 				];
 
