@@ -1800,7 +1800,9 @@ var abaaso = function(){
 				}
 				else {
 					this.update({innerHTML: cache.get(uri, false).response.toString()});
-				}};
+				}
+				return this;
+				};
 			Element.prototype.fall         = function(pos, ms) { this.genID(); abaaso.fx.bounce(this.id, pos, ms); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
