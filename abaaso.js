@@ -1790,7 +1790,7 @@ var abaaso = function(){
 			Element.prototype.destroy      = function() { this.genID(); abaaso.destroy(this.id); };
 			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
 			Element.prototype.get          = function(uri) {
-				if (!cache.get(uri, false)) {
+				if (!cache.get(uri)) {
 					new String(uri).on("afterXHR", function() {
 						var o = cache.get(uri, false);
 						this.update({innerHTML: o.response});
