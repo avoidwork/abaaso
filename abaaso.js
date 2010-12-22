@@ -123,8 +123,10 @@ var abaaso = function(){
 		remove : function(instance, start, end) {
 			try {
 				start = start || 0;
+				instance.fire("beforeRemove");
 				var remaining = instance.slice((end || start)+1 || instance.length);
 				instance.length = (start < 0) ? (instance.length + start) : start;
+				instance.fire("beforeAfter");
 				return instance.push.apply(instance, remaining);
 			}
 			catch (e) {
@@ -380,6 +382,8 @@ var abaaso = function(){
 		render : function(target, dateStamp) {
 			try {
 				if ($(target)) {
+					$(target).fire("beforeRender");
+
 					$(target).clear();
 
 					var o = calendar.date;
@@ -459,6 +463,8 @@ var abaaso = function(){
 					for (i = 1; i <= loop; i++) {
 						calendar.day("calendarDays", dateStamp.setDate(i));
 					}
+
+					$(target).fire("afterRender");
 
 					return true;
 				}
@@ -618,6 +624,8 @@ var abaaso = function(){
 			}
 
 			try {
+				uri.fire("beforeXHR");
+
 				switch(type.toLowerCase()) {
 					case "delete":
 					case "get":
@@ -678,6 +686,8 @@ var abaaso = function(){
 
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xmlHttp.responseText);
+
+						uri.fire("afterXHR");
 
 						uri = cache.get(uri, false);
 
@@ -743,6 +753,8 @@ var abaaso = function(){
 		clear : function(id) {
 			try {
 				if ($(id)) {
+					$(id).fire("beforeClear");
+
 					switch (typeof $(id)) {
 						case "form":
 							$(id).reset();
@@ -754,6 +766,8 @@ var abaaso = function(){
 							$(id).update({innerHTML: ""});
 							break;
 					}
+
+					$(id).fire("afterClear");
 				}
 				else {
 					throw label.error.elementNotFound;
@@ -810,7 +824,11 @@ var abaaso = function(){
 
 				while (i--) {
 					var instance = $(args[i]);
-					((instance !== undefined) && (instance != null)) ? instance.parentNode.removeChild(instance) : void(0);
+					if ((instance !== undefined) && (instance != null)) {
+						instance.fire("beforeDestroy");
+						instance.parentNode.removeChild(instance);
+						instance.fire("afterDestroy");
+					}
 				}
 			}
 			catch(e) {
@@ -929,6 +947,8 @@ var abaaso = function(){
 		 * @todo implement this!
 		 */
 		bounce : function(id, ms, height) {
+			$(id).fire("beforeBounce");
+			$(id).fire("afterBounce");
 			return $(id);
 		},
 
@@ -941,6 +961,8 @@ var abaaso = function(){
 		 * @todo implement this!
 		 */
 		fall : function (id, pos, ms) {
+			$(id).fire("beforeFall");
+			$(id).fire("afterFall");
 			return $(id);
 		},
 
@@ -1068,6 +1090,9 @@ var abaaso = function(){
 				}
 
 				elastic = elastic || 0;
+
+				$(id).fire("beforeSlide");
+				$(id).fire("afterSlide");
 
 				return $(id);
 			}
