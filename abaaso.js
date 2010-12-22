@@ -740,6 +740,24 @@ var abaaso = function(){
 	};
 
 	/**
+	 * Template data store object, to be put on a widget
+	 *
+	 * @class
+	 * @todo complete for v1.0.0
+	 */
+	var data = {
+		// Records
+		records : [],
+
+		// Methods
+		del : function() {},
+		insert : function() {},
+		search : function() {},
+		select : function() {},
+		update : function() {}
+	};
+
+	/**
 	 * Element methods
 	 *
 	 * @class
