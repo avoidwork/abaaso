@@ -1272,8 +1272,12 @@ var abaaso = function(){
 		 */
 		add : function(obj, event, listener, scope, id, standby) {
 			try {
-				var o   = (obj instanceof Object) ? obj.id : obj;
-				obj     = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				var o   = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj.id : obj;
+				obj     = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 				standby = ((standby !== undefined) && (standby === true)) ? true : false;
 
 				if ((o === undefined)
@@ -1325,8 +1329,12 @@ var abaaso = function(){
 		 */
 		fire : function(obj, event) {
 			try {
-				var o = (obj instanceof Object) ? obj.id : obj;
-				obj   = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				var o = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj.id : obj;
+				obj   = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
 				if ((o === undefined)
 				    || (o == "")
@@ -1370,7 +1378,9 @@ var abaaso = function(){
 		 */
 		list : function(obj, event) {
 			try {
-				obj = (obj instanceof Object) ? obj.id : obj;
+				obj = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj.id : obj;
 
 				if ((obj === undefined)
 				    || (event === undefined)) {
@@ -1395,8 +1405,12 @@ var abaaso = function(){
 		 */
 		remove : function(obj, event, id) {
 			try {
-				var o = (obj instanceof Object) ? obj.id : obj;
-				obj   = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				var o = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj.id : obj;
+				obj   = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
 				if ((o === undefined)
 				    || (event === undefined)
@@ -1439,8 +1453,12 @@ var abaaso = function(){
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
-				var o = (obj instanceof Object) ? obj.id : obj;
-				obj   = (obj instanceof Object) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				var o = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj.id : obj;
+				obj   = ((obj instanceof Array)
+					   || (obj instanceof Object)
+					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
 				if ((o === undefined)
 				    || (event === undefined)
