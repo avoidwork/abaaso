@@ -767,7 +767,10 @@ var abaaso = function(){
 		/**
 		 * Creates an element in document.body or a target element
 		 *
-		 * Element.genID() is executed incase args doesn't contain an id
+		 * Element.genID() is executed if args doesn't contain an id
+		 *
+		 * Events:    beforeCreate    Fires after the object has been created, but not set
+		 *            afterCreate     Fires after the object has been appended to it's parent
 		 *
 		 * @param type {string} Type of element to create
 		 * @param args {object} Collection of properties to apply to the new element
@@ -778,9 +781,11 @@ var abaaso = function(){
 			try {
 				if (args instanceof Object) {
 					var obj = document.createElement(type);
-					(args.id === undefined) ? obj.genID() : void(0);
+					(args.id === undefined) ? obj.genID() : obj.id = args.id;
+					obj.fire("beforeCreate");
 					el.update(obj, args);
 					($(id)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
+					obj.fire("afterCreate");
 					return obj;
 				}
 				else {
@@ -862,11 +867,18 @@ var abaaso = function(){
 
 				obj = (typeof obj == "object") ? obj : $(obj);
 
+				if (obj === undefined) {
+					throw label.error.invalidArguments;
+				}
+
+				obj.fire("beforeUpdate");
+
 				if (obj) {
 					for (var i in args) {
 						switch(i) {
 							case "class":
-								((client.ie) && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
+								((client.ie)
+								 && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
 								break;
 							case "innerHTML":
 							case "type":
@@ -876,11 +888,18 @@ var abaaso = function(){
 							case "opacity":
 								obj.opacity(args[i]);
 								break;
+							case "id":
+								if (observer.listeners[obj.id] !== undefined) {
+									observer.listeners[args[i]] = observer.listeners[obj.id];
+									delete observer.listeners[obj.id];
+								}
 							default:
 								obj.setAttribute(i, args[i]);
 								break;
 						}
 					}
+
+					obj.fire("afterUpdate");
 
 					return obj;
 				}
