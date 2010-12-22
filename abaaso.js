@@ -1800,6 +1800,13 @@ var abaaso = function(){
 			Element.prototype.bounce       = function(ms, height) { this.genID(); abaaso.fx.bounce(this.id, ms, height); };
 			Element.prototype.destroy      = function() { this.genID(); abaaso.destroy(this.id); };
 			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
+			Element.prototype.get          = function(uri) {
+				new String(uri).on("afterXHR", function() {
+					var o = cache.get(uri, false);
+					this.update({innerHTML: o.response});
+					}, this, "get");
+				abaaso.get(uri, function() { void(0); });
+				};
 			Element.prototype.fall         = function(pos, ms) { this.genID(); abaaso.fx.bounce(this.id, pos, ms); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
