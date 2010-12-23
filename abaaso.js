@@ -1774,8 +1774,7 @@ var abaaso = function(){
 			Element.prototype.get          = function(uri) {
 				if (!cache.get(uri)) {
 					new String(uri).on("afterXHR", function() {
-						var o = cache.get(uri, false);
-						this.update({innerHTML: o.response});
+						this.update({innerHTML: cache.get(uri, false).response});
 						new String(uri).un("afterXHR", "get");
 						}, this, "get");
 					abaaso.get(uri);
