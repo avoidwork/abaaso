@@ -1787,10 +1787,8 @@ var abaaso = function(){
 					abaaso.get(uri);
 				}
 				else {
-					this.update({
-						innerHTML: cache.get(uri, false).response.toString(),
-						value: cache.get(uri, false).response.toString()
-						});
+					var response = cache.get(uri, false).response.toString();
+					this.update({innerHTML: response, value: response});
 					this.fire("afterGet");
 				}
 				return this;
