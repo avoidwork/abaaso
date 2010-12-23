@@ -1778,7 +1778,8 @@ var abaaso = function(){
 			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
 			Element.prototype.get          = function(uri) {
 				this.fire("beforeGet");
-				if (!cache.get(uri)) {
+				var cached = cache.get(uri, false);
+				if (!cached) {
 					new String(uri).on("afterXHR", function() {
 						this.update({innerHTML: cache.get(uri, false).response});
 						new String(uri).un("afterXHR", "get");
@@ -1787,8 +1788,7 @@ var abaaso = function(){
 					abaaso.get(uri);
 				}
 				else {
-					var response = cache.get(uri, false).response.toString();
-					this.update({innerHTML: response, value: response});
+					this.update({innerHTML: cached.response.toString(), value: cached.response.toString()});
 					this.fire("afterGet");
 				}
 				return this;
