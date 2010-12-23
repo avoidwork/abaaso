@@ -39,6 +39,10 @@
  *
  * See @link for the development roadmap
  *
+ * Events:    ready      Fires when the DOM is available (safe for GUI creation)
+ *            render     Fires after the window resources have loaded (safe for visual fx)
+ *            resize     Fires on window resize
+ *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://avoidwork.com/products/abaaso abaaso
  * @namespace
