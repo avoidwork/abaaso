@@ -1748,6 +1748,7 @@ var abaaso = function(){
 					return abaaso.listeners(this, event);
 					}},
 				{name: "on", fn: function(event, listener, scope, id, standby) {
+					scope = scope || this;
 					((!this instanceof String)
 						 && ((this.id === undefined)
 						     || (this.id == ""))) ? this.genID() : void(0);
