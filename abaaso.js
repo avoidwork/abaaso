@@ -853,11 +853,8 @@ var abaaso = function(){
 		 */
 		update : function(obj, args) {
 			try {
-				if (!args instanceof Object) {
-					throw label.error.expectedObject;
-				}
-
 				obj = (typeof obj == "object") ? obj : $(obj);
+				args = arg || {};
 
 				if (obj === undefined) {
 					throw label.error.invalidArguments;
