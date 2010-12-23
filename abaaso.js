@@ -1236,17 +1236,17 @@ var abaaso = function(){
 		listeners : [],
 
 		/**
-		 * Adds a listener to an object
+		 * Adds a handler to an event
 		 *
 		 * @param obj {mixed} The object.id or instance of object firing the event
 		 * @param event {string} The event being fired
-		 * @param listener {function} The event listener
-		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
+		 * @param fn {function} The event handler
 		 * @param id {string} [Optional / Recommended] The id for the listener
+		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param standby {boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
 		 * @returns {object} The object
 		 */
-		add : function(obj, event, listener, scope, id, standby) {
+		add : function(obj, event, fn, id, scope, standby) {
 			try {
 				var o   = (obj.id !== undefined) ? obj.id : obj.toString();
 				obj     = ((obj instanceof Array)
@@ -1256,15 +1256,14 @@ var abaaso = function(){
 
 				if ((o === undefined)
 				    || (event === undefined)
-				    || (listener === undefined)
-				    || (!listener instanceof Function)
+				    || (!fn instanceof Function)
 				    || ((standby)
 					&& (id === undefined))) {
 					throw label.error.invalidArguments;
 				}
 
 				var item = {};
-				item.fn  = listener;
+				item.fn  = fn;
 				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
 
 				(observer.listeners[o] === undefined) ? observer.listeners[o] = [] : void(0);
@@ -1325,6 +1324,7 @@ var abaaso = function(){
 						if (listeners[i].scope !== undefined) {
 							var scope = ($(listeners[i].scope)) ? $(listeners[i].scope) : listeners[i].scope,
 							    fn    = listeners[i]["fn"];
+
 							fn.call(scope);
 						}
 						else {
@@ -1747,12 +1747,12 @@ var abaaso = function(){
 						     || (this.id == ""))) ? this.genID() : void(0);
 					return abaaso.listeners(this, event);
 					}},
-				{name: "on", fn: function(event, listener, scope, id, standby) {
+				{name: "on", fn: function(event, listener, id, scope, standby) {
 					scope = scope || this;
 					((!this instanceof String)
 						 && ((this.id === undefined)
 						     || (this.id == ""))) ? this.genID() : void(0);
-					return abaaso.on(this, event, listener, scope, id, standby);
+					return abaaso.on(this, event, listener, id, scope, standby);
 					}},
 				{name: "un", fn: function(event, id) {
 					((!this instanceof String)
@@ -1783,7 +1783,7 @@ var abaaso = function(){
 						this.update({innerHTML: cache.get(uri, false).response});
 						new String(uri).un("afterXHR", "get");
 						this.fire("afterGet");
-						}, this, "get");
+						}, "get", this);
 					abaaso.get(uri);
 				}
 				else {
@@ -1829,11 +1829,11 @@ var abaaso = function(){
 			var obj      = (all) ? arguments[0] : abaaso,
 			    event    = (all) ? arguments[1] : arguments[0],
 			    listener = (all) ? arguments[2] : arguments[1],
-			    scope    = (all) ? arguments[3] : arguments[2],
-			    id       = (all) ? arguments[4] : arguments[3],
+			    id       = (all) ? arguments[3] : arguments[2],
+			    scope    = (all) ? arguments[4] : arguments[3],
 			    standby  = (all) ? arguments[5] : arguments[4];
 
-			return abaaso.observer.add(obj, event, listener, scope, id, standby);
+			return abaaso.observer.add(obj, event, listener, id, scope, standby);
 			},
 		un              : function() {
 			var all   = (typeof arguments[0] == "string") ? false : true;
