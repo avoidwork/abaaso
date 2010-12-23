@@ -1778,17 +1778,18 @@ var abaaso = function(){
 			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
 			Element.prototype.get          = function(uri) {
 				this.fire("beforeGet");
-				var cached = cache.get(uri, false);
+				var cached = cache.get(uri);
 				if (!cached) {
 					new String(uri).on("afterXHR", function() {
-						this.update({innerHTML: cache.get(uri, false).response});
+						var response = cache.get(uri, false).response;
+						this.update({innerHTML: response, value: response});
 						new String(uri).un("afterXHR", "get");
 						this.fire("afterGet");
 						}, "get", this);
 					abaaso.get(uri);
 				}
 				else {
-					this.update({innerHTML: cached.response.toString(), value: cached.response.toString()});
+					this.update({innerHTML: cached.response, value: cached.response});
 					this.fire("afterGet");
 				}
 				return this;
