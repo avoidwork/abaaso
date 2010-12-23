@@ -41,7 +41,7 @@
  *
  * Events:    ready      Fires when the DOM is available (safe for GUI creation)
  *            render     Fires when the window resources have loaded (safe for visual fx)
- *            resize     Fires when the window resize
+ *            resize     Fires when the window resizes
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://avoidwork.com/products/abaaso abaaso
@@ -1314,6 +1314,8 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
+				console.log(o + " fired " + event);
+
 				var listeners = (observer.listeners[o] !== undefined) ?
 					((observer.listeners[o][event] !== undefined) ?
 					 ((observer.listeners[o][event]["active"] !== undefined) ?
@@ -1776,10 +1778,12 @@ var abaaso = function(){
 			Element.prototype.destroy      = function() { this.genID(); abaaso.destroy(this.id); };
 			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
 			Element.prototype.get          = function(uri) {
+				this.fire("beforeGet");
 				if (!cache.get(uri)) {
 					new String(uri).on("afterXHR", function() {
 						this.update({innerHTML: cache.get(uri, false).response});
 						new String(uri).un("afterXHR", "get");
+						this.fire("afterGet");
 						}, this, "get");
 					abaaso.get(uri);
 				}
@@ -1788,6 +1792,7 @@ var abaaso = function(){
 						innerHTML: cache.get(uri, false).response.toString(),
 						value: cache.get(uri, false).response.toString()
 						});
+					this.fire("afterGet");
 				}
 				return this;
 				};
