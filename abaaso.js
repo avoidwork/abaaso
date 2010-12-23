@@ -1314,8 +1314,6 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				console.log(o + " fired " + event);
-
 				var listeners = (observer.listeners[o] !== undefined) ?
 					((observer.listeners[o][event] !== undefined) ?
 					 ((observer.listeners[o][event]["active"] !== undefined) ?
