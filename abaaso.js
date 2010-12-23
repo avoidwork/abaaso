@@ -854,7 +854,7 @@ var abaaso = function(){
 		update : function(obj, args) {
 			try {
 				obj = (typeof obj == "object") ? obj : $(obj);
-				args = arg || {};
+				args = args || {};
 
 				if (obj === undefined) {
 					throw label.error.invalidArguments;
