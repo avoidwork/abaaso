@@ -599,54 +599,36 @@ var abaaso = function(){
 		 * Creates an XmlHttpRequest to a URI
 		 *
 		 * @param uri {string} The resource to interact with
-		 * @param handler {function} A handler function to execute when an appropriate response been received
+		 * @param fn {function} A handler function to execute when an appropriate response been received
 		 * @param type {string} The type of request
 		 * @param args {mixed} Data to append to the request
 		 */
-		request : function(uri, handler, type, args) {
-			var xmlHttp = false;
-
-			if (window.XMLHttpRequest) {
-				xmlHttp = new XMLHttpRequest();
-			}
-			else if (window.ActiveXObject) {
-				try {
-					xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
-				}
-				catch (e1) {
-					try {
-						xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-					}
-					catch (e2) {
-						error(e2);
-					}
-				}
-			}
-
+		request : function(uri, fn, type, args) {
 			try {
+				var xhr = new XMLHttpRequest();
 				new String(uri).fire("beforeXHR");
 
 				switch(type.toLowerCase()) {
 					case "delete":
 					case "get":
-						xmlHttp.onreadystatechange = function() { client.response(xmlHttp, uri, handler); };
-						(type.toLowerCase() == "delete") ? xmlHttp.open("DELETE", uri, true) : xmlHttp.open("GET", uri, true);
-						xmlHttp.send(null);
+						xhr.onreadystatechange = function() { client.response(xhr, uri, fn); };
+						(type.toLowerCase() == "delete") ? xhr.open("DELETE", uri, true) : xhr.open("GET", uri, true);
+						xhr.send(null);
 						break;
 					case "post":
 					case "put":
-						xmlHttp.onreadystatechange = function() { client.response(xmlHttp, uri, handler); };
-						(type.toLowerCase() == "post") ? xmlHttp.open("POST", uri, true) : xmlHttp.open("PUT", uri, true);
-						(xmlHttp.overrideMimeType) ? xmlHttp.overrideMimeType("text/html") : void(0);
-						xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-						xmlHttp.setRequestHeader("Content-length", args.length);
-						xmlHttp.setRequestHeader("Connection", "close");
-						xmlHttp.send(args);
+						xhr.onreadystatechange = function() { client.response(xhr, uri, fn); };
+						(type.toLowerCase() == "post") ? xhr.open("POST", uri, true) : xhr.open("PUT", uri, true);
+						(xhr.overrideMimeType) ? xhr.overrideMimeType("text/html") : void(0);
+						xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+						xhr.setRequestHeader("Content-length", args.length);
+						xhr.setRequestHeader("Connection", "close");
+						xhr.send(args);
 						break;
 				}
 			}
-			catch(e3) {
-				error(e3);
+			catch(e) {
+				error(e);
 			}
 		},
 
@@ -655,14 +637,14 @@ var abaaso = function(){
 		 *
 		 * Headers are cached, if an expiration is set it will be used to control the local cache
 		 *
-		 * @param xmlHttp {object} XMLHttp object
+		 * @param xhr {object} XMLHttpRequest object
 		 * @param uri {string} The URI.value to cache
-		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param fn {function} A handler function to execute once a response has been received
 		 */
-		response : function(xmlHttp, uri, handler) {
+		response : function(xhr, uri, fn) {
 			try {
-				if (xmlHttp.readyState == 2) {
-					var headers = xmlHttp.getAllResponseHeaders().split("\n"),
+				if (xhr.readyState == 2) {
+					var headers = xhr.getAllResponseHeaders().split("\n"),
 					    i       = null,
 					    loop    = headers.length,
 					    items   = {};
@@ -678,14 +660,14 @@ var abaaso = function(){
 
 					cache.set(uri, "headers", items);
 				}
-				else if (xmlHttp.readyState == 4) {
-					if ((xmlHttp.status == 200)
-					    && (xmlHttp.responseText != "")) {
+				else if (xhr.readyState == 4) {
+					if ((xhr.status == 200)
+					    && (xhr.responseText != "")) {
 						var state = null,
 						        s = abaaso.state;
 
 						cache.set(uri, "epoch", new Date());
-						cache.set(uri, "response", xmlHttp.responseText);
+						cache.set(uri, "response", xhr.responseText);
 
 						new String(uri).fire("afterXHR");
 
@@ -700,7 +682,7 @@ var abaaso = function(){
 							abaaso.fire(state);
 						}
 
-						(handler !== undefined) ? handler(uri) : void(0);
+						(fn !== undefined) ? fn(uri) : void(0);
 					}
 					else {
 						throw label.error.serverError;
@@ -1796,7 +1778,7 @@ var abaaso = function(){
 						this.update({innerHTML: o.response});
 						new String(uri).un("afterXHR", "get");
 						}, this, "get");
-					abaaso.get(uri, function() { void(0); });
+					abaaso.get(uri);
 				}
 				else {
 					this.update({innerHTML: cache.get(uri, false).response.toString()});
