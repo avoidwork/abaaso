@@ -692,32 +692,6 @@ var abaaso = function(){
 			catch (e) {
 				error(e);
 			}
-		},
-
-		/**
-		 * Renders a loading icon in a target element
-		 *
-		 * @param id {string} Target object.id value
-		 */
-		spinner : function(id) {
-			try {
-				if (!window["abaaso_spinner"]) {
-					window["abaaso_spinner"] = new Image();
-					window["abaaso_spinner"].src = abaaso.spinner.url;
-				}
-
-				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
-					el.create("img", {
-						alt: label.common.loading,
-						id: id + "_" + label.common.loading.toLocaleLowerCase(),
-						src: window["abaaso_spinner"].src,
-						"class": "spinner"
-						}, id);
-				}
-			}
-			catch (e) {
-				error(e);
-			}
 		}
 	};
 
@@ -1573,6 +1547,35 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Renders a loading icon in a target element
+		 *
+		 * @param id {string} Target object.id value
+		 */
+		loading : function(id) {
+			try {
+				if (!window["abaaso_loading"]) {
+					window["abaaso_loading"] = new Image();
+					window["abaaso_loading"].src = abaaso.loading.url;
+				}
+
+				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
+					el.create("img", {
+						alt: label.common.loading,
+						id: id + "_" + label.common.loading.toLocaleLowerCase(),
+						src: window["abaaso_loading"].src,
+						"class": "loading"
+						}, id);
+				}
+
+				return $(id);
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Error handling
 		 *
 		 * History is available as error.events
@@ -1788,6 +1791,7 @@ var abaaso = function(){
 				return this;
 				};
 			Element.prototype.fall         = function(pos, ms) { this.genID(); abaaso.fx.bounce(this.id, pos, ms); };
+			Element.prototype.loading      = function() { this.genID(); return abaaso.loading.create(this.id); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
 			Element.prototype.slide        = function(ms, pos, elastic) { this.genID(); abaaso.fx.slide(this.id, ms, pos, elastic); };
@@ -1872,8 +1876,8 @@ var abaaso = function(){
 			header  : null,
 			previous: null
 			},
-		spinner         : {
-			create  : client.spinner,
+		loading         : {
+			create  : utility.loading,
 			url     : null
 			},
 		validate        : validate
