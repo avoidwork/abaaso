@@ -929,6 +929,36 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Shifts an object's opacity, transition speed is based on the ms argument
+		 *
+		 * Events:    beforeFade    Fires before the fade starts
+		 *            afterFade     Fires after the fade ends
+		 *
+		 * @param id {string} Target object.id value
+		 * @param ms {integer} Milliseconds for transition to take
+		 * @returns {object} Target object
+		 */
+		fade : function(id, ms) {
+			try {
+				if ($(id) === undefined) {
+					throw label.error.invalidArguments;
+				}
+
+				var o = $(id);
+				var start = (o.opacity() === 0) ? 0 : 100,
+				    end   = (o.opacity() === 0) ? 100 : 0;
+
+				$(id).fire("beforeFade");
+				this.opacityChange(id, start, end, ms);
+				return $(id);
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Simulates the Target falling to a position
 		 *
 		 * @param id {string} Target object.id value
@@ -990,7 +1020,7 @@ var abaaso = function(){
 				if (start > end) {
 					for (i = start; i >= end; i--) {
 						if (i == end) {
-							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterOpacityChange\")", (timer*speed));
+							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterFade\")", (timer*speed));
 						}
 						else {
 							setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
@@ -1001,7 +1031,7 @@ var abaaso = function(){
 				else {
 					for (i = start; i <= end; i++) {
 						if (i == end) {
-							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterOpacityChange\")", (timer*speed));
+							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterFade\")", (timer*speed));
 						}
 						else {
 							setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
@@ -1012,36 +1042,6 @@ var abaaso = function(){
 			}
 			catch (e) {
 				error(e);
-			}
-		},
-
-		/**
-		 * Shifts an object's opacity, transition speed is based on the ms argument
-		 *
-		 * Events:    beforeOpacityChange    Fires before the opacityShift starts
-		 *            afterOpacityChange     Fires after the opacityShift ends
-		 *
-		 * @param id {string} Target object.id value
-		 * @param ms {integer} Milliseconds for transition to take
-		 * @returns {object} Target object
-		 */
-		opacityShift : function(id, ms) {
-			try {
-				if ($(id) === undefined) {
-					throw label.error.invalidArguments;
-				}
-
-				var o = $(id);
-				var start = (o.opacity() === 0) ? 0 : 100,
-				    end   = (o.opacity() === 0) ? 100 : 0;
-
-				$(id).fire("beforeOpacityChange");
-				this.opacityChange(id, start, end, ms);
-				return $(id);
-			}
-			catch (e) {
-				error(e);
-				return undefined;
 			}
 		},
 
@@ -1794,10 +1794,10 @@ var abaaso = function(){
 				}
 				return this;
 				};
+			Element.prototype.fade         = function(arg) { abaaso.fx.fade(this.id, arg); };
 			Element.prototype.fall         = function(pos, ms) { this.genID(); abaaso.fx.bounce(this.id, pos, ms); };
 			Element.prototype.loading      = function() { this.genID(); return abaaso.loading.create(this.id); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
-			Element.prototype.opacityShift = function(arg) { abaaso.fx.opacityShift(this.id, arg); };
 			Element.prototype.slide        = function(ms, pos, elastic) { this.genID(); abaaso.fx.slide(this.id, ms, pos, elastic); };
 			Element.prototype.update       = function(args) { this.genID(); abaaso.update(this.id, args); };
 			Number.prototype.even          = function() { return abaaso.number.even(this); };
