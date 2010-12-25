@@ -936,18 +936,18 @@ var abaaso = function(){
 		 *
 		 * @param id {string} Target object.id value
 		 * @param ms {integer} Milliseconds for transition to take
+		 * @param end {integer} [Optional] The final opacity value of the fade
 		 * @returns {object} Target object
-		 * @todo consider fading from current opacity value instead of 0 or 100
 		 */
-		fade : function(id, ms) {
+		fade : function(id, ms, end) {
 			try {
 				if ($(id) === undefined) {
 					throw label.error.invalidArguments;
 				}
 
-				var o = $(id);
-				var start = (o.opacity() === 0) ? 0 : 100,
-				    end   = (o.opacity() === 0) ? 100 : 0;
+				var o     = $(id),
+				    start = o.opacity();
+				    end   = end || ((o.opacity() === 0) ? 100 : 0);
 
 				$(id).fire("beforeFade");
 				fx.opacityChange(id, start, end, ms);
