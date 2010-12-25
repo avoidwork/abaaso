@@ -923,9 +923,22 @@ var abaaso = function(){
 		 * @todo implement this!
 		 */
 		bounce : function(id, ms, height) {
-			$(id).fire("beforeBounce");
-			$(id).fire("afterBounce");
-			return $(id);
+			try {
+				if (($(id) === undefined)
+				    || (isNaN(ms))
+				    || (isNaN(height))) {
+					throw label.error.invalidArguments;
+				}
+
+				var o = $(id);
+				o.fire("beforeBounce");
+				o.fire("afterBounce");
+				return o;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -941,7 +954,10 @@ var abaaso = function(){
 		 */
 		fade : function(id, ms, end) {
 			try {
-				if ($(id) === undefined) {
+				if (($(id) === undefined)
+				    || (isNaN(ms))
+				    || ((end !== undefined)
+					&& (isNaN(end)))) {
 					throw label.error.invalidArguments;
 				}
 
@@ -968,9 +984,20 @@ var abaaso = function(){
 		 * @todo implement this!
 		 */
 		fall : function (id, pos, ms) {
-			$(id).fire("beforeFall");
-			$(id).fire("afterFall");
-			return $(id);
+			try {
+				if ($(id) === undefined) {
+					throw label.error.invalidArguments;
+				}
+
+				var o = $(id);
+				o.fire("beforeFall");
+				o.fire("afterFall");
+				return o;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -985,7 +1012,8 @@ var abaaso = function(){
 				obj = (typeof obj == "object") ? obj : $(obj);
 
 				if (obj !== undefined) {
-					if (opacity !== undefined) {
+					if ((opacity !== undefined)
+					    || (!isNaN(opacity))) {
 						(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (parseInt(opacity)/100);
 						return parseInt(opacity);
 					}
@@ -1059,19 +1087,20 @@ var abaaso = function(){
 			try {
 				if ((id === undefined)
 				    || (!$(id))
-				    || (NaN(ms))
+				    || (isNaN(ms))
 				    || (!pos instanceof Array)
-				    || (NaN(pos[0]))
-				    || (NaN(pos[1]))) {
+				    || (isNaN(pos[0]))
+				    || (isNaN(pos[1]))) {
 					throw label.error.invalidArguments;
 				}
 
 				elastic = elastic || 0;
+				var o = $(id);
 
-				$(id).fire("beforeSlide");
-				$(id).fire("afterSlide");
+				o.fire("beforeSlide");
+				o.fire("afterSlide");
 
-				return $(id);
+				return o;
 			}
 			catch (e) {
 				error(e);
