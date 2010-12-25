@@ -949,9 +949,9 @@ var abaaso = function(){
 				    start = o.opacity();
 				    end   = end || ((o.opacity() === 0) ? 100 : 0);
 
-				$(id).fire("beforeFade");
+				o.fire("beforeFade");
 				fx.opacityChange(id, start, end, ms);
-				return $(id);
+				return o;
 			}
 			catch (e) {
 				error(e);
