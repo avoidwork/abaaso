@@ -937,6 +937,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param ms {integer} Milliseconds for transition to take
 		 * @returns {object} Target object
+		 * @todo consider fading from current opacity value instead of 0 or 100
 		 */
 		fade : function(id, ms) {
 			try {
@@ -949,7 +950,7 @@ var abaaso = function(){
 				    end   = (o.opacity() === 0) ? 100 : 0;
 
 				$(id).fire("beforeFade");
-				this.opacityChange(id, start, end, ms);
+				fx.opacityChange(id, start, end, ms);
 				return $(id);
 			}
 			catch (e) {
@@ -1865,7 +1866,13 @@ var abaaso = function(){
 			put     : client.put
 			},
 		el              : el,
-		fx              : fx,
+		fx              : {
+			bounce  : fx.bounce,
+			fade    : fx.fade,
+			fall    : fx.fall,
+			opacity : fx.opacity,
+			slide   : fx.slide
+			},
 		json            : json,
 		label           : label,
 		number          : number,
