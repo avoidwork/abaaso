@@ -1015,11 +1015,11 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Moves an Object to a new position in the Window
+		 * Moves an Object to a new position
 		 *
 		 * @param id {string} Target object.id value
 		 * @param pos {array} An array of co-ordinates [X,Y]
-		 * @todo finish this!
+		 * @todo debug the style setting
 		 */
 		move : function (id, pos) {
 			try {
@@ -1030,19 +1030,13 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				var o = $(id);
-				o.style.zindex = '99999'
-				o.style.position = 'absolute'
+				var o = $(id),
+				    p = o.position();
 
-				for (i = start; i >= end; i--) {
-					if (i == end) {
-						setTimeout("$(\"" + id + "\").move(" + i + ");$(\"" + id + "\").fire(\"afterFall\")", (timer*speed));
-					}
-					else {
-						setTimeout("$(\"" + id + "\").move(" + i + ")", (timer*speed));
-					}
-					timer++;
-				}
+				p[0] += pos[0];
+				p[1] += pos[1];
+
+				o.style = "top:" + p[1] + "px;left:" + p[0] + "px;";
 
 				return o;
 			}
@@ -1879,7 +1873,9 @@ var abaaso = function(){
 			Element.prototype.fade         = function(arg) { abaaso.fx.fade(this.id, arg); };
 			Element.prototype.fall         = function(pos, ms) { this.genID(); abaaso.fx.bounce(this.id, pos, ms); };
 			Element.prototype.loading      = function() { this.genID(); return abaaso.loading.create(this.id); };
+			Element.prototype.move         = function(pos) { this.genID(); return abaaso.fx.move(this.id, pos); };
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
+			Element.prototype.position     = function() { this.genID(); return abaaso.el.position(this.id); };
 			Element.prototype.slide        = function(ms, pos, elastic) { this.genID(); abaaso.fx.slide(this.id, ms, pos, elastic); };
 			Element.prototype.update       = function(args) { this.genID(); abaaso.update(this.id, args); };
 			Number.prototype.even          = function() { return abaaso.number.even(this); };
@@ -1951,6 +1947,7 @@ var abaaso = function(){
 			bounce  : fx.bounce,
 			fade    : fx.fade,
 			fall    : fx.fall,
+			move    : fx.move,
 			opacity : fx.opacity,
 			slide   : fx.slide
 			},
