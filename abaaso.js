@@ -981,7 +981,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param pos {int} The X co-ordinate to end the fall
 		 * @param ms {int} Milliseconds for bounce to take
-		 * @todo implement this!
+		 * @todo implement this! track the style.position attribute and reset it after move has completed
 		 */
 		fall : function (id, pos, ms) {
 			try {
@@ -991,7 +991,59 @@ var abaaso = function(){
 
 				var o = $(id);
 				o.fire("beforeFall");
-				o.fire("afterFall");
+
+				var i     = null,
+				    speed = Math.round(ms/100),
+				    timer = 0;
+
+				for (i = start; i >= end; i--) {
+					if (i == end) {
+						setTimeout("$(\"" + id + "\").move(" + i + ");$(\"" + id + "\").fire(\"afterFall\")", (timer*speed));
+					}
+					else {
+						setTimeout("$(\"" + id + "\").move(" + i + ")", (timer*speed));
+					}
+					timer++;
+				}
+
+				return o;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Moves an Object to a new position in the Window
+		 *
+		 * @param id {string} Target object.id value
+		 * @param pos {array} An array of co-ordinates [X,Y]
+		 * @todo finish this!
+		 */
+		move : function (id, pos) {
+			try {
+				if (($(id) === undefined)
+				    || (!pos instanceof Array)
+				    || (isNaN(pos[0]))
+				    || (isNaN(pos[1]))) {
+					throw label.error.invalidArguments;
+				}
+
+				var o = $(id);
+				o.style.zindex = '99999'
+				o.style.position = 'absolute'
+
+				for (i = start; i >= end; i--) {
+					if (i == end) {
+						setTimeout("$(\"" + id + "\").move(" + i + ");$(\"" + id + "\").fire(\"afterFall\")", (timer*speed));
+					}
+					else {
+						setTimeout("$(\"" + id + "\").move(" + i + ")", (timer*speed));
+					}
+					timer++;
+				}
+
 				return o;
 			}
 			catch (e) {
