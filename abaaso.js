@@ -1019,7 +1019,6 @@ var abaaso = function(){
 		 *
 		 * @param id {string} Target object.id value
 		 * @param pos {array} An array of co-ordinates [X,Y]
-		 * @todo debug the style setting
 		 */
 		move : function (id, pos) {
 			try {
@@ -1036,7 +1035,7 @@ var abaaso = function(){
 				p[0] += pos[0];
 				p[1] += pos[1];
 
-				o.style.position = "relative";
+				o.style.position = "absolute";
 				o.style.left     = p[0] + "px";
 				o.style.top      = p[1] + "px";
 
