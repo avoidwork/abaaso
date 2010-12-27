@@ -1035,7 +1035,7 @@ var abaaso = function(){
 				p[0] += pos[0];
 				p[1] += pos[1];
 
-				o.style.position = "absolute";
+				(o.style.position != "absolute") ? o.style.position = "absolute" : void(0);
 				o.style.left     = p[0] + "px";
 				o.style.top      = p[1] + "px";
 
