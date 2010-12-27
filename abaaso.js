@@ -1036,7 +1036,9 @@ var abaaso = function(){
 				p[0] += pos[0];
 				p[1] += pos[1];
 
-				o.style = "top:" + p[1] + "px;left:" + p[0] + "px;";
+				o.style.position = "relative";
+				o.style.left     = p[0] + "px";
+				o.style.top      = p[1] + "px";
 
 				return o;
 			}
