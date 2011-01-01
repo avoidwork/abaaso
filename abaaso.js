@@ -1862,7 +1862,7 @@ var abaaso = function(){
 				if (!cached) {
 					new String(uri).on("afterXHR", function() {
 						var response = cache.get(uri, false).response;
-						this.update({innerHTML: response, value: response});
+						(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
 						new String(uri).un("afterXHR", "get");
 						this.fire("afterGet");
 						}, "get", this);
