@@ -796,6 +796,9 @@ var abaaso = function(){
 		/**
 		 * Destroys an element
 		 *
+		 * Events:    beforeDestroy    Fires before the destroy starts
+		 *            afterDestroy     Fires after the destroy ends
+		 *
 		 * @param arg {string} Comma delimited string of target element.id values
 		 */
 		destroy : function(arg) {
@@ -814,6 +817,71 @@ var abaaso = function(){
 			}
 			catch(e) {
 				error(e);
+			}
+		},
+
+		/**
+		 * Disables an element
+		 *
+		 * Events:    beforeDisable    Fires before the disable starts
+		 *            afterDisable     Fires after the disable ends
+		 *
+		 * @param arg {string} Comma delimited string of target element.id values
+		 */
+		disable : function(arg) {
+			try {
+				var args      = arg.split(","),
+				    i         = args.length,
+				    instances = [];
+
+				while (i--) {
+					var instance = $(args[i]);
+					if ((instance !== undefined) && (instance != null)) {
+						instances.push(instance);
+						instance.fire("beforeDisable");
+						instance.disabled = true;
+						instance.fire("afterDisable");
+					}
+				}
+
+				return (instances.length == 1) ? instances[0] : instances;
+			}
+			catch(e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Enables an element
+		 *
+		 * Events:    beforeEnable    Fires before the enable starts
+		 *            afterEnable     Fires after the enable ends
+		 *
+		 * @param arg {string} Comma delimited string of target element.id values
+		 */
+		enable : function(arg) {
+			try {
+				var args      = arg.split(","),
+				    i         = args.length,
+				    instances = [];
+
+
+				while (i--) {
+					var instance = $(args[i]);
+					if ((instance !== undefined) && (instance != null)) {
+						instances.push(instance);
+						instance.fire("beforeEnable");
+						instance.disabled = false;
+						instance.fire("afterEnable");
+					}
+				}
+
+				return (instances.length == 1) ? instances[0] : instances;
+			}
+			catch(e) {
+				error(e);
+				return undefined;
 			}
 		},
 
@@ -854,6 +922,9 @@ var abaaso = function(){
 
 		/**
 		 * Updates an object or element
+		 *
+		 * Events:    beforeUpdate    Fires before the update starts
+		 *            afterUpdate     Fires after the update ends
 		 *
 		 * @param obj {mixed} An instance of an object, or a target object.id value
 		 * @param args {object} A collection of properties
@@ -1855,7 +1926,9 @@ var abaaso = function(){
 			Array.prototype.remove         = function(arg) { abaaso.array.remove(this, arg); };
 			Element.prototype.bounce       = function(ms, height) { this.genID(); abaaso.fx.bounce(this.id, ms, height); };
 			Element.prototype.destroy      = function() { this.genID(); abaaso.destroy(this.id); };
+			Element.prototype.disable      = function() { this.genID(); return abaaso.el.disable(this.id); };
 			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
+			Element.prototype.enable       = function() { this.genID(); return abaaso.el.enable(this.id); };
 			Element.prototype.get          = function(uri) {
 				this.fire("beforeGet");
 				var cached = cache.get(uri);
