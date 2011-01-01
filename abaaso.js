@@ -1956,6 +1956,10 @@ var abaaso = function(){
 			},
 		json            : json,
 		label           : label,
+		loading         : {
+			create  : utility.loading,
+			url     : null
+			},
 		number          : number,
 		observer        : {
 			add     : observer.add,
@@ -1967,10 +1971,6 @@ var abaaso = function(){
 			current : null,
 			header  : null,
 			previous: null
-			},
-		loading         : {
-			create  : utility.loading,
-			url     : null
 			},
 		validate        : validate
 	};
