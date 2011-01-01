@@ -254,7 +254,7 @@ var abaaso = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {},
+				var args = {id: "abaaso_calendar"},
 				    o    = calendar.date,
 				    obj  = null;
 
@@ -263,11 +263,13 @@ var abaaso = function(){
 				o.c           = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : o.c;
 
 				$(target).blur();
-				((o.destination !== null) && ($(destination).value == "Invalid Date"))? $(destination).clear() : void(0);
+
+				((o.destination !== null)
+				 && ($(destination).value == label.error.invalidDate))? $(destination).clear() : void(0);
 
 				if (o.destination !== null) {
 					var pos = el.position(target);
-					args.style = "top:" + pos[1] + "px;left:" + pos[0] + "px;z-index:9999;";
+					args.style = "top:" + pos[1] + "px;left:" + pos[0] + "px;position:absolute;z-index:9999;";
 					obj = el.create("div", args);
 				}
 				else {
@@ -302,14 +304,15 @@ var abaaso = function(){
 				if ((dateStamp != null)
 				     && (!isNaN(dateStamp.getYear()))) {
 					var o    = calendar.date.c,
-					    args = {id: "href_day_" + dateStamp.getDate(), innerHTML: dateStamp.getDate()};
+					    d    = dateStamp.getDate(),
+					    args = {id: "href_day_" + d, innerHTML: d};
 
 					args["class"] = ((dateStamp.getDate() == o.getDate())
 						      && (dateStamp.getMonth() == o.getMonth())
 						      && (dateStamp.getFullYear() == o.getFullYear())) ? "current" : "weekend";
 
-					el.create("div", {id: "div_day_" + dateStamp.getDate(), "class": "day"}, target);
-					el.create("a", args, "div_day_" + dateStamp.getDate());
+					el.create("div", {id: "div_day_" + d, "class": "day"}, target);
+					el.create("a", args, "div_day_" + d);
 
 					if (calendar.date.destination !== null) {
 						$(args.id).un("click").on("click", function() {
