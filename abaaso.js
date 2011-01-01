@@ -1634,7 +1634,9 @@ var abaaso = function(){
 		 */
 		loading : function(id) {
 			try {
-				if (!$(id)) {
+				var o = $(id);
+
+				if (o === undefined) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1643,16 +1645,9 @@ var abaaso = function(){
 					abaaso.loading.image.src = abaaso.loading.url;
 				}
 
-				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
-					el.create("img", {
-						alt     : label.common.loading,
-						id      : id + "_" + label.common.loading.toLocaleLowerCase(),
-						src     : abaaso.loading.image.src,
-						"class" : "loading"
-						}, id);
-				}
-
-				return $(id);
+				o.clear();
+				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, id);
+				return o;
 			}
 			catch (e) {
 				error(e);
