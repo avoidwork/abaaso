@@ -981,7 +981,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param pos {int} The X co-ordinate to end the fall
 		 * @param ms {int} Milliseconds for bounce to take
-		 * @todo implement this! track the style.position attribute and reset it after move has completed
+		 * @todo implement this!
 		 */
 		fall : function (id, pos, ms) {
 			try {
@@ -1631,17 +1631,21 @@ var abaaso = function(){
 		 */
 		loading : function(id) {
 			try {
-				if (!window["abaaso_loading"]) {
-					window["abaaso_loading"] = new Image();
-					window["abaaso_loading"].src = abaaso.loading.url;
+				if (!$(id)) {
+					throw label.error.invalidArguments;
+				}
+
+				if (abaaso.loading.image === undefined) {
+					abaaso.loading.image     = new Image();
+					abaaso.loading.image.src = abaaso.loading.url;
 				}
 
 				if (!$(id + "_" + label.common.loading.toLocaleLowerCase())) {
 					el.create("img", {
-						alt: label.common.loading,
-						id: id + "_" + label.common.loading.toLocaleLowerCase(),
-						src: window["abaaso_loading"].src,
-						"class": "loading"
+						alt     : label.common.loading,
+						id      : id + "_" + label.common.loading.toLocaleLowerCase(),
+						src     : abaaso.loading.image.src,
+						"class" : "loading"
 						}, id);
 				}
 
