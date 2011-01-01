@@ -1646,7 +1646,8 @@ var abaaso = function(){
 				}
 
 				o.clear();
-				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, id);
+				abaaso.create("div", {id: id + "_loading", style: "text-align:center"}, id);
+				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, id + "_loading");
 				return o;
 			}
 			catch (e) {
