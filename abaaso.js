@@ -1886,7 +1886,7 @@ var abaaso = function(){
 			String.prototype.domID         = function() { return abaaso.domID(this); };
 
 			window.$        = function(arg) { return abaaso.$(arg); };
-			window.onload   = function() { abaaso.fire("render"); };
+			window.onload   = function() { abaaso.fire("render"); abaaso.un("render"); };
 			window.onresize = function() { abaaso.fire("resize"); };
 
 			abaaso.fire("ready");
