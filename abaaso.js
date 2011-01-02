@@ -1855,6 +1855,7 @@ var abaaso = function(){
 		// Properties
 		id              : "abaaso",
 		ready           : false,
+		version         : "beta",
 
 		// Methods
 		$               : utility.$,
