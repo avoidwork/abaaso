@@ -810,6 +810,7 @@ var abaaso = function(){
 					var instance = $(args[i]);
 					if ((instance !== undefined) && (instance != null)) {
 						instance.fire("beforeDestroy");
+						observer.remove(instance.id);
 						instance.parentNode.removeChild(instance);
 						instance.fire("afterDestroy");
 					}
