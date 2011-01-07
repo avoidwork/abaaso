@@ -1944,7 +1944,7 @@ var abaaso = function(){
 					abaaso.get(uri);
 				}
 				else {
-					this.update({innerHTML: cached.response, value: cached.response});
+					(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
 					this.fire("afterGet");
 				}
 				return this;
@@ -2053,17 +2053,10 @@ var abaaso = function(){
 }();
 
 // Registering events
-if ((abaaso.client.chrome) || (abaaso.client.firefox)) {
+if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari)) {
 	window.addEventListener("DOMContentLoaded", function(){
 		abaaso.init();
 	}, false);
-}
-else if (abaaso.client.safari) {
-	abaaso.ready = setInterval(function(){
-		if (/loaded|complete/.test(document.readyState)) {
-			clearInterval(abaaso.ready);
-			abaaso.init();
-		}}, 10);
 }
 else {
 	abaaso.ready = setInterval(function(){
