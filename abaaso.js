@@ -1697,6 +1697,20 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Error handling
+		 *
+		 * History is available as error.events
+		 *
+		 * @param e {mixed} Error object or message to display.
+		 */
+		error : function(e) {
+			var err = new Error(e);
+			((client.ie) || (console === undefined)) ? alert(err.description) : console.error(err);
+			(error.events === undefined) ? error.events = [] : void(0);
+			error.events.push(err);
+		},
+
+		/**
 		 * Encodes a string to a DOM friendly ID
 		 *
 		 * @param id {string} The object.id value to encode
@@ -1769,17 +1783,178 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Error handling
+		 * Sets methods on obj
 		 *
-		 * History is available as error.events
-		 *
-		 * @param e {mixed} Error object or message to display.
+		 * @param obj {object} Instance of Array, Element, String or Number
+		 * @param type {string} Identifier of obj, determines what arrays to apply
 		 */
-		error : function(e) {
-			var err = new Error(e);
-			((client.ie) || (console === undefined)) ? alert(err.description) : console.error(err);
-			(error.events === undefined) ? error.events = [] : void(0);
-			error.events.push(err);
+		methods : function(obj, type) {
+			try {
+				if (typeof obj != "object") {
+					throw label.error.invalidArguments;
+				}
+
+				/**
+				 * Applies a collection of methods onto an Object
+				 *
+				 * @param obj {object} The object to receive the methods
+				 * @param collection {array} The collection of methods to apply
+				 */
+				var apply   = function(obj, collection) {
+					var i = collection.length;
+					while (i--) {
+						obj[collection[i].name] = collection[i].fn;
+					}
+				}
+
+				var array   = [
+					{name: "contains", fn: function(arg) {
+						return abaaso.array.contains(this, arg);
+						}},
+					{name: "index", fn: function(arg) {
+						return abaaso.array.index(this, arg);
+						}},
+					{name: "remove", fn: function(arg) {
+						return abaaso.array.remove(this, arg);
+						}}
+					       ],
+				    element = [
+					{name: "bounce", fn: function(ms, height) {
+						this.genID();
+						abaaso.fx.bounce(this.id, ms, height);
+						}},
+					{name: "destroy", fn: function() {
+						this.genID();
+						abaaso.destroy(this.id);
+						}},
+					{name: "disable", fn: function() {
+						this.genID();
+						return abaaso.el.disable(this.id);
+						}},
+					{name: "domID", fn: function() {
+						this.genID();
+						return abaaso.domID(this.id);
+						}},
+					{name: "enable", fn: function() {
+						this.genID();
+						return abaaso.el.enable(this.id);
+						}},
+					{name: "get", fn: function(uri) {
+						this.fire("beforeGet");
+						var cached = cache.get(uri);
+						if (!cached) {
+							uri.toString().on("afterXHR", function() {
+								var response = cache.get(uri, false).response;
+								(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
+								uri.toString().un("afterXHR", "get");
+								this.fire("afterGet");
+								}, "get", this);
+							abaaso.get(uri);
+						}
+						else {
+							(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
+							this.fire("afterGet");
+						}
+						return this;
+						}},
+					{name: "fade", fn: function(arg) {
+						abaaso.fx.fade(this.id, arg);
+						}},
+					{name: "fall", fn: function() {
+						void(0);
+						}},
+					{name: "loading", fn: function() {
+						this.genID();
+						return abaaso.loading.create(this.id);
+						}},
+					{name: "move", fn: function(pos, ms) {
+						this.genID();
+						abaaso.fx.move(this, pos, ms);
+						}},
+					{name: "opacity", fn: function(arg) {
+						return abaaso.fx.opacity(this, arg);
+						}},
+					{name: "position", fn: function() {
+						this.genID();
+						return abaaso.el.position(this.id);
+						}},
+					{name: "slide", fn: function(ms, pos, elastic) {
+						this.genID();
+						abaaso.fx.slide(this.id, ms, pos, elastic);
+						}},
+					{name: "update", fn: function(args) {
+						this.genID();
+						abaaso.update(this, args);
+						}}
+					       ],
+				    number  = [
+					{name: "even", fn: function() {
+						return abaaso.number.even(this);
+						}},
+					{name: "odd", fn: function() {
+						return abaaso.number.odd(this);
+						}}
+					       ],
+				    shared  = [
+					{name: "clear", fn: function() {
+						((typeof this == "object")
+						 && ((this.id === undefined)
+						     || (this.id == ""))) ? this.genID() : void(0);
+						(typeof this == "object") ? abaaso.clear(this) : (this.constructor = new String(""));
+						return this;
+						}},
+					{name: "fire", fn: function(event) {
+						((!this instanceof String)
+							 && ((this.id === undefined)
+							     || (this.id == ""))) ? this.genID() : void(0);
+						return abaaso.fire(this, event);
+						}},
+					{name: "genID", fn: function() {
+						return abaaso.genID(this);
+						}},
+					{name: "listeners", fn: function(event) {
+						((!this instanceof String)
+							 && ((this.id === undefined)
+							     || (this.id == ""))) ? this.genID() : void(0);
+						return abaaso.listeners(this, event);
+						}},
+					{name: "on", fn: function(event, listener, id, scope, standby) {
+						scope = scope || this;
+						((!this instanceof String)
+							 && ((this.id === undefined)
+							     || (this.id == ""))) ? this.genID() : void(0);
+						return abaaso.on(this, event, listener, id, scope, standby);
+						}},
+					{name: "un", fn: function(event, id) {
+						((!this instanceof String)
+							 && ((this.id === undefined)
+							     || (this.id == ""))) ? this.genID() : void(0);
+						return abaaso.un(this, event, id);
+						}}
+					],
+				    string  = [];
+
+
+				switch (type) {
+					case "array":
+						apply(obj, array);
+						break;
+					case "element":
+						apply(obj, element);
+						break;
+					case "number":
+						apply(obj, number);
+						break;
+					case "string":
+						apply(obj, string);
+						break;
+				}
+
+				apply(obj, shared);
+			}
+			catch (e) {
+				error(e);
+			}
 		}
 	};
 
@@ -1919,89 +2094,10 @@ var abaaso = function(){
 
 			((client.ie) && (!window.Element)) ? Element = function(){} : void(0);
 
-			var methods = [
-				{name: "clear", fn: function() {
-					((typeof this == "object")
-					 && ((this.id === undefined)
-					     || (this.id == ""))) ? this.genID() : void(0);
-					(typeof this == "object") ? abaaso.clear(this) : (this.constructor = new String(""));
-					return this;
-					}},
-				{name: "fire", fn: function(event) {
-					((!this instanceof String)
-						 && ((this.id === undefined)
-						     || (this.id == ""))) ? this.genID() : void(0);
-					return abaaso.fire(this, event);
-					}},
-				{name: "genID", fn: function() {
-					return abaaso.genID(this);
-					}},
-				{name: "listeners", fn: function(event) {
-					((!this instanceof String)
-						 && ((this.id === undefined)
-						     || (this.id == ""))) ? this.genID() : void(0);
-					return abaaso.listeners(this, event);
-					}},
-				{name: "on", fn: function(event, listener, id, scope, standby) {
-					scope = scope || this;
-					((!this instanceof String)
-						 && ((this.id === undefined)
-						     || (this.id == ""))) ? this.genID() : void(0);
-					return abaaso.on(this, event, listener, id, scope, standby);
-					}},
-				{name: "un", fn: function(event, id) {
-					((!this instanceof String)
-						 && ((this.id === undefined)
-						     || (this.id == ""))) ? this.genID() : void(0);
-					return abaaso.un(this, event, id);
-					}}
-				];
-
-			var i = methods.length;
-
-			while (i--) {
-				Array.prototype[methods[i].name]   = methods[i].fn;
-				Element.prototype[methods[i].name] = methods[i].fn;
-				String.prototype[methods[i].name]  = methods[i].fn;
-			}
-
-			Array.prototype.contains       = function(arg) { abaaso.array.contains(this, arg); };
-			Array.prototype.index          = function(arg) { abaaso.array.index(this, arg); };
-			Array.prototype.remove         = function(arg) { abaaso.array.remove(this, arg); };
-			Element.prototype.bounce       = function(ms, height) { this.genID(); abaaso.fx.bounce(this.id, ms, height); };
-			Element.prototype.destroy      = function() { this.genID(); abaaso.destroy(this.id); };
-			Element.prototype.disable      = function() { this.genID(); return abaaso.el.disable(this.id); };
-			Element.prototype.domID        = function() { this.genID(); return abaaso.domID(this.id); };
-			Element.prototype.enable       = function() { this.genID(); return abaaso.el.enable(this.id); };
-			Element.prototype.get          = function(uri) {
-				this.fire("beforeGet");
-				var cached = cache.get(uri);
-				if (!cached) {
-					uri.toString().on("afterXHR", function() {
-						var response = cache.get(uri, false).response;
-						(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
-						uri.toString().un("afterXHR", "get");
-						this.fire("afterGet");
-						}, "get", this);
-					abaaso.get(uri);
-				}
-				else {
-					(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
-					this.fire("afterGet");
-				}
-				return this;
-				};
-			Element.prototype.fade         = function(arg) { abaaso.fx.fade(this.id, arg); };
-			Element.prototype.fall         = function(pos, ms) { this.genID(); abaaso.fx.bounce(this.id, pos, ms); };
-			Element.prototype.loading      = function() { this.genID(); return abaaso.loading.create(this.id); };
-			Element.prototype.move         = function(pos) { this.genID(); return abaaso.fx.move(this.id, pos); };
-			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
-			Element.prototype.position     = function() { this.genID(); return abaaso.el.position(this.id); };
-			Element.prototype.slide        = function(ms, pos, elastic) { this.genID(); abaaso.fx.slide(this.id, ms, pos, elastic); };
-			Element.prototype.update       = function(args) { this.genID(); abaaso.update(this, args); };
-			Number.prototype.even          = function() { return abaaso.number.even(this); };
-			Number.prototype.odd           = function() { return abaaso.number.odd(this); };
-			String.prototype.domID         = function() { return abaaso.domID(this); };
+			utility.methods(Array.prototype, "array");
+			utility.methods(Element.prototype, "element");
+			utility.methods(Number.prototype, "number");
+			utility.methods(String.prototype, "string");
 
 			window.$        = function(arg) { return abaaso.$(arg); };
 			window.onload   = function() { abaaso.fire("render"); abaaso.un("render"); };
