@@ -738,7 +738,7 @@ var abaaso = function(){
 			try {
 				obj = (typeof obj == "object") ? obj : $(obj);
 
-				if (obj !== undefined) {
+				if (obj !== null) {
 					obj.fire("beforeClear");
 
 					switch (typeof obj) {
@@ -817,7 +817,7 @@ var abaaso = function(){
 
 				while (i--) {
 					obj = $(args[i]);
-					if (obj !== undefined) {
+					if (obj !== null) {
 						obj.fire("beforeDestroy");
 						observer.remove(obj.id);
 						obj.parentNode.removeChild(obj);
@@ -847,7 +847,7 @@ var abaaso = function(){
 
 				while (i--) {
 					obj = $(args[i]);
-					if (obj !== undefined) {
+					if (obj !== null) {
 						obj.fire("beforeDisable");
 						obj.disabled = true;
 						obj.fire("afterDisable");
@@ -881,7 +881,7 @@ var abaaso = function(){
 
 				while (i--) {
 					obj = $(args[i]);
-					if (obj !== undefined) {
+					if (obj !== null) {
 						obj.fire("beforeEnable");
 						obj.disabled = false;
 						obj.fire("afterEnable");
@@ -1153,7 +1153,7 @@ var abaaso = function(){
 			try {
 				obj = (typeof obj == "object") ? obj : $(obj);
 
-				if (obj !== undefined) {
+				if (obj !== null) {
 					if ((opacity !== undefined)
 					    || (!isNaN(opacity))) {
 						(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (parseInt(opacity)/100);
