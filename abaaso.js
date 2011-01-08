@@ -254,21 +254,23 @@ var abaaso = function(){
 					throw label.error.elementNotFound;
 				}
 
-				var args = {id: "abaaso_calendar"},
-				    o    = calendar.date,
-				    obj  = null;
+				var args           = {id: "abaaso_calendar"},
+				    o              = calendar.date,
+				    obj            = null,
+				    objDestination = $(destination),
+				    objTarget      = $(target);
 
 				o.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
-				o.destination = ((destination !== undefined) && ($(destination))) ? destination : null;
-				o.c           = ((destination !== undefined) && ($(destination).value != "")) ? new Date($(destination).value) : o.c;
+				o.destination = ((destination !== undefined) && (objDestination)) ? destination : null;
+				o.c           = ((destination !== undefined) && (objDestination.value != "")) ? new Date(objDestination.value) : o.c;
 
-				$(target).blur();
+				objTarget.blur();
 
 				((o.destination !== null)
-				 && ($(destination).value == label.error.invalidDate))? $(destination).clear() : void(0);
+				 && (objDestination.value == label.error.invalidDate))? objDestination.clear() : void(0);
 
 				if (o.destination !== null) {
-					var pos = el.position(target);
+					var pos = objTarget.position();
 					args.style = "top:" + pos[1] + "px;left:" + pos[0] + "px;position:absolute;z-index:9999;";
 					obj = el.create("div", args);
 				}
@@ -388,10 +390,10 @@ var abaaso = function(){
 		 */
 		render : function(target, dateStamp) {
 			try {
-				if ($(target)) {
-					$(target).fire("beforeRender");
-
-					$(target).clear();
+				var obj = $(target);
+				if (obj !== null) {
+					obj.fire("beforeRender");
+					obj.clear();
 
 					var o = calendar.date;
 					o.c = new Date(dateStamp);
@@ -613,7 +615,7 @@ var abaaso = function(){
 		request : function(uri, fn, type, args) {
 			try {
 				var xhr = new XMLHttpRequest();
-				new String(uri).fire("beforeXHR");
+				uri.toString().fire("beforeXHR");
 
 				switch(type.toLowerCase()) {
 					case "delete":
@@ -658,8 +660,9 @@ var abaaso = function(){
 
 					for (i = 0; i < loop; i++) {
 						if (headers[i] != "") {
-							var header    = new String(headers[i]),
+							var header    = headers[i].toString(),
 							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+
 							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 							items[header] = value;
 						}
@@ -676,7 +679,7 @@ var abaaso = function(){
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xhr.responseText);
 
-						new String(uri).fire("afterXHR");
+						uri.toString().fire("afterXHR");
 
 						uri = cache.get(uri, false);
 
@@ -731,24 +734,27 @@ var abaaso = function(){
 		 *
 		 * @param id {string} Target object.id value
 		 */
-		clear : function(id) {
+		clear : function(obj) {
 			try {
-				if ($(id)) {
-					$(id).fire("beforeClear");
+				obj = (typeof obj == "object") ? obj : $(obj);
 
-					switch (typeof $(id)) {
+				if (obj !== undefined) {
+					obj.fire("beforeClear");
+
+					switch (typeof obj) {
 						case "form":
-							$(id).reset();
+							obj.reset();
 							break;
 						case "object":
-							$(id).update({innerHTML: "", value: ""});
+							obj.update({innerHTML: "", value: ""});
 							break;
 						default:
-							$(id).update({innerHTML: ""});
+							obj.update({innerHTML: ""});
 							break;
 					}
 
-					$(id).fire("afterClear");
+					obj.fire("afterClear");
+					return obj;
 				}
 				else {
 					throw label.error.elementNotFound;
@@ -756,6 +762,7 @@ var abaaso = function(){
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -779,7 +786,8 @@ var abaaso = function(){
 					(args.id === undefined) ? obj.genID() : obj.id = args.id;
 					obj.fire("beforeCreate");
 					el.update(obj, args);
-					($(id)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
+					((id !== undefined)
+					 && ($(id) !== undefined)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
 					obj.fire("afterCreate");
 					return obj;
 				}
@@ -803,16 +811,17 @@ var abaaso = function(){
 		 */
 		destroy : function(arg) {
 			try {
-				var args = arg.split(","),
-				       i = args.length;
+				var args   = arg.split(","),
+				       i   = args.length
+				       obj = null;
 
 				while (i--) {
-					var instance = $(args[i]);
-					if ((instance !== undefined) && (instance != null)) {
-						instance.fire("beforeDestroy");
-						observer.remove(instance.id);
-						instance.parentNode.removeChild(instance);
-						instance.fire("afterDestroy");
+					obj = $(args[i]);
+					if (obj !== undefined) {
+						obj.fire("beforeDestroy");
+						observer.remove(obj.id);
+						obj.parentNode.removeChild(obj);
+						obj.fire("afterDestroy");
 					}
 				}
 			}
@@ -833,15 +842,16 @@ var abaaso = function(){
 			try {
 				var args      = arg.split(","),
 				    i         = args.length,
-				    instances = [];
+				    instances = [],
+				    obj       = null;
 
 				while (i--) {
-					var instance = $(args[i]);
-					if ((instance !== undefined) && (instance != null)) {
-						instances.push(instance);
-						instance.fire("beforeDisable");
-						instance.disabled = true;
-						instance.fire("afterDisable");
+					obj = $(args[i]);
+					if (obj !== undefined) {
+						obj.fire("beforeDisable");
+						obj.disabled = true;
+						obj.fire("afterDisable");
+						instances.push(obj);
 					}
 				}
 
@@ -865,16 +875,17 @@ var abaaso = function(){
 			try {
 				var args      = arg.split(","),
 				    i         = args.length,
-				    instances = [];
+				    instances = []
+				    obj       = null;
 
 
 				while (i--) {
-					var instance = $(args[i]);
-					if ((instance !== undefined) && (instance != null)) {
-						instances.push(instance);
-						instance.fire("beforeEnable");
-						instance.disabled = false;
-						instance.fire("afterEnable");
+					obj = $(args[i]);
+					if (obj !== undefined) {
+						obj.fire("beforeEnable");
+						obj.disabled = false;
+						obj.fire("afterEnable");
+						instances.push(obj);
 					}
 				}
 
@@ -903,10 +914,15 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @returns {array} An array containing the render position of the element
 		 */
-		position : function(id) {
+		position : function(obj) {
+			obj = (typeof obj == "object") ? obj : $(obj);
+
+			if (obj === undefined) {
+				throw label.error.invalidArguments;
+			}
+
 			var left = null,
-			     top = null,
-			     obj = $(id);
+			     top = null;
 
 			if (obj.offsetParent) {
 				left = obj.offsetLeft;
@@ -997,18 +1013,19 @@ var abaaso = function(){
 		 * @param height {int} The maximum height of the bounce
 		 * @todo implement this!
 		 */
-		bounce : function(id, ms, height) {
+		bounce : function(obj, ms, height) {
 			try {
-				if (($(id) === undefined)
+				obj = (typeof obj == "object") ? obj : $(obj);
+
+				if ((obj === undefined)
 				    || (isNaN(ms))
 				    || (isNaN(height))) {
 					throw label.error.invalidArguments;
 				}
 
-				var o = $(id);
-				o.fire("beforeBounce");
-				o.fire("afterBounce");
-				return o;
+				obj.fire("beforeBounce");
+				obj.fire("afterBounce");
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1027,22 +1044,23 @@ var abaaso = function(){
 		 * @param end {integer} [Optional] The final opacity value of the fade
 		 * @returns {object} Target object
 		 */
-		fade : function(id, ms, end) {
+		fade : function(obj, ms, end) {
 			try {
-				if (($(id) === undefined)
+				obj = (typeof obj == "object") ? obj : $(obj);
+
+				if ((obj === undefined)
 				    || (isNaN(ms))
 				    || ((end !== undefined)
 					&& (isNaN(end)))) {
 					throw label.error.invalidArguments;
 				}
 
-				var o     = $(id),
-				    start = o.opacity();
-				    end   = end || ((o.opacity() === 0) ? 100 : 0);
+				var start = obj.opacity();
+				    end   = end || ((obj.opacity() === 0) ? 100 : 0);
 
-				o.fire("beforeFade");
-				fx.opacityChange(id, start, end, ms);
-				return o;
+				obj.fire("beforeFade");
+				fx.opacityChange(obj, start, end, ms);
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1058,14 +1076,15 @@ var abaaso = function(){
 		 * @param ms {int} Milliseconds for bounce to take
 		 * @todo implement this!
 		 */
-		fall : function (id, pos, ms) {
+		fall : function (obj, pos, ms) {
 			try {
-				if ($(id) === undefined) {
+				obj = (typeof obj == "object") ? obj : $(obj);
+
+				if (obj === undefined) {
 					throw label.error.invalidArguments;
 				}
 
-				var o = $(id);
-				o.fire("beforeFall");
+				obj.fire("beforeFall");
 
 				var i     = null,
 				    speed = Math.round(ms/100),
@@ -1073,10 +1092,10 @@ var abaaso = function(){
 
 				for (i = start; i >= end; i--) {
 					if (i == end) {
-						setTimeout("$(\"" + id + "\").move(" + i + ");$(\"" + id + "\").fire(\"afterFall\")", (timer*speed));
+						setTimeout("$(\"" + obj.id + "\").move(" + i + ");$(\"" + obj.id + "\").fire(\"afterFall\")", (timer*speed));
 					}
 					else {
-						setTimeout("$(\"" + id + "\").move(" + i + ")", (timer*speed));
+						setTimeout("$(\"" + obj.id + "\").move(" + i + ")", (timer*speed));
 					}
 					timer++;
 				}
@@ -1095,26 +1114,27 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param pos {array} An array of co-ordinates [X,Y]
 		 */
-		move : function (id, pos) {
+		move : function (obj, pos) {
 			try {
-				if (($(id) === undefined)
+				obj = (typeof obj == "object") ? obj : $(obj);
+
+				if ((obj === undefined)
 				    || (!pos instanceof Array)
 				    || (isNaN(pos[0]))
 				    || (isNaN(pos[1]))) {
 					throw label.error.invalidArguments;
 				}
 
-				var o = $(id),
-				    p = o.position();
+				var p     = obj.position();
+				    p[0] += pos[0];
+				    p[1] += pos[1];
 
-				p[0] += pos[0];
-				p[1] += pos[1];
+				(obj.style.position != "absolute") ? obj.style.position = "absolute" : void(0);
 
-				(o.style.position != "absolute") ? o.style.position = "absolute" : void(0);
-				o.style.left     = p[0] + "px";
-				o.style.top      = p[1] + "px";
+				obj.style.left     = p[0] + "px";
+				obj.style.top      = p[1] + "px";
 
-				return o;
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1161,8 +1181,14 @@ var abaaso = function(){
 		 * @param end {integer} Opacity end value
 		 * @param ms {integer} Milliseconds for transition to take
 		 */
-		opacityChange : function(id, start, end, ms) {
+		opacityChange : function(obj, start, end, ms) {
 			try {
+				obj = (typeof obj == "object") ? obj : $(obj);
+
+				if (obj === undefined) {
+					throw label.error.invalidArguments;
+				}
+
 				var fn    = null,
 				    speed = Math.round(ms/100),
 				    timer = 0,
@@ -1171,10 +1197,10 @@ var abaaso = function(){
 				if (start > end) {
 					for (i = start; i >= end; i--) {
 						if (i == end) {
-							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterFade\")", (timer*speed));
+							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ");$(\"" + obj.id + "\").fire(\"afterFade\")", (timer*speed));
 						}
 						else {
-							setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ")", (timer*speed));
 						}
 						timer++;
 					}
@@ -1182,10 +1208,10 @@ var abaaso = function(){
 				else {
 					for (i = start; i <= end; i++) {
 						if (i == end) {
-							setTimeout("$(\"" + id + "\").opacity(" + i + ");$(\"" + id + "\").fire(\"afterFade\")", (timer*speed));
+							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ");$(\"" + obj.id + "\").fire(\"afterFade\")", (timer*speed));
 						}
 						else {
-							setTimeout("$(\"" + id + "\").opacity(" + i + ")", (timer*speed));
+							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ")", (timer*speed));
 						}
 						timer++;
 					}
@@ -1205,10 +1231,11 @@ var abaaso = function(){
 		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
 		 * @todo implement this!
 		 */
-		slide : function(id, ms, pos, elastic) {
+		slide : function(obj, ms, pos, elastic) {
 			try {
-				if ((id === undefined)
-				    || (!$(id))
+				obj = (typeof obj == "object") ? obj : $(obj);
+
+				if ((obj === undefined)
 				    || (isNaN(ms))
 				    || (!pos instanceof Array)
 				    || (isNaN(pos[0]))
@@ -1217,12 +1244,11 @@ var abaaso = function(){
 				}
 
 				elastic = elastic || 0;
-				var o = $(id);
 
-				o.fire("beforeSlide");
-				o.fire("afterSlide");
+				obj.fire("beforeSlide");
+				obj.fire("afterSlide");
 
-				return o;
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1400,7 +1426,10 @@ var abaaso = function(){
 		 */
 		add : function(obj, event, fn, id, scope, standby) {
 			try {
-				var o   = (obj.id !== undefined) ? obj.id : obj.toString();
+				var instance = null;
+				           l = observer.listeners,
+				           o = (obj.id !== undefined) ? obj.id : obj.toString();
+
 				obj     = ((obj instanceof Array)
 					   || (obj instanceof Object)
 					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
@@ -1414,27 +1443,24 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				var item = {};
-				item.fn  = fn;
+				(l[o] === undefined) ? l[o] = [] : void(0);
+				(l[o][event] === undefined) ? l[o][event] = [] : void(0);
+				(l[o][event]["active"] === undefined) ? l[o][event]["active"] = [] : void(0);
+
+				var item = {fn: fn};
 				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
 
-				(observer.listeners[o] === undefined) ? observer.listeners[o] = [] : void(0);
-				(observer.listeners[o][event] === undefined) ? observer.listeners[o][event] = [] : void(0);
-				(observer.listeners[o][event]["active"] === undefined) ? observer.listeners[o][event]["active"] = [] : void(0);
-
 				if (!standby) {
-					(id !== undefined) ?
-					 observer.listeners[o][event]["active"][id] = item :
-					 observer.listeners[o][event]["active"].push(item);
-
-					($(o)) ? (($(o).addEventListener) ?
-						    $(o).addEventListener(event, function(){ $(o).fire(event); }, false) :
-						    $(o).attachEvent("on" + event, function(){ $(o).fire(event); }))
-					: void(0);
+					(id !== undefined) ? l[o][event]["active"][id] = item : l[o][event]["active"].push(item);
+					instance = $(o);
+					((instance !== null)
+					 && (instance !== undefined)) ? ((instance.addEventListener !== undefined)
+									 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
+									 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 				}
 				else {
-					(observer.listeners[o][event]["standby"] === undefined) ? observer.listeners[o][event]["standby"] = [] : void(0);
-					observer.listeners[o][event]["standby"][id] = item;
+					(l[o][event]["standby"] === undefined) ? l[o][event]["standby"] = [] : void(0);
+					l[o][event]["standby"][id] = item;
 				}
 
 				return obj;
@@ -1454,7 +1480,8 @@ var abaaso = function(){
 		 */
 		fire : function(obj, event) {
 			try {
-				var o   = (obj.id !== undefined) ? obj.id : obj.toString();
+				var l = observer.listeners,
+				    o = (obj.id !== undefined) ? obj.id : obj.toString();
 				obj     = ((obj instanceof Array)
 					   || (obj instanceof Object)
 					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
@@ -1465,17 +1492,17 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				var listeners = (observer.listeners[o] !== undefined) ?
-					((observer.listeners[o][event] !== undefined) ?
-					 ((observer.listeners[o][event]["active"] !== undefined) ?
-					  observer.listeners[o][event]["active"] : []) : []) : [];
+				var listeners = (l[o] !== undefined) ? ((l[o][event] !== undefined)
+									? ((l[o][event]["active"] !== undefined)
+									   ? l[o][event]["active"] : []) : []) : [];
 
 				for (var i in listeners) {
 					if ((listeners[i] !== undefined)
 					    && (listeners[i].fn)) {
 						if (listeners[i].scope !== undefined) {
-							var scope = ($(listeners[i].scope)) ? $(listeners[i].scope) : listeners[i].scope,
-							    fn    = listeners[i]["fn"];
+							var instance = $(listeners[i].scope),
+							       fn    = listeners[i]["fn"];
+							       scope = (instance !== undefined) ? instance : listeners[i].scope,
 
 							fn.call(scope);
 						}
@@ -1502,15 +1529,16 @@ var abaaso = function(){
 		 */
 		list : function(obj, event) {
 			try {
-				var o   = ((obj instanceof Array)
-					   || (obj instanceof Object)) ? obj.id : ((obj instanceof String) ? obj.valueOf() : obj);
-
 				if ((obj === undefined)
 				    || (event === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				return (observer.listeners[o] !== undefined) ? ((observer.listeners[o][event] !== undefined) ? observer.listeners[o][event] : []) : [];
+				var l = observer.listeners,
+				    o = ((obj instanceof Array)
+					 || (obj instanceof Object)) ? obj.id : ((obj instanceof String) ? obj.valueOf() : obj);
+
+				return (l[o] !== undefined) ? ((l[o][event] !== undefined) ? l[o][event] : l[o]) : [];
 			}
 			catch (e) {
 				error(e);
@@ -1528,11 +1556,13 @@ var abaaso = function(){
 		 */
 		remove : function(obj, event, id) {
 			try {
-				var o   = (obj.id !== undefined) ? obj.id : obj.toString(),
-				    l   = observer.listeners;
-				obj     = ((obj instanceof Array)
-					   || (obj instanceof Object)
-					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				var instance = null,
+				    o        = (obj.id !== undefined) ? obj.id : obj.toString(),
+				    l        = observer.listeners;
+
+				obj = ((obj instanceof Array)
+				       || (obj instanceof Object)
+				       || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
 				if ((o === undefined)
 				    || (event === undefined)
@@ -1543,10 +1573,10 @@ var abaaso = function(){
 				else {
 					if (id === undefined) {
 						delete l[o][event];
-						($(o)) ? (($(o).removeEventListener) ?
-							    $(o).removeEventListener(event, function(){ $(o).fire(event); }, false) :
-							    $(o).removeEvent("on" + event, function(){ $(o).fire(event); }))
-						: void(0);
+						instance = $(o);
+						(instance !== undefined) ? ((instance.removeEventListener)
+									    ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
+									    : instance.removeEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 					}
 					else if (l[o][event]['active'][id] !== undefined) {
 						delete l[o][event]['active'][id];
@@ -1575,41 +1605,43 @@ var abaaso = function(){
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
-				var o   = ((obj instanceof Array)
-					   || (obj instanceof Object)) ? obj.id : ((obj instanceof String) ? obj.valueOf() : obj);
-				obj   = ((obj instanceof Array)
-					   || (obj instanceof Object)
-					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
+				var l = observer.listeners,
+				    o = ((obj instanceof Array)
+					 || (obj instanceof Object)) ? obj.id : ((obj instanceof String) ? obj.valueOf() : obj);
+
+				obj = ((obj instanceof Array)
+				       || (obj instanceof Object)
+				       || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
 				if ((o === undefined)
 				    || (event === undefined)
 				    || (id === undefined)
 				    || (sId === undefined)
-				    || (observer.listeners[o] === undefined)
-				    || (observer.listeners[o][event] === undefined)
-				    || (observer.listeners[o][event]["active"] === undefined)
-				    || (observer.listeners[o][event]["active"][id] === undefined)) {
+				    || (l[o] === undefined)
+				    || (l[o][event] === undefined)
+				    || (l[o][event]["active"] === undefined)
+				    || (l[o][event]["active"][id] === undefined)) {
 					throw label.error.invalidArguments;
 				}
 
-				(observer.listeners[o][event]["standby"] === undefined) ? observer.listeners[o][event]["standby"] = [] : void(0);
+				(l[o][event]["standby"] === undefined) ? l[o][event]["standby"] = [] : void(0);
 
 				if (typeof(listener) == "string")
 				{
-					if ((observer.listeners[o][event]["standby"][listener] === undefined)
-					    || (observer.listeners[o][event]["standby"][listener]["fn"] === undefined)) {
+					if ((l[o][event]["standby"][listener] === undefined)
+					    || (l[o][event]["standby"][listener]["fn"] === undefined)) {
 						throw label.error.invalidArguments;
 					}
 					else {
-						listener = observer.listeners[o][event]["standby"][listener]["fn"];
+						listener = l[o][event]["standby"][listener]["fn"];
 					}
 				}
 				else if (!listener instanceof Function) {
 					throw label.error.invalidArguments;
 				}
 
-				observer.listeners[o][event]["standby"][sId] = {"fn" : observer.listeners[o][event]["active"][id]["fn"]};
-				observer.listeners[o][event]["active"][id]   = {"fn" : listener};
+				l[o][event]["standby"][sId] = {"fn" : l[o][event]["active"][id]["fn"]};
+				l[o][event]["active"][id]   = {"fn" : listener};
 
 				return obj;
 			}
@@ -1631,11 +1663,11 @@ var abaaso = function(){
 		 *
 		 * @param arg {string} Comma delimited string of target element.id values
 		 * @returns {mixed} instances Instance or Array of Instances of elements
+		 * @todo extend this to add methods to instances returned if client.ie is true
 		 */
 		$ : function(arg) {
 			try {
-				arg = new String(arg);
-				arg = (arg.indexOf(",") > -1) ? arg.split(",") : arg;
+				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
 
 				if (arg instanceof Array) {
 					var instances = [],
@@ -1648,7 +1680,14 @@ var abaaso = function(){
 					return instances;
 				}
 
-				return document.getElementById(arg);
+				var obj = document.getElementById(arg);
+				obj = (obj === null) ? undefined : obj;
+
+				if ((obj !== undefined) && (client.ie)) {
+					void(0);
+				}
+
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1706,9 +1745,9 @@ var abaaso = function(){
 		 */
 		loading : function(id) {
 			try {
-				var o = $(id);
+				var obj = $(id);
 
-				if (o === undefined) {
+				if (obj === undefined) {
 					throw label.error.invalidArguments;
 				}
 
@@ -1717,10 +1756,10 @@ var abaaso = function(){
 					abaaso.loading.image.src = abaaso.loading.url;
 				}
 
-				o.clear();
+				obj.clear();
 				abaaso.create("div", {id: id + "_loading", style: "text-align:center"}, id);
 				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, id + "_loading");
-				return o;
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1877,12 +1916,14 @@ var abaaso = function(){
 		init            : function() {
 			abaaso.ready = true;
 
+			((client.ie) && (!window.Element)) ? Element = function(){} : void(0);
+
 			var methods = [
 				{name: "clear", fn: function() {
 					((typeof this == "object")
 					 && ((this.id === undefined)
 					     || (this.id == ""))) ? this.genID() : void(0);
-					(typeof this == "object") ? abaaso.clear(this.id) : (this.constructor = new String(""));
+					(typeof this == "object") ? abaaso.clear(this) : (this.constructor = new String(""));
 					return this;
 					}},
 				{name: "fire", fn: function(event) {
@@ -1935,10 +1976,10 @@ var abaaso = function(){
 				this.fire("beforeGet");
 				var cached = cache.get(uri);
 				if (!cached) {
-					new String(uri).on("afterXHR", function() {
+					uri.toString().on("afterXHR", function() {
 						var response = cache.get(uri, false).response;
 						(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
-						new String(uri).un("afterXHR", "get");
+						uri.toString().un("afterXHR", "get");
 						this.fire("afterGet");
 						}, "get", this);
 					abaaso.get(uri);
@@ -1956,7 +1997,7 @@ var abaaso = function(){
 			Element.prototype.opacity      = function(arg) { return abaaso.fx.opacity(this, arg); };
 			Element.prototype.position     = function() { this.genID(); return abaaso.el.position(this.id); };
 			Element.prototype.slide        = function(ms, pos, elastic) { this.genID(); abaaso.fx.slide(this.id, ms, pos, elastic); };
-			Element.prototype.update       = function(args) { this.genID(); abaaso.update(this.id, args); };
+			Element.prototype.update       = function(args) { this.genID(); abaaso.update(this, args); };
 			Number.prototype.even          = function() { return abaaso.number.even(this); };
 			Number.prototype.odd           = function() { return abaaso.number.odd(this); };
 			String.prototype.domID         = function() { return abaaso.domID(this); };
@@ -1993,7 +2034,7 @@ var abaaso = function(){
 			},
 		un              : function() {
 			var all   = (typeof arguments[0] == "string") ? false : true;
-			var obj   = (all) ? arguments[0] : window.abaaso,
+			var obj   = (all) ? arguments[0] : abaaso,
 			    event = (all) ? arguments[1] : arguments[0],
 			    id    = (all) ? arguments[2] : arguments[1];
 
