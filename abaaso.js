@@ -1452,7 +1452,7 @@ var abaaso = function(){
 
 				if (!standby) {
 					(id !== undefined) ? l[o][event]["active"][id] = item : l[o][event]["active"].push(item);
-					instance = $(o);
+					instance = (o !== "abaaso") ? $(o) : null;
 					((instance !== null)
 					 && (instance !== undefined)) ? ((instance.addEventListener !== undefined)
 									 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
@@ -1480,9 +1480,9 @@ var abaaso = function(){
 		 */
 		fire : function(obj, event) {
 			try {
-				var l = observer.listeners,
-				    o = (obj.id !== undefined) ? obj.id : obj.toString();
-				obj     = ((obj instanceof Array)
+				var l   = observer.listeners,
+				    o   = (obj.id !== undefined) ? obj.id : obj.toString();
+				    obj = ((obj instanceof Array)
 					   || (obj instanceof Object)
 					   || (obj instanceof String)) ? obj : ((window[obj]) ? window[obj] : $(obj));
 
@@ -1573,10 +1573,11 @@ var abaaso = function(){
 				else {
 					if (id === undefined) {
 						delete l[o][event];
-						instance = $(o);
-						(instance !== undefined) ? ((instance.removeEventListener)
-									    ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
-									    : instance.removeEvent("on" + event, function(){ instance.fire(event); })) : void(0);
+						instance = (o !== "abaaso") ? $(o) : null;
+						((instance !== null)
+						 && (instance !== undefined)) ? ((instance.removeEventListener)
+										 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
+										 : instance.removeEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 					}
 					else if (l[o][event]['active'][id] !== undefined) {
 						delete l[o][event]['active'][id];
