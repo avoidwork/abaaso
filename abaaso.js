@@ -1684,8 +1684,9 @@ var abaaso = function(){
 				var obj = document.getElementById(arg);
 				obj = (obj === null) ? undefined : obj;
 
-				if ((obj !== undefined) && (client.ie)) {
-					void(0);
+				if ((client.ie)
+				    && (obj instanceof Element)) {
+					utility.methods(obj, "element");
 				}
 
 				return obj;
@@ -1787,6 +1788,7 @@ var abaaso = function(){
 		 *
 		 * @param obj {object} Instance of Array, Element, String or Number
 		 * @param type {string} Identifier of obj, determines what arrays to apply
+		 * @todo make this work for putting methods on elements in IE!
 		 */
 		methods : function(obj, type) {
 			try {
