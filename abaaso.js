@@ -1798,9 +1798,9 @@ var abaaso = function(){
 				var apply   = function(obj, collection) {
 					var i = collection.length;
 					while (i--) {
-						if ((client.ie)
-						    && (collection == "element")) {
-							(HTMLDocument.prototype[collection[i].name] = collection[i].fn);
+						if ((collection == "element")
+						    && (client.ie)) {
+							HTMLDocument.prototype[collection[i].name] = collection[i].fn;
 						}
 						(obj[collection[i].name] = collection[i].fn);
 					}
