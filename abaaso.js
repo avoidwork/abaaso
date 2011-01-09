@@ -2092,7 +2092,7 @@ var abaaso = function(){
 			abaaso.ready = true;
 
 			utility.methods(Array.prototype, "array");
-			(!client.ie) ? utility.methods(Element.prototype, "element") : utility.methods(Element, "element");
+			(!client.ie) ? utility.methods(Element.prototype, "element") : void(0);
 			utility.methods(Number.prototype, "number");
 			utility.methods(String.prototype, "string");
 
