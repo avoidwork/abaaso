@@ -2087,11 +2087,13 @@ var abaaso = function(){
 			utility.methods(String.prototype, "string");
 
 			window.$        = function(arg) { return abaaso.$(arg); };
-			window.onload   = function() { abaaso.fire("render"); abaaso.un("render"); };
 			window.onresize = function() { abaaso.fire("resize"); };
 
-			abaaso.fire("ready");
-			abaaso.un("ready");
+			if (!client.ie) {
+				window.onload = function() { abaaso.fire("render").un("render"); };
+			}
+
+			abaaso.fire("ready").un("ready");
 
 			delete abaaso.init;
 			},
@@ -2189,6 +2191,7 @@ try {
 			if (document.getElementById) {
 				clearInterval(abaaso.ready);
 				abaaso.init();
+				abaaso.fire("render").un("render");
 			}}, 50);
 	}
 }
