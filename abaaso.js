@@ -1493,7 +1493,6 @@ var abaaso = function(){
 									? ((l[o][event].active !== undefined)
 									   ? l[o][event].active : []) : []) : [];
 
-				debugger;
 				for (var i in listeners) {
 					if ((listeners[i] !== undefined)
 					    && (listeners[i].fn)) {
