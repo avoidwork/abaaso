@@ -297,7 +297,6 @@ var abaaso = function(){
 		 *
 		 * @param target {string} Object.id value
 		 * @param dateStamp {date} Date object
-		 * @todo refactor to use element.on/.un()!
 		 */
 		day : function(target, dateStamp) {
 			try {
@@ -709,7 +708,7 @@ var abaaso = function(){
 	 * Template data store object, to be put on a widget
 	 *
 	 * @class
-	 * @todo complete for v1.0.0
+	 * @todo complete for v1.1.0
 	 */
 	var data = {
 		// Records
@@ -1011,7 +1010,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param ms {int} Milliseconds for bounce to take
 		 * @param height {int} The maximum height of the bounce
-		 * @todo implement this!
+		 * @todo complete for v1.1.0
 		 */
 		bounce : function(obj, ms, height) {
 			try {
@@ -1074,7 +1073,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param pos {int} The X co-ordinate to end the fall
 		 * @param ms {int} Milliseconds for bounce to take
-		 * @todo implement this!
+		 * @todo complete for v1.1.0
 		 */
 		fall : function (obj, pos, ms) {
 			try {
@@ -1229,7 +1228,7 @@ var abaaso = function(){
 		 * @param ms {integer} Milliseconds for transition to take
 		 * @param pos {array} An array of co-ordinates [X,Y]
 		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
-		 * @todo implement this!
+		 * @todo complete for v1.1.0
 		 */
 		slide : function(obj, ms, pos, elastic) {
 			try {
@@ -1773,7 +1772,6 @@ var abaaso = function(){
 		 *
 		 * @param obj {object} Instance of Array, Element, String or Number
 		 * @param type {string} Identifier of obj, determines what arrays to apply
-		 * @todo make this work for putting methods on elements in IE!
 		 */
 		methods : function(obj, type) {
 			try {
@@ -2188,6 +2186,7 @@ try {
 		}, false);
 	}
 	else {
+		// @todo Refactor for v1.0.0
 		abaaso.ready = setInterval(function(){
 			if (document.getElementById) {
 				clearInterval(abaaso.ready);
