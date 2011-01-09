@@ -1690,7 +1690,8 @@ var abaaso = function(){
 		error : function(e) {
 			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
 			(e.number !== undefined) ? (err.number = (e.number & 0xFFFF)) : void(0);
-			(console !== undefined) ? console.error(err.message) : alert(err.message);
+			((!client.ie)
+			 && (console !== undefined)) ? console.error(err.message) : void(0);
 			(error.events === undefined) ? error.events = [] : void(0);
 			error.events.push(err);
 		},
