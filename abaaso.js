@@ -1835,7 +1835,7 @@ var abaaso = function(){
 						if (!cached) {
 							uri.toString().on("afterXHR", function() {
 								var response = cache.get(uri, false).response;
-								(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
+								this.update({innerHTML: response, value: response});
 								uri.toString().un("afterXHR", "get");
 								this.fire("afterGet");
 								}, "get", this);
@@ -2192,7 +2192,7 @@ try {
 				clearInterval(abaaso.ready);
 				abaaso.init();
 				abaaso.fire("render").un("render");
-			}}, 50);
+			}}, 250);
 	}
 }
 catch (e) {
