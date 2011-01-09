@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010, avoidwork inc.
+ * Copyright (c) 2011, avoidwork inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
