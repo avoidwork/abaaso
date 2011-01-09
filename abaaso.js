@@ -1683,11 +1683,6 @@ var abaaso = function(){
 				var obj = document.getElementById(arg);
 				obj = (obj === null) ? undefined : obj;
 
-				if ((client.ie)
-				    && (obj instanceof Element)) {
-					utility.methods(obj, "element");
-				}
-
 				return obj;
 			}
 			catch (e) {
@@ -1803,7 +1798,11 @@ var abaaso = function(){
 				var apply   = function(obj, collection) {
 					var i = collection.length;
 					while (i--) {
-						obj[collection[i].name] = collection[i].fn;
+						if ((client.ie)
+						    && (collection == "element")) {
+							(HTMLDocument.prototype[collection[i].name] = collection[i].fn);
+						}
+						(obj[collection[i].name] = collection[i].fn);
 					}
 				}
 
@@ -2092,7 +2091,7 @@ var abaaso = function(){
 			abaaso.ready = true;
 
 			utility.methods(Array.prototype, "array");
-			(!client.ie) ? utility.methods(Element.prototype, "element") : void(0);
+			utility.methods(Element.prototype, "element");
 			utility.methods(Number.prototype, "number");
 			utility.methods(String.prototype, "string");
 
@@ -2199,7 +2198,7 @@ try {
 			if (document.getElementById) {
 				clearInterval(abaaso.ready);
 				abaaso.init();
-			}}, 100);
+			}}, 50);
 	}
 }
 catch (e) {
