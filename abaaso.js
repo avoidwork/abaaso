@@ -812,7 +812,7 @@ var abaaso = function(){
 		destroy : function(arg) {
 			try {
 				var args   = arg.split(","),
-				       i   = args.length
+				       i   = args.length,
 				       obj = null;
 
 				while (i--) {
@@ -875,7 +875,7 @@ var abaaso = function(){
 			try {
 				var args      = arg.split(","),
 				    i         = args.length,
-				    instances = []
+				    instances = [],
 				    obj       = null;
 
 
@@ -1426,7 +1426,7 @@ var abaaso = function(){
 		 */
 		add : function(obj, event, fn, id, scope, standby) {
 			try {
-				var instance = null;
+				var instance = null,
 				           l = observer.listeners,
 				           o = (obj.id !== undefined) ? obj.id : obj.toString();
 
@@ -1808,8 +1808,8 @@ var abaaso = function(){
 					{name: "remove", fn: function(arg) {
 						return abaaso.array.remove(this, arg);
 						}}
-					       ],
-				    element = [
+					       ];
+				var element = [
 					{name: "bounce", fn: function(ms, height) {
 						this.genID();
 						abaaso.fx.bounce(this.id, ms, height);
@@ -1877,16 +1877,16 @@ var abaaso = function(){
 						this.genID();
 						abaaso.update(this, args);
 						}}
-					       ],
-				    number  = [
+					       ];
+				var number  = [
 					{name: "even", fn: function() {
 						return abaaso.number.even(this);
 						}},
 					{name: "odd", fn: function() {
 						return abaaso.number.odd(this);
 						}}
-					       ],
-				    shared  = [
+					       ];
+				var shared  = [
 					{name: "clear", fn: function() {
 						((typeof this == "object")
 						 && ((this.id === undefined)
@@ -1922,8 +1922,8 @@ var abaaso = function(){
 							     || (this.id == ""))) ? this.genID() : void(0);
 						return abaaso.un(this, event, id);
 						}}
-					],
-				    string  = [];
+					];
+				var string  = [];
 
 				switch (type) {
 					case "array":
