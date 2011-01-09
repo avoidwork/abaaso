@@ -1,10 +1,11 @@
 abaaso
 
-abaaso provides a set of classes and object prototyping to ease the creation and maintenance of RESTful JavaScript applications.
-HATEOAS can be implemented by setting abaaso.state.header which will trigger a transition (state change) if the header is part of an xhr response.
-This requires standby listeners to be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
+abaaso provides a set of classes and object prototyping to ease the creation and maintenance of RESTful
+JavaScript applications. HATEOAS can be implemented by setting abaaso.state.header which will trigger a
+transition (state change) if the header is part of an xhr response. This requires standby listeners to
+be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
 
-See #link for the development roadmap.
+See #link for the development roadmap
 
 Download from https://github.com/avoidwork/abaaso
 
