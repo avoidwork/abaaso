@@ -1664,7 +1664,6 @@ var abaaso = function(){
 		 *
 		 * @param arg {string} Comma delimited string of target element.id values
 		 * @returns {mixed} instances Instance or Array of Instances of elements
-		 * @todo extend this to add methods to instances returned if client.ie is true
 		 */
 		$ : function(arg) {
 			try {
@@ -1706,7 +1705,7 @@ var abaaso = function(){
 		 */
 		error : function(e) {
 			var err = new Error(e);
-			((client.ie) || (console === undefined)) ? alert(err.description) : console.error(err);
+			(console === undefined) ? void(0) : console.error(err);
 			(error.events === undefined) ? error.events = [] : void(0);
 			error.events.push(err);
 		},
@@ -1936,7 +1935,6 @@ var abaaso = function(){
 					],
 				    string  = [];
 
-
 				switch (type) {
 					case "array":
 						apply(obj, array);
@@ -2094,10 +2092,8 @@ var abaaso = function(){
 		init            : function() {
 			abaaso.ready = true;
 
-			((client.ie) && (!window.Element)) ? Element = function(){} : void(0);
-
 			utility.methods(Array.prototype, "array");
-			utility.methods(Element.prototype, "element");
+			(!client.ie) ? utility.methods(Element.prototype, "element") : void(0);
 			utility.methods(Number.prototype, "number");
 			utility.methods(String.prototype, "string");
 
@@ -2193,15 +2189,20 @@ var abaaso = function(){
 }();
 
 // Registering events
-if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari)) {
-	window.addEventListener("DOMContentLoaded", function(){
-		abaaso.init();
-	}, false);
-}
-else {
-	abaaso.ready = setInterval(function(){
-		if (document.getElementById) {
-			clearInterval(abaaso.ready);
+try {
+	if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari)) {
+		window.addEventListener("DOMContentLoaded", function(){
 			abaaso.init();
-		}}, 10);
+		}, false);
+	}
+	else {
+		abaaso.ready = setInterval(function(){
+			if (document.getElementById) {
+				clearInterval(abaaso.ready);
+				abaaso.init();
+			}}, 100);
+	}
+}
+catch (e) {
+	abaaso.error(e);
 }
