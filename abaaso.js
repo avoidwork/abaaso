@@ -1697,15 +1697,14 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Error handling
-		 *
-		 * History is available as error.events
+		 * Error handling, with history in .events[]
 		 *
 		 * @param e {mixed} Error object or message to display.
 		 */
 		error : function(e) {
-			var err = new Error(e);
-			(console === undefined) ? void(0) : console.error(err);
+			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
+			(e.number !== undefined) ? (err.number = (e.number & 0xFFFF)) : void(0);
+			(console !== undefined) ? console.error(err.message) : alert(err.message);
 			(error.events === undefined) ? error.events = [] : void(0);
 			error.events.push(err);
 		},
@@ -2093,7 +2092,7 @@ var abaaso = function(){
 			abaaso.ready = true;
 
 			utility.methods(Array.prototype, "array");
-			(!client.ie) ? utility.methods(Element.prototype, "element") : void(0);
+			(!client.ie) ? utility.methods(Element.prototype, "element") : utility.methods(Element, "element");
 			utility.methods(Number.prototype, "number");
 			utility.methods(String.prototype, "string");
 
