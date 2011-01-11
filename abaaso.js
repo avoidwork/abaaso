@@ -1959,18 +1959,12 @@ var abaaso = function(){
 		 * @returns {boolean}
 		 */
 		bool : function(arg) {
-			try {
-				switch (arg) {
-					case true:
-					case false:
-						return arg;
-					default:
-						return false;
-				}
-			}
-			catch (e) {
-				error(e);
-				return false;
+			switch (arg) {
+				case true:
+				case false:
+					return arg;
+				default:
+					return false;
 			}
 		},
 
@@ -2166,22 +2160,19 @@ var abaaso = function(){
 }();
 
 // Registering events
-try {
-	if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari)) {
-		window.addEventListener("DOMContentLoaded", function(){
-			abaaso.init();
-		}, false);
-	}
-	else {
-		// @todo Refactor for v1.0.0
-		abaaso.ready = setInterval(function(){
-			if (document.getElementById) {
-				clearInterval(abaaso.ready);
-				abaaso.init();
-				abaaso.fire("render").un("render");
-			}}, 250);
-	}
+if ((abaaso.client.chrome)
+    || (abaaso.client.firefox)
+    || (abaaso.client.safari)) {
+	window.addEventListener("DOMContentLoaded", function(){
+		abaaso.init();
+	}, false);
 }
-catch (e) {
-	abaaso.error(e);
+else {
+	abaaso.ready = setInterval(function(){
+		if ((document.readyState == "loaded")
+		    || (document.readyState == "complete")) {
+			clearInterval(abaaso.ready);
+			abaaso.init();
+			abaaso.fire("render").un("render");
+		}}, 100);
 }
