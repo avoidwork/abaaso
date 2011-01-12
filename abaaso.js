@@ -740,16 +740,14 @@ var abaaso = function(){
 				if (obj !== null) {
 					obj.fire("beforeClear");
 
-					switch (typeof obj) {
-						case "form":
-							obj.reset();
-							break;
-						case "object":
-							obj.update({innerHTML: "", value: ""});
-							break;
-						default:
-							obj.update({innerHTML: ""});
-							break;
+					if (typeof obj.reset == "function") {
+						obj.reset();
+					}
+					else if (obj.value !== undefined) {
+						obj.update({innerHTML: "", value: ""});
+					}
+					else {
+						obj.update({innerHTML: ""});
 					}
 
 					obj.fire("afterClear");
@@ -1887,7 +1885,7 @@ var abaaso = function(){
 							((typeof this == "object")
 							 && ((this.id === undefined)
 							     || (this.id == ""))) ? this.genID() : void(0);
-							(typeof this == "object") ? abaaso.clear(this) : (this.constructor = new String(""));
+							(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
 							return this;
 							}},
 						{name: "fire", fn: function(event) {
