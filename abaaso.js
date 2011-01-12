@@ -31,14 +31,6 @@
  * abaaso provides a set of classes and object prototyping to ease the creation
  * and maintenance of RESTful JavaScript applications.
  *
- * HATEOAS can be implemented by setting abaaso.state.header which will trigger a
- * transition (state change) if the header is part of an XHR response.
- *
- * This requires standby listeners to be created on "ready" so the observer can
- * replace the active listeners; otherwise an exception is thrown.
- *
- * See @link for the development roadmap
- *
  * Events:    ready      Fires when the DOM is available (safe for GUI creation)
  *            render     Fires when the window resources have loaded (safe for visual fx)
  *            resize     Fires when the window resizes
@@ -1523,8 +1515,7 @@ var abaaso = function(){
 		 */
 		list : function(obj, event) {
 			try {
-				if ((obj === undefined)
-				    || (event === undefined)) {
+				if (obj === undefined) {
 					throw label.error.invalidArguments;
 				}
 
