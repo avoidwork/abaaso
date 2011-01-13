@@ -1478,9 +1478,7 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				var listeners = (l[o] !== undefined) ? ((l[o][event] !== undefined)
-									? ((l[o][event].active !== undefined)
-									   ? l[o][event].active : []) : []) : [];
+				var listeners = observer.list(obj, event).active;
 
 				for (var i in listeners) {
 					if ((listeners[i] !== undefined)
@@ -1520,9 +1518,11 @@ var abaaso = function(){
 				}
 
 				var l = observer.listeners,
-				    o = (obj.id !== undefined) ? obj.id : obj.toString();
+				    o = (obj.id !== undefined) ? obj.id : obj.toString(),
+				    c = (l[o] !== undefined) ? (((event !== undefined)
+								 && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
 
-				return (l[o] !== undefined) ? ((l[o][event] !== undefined) ? l[o][event] : l[o]) : [];
+				return c;
 			}
 			catch (e) {
 				error(e);
