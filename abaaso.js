@@ -1518,11 +1518,9 @@ var abaaso = function(){
 				}
 
 				var l = observer.listeners,
-				    o = (obj.id !== undefined) ? obj.id : obj.toString(),
-				    c = (l[o] !== undefined) ? (((event !== undefined)
-								 && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
+				    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-				return c;
+				return (l[o] !== undefined) ? (((event !== undefined) && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
 			}
 			catch (e) {
 				error(e);
