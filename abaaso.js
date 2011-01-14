@@ -1574,8 +1574,11 @@ var abaaso = function(){
 					}
 					else if (l[o][event].active[id] !== undefined) {
 						delete l[o][event].active[id];
-						((l[o][event].standby !== undefined)
-						 && (l[o][event].standby[id] !== undefined)) ? delete l[o][event].standby[id] : void(0);
+
+						if ((l[o][event].standby !== undefined)
+						    && (l[o][event].standby[id] !== undefined)) {
+							delete l[o][event].standby[id];
+						}
 					}
 
 					return obj;
@@ -1932,7 +1935,11 @@ var abaaso = function(){
 							return abaaso.un(this, event, id);
 							}}
 					],
-					string  : []
+					string  : [
+						{name: "domID", fn: function() {
+							return abaaso.domID(this);
+							}}
+					]
 				};
 
 				// Applying the methods
