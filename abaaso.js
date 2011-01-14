@@ -644,6 +644,7 @@ var abaaso = function(){
 		 * Receives and caches the URI response
 		 *
 		 * Headers are cached, if an expiration is set it will be used to control the local cache
+		 * If abaaso.state.header is set, a state change is possible
 		 *
 		 * @param xhr {object} XMLHttpRequest object
 		 * @param uri {string} The URI.value to cache
