@@ -672,8 +672,7 @@ var abaaso = function(){
 				else if (xhr.readyState == 4) {
 					if ((xhr.status == 200)
 					    && (xhr.responseText != "")) {
-						var cached = null,
-						    state  = null,
+						var state  = null,
 						    s      = abaaso.state;
 
 						cache.set(uri, "epoch", new Date());
