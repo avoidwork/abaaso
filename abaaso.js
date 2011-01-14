@@ -36,7 +36,7 @@
  *            resize     Fires when the window resizes
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @link http://avoidwork.com/products/abaaso abaaso
+ * @link http://abaaso.com/
  * @namespace
  * @version Beta
  */
@@ -111,19 +111,24 @@ var abaaso = function(){
 		/**
 		 * Removes arg from instance without destroying and re-creating instance
 		 *
-		 * @param instance {array} An instance of the array to use
+		 * Events:    beforeRemove      Fires before modifying the array
+		 *            afterRemove       Fires after modifying the array
+		 *
+		 * @param obj {array} An instance of the array to use
 		 * @param start {integer} The starting position
 		 * @param end {integer} The ending position (optional)
 		 * @returns {array} A scrubbed array
 		 */
-		remove : function(instance, start, end) {
+		remove : function(obj, start, end) {
 			try {
 				start = start || 0;
-				instance.fire("beforeRemove");
-				var remaining = instance.slice((end || start)+1 || instance.length);
-				instance.length = (start < 0) ? (instance.length + start) : start;
-				instance.fire("beforeAfter");
-				return instance.push.apply(instance, remaining);
+				obj.fire("beforeRemove");
+				var remaining = obj.slice((end || start)+1 || obj.length);
+				obj.length = (start < 0) ? (obj.length + start) : start;
+				obj.push.apply(obj, remaining);
+				obj.fire("afterRemove");
+
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -252,9 +257,12 @@ var abaaso = function(){
 				    objDestination = $(destination),
 				    objTarget      = $(target);
 
-				o.clear       = ((destination !== undefined) && (clear === undefined)) ? false : validate.bool(clear);
-				o.destination = ((destination !== undefined) && (objDestination)) ? destination : null;
-				o.c           = ((destination !== undefined) && (objDestination.value != "")) ? new Date(objDestination.value) : o.c;
+				o.clear       = ((destination !== undefined)
+						 && (clear === undefined)) ? false : validate.bool(clear);
+				o.destination = ((destination !== undefined)
+						 && (objDestination)) ? destination : null;
+				o.c           = ((destination !== undefined)
+						 && (objDestination.value != "")) ? new Date(objDestination.value) : o.c;
 
 				objTarget.blur();
 
@@ -301,8 +309,8 @@ var abaaso = function(){
 					    args = {id: "href_day_" + d, innerHTML: d};
 
 					args["class"] = ((dateStamp.getDate() == o.getDate())
-						      && (dateStamp.getMonth() == o.getMonth())
-						      && (dateStamp.getFullYear() == o.getFullYear())) ? "current" : "weekend";
+							 && (dateStamp.getMonth() == o.getMonth())
+							 && (dateStamp.getFullYear() == o.getFullYear())) ? "current" : "weekend";
 
 					el.create("div", {id: "div_day_" + d, "class": "day"}, target);
 					el.create("a", args, "div_day_" + d);
@@ -318,7 +326,7 @@ var abaaso = function(){
 
 							($(abaaso.calendar.date.destination)) ? $(abaaso.calendar.date.destination).update({innerHTML: date, value: date}) : void(0);
 
-							abaaso.destroy("abaaso_calendar");
+							$("abaaso_calendar").destroy();
 							}, args.id);
 					}
 				}
@@ -382,7 +390,7 @@ var abaaso = function(){
 		render : function(target, dateStamp) {
 			try {
 				var obj = $(target);
-				if (obj !== null) {
+				if (obj !== undefined) {
 					obj.fire("beforeRender");
 					obj.clear();
 
@@ -514,16 +522,16 @@ var abaaso = function(){
 		 * Sends a DELETE to the URI
 		 *
 		 * @param uri {string} URI to submit to
-		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param fn {function} A handler function to execute once a response has been received
 		 */
-		del : function(uri, handler) {
+		del : function(uri, fn) {
 			try {
 				if ((uri == "")
-				    || (!handler instanceof Function)) {
+				    || (!fn instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
-				client.request(uri, handler, "DELETE");
+				client.request(uri, fn, "DELETE");
 			}
 			catch (e) {
 				error(e);
@@ -534,17 +542,17 @@ var abaaso = function(){
 		 * Sends a GET to the URI
 		 *
 		 * @param uri {string} URI to submit to
-		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param fn {function} A handler function to execute once a response has been received
 		 */
-		get : function(uri, handler) {
+		get : function(uri, fn) {
 			try {
 				if ((uri == "")
-				    || (!handler instanceof Function)) {
+				    || (!fn instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
-				var response = cache.get(uri);
-				(!response) ? client.request(uri, handler, "GET") : handler(response);
+				var cached = cache.get(uri);
+				(!cached) ? client.request(uri, fn, "GET") : fn(cached.response);
 			}
 			catch (e) {
 				error(e);
@@ -555,18 +563,18 @@ var abaaso = function(){
 		 * Sends a PUT to the URI
 		 *
 		 * @param uri {string} URI submit to
-		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param fn {function} A handler function to execute once a response has been received
 		 * @param {args} PUT variables to include
 		 */
-		put : function(uri, handler, args) {
+		put : function(uri, fn, args) {
 			try {
 				if ((uri == "")
-				    || (!handler instanceof Function)
+				    || (!fn instanceof Function)
 				    || (args == "")) {
 					throw label.error.invalidArguments;
 				}
 
-				client.request(uri, handler, "PUT", args);
+				client.request(uri, fn, "PUT", args);
 			}
 			catch (e) {
 				error(e);
@@ -577,18 +585,18 @@ var abaaso = function(){
 		 * Sends a POST to the URI
 		 *
 		 * @param uri {string} URI submit to
-		 * @param handler {function} A handler function to execute once a response has been received
+		 * @param fn {function} A handler function to execute once a response has been received
 		 * @param {args} POST variables to include
 		 */
-		post : function(uri, handler, args) {
+		post : function(uri, fn, args) {
 			try {
 				if ((uri == "")
-				    || (!handler instanceof Function)
+				    || (!fn instanceof Function)
 				    || (args == "")) {
 					throw label.error.invalidArguments;
 				}
 
-				client.request(uri, handler, "POST", args);
+				client.request(uri, fn, "POST", args);
 			}
 			catch (e) {
 				error(e);
@@ -664,8 +672,9 @@ var abaaso = function(){
 				else if (xhr.readyState == 4) {
 					if ((xhr.status == 200)
 					    && (xhr.responseText != "")) {
-						var state = null,
-						        s = abaaso.state;
+						var cached = null,
+						    state  = null,
+						    s      = abaaso.state;
 
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xhr.responseText);
@@ -774,7 +783,7 @@ var abaaso = function(){
 					var obj = document.createElement(type);
 					(args.id === undefined) ? obj.genID() : obj.id = args.id;
 					obj.fire("beforeCreate");
-					el.update(obj, args);
+					obj.update(args);
 					((id !== undefined)
 					 && ($(id) !== undefined)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
 					obj.fire("afterCreate");
@@ -806,7 +815,7 @@ var abaaso = function(){
 
 				while (i--) {
 					obj = $(args[i]);
-					if (obj !== null) {
+					if (obj !== undefined) {
 						obj.fire("beforeDestroy");
 						observer.remove(obj.id);
 						obj.parentNode.removeChild(obj);
@@ -836,7 +845,8 @@ var abaaso = function(){
 
 				while (i--) {
 					obj = $(args[i]);
-					if (obj !== null) {
+					if ((obj !== undefined)
+					    && (obj.disabled !== undefined)) {
 						obj.fire("beforeDisable");
 						obj.disabled = true;
 						obj.fire("afterDisable");
@@ -844,7 +854,7 @@ var abaaso = function(){
 					}
 				}
 
-				return (instances.length == 1) ? instances[0] : instances;
+				return (instances.length == 0) ? obj : ((instances.length == 1) ? instances[0] : instances);
 			}
 			catch(e) {
 				error(e);
@@ -870,7 +880,8 @@ var abaaso = function(){
 
 				while (i--) {
 					obj = $(args[i]);
-					if (obj !== null) {
+					if ((obj !== undefined)
+					    && (obj.disabled !== undefined)) {
 						obj.fire("beforeEnable");
 						obj.disabled = false;
 						obj.fire("afterEnable");
@@ -878,7 +889,7 @@ var abaaso = function(){
 					}
 				}
 
-				return (instances.length == 1) ? instances[0] : instances;
+				return (instances.length == 0) ? obj : ((instances.length == 1) ? instances[0] : instances);
 			}
 			catch(e) {
 				error(e);
@@ -1218,9 +1229,10 @@ var abaaso = function(){
 		 * @param ms {integer} Milliseconds for transition to take
 		 * @param pos {array} An array of co-ordinates [X,Y]
 		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
+		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
 		 * @todo complete for v1.1.0
 		 */
-		slide : function(obj, ms, pos, elastic) {
+		slide : function(obj, ms, pos, elastic, gravity) {
 			try {
 				obj = (typeof obj == "object") ? obj : $(obj);
 
@@ -1232,7 +1244,8 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				elastic = elastic || 0;
+				elastic = parseInt(elastic) || 0;
+				gravity = parseInt(gravity) || 0;
 
 				obj.fire("beforeSlide");
 				obj.fire("afterSlide");
@@ -1604,8 +1617,7 @@ var abaaso = function(){
 
 				(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
 
-				if (typeof(listener) == "string")
-				{
+				if (typeof(listener) == "string") {
 					if ((l[o][event].standby[listener] === undefined)
 					    || (l[o][event].standby[listener].fn === undefined)) {
 						throw label.error.invalidArguments;
@@ -1813,6 +1825,12 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.enable(this.id);
 							}},
+						{name: "fade", fn: function(arg) {
+							abaaso.fx.fade(this.id, arg);
+							}},
+						{name: "fall", fn: function() {
+							void(0);
+							}},
 						{name: "get", fn: function(uri) {
 							this.fire("beforeGet");
 							var cached = cache.get(uri);
@@ -1831,11 +1849,12 @@ var abaaso = function(){
 							}
 							return this;
 							}},
-						{name: "fade", fn: function(arg) {
-							abaaso.fx.fade(this.id, arg);
-							}},
-						{name: "fall", fn: function() {
-							void(0);
+						{name: "hide", fn: function() {
+							this.genID();
+							(this.old === undefined) ? this.old = {} : void(0);
+							this.old.display = this.style.display;
+							this.style.display = "none";
+							return this;
 							}},
 						{name: "loading", fn: function() {
 							this.genID();
@@ -1851,6 +1870,13 @@ var abaaso = function(){
 						{name: "position", fn: function() {
 							this.genID();
 							return abaaso.el.position(this.id);
+							}},
+						{name: "show", fn: function() {
+							this.genID();
+							this.style.display = ((this.old !== undefined)
+									      && (this.old.display !== undefined)
+									      && (this.old.display != "")) ? this.old.display : "inherit";
+							return this;
 							}},
 						{name: "slide", fn: function(ms, pos, elastic) {
 							this.genID();
@@ -2056,11 +2082,11 @@ var abaaso = function(){
 			window.$        = function(arg) { return abaaso.$(arg); };
 			window.onresize = function() { abaaso.fire("resize"); };
 
+			abaaso.fire("ready").un("ready");
+
 			if (!client.ie) {
 				window.onload = function() { abaaso.fire("render").un("render"); };
 			}
-
-			abaaso.fire("ready").un("ready");
 
 			delete abaaso.init;
 			},
