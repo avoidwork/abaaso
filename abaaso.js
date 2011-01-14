@@ -570,7 +570,8 @@ var abaaso = function(){
 			try {
 				if ((uri == "")
 				    || (!fn instanceof Function)
-				    || (args == "")) {
+				    || (args === undefined)
+				    || (typeof args != "object")) {
 					throw label.error.invalidArguments;
 				}
 
@@ -613,27 +614,22 @@ var abaaso = function(){
 		 */
 		request : function(uri, fn, type, args) {
 			try {
-				var xhr = new XMLHttpRequest();
+				if (((type.toLowerCase() == "post")
+				     || (type.toLowerCase() == "put"))
+				    && (typeof args != "object")) {
+					throw label.error.invalidArguments;
+				}
+
 				uri.toString().fire("beforeXHR");
 
-				switch(type.toLowerCase()) {
-					case "delete":
-					case "get":
-						xhr.onreadystatechange = function() { client.response(xhr, uri, fn); };
-						(type.toLowerCase() == "delete") ? xhr.open("DELETE", uri, true) : xhr.open("GET", uri, true);
-						xhr.send(null);
-						break;
-					case "post":
-					case "put":
-						xhr.onreadystatechange = function() { client.response(xhr, uri, fn); };
-						(type.toLowerCase() == "post") ? xhr.open("POST", uri, true) : xhr.open("PUT", uri, true);
-						(xhr.overrideMimeType) ? xhr.overrideMimeType("text/html") : void(0);
-						xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-						xhr.setRequestHeader("Content-length", args.length);
-						xhr.setRequestHeader("Connection", "close");
-						xhr.send(args);
-						break;
-				}
+				var xhr     = new XMLHttpRequest(),
+				    payload = ((type.toLowerCase() == "post")
+					       || (type.toLowerCase() == "put")) ? args : null;
+
+				xhr.onreadystatechange = function() { client.response(xhr, uri, fn); };
+				xhr.open(type.toUpperCase(), uri, true);
+				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
+				xhr.send(payload);
 			}
 			catch(e) {
 				error(e);
