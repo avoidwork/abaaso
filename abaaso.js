@@ -1820,10 +1820,6 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.disable(this.id);
 							}},
-						{name: "domID", fn: function() {
-							this.genID();
-							return abaaso.domID(this.id);
-							}},
 						{name: "enable", fn: function() {
 							this.genID();
 							return abaaso.el.enable(this.id);
@@ -1906,6 +1902,10 @@ var abaaso = function(){
 							(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
 							return this;
 							}},
+						{name: "domID", fn: function() {
+							this.genID();
+							return abaaso.domID(this.id);
+							}},
 						{name: "fire", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
@@ -1935,11 +1935,7 @@ var abaaso = function(){
 							return abaaso.un(this, event, id);
 							}}
 					],
-					string  : [
-						{name: "domID", fn: function() {
-							return abaaso.domID(this);
-							}}
-					]
+					string  : []
 				};
 
 				// Applying the methods
