@@ -1839,7 +1839,7 @@ var abaaso = function(){
 								abaaso.get(uri);
 							}
 							else {
-								(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
+								(this.value !== undefined) ? this.update({value: cached.response}) : this.update({innerHTML: cached.response});
 								this.fire("afterGet");
 							}
 							return this;
