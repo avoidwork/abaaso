@@ -610,7 +610,7 @@ var abaaso = function(){
 		 * @param uri {string} The resource to interact with
 		 * @param fn {function} A handler function to execute when an appropriate response been received
 		 * @param type {string} The type of request
-		 * @param args {mixed} Data to append to the request
+		 * @param args {mixed} Data to send with the request
 		 */
 		request : function(uri, fn, type, args) {
 			try {
@@ -1899,8 +1899,11 @@ var abaaso = function(){
 							return this;
 							}},
 						{name: "domID", fn: function() {
-							this.genID();
-							return abaaso.domID(this.id);
+							if (!this instanceof String) {
+								this.genID();
+								return abaaso.domID(this.id);
+							}
+							return abaaso.domID(this);
 							}},
 						{name: "fire", fn: function(event) {
 							((!this instanceof String)
