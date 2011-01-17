@@ -1832,7 +1832,7 @@ var abaaso = function(){
 							if (!cached) {
 								uri.toString().on("afterXHR", function() {
 									var response = cache.get(uri, false).response;
-									this.update({innerHTML: response, value: response});
+									(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
 									uri.toString().un("afterXHR", "get");
 									this.fire("afterGet");
 									}, "get", this);
@@ -2148,7 +2148,6 @@ var abaaso = function(){
 			bounce  : fx.bounce,
 			fade    : fx.fade,
 			fall    : fx.fall,
-			move    : fx.move,
 			opacity : fx.opacity,
 			slide   : fx.slide
 			},
