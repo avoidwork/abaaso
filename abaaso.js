@@ -83,7 +83,7 @@ var abaaso = function(){
 		 *
 		 * @param instance {mixed} The entity to search
 		 * @param arg {mixed} The argument to find (string or integer)
-		 * @returns {integer} The position of item in ar
+		 * @returns {integer} The position of arg in instance
 		 */
 		index : function(instance, arg) {
 			try {
@@ -1340,25 +1340,6 @@ var abaaso = function(){
 	 */
 	var label = {
 		/**
-		 * Error messages
-		 */
-		error : {
-			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota.",
-			databaseNotSupported  : "Client does not support local database storage.",
-			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder.",
-			elementNotCreated     : "Could not create the Element.",
-			elementNotFound       : "Could not find the Element.",
-			expectedArray         : "Expected an Array.",
-			expectedArrayObject   : "Expected an Array or Object.",
-			expectedBoolean       : "Expected a Boolean value.",
-			expectedObject        : "Expected an Object.",
-			invalidArguments      : "One or more arguments is invalid.",
-			invalidDate           : "Invalid Date.",
-			invalidFields         : "The following required fields are invalid: ",
-			serverError           : "A server error has occurred."
-		},
-
-		/**
 		 * Common labels
 		 */
 		common : {
@@ -1379,6 +1360,25 @@ var abaaso = function(){
 			save    : "Save",
 			search  : "Search",
 			submit  : "Submit"
+		},
+
+		/**
+		 * Error messages
+		 */
+		error : {
+			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota.",
+			databaseNotSupported  : "Client does not support local database storage.",
+			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder.",
+			elementNotCreated     : "Could not create the Element.",
+			elementNotFound       : "Could not find the Element.",
+			expectedArray         : "Expected an Array.",
+			expectedArrayObject   : "Expected an Array or Object.",
+			expectedBoolean       : "Expected a Boolean value.",
+			expectedObject        : "Expected an Object.",
+			invalidArguments      : "One or more arguments is invalid.",
+			invalidDate           : "Invalid Date.",
+			invalidFields         : "The following required fields are invalid: ",
+			serverError           : "A server error has occurred."
 		},
 
 		/**
