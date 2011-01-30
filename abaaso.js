@@ -2051,78 +2051,6 @@ var abaaso = function(){
 	 * @constructor
 	 */
 	return {
-		// Properties
-		id              : "abaaso",
-		ready           : false,
-		version         : "beta",
-
-		// Methods
-		$               : utility.$,
-		clear           : el.clear,
-		create          : el.create,
-		del             : client.del,
-		destroy         : el.destroy,
-		domID           : utility.domID,
-		error           : utility.error,
-		fire            : function() {
-			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
-			    event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
-
-			return abaaso.observer.fire(obj, event);
-			},
-		genID           : utility.genID,
-		get             : client.get,
-		init            : function() {
-			abaaso.ready = true;
-
-			utility.proto(Array.prototype, "array");
-			utility.proto(Element.prototype, "element");
-			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
-			utility.proto(Number.prototype, "number");
-			utility.proto(String.prototype, "string");
-
-			window.$        = function(arg) { return abaaso.$(arg); };
-			window.onresize = function() { abaaso.fire("resize"); };
-
-			abaaso.fire("ready").un("ready");
-
-			if (!client.ie) {
-				window.onload = function() { abaaso.fire("render").un("render"); };
-			}
-
-			delete abaaso.init;
-			},
-		listeners       : function() {
-			var all   = (arguments[1] !== undefined) ? true : false;
-			var obj   = (all) ? arguments[0] : abaaso,
-			    event = (all) ? arguments[1] : arguments[0];
-
-			return abaaso.observer.list(obj, event);
-			},
-		position        : el.position,
-		post            : client.post,
-		put             : client.put,
-		on              : function() {
-			var all      = (arguments[2] instanceof Function) ? true : false;
-			var obj      = (all) ? arguments[0] : abaaso,
-			    event    = (all) ? arguments[1] : arguments[0],
-			    listener = (all) ? arguments[2] : arguments[1],
-			    id       = (all) ? arguments[3] : arguments[2],
-			    scope    = (all) ? arguments[4] : arguments[3],
-			    standby  = (all) ? arguments[5] : arguments[4];
-
-			return abaaso.observer.add(obj, event, listener, id, scope, standby);
-			},
-		un              : function() {
-			var all   = (typeof arguments[0] == "string") ? false : true;
-			var obj   = (all) ? arguments[0] : abaaso,
-			    event = (all) ? arguments[1] : arguments[0],
-			    id    = (all) ? arguments[2] : arguments[1];
-
-			return abaaso.observer.remove(obj, event, id);
-			},
-		update          : el.update,
-
 		// Classes
 		array           : array,
 		calendar        : calendar,
@@ -2169,7 +2097,77 @@ var abaaso = function(){
 			header  : null,
 			previous: null
 			},
-		validate        : validate
+		validate        : validate,
+
+		// Methods & Properties
+		$               : utility.$,
+		clear           : el.clear,
+		create          : el.create,
+		del             : client.del,
+		destroy         : el.destroy,
+		domID           : utility.domID,
+		error           : utility.error,
+		fire            : function() {
+			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
+			    event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
+
+			return abaaso.observer.fire(obj, event);
+			},
+		genID           : utility.genID,
+		get             : client.get,
+		id              : "abaaso",
+		init            : function() {
+			abaaso.ready = true;
+
+			utility.proto(Array.prototype, "array");
+			utility.proto(Element.prototype, "element");
+			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
+			utility.proto(Number.prototype, "number");
+			utility.proto(String.prototype, "string");
+
+			window.$        = function(arg) { return abaaso.$(arg); };
+			window.onresize = function() { abaaso.fire("resize"); };
+
+			abaaso.fire("ready").un("ready");
+
+			if (!client.ie) {
+				window.onload = function() { abaaso.fire("render").un("render"); };
+			}
+
+			delete abaaso.init;
+			},
+		listeners       : function() {
+			var all   = (arguments[1] !== undefined) ? true : false;
+			var obj   = (all) ? arguments[0] : abaaso,
+			    event = (all) ? arguments[1] : arguments[0];
+
+			return abaaso.observer.list(obj, event);
+			},
+		position        : el.position,
+		post            : client.post,
+		put             : client.put,
+		on              : function() {
+			var all      = (arguments[2] instanceof Function) ? true : false;
+			var obj      = (all) ? arguments[0] : abaaso,
+			    event    = (all) ? arguments[1] : arguments[0],
+			    listener = (all) ? arguments[2] : arguments[1],
+			    id       = (all) ? arguments[3] : arguments[2],
+			    scope    = (all) ? arguments[4] : arguments[3],
+			    standby  = (all) ? arguments[5] : arguments[4];
+
+			return abaaso.observer.add(obj, event, listener, id, scope, standby);
+			},
+		ready           : false,
+		un              : function() {
+			var all   = (typeof arguments[0] == "string") ? false : true;
+			var obj   = (all) ? arguments[0] : abaaso,
+			    event = (all) ? arguments[1] : arguments[0],
+			    id    = (all) ? arguments[2] : arguments[1];
+
+			return abaaso.observer.remove(obj, event, id);
+			},
+		update          : el.update,
+		version         : "beta"
 	};
 }();
 
@@ -2188,5 +2186,5 @@ else {
 			clearInterval(abaaso.ready);
 			abaaso.init();
 			abaaso.fire("render").un("render");
-		}}, 100);
+		}}, 300);
 }
