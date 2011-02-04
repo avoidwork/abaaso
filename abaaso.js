@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version Beta
+ * @version 1.0
  */
 var abaaso = function(){
 	/**
@@ -2201,7 +2201,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "beta"
+		version         : 1.0
 	};
 }();
 
