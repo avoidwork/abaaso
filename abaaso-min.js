@@ -35,14 +35,14 @@ if(this.firefox){return navigator.userAgent.replace(/(.*Firefox\/)/gi,"");}
 if(this.ie){return navigator.userAgent.replace(/(.*MSIE|;.*)/gi,"");}
 if(this.opera){return navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi,"");}
 if(this.safari){return navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi,"");}
-else{return parseInt(navigator.appVersion);}}),del:function(uri,fn){try{uri.toString().fire("beforeDelete");if((uri=="")||(!fn instanceof Function)){throw label.error.invalidArguments;}
-client.request(uri,fn,"DELETE");}
-catch(e){error(e);}},get:function(uri,fn){try{uri.toString().fire("beforeGet");if((uri=="")||(!fn instanceof Function)){throw label.error.invalidArguments;}
-var cached=cache.get(uri);(!cached)?client.request(uri,fn,"GET"):fn(cached.response);}
-catch(e){error(e);}},put:function(uri,fn,args){try{uri.toString().fire("beforePut");if((uri=="")||(!fn instanceof Function)||(args===undefined)||(typeof args!="object")){throw label.error.invalidArguments;}
-client.request(uri,fn,"PUT",args);}
-catch(e){error(e);}},post:function(uri,fn,args){try{uri.toString().fire("beforePost");if((uri=="")||(!fn instanceof Function)||(args=="")){throw label.error.invalidArguments;}
-client.request(uri,fn,"POST",args);}
+else{return parseInt(navigator.appVersion);}}),del:function(uri,fn){try{if((uri=="")||(!fn instanceof Function)){throw label.error.invalidArguments;}
+uri.toString().fire("beforeDelete");client.request(uri,fn,"DELETE");}
+catch(e){error(e);}},get:function(uri,fn){try{if((uri=="")||(!fn instanceof Function)){throw label.error.invalidArguments;}
+uri.toString().fire("beforeGet");var cached=cache.get(uri);(!cached)?client.request(uri,fn,"GET"):fn(cached.response);}
+catch(e){error(e);}},put:function(uri,fn,args){try{if((uri=="")||(!fn instanceof Function)||(args===undefined)||(typeof args!="object")){throw label.error.invalidArguments;}
+uri.toString().fire("beforePut");client.request(uri,fn,"PUT",args);}
+catch(e){error(e);}},post:function(uri,fn,args){try{if((uri=="")||(!fn instanceof Function)||(args=="")){throw label.error.invalidArguments;}
+uri.toString().fire("beforePost");client.request(uri,fn,"POST",args);}
 catch(e){error(e);}},request:function(uri,fn,type,args){try{if(((type.toLowerCase()=="post")||(type.toLowerCase()=="put"))&&(typeof args!="object")){throw label.error.invalidArguments;}
 uri.toString().fire("beforeXHR");var xhr=new XMLHttpRequest(),payload=((type.toLowerCase()=="post")||(type.toLowerCase()=="put"))?args:null,cached=cache.get(uri,false);xhr.onreadystatechange=function(){client.response(xhr,uri,fn,type);};xhr.open(type.toUpperCase(),uri,true);(payload!==null)?xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded; charset=UTF-8"):void(0);((cached!==false)&&(cached.headers.ETag!==undefined))?xhr.setRequestHeader("ETag",cached.headers.ETag):void(0);xhr.send(payload);}
 catch(e){error(e);}},response:function(xhr,uri,fn,type){try{if(xhr.readyState==2){var headers=xhr.getAllResponseHeaders().split("\n"),i=null,loop=headers.length,items={};for(i=0;i<loop;i++){if(headers[i]!=""){var header=headers[i].toString(),value=header.substr((header.indexOf(':')+1),header.length).replace(/\s/,"");header=header.substr(0,header.indexOf(':')).replace(/\s/,"");items[header]=value;}}
