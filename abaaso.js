@@ -637,7 +637,8 @@ var abaaso = function(){
 				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
 				xhr.open(type.toUpperCase(), uri, true);
 				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
-				(cached !== false) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
+				((cached !== false)
+				 && (cached.headers.ETag !== undefined)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
 				xhr.send(payload);
 			}
 			catch(e) {
