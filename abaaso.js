@@ -384,6 +384,9 @@ var abaaso = function(){
 		 *
 		 * (Pre-registered) Events are destroyed and recreated to insure proper behavior
 		 *
+		 * Events:     beforeRender    Fires before the calendar has rendered
+		 *             afterRender     Fires after the calendar has rendered
+		 *
 		 * @param target {string} Target object.id value
 		 * @param dateStamp {mixed} Date to work with
 		 */
@@ -526,6 +529,7 @@ var abaaso = function(){
 		 */
 		del : function(uri, fn) {
 			try {
+			        uri.toString().fire("beforeDelete");
 				if ((uri == "")
 				    || (!fn instanceof Function)) {
 					throw label.error.invalidArguments;
@@ -546,6 +550,7 @@ var abaaso = function(){
 		 */
 		get : function(uri, fn) {
 			try {
+			        uri.toString().fire("beforeGet");
 				if ((uri == "")
 				    || (!fn instanceof Function)) {
 					throw label.error.invalidArguments;
@@ -568,6 +573,7 @@ var abaaso = function(){
 		 */
 		put : function(uri, fn, args) {
 			try {
+			        uri.toString().fire("beforePut");
 				if ((uri == "")
 				    || (!fn instanceof Function)
 				    || (args === undefined)
@@ -591,6 +597,7 @@ var abaaso = function(){
 		 */
 		post : function(uri, fn, args) {
 			try {
+			        uri.toString().fire("beforePost");
 				if ((uri == "")
 				    || (!fn instanceof Function)
 				    || (args == "")) {
@@ -624,11 +631,13 @@ var abaaso = function(){
 
 				var xhr     = new XMLHttpRequest(),
 				    payload = ((type.toLowerCase() == "post")
-					       || (type.toLowerCase() == "put")) ? args : null;
+					       || (type.toLowerCase() == "put")) ? args : null,
+				    cached  = cache.get(uri, false);
 
-				xhr.onreadystatechange = function() { client.response(xhr, uri, fn); };
+				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
 				xhr.open(type.toUpperCase(), uri, true);
 				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
+				(cached !== false) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
 				xhr.send(payload);
 			}
 			catch(e) {
@@ -645,8 +654,9 @@ var abaaso = function(){
 		 * @param xhr {object} XMLHttpRequest object
 		 * @param uri {string} The URI.value to cache
 		 * @param fn {function} A handler function to execute once a response has been received
+		 * @param type {string} The type of request
 		 */
-		response : function(xhr, uri, fn) {
+		response : function(xhr, uri, fn, type) {
 			try {
 				if (xhr.readyState == 2) {
 					var headers = xhr.getAllResponseHeaders().split("\n"),
@@ -674,9 +684,8 @@ var abaaso = function(){
 
 						cache.set(uri, "epoch", new Date());
 						cache.set(uri, "response", xhr.responseText);
-
 						uri.toString().fire("afterXHR");
-
+						uri.toString().fire("after"+type.toLowerCase().capitalize());
 						uri = cache.get(uri, false);
 
 						if ((s.header !== null)
@@ -728,7 +737,11 @@ var abaaso = function(){
 		/**
 		 * Clears an object's innerHTML, or resets it's state
 		 *
+		 * Events:    beforeClear    Fires before the Object is cleared
+		 *            afterClear     Fires after the Object is cleared
+		 *
 		 * @param id {string} Target object.id value
+		 * @returns {object} The object being cleared
 		 */
 		clear : function(obj) {
 			try {
@@ -1830,10 +1843,10 @@ var abaaso = function(){
 							this.fire("beforeGet");
 							var cached = cache.get(uri);
 							if (!cached) {
-								uri.toString().on("afterXHR", function() {
+								uri.toString().on("afterGet", function() {
 									var response = cache.get(uri, false).response;
 									(this.value !== undefined) ? this.update({value: response}) : this.update({innerHTML: response});
-									uri.toString().un("afterXHR", "get");
+									uri.toString().un("afterGet", "get");
 									this.fire("afterGet");
 									}, "get", this);
 								abaaso.get(uri);
@@ -1934,7 +1947,11 @@ var abaaso = function(){
 							return abaaso.un(this, event, id);
 							}}
 					],
-					string  : []
+					string  : [
+						{name: "capitalize", fn: function() {
+							return this.charAt(0).toUpperCase() + this.slice(1);
+						}}
+					]
 				};
 
 				// Applying the methods
