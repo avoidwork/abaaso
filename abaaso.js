@@ -524,17 +524,20 @@ var abaaso = function(){
 		/**
 		 * Sends a DELETE to the URI
 		 *
+		 * Events:     beforeDelete    Fires before the DELETE request is made
+		 *             afterDelete     Fires after the DELETE response is received
+		 *
 		 * @param uri {string} URI to submit to
 		 * @param fn {function} A handler function to execute once a response has been received
 		 */
 		del : function(uri, fn) {
 			try {
-			        uri.toString().fire("beforeDelete");
 				if ((uri == "")
 				    || (!fn instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
+				uri.toString().fire("beforeDelete");
 				client.request(uri, fn, "DELETE");
 			}
 			catch (e) {
@@ -545,17 +548,20 @@ var abaaso = function(){
 		/**
 		 * Sends a GET to the URI
 		 *
+		 * Events:     beforeGet    Fires before the GET request is made
+		 *             afterGet     Fires after the GET response is received
+		 *
 		 * @param uri {string} URI to submit to
 		 * @param fn {function} A handler function to execute once a response has been received
 		 */
 		get : function(uri, fn) {
 			try {
-			        uri.toString().fire("beforeGet");
 				if ((uri == "")
 				    || (!fn instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
+				uri.toString().fire("beforeGet");
 				var cached = cache.get(uri);
 				(!cached) ? client.request(uri, fn, "GET") : fn(cached.response);
 			}
@@ -567,13 +573,15 @@ var abaaso = function(){
 		/**
 		 * Sends a PUT to the URI
 		 *
+		 * Events:     beforePut    Fires before the PUT request is made
+		 *             afterPut     Fires after the PUT response is received
+		 *
 		 * @param uri {string} URI submit to
 		 * @param fn {function} A handler function to execute once a response has been received
 		 * @param {args} PUT variables to include
 		 */
 		put : function(uri, fn, args) {
 			try {
-			        uri.toString().fire("beforePut");
 				if ((uri == "")
 				    || (!fn instanceof Function)
 				    || (args === undefined)
@@ -581,6 +589,7 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
+				uri.toString().fire("beforePut");
 				client.request(uri, fn, "PUT", args);
 			}
 			catch (e) {
@@ -591,19 +600,22 @@ var abaaso = function(){
 		/**
 		 * Sends a POST to the URI
 		 *
+		 * Events:     beforePost    Fires before the POST request is made
+		 *             afterPost     Fires after the POST response is received
+		 *
 		 * @param uri {string} URI submit to
 		 * @param fn {function} A handler function to execute once a response has been received
 		 * @param {args} POST variables to include
 		 */
 		post : function(uri, fn, args) {
 			try {
-			        uri.toString().fire("beforePost");
 				if ((uri == "")
 				    || (!fn instanceof Function)
 				    || (args == "")) {
 					throw label.error.invalidArguments;
 				}
 
+				uri.toString().fire("beforePost");
 				client.request(uri, fn, "POST", args);
 			}
 			catch (e) {
@@ -613,6 +625,8 @@ var abaaso = function(){
 
 		/**
 		 * Creates an XmlHttpRequest to a URI
+		 *
+		 * Events:     beforeXHR    Fires before the XmlHttpRequest is made
 		 *
 		 * @param uri {string} The resource to interact with
 		 * @param fn {function} A handler function to execute when an appropriate response been received
@@ -651,6 +665,8 @@ var abaaso = function(){
 		 *
 		 * Headers are cached, if an expiration is set it will be used to control the local cache
 		 * If abaaso.state.header is set, a state change is possible
+		 *
+		 * Events:     afterXHR    Fires after the XmlHttpRequest response is received
 		 *
 		 * @param xhr {object} XMLHttpRequest object
 		 * @param uri {string} The URI.value to cache
