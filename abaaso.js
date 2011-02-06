@@ -150,6 +150,17 @@ var abaaso = function(){
 		items : [],
 
 		/**
+		 * Expires a URI from the local cache
+		 *
+		 * @param uri {string} The URI of the local representation
+		 * @returns undefined
+		 */
+		expire : function(uri) {
+			(this.items[uri] !== undefined) ? delete this.items[uri] : void(0);
+			return;
+		},
+
+		/**
 		 * Returns the cached object {headers, response} of the URI or false
 		 *
 		 * @param uri {string} The URI/Identifier for the resource to retrieve from cache
@@ -537,7 +548,10 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				uri.toString().fire("beforeDelete");
+				uri.toString().on("afterDelete", function(){
+						cache.expire(uri);
+						uri.toString().un("afterDelete", "expire");
+					}, "expire").fire("beforeDelete");
 				client.request(uri, fn, "DELETE");
 			}
 			catch (e) {
@@ -699,8 +713,11 @@ var abaaso = function(){
 						var state  = null,
 						    s      = abaaso.state;
 
-						cache.set(uri, "epoch", new Date());
-						cache.set(uri, "response", xhr.responseText);
+						if (type != "delete") {
+							cache.set(uri, "epoch", new Date());
+							cache.set(uri, "response", xhr.responseText);
+						}
+
 						uri.toString().fire("afterXHR");
 						uri.toString().fire("after"+type.toLowerCase().capitalize());
 						uri = cache.get(uri, false);
@@ -715,6 +732,9 @@ var abaaso = function(){
 						}
 
 						(fn !== undefined) ? fn(uri) : void(0);
+					}
+					else if (xhr.status == 401) {
+						throw label.error.serverUnauthorized;
 					}
 					else {
 						throw label.error.serverError;
@@ -1408,7 +1428,8 @@ var abaaso = function(){
 			invalidArguments      : "One or more arguments is invalid.",
 			invalidDate           : "Invalid Date.",
 			invalidFields         : "The following required fields are invalid: ",
-			serverError           : "A server error has occurred."
+			serverError           : "A server error has occurred.",
+			serverUnauthorized    : "Unauthorized to access URI."
 		},
 
 		/**
