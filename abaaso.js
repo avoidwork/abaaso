@@ -548,7 +548,10 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				uri.toString().fire("beforeDelete");
+				uri.toString().on("afterDelete", function(){
+						cache.expire(uri);
+						uri.toString().un("afterDelete", "expire");
+					}, "expire").fire("beforeDelete");
 				client.request(uri, fn, "DELETE");
 			}
 			catch (e) {
@@ -726,6 +729,9 @@ var abaaso = function(){
 						}
 
 						(fn !== undefined) ? fn(uri) : void(0);
+					}
+					else if (xhr.status == 401) {
+						throw label.error.serverUnauthorized;
 					}
 					else {
 						throw label.error.serverError;
@@ -1419,7 +1425,8 @@ var abaaso = function(){
 			invalidArguments      : "One or more arguments is invalid.",
 			invalidDate           : "Invalid Date.",
 			invalidFields         : "The following required fields are invalid: ",
-			serverError           : "A server error has occurred."
+			serverError           : "A server error has occurred.",
+			serverUnauthorized    : "Unauthorized to access URI."
 		},
 
 		/**
