@@ -150,6 +150,17 @@ var abaaso = function(){
 		items : [],
 
 		/**
+		 * Expires a URI from the local cache
+		 *
+		 * @param uri {string} The URI of the local representation
+		 * @returns undefined
+		 */
+		expire : function(uri) {
+			(this.items[uri] !== undefined) ? delete this.items[uri] : void(0);
+			return;
+		},
+
+		/**
 		 * Returns the cached object {headers, response} of the URI or false
 		 *
 		 * @param uri {string} The URI/Identifier for the resource to retrieve from cache
