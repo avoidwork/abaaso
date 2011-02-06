@@ -713,8 +713,11 @@ var abaaso = function(){
 						var state  = null,
 						    s      = abaaso.state;
 
-						cache.set(uri, "epoch", new Date());
-						cache.set(uri, "response", xhr.responseText);
+						if (type != "delete") {
+							cache.set(uri, "epoch", new Date());
+							cache.set(uri, "response", xhr.responseText);
+						}
+
 						uri.toString().fire("afterXHR");
 						uri.toString().fire("after"+type.toLowerCase().capitalize());
 						uri = cache.get(uri, false);
