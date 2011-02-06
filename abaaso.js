@@ -2222,7 +2222,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : 1.1
+		version         : '1.1'
 	};
 }();
 
