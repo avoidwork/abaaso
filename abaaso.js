@@ -189,7 +189,7 @@ var abaaso = function(){
 						    || ((client.ms > 0)
 							 && (expire)
 							 && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date()))) {
-							delete this.items[uri];
+							this.expire(uri);
 							return false;
 						}
 						else {
@@ -713,7 +713,7 @@ var abaaso = function(){
 						var state  = null,
 						    s      = abaaso.state;
 
-						if (type != "delete") {
+						if (type != "DELETE") {
 							cache.set(uri, "epoch", new Date());
 							cache.set(uri, "response", xhr.responseText);
 						}
