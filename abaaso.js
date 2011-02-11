@@ -731,7 +731,7 @@ var abaaso = function(){
 							abaaso.fire(state);
 						}
 
-						(fn !== undefined) ? fn(uri) : void(0);
+						(fn !== undefined) ? fn(uri.response) : void(0);
 					}
 					else if (xhr.status == 401) {
 						throw label.error.serverUnauthorized;
