@@ -1821,12 +1821,16 @@ var abaaso = function(){
 		 *
 		 * @param obj {object} Instance of Array, Element, String or Number
 		 * @param type {string} Identifier of obj, determines what arrays to apply
+		 * @param shared {boolean} [Optional] Determines whether to apply the shared methods
 		 */
-		proto : function(obj, type) {
+		proto : function(obj, type, shared) {
 			try {
 				if (typeof obj != "object") {
 					throw label.error.invalidArguments;
 				}
+
+				// Defaulting to applying shared methods
+				(shared !== false) ? shared = true : void(0);
 
 				/**
 				 * Applies a collection of methods onto an Object
@@ -1941,6 +1945,21 @@ var abaaso = function(){
 							return abaaso.number.odd(this);
 							}}
 					],
+					object  : [
+						{name: "define", fn: function(args, value) {
+							if (typeof(args) != "string") { throw abaaso.label.error.invalidArguments; }
+							args = args.split(".");
+							var i = null,
+							    l = args.length,
+							    p = this;
+							for (i = 0; i < l; i++) {
+								(p[args[i]] === undefined) ? p[args[i]] = ((i+1 < l) ? {} : ((value !== undefined) ? value : null))
+											   : ((i+1 >= l) ? ((value !== undefined) ? p[args[i]] = value : p[args[i]] = null) : void(0));
+								p = p[args[i]];
+							}
+							return this;
+							}},
+					],
 					shared  : [
 						{name: "clear", fn: function() {
 							((typeof this == "object")
@@ -1994,7 +2013,7 @@ var abaaso = function(){
 
 				// Applying the methods
 				apply(obj, methods[type]);
-				apply(obj, methods.shared);
+				(shared) ? apply(obj, methods.shared) : void(0);
 			}
 			catch (e) {
 				error(e);
@@ -2178,6 +2197,7 @@ var abaaso = function(){
 			utility.proto(Element.prototype, "element");
 			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
+			utility.proto(Object.prototype, "object", false);
 			utility.proto(String.prototype, "string");
 
 			window.$        = function(arg) { return abaaso.$(arg); };
