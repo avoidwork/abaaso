@@ -1954,7 +1954,7 @@ var abaaso = function(){
 							    p = this;
 							for (i = 0; i < l; i++) {
 								(p[args[i]] === undefined) ? p[args[i]] = ((i+1 < l) ? {} : ((value !== undefined) ? value : null))
-											   : ((i+1 >= l) ? ((value !== undefined) ? p[args[i]] = value : p[args[i]] = null) : void(0));
+											   : ((i+1 >= l) ? ((value !== undefined) ? p[args[i]] = value : void(0)) : void(0));
 								p = p[args[i]];
 							}
 							return this;
