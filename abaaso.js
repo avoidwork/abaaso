@@ -748,6 +748,70 @@ var abaaso = function(){
 	};
 
 	/**
+	 * Cookie management methods
+	 *
+	 * @class
+	 */
+	var cookie = {
+		/**
+		 * Creates a cookie
+		 *
+		 * @param name {string} The name of the cookie to create
+		 * @param value {string} The value to set
+		 * @param days {integer} The days until the cookie expires
+		 * @returns {object} The new cookie
+		 */
+		create : function(name, value, days) {
+			var expires = ((days) && (!isNaN(days))) ? "; expires="+new Date().setTime(new Date().getTime()+(days*24*60*60*1000)).toGMTString() : "";
+			document.cookie = name+"="+value+expires+"; path=/";
+			return cookie.get(name);
+		},
+
+		/**
+		 * Gets a cookie
+		 *
+		 * @returns {object} The requested cookie or undefined
+		 */
+		get : function(name) {
+			return cookie.list()[name];
+		},
+
+		/**
+		 * Expires a cookie if it exists
+		 *
+		 * @param name {string} The name of the cookie to create
+		 */
+		expire : function(name) {
+			(cookie.get(name) !== undefined) ? cookie.create(name, "", "") : void(0);
+		},
+
+		/**
+		 * Gets the cookies for the domain
+		 *
+		 * @returns {object} Object containing the cookies
+		 */
+		list : function() {
+			var i      = null,
+			    loop   = null,
+			    item   = null,
+			    items  = null,
+			    result = {};
+
+			if ((document.cookie)
+			    && (document.cookie != '')) {
+				items = document.cookie.split(';');
+				loop  = items.length;
+
+				for (i = 0; i < loop; i++) {
+					item = items[i].split("=");
+					result[decodeURIComponent(item[0])] = decodeURIComponent(item[1]);
+				}
+			}
+			return result;
+		}
+	};
+
+	/**
 	 * Template data store object, to be put on a widget
 	 *
 	 * @class
@@ -2145,6 +2209,7 @@ var abaaso = function(){
 			post    : client.post,
 			put     : client.put
 			},
+		cookie          : cookie,
 		el              : el,
 		fx              : {
 			bounce  : fx.bounce,
