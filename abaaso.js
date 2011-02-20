@@ -535,21 +535,21 @@ var abaaso = function(){
 	 */
 	var cookie = {
 		/**
-		 * Gets a cookie
-		 *
-		 * @returns {object} The requested cookie or undefined
-		 */
-		get : function(name) {
-			return this.list()[name];
-		},
-
-		/**
 		 * Expires a cookie if it exists
 		 *
 		 * @param name {string} The name of the cookie to create
 		 */
 		expire : function(name) {
 			(this.get(name) !== undefined) ? this.set(name, "", "-1s") : void(0);
+		},
+
+		/**
+		 * Gets a cookie
+		 *
+		 * @returns {object} The requested cookie or undefined
+		 */
+		get : function(name) {
+			return this.list()[name];
 		},
 
 		/**
@@ -641,10 +641,8 @@ var abaaso = function(){
 
 		// Methods
 		del : function() {},
-		insert : function() {},
-		search : function() {},
-		select : function() {},
-		update : function() {}
+		get : function() {},
+		set : function() {}
 	};
 
 	/**
