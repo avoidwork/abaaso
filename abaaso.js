@@ -56,6 +56,10 @@ var abaaso = function(){
 		 */
 		contains : function(instance, arg) {
 			try {
+				if (!instance instanceof Array) {
+					throw label.error.expectedArray;
+				}
+
 				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
 
 				if (arg instanceof Array) {
@@ -79,6 +83,28 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Finds the difference between array1 and array2
+		 *
+		 * @param array1 {array} An array to compare against
+		 * @param array2 {array} An array to compare against
+		 * @returns {array} An array of the differences
+		 */
+		diff : function(array1, array2) {
+			try {
+				if ((!array1 instanceof Array)
+				    && (!array2 instanceof Array)) {
+					throw label.error.expectedArray;
+				}
+
+				return array1.filter(function(key) {return (array2.indexOf(key) < 0);});
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Finds the index of arg in instance. Use contains() for multiple arguments
 		 *
 		 * @param instance {mixed} The entity to search
@@ -87,20 +113,19 @@ var abaaso = function(){
 		 */
 		index : function(instance, arg) {
 			try {
-				if (instance instanceof Array) {
-					var i = instance.length;
-
-					while (i--) {
-						if (instance[i] == arg) {
-							return i;
-						}
-					}
-
-					return -1;
-				}
-				else {
+				if (!instance instanceof Array) {
 					throw label.error.expectedArray;
 				}
+
+				var i = instance.length;
+
+				while (i--) {
+					if (instance[i] == arg) {
+						return i;
+					}
+				}
+
+				return -1;
 			}
 			catch (e) {
 				error(e);
@@ -111,20 +136,20 @@ var abaaso = function(){
 		/**
 		 * Returns the keys in the array
 		 *
-		 * @param obj {array} The array to extract keys from
+		 * @param instance {array} The array to extract keys from
 		 * @returns {array} An array of the keys in obj
 		 */
-		keys : function(obj) {
+		keys : function(instance) {
 			try {
-				if (typeof(obj) != "array") {
-					throw label.error.invalidArguments;
+				if (!instance instanceof Array) {
+					throw label.error.expectedArray;
 				}
 
 				var keys = [],
 				    i    = null;
 
-				for (i in obj) {
-					(typeof(obj[i]) != "function") ? keys.push(i) : void(0);
+				for (i in instance) {
+					(typeof(instance[i]) != "function") ? keys.push(i) : void(0);
 				}
 
 				return keys;
@@ -141,21 +166,26 @@ var abaaso = function(){
 		 * Events:    beforeRemove      Fires before modifying the array
 		 *            afterRemove       Fires after modifying the array
 		 *
-		 * @param obj {array} An instance of the array to use
+		 * @param instance {array} An instance of the array to use
 		 * @param start {integer} The starting position
 		 * @param end {integer} The ending position (optional)
 		 * @returns {array} A scrubbed array
 		 */
-		remove : function(obj, start, end) {
+		remove : function(instance, start, end) {
 			try {
-				start = start || 0;
-				obj.fire("beforeRemove");
-				var remaining = obj.slice((end || start)+1 || obj.length);
-				obj.length = (start < 0) ? (obj.length + start) : start;
-				obj.push.apply(obj, remaining);
-				obj.fire("afterRemove");
+				if (!instance instanceof Array) {
+					throw label.error.expectedArray;
+				}
 
-				return obj;
+				var remaining;
+				start = start || 0;
+				instance.fire("beforeRemove");
+				remaining = instance.slice((end || start)+1 || instance.length);
+				instance.length = (start < 0) ? (instance.length + start) : start;
+				instance.push.apply(obj, remaining);
+				instance.fire("afterRemove");
+
+				return instance;
 			}
 			catch (e) {
 				error(e);
@@ -1663,6 +1693,9 @@ var abaaso = function(){
 					array   : [
 						{name: "contains", fn: function(arg) {
 							return abaaso.array.contains(this, arg);
+							}},
+						{name: "diff", fn: function(arg) {
+							return abaaso.array.diff(this, arg);
 							}},
 						{name: "index", fn: function(arg) {
 							return abaaso.array.index(this, arg);
