@@ -535,26 +535,12 @@ var abaaso = function(){
 	 */
 	var cookie = {
 		/**
-		 * Creates a cookie
-		 *
-		 * @param name {string} The name of the cookie to create
-		 * @param value {string} The value to set
-		 * @param days {integer} The days until the cookie expires
-		 * @returns {object} The new cookie
-		 */
-		create : function(name, value, days) {
-			var expires = ((days) && (!isNaN(days))) ? "; expires="+new Date().setTime(new Date().getTime()+(days*24*60*60*1000)).toGMTString() : "";
-			document.cookie = name+"="+value+expires+"; path=/";
-			return cookie.get(name);
-		},
-
-		/**
 		 * Gets a cookie
 		 *
 		 * @returns {object} The requested cookie or undefined
 		 */
 		get : function(name) {
-			return cookie.list()[name];
+			return this.list()[name];
 		},
 
 		/**
@@ -563,7 +549,7 @@ var abaaso = function(){
 		 * @param name {string} The name of the cookie to create
 		 */
 		expire : function(name) {
-			(cookie.get(name) !== undefined) ? cookie.create(name, "", "") : void(0);
+			(this.get(name) !== undefined) ? this.set(name, "", "-1s") : void(0);
 		},
 
 		/**
@@ -585,10 +571,61 @@ var abaaso = function(){
 
 				for (i = 0; i < loop; i++) {
 					item = items[i].split("=");
-					result[decodeURIComponent(item[0])] = decodeURIComponent(item[1]);
+					result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
 				}
 			}
 			return result;
+		},
+
+		/**
+		 * Creates a cookie
+		 *
+		 * @param name {string} The name of the cookie to create
+		 * @param value {string} The value to set
+		 * @param days {integer} The days until the cookie expires
+		 * @returns {object} The new cookie
+		 */
+		set : function(name, value, offset) {
+			offset = offset.toString() || "";
+			var expire = "",
+			    span   = null,
+			    type   = null,
+			    types  = ["d", "h", "m", "s"],
+			    i      = types.length;
+
+			if (offset != "") {
+				while (i--) {
+					if (offset.indexOf(types[i]) > 0) {
+						type = types[i];
+						span = parseInt(offset.substring(0, offset.indexOf(type)));
+						break;
+					}
+				}
+
+				if (isNaN(span)) {
+					throw label.error.invalidArguments;
+				}
+
+				expire = new Date();
+
+				switch (type) {
+					case "d":
+						expire.setDate(expire.getDate() + span);
+						break;
+					case "h":
+						expire.setHours(expire.getHours() + span);
+						break;
+					case "m":
+						expire.setMinutes(expire.getMinutes() + span);
+						break;
+					case "s":
+						expire.setSeconds(expire.getSeconds() + span);
+						break;
+				}
+			}
+			(expire != "") ? expire = "; expires=" + expire.toUTCString() : void(0);
+			document.cookie = name.toString().trim() + "=" + value + expire + "; path=/";
+			return this.get(name);
 		}
 	};
 
@@ -1335,8 +1372,9 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				(l[o] === undefined) ? l.define(o, []) : void(0);
-				(l[o][event] === undefined) ? l[o].define(event, {active:[], standby:[]}) : void(0);
+				(l[o] === undefined) ? l[o] = [] : void(0);
+				(l[o][event] === undefined) ? l[o][event] = [] : void(0);
+				(l[o][event].active === undefined) ? l[o][event].active = [] : void(0);
 
 				var item = {fn: fn};
 				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
@@ -1350,6 +1388,7 @@ var abaaso = function(){
 									 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 				}
 				else {
+					(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
 					l[o][event].standby[id] = item;
 				}
 
@@ -1856,7 +1895,10 @@ var abaaso = function(){
 					string  : [
 						{name: "capitalize", fn: function() {
 							return this.charAt(0).toUpperCase() + this.slice(1);
-						}}
+							}},
+						{name: "trim", fn: function(){
+							return this.replace(/^\s+|\s+$/, "");
+							}}
 					]
 				};
 
@@ -1976,7 +2018,6 @@ var abaaso = function(){
 	return {
 		// Classes
 		array           : array,
-		calendar        : calendar,
 		client          : {
 			// Properties
 			css3    : client.css3,
