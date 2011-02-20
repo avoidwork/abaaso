@@ -109,6 +109,33 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Returns the keys in the array
+		 *
+		 * @param obj {array} The array to extract keys from
+		 * @returns {array} An array of the keys in obj
+		 */
+		keys : function(obj) {
+			try {
+				if (typeof(obj) != "array") {
+					throw label.error.invalidArguments;
+				}
+
+				var keys = [],
+				    i    = null;
+
+				for (i in obj) {
+					(typeof(obj[i]) != "function") ? keys.push(i) : void(0);
+				}
+
+				return keys;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Removes arg from instance without destroying and re-creating instance
 		 *
 		 * Events:    beforeRemove      Fires before modifying the array
@@ -1278,9 +1305,8 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				(l[o] === undefined) ? l[o] = [] : void(0);
-				(l[o][event] === undefined) ? l[o][event] = [] : void(0);
-				(l[o][event].active === undefined) ? l[o][event].active = [] : void(0);
+				(l[o] === undefined) ? l.define(o, []) : void(0);
+				(l[o][event] === undefined) ? l[o].define(event, {active:[], standby:[]}) : void(0);
 
 				var item = {fn: fn};
 				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
@@ -1294,7 +1320,6 @@ var abaaso = function(){
 									 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 				}
 				else {
-					(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
 					l[o][event].standby[id] = item;
 				}
 
@@ -1641,6 +1666,9 @@ var abaaso = function(){
 							}},
 						{name: "index", fn: function(arg) {
 							return abaaso.array.index(this, arg);
+							}},
+						{name: "keys", fn: function() {
+							return abaaso.array.keys(this);
 							}},
 						{name: "remove", fn: function(arg) {
 							return abaaso.array.remove(this, arg);
