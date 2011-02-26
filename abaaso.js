@@ -2090,7 +2090,8 @@ var abaaso = function(){
 			del     : client.del,
 			get     : client.get,
 			post    : client.post,
-			put     : client.put
+			put     : client.put,
+			jsonp   : client.jsonp
 			},
 		cookie          : cookie,
 		el              : el,
