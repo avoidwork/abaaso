@@ -451,6 +451,7 @@ var abaaso = function(){
 		 * @param fn {function} A handler function to execute when an appropriate response been received
 		 * @param type {string} The type of request (DELETE/GET/POST/PUT/JSONP)
 		 * @param args {mixed} Data to send with the request
+		 * @private
 		 */
 		request : function(uri, fn, type, args) {
 			try {
@@ -510,6 +511,7 @@ var abaaso = function(){
 		 * @param uri {string} The URI.value to cache
 		 * @param fn {function} A handler function to execute once a response has been received
 		 * @param type {string} The type of request
+		 * @private
 		 */
 		response : function(xhr, uri, fn, type) {
 			try {
