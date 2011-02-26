@@ -678,7 +678,7 @@ var abaaso = function(){
 	 * Template data store object, to be put on a widget
 	 *
 	 * @class
-	 * @todo complete for v1.1.0
+	 * @todo complete for v1.2
 	 */
 	var data = {
 		// Records
@@ -982,7 +982,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param ms {int} Milliseconds for bounce to take
 		 * @param height {int} The maximum height of the bounce
-		 * @todo complete for v1.1.0
+		 * @todo complete for v1.2
 		 */
 		bounce : function(obj, ms, height) {
 			try {
@@ -1045,7 +1045,7 @@ var abaaso = function(){
 		 * @param id {string} Target object.id value
 		 * @param pos {int} The X co-ordinate to end the fall
 		 * @param ms {int} Milliseconds for bounce to take
-		 * @todo complete for v1.1.0
+		 * @todo complete for v1.2
 		 */
 		fall : function (obj, pos, ms) {
 			try {
@@ -1201,7 +1201,7 @@ var abaaso = function(){
 		 * @param pos {array} An array of co-ordinates [X,Y]
 		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
 		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
-		 * @todo complete for v1.1.0
+		 * @todo complete for v1.2
 		 */
 		slide : function(obj, ms, pos, elastic, gravity) {
 			try {
