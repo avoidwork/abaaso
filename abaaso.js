@@ -625,9 +625,11 @@ var abaaso = function(){
 		/**
 		 * Creates a cookie
 		 *
+		 * The offset specifies a positive or negative span of time as day, hour, minute or second
+		 *
 		 * @param name {string} The name of the cookie to create
 		 * @param value {string} The value to set
-		 * @param days {integer} The days until the cookie expires
+		 * @param offset {string} A positive or negative integer followed by "d", "h", "m" or "s"
 		 * @returns {object} The new cookie
 		 */
 		set : function(name, value, offset) {
