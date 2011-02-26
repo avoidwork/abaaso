@@ -419,13 +419,37 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Cross-site JSONP request
+		 *
+		 * Events:     beforeJSONP    Fires before the JSONP request is made
+		 *             afterJSONP     Fires after the JSONP response is received
+		 *
+		 * @param uri {string} URI to load as a SCRIPT element
+		 * @param fn {function} A handler function to execute once a response has been received
+		 */
+		jsonp : function(uri, fn) {
+			try {
+				if ((uri == "")
+				    || (!fn instanceof Function)) {
+					throw label.error.invalidArguments;
+				}
+
+				uri.toString().fire("beforeJSONP");
+				client.request(uri, fn, "JSONP");
+			}
+			catch (e) {
+				error(e);
+			}
+		},
+
+		/**
 		 * Creates an XmlHttpRequest to a URI
 		 *
 		 * Events:     beforeXHR    Fires before the XmlHttpRequest is made
 		 *
 		 * @param uri {string} The resource to interact with
 		 * @param fn {function} A handler function to execute when an appropriate response been received
-		 * @param type {string} The type of request
+		 * @param type {string} The type of request (DELETE/GET/POST/PUT/JSONP)
 		 * @param args {mixed} Data to send with the request
 		 */
 		request : function(uri, fn, type, args) {
@@ -436,19 +460,38 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				uri.toString().fire("beforeXHR");
+				if (type.toLowerCase() == "jsonp") {
+					var uid  = utility.id(),
+					    curi = uri;
 
-				var xhr     = new XMLHttpRequest(),
-				    payload = ((type.toLowerCase() == "post")
-					       || (type.toLowerCase() == "put")) ? args : null,
-				    cached  = cache.get(uri, false);
+					do uid = utility.id();
+					while (abaaso.callback[uid] !== undefined);
 
-				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
-				xhr.open(type.toUpperCase(), uri, true);
-				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
-				((cached !== false)
-				 && (cached.headers.ETag !== undefined)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
-				xhr.send(payload);
+					uri += "&"+new Date().getTime().toString();
+					uri = uri.replace(/callback=\?/, "callback=abaaso.callback["+uid+"]");
+
+					abaaso.callback[uid] = function(arg) {
+						curi.toString().fire("afterJSONP");
+						fn(arg);
+						};
+
+					el.create("script", {src: uri, type: "text/javascript"});
+				}
+				else {
+					var xhr     = new XMLHttpRequest(),
+					    payload = ((type.toLowerCase() == "post")
+						       || (type.toLowerCase() == "put")) ? args : null,
+					    cached  = cache.get(uri, false);
+
+					uri.toString().fire("beforeXHR");
+
+					xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
+					xhr.open(type.toUpperCase(), uri, true);
+					(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
+					((cached !== false)
+					 && (cached.headers.ETag !== undefined)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
+					xhr.send(payload);
+				}
 			}
 			catch(e) {
 				error(e);
@@ -1648,7 +1691,7 @@ var abaaso = function(){
 		 */
 		genID : function(obj) {
 			try {
-				if (obj === undefined) {
+				if (typeof(obj) != "object") {
 					throw label.error.invalidArguments;
 				}
 
@@ -1656,8 +1699,10 @@ var abaaso = function(){
 					return obj;
 				}
 
-				var id = "abaaso_" + Math.floor(Math.random() * 1000000000);
-				obj.id = ($(id) === undefined) ?  id : id + Math.floor(Math.random() * 1000);
+				var id = "abaaso-" + utility.id();
+				do id = "abaaso-" + utility.id();
+				while ($(id) !== undefined);
+				obj.id = id;
 
 				return obj;
 			}
@@ -1665,6 +1710,15 @@ var abaaso = function(){
 				error(e);
 				return undefined;
 			}
+		},
+
+		/**
+		 * Generates a random number
+		 *
+		 * @returns {integer} Between 1 and 1-trillian
+		 */
+		id : function() {
+			return Math.floor(Math.random() * 1000000000);
 		},
 
 		/**
@@ -2016,6 +2070,7 @@ var abaaso = function(){
 	return {
 		// Classes
 		array           : array,
+		callback        : [],
 		client          : {
 			// Properties
 			css3    : client.css3,
@@ -2100,6 +2155,7 @@ var abaaso = function(){
 
 			delete abaaso.init;
 			},
+		jsonp           : client.jsonp,
 		listeners       : function() {
 			var all   = (arguments[1] !== undefined) ? true : false;
 			var obj   = (all) ? arguments[0] : abaaso,
@@ -2131,7 +2187,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : '1.1'
+		version         : "1.1"
 	};
 }();
 
