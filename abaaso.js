@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.1
+ * @version 1.1.1
  */
 var abaaso = function(){
 	/**
@@ -1640,6 +1640,31 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Allows deep setting of properties without knowing
+		 * if the structure is valid
+		 *
+		 * @param args {string} Dot delimited string of the structure
+		 * @param value {mixed} The value to set
+		 * @param obj {object} The object to set the value on
+		 */
+		define: function(args, value, obj) {
+			args = args.split(".");
+			obj  = obj || this;
+
+			var i = null,
+			    l = args.length,
+			    p = obj;
+
+			for (i = 0; i < l; i++) {
+				(p[args[i]] === undefined) ? p[args[i]] = ((i+1 < l) ? {} : ((value !== undefined) ? value : null))
+							   : ((i+1 >= l) ? (p[args[i]] = (value !== undefined) ? value : null) : void(0));
+				p = p[args[i]];
+			}
+
+			return obj;
+		},
+
+		/**
 		 * Error handling, with history in .events[]
 		 *
 		 * @param e {mixed} Error object or message to display.
@@ -1741,16 +1766,12 @@ var abaaso = function(){
 		 *
 		 * @param obj {object} Instance of Array, Element, String or Number
 		 * @param type {string} Identifier of obj, determines what arrays to apply
-		 * @param shared {boolean} [Optional] Determines whether to apply the shared methods
 		 */
-		proto : function(obj, type, shared) {
+		proto : function(obj, type) {
 			try {
 				if (typeof obj != "object") {
 					throw label.error.invalidArguments;
 				}
-
-				// Defaulting to applying shared methods
-				(shared !== false) ? shared = true : void(0);
 
 				/**
 				 * Applies a collection of methods onto an Object
@@ -1761,7 +1782,7 @@ var abaaso = function(){
 				var apply   = function(obj, collection) {
 					var i = collection.length;
 					while (i--) {
-						(obj[collection[i].name] = collection[i].fn);
+						obj[collection[i].name] = collection[i].fn;
 					}
 				}
 
@@ -1871,21 +1892,6 @@ var abaaso = function(){
 							return abaaso.number.odd(this);
 							}}
 					],
-					object  : [
-						{name: "define", fn: function(args, value) {
-							if (typeof(args) != "string") { throw abaaso.label.error.invalidArguments; }
-							args = args.split(".");
-							var i = null,
-							    l = args.length,
-							    p = this;
-							for (i = 0; i < l; i++) {
-								(p[args[i]] === undefined) ? p[args[i]] = ((i+1 < l) ? {} : ((value !== undefined) ? value : null))
-											   : ((i+1 >= l) ? (p[args[i]] = (value !== undefined) ? value : null) : void(0));
-								p = p[args[i]];
-							}
-							return this;
-							}},
-					],
 					shared  : [
 						{name: "clear", fn: function() {
 							((typeof this == "object")
@@ -1942,7 +1948,7 @@ var abaaso = function(){
 
 				// Applying the methods
 				apply(obj, methods[type]);
-				(shared) ? apply(obj, methods.shared) : void(0);
+				apply(obj, methods.shared);
 			}
 			catch (e) {
 				error(e);
@@ -2108,6 +2114,7 @@ var abaaso = function(){
 		$               : utility.$,
 		clear           : el.clear,
 		create          : el.create,
+		define          : utility.define,
 		del             : client.del,
 		destroy         : el.destroy,
 		domID           : utility.domID,
@@ -2123,23 +2130,15 @@ var abaaso = function(){
 		id              : "abaaso",
 		init            : function() {
 			abaaso.ready = true;
-
 			utility.proto(Array.prototype, "array");
 			utility.proto(Element.prototype, "element");
 			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
-			utility.proto(Object.prototype, "object", false);
 			utility.proto(String.prototype, "string");
-
-			window.$        = function(arg) { return abaaso.$(arg); };
+			window.$ = function(arg) { return abaaso.$(arg); };
 			window.onresize = function() { abaaso.fire("resize"); };
-
 			abaaso.fire("ready").un("ready");
-
-			if (!client.ie) {
-				window.onload = function() { abaaso.fire("render").un("render"); };
-			}
-
+			(!client.ie) ? window.onload = function() { abaaso.fire("render").un("render"); } : void(0);
 			delete abaaso.init;
 			},
 		jsonp           : client.jsonp,
@@ -2174,7 +2173,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.1"
+		version         : "1.1.1"
 	};
 }();
 
