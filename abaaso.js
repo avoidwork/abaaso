@@ -462,18 +462,19 @@ var abaaso = function(){
 				}
 
 				if (type.toLowerCase() == "jsonp") {
-					var uid  = utility.id(),
+					var uid  = 'acb' + utility.id(),
 					    curi = uri;
 
-					do uid = utility.id();
+					do uid = 'acb' + utility.id();
 					while (abaaso.callback[uid] !== undefined);
 
 					uri += "&"+new Date().getTime().toString();
-					uri = uri.replace(/callback=\?/, "callback=abaaso.callback["+uid+"]");
+					uri = uri.replace(/callback=\?/, "callback=abaaso.callback."+uid);
 
-					abaaso.callback[uid] = function(arg) {
+					abaaso.callback[uid] = function(response) {
 						curi.toString().fire("afterJSONP");
-						fn(arg);
+						fn(response);
+						delete abaaso.callback[uid];
 						};
 
 					el.create("script", {src: uri, type: "text/javascript"});
