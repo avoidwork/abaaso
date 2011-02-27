@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.1.1
+ * @version 1.1.2
  */
 var abaaso = function(){
 	/**
@@ -463,7 +463,8 @@ var abaaso = function(){
 
 				if (type.toLowerCase() == "jsonp") {
 					var uid  = 'acb' + utility.id(),
-					    curi = uri;
+					    curi = uri,
+					    head = document.getElementsByTagName("head")[0];
 
 					do uid = 'acb' + utility.id();
 					while (abaaso.callback[uid] !== undefined);
@@ -477,7 +478,7 @@ var abaaso = function(){
 						delete abaaso.callback[uid];
 						};
 
-					el.create("script", {src: uri, type: "text/javascript"});
+					el.create("script", {src: uri, type: "text/javascript"}, head);
 				}
 				else {
 					var xhr     = new XMLHttpRequest(),
@@ -748,7 +749,7 @@ var abaaso = function(){
 		 *
 		 * @param type {string} Type of element to create
 		 * @param args {object} Collection of properties to apply to the new element
-		 * @param id {string} [Optional] Target id value to add element to
+		 * @param id {mixed} [Optional] Target object or element.id value to append to
 		 * @returns {object} The elemented that was created
 		 */
 		create : function(type, args, id) {
@@ -758,8 +759,9 @@ var abaaso = function(){
 					(args.id === undefined) ? obj.genID() : obj.id = args.id;
 					obj.fire("beforeCreate");
 					obj.update(args);
-					((id !== undefined)
-					 && ($(id) !== undefined)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
+					(typeof(id) == "object") ? id.appendChild(obj)
+								 : ((id !== undefined)
+								    && ($(id) !== undefined)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
 					obj.fire("afterCreate");
 					return obj;
 				}
@@ -2174,7 +2176,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.1.1"
+		version         : "1.1.2"
 	};
 }();
 
