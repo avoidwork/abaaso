@@ -2142,7 +2142,7 @@ var abaaso = function(){
 			window.onresize = function() { abaaso.fire("resize"); };
 
 			if (!Array.prototype.filter) {
-				Array.prototype.filter = function(fun /*, thisp */) {
+				Array.prototype.filter = function(fn) {
 					"use strict";
 					if ((this === void 0)
 					    || (this === null)
@@ -2150,21 +2150,21 @@ var abaaso = function(){
 						throw label.error.invalidArguments;
 					}
 
-					var i     = null,
-					    t     = Object(this),
-					    len   = t.length >>> 0,
-					    res   = [],
-					    thisp = arguments[1]
-					    val   = null;
+					var i      = null,
+					    t      = Object(this),
+					    loop   = t.length >>> 0,
+					    result = [],
+					    prop   = arguments[1]
+					    val    = null;
 
-					for (i = 0; i < len; i++) {
+					for (i = 0; i < loop; i++) {
 						if (i in t) {
 							val = t[i];
-							(fn.call(thisp, val, i, t)) ? res.push(val) : void(0);
+							(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
 						}
 					}
 
-					return res;
+					return result;
 				}
 			}
 
