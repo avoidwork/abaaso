@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.1.3
+ * @version 1.1.4
  */
 var abaaso = function(){
 	/**
@@ -945,7 +945,7 @@ var abaaso = function(){
 							case "src":
 								obj[i] = args[i];
 								break;
-							case "opacity":
+							case "opacity": // Requires the fx module
 								obj.opacity(args[i]);
 								break;
 							case "id":
@@ -967,266 +967,6 @@ var abaaso = function(){
 				else {
 					throw label.error.elementNotFound;
 				}
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		}
-	};
-
-	/**
-	 * Effects methods
-	 *
-	 * @class
-	 */
-	var fx = {
-		/**
-		 * Bounces Target at it's current position
-		 *
-		 * @param id {string} Target object.id value
-		 * @param ms {int} Milliseconds for bounce to take
-		 * @param height {int} The maximum height of the bounce
-		 * @todo complete for v1.2
-		 */
-		bounce : function(obj, ms, height) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if ((obj === undefined)
-				    || (isNaN(ms))
-				    || (isNaN(height))) {
-					throw label.error.invalidArguments;
-				}
-
-				obj.fire("beforeBounce");
-				obj.fire("afterBounce");
-				return obj;
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Shifts an object's opacity, transition speed is based on the ms argument
-		 *
-		 * Events:    beforeFade    Fires before the fade starts
-		 *            afterFade     Fires after the fade ends
-		 *
-		 * @param id {string} Target object.id value
-		 * @param ms {integer} Milliseconds for transition to take
-		 * @param end {integer} [Optional] The final opacity value of the fade
-		 * @returns {object} Target object
-		 */
-		fade : function(obj, ms, end) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if ((obj === undefined)
-				    || (isNaN(ms))
-				    || ((end !== undefined)
-					&& (isNaN(end)))) {
-					throw label.error.invalidArguments;
-				}
-
-				var start = obj.opacity();
-				    end   = end || ((obj.opacity() === 0) ? 100 : 0);
-
-				obj.fire("beforeFade");
-				fx.opacityChange(obj, start, end, ms);
-				return obj;
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Simulates the Target falling to a position
-		 *
-		 * @param id {string} Target object.id value
-		 * @param pos {int} The X co-ordinate to end the fall
-		 * @param ms {int} Milliseconds for bounce to take
-		 * @todo complete for v1.2
-		 */
-		fall : function (obj, pos, ms) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if (obj === undefined) {
-					throw label.error.invalidArguments;
-				}
-
-				obj.fire("beforeFall");
-
-				var i     = null,
-				    speed = Math.round(ms/100),
-				    timer = 0;
-
-				for (i = start; i >= end; i--) {
-					if (i == end) {
-						setTimeout("$(\"" + obj.id + "\").move(" + i + ");$(\"" + obj.id + "\").fire(\"afterFall\")", (timer*speed));
-					}
-					else {
-						setTimeout("$(\"" + obj.id + "\").move(" + i + ")", (timer*speed));
-					}
-					timer++;
-				}
-
-				return o;
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Moves an Object to a new position
-		 *
-		 * @param id {string} Target object.id value
-		 * @param pos {array} An array of co-ordinates [X,Y]
-		 */
-		move : function (obj, pos) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if ((obj === undefined)
-				    || (!pos instanceof Array)
-				    || (isNaN(pos[0]))
-				    || (isNaN(pos[1]))) {
-					throw label.error.invalidArguments;
-				}
-
-				var p     = obj.position();
-				    p[0] += pos[0];
-				    p[1] += pos[1];
-
-				(obj.style.position != "absolute") ? obj.style.position = "absolute" : void(0);
-
-				obj.style.left     = p[0] + "px";
-				obj.style.top      = p[1] + "px";
-
-				return obj;
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Changes an element's opacity to the supplied value
-		 *
-		 * @param obj {mixed} Instance of an object, or the target object.id value
-		 * @param opacity {integer} The opacity value to set
-		 * @returns {integer} The opacity value of the element
-		 */
-		opacity : function(obj, opacity) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if (obj !== null) {
-					if ((opacity !== undefined)
-					    || (!isNaN(opacity))) {
-						(client.ie) ? obj.style.filter = "alpha(opacity=" + opacity + ")" : obj.style.opacity = (parseInt(opacity)/100);
-						return parseInt(opacity);
-					}
-					else {
-						return (client.ie) ? parseInt(obj.style.filter.toString().replace(/(.*\=|\))/gi, "")) : parseInt(obj.style.opacity);
-					}
-				}
-				else {
-					return undefined;
-				}
-			}
-			catch (e) {
-				error(e);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Changes an object's opacity from the start value to the end value, transition speed is based on the ms argument
-		 *
-		 * @param id {string} Target object.id value
-		 * @param start {integer} Opacity start value
-		 * @param end {integer} Opacity end value
-		 * @param ms {integer} Milliseconds for transition to take
-		 */
-		opacityChange : function(obj, start, end, ms) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if (obj === undefined) {
-					throw label.error.invalidArguments;
-				}
-
-				var fn    = null,
-				    speed = Math.round(ms/100),
-				    timer = 0,
-				    i     = null;
-
-				if (start > end) {
-					for (i = start; i >= end; i--) {
-						if (i == end) {
-							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ");$(\"" + obj.id + "\").fire(\"afterFade\")", (timer*speed));
-						}
-						else {
-							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ")", (timer*speed));
-						}
-						timer++;
-					}
-				}
-				else {
-					for (i = start; i <= end; i++) {
-						if (i == end) {
-							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ");$(\"" + obj.id + "\").fire(\"afterFade\")", (timer*speed));
-						}
-						else {
-							setTimeout("$(\"" + obj.id + "\").opacity(" + i + ")", (timer*speed));
-						}
-						timer++;
-					}
-				}
-			}
-			catch (e) {
-				error(e);
-			}
-		},
-
-		/**
-		 * Slides an object to a position
-		 *
-		 * @param id {string} Target object.id value
-		 * @param ms {integer} Milliseconds for transition to take
-		 * @param pos {array} An array of co-ordinates [X,Y]
-		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
-		 * @param elastic {integer} [Optional] The elastic force to apply when Target reaches destination [0-100]
-		 * @todo complete for v1.2
-		 */
-		slide : function(obj, ms, pos, elastic, gravity) {
-			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if ((obj === undefined)
-				    || (isNaN(ms))
-				    || (!pos instanceof Array)
-				    || (isNaN(pos[0]))
-				    || (isNaN(pos[1]))) {
-					throw label.error.invalidArguments;
-				}
-
-				elastic = parseInt(elastic) || 0;
-				gravity = parseInt(gravity) || 0;
-
-				obj.fire("beforeSlide");
-				obj.fire("afterSlide");
-
-				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1864,7 +1604,7 @@ var abaaso = function(){
 							this.genID();
 							abaaso.fx.move(this, pos, ms);
 							}},
-						{name: "opacity", fn: function(arg) {
+						{name: "opacity", fn: function(arg) { // Requires the fx module
 							return abaaso.fx.opacity(this, arg);
 							}},
 						{name: "position", fn: function() {
@@ -2086,13 +1826,6 @@ var abaaso = function(){
 			},
 		cookie          : cookie,
 		el              : el,
-		fx              : {
-			bounce  : fx.bounce,
-			fade    : fx.fade,
-			fall    : fx.fall,
-			opacity : fx.opacity,
-			slide   : fx.slide
-			},
 		json            : json,
 		label           : label,
 		loading         : {
@@ -2204,7 +1937,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.1.3"
+		version         : "1.1.4"
 	};
 }();
 
