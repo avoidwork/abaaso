@@ -1151,7 +1151,7 @@ var abaaso = function(){
 
 				if (!standby) {
 					(id !== undefined) ? l[o][event].active[id] = item : l[o][event].active.push(item);
-					instance = (o !== "abaaso") ? $(o) : null;
+					instance = (o != "abaaso") ? $("#"+o) : null;
 					((instance !== null)
 					 && (instance !== undefined)) ? ((instance.addEventListener !== undefined)
 									 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
@@ -1371,9 +1371,22 @@ var abaaso = function(){
 					return instances;
 				}
 
-				var obj = document.getElementById(arg);
-				obj = (obj === null) ? undefined : obj;
+				var obj;
 
+				switch (arg.charAt(0)) {
+					case ".": // Not implemented yet!
+						obj = null;
+						break;
+					case "#":
+						obj = document.getElementById(arg);
+						break;
+					default:
+						obj = document.getElementsByTagName(arg);
+						obj = Array.prototype.slice.call(obj);
+						break;
+				}
+
+				obj = (obj === null) ? undefined : obj;
 				return obj;
 			}
 			catch (e) {
