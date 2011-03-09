@@ -1354,9 +1354,10 @@ var abaaso = function(){
 		 * Returns an instance or array of instances
 		 *
 		 * @param arg {string} Comma delimited string of target element.id values
-		 * @returns {mixed} instances Instance or Array of Instances of elements
+		 * @param nodelist {boolean} [Optional] True will return a NodeList (by reference) for tags & classes
+		 * @returns {mixed} instances Instance or Array of Instances
 		 */
-		$ : function(arg) {
+		$ : function(arg, nodelist) {
 			try {
 				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
 
@@ -1376,14 +1377,14 @@ var abaaso = function(){
 				switch (arg.charAt(0)) {
 					case ".":
 						obj = document.getElementsByClassName(arg);
-						obj = Array.prototype.slice.call(obj);
+						(nodelist !== true) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 					case "#":
 						obj = document.getElementById(arg);
 						break;
 					default:
 						obj = document.getElementsByTagName(arg);
-						obj = Array.prototype.slice.call(obj);
+						(nodelist !== true) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 				}
 
