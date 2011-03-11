@@ -1377,7 +1377,7 @@ var abaaso = function(){
 
 				switch (arg.charAt(0)) {
 					case ".":
-						obj = document.getElementsByClassName(arg);
+						obj = document.getElementsByClassName(arg.substring(1));
 						(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 					case "#":
