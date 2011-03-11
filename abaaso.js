@@ -1381,7 +1381,7 @@ var abaaso = function(){
 						(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 					case "#":
-						obj = document.getElementById(arg);
+						obj = document.getElementById(arg.substring(1));
 						break;
 					default:
 						obj = document.getElementsByTagName(arg);
