@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.1.5
+ * @version 1.2
  */
 var abaaso = function(){
 	/**
@@ -1359,14 +1359,15 @@ var abaaso = function(){
 		 */
 		$ : function(arg, nodelist) {
 			try {
-				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
+				arg      = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
+				nodelist = (nodelist === true) ? true : false;
 
 				if (arg instanceof Array) {
 					var instances = [],
 					    i         = arg.length;
 
 					while (i--) {
-						instances.push($(arg[i]));
+						instances.push($(arg[i], nodelist));
 					}
 
 					return instances;
@@ -1377,14 +1378,14 @@ var abaaso = function(){
 				switch (arg.charAt(0)) {
 					case ".":
 						obj = document.getElementsByClassName(arg);
-						(nodelist !== true) ? obj = Array.prototype.slice.call(obj) : void(0);
+						(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 					case "#":
 						obj = document.getElementById(arg);
 						break;
 					default:
 						obj = document.getElementsByTagName(arg);
-						(nodelist !== true) ? obj = Array.prototype.slice.call(obj) : void(0);
+						(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 				}
 
@@ -1886,7 +1887,7 @@ var abaaso = function(){
 			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
-			window.$ = function(arg) { return abaaso.$(arg); };
+			window.$ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 			window.onresize = function() { abaaso.fire("resize"); };
 
 			if (!Array.prototype.filter) {
@@ -1952,22 +1953,19 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.1.5"
+		version         : "1.2"
 	};
 }();
 
 // Registering events
-if ((abaaso.client.chrome)
-    || (abaaso.client.firefox)
-    || (abaaso.client.safari)) {
+if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari)) {
 	window.addEventListener("DOMContentLoaded", function(){
 		abaaso.init();
 	}, false);
 }
 else {
 	abaaso.ready = setInterval(function(){
-		if ((document.readyState == "loaded")
-		    || (document.readyState == "complete")) {
+		if ((document.readyState == "loaded") || (document.readyState == "complete")) {
 			clearInterval(abaaso.ready);
 			abaaso.init();
 			abaaso.fire("render").un("render");
