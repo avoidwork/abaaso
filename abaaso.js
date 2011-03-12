@@ -711,40 +711,41 @@ var abaaso = function(){
 	 * @class
 	 * @todo complete for v1.2
 	 */
-	var data = function(){
-		var records, batch, find, insert, del, get, update;
-
-		// Associative array of records
-		records = [];
-
-		/**
-		 * Finds a record based on key or index
-		 *
-		 * @param record {midex} They record key or index
-		 */
-		find = function(record) {
-			void(0);
-		};
-
-		/**
-		 * Inserts an array of records
-		 */
-		batch = function(data, map) {
-			var i = data.length;
-			while (i--) {
-				this.insert(data[i], map);
-			}
-		};
+	var data = {
+		// Associative arrays of records
+		keys    : [],
+		records : [],
 
 		/**
 		 * Deletes a record based on key or index
 		 *
 		 * @param record {mixed} The record key or index
-		 * @returns undefined
+		 * @returns {mixed} Boolean indicating if the record is deleted, undefined if invalid arguments are passed
 		 */
-		del = function(record) {
-			void(0);
-		};
+		del : function(record) {
+			try {
+				if ((record === undefined)
+				    || ((typeof(record) != "string")
+					&& (typeof(record) != "number"))) {
+					throw label.error.invalidArguments;
+				}
+
+				var deleted = false;
+
+				if (typeof(record) == "string") {
+
+				}
+				else {
+
+				}
+
+				return deleted;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
 
 		/**
 		 * Retrieves a record based on key or index
@@ -752,35 +753,16 @@ var abaaso = function(){
 		 * @param record {mixed} The record key or index
 		 * @returns object
 		 */
-		get = function(record) {
+		get : function(record) {
 			void(0);
-		};
+		},
 
 		/**
-		 * Inserts an array of records
+		 * Sets a new or existing record
 		 */
-		insert = function(data, map) {
+		set : function(key, data) {
 			void(0);
-		};
-
-		/**
-		 * Updates a record based on key or index
-		 *
-		 * @param record {mixed} The record key or index
-		 * @returns object
-		 * @private
-		 */
-		update = function(record, args) {
-			void(0);
-		};
-
-		return {
-			batch  : batch,
-			find   : find,
-			del    : del,
-			insert : insert,
-			update : update
-		};
+		}
 	};
 
 	/**
