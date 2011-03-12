@@ -191,6 +191,20 @@ var abaaso = function(){
 				error(e);
 				return undefined;
 			}
+		},
+
+		/**
+		 * Gets the total keys in an Array
+		 *
+		 * @param instance {array} The array to iterate
+		 * @returns {integer} The number of keys in the Array
+		 */
+		total : function(instance) {
+			var i = 0, arg;
+			for (arg in instance) {
+				(typeof(instance[arg]) != "function") ? i++ : void(0);
+			}
+			return i;
 		}
 	};
 
@@ -704,17 +718,24 @@ var abaaso = function(){
 	};
 
 	/**
-	 * Template data store object, to be put on a widget
+	 * Template data store object, to be put on a widget with define()
 	 *
-	 * The resulting object from closure has a private record collection
+	 * Do not use this directly!
 	 *
 	 * @class
-	 * @todo complete for v1.2
 	 */
 	var data = {
 		// Associative arrays of records
 		keys    : [],
 		records : [],
+
+		/**
+		 * Clears the data object
+		 */
+		clear : function() {
+			this.keys    = [];
+			this.records = [];
+		},
 
 		/**
 		 * Deletes a record based on key or index
@@ -723,7 +744,7 @@ var abaaso = function(){
 		 */
 		del : function(record) {
 			try {
-				var key;
+				var key, index;
 
 				if ((record === undefined)
 				    || ((typeof(record) != "string")
@@ -732,14 +753,17 @@ var abaaso = function(){
 				}
 
 				if (typeof(record) == "string") {
-					key = keys[record];
+					key = this.keys[record];
 					if (key === undefined) {
 						throw label.error.invalidArguments;
 					}
-					delete records[key.index];
+					delete this.records[key.index];
+					delete this.keys[record];
 				}
 				else {
-					delete records[record];
+					key = this.records[record].key;
+					delete this.records[record];
+					delete this.keys[key];
 				}
 			}
 			catch (e) {
@@ -750,29 +774,20 @@ var abaaso = function(){
 		/**
 		 * Retrieves a record based on key or index
 		 *
+		 * If the key is an integer, cast to a string before sending as an argument!
+		 *
 		 * @param record {mixed} The record key (string),  index (integer) or array for pagination [start, end]
 		 * @returns object
 		 */
 		get : function(record) {
 			try {
 				var r = [],
-				    key, i, start, end;
-
-				if ((record === undefined)
-				    || ((typeof(record) != "string")
-					&& (typeof(record) != "number"))) {
-					throw label.error.invalidArguments;
-				}
+				    i, start, end;
 
 				if (typeof(record) == "string") {
-					key = keys[record];
-					if (key === undefined) {
-						throw label.error.invalidArguments;
-					}
-
-					return records[key.index];
+					return (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
 				}
-				else if (typeof(record) == "array") {
+				else if (record instanceof Array) {
 					if (isNaN(record[0]) || isNaN(record[1])) {
 						throw label.error.invalidArguments;
 					}
@@ -781,13 +796,13 @@ var abaaso = function(){
 					end   = record[1] - 1;
 
 					for (i = start; i < end; i++) {
-						r.push(records[i]);
+						(this.records[i] !== undefined) ? r.push(this.records[i]) : void(0);
 					}
 
 					return r;
 				}
 				else {
-					return records[record];
+					return this.records[record];
 				}
 			}
 			catch (e) {
@@ -798,8 +813,42 @@ var abaaso = function(){
 
 		/**
 		 * Sets a new or existing record
+		 *
+		 * @param key {mixed} Integer or String to use as a Primary Key
+		 * @param data {object} Key:Value pairs to set as field values
 		 */
 		set : function(key, data) {
+			try {
+				if ((key === undefined)
+				    || (typeof(data) != "object")) {
+					throw label.error.invalidArguments;
+				}
+
+				var record = ((this.keys[key] === undefined) && (this.records[key] === undefined)) ? undefined : this.get(key),
+				    arg, index;
+
+				if (record === undefined) {
+					this.keys[key] = {};
+					index = this.records.total() + 1;
+					this.keys[key].index = index;
+					this.records[index] = data;
+					this.records[index].key = key;
+					this.records[index].index = index;
+					record = this.records[index];
+				}
+				else {
+					for (arg in data) {
+						record[arg] = data[arg];
+					}
+					this.records[record.index] = record;
+				}
+
+				return record;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 			void(0);
 		}
 	};
@@ -1542,7 +1591,7 @@ var abaaso = function(){
 			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
 			(e.number !== undefined) ? (err.number = (e.number & 0xFFFF)) : void(0);
 			((!client.ie)
-			 && (console !== undefined)) ? console.error(err.message) : void(0);
+			 && (console)) ? console.error(err.message) : void(0);
 			(error.events === undefined) ? error.events = [] : void(0);
 			error.events.push(err);
 		},
@@ -1672,6 +1721,9 @@ var abaaso = function(){
 							}},
 						{name: "remove", fn: function(arg) {
 							return abaaso.array.remove(this, arg);
+							}},
+						{name: "total", fn: function() {
+							return abaaso.array.total(this);
 							}}
 					],
 					element : [
@@ -1951,6 +2003,7 @@ var abaaso = function(){
 			jsonp   : client.jsonp
 			},
 		cookie          : cookie,
+		data            : data,
 		el              : el,
 		json            : json,
 		label           : label,
