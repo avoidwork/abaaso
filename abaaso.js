@@ -750,11 +750,50 @@ var abaaso = function(){
 		/**
 		 * Retrieves a record based on key or index
 		 *
-		 * @param record {mixed} The record key or index
+		 * @param record {mixed} The record key (string),  index (integer) or array for pagination [start, end]
 		 * @returns object
 		 */
 		get : function(record) {
-			void(0);
+			try {
+				var r = [],
+				    key, i, start, end;
+
+				if ((record === undefined)
+				    || ((typeof(record) != "string")
+					&& (typeof(record) != "number"))) {
+					throw label.error.invalidArguments;
+				}
+
+				if (typeof(record) == "string") {
+					key = keys[record];
+					if (key === undefined) {
+						throw label.error.invalidArguments;
+					}
+
+					return records[key.index];
+				}
+				else if (typeof(record) == "array") {
+					if (isNaN(record[0]) || isNaN(record[1])) {
+						throw label.error.invalidArguments;
+					}
+
+					start = record[0] - 1;
+					end   = record[1] - 1;
+
+					for (i = start; i < end; i++) {
+						r.push(records[i]);
+					}
+
+					return r;
+				}
+				else {
+					return records[record];
+				}
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
