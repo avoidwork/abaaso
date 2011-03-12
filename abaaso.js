@@ -706,17 +706,81 @@ var abaaso = function(){
 	/**
 	 * Template data store object, to be put on a widget
 	 *
+	 * The resulting object from closure has a private record collection
+	 *
 	 * @class
 	 * @todo complete for v1.2
 	 */
-	var data = {
-		// Records
-		records : [],
+	var data = function(){
+		var records, batch, find, insert, del, get, update;
 
-		// Methods
-		del : function() {},
-		get : function() {},
-		set : function() {}
+		// Associative array of records
+		records = [];
+
+		/**
+		 * Finds a record based on key or index
+		 *
+		 * @param record {midex} They record key or index
+		 */
+		find = function(record) {
+			void(0);
+		};
+
+		/**
+		 * Inserts an array of records
+		 */
+		batch = function(data, map) {
+			var i = data.length;
+			while (i--) {
+				this.insert(data[i], map);
+			}
+		};
+
+		/**
+		 * Deletes a record based on key or index
+		 *
+		 * @param record {mixed} The record key or index
+		 * @returns undefined
+		 */
+		del = function(record) {
+			void(0);
+		};
+
+		/**
+		 * Retrieves a record based on key or index
+		 *
+		 * @param record {mixed} The record key or index
+		 * @returns object
+		 */
+		get = function(record) {
+			void(0);
+		};
+
+		/**
+		 * Inserts an array of records
+		 */
+		insert = function(data, map) {
+			void(0);
+		};
+
+		/**
+		 * Updates a record based on key or index
+		 *
+		 * @param record {mixed} The record key or index
+		 * @returns object
+		 * @private
+		 */
+		update = function(record, args) {
+			void(0);
+		};
+
+		return {
+			batch  : batch,
+			find   : find,
+			del    : del,
+			insert : insert,
+			update : update
+		};
 	};
 
 	/**
