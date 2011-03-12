@@ -1338,9 +1338,11 @@ var abaaso = function(){
 		 */
 		fire : function(obj, event) {
 			try {
+				obj = (typeof obj == "object") ? obj : $(obj);
+
 				var l   = observer.listeners,
-				    o   = (obj.id !== undefined) ? obj.id : obj.toString();
-				    obj = (typeof obj == "object") ? obj : $(obj);
+				    o   = (obj.id !== undefined) ? obj.id : obj.toString(),
+				    i;
 
 				if ((o === undefined)
 				    || (o == "")
@@ -1351,18 +1353,20 @@ var abaaso = function(){
 
 				var listeners = observer.list(obj, event).active;
 
-				for (var i in listeners) {
-					if ((listeners[i] !== undefined)
-					    && (listeners[i].fn)) {
-						if (listeners[i].scope !== undefined) {
-							var instance = $(listeners[i].scope),
-							    fn       = listeners[i].fn,
-							    scope    = (instance !== undefined) ? instance : listeners[i].scope;
+				if (listeners !== undefined) {
+					for (i in listeners) {
+						if ((listeners[i] !== undefined)
+						    && (listeners[i].fn)) {
+							if (listeners[i].scope !== undefined) {
+								var instance = (typeof(listeners[i].scope) == "object") ? listeners[i].scope : $("#"+listeners[i].scope),
+								    fn       = listeners[i].fn,
+								    scope    = (instance !== undefined) ? instance : listeners[i].scope;
 
-							fn.call(scope);
-						}
-						else {
-							listeners[i].fn();
+								fn.call(scope);
+							}
+							else {
+								listeners[i].fn();
+							}
 						}
 					}
 				}
@@ -1424,7 +1428,7 @@ var abaaso = function(){
 				else {
 					if (id === undefined) {
 						delete l[o][event];
-						instance = (o !== "abaaso") ? $(o) : null;
+						instance = (o != "abaaso") ? $("#"+o) : null;
 						((instance !== null)
 						 && (instance !== undefined)) ? ((instance.removeEventListener)
 										 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
@@ -1533,6 +1537,7 @@ var abaaso = function(){
 				}
 
 				var obj;
+				arg = new String(arg);
 
 				switch (arg.charAt(0)) {
 					case ".":
@@ -1630,7 +1635,7 @@ var abaaso = function(){
 
 				var id = "abaaso-" + utility.id();
 				do id = "abaaso-" + utility.id();
-				while ($(id) !== undefined);
+				while ($("#"+id) !== undefined);
 				obj.id = id;
 
 				return obj;
@@ -1663,14 +1668,28 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
+				// Stripping identifying character
+				id = new String(id);
+				switch (id.charAt(0)) {
+					case ".":
+					case "#":
+						id = id.substring(1);
+						break;
+				}
+
+				// Setting loading image
 				if (abaaso.loading.image === undefined) {
 					abaaso.loading.image     = new Image();
 					abaaso.loading.image.src = abaaso.loading.url;
 				}
 
+				// Clearing target element
 				obj.clear();
-				abaaso.create("div", {id: id + "_loading", style: "text-align:center"}, id);
-				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, id + "_loading");
+
+				// Creating loading image in target element
+				abaaso.create("div", {id: id+"_loading", style: "text-align:center"}, "#"+id);
+				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, "#"+id+"_loading");
+
 				return obj;
 			}
 			catch (e) {
@@ -1729,22 +1748,23 @@ var abaaso = function(){
 					element : [
 						{name: "bounce", fn: function(ms, height) {
 							this.genID();
-							abaaso.fx.bounce(this.id, ms, height);
+							abaaso.fx.bounce("#"+this.id, ms, height);
 							}},
 						{name: "destroy", fn: function() {
 							this.genID();
-							abaaso.destroy(this.id);
+							abaaso.destroy("#"+this.id);
 							}},
 						{name: "disable", fn: function() {
 							this.genID();
-							return abaaso.el.disable(this.id);
+							return abaaso.el.disable("#"+this.id);
 							}},
 						{name: "enable", fn: function() {
 							this.genID();
-							return abaaso.el.enable(this.id);
+							return abaaso.el.enable("#"+this.id);
 							}},
 						{name: "fade", fn: function(arg) {
-							abaaso.fx.fade(this.id, arg);
+							this.genID();
+							abaaso.fx.fade("#"+this.id, arg);
 							}},
 						{name: "fall", fn: function() {
 							void(0);
@@ -1776,7 +1796,7 @@ var abaaso = function(){
 							}},
 						{name: "loading", fn: function() {
 							this.genID();
-							return abaaso.loading.create(this.id);
+							return abaaso.loading.create("#"+this.id);
 							}},
 						{name: "move", fn: function(pos, ms) {
 							this.genID();
@@ -1787,7 +1807,7 @@ var abaaso = function(){
 							}},
 						{name: "position", fn: function() {
 							this.genID();
-							return abaaso.el.position(this.id);
+							return abaaso.el.position(this);
 							}},
 						{name: "show", fn: function() {
 							this.genID();
@@ -1798,7 +1818,7 @@ var abaaso = function(){
 							}},
 						{name: "slide", fn: function(ms, pos, elastic) {
 							this.genID();
-							abaaso.fx.slide(this.id, ms, pos, elastic);
+							abaaso.fx.slide("#"+this.id, ms, pos, elastic);
 							}},
 						{name: "update", fn: function(args) {
 							this.genID();
@@ -2050,7 +2070,6 @@ var abaaso = function(){
 			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
-			window.$ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 			window.onresize = function() { abaaso.fire("resize"); };
 			cache.clean();
 
@@ -2120,6 +2139,10 @@ var abaaso = function(){
 		version         : "1.2"
 	};
 }();
+
+var $ = function(arg, nodelist) {
+	return abaaso.$(arg, nodelist);
+};
 
 // Registering events
 if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari)) {
