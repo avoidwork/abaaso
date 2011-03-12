@@ -207,6 +207,22 @@ var abaaso = function(){
 		items : [],
 
 		/**
+		 * Garbage collector for the cached items
+		 *
+		 * Expires cached items every two minutes
+		 * @returns undefined
+		 */
+		clean : function() {
+			var timer = setInterval(function(){
+				for (var uri in cache.items) {
+					((typeof(cache.items[uri]) != "function")
+					 && (cache.expired(uri) === true)) ? cache.expire(uri) : void(0);
+				}
+			}, 12000);
+			return;
+		},
+
+		/**
 		 * Expires a URI from the local cache
 		 *
 		 * @param uri {string} The URI of the local representation
@@ -215,6 +231,24 @@ var abaaso = function(){
 		expire : function(uri) {
 			(this.items[uri] !== undefined) ? delete this.items[uri] : void(0);
 			return;
+		},
+
+		/**
+		 * Determines if a URI has expired
+		 *
+		 * @param uri {object} The cached URI object
+		 * @returns {boolean} A boolean representing if the URI has expired
+		 */
+		expired : function(uri) {
+			var result = ((this.items[uri] !== undefined)
+				      && (((this.items[uri].headers.Expires !== undefined)
+					   && (new Date(this.items[uri].headers.Expires) < new Date()))
+					  || ((client.ms > 0)
+					      && (this.items[uri].headers.Date !== undefined)
+					      && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
+					  || ((client.ms > 0)
+					      && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
+			return result;
 		},
 
 		/**
@@ -236,16 +270,7 @@ var abaaso = function(){
 						if (((this.items[uri].headers.Pragma !== undefined)
 						    && (this.items[uri].headers.Pragma == "no-cache")
 						    && (expire))
-						    || ((this.items[uri].headers.Expires !== undefined)
-							 && (new Date(this.items[uri].headers.Expires) < new Date())
-							 && (expire))
-						    || ((client.ms > 0)
-							 && (expire)
-							 && (this.items[uri].headers.Date !== undefined)
-							 && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
-						    || ((client.ms > 0)
-							 && (expire)
-							 && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date()))) {
+						    || (this.expired(this.items[uri]))) {
 							this.expire(uri);
 							return false;
 						}
@@ -1889,6 +1914,7 @@ var abaaso = function(){
 			utility.proto(String.prototype, "string");
 			window.$ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 			window.onresize = function() { abaaso.fire("resize"); };
+			cache.clean();
 
 			if (!Array.prototype.filter) {
 				Array.prototype.filter = function(fn) {
