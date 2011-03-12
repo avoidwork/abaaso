@@ -720,30 +720,30 @@ var abaaso = function(){
 		 * Deletes a record based on key or index
 		 *
 		 * @param record {mixed} The record key or index
-		 * @returns {mixed} Boolean indicating if the record is deleted, undefined if invalid arguments are passed
 		 */
 		del : function(record) {
 			try {
+				var key;
+
 				if ((record === undefined)
 				    || ((typeof(record) != "string")
 					&& (typeof(record) != "number"))) {
 					throw label.error.invalidArguments;
 				}
 
-				var deleted = false;
-
 				if (typeof(record) == "string") {
-
+					key = keys[record];
+					if (key === undefined) {
+						throw label.error.invalidArguments;
+					}
+					delete records[key.index];
 				}
 				else {
-
+					delete records[record];
 				}
-
-				return deleted;
 			}
 			catch (e) {
 				error(e);
-				return undefined;
 			}
 		},
 
