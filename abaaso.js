@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.2
+ * @version 1.2.3
  */
 var abaaso = function(){
 	/**
@@ -1542,21 +1542,8 @@ var abaaso = function(){
 
 				switch (arg.charAt(0)) {
 					case ".":
-						if (typeof(document.getElementsByClassName) == "function") {
-							obj = document.getElementsByClassName(arg.substring(1));
-							(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
-						}
-						else {
-							var nodes   = document.getElementsByTagName("*"),
-							    i       = nodes.length,
-							    pattern = new RegExp("\\b"+arg.substring(1)+"\\b");
-
-							obj = [];
-
-							while (i--) {
-								(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
-							}
-						}
+						obj = document.getElementsByClassName(arg.substring(1));
+						(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
 						break;
 					case "#":
 						obj = document.getElementById(arg.substring(1));
@@ -2086,7 +2073,23 @@ var abaaso = function(){
 			window.onresize = function() { abaaso.fire("resize"); };
 			cache.clean();
 
-			if (!Array.prototype.filter) {
+			// IE8 conditional statements
+			if (typeof(document.getElementsByClassName) != "function") {
+				document.getElementsByClassName = function(arg) {
+					var nodes   = document.getElementsByTagName("*"),
+					    i       = nodes.length,
+					    obj     = [],
+					    pattern = new RegExp(arg);
+
+					while (i--) {
+						(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
+					}
+
+					return obj;
+				};
+			}
+
+			if (typeof(Array.prototype.filter) != "function") {
 				Array.prototype.filter = function(fn) {
 					"use strict";
 					if ((this === void 0)
@@ -2149,7 +2152,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.2"
+		version         : "1.2.3"
 	};
 }();
 
