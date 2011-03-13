@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.4
+ * @version 1.2.5
  */
 var abaaso = function(){
 	/**
@@ -254,14 +254,14 @@ var abaaso = function(){
 		 * @returns {boolean} A boolean representing if the URI has expired
 		 */
 		expired : function(uri) {
-			var result = ((this.items[uri] !== undefined)
-				      && (((this.items[uri].headers.Expires !== undefined)
-					   && (new Date(this.items[uri].headers.Expires) < new Date()))
+			var result = ((cache.items[uri] !== undefined)
+				      && (((cache.items[uri].headers.Expires !== undefined)
+					   && (new Date(cache.items[uri].headers.Expires) < new Date()))
 					  || ((client.ms > 0)
-					      && (this.items[uri].headers.Date !== undefined)
-					      && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
+					      && (cache.items[uri].headers.Date !== undefined)
+					      && (new Date(cache.items[uri].headers.Date).setMilliseconds(new Date(cache.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
 					  || ((client.ms > 0)
-					      && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
+					      && (new Date(cache.items[uri].epoch).setMilliseconds(new Date(cache.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
 			return result;
 		},
 
@@ -2256,7 +2256,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.4"
+		version         : "1.2.5"
 	};
 }();
 
