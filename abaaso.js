@@ -1903,7 +1903,7 @@ var abaaso = function(){
 						{name: "slide", fn: function(ms, pos, elastic) {
 							this.genID();
 							abaaso.fx.slide("#"+this.id, ms, pos, elastic);
-							}},
+							}}
 					],
 					number  : [
 						{name: "even", fn: function() {
