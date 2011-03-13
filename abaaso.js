@@ -1452,8 +1452,6 @@ var abaaso = function(){
 						throw label.error.invalidArguments;
 					}
 
-					console.log(o + " fired " + event);
-
 					var listeners = observer.list(obj, event).active;
 
 					if (listeners !== undefined) {
@@ -1782,29 +1780,20 @@ var abaaso = function(){
 		 *
 		 * @param id {string} Target object.id value
 		 */
-		loading : function(arg) {
+		loading : function(obj) {
 			try {
-				if (arg instanceof Array) {
-					var i = (!isNaN(arg.length)) ? arg.length : arg.total();
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
 					while (i--) {
-						this.loading(arg[i].id);
+						this.loading(obj[i]);
 					}
 					return arg;
 				}
 				else {
-					var obj = $(arg);
+					obj = (typeof obj == "object") ? obj : $(obj);
 
 					if (obj === undefined) {
 						throw label.error.invalidArguments;
-					}
-
-					// Stripping identifying character
-					arg = new String(arg);
-					switch (arg.charAt(0)) {
-						case ".":
-						case "#":
-							arg = arg.substring(1);
-							break;
 					}
 
 					// Setting loading image
@@ -1814,11 +1803,12 @@ var abaaso = function(){
 					}
 
 					// Clearing target element
+					obj.genID();
 					obj.clear();
 
 					// Creating loading image in target element
-					abaaso.create("div", {id: arg+"_loading", style: "text-align:center"}, "#"+arg);
-					abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, "#"+arg+"_loading");
+					abaaso.create("div", {id: obj.id+"_loading", style: "text-align:center"}, "#"+obj.id);
+					abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, "#"+obj.id+"_loading");
 
 					return obj;
 				}
