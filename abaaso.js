@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.1
+ * @version 1.2.2
  */
 var abaaso = function(){
 	/**
@@ -1290,7 +1290,7 @@ var abaaso = function(){
 				           l = observer.listeners,
 				           o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-				obj     = (typeof obj == "object") ? obj : $(obj);
+				obj     = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
 				standby = ((standby !== undefined) && (standby === true)) ? true : false;
 
 				if ((o === undefined)
@@ -1356,6 +1356,7 @@ var abaaso = function(){
 				if (listeners !== undefined) {
 					for (i in listeners) {
 						if ((listeners[i] !== undefined)
+						    && (typeof(listeners[i]) != "function")
 						    && (listeners[i].fn)) {
 							if (listeners[i].scope !== undefined) {
 								var instance = (typeof(listeners[i].scope) == "object") ? listeners[i].scope : $("#"+listeners[i].scope),
@@ -1417,7 +1418,7 @@ var abaaso = function(){
 				    o        = (obj.id !== undefined) ? obj.id : obj.toString(),
 				    l        = observer.listeners;
 
-				obj = (typeof obj == "object") ? obj : $(obj);
+				obj = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
 
 				if ((o === undefined)
 				    || (event === undefined)
@@ -1432,7 +1433,7 @@ var abaaso = function(){
 						((instance !== null)
 						 && (instance !== undefined)) ? ((instance.removeEventListener)
 										 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
-										 : instance.removeEvent("on" + event, function(){ instance.fire(event); })) : void(0);
+										 : instance.detachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 					}
 					else if (l[o][event].active[id] !== undefined) {
 						delete l[o][event].active[id];
@@ -1467,7 +1468,7 @@ var abaaso = function(){
 				var l = observer.listeners,
 				    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-				obj = (typeof obj == "object") ? obj : $(obj);
+				obj = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
 
 				if ((o === undefined)
 				    || (event === undefined)
@@ -1539,7 +1540,7 @@ var abaaso = function(){
 				var obj;
 				arg = new String(arg);
 
-				switch (arg[0]) {
+				switch (arg.charAt(0)) {
 					case ".":
 						if (typeof(document.getElementsByClassName) == "function") {
 							obj = document.getElementsByClassName(arg.substring(1));
@@ -1608,8 +1609,7 @@ var abaaso = function(){
 		error : function(e) {
 			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
 			(e.number !== undefined) ? (err.number = (e.number & 0xFFFF)) : void(0);
-			((!client.ie)
-			 && (console)) ? console.error(err.message) : void(0);
+			((!client.ie) && (console)) ? console.error(err.message) : void(0);
 			(error.events === undefined) ? error.events = [] : void(0);
 			error.events.push(err);
 		},
@@ -2149,7 +2149,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.1"
+		version         : "1.2.2"
 	};
 }();
 
