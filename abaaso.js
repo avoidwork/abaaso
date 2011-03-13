@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.5
+ * @version 1.2.6
  */
 var abaaso = function(){
 	/**
@@ -227,12 +227,10 @@ var abaaso = function(){
 		 * @returns undefined
 		 */
 		clean : function() {
-			var timer = setInterval(function(){
-				for (var uri in cache.items) {
-					((typeof(cache.items[uri]) != "function")
-					 && (cache.expired(uri) === true)) ? cache.expire(uri) : void(0);
-				}
-			}, 12000);
+			for (var uri in this.items) {
+				((typeof(this.items[uri]) != "function")
+				 && (this.expired(uri) === true)) ? this.expire(uri) : void(0);
+			}
 			return;
 		},
 
@@ -254,14 +252,14 @@ var abaaso = function(){
 		 * @returns {boolean} A boolean representing if the URI has expired
 		 */
 		expired : function(uri) {
-			var result = ((cache.items[uri] !== undefined)
-				      && (((cache.items[uri].headers.Expires !== undefined)
-					   && (new Date(cache.items[uri].headers.Expires) < new Date()))
+			var result = ((this.items[uri] !== undefined)
+				      && (((this.items[uri].headers.Expires !== undefined)
+					   && (new Date(this.items[uri].headers.Expires) < new Date()))
 					  || ((client.ms > 0)
-					      && (cache.items[uri].headers.Date !== undefined)
-					      && (new Date(cache.items[uri].headers.Date).setMilliseconds(new Date(cache.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
+					      && (this.items[uri].headers.Date !== undefined)
+					      && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
 					  || ((client.ms > 0)
-					      && (new Date(cache.items[uri].epoch).setMilliseconds(new Date(cache.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
+					      && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
 			return result;
 		},
 
@@ -2152,6 +2150,7 @@ var abaaso = function(){
 		// Methods & Properties
 		$               : utility.$,
 		clear           : el.clear,
+		clean           : cache.clean,
 		create          : el.create,
 		define          : utility.define,
 		del             : client.del,
@@ -2175,7 +2174,7 @@ var abaaso = function(){
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onresize = function() { abaaso.fire("resize"); };
-			cache.clean();
+			abaaso.timer["clean"] = setInterval(function(){ abaaso.clean(); }, 12000);
 
 			// IE8 conditional statements
 			if (typeof(document.getElementsByClassName) != "function") {
@@ -2247,6 +2246,7 @@ var abaaso = function(){
 			return abaaso.observer.add(obj, event, listener, id, scope, standby);
 			},
 		ready           : false,
+		timer           : {},
 		un              : function() {
 			var all   = (typeof arguments[0] == "string") ? false : true;
 			var obj   = (all) ? arguments[0] : abaaso,
@@ -2256,7 +2256,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.5"
+		version         : "1.2.6"
 	};
 }();
 
