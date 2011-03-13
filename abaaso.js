@@ -227,9 +227,9 @@ var abaaso = function(){
 		 * @returns undefined
 		 */
 		clean : function() {
-			for (var uri in this.items) {
-				((typeof(this.items[uri]) != "function")
-				 && (this.expired(uri) === true)) ? this.expire(uri) : void(0);
+			for (var uri in cache.items) {
+				((typeof(cache.items[uri]) != "function")
+				 && (cache.expired(uri) === true)) ? cache.expire(uri) : void(0);
 			}
 			return;
 		},
