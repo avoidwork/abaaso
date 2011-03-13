@@ -1549,7 +1549,7 @@ var abaaso = function(){
 						else {
 							var nodes   = document.getElementsByTagName("*"),
 							    i       = nodes.length,
-							    pattern = new RegExp(arg.substring(1));
+							    pattern = new RegExp("\\b"+arg.substring(1)+"\\b");
 
 							obj = [];
 
