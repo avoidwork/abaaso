@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.3
+ * @version 1.2.4
  */
 var abaaso = function(){
 	/**
@@ -865,31 +865,40 @@ var abaaso = function(){
 		 * Events:    beforeClear    Fires before the Object is cleared
 		 *            afterClear     Fires after the Object is cleared
 		 *
-		 * @param id {string} Target object.id value
-		 * @returns {object} The object being cleared
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {mixed} Instance or Array of Instances
 		 */
 		clear : function(obj) {
 			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				if (obj !== null) {
-					obj.fire("beforeClear");
-
-					if (typeof obj.reset == "function") {
-						obj.reset();
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.clear(obj[i]);
 					}
-					else if (obj.value !== undefined) {
-						obj.update({innerHTML: "", value: ""});
-					}
-					else {
-						obj.update({innerHTML: ""});
-					}
-
-					obj.fire("afterClear");
 					return obj;
 				}
 				else {
-					throw label.error.elementNotFound;
+					obj = (typeof obj == "object") ? obj : $(obj);
+
+					if (obj !== null) {
+						obj.fire("beforeClear");
+
+						if (typeof obj.reset == "function") {
+							obj.reset();
+						}
+						else if (obj.value !== undefined) {
+							obj.update({innerHTML: "", value: ""});
+						}
+						else {
+							obj.update({innerHTML: ""});
+						}
+
+						obj.fire("afterClear");
+						return obj;
+					}
+					else {
+						throw label.error.elementNotFound;
+					}
 				}
 			}
 			catch (e) {
@@ -940,26 +949,32 @@ var abaaso = function(){
 		 * Events:    beforeDestroy    Fires before the destroy starts
 		 *            afterDestroy     Fires after the destroy ends
 		 *
-		 * @param arg {string} Comma delimited string of target element.id values
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {mixed} Undefined or Array of Instances
 		 */
-		destroy : function(arg) {
+		destroy : function(obj) {
 			try {
-				var args   = arg.split(","),
-				       i   = args.length,
-				       obj = null;
-
-				while (i--) {
-					obj = $(args[i]);
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.destroy(obj[i]);
+					}
+					return obj;
+				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
 					if (obj !== undefined) {
 						obj.fire("beforeDestroy");
 						observer.remove(obj.id);
 						obj.parentNode.removeChild(obj);
 						obj.fire("afterDestroy");
 					}
+					return undefined;
 				}
 			}
 			catch(e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -969,27 +984,27 @@ var abaaso = function(){
 		 * Events:    beforeDisable    Fires before the disable starts
 		 *            afterDisable     Fires after the disable ends
 		 *
-		 * @param arg {string} Comma delimited string of target element.id values
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
 		 */
-		disable : function(arg) {
+		disable : function(obj) {
 			try {
-				var args      = arg.split(","),
-				    i         = args.length,
-				    instances = [],
-				    obj       = null;
-
-				while (i--) {
-					obj = $(args[i]);
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.disable(obj[i]);
+					}
+					return obj;
+				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
 					if ((obj !== undefined)
 					    && (obj.disabled !== undefined)) {
 						obj.fire("beforeDisable");
 						obj.disabled = true;
 						obj.fire("afterDisable");
-						instances.push(obj);
 					}
+					return obj;
 				}
-
-				return (instances.length == 0) ? obj : ((instances.length == 1) ? instances[0] : instances);
 			}
 			catch(e) {
 				error(e);
@@ -1003,18 +1018,20 @@ var abaaso = function(){
 		 * Events:    beforeEnable    Fires before the enable starts
 		 *            afterEnable     Fires after the enable ends
 		 *
-		 * @param arg {string} Comma delimited string of target element.id values
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {mixed} Instance or Array of Instances
 		 */
-		enable : function(arg) {
+		enable : function(obj) {
 			try {
-				var args      = arg.split(","),
-				    i         = args.length,
-				    instances = [],
-				    obj       = null;
-
-
-				while (i--) {
-					obj = $(args[i]);
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.enable(obj[i]);
+					}
+					return obj;
+				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
 					if ((obj !== undefined)
 					    && (obj.disabled !== undefined)) {
 						obj.fire("beforeEnable");
@@ -1022,9 +1039,8 @@ var abaaso = function(){
 						obj.fire("afterEnable");
 						instances.push(obj);
 					}
+					return obj;
 				}
-
-				return (instances.length == 0) ? obj : ((instances.length == 1) ? instances[0] : instances);
 			}
 			catch(e) {
 				error(e);
@@ -1041,6 +1057,35 @@ var abaaso = function(){
 		 */
 		eventID : function(e, obj) {
 			return (window.event) ? window.event.srcElement.id : obj.id;
+		},
+
+		/**
+		 * Hides an Element if it's visible
+		 *
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {mixed} Instance or Array of Instances
+		 */
+		hide : function(obj) {
+			try {
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.hide(obj[i]);
+					}
+					return obj;
+				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
+					(obj.old === undefined) ? obj.old = {} : void(0);
+					obj.old.display   = obj.style.display;
+					obj.style.display = "none";
+					return obj;
+				}
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
 		},
 
 		/**
@@ -1073,58 +1118,97 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Shows an Element if it's not visible
+		 *
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {mixed} Instance or Array of Instances
+		 */
+		show : function(obj) {
+			try {
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.show(obj[i]);
+					}
+					return obj;
+				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
+					obj.style.display = ((obj.old !== undefined)
+							     && (obj.old.display !== undefined)
+							     && (obj.old.display != "")) ? obj.old.display : "inherit";
+					return obj;
+				}
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Updates an object or element
 		 *
 		 * Events:    beforeUpdate    Fires before the update starts
 		 *            afterUpdate     Fires after the update ends
 		 *
-		 * @param obj {mixed} An instance of an object, or a target object.id value
+		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
 		 * @param args {object} A collection of properties
+		 * @returns {mixed} Instance or Array of Instances
 		 */
 		update : function(obj, args) {
 			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-				args = args || {};
-
-				if (obj === undefined) {
-					throw label.error.invalidArguments;
-				}
-
-				obj.fire("beforeUpdate");
-
-				if (obj) {
-					for (var i in args) {
-						switch(i) {
-							case "class":
-								((client.ie)
-								 && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
-								break;
-							case "innerHTML":
-							case "type":
-							case "src":
-								obj[i] = args[i];
-								break;
-							case "opacity": // Requires the fx module
-								obj.opacity(args[i]);
-								break;
-							case "id":
-								var o = observer.listeners;
-								if (o[obj.id] !== undefined) {
-									o[args[i]] = [].concat(o[obj.id]);
-									delete o[obj.id];
-								}
-							default:
-								obj.setAttribute(i, args[i]);
-								break;
-						}
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.update(obj[i], args);
 					}
-
-					obj.fire("afterUpdate");
-
 					return obj;
 				}
 				else {
-					throw label.error.elementNotFound;
+					obj = (typeof obj == "object") ? obj : $(obj);
+					args = args || {};
+
+					if (obj === undefined) {
+						throw label.error.invalidArguments;
+					}
+
+					obj.fire("beforeUpdate");
+
+					if (obj) {
+						for (var i in args) {
+							switch(i) {
+								case "class":
+									((client.ie)
+									 && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
+									break;
+								case "innerHTML":
+								case "type":
+								case "src":
+									obj[i] = args[i];
+									break;
+								case "opacity": // Requires the fx module
+									obj.opacity(args[i]);
+									break;
+								case "id":
+									var o = observer.listeners;
+									if (o[obj.id] !== undefined) {
+										o[args[i]] = [].concat(o[obj.id]);
+										delete o[obj.id];
+									}
+								default:
+									obj.setAttribute(i, args[i]);
+									break;
+							}
+						}
+
+						obj.fire("afterUpdate");
+
+						return obj;
+					}
+					else {
+						throw label.error.elementNotFound;
+					}
 				}
 			}
 			catch (e) {
@@ -1286,42 +1370,51 @@ var abaaso = function(){
 		 */
 		add : function(obj, event, fn, id, scope, standby) {
 			try {
-				var instance = null,
-				           l = observer.listeners,
-				           o = (obj.id !== undefined) ? obj.id : obj.toString();
-
-				obj     = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
-				standby = ((standby !== undefined) && (standby === true)) ? true : false;
-
-				if ((o === undefined)
-				    || (event === undefined)
-				    || (!fn instanceof Function)
-				    || ((standby)
-					&& (id === undefined))) {
-					throw label.error.invalidArguments;
-				}
-
-				(l[o] === undefined) ? l[o] = [] : void(0);
-				(l[o][event] === undefined) ? l[o][event] = [] : void(0);
-				(l[o][event].active === undefined) ? l[o][event].active = [] : void(0);
-
-				var item = {fn: fn};
-				((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
-
-				if (!standby) {
-					(id !== undefined) ? l[o][event].active[id] = item : l[o][event].active.push(item);
-					instance = (o != "abaaso") ? $("#"+o) : null;
-					((instance !== null)
-					 && (instance !== undefined)) ? ((instance.addEventListener !== undefined)
-									 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
-									 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.add(obj[i], event, fn, id, scope, standby);
+					}
+					return obj;
 				}
 				else {
-					(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
-					l[o][event].standby[id] = item;
-				}
+					var instance = null,
+						   l = observer.listeners,
+						   o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-				return obj;
+					obj     = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
+					standby = ((standby !== undefined) && (standby === true)) ? true : false;
+
+					if ((o === undefined)
+					    || (event === undefined)
+					    || (!fn instanceof Function)
+					    || ((standby)
+						&& (id === undefined))) {
+						throw label.error.invalidArguments;
+					}
+
+					(l[o] === undefined) ? l[o] = [] : void(0);
+					(l[o][event] === undefined) ? l[o][event] = [] : void(0);
+					(l[o][event].active === undefined) ? l[o][event].active = [] : void(0);
+
+					var item = {fn: fn};
+					((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
+
+					if (!standby) {
+						(id !== undefined) ? l[o][event].active[id] = item : l[o][event].active.push(item);
+						instance = (o != "abaaso") ? $("#"+o) : null;
+						((instance !== null)
+						 && (instance !== undefined)) ? ((instance.addEventListener !== undefined)
+										 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
+										 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
+					}
+					else {
+						(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
+						l[o][event].standby[id] = item;
+					}
+
+					return obj;
+				}
 			}
 			catch (e) {
 				error(e);
@@ -1338,41 +1431,52 @@ var abaaso = function(){
 		 */
 		fire : function(obj, event) {
 			try {
-				obj = (typeof obj == "object") ? obj : $(obj);
-
-				var l   = observer.listeners,
-				    o   = (obj.id !== undefined) ? obj.id : obj.toString(),
-				    i;
-
-				if ((o === undefined)
-				    || (o == "")
-				    || (obj === undefined)
-				    || (event === undefined)) {
-					throw label.error.invalidArguments;
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.fire(obj[i], event);
+					}
+					return obj;
 				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
 
-				var listeners = observer.list(obj, event).active;
+					var l   = observer.listeners,
+					    o   = (obj.id !== undefined) ? obj.id : obj.toString(),
+					    i;
 
-				if (listeners !== undefined) {
-					for (i in listeners) {
-						if ((listeners[i] !== undefined)
-						    && (typeof(listeners[i]) != "function")
-						    && (listeners[i].fn)) {
-							if (listeners[i].scope !== undefined) {
-								var instance = (typeof(listeners[i].scope) == "object") ? listeners[i].scope : $("#"+listeners[i].scope),
-								    fn       = listeners[i].fn,
-								    scope    = (instance !== undefined) ? instance : listeners[i].scope;
+					if ((o === undefined)
+					    || (o == "")
+					    || (obj === undefined)
+					    || (event === undefined)) {
+						throw label.error.invalidArguments;
+					}
 
-								fn.call(scope);
-							}
-							else {
-								listeners[i].fn();
+					console.log(o + " fired " + event);
+
+					var listeners = observer.list(obj, event).active;
+
+					if (listeners !== undefined) {
+						for (i in listeners) {
+							if ((listeners[i] !== undefined)
+							    && (typeof(listeners[i]) != "function")
+							    && (listeners[i].fn)) {
+								if (listeners[i].scope !== undefined) {
+									var instance = (typeof(listeners[i].scope) == "object") ? listeners[i].scope : $("#"+listeners[i].scope),
+									    fn       = listeners[i].fn,
+									    scope    = (instance !== undefined) ? instance : listeners[i].scope;
+
+									fn.call(scope);
+								}
+								else {
+									listeners[i].fn();
+								}
 							}
 						}
 					}
-				}
 
-				return obj;
+					return obj;
+				}
 			}
 			catch (e) {
 				error(e);
@@ -1414,37 +1518,46 @@ var abaaso = function(){
 		 */
 		remove : function(obj, event, id) {
 			try {
-				var instance = null,
-				    o        = (obj.id !== undefined) ? obj.id : obj.toString(),
-				    l        = observer.listeners;
-
-				obj = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
-
-				if ((o === undefined)
-				    || (event === undefined)
-				    || (l[o] === undefined)
-				    || (l[o][event] === undefined)) {
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.remove(obj[i], event, id);
+					}
 					return obj;
 				}
 				else {
-					if (id === undefined) {
-						delete l[o][event];
-						instance = (o != "abaaso") ? $("#"+o) : null;
-						((instance !== null)
-						 && (instance !== undefined)) ? ((instance.removeEventListener)
-										 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
-										 : instance.detachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
-					}
-					else if (l[o][event].active[id] !== undefined) {
-						delete l[o][event].active[id];
+					var instance = null,
+					    o        = (obj.id !== undefined) ? obj.id : obj.toString(),
+					    l        = observer.listeners;
 
-						if ((l[o][event].standby !== undefined)
-						    && (l[o][event].standby[id] !== undefined)) {
-							delete l[o][event].standby[id];
+					obj = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
+
+					if ((o === undefined)
+					    || (event === undefined)
+					    || (l[o] === undefined)
+					    || (l[o][event] === undefined)) {
+						return obj;
+					}
+					else {
+						if (id === undefined) {
+							delete l[o][event];
+							instance = (o != "abaaso") ? $("#"+o) : null;
+							((instance !== null)
+							 && (instance !== undefined)) ? ((instance.removeEventListener)
+											 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
+											 : instance.detachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 						}
-					}
+						else if (l[o][event].active[id] !== undefined) {
+							delete l[o][event].active[id];
 
-					return obj;
+							if ((l[o][event].standby !== undefined)
+							    && (l[o][event].standby[id] !== undefined)) {
+								delete l[o][event].standby[id];
+							}
+						}
+
+						return obj;
+					}
 				}
 			}
 			catch (e) {
@@ -1465,41 +1578,50 @@ var abaaso = function(){
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
-				var l = observer.listeners,
-				    o = (obj.id !== undefined) ? obj.id : obj.toString();
-
-				obj = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
-
-				if ((o === undefined)
-				    || (event === undefined)
-				    || (id === undefined)
-				    || (sId === undefined)
-				    || (l[o] === undefined)
-				    || (l[o][event] === undefined)
-				    || (l[o][event].active === undefined)
-				    || (l[o][event].active[id] === undefined)) {
-					throw label.error.invalidArguments;
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.replace(obj[i], event, id, sId, listener);
+					}
+					return obj;
 				}
+				else {
+					var l = observer.listeners,
+					    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-				(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
+					obj = (typeof obj == "object") ? obj : ((obj == "abaaso") ? abaaso : $(obj));
 
-				if (typeof(listener) == "string") {
-					if ((l[o][event].standby[listener] === undefined)
-					    || (l[o][event].standby[listener].fn === undefined)) {
+					if ((o === undefined)
+					    || (event === undefined)
+					    || (id === undefined)
+					    || (sId === undefined)
+					    || (l[o] === undefined)
+					    || (l[o][event] === undefined)
+					    || (l[o][event].active === undefined)
+					    || (l[o][event].active[id] === undefined)) {
 						throw label.error.invalidArguments;
 					}
-					else {
-						listener = l[o][event].standby[listener].fn;
+
+					(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
+
+					if (typeof(listener) == "string") {
+						if ((l[o][event].standby[listener] === undefined)
+						    || (l[o][event].standby[listener].fn === undefined)) {
+							throw label.error.invalidArguments;
+						}
+						else {
+							listener = l[o][event].standby[listener].fn;
+						}
 					}
-				}
-				else if (!listener instanceof Function) {
-					throw label.error.invalidArguments;
-				}
+					else if (!listener instanceof Function) {
+						throw label.error.invalidArguments;
+					}
 
-				l[o][event].standby[sId] = {"fn" : l[o][event].active[id].fn};
-				l[o][event].active[id]   = {"fn" : listener};
+					l[o][event].standby[sId] = {"fn" : l[o][event].active[id].fn};
+					l[o][event].active[id]   = {"fn" : listener};
 
-				return obj;
+					return obj;
+				}
 			}
 			catch (e) {
 				error(e);
@@ -1629,12 +1751,12 @@ var abaaso = function(){
 					throw label.error.invalidArguments;
 				}
 
-				if (obj.id != "") {
+				if ((obj instanceof Array) || (obj.id != "")) {
 					return obj;
 				}
 
 				var id = "abaaso-" + utility.id();
-				do id = "abaaso-" + utility.id();
+				do id  = "abaaso-" + utility.id();
 				while ($("#"+id) !== undefined);
 				obj.id = id;
 
@@ -1660,37 +1782,46 @@ var abaaso = function(){
 		 *
 		 * @param id {string} Target object.id value
 		 */
-		loading : function(id) {
+		loading : function(arg) {
 			try {
-				var obj = $(id);
-
-				if (obj === undefined) {
-					throw label.error.invalidArguments;
+				if (arg instanceof Array) {
+					var i = (!isNaN(arg.length)) ? arg.length : arg.total();
+					while (i--) {
+						this.loading(arg[i].id);
+					}
+					return arg;
 				}
+				else {
+					var obj = $(arg);
 
-				// Stripping identifying character
-				id = new String(id);
-				switch (id.charAt(0)) {
-					case ".":
-					case "#":
-						id = id.substring(1);
-						break;
+					if (obj === undefined) {
+						throw label.error.invalidArguments;
+					}
+
+					// Stripping identifying character
+					arg = new String(arg);
+					switch (arg.charAt(0)) {
+						case ".":
+						case "#":
+							arg = arg.substring(1);
+							break;
+					}
+
+					// Setting loading image
+					if (abaaso.loading.image === undefined) {
+						abaaso.loading.image     = new Image();
+						abaaso.loading.image.src = abaaso.loading.url;
+					}
+
+					// Clearing target element
+					obj.clear();
+
+					// Creating loading image in target element
+					abaaso.create("div", {id: arg+"_loading", style: "text-align:center"}, "#"+arg);
+					abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, "#"+arg+"_loading");
+
+					return obj;
 				}
-
-				// Setting loading image
-				if (abaaso.loading.image === undefined) {
-					abaaso.loading.image     = new Image();
-					abaaso.loading.image.src = abaaso.loading.url;
-				}
-
-				// Clearing target element
-				obj.clear();
-
-				// Creating loading image in target element
-				abaaso.create("div", {id: id+"_loading", style: "text-align:center"}, "#"+id);
-				abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, "#"+id+"_loading");
-
-				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -1746,28 +1877,9 @@ var abaaso = function(){
 							}}
 					],
 					element : [
-						{name: "bounce", fn: function(ms, height) {
-							this.genID();
-							abaaso.fx.bounce("#"+this.id, ms, height);
-							}},
-						{name: "destroy", fn: function() {
-							this.genID();
-							abaaso.destroy("#"+this.id);
-							}},
-						{name: "disable", fn: function() {
-							this.genID();
-							return abaaso.el.disable("#"+this.id);
-							}},
-						{name: "enable", fn: function() {
-							this.genID();
-							return abaaso.el.enable("#"+this.id);
-							}},
 						{name: "fade", fn: function(arg) {
 							this.genID();
 							abaaso.fx.fade("#"+this.id, arg);
-							}},
-						{name: "fall", fn: function() {
-							void(0);
 							}},
 						{name: "get", fn: function(uri) {
 							this.fire("beforeGet");
@@ -1787,17 +1899,6 @@ var abaaso = function(){
 							}
 							return this;
 							}},
-						{name: "hide", fn: function() {
-							this.genID();
-							(this.old === undefined) ? this.old = {} : void(0);
-							this.old.display = this.style.display;
-							this.style.display = "none";
-							return this;
-							}},
-						{name: "loading", fn: function() {
-							this.genID();
-							return abaaso.loading.create("#"+this.id);
-							}},
 						{name: "move", fn: function(pos, ms) {
 							this.genID();
 							abaaso.fx.move(this, pos, ms);
@@ -1809,21 +1910,10 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.position(this);
 							}},
-						{name: "show", fn: function() {
-							this.genID();
-							this.style.display = ((this.old !== undefined)
-									      && (this.old.display !== undefined)
-									      && (this.old.display != "")) ? this.old.display : "inherit";
-							return this;
-							}},
 						{name: "slide", fn: function(ms, pos, elastic) {
 							this.genID();
 							abaaso.fx.slide("#"+this.id, ms, pos, elastic);
 							}},
-						{name: "update", fn: function(args) {
-							this.genID();
-							abaaso.update(this, args);
-							}}
 					],
 					number  : [
 						{name: "even", fn: function() {
@@ -1841,12 +1931,21 @@ var abaaso = function(){
 							(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
 							return this;
 							}},
+						{name: "destroy", fn: function() {
+							abaaso.destroy(this);
+							}},
+						{name: "disable", fn: function() {
+							return abaaso.el.disable(this);
+							}},
 						{name: "domID", fn: function() {
 							if (!this instanceof String) {
 								this.genID();
 								return abaaso.domID(this.id);
 							}
 							return abaaso.domID(this);
+							}},
+						{name: "enable", fn: function() {
+							return abaaso.el.enable(this);
 							}},
 						{name: "fire", fn: function(event) {
 							((!this instanceof String)
@@ -1857,11 +1956,18 @@ var abaaso = function(){
 						{name: "genID", fn: function() {
 							return abaaso.genID(this);
 							}},
+						{name: "hide", fn: function() {
+							this.genID();
+							return abaaso.el.hide(this);
+							}},
 						{name: "listeners", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
 								     || (this.id == ""))) ? this.genID() : void(0);
 							return abaaso.listeners(this, event);
+							}},
+						{name: "loading", fn: function() {
+							return abaaso.loading.create(this);
 							}},
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
@@ -1870,11 +1976,19 @@ var abaaso = function(){
 								     || (this.id == ""))) ? this.genID() : void(0);
 							return abaaso.on(this, event, listener, id, scope, standby);
 							}},
+						{name: "show", fn: function() {
+							this.genID();
+							return abaaso.el.show(this);
+							}},
 						{name: "un", fn: function(event, id) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
 								     || (this.id == ""))) ? this.genID() : void(0);
 							return abaaso.un(this, event, id);
+							}},
+						{name: "update", fn: function(args) {
+							this.genID();
+							abaaso.update(this, args);
 							}}
 					],
 					string  : [
@@ -2152,7 +2266,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.3"
+		version         : "1.2.4"
 	};
 }();
 
