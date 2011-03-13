@@ -1516,7 +1516,7 @@ var abaaso = function(){
 		/**
 		 * Returns an instance or array of instances
 		 *
-		 * @param arg {string} Comma delimited string of target element.id values
+		 * @param arg {string} Comma delimited string of target #id, .class or tagNames
 		 * @param nodelist {boolean} [Optional] True will return a NodeList (by reference) for tags & classes
 		 * @returns {mixed} instances Instance or Array of Instances
 		 */
