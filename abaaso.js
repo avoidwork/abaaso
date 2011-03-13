@@ -1539,7 +1539,7 @@ var abaaso = function(){
 				var obj;
 				arg = new String(arg);
 
-				switch (arg.charAt(0)) {
+				switch (arg[0]) {
 					case ".":
 						obj = document.getElementsByClassName(arg.substring(1));
 						(nodelist === false) ? obj = Array.prototype.slice.call(obj) : void(0);
