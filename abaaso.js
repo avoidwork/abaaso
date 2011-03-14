@@ -1641,7 +1641,7 @@ var abaaso = function(){
 		 */
 		$ : function(arg, nodelist) {
 			try {
-				arg      = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
+				arg      = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
 				nodelist = (nodelist === true) ? true : false;
 
 				if (arg instanceof Array) {
