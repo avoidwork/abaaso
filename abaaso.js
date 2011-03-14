@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.7
+ * @version 1.2.8
  */
 var abaaso = function(){
 	/**
@@ -64,17 +64,17 @@ var abaaso = function(){
 
 				if (arg instanceof Array) {
 					var indexes = [],
-					          i = args.length;
+					    loop    = args.length,
+					    i       = null;
 
-					while (i--) {
+					for (i = 0; i < loop; i++) {
 						indexes[i] = instance.index(arg[i]);
 					}
 
 					return indexes;
 				}
-				else {
-					return instance.index(arg);
-				}
+
+				return instance.index(arg);
 			}
 			catch (e) {
 				error(e);
@@ -869,8 +869,9 @@ var abaaso = function(){
 		clear : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.clear(obj[i]);
 					}
 					return obj;
@@ -1066,8 +1067,9 @@ var abaaso = function(){
 		hide : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.hide(obj[i]);
 					}
 					return obj;
@@ -1124,8 +1126,9 @@ var abaaso = function(){
 		show : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.show(obj[i]);
 					}
 					return obj;
@@ -1157,8 +1160,9 @@ var abaaso = function(){
 		update : function(obj, args) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.update(obj[i], args);
 					}
 					return obj;
@@ -1369,8 +1373,9 @@ var abaaso = function(){
 		add : function(obj, event, fn, id, scope, standby) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.add(obj[i], event, fn, id, scope, standby);
 					}
 					return obj;
@@ -1430,8 +1435,9 @@ var abaaso = function(){
 		fire : function(obj, event) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.fire(obj[i], event);
 					}
 					return obj;
@@ -1515,8 +1521,9 @@ var abaaso = function(){
 		remove : function(obj, event, id) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.remove(obj[i], event, id);
 					}
 					return obj;
@@ -1575,8 +1582,9 @@ var abaaso = function(){
 		replace : function(obj, event, id, sId, listener) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.replace(obj[i], event, id, sId, listener);
 					}
 					return obj;
@@ -1646,13 +1654,13 @@ var abaaso = function(){
 
 				if (arg instanceof Array) {
 					var instances = [],
-					    i         = arg.length;
+					    loop      = arg.length,
+					    i         = null;
 
-					while (i--) {
+					for (i = 0; i < loop; i++) {
 						instances.push($(arg[i], nodelist));
 					}
 
-					instances.reverse();
 					return instances;
 				}
 
@@ -1782,8 +1790,9 @@ var abaaso = function(){
 		loading : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
-					while (i--) {
+					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					    i    = null;
+					for (i = 0; i < loop; i++) {
 						this.loading(obj[i]);
 					}
 					return arg;
@@ -2181,11 +2190,12 @@ var abaaso = function(){
 			if (typeof(document.getElementsByClassName) != "function") {
 				document.getElementsByClassName = function(arg) {
 					var nodes   = document.getElementsByTagName("*"),
-					    i       = nodes.length,
+					    loop    = nodes.length,
+					    i       = null,
 					    obj     = [],
 					    pattern = new RegExp("\\b"+arg+"\\b");
 
-					while (i--) {
+					for (i = 0; i < loop; i++) {
 						(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
 					}
 
@@ -2257,7 +2267,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.7"
+		version         : "1.2.8"
 	};
 }();
 
