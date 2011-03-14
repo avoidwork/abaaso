@@ -1407,7 +1407,7 @@ var abaaso = function(){
 						(id !== undefined) ? l[o][event].active[id] = item : l[o][event].active.push(item);
 						instance = (o != "abaaso") ? $("#"+o) : null;
 						((instance !== null)
-						 && (instance !== undefined)) ? ((instance.addEventListener !== undefined)
+						 && (instance !== undefined)) ? ((typeof(instance.addEventListener) == "function")
 										 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
 										 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 					}
@@ -1546,7 +1546,7 @@ var abaaso = function(){
 							delete l[o][event];
 							instance = (o != "abaaso") ? $("#"+o) : null;
 							((instance !== null)
-							 && (instance !== undefined)) ? ((instance.removeEventListener)
+							 && (instance !== undefined)) ? ((typeof(instance.removeEventListener) == "function")
 											 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
 											 : instance.detachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
 						}
