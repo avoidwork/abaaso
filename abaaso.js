@@ -2183,7 +2183,7 @@ var abaaso = function(){
 					var nodes   = document.getElementsByTagName("*"),
 					    i       = nodes.length,
 					    obj     = [],
-					    pattern = new RegExp(arg);
+					    pattern = new RegExp("\\b"+arg+"\\b");
 
 					while (i--) {
 						(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
