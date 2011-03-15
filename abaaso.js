@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.9
+ * @version 1.2.9.1
  */
 var abaaso = function(){
 	/**
@@ -1376,7 +1376,7 @@ var abaaso = function(){
 					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
 					for (i = 0; i < loop; i++) {
-						this.add(obj[i], event, fn, id, ((scope instanceof Array) ? obj[i] : scope), standby);
+						this.add(obj[i], event, fn, id, ((scope === false) ? obj[i] : scope), standby);
 					}
 					return obj;
 				}
@@ -1867,6 +1867,10 @@ var abaaso = function(){
 						{name: "keys", fn: function() {
 							return abaaso.array.keys(this);
 							}},
+						{name: "on", fn: function(event, listener, id, scope, standby) {
+							scope = scope || false;
+							return abaaso.on(this, event, listener, id, scope, standby);
+							}},
 						{name: "remove", fn: function(arg) {
 							return abaaso.array.remove(this, arg);
 							}},
@@ -1901,6 +1905,12 @@ var abaaso = function(){
 							this.genID();
 							abaaso.fx.move(this, pos, ms);
 							}},
+						{name: "on", fn: function(event, listener, id, scope, standby) {
+							scope = scope || this;
+							((this.id === undefined)
+							 || (this.id == "")) ? this.genID() : void(0);
+							return abaaso.on(this, event, listener, id, scope, standby);
+							}},
 						{name: "opacity", fn: function(arg) { // Requires the fx module
 							return abaaso.fx.opacity(this, arg);
 							}},
@@ -1919,7 +1929,11 @@ var abaaso = function(){
 							}},
 						{name: "odd", fn: function() {
 							return abaaso.number.odd(this);
-							}}
+							}},
+						{name: "on", fn: function(event, listener, id, scope, standby) {
+							scope = scope || this;
+							return abaaso.on(this, event, listener, id, scope, standby);
+							}},
 					],
 					shared  : [
 						{name: "clear", fn: function() {
@@ -1967,13 +1981,6 @@ var abaaso = function(){
 						{name: "loading", fn: function() {
 							return abaaso.loading.create(this);
 							}},
-						{name: "on", fn: function(event, listener, id, scope, standby) {
-							scope = scope || this;
-							((!this instanceof String)
-								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genID() : void(0);
-							return abaaso.on(this, event, listener, id, scope, standby);
-							}},
 						{name: "show", fn: function() {
 							this.genID();
 							return abaaso.el.show(this);
@@ -1992,6 +1999,10 @@ var abaaso = function(){
 					string  : [
 						{name: "capitalize", fn: function() {
 							return this.charAt(0).toUpperCase() + this.slice(1);
+							}},
+						{name: "on", fn: function(event, listener, id, scope, standby) {
+							scope = scope || this;
+							return abaaso.on(this, event, listener, id, scope, standby);
 							}},
 						{name: "trim", fn: function(){
 							return this.replace(/^\s+|\s+$/, "");
@@ -2267,7 +2278,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.9"
+		version         : "1.2.9.1"
 	};
 }();
 
