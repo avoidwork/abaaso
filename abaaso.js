@@ -1933,7 +1933,7 @@ var abaaso = function(){
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							return abaaso.on(this, event, listener, id, scope, standby);
-							}},
+							}}
 					],
 					shared  : [
 						{name: "clear", fn: function() {
