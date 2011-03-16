@@ -1408,8 +1408,19 @@ var abaaso = function(){
 						instance = (o != "abaaso") ? $("#"+o) : null;
 						((instance !== null)
 						 && (instance !== undefined)) ? ((typeof(instance.addEventListener) == "function")
-										 ? instance.addEventListener(event, function(){ instance.fire(event); }, false)
-										 : instance.attachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
+										 ? instance.addEventListener(event, function(e){
+											(!e) ? e = window.event : void(0);
+											e.cancelBubble = true;
+											(typeof(e.stopPropagation) == "function") ? e.stopPropagation() : void(0);
+											instance.fire(event);
+										   }, false)
+										 : instance.attachEvent("on" + event, function(e){
+											(!e) ? e = window.event : void(0);
+											e.cancelBubble = true;
+											(typeof(e.stopPropagation) == "function") ? e.stopPropagation() : void(0);
+											instance.fire(event);
+										   }))
+						                              : void(0);
 					}
 					else {
 						(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
@@ -1547,8 +1558,18 @@ var abaaso = function(){
 							instance = (o != "abaaso") ? $("#"+o) : null;
 							((instance !== null)
 							 && (instance !== undefined)) ? ((typeof(instance.removeEventListener) == "function")
-											 ? instance.removeEventListener(event, function(){ instance.fire(event); }, false)
-											 : instance.detachEvent("on" + event, function(){ instance.fire(event); })) : void(0);
+											 ? instance.removeEventListener(event, function(e){
+												(!e) ? e = window.event : void(0);
+												e.cancelBubble = true;
+												(typeof(e.stopPropagation) == "function") ? e.stopPropagation() : void(0);
+												instance.fire(event);
+											   }, false)
+											 : instance.detachEvent("on" + event, function(e){
+												(!e) ? e = window.event : void(0);
+												e.cancelBubble = true;
+												(typeof(e.stopPropagation) == "function") ? e.stopPropagation() : void(0);
+												instance.fire(event);
+											   })) : void(0);
 						}
 						else if (l[o][event].active[id] !== undefined) {
 							delete l[o][event].active[id];
