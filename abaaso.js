@@ -1698,7 +1698,18 @@ var abaaso = function(){
 						break;
 					default:
 						obj = document.getElementsByTagName(arg);
-						((nodelist === false) && (!client.ie)) ? obj = Array.prototype.slice.call(obj) : void(0);
+						if (nodelist === false) {
+							if (!client.ie) {
+								obj = Array.prototype.slice.call(obj);
+							}
+							else {
+								var a = [], i, loop = obj.length;
+								for (var i = 0; i < loop; i++) {
+									a.push(obj[i]);
+								}
+								obj = a;
+							}
+						}
 						break;
 				}
 
