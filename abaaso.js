@@ -1890,7 +1890,9 @@ var abaaso = function(){
 				switch (args[0].toString().replace(/\(.*\)/, "")) {
 					case "contains":
 						obj = contains(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
-						(obj.length === 1) ? obj = obj.first() : void(0);
+						(obj.length === 0) ? obj = undefined
+						                   : ((obj.length == 1) ? obj = obj.first() : void(0));
+								break;
 						break;
 					case "first":
 						obj = (obj instanceof Array) ? obj.first() : obj;
@@ -1920,7 +1922,8 @@ var abaaso = function(){
 						switch (args[1].toString().replace(/\(.*\)/, "")) {
 							case "contains":
 								obj = contains(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-								(obj.length === 1) ? obj = obj.first() : void(0);
+								(obj.length === 0) ? obj = undefined
+								                   : ((obj.length == 1) ? obj = obj.first() : void(0));
 								break;
 							case "first":
 								obj = obj.first();
@@ -2147,7 +2150,7 @@ var abaaso = function(){
 					element : [
 						{name: "create", fn: function(type, args) {
 							this.genID();
-							abaaso.create(type, args, this);
+							return abaaso.create(type, args, this);
 							}},
 						{name: "fade", fn: function(arg) {
 							this.genID();
