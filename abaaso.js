@@ -1816,17 +1816,20 @@ var abaaso = function(){
 			 * @param arg {string} HTMLElement type to exclude, can be comma delimited
 			 */
 			not = function(obj, arg) {
-				var i, o, loop, x, loop2, instances = [], found = [];
+				var i, o, loop, x, loop2, instances = [];
 
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
-							(find(obj[i].childNodes[x], arg) === false) ? instances.push(obj[i]) : found.push(obj[i]);
+							obj[i].genID();
+							(find(obj[i].childNodes[x], arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
+							                                            : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
 						}
 					}
-					return instances.diff(found);
+					instances = instances.indexed();
+					return instances;
 				}
 				else {
 					loop = obj.childNodes.length;
