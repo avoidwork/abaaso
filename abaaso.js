@@ -154,6 +154,24 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Returns an Associative Array as an Indexed Array
+		 *
+		 * @param instance {array} The array to index
+		 * @param returns {array} The indexed array
+		 */
+		indexed : function(instance) {
+			var o, i = 0, indexed = [];
+			for (o in instance) {
+				if (typeof(instance[o]) != "function") {
+					indexed[i] = (instance[o] instanceof Array) ? instance[o].indexed() : instance[o];
+					i++
+				}
+			}
+			indexed.length = i;
+			return indexed;
+		},
+
+		/**
 		 * Returns the keys in the array
 		 *
 		 * @param instance {array} The array to extract keys from
@@ -1736,9 +1754,7 @@ var abaaso = function(){
 			 * @returns {boolean} True if found
 			 */
 			find = function(obj, arg) {
-				var result = ((obj.nodeType == 1) && (obj.nodeName.toLowerCase() == arg)) ? true : false;
-				debugger;
-				return result;
+				return ((obj.nodeType == 1) && (obj.nodeName.toLowerCase() == arg)) ? true : false;
 			}
 
 			/**
@@ -1776,9 +1792,12 @@ var abaaso = function(){
 					for (i = 0; i < loop; i++) {
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
-							(find(obj[i].childNodes[x], arg)) ? instances.push(obj[i]) : void(0);
+							obj[i].genID();
+							((find(obj[i].childNodes[x], arg) == true)
+							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 						}
 					}
+					instances = instances.indexed();
 					return instances;
 				}
 				else {
@@ -1786,7 +1805,6 @@ var abaaso = function(){
 					for (i = 0; i < loop; i++) {
 						(find(obj.childNodes[i], arg)) ? instances.push(obj[i]) : void(0);
 					}
-
 					return (instances.length == 1) ? obj : undefined;
 				}
 			};
@@ -1798,22 +1816,22 @@ var abaaso = function(){
 			 * @param arg {string} HTMLElement type to exclude, can be comma delimited
 			 */
 			not = function(obj, arg) {
-				var i, o, loop, x, loop2, instances = [];
+				var i, o, loop, x, loop2, instances = [], found = [];
 
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
-							(!find(obj[i].childNodes[x], arg)) ? instances.push(obj[i]) : void(0);
+							(find(obj[i].childNodes[x], arg) === false) ? instances.push(obj[i]) : found.push(obj[i]);
 						}
 					}
-					return instances;
+					return instances.diff(found);
 				}
 				else {
 					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
-						(!find(obj.childNodes[i], arg)) ? instances.push(obj[i]) : void(0);
+						(find(obj.childNodes[i], arg) === false) ? instances.push(obj[i]) : void(0);
 					}
 
 					return (instances.length == 1) ? obj : undefined;
@@ -1879,14 +1897,17 @@ var abaaso = function(){
 						break;
 					case "has":
 						obj = has(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
-						(obj.length === 1) ? obj = obj.first() : void(0);
-						break;
+						(obj.length === 0) ? obj = undefined
+						                   : ((obj.length == 1) ? obj = obj.first() : void(0));
+								break;
 					case "last":
 						obj = (obj instanceof Array) ? obj.last() : obj;
 						break;
 					case "not":
 						obj = not(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
-						(obj.length === 1) ? obj = obj.first() : void(0);
+						(obj.length === 0) ? obj = undefined
+						                   : ((obj.length == 1) ? obj = obj.first() : void(0));
+								break;
 						break;
 					default:
 						loop = obj.length;
@@ -1906,14 +1927,16 @@ var abaaso = function(){
 								break;
 							case "has":
 								obj = has(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-								(obj.length === 1) ? obj = obj.first() : void(0);
+								(obj.length === 0) ? obj = undefined
+								                   : ((obj.length == 1) ? obj = obj.first() : void(0));
 								break;
 							case "last":
 								obj = obj.last();
 								break;
 							case "not":
 								obj = not(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-								(obj.length === 1) ? obj = obj.first() : void(0);
+								(obj.length === 0) ? obj = undefined
+								                   : ((obj.length == 1) ? obj = obj.first() : void(0));
 								break;
 						}
 						break;
@@ -2100,6 +2123,9 @@ var abaaso = function(){
 							}},
 						{name: "index", fn: function(arg) {
 							return abaaso.array.index(this, arg);
+							}},
+						{name: "indexed", fn: function() {
+							return abaaso.array.indexed(this);
 							}},
 						{name: "keys", fn: function() {
 							return abaaso.array.keys(this);
