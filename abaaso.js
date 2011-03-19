@@ -1854,7 +1854,10 @@ var abaaso = function(){
 
 			// Setting arg & args
 			args = arg.split(/\.|:/).slice(1);
-			if (arg.charAt(0) == ".") {
+			if (arg.charAt(0) == ":") {
+				arg = ":";
+			}
+			else if (arg.charAt(0) == ".") {
 				arg = (args.length > 0) ? new String("."+args[0]) : new String(arg);
 				args = args.splice(1);
 			}
@@ -1872,8 +1875,7 @@ var abaaso = function(){
 					obj = document.getElementById(arg.substring(1));
 					break;
 				case ":":
-					arg = "*"+arg;
-					obj = document.getElementsByTagName("*");
+					obj = document.body.getElementsByTagName("*");
 					if (nodelist === false) {
 						if (!client.ie) {
 							obj = Array.prototype.slice.call(obj);
