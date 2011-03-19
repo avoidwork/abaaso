@@ -2119,6 +2119,10 @@ var abaaso = function(){
 							}}
 					],
 					element : [
+						{name: "create", fn: function(type, args) {
+							this.genID();
+							abaaso.create(type, args, this);
+							}},
 						{name: "fade", fn: function(arg) {
 							this.genID();
 							abaaso.fx.fade("#"+this.id, arg);
