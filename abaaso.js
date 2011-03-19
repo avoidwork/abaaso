@@ -1871,6 +1871,22 @@ var abaaso = function(){
 				case "#":
 					obj = document.getElementById(arg.substring(1));
 					break;
+				case ":":
+					arg = "*"+arg;
+					obj = document.getElementsByTagName("*");
+					if (nodelist === false) {
+						if (!client.ie) {
+							obj = Array.prototype.slice.call(obj);
+						}
+						else {
+							var a = [], i, loop = obj.length;
+							for (var i = 0; i < loop; i++) {
+								a.push(obj[i]);
+							}
+							obj = a;
+						}
+					}
+					break;
 				default:
 					obj = document.getElementsByTagName(arg);
 					if (nodelist === false) {
