@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.2.9.1
+ * @version 1.2.9.2
  */
 var abaaso = function(){
 	/**
@@ -943,6 +943,23 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Loads a CSS stylesheet into the View
+		 *
+		 * @param content {string} The CSS to put in a style tag
+		 */
+		css : function(content) {
+			var ss, css;
+			ss = create("style", {type: "text/css"}, $("head")[0]);
+			if (ss.styleSheet) {
+				ss.styleSheet.cssText = content;
+			}
+			else {
+				css = document.createTextNode(content);
+				ss.appendChild(css);
+			}
+		},
+
+		/**
 		 * Destroys an element
 		 *
 		 * Events:    beforeDestroy    Fires before the destroy starts
@@ -1180,10 +1197,6 @@ var abaaso = function(){
 					if (obj) {
 						for (var i in args) {
 							switch(i) {
-								case "class":
-									((client.ie)
-									 && (client.version < 8)) ? obj.setAttribute("className", args[i]) : obj.setAttribute("class", args[i]);
-									break;
 								case "innerHTML":
 								case "type":
 								case "src":
@@ -1192,6 +1205,8 @@ var abaaso = function(){
 								case "opacity": // Requires the fx module
 									obj.opacity(args[i]);
 									break;
+								case "class":
+									((client.ie) && (client.version < 8)) ? i = "className" : void(0);
 								case "id":
 									var o = observer.listeners;
 									if (o[obj.id] !== undefined) {
@@ -1667,6 +1682,7 @@ var abaaso = function(){
 		 * @param arg {string} Comma delimited string of target #id, .class or tagNames
 		 * @param nodelist {boolean} [Optional] True will return a NodeList (by reference) for tags & classes
 		 * @returns {mixed} instances Instance or Array of Instances
+		 * @todo add selectors like tag.tag, class.tag and tag:first/last
 		 */
 		$ : function(arg, nodelist) {
 			try {
@@ -1768,7 +1784,7 @@ var abaaso = function(){
 		 */
 		domID : function(id) {
 			try {
-				return id.replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+				return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 			}
 			catch (e) {
 				error(e);
@@ -2205,6 +2221,7 @@ var abaaso = function(){
 		clear           : el.clear,
 		clean           : cache.clean,
 		create          : el.create,
+		css             : el.css,
 		define          : utility.define,
 		del             : client.del,
 		destroy         : el.destroy,
@@ -2310,7 +2327,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.2.9.1"
+		version         : "1.2.9.2"
 	};
 }();
 
