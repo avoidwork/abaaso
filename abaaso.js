@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3
+ * @version 1.3.1
  */
 var abaaso = function(){
 	/**
@@ -1334,10 +1334,6 @@ var abaaso = function(){
 		 */
 		even : function(arg) {
 			try {
-				if (typeof(arg) != "number") {
-					throw label.error.expectedNumber;
-				}
-
 				return ((arg % 2) === 0) ? true : false;
 			}
 			catch (e) {
@@ -1354,10 +1350,6 @@ var abaaso = function(){
 		 */
 		odd : function(arg) {
 			try {
-				if (typeof(arg) != "number") {
-					throw label.error.expectedNumber;
-				}
-
 				return ((arg % 2) === 0) ? false : true;
 			}
 			catch (e) {
@@ -1779,9 +1771,30 @@ var abaaso = function(){
 		 */
 		$ : function(arg, nodelist) {
 			try {
-				var args, obj, i, loop, c, find, contains, has, not,
+				var args, obj, i, loop, c, alt, find, contains, has, not,
 				    document  = window.document,
 				    instances = [];
+
+				/**
+				 * Looks for alternating HTMLElement (arg) in HTMLElement (obj)
+				 *
+				 * @param obj {object} HTMLElement to search
+				 * @param state {object} Boolean representing rows, true is even, false is odd
+				 * @returns {mixed} Instance or Array of Instances containing arg, alternating odd or even
+				 */
+				alt = function(obj, state) {
+					if (obj.childNodes.length > 0) {
+						var i, loop = obj.childNodes.length, instances = [];
+						for (i = 0; i < loop; i++) {
+							((i+1).even() === state) ? instances.push(obj.childNodes[i]) : void(0);
+						}
+						return instances;
+					}
+					else {
+						obj = undefined;
+					}
+					return obj;
+				};
 
 				/**
 				 * Finds an HTMLElement type (arg) in a NodeList (obj)
@@ -1792,7 +1805,7 @@ var abaaso = function(){
 				 */
 				find = function(obj, arg) {
 					return ((obj.nodeType == 1) && (obj.nodeName.toLowerCase() == arg)) ? true : false;
-				}
+				};
 
 				/**
 				 * Looks for arg in obj.innerHTML
@@ -1820,6 +1833,7 @@ var abaaso = function(){
 				 *
 				 * @param obj {object} HTMLElement to search
 				 * @param arg {string} HTMLElement type to find, can be comma delimited
+				 * @returns {mixed} Instance or Array of Instances containing arg
 				 */
 				has = function(obj, arg) {
 					var i, o, loop, x, loop2, instances = [];
@@ -1851,6 +1865,7 @@ var abaaso = function(){
 				 *
 				 * @param obj {object} HTMLElement to search
 				 * @param arg {string} HTMLElement type to exclude, can be comma delimited
+				 * @returns {mixed} Instance or Array of Instances containing arg
 				 */
 				not = function(obj, arg) {
 					var i, o, loop, x, loop2, instances = [];
@@ -1952,8 +1967,13 @@ var abaaso = function(){
 							(obj.length === 0) ? obj = undefined
 									   : ((obj.length == 1) ? obj = obj.first() : void(0));
 							break;
+						case "even":
+							obj = alt(obj, true);
+							(obj.length === 0) ? obj = undefined
+									   : ((obj.length == 1) ? obj = obj.first() : void(0));
+							break;
 						case "first":
-							obj = (obj instanceof Array) ? obj.first() : obj;
+							obj = (obj instanceof Array) ? obj.first() : obj.childNodes[0];
 							break;
 						case "has":
 							obj = has(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
@@ -1961,10 +1981,15 @@ var abaaso = function(){
 									   : ((obj.length == 1) ? obj = obj.first() : void(0));
 							break;
 						case "last":
-							obj = (obj instanceof Array) ? obj.last() : obj;
+							obj = (obj instanceof Array) ? obj.last() : obj.childNodes[(obj.childNodes.length - 1)];
 							break;
 						case "not":
 							obj = not(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
+							(obj.length === 0) ? obj = undefined
+									   : ((obj.length == 1) ? obj = obj.first() : void(0));
+							break;
+						case "odd":
+							obj = alt(obj, false);
 							(obj.length === 0) ? obj = undefined
 									   : ((obj.length == 1) ? obj = obj.first() : void(0));
 							break;
@@ -1980,6 +2005,9 @@ var abaaso = function(){
 								case "contains":
 									obj = contains(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
 									break;
+								case "even":
+									obj = alt(obj, true);
+									break;
 								case "first":
 									obj = obj.first();
 									break;
@@ -1992,6 +2020,9 @@ var abaaso = function(){
 								case "not":
 									obj = not(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
 									break;
+								case "odd":
+									obj = alt(obj, false);
+									break
 							}
 							break;
 					}
@@ -2617,7 +2648,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3"
+		version         : "1.3.1"
 	};
 }();
 
