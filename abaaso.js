@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.1
+ * @version 1.3.2
  */
 var abaaso = function(){
 	/**
@@ -434,12 +434,13 @@ var abaaso = function(){
 		 *             afterDelete     Fires after the DELETE response is received
 		 *
 		 * @param uri {string} URI to submit to
-		 * @param fn {function} A handler function to execute once a response has been received
+		 * @param success {function} A handler function to execute once a response has been received
+		 * @param failure {function} [Optional] A handler function to execute on error
 		 */
-		del : function(uri, fn) {
+		del : function(uri, success, failure) {
 			try {
 				if ((uri == "")
-				    || (!fn instanceof Function)) {
+				    || (!success instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
@@ -447,10 +448,11 @@ var abaaso = function(){
 						cache.expire(uri);
 						uri.toString().un("afterDelete", "expire");
 					}, "expire").fire("beforeDelete");
-				client.request(uri, fn, "DELETE");
+				client.request(uri, success, "DELETE");
 			}
 			catch (e) {
 				error(e);
+				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
 
@@ -461,21 +463,23 @@ var abaaso = function(){
 		 *             afterGet     Fires after the GET response is received
 		 *
 		 * @param uri {string} URI to submit to
-		 * @param fn {function} A handler function to execute once a response has been received
+		 * @param success {function} A handler function to execute once a response has been received
+		 * @param failure {function} [Optional] A handler function to execute on error
 		 */
-		get : function(uri, fn) {
+		get : function(uri, success, failure) {
 			try {
 				if ((uri == "")
-				    || (!fn instanceof Function)) {
+				    || (!success instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
 				uri.toString().fire("beforeGet");
 				var cached = cache.get(uri);
-				(!cached) ? client.request(uri, fn, "GET") : fn(cached.response);
+				(!cached) ? client.request(uri, success, "GET") : success(cached.response);
 			}
 			catch (e) {
 				error(e);
+				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
 
@@ -486,23 +490,25 @@ var abaaso = function(){
 		 *             afterPut     Fires after the PUT response is received
 		 *
 		 * @param uri {string} URI submit to
-		 * @param fn {function} A handler function to execute once a response has been received
+		 * @param success {function} A handler function to execute once a response has been received
 		 * @param {args} PUT variables to include
+		 * @param failure {function} [Optional] A handler function to execute on error
 		 */
-		put : function(uri, fn, args) {
+		put : function(uri, success, args, failure) {
 			try {
 				if ((uri == "")
-				    || (!fn instanceof Function)
+				    || (!success instanceof Function)
 				    || (args === undefined)
 				    || (typeof args != "object")) {
 					throw label.error.invalidArguments;
 				}
 
 				uri.toString().fire("beforePut");
-				client.request(uri, fn, "PUT", args);
+				client.request(uri, success, "PUT", args);
 			}
 			catch (e) {
 				error(e);
+				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
 
@@ -513,22 +519,24 @@ var abaaso = function(){
 		 *             afterPost     Fires after the POST response is received
 		 *
 		 * @param uri {string} URI submit to
-		 * @param fn {function} A handler function to execute once a response has been received
+		 * @param success {function} A handler function to execute once a response has been received
 		 * @param {args} POST variables to include
+		 * @param failure {function} [Optional] A handler function to execute on error
 		 */
-		post : function(uri, fn, args) {
+		post : function(uri, success, args, failure) {
 			try {
 				if ((uri == "")
-				    || (!fn instanceof Function)
+				    || (!success instanceof Function)
 				    || (args == "")) {
 					throw label.error.invalidArguments;
 				}
 
 				uri.toString().fire("beforePost");
-				client.request(uri, fn, "POST", args);
+				client.request(uri, success, "POST", args);
 			}
 			catch (e) {
 				error(e);
+				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
 
@@ -539,20 +547,22 @@ var abaaso = function(){
 		 *             afterJSONP     Fires after the JSONP response is received
 		 *
 		 * @param uri {string} URI to load as a SCRIPT element
-		 * @param fn {function} A handler function to execute once a response has been received
+		 * @param success {function} A handler function to execute once a response has been received
+		 * @param failure {function} [Optional] A handler function to execute on error
 		 */
-		jsonp : function(uri, fn) {
+		jsonp : function(uri, success, failure) {
 			try {
 				if ((uri == "")
-				    || (!fn instanceof Function)) {
+				    || (!success instanceof Function)) {
 					throw label.error.invalidArguments;
 				}
 
 				uri.toString().fire("beforeJSONP");
-				client.request(uri, fn, "JSONP");
+				client.request(uri, success, "JSONP");
 			}
 			catch (e) {
 				error(e);
+				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
 
@@ -568,50 +578,45 @@ var abaaso = function(){
 		 * @private
 		 */
 		request : function(uri, fn, type, args) {
-			try {
-				if (((type.toLowerCase() == "post")
-				     || (type.toLowerCase() == "put"))
-				    && (typeof args != "object")) {
-					throw label.error.invalidArguments;
-				}
-
-				if (type.toLowerCase() == "jsonp") {
-					var uid  = 'acb' + utility.id(),
-					    curi = uri,
-					    head = document.getElementsByTagName("head")[0];
-
-					do uid = 'acb' + utility.id();
-					while (abaaso.callback[uid] !== undefined);
-
-					uri += "&"+new Date().getTime().toString();
-					uri = uri.replace(/callback=\?/, "callback=abaaso.callback."+uid);
-
-					abaaso.callback[uid] = function(response) {
-						curi.toString().fire("afterJSONP");
-						fn(response);
-						delete abaaso.callback[uid];
-						};
-
-					el.create("script", {src: uri, type: "text/javascript"}, head);
-				}
-				else {
-					var xhr     = new XMLHttpRequest(),
-					    payload = ((type.toLowerCase() == "post")
-						       || (type.toLowerCase() == "put")) ? args : null,
-					    cached  = cache.get(uri, false);
-
-					uri.toString().fire("beforeXHR");
-
-					xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
-					xhr.open(type.toUpperCase(), uri, true);
-					(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
-					((cached !== false)
-					 && (cached.headers.ETag !== undefined)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
-					xhr.send(payload);
-				}
+			if (((type.toLowerCase() == "post")
+			     || (type.toLowerCase() == "put"))
+			    && (typeof args != "object")) {
+				throw label.error.invalidArguments;
 			}
-			catch(e) {
-				error(e);
+
+			if (type.toLowerCase() == "jsonp") {
+				var uid  = 'acb' + utility.id(),
+				    curi = uri,
+				    head = document.getElementsByTagName("head")[0];
+
+				do uid = 'acb' + utility.id();
+				while (abaaso.callback[uid] !== undefined);
+
+				uri += "&"+new Date().getTime().toString();
+				uri = uri.replace(/callback=\?/, "callback=abaaso.callback."+uid);
+
+				abaaso.callback[uid] = function(response) {
+					curi.toString().fire("afterJSONP");
+					fn(response);
+					delete abaaso.callback[uid];
+					};
+
+				el.create("script", {src: uri, type: "text/javascript"}, head);
+			}
+			else {
+				var xhr     = new XMLHttpRequest(),
+				    payload = ((type.toLowerCase() == "post")
+					       || (type.toLowerCase() == "put")) ? args : null,
+				    cached  = cache.get(uri, false);
+
+				uri.toString().fire("beforeXHR");
+
+				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
+				xhr.open(type.toUpperCase(), uri, true);
+				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
+				((cached !== false)
+				 && (cached.headers.ETag !== undefined)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
+				xhr.send(payload);
 			}
 		},
 
@@ -630,61 +635,56 @@ var abaaso = function(){
 		 * @private
 		 */
 		response : function(xhr, uri, fn, type) {
-			try {
-				if (xhr.readyState == 2) {
-					var headers = xhr.getAllResponseHeaders().split("\n"),
-					    i       = null,
-					    loop    = headers.length,
-					    items   = {};
+			if (xhr.readyState == 2) {
+				var headers = xhr.getAllResponseHeaders().split("\n"),
+				    i       = null,
+				    loop    = headers.length,
+				    items   = {};
 
-					for (i = 0; i < loop; i++) {
-						if (headers[i] != "") {
-							var header    = headers[i].toString(),
-							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+				for (i = 0; i < loop; i++) {
+					if (headers[i] != "") {
+						var header    = headers[i].toString(),
+						    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 
-							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-							items[header] = value;
-						}
-					}
-
-					cache.set(uri, "headers", items);
-				}
-				else if (xhr.readyState == 4) {
-					if ((xhr.status == 200)
-					    && (xhr.responseText != "")) {
-						var state  = null,
-						    s      = abaaso.state;
-
-						if (type != "DELETE") {
-							cache.set(uri, "epoch", new Date());
-							cache.set(uri, "response", xhr.responseText);
-						}
-
-						uri.toString().fire("afterXHR");
-						uri.toString().fire("after"+type.toLowerCase().capitalize());
-						uri = cache.get(uri, false);
-
-						if ((s.header !== null)
-						    && (state = uri.headers[s.header]) && (state !== undefined)) {
-							s.previous = s.current;
-							s.current  = state;
-							((s.previous !== null)
-							 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current) : void(0);
-							abaaso.fire(state);
-						}
-
-						(fn !== undefined) ? fn(uri.response) : void(0);
-					}
-					else if (xhr.status == 401) {
-						throw label.error.serverUnauthorized;
-					}
-					else {
-						throw label.error.serverError;
+						header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+						items[header] = value;
 					}
 				}
+
+				cache.set(uri, "headers", items);
 			}
-			catch (e) {
-				error(e);
+			else if (xhr.readyState == 4) {
+				if ((xhr.status == 200)
+				    && (xhr.responseText != "")) {
+					var state  = null,
+					    s      = abaaso.state;
+
+					if (type != "DELETE") {
+						cache.set(uri, "epoch", new Date());
+						cache.set(uri, "response", xhr.responseText);
+					}
+
+					uri.toString().fire("afterXHR");
+					uri.toString().fire("after"+type.toLowerCase().capitalize());
+					uri = cache.get(uri, false);
+
+					if ((s.header !== null)
+					    && (state = uri.headers[s.header]) && (state !== undefined)) {
+						s.previous = s.current;
+						s.current  = state;
+						((s.previous !== null)
+						 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current) : void(0);
+						abaaso.fire(state);
+					}
+
+					(fn !== undefined) ? fn(uri.response) : void(0);
+				}
+				else if (xhr.status == 401) {
+					throw label.error.serverUnauthorized;
+				}
+				else {
+					throw label.error.serverError;
+				}
 			}
 		}
 	};
@@ -992,26 +992,30 @@ var abaaso = function(){
 		 *            afterCreate     Fires after the object has been appended to it's parent
 		 *
 		 * @param type {string} Type of element to create
-		 * @param args {object} Collection of properties to apply to the new element
+		 * @param args {object} [Optional] Collection of properties to apply to the new element
 		 * @param id {mixed} [Optional] Target object or element.id value to append to
 		 * @returns {object} The elemented that was created
+		 * @todo complete target assignment
 		 */
 		create : function(type, args, id) {
 			try {
-				if (args instanceof Object) {
-					var obj = document.createElement(type);
-					(args.id === undefined) ? obj.genID() : obj.id = args.id;
-					obj.fire("beforeCreate");
-					obj.update(args);
-					(typeof(id) == "object") ? id.appendChild(obj)
-								 : ((id !== undefined)
-								    && ($(id) !== undefined)) ? $(id).appendChild(obj) : document.body.appendChild(obj);
-					obj.fire("afterCreate");
-					return obj;
+				var obj,
+				    target = (id !== undefined) ? id : (((typeof(args) == "string")
+									 || (args.childNodes !== undefined)) ? args : document.body);
+				(typeof(target) == "string") ? target = $(target) : void(0);
+				if (target === undefined) {
+					throw label.error.invalidArguments;
 				}
-				else {
-					throw label.error.expectedObject;
-				}
+				obj = document.createElement(type);
+				(args === undefined) ? obj.genID() : ((typeof(args) != "string")
+								      && (args.childNodes === undefined)
+								      && (args.id === undefined) ? obj.id = args.id : obj.genID());
+				obj.fire("beforeCreate");
+				((args instanceof Object)
+				 && (args.childNodes === undefined)) ? obj.update(args) : void(0);
+				target.appendChild(obj);
+				obj.fire("afterCreate");
+				return obj;
 			}
 			catch (e) {
 				error(e);
@@ -2648,7 +2652,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.1"
+		version         : "1.3.2"
 	};
 }();
 
