@@ -1913,7 +1913,6 @@ var abaaso = function(){
 						obj = contains(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
 						(obj.length === 0) ? obj = undefined
 						                   : ((obj.length == 1) ? obj = obj.first() : void(0));
-								break;
 						break;
 					case "first":
 						obj = (obj instanceof Array) ? obj.first() : obj;
@@ -1922,7 +1921,7 @@ var abaaso = function(){
 						obj = has(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
 						(obj.length === 0) ? obj = undefined
 						                   : ((obj.length == 1) ? obj = obj.first() : void(0));
-								break;
+						break;
 					case "last":
 						obj = (obj instanceof Array) ? obj.last() : obj;
 						break;
@@ -1930,7 +1929,6 @@ var abaaso = function(){
 						obj = not(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
 						(obj.length === 0) ? obj = undefined
 						                   : ((obj.length == 1) ? obj = obj.first() : void(0));
-								break;
 						break;
 					default:
 						loop = obj.length;
@@ -1943,28 +1941,28 @@ var abaaso = function(){
 						switch (args[1].toString().replace(/\(.*\)/, "")) {
 							case "contains":
 								obj = contains(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-								(obj.length === 0) ? obj = undefined
-								                   : ((obj.length == 1) ? obj = obj.first() : void(0));
 								break;
 							case "first":
 								obj = obj.first();
 								break;
 							case "has":
 								obj = has(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-								(obj.length === 0) ? obj = undefined
-								                   : ((obj.length == 1) ? obj = obj.first() : void(0));
 								break;
 							case "last":
 								obj = obj.last();
 								break;
 							case "not":
 								obj = not(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-								(obj.length === 0) ? obj = undefined
-								                   : ((obj.length == 1) ? obj = obj.first() : void(0));
 								break;
 						}
 						break;
 				}
+			}
+
+			// If one Element is in an Array, set it to obj.first()
+			if (obj instanceof Array) {
+				(obj.length === 0) ? obj = undefined
+					           : ((obj.length == 1) ? obj = obj.first() : void(0));
 			}
 
 			obj = (obj === null) ? undefined : obj;
@@ -2212,6 +2210,10 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.position(this);
 							}},
+						{name: "text", fn: function(arg) {
+							this.genID();
+							return abaaso.update(this, {innerHTML: arg});
+							}},
 						{name: "slide", fn: function(ms, pos, elastic) {
 							this.genID();
 							abaaso.fx.slide("#"+this.id, ms, pos, elastic);
@@ -2287,7 +2289,7 @@ var abaaso = function(){
 							}},
 						{name: "update", fn: function(args) {
 							this.genID();
-							abaaso.update(this, args);
+							return abaaso.update(this, args);
 							}}
 					],
 					string  : [
