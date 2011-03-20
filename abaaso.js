@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.2
+ * @version 1.3.3
  */
 var abaaso = function(){
 	/**
@@ -1789,7 +1789,7 @@ var abaaso = function(){
 					if (obj.childNodes.length > 0) {
 						var i, loop = obj.childNodes.length, instances = [];
 						for (i = 0; i < loop; i++) {
-							((i+1).even() === state) ? instances.push(obj.childNodes[i]) : void(0);
+							(i.even() === state) ? instances.push(obj.childNodes[i]) : void(0);
 						}
 						return instances;
 					}
@@ -2651,7 +2651,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.2"
+		version         : "1.3.3"
 	};
 }();
 
@@ -2666,9 +2666,9 @@ if ((abaaso.client.chrome) || (abaaso.client.firefox) || (abaaso.client.safari))
 	}, false);
 }
 else {
-	abaaso.ready = setInterval(function(){
+	abaaso.timer.init = setInterval(function(){
 		if ((document.readyState == "loaded") || (document.readyState == "complete")) {
-			clearInterval(abaaso.ready);
+			clearInterval(abaaso.timer.init);
 			abaaso.init();
 			abaaso.fire("render").un("render");
 		}}, 10);
