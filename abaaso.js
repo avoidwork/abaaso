@@ -1742,7 +1742,7 @@ var abaaso = function(){
 		 * @returns {mixed} Instance or Array of Instances
 		 */
 		$ : function(arg, nodelist) {
-			var args, obj, i, loop, c, contains, has, not,
+			var args, obj, i, loop, c, find, contains, has, not,
 			    document  = window.document,
 			    instances = [];
 
