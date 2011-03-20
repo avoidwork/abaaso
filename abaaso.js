@@ -1844,7 +1844,7 @@ var abaaso = function(){
 			arg      = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
 			nodelist = (nodelist === true) ? true : false;
 
-			// Recursiving processing, ends up below
+			// Recursive processing, ends up below
 			if (arg instanceof Array) {
 				loop = arg.length;
 				for (i = 0; i < loop; i++) {
