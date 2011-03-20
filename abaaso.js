@@ -995,7 +995,6 @@ var abaaso = function(){
 		 * @param args {object} [Optional] Collection of properties to apply to the new element
 		 * @param id {mixed} [Optional] Target object or element.id value to append to
 		 * @returns {object} The elemented that was created
-		 * @todo complete target assignment
 		 */
 		create : function(type, args, id) {
 			try {
