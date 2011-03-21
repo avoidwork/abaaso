@@ -1337,7 +1337,7 @@ var abaaso = function(){
 		 */
 		even : function(arg) {
 			try {
-				return ((arg % 2) === 0) ? true : false;
+				return ((arg % 2) === 0);
 			}
 			catch (e) {
 				error(e);
@@ -1353,7 +1353,7 @@ var abaaso = function(){
 		 */
 		odd : function(arg) {
 			try {
-				return ((arg % 2) === 0) ? false : true;
+				return !((arg % 2) === 0);
 			}
 			catch (e) {
 				error(e);
