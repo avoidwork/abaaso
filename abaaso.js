@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.3
+ * @version 1.3.4
  */
 var abaaso = function(){
 	/**
@@ -1453,6 +1453,58 @@ var abaaso = function(){
 	};
 
 	/**
+	 * Mouse co-ordinates
+	 *
+	 * @class
+	 */
+	var mouse = {
+		/**
+		 * Indicates whether mouse tracking is enabled
+		 */
+		enabled : false,
+
+		/**
+		 * Indicates whether to try logging co-ordinates to the console
+		 */
+		log : false,
+
+		/**
+		 * Mouse co-ordinations
+		 */
+		pos : {x: null, y: null},
+
+		/**
+		 * Enables or disables mouse co-ordinate tracking
+		 *
+		 * @param n {mixed} Boolean to enable/disable tracking, or Mouse Event
+		 * @returns {object} abaaso.mouse
+		 */
+		track : function(n) {
+			var m = abaaso.mouse;
+			if (typeof(n) == "object") {
+				m.pos.x = (n.pageX) ? n.pageX : (document.body.scrollTop + n.clientX);
+				m.pos.y = (n.pageY) ? n.pageY : (document.body.scrollLeft + n.clientY);
+				try {
+					(m.log === true) ? console.log(m.pos.x + " : " + m.pos.y) : void(0);
+				}
+				catch (e) {
+					error(e);
+				}
+			}
+			else if (typeof(n) == "boolean") {
+				if (n === true) {
+					(document.addEventListener) ? document.addEventListener("mousemove", abaaso.mouse.track, false) : document.attachEvent("onmousemove", abaaso.mouse.track);
+				}
+				else {
+					(document.removeEventListener) ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track);
+				}
+				m.enabled = n;
+			}
+			return m;
+		}
+	};
+
+	/**
 	 * Observer for events
 	 *
 	 * @class
@@ -2527,6 +2579,7 @@ var abaaso = function(){
 			create  : utility.loading,
 			url     : null
 			},
+		mouse           : mouse,
 		number          : number,
 		observer        : {
 			add     : observer.add,
@@ -2626,9 +2679,6 @@ var abaaso = function(){
 
 			return abaaso.observer.list(obj, event);
 			},
-		position        : el.position,
-		post            : client.post,
-		put             : client.put,
 		on              : function() {
 			var all      = (arguments[2] instanceof Function) ? true : false;
 			var obj      = (all) ? arguments[0] : abaaso,
@@ -2640,6 +2690,9 @@ var abaaso = function(){
 
 			return abaaso.observer.add(obj, event, listener, id, scope, standby);
 			},
+		position        : el.position,
+		post            : client.post,
+		put             : client.put,
 		ready           : false,
 		timer           : {},
 		un              : function() {
@@ -2651,7 +2704,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.3"
+		version         : "1.3.4"
 	};
 }();
 
