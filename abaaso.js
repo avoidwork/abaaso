@@ -1496,12 +1496,13 @@ var abaaso = function(){
 					c = true;
 				}
 
-				try {
-					((c === true)
-					 && (m.log === true)) ? console.log(m.pos.x + " : " + m.pos.y) : void(0);
-				}
-				catch (e) {
-					abaaso.error(e);
+				if ((c === true) && (m.log === true)) {
+					try {
+						console.log(m.pos.x + " : " + m.pos.y);
+					}
+					catch (e) {
+						abaaso.error(e);
+					}
 				}
 			}
 			else if (typeof(n) == "boolean") {
