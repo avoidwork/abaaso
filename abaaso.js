@@ -1482,10 +1482,23 @@ var abaaso = function(){
 		track : function(n) {
 			var m = abaaso.mouse;
 			if (typeof(n) == "object") {
-				m.pos.x = (n.pageX) ? n.pageX : (document.body.scrollTop + n.clientX);
-				m.pos.y = (n.pageY) ? n.pageY : (document.body.scrollLeft + n.clientY);
+				var x, y, c = false;
+				x = (n.pageX) ? n.pageX : (document.body.scrollTop + n.clientX);
+				y = (n.pageY) ? n.pageY : (document.body.scrollLeft + n.clientY);
+
+				if (m.pos.x != x) {
+					m.pos.x = x;
+					c = true;
+				}
+
+				if (m.pos.y != y) {
+					m.pos.y = y;
+					c = true;
+				}
+				
 				try {
-					(m.log === true) ? console.log(m.pos.x + " : " + m.pos.y) : void(0);
+					((c === true)
+					 && (m.log === true)) ? console.log(m.pos.x + " : " + m.pos.y) : void(0);
 				}
 				catch (e) {
 					error(e);
