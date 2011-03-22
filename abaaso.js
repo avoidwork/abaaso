@@ -1495,13 +1495,13 @@ var abaaso = function(){
 					m.pos.y = y;
 					c = true;
 				}
-				
+
 				try {
 					((c === true)
 					 && (m.log === true)) ? console.log(m.pos.x + " : " + m.pos.y) : void(0);
 				}
 				catch (e) {
-					error(e);
+					abaaso.error(e);
 				}
 			}
 			else if (typeof(n) == "boolean") {
