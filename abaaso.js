@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.4
+ * @version 1.3.5
  */
 var abaaso = function(){
 	/**
@@ -998,19 +998,33 @@ var abaaso = function(){
 		 */
 		create : function(type, args, id) {
 			try {
-				var obj,
-				    target = (id !== undefined) ? id : (((typeof(args) == "string")
-									 || (args.childNodes !== undefined)) ? args : document.body);
-				(typeof(target) == "string") ? target = $(target) : void(0);
+				if (type === undefined) {
+					throw label.error.invalidArguments;
+				}
+
+				var obj, target;
+
+				if (id !== undefined) {
+					target = id;
+				}
+				else if ((args !== undefined) && ((typeof(args) == "string") || (args.childNodes !== undefined))) {
+					target = args;
+					(typeof(target) == "string") ? target = $(target) : void(0);
+				}
+				else {
+					target = document.body;
+				}
+
 				if (target === undefined) {
 					throw label.error.invalidArguments;
 				}
+
 				obj = document.createElement(type);
 				(args === undefined) ? obj.genID() : ((typeof(args) != "string")
 								      && (args.childNodes === undefined)
 								      && (args.id === undefined) ? obj.id = args.id : obj.genID());
 				obj.fire("beforeCreate");
-				((args instanceof Object)
+				((typeof(args) == "object")
 				 && (args.childNodes === undefined)) ? obj.update(args) : void(0);
 				target.appendChild(obj);
 				obj.fire("afterCreate");
@@ -1839,109 +1853,111 @@ var abaaso = function(){
 		 * @returns {mixed} Instance or Array of Instances
 		 */
 		$ : function(arg, nodelist) {
-			try {
-				var args, obj, i, loop, c, alt, find, contains, has, not,
-				    document  = window.document,
-				    instances = [];
+			var args, obj, i, loop, c, alt, find, contains, has, not, x,
+			    document  = window.document,
+			    instances = [];
 
-				/**
-				 * Looks for alternating HTMLElement (arg) in HTMLElement (obj)
-				 *
-				 * @param obj {object} HTMLElement to search
-				 * @param state {object} Boolean representing rows, true is even, false is odd
-				 * @returns {mixed} Instance or Array of Instances containing arg, alternating odd or even
-				 */
-				alt = function(obj, state) {
-					if (obj.childNodes.length > 0) {
-						var i, loop = obj.childNodes.length, instances = [];
-						for (i = 0; i < loop; i++) {
-							(i.even() === state) ? instances.push(obj.childNodes[i]) : void(0);
+			/**
+			 * Looks for alternating HTMLElement (arg) in HTMLElement (obj)
+			 *
+			 * @param obj {object} HTMLElement to search
+			 * @param state {object} Boolean representing rows, true is even, false is odd
+			 * @returns {mixed} Instance or Array of Instances containing arg, alternating odd or even
+			 */
+			alt = function(obj, state) {
+				if (obj.childNodes.length > 0) {
+					var i, loop = obj.childNodes.length, instances = [];
+					for (i = 0; i < loop; i++) {
+						(i.even() === state) ? instances.push(obj.childNodes[i]) : void(0);
+					}
+					return instances;
+				}
+				else {
+					obj = undefined;
+				}
+				return obj;
+			};
+
+			/**
+			 * Finds an HTMLElement type (arg) in a NodeList (obj)
+			 *
+			 * @param obj {object} NodeList to search
+			 * @param arg {string} The HTMLElement type to find
+			 * @returns {boolean} True if found
+			 */
+			find = function(obj, arg) {
+				return ((obj.nodeType == 1) && (obj.nodeName.toLowerCase() == arg)) ? true : false;
+			};
+
+			/**
+			 * Looks for arg in obj.innerHTML
+			 *
+			 * @param obj {object} HTMLElement to search
+			 * @param arg {mixed} String or Integer to find in obj
+			 * @returns {mixed} Instance or Array of Instances containing arg
+			 */
+			contains = function(obj, arg) {
+				var i, loop, instances = [];
+				if (obj instanceof Array) {
+					loop = obj.length;
+					for (i = 0; i < loop; i++) {
+						(obj[i].innerHTML.indexOf(arg) >= 0) ? instances.push(obj[i]) : void(0);
+					}
+					return (instances.length == 1) ? instances[0] : instances;
+				}
+				else {
+					return (obj.innerHTML.indexOf(arg) >= 0) ? obj : undefined;
+				}
+			};
+
+			/**
+			 * Looks for HTMLElement (arg) in HTMLElement (obj)
+			 *
+			 * @param obj {object} HTMLElement to search
+			 * @param arg {string} HTMLElement type to find, can be comma delimited
+			 * @returns {mixed} Instance or Array of Instances containing arg
+			 */
+			has = function(obj, arg) {
+				var i, o, loop, x, loop2, instances = [];
+
+				if (obj instanceof Array) {
+					loop = obj.length;
+					for (i = 0; i < loop; i++) {
+						loop2 = obj[i].childNodes.length;
+						for (x = 0; x < loop2; x++) {
+							obj[i].genID();
+							((find(obj[i].childNodes[x], arg) === true)
+							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 						}
-						return instances;
 					}
-					else {
-						obj = undefined;
+					instances = instances.indexed();
+					return instances;
+				}
+				else {
+					loop = obj.childNodes.length;
+					for (i = 0; i < loop; i++) {
+						(find(obj.childNodes[i], arg) === true) ? instances.push(obj[i]) : void(0);
 					}
-					return obj;
-				};
+					return (instances.length == 1) ? obj : undefined;
+				}
+			};
 
-				/**
-				 * Finds an HTMLElement type (arg) in a NodeList (obj)
-				 *
-				 * @param obj {object} NodeList to search
-				 * @param arg {string} The HTMLElement type to find
-				 * @returns {boolean} True if found
-				 */
-				find = function(obj, arg) {
-					return ((obj.nodeType == 1) && (obj.nodeName.toLowerCase() == arg)) ? true : false;
-				};
+			/**
+			 * Finds and excludes HTMLElements (arg) in HTMLElement (obj)
+			 *
+			 * @param obj {object} HTMLElement to search
+			 * @param arg {string} HTMLElement type to exclude, can be comma delimited
+			 * @returns {mixed} Instance or Array of Instances containing arg
+			 */
+			not = function(obj, arg) {
+				var i, o, loop, x, loop2, instances = [];
 
-				/**
-				 * Looks for arg in obj.innerHTML
-				 *
-				 * @param obj {object} HTMLElement to search
-				 * @param arg {mixed} String or Integer to find in obj
-				 * @returns {mixed} Instance or Array of Instances containing arg
-				 */
-				contains = function(obj, arg) {
-					var i, loop, instances = [];
-					if (obj instanceof Array) {
-						loop = obj.length;
-						for (i = 0; i < loop; i++) {
-							(obj[i].innerHTML.indexOf(arg) >= 0) ? instances.push(obj[i]) : void(0);
-						}
-						return (instances.length == 1) ? instances[0] : instances;
-					}
-					else {
-						return (obj.innerHTML.indexOf(arg) >= 0) ? obj : undefined;
-					}
-				};
+				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
 
-				/**
-				 * Looks for HTMLElement (arg) in HTMLElement (obj)
-				 *
-				 * @param obj {object} HTMLElement to search
-				 * @param arg {string} HTMLElement type to find, can be comma delimited
-				 * @returns {mixed} Instance or Array of Instances containing arg
-				 */
-				has = function(obj, arg) {
-					var i, o, loop, x, loop2, instances = [];
-
-					if (obj instanceof Array) {
-						loop = obj.length;
-						for (i = 0; i < loop; i++) {
-							loop2 = obj[i].childNodes.length;
-							for (x = 0; x < loop2; x++) {
-								obj[i].genID();
-								((find(obj[i].childNodes[x], arg) == true)
-								 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
-							}
-						}
-						instances = instances.indexed();
-						return instances;
-					}
-					else {
-						loop = obj.childNodes.length;
-						for (i = 0; i < loop; i++) {
-							(find(obj.childNodes[i], arg)) ? instances.push(obj[i]) : void(0);
-						}
-						return (instances.length == 1) ? obj : undefined;
-					}
-				};
-
-				/**
-				 * Finds and excludes HTMLElements (arg) in HTMLElement (obj)
-				 *
-				 * @param obj {object} HTMLElement to search
-				 * @param arg {string} HTMLElement type to exclude, can be comma delimited
-				 * @returns {mixed} Instance or Array of Instances containing arg
-				 */
-				not = function(obj, arg) {
-					var i, o, loop, x, loop2, instances = [];
-
-					if (obj instanceof Array) {
-						loop = obj.length;
-						for (i = 0; i < loop; i++) {
+				if (obj instanceof Array) {
+					loop = obj.length;
+					for (i = 0; i < loop; i++) {
+						if (find(obj[i], arg) === false) {
 							loop2 = obj[i].childNodes.length;
 							for (x = 0; x < loop2; x++) {
 								obj[i].genID();
@@ -1949,167 +1965,142 @@ var abaaso = function(){
 													    : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
 							}
 						}
-						instances = instances.indexed();
-						return instances;
 					}
-					else {
-						loop = obj.childNodes.length;
-						for (i = 0; i < loop; i++) {
-							(find(obj.childNodes[i], arg) === false) ? instances.push(obj[i]) : void(0);
-						}
-
-						return (instances.length == 1) ? obj : undefined;
-					}
-				};
-
-				arg      = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
-				nodelist = (nodelist === true) ? true : false;
-
-				// Recursive processing, ends up below
-				if (arg instanceof Array) {
-					loop = arg.length;
-					for (i = 0; i < loop; i++) {
-						instances.push($(arg[i], nodelist));
-					}
-					return instances;
-				}
-
-				// Setting arg & args
-				args = arg.split(/\.|:/).slice(1);
-				if (arg.charAt(0) == ":") {
-					arg = ":";
-				}
-				else if (arg.charAt(0) == ".") {
-					arg = (args.length > 0) ? new String("."+args[0]) : new String(arg);
-					args = args.splice(1);
+					instances = instances.indexed();
 				}
 				else {
-					arg = (args.length > 0) ? new String(arg.split(/\.|:/)[0]) : new String(arg);
+					if (find(obj, arg) === false) {
+						loop = obj.childNodes.length;
+						for (i = 0; i < loop; i++) {
+							(find(obj.childNodes[i], arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
+						}
+					}
 				}
 
-				// Getting instance(s)
-				switch (arg.charAt(0)) {
-					case ".":
-						obj = document.getElementsByClassName(arg.substring(1));
-						((nodelist === false) && (!client.ie)) ? obj = Array.prototype.slice.call(obj) : void(0);
-						break;
-					case "#":
-						obj = document.getElementById(arg.substring(1));
-						break;
-					case ":":
-						obj = document.body.getElementsByTagName("*");
-						if (nodelist === false) {
-							if (!client.ie) {
-								obj = Array.prototype.slice.call(obj);
-							}
-							else {
-								var a = [], i, loop = obj.length;
-								for (var i = 0; i < loop; i++) {
-									a.push(obj[i]);
-								}
-								obj = a;
-							}
-						}
-						break;
-					default:
-						obj = document.getElementsByTagName(arg);
-						if (nodelist === false) {
-							if (!client.ie) {
-								obj = Array.prototype.slice.call(obj);
-							}
-							else {
-								var a = [], i, loop = obj.length;
-								for (var i = 0; i < loop; i++) {
-									a.push(obj[i]);
-								}
-								obj = a;
-							}
-						}
-						break;
-				}
+				return instances;
+			};
 
-				// Processing selector(s)
-				if (args.length > 0) {
-					switch (args[0].toString().replace(/\(.*\)/, "")) {
+			arg      = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
+			nodelist = (nodelist === true) ? true : false;
+
+			// Recursive processing, ends up below
+			if (arg instanceof Array) {
+				loop = arg.length;
+				for (i = 0; i < loop; i++) {
+					instances.push($(arg[i], nodelist));
+				}
+				return instances;
+			}
+
+			// Setting arg & args
+			args = arg.split(/\.|:/).slice(1);
+			if (arg.charAt(0) == ":") {
+				arg = ":";
+			}
+			else if (arg.charAt(0) == ".") {
+				arg = (args.length > 0) ? new String("."+args[0]) : new String(arg);
+				args = args.splice(1);
+			}
+			else {
+				arg = (args.length > 0) ? new String(arg.split(/\.|:/)[0]) : new String(arg);
+			}
+
+			// Getting instance(s)
+			switch (arg.charAt(0)) {
+				case ".":
+					obj = document.getElementsByClassName(arg.substring(1));
+					((nodelist === false) && (!client.ie)) ? obj = Array.prototype.slice.call(obj) : void(0);
+					break;
+				case "#":
+					obj = document.getElementById(arg.substring(1));
+					break;
+				case ":":
+					obj = document.body.getElementsByTagName("*");
+					if (nodelist === false) {
+						if (!client.ie) {
+							obj = Array.prototype.slice.call(obj);
+						}
+						else {
+							var a = [], i, loop = obj.length;
+							for (var i = 0; i < loop; i++) {
+								a.push(obj[i]);
+							}
+							obj = a;
+						}
+					}
+					break;
+				default:
+					obj = document.getElementsByTagName(arg);
+					if (nodelist === false) {
+						if (!client.ie) {
+							obj = Array.prototype.slice.call(obj);
+						}
+						else {
+							var a = [], i, loop = obj.length;
+							for (var i = 0; i < loop; i++) {
+								a.push(obj[i]);
+							}
+							obj = a;
+						}
+					}
+					break;
+			}
+
+			// Processing selector(s)
+			if (args.length > 0) {
+				loop = args.length;
+				for (i = 0; i < loop; i++) {
+					if (obj === undefined) {
+						break;
+					}
+
+					switch (args[i].toString().replace(/\(.*\)/, "")) {
 						case "contains":
-							obj = contains(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
-							(obj.length === 0) ? obj = undefined
-									   : ((obj.length == 1) ? obj = obj.first() : void(0));
+							obj = contains(obj, args[i].toString().replace(/.*\(|'|"|\)/g, ""));
 							break;
 						case "even":
 							obj = alt(obj, true);
-							(obj.length === 0) ? obj = undefined
-									   : ((obj.length == 1) ? obj = obj.first() : void(0));
 							break;
 						case "first":
-							obj = (obj instanceof Array) ? obj.first() : obj.childNodes[0];
+							obj = obj.first();
 							break;
 						case "has":
-							obj = has(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
-							(obj.length === 0) ? obj = undefined
-									   : ((obj.length == 1) ? obj = obj.first() : void(0));
+							obj = has(obj, args[i].toString().replace(/.*\(|'|"|\)/g, ""));
 							break;
 						case "last":
-							obj = (obj instanceof Array) ? obj.last() : obj.childNodes[(obj.childNodes.length - 1)];
+							obj = obj.last();
 							break;
 						case "not":
-							obj = not(obj, args[0].toString().replace(/.*\(|'|"|\)/g, ""));
-							(obj.length === 0) ? obj = undefined
-									   : ((obj.length == 1) ? obj = obj.first() : void(0));
+							obj = not(obj, args[i].toString().replace(/.*\(|'|"|\)/g, ""));
 							break;
 						case "odd":
 							obj = alt(obj, false);
-							(obj.length === 0) ? obj = undefined
-									   : ((obj.length == 1) ? obj = obj.first() : void(0));
-							break;
+							break
 						default:
 							loop = obj.length;
 							instances = [];
-							for (i = 0; i < loop; i++) {
-								c = obj[i].className.split(" ");
-								(c.index(args[0]) > -1) ? instances.push(obj[i]) : void(0);
+							for (x = 0; x < loop; x++) {
+								c = obj[x].className.split(" ");
+								(c.index(args[i]) > -1) ? instances.push(obj[x]) : void(0);
 							}
 							obj = instances;
-							switch (args[1].toString().replace(/\(.*\)/, "")) {
-								case "contains":
-									obj = contains(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-									break;
-								case "even":
-									obj = alt(obj, true);
-									break;
-								case "first":
-									obj = obj.first();
-									break;
-								case "has":
-									obj = has(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-									break;
-								case "last":
-									obj = obj.last();
-									break;
-								case "not":
-									obj = not(obj, args[1].toString().replace(/.*\(|'|"|\)/g, ""));
-									break;
-								case "odd":
-									obj = alt(obj, false);
-									break
-							}
-							break;
+					}
+
+					if (obj instanceof Array) {
+						(obj.length === 0) ? obj = undefined
+								   : ((obj.length == 1) ? obj = obj.first() : void(0));
 					}
 				}
-
-				// If one Element is in an Array, set it to obj.first()
-				if (obj instanceof Array) {
-					(obj.length === 0) ? obj = undefined
-							   : ((obj.length == 1) ? obj = obj.first() : void(0));
-				}
-
-				obj = (obj === null) ? undefined : obj;
-				return obj;
 			}
-			catch (e) {
-				error(e);
-				return undefined;
+
+			if (obj instanceof Array) {
+				obj = (obj.length === 0) ? undefined : ((obj.length == 1) ? obj.first() : obj);
 			}
+			else if (obj === null) {
+			       obj = undefined;
+			}
+
+			return obj;
 		},
 
 		/**
@@ -2220,7 +2211,11 @@ var abaaso = function(){
 					return arg;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					if (abaaso.loading.url === null) {
+						throw label.error.elementNotFound;
+					}
+
+					obj = (typeof(obj) == "object") ? obj : $(obj);
 
 					if (obj === undefined) {
 						throw label.error.invalidArguments;
@@ -2718,7 +2713,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.4"
+		version         : "1.3.5"
 	};
 }();
 
