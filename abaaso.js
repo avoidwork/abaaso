@@ -1005,7 +1005,7 @@ var abaaso = function(){
 				var obj, target;
 
 				if (id !== undefined) {
-					target = id;
+					target = (typeof id == "object") ? id : $(id);
 				}
 				else if ((args !== undefined) && ((typeof(args) == "string") || (args.childNodes !== undefined))) {
 					target = args;
@@ -2232,8 +2232,8 @@ var abaaso = function(){
 					obj.clear();
 
 					// Creating loading image in target element
-					abaaso.create("div", {id: obj.id+"_loading", style: "text-align:center"}, "#"+obj.id);
-					abaaso.create("img", {alt: label.common.loading, src: abaaso.loading.image.src}, "#"+obj.id+"_loading");
+					$("#"+obj.id).create("div", {id: obj.id+"_loading", style: "text-align:center"});
+					$("#"+obj.id+"_loading").create("img", {alt: label.common.loading, src: abaaso.loading.image.src});
 
 					return obj;
 				}
