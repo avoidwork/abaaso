@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.5
+ * @version 1.3.5.1
  */
 var abaaso = function(){
 	/**
@@ -448,7 +448,7 @@ var abaaso = function(){
 						cache.expire(uri);
 						uri.toString().un("afterDelete", "expire");
 					}, "expire").fire("beforeDelete");
-				client.request(uri, success, "DELETE");
+				client.request(uri, success, "DELETE", null, failure);
 			}
 			catch (e) {
 				error(e);
@@ -475,7 +475,7 @@ var abaaso = function(){
 
 				uri.toString().fire("beforeGet");
 				var cached = cache.get(uri);
-				(!cached) ? client.request(uri, success, "GET") : success(cached.response);
+				(!cached) ? client.request(uri, success, "GET", null, failure) : success(cached.response);
 			}
 			catch (e) {
 				error(e);
@@ -504,7 +504,7 @@ var abaaso = function(){
 				}
 
 				uri.toString().fire("beforePut");
-				client.request(uri, success, "PUT", args);
+				client.request(uri, success, "PUT", args, failure);
 			}
 			catch (e) {
 				error(e);
@@ -532,7 +532,7 @@ var abaaso = function(){
 				}
 
 				uri.toString().fire("beforePost");
-				client.request(uri, success, "POST", args);
+				client.request(uri, success, "POST", args, failure);
 			}
 			catch (e) {
 				error(e);
@@ -558,7 +558,7 @@ var abaaso = function(){
 				}
 
 				uri.toString().fire("beforeJSONP");
-				client.request(uri, success, "JSONP");
+				client.request(uri, success, "JSONP", null, failure);
 			}
 			catch (e) {
 				error(e);
@@ -575,9 +575,10 @@ var abaaso = function(){
 		 * @param fn {function} A handler function to execute when an appropriate response been received
 		 * @param type {string} The type of request (DELETE/GET/POST/PUT/JSONP)
 		 * @param args {mixed} Data to send with the request
+		 * @param ffn {function} [Optional] A handler function to execute on error
 		 * @private
 		 */
-		request : function(uri, fn, type, args) {
+		request : function(uri, fn, type, args, ffn) {
 			if (((type.toLowerCase() == "post")
 			     || (type.toLowerCase() == "put"))
 			    && (typeof args != "object")) {
@@ -611,7 +612,7 @@ var abaaso = function(){
 
 				uri.toString().fire("beforeXHR");
 
-				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type); };
+				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type, ffn); };
 				xhr.open(type.toUpperCase(), uri, true);
 				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
 				((cached !== false)
@@ -632,59 +633,66 @@ var abaaso = function(){
 		 * @param uri {string} The URI.value to cache
 		 * @param fn {function} A handler function to execute once a response has been received
 		 * @param type {string} The type of request
+		 * @param ffn {function} [Optional] A handler function to execute on error
 		 * @private
 		 */
-		response : function(xhr, uri, fn, type) {
-			if (xhr.readyState == 2) {
-				var headers = xhr.getAllResponseHeaders().split("\n"),
-				    i       = null,
-				    loop    = headers.length,
-				    items   = {};
+		response : function(xhr, uri, fn, type, ffn) {
+			try {
+				if (xhr.readyState == 2) {
+					var headers = xhr.getAllResponseHeaders().split("\n"),
+					    i       = null,
+					    loop    = headers.length,
+					    items   = {};
 
-				for (i = 0; i < loop; i++) {
-					if (headers[i] != "") {
-						var header    = headers[i].toString(),
-						    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+					for (i = 0; i < loop; i++) {
+						if (headers[i] != "") {
+							var header    = headers[i].toString(),
+							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 
-						header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-						items[header] = value;
+							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+							items[header] = value;
+						}
+					}
+
+					cache.set(uri, "headers", items);
+				}
+				else if (xhr.readyState == 4) {
+					if ((xhr.status == 200)
+					    && (xhr.responseText != "")) {
+						var state  = null,
+						    s      = abaaso.state;
+
+						if (type != "DELETE") {
+							cache.set(uri, "epoch", new Date());
+							cache.set(uri, "response", xhr.responseText);
+						}
+
+						uri.toString().fire("afterXHR");
+						uri.toString().fire("after"+type.toLowerCase().capitalize());
+						uri = cache.get(uri, false);
+
+						if ((s.header !== null)
+						    && (state = uri.headers[s.header]) && (state !== undefined)) {
+							s.previous = s.current;
+							s.current  = state;
+							((s.previous !== null)
+							 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current) : void(0);
+							abaaso.fire(state);
+						}
+
+						(fn !== undefined) ? fn(uri.response) : void(0);
+					}
+					else if (xhr.status == 401) {
+						throw label.error.serverUnauthorized;
+					}
+					else {
+						throw label.error.serverError;
 					}
 				}
-
-				cache.set(uri, "headers", items);
 			}
-			else if (xhr.readyState == 4) {
-				if ((xhr.status == 200)
-				    && (xhr.responseText != "")) {
-					var state  = null,
-					    s      = abaaso.state;
-
-					if (type != "DELETE") {
-						cache.set(uri, "epoch", new Date());
-						cache.set(uri, "response", xhr.responseText);
-					}
-
-					uri.toString().fire("afterXHR");
-					uri.toString().fire("after"+type.toLowerCase().capitalize());
-					uri = cache.get(uri, false);
-
-					if ((s.header !== null)
-					    && (state = uri.headers[s.header]) && (state !== undefined)) {
-						s.previous = s.current;
-						s.current  = state;
-						((s.previous !== null)
-						 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current) : void(0);
-						abaaso.fire(state);
-					}
-
-					(fn !== undefined) ? fn(uri.response) : void(0);
-				}
-				else if (xhr.status == 401) {
-					throw label.error.serverUnauthorized;
-				}
-				else {
-					throw label.error.serverError;
-				}
+			catch (e) {
+				error(e);
+				(ffn instanceof Function) ? ffn(e) : void(0);
 			}
 		}
 	};
@@ -2716,7 +2724,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.5"
+		version         : "1.3.5.1"
 	};
 }();
 
