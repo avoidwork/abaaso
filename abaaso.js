@@ -1898,6 +1898,9 @@ var abaaso = function(){
 			 */
 			contains = function(obj, arg) {
 				var i, loop, instances = [];
+
+				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
+
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
@@ -1918,17 +1921,15 @@ var abaaso = function(){
 			 * @returns {mixed} Instance or Array of Instances containing arg
 			 */
 			has = function(obj, arg) {
-				var i, o, loop, x, loop2, instances = [];
+				var i, loop, instances = [];
+
+				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						loop2 = obj[i].childNodes.length;
-						for (x = 0; x < loop2; x++) {
-							obj[i].genID();
-							((find(obj[i].childNodes[x], arg) === true)
-							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
-						}
+						((find(obj[i], arg) === true)
+						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 					}
 					instances = instances.indexed();
 					return instances;
@@ -1950,30 +1951,22 @@ var abaaso = function(){
 			 * @returns {mixed} Instance or Array of Instances containing arg
 			 */
 			not = function(obj, arg) {
-				var i, o, loop, x, loop2, instances = [];
+				var i, loop, instances = [];
 
 				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						if (find(obj[i], arg) === false) {
-							loop2 = obj[i].childNodes.length;
-							for (x = 0; x < loop2; x++) {
-								obj[i].genID();
-								(find(obj[i].childNodes[x], arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
-													    : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
-							}
-						}
+						((find(obj[i], arg) === false)
+						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 					}
 					instances = instances.indexed();
 				}
 				else {
-					if (find(obj, arg) === false) {
-						loop = obj.childNodes.length;
-						for (i = 0; i < loop; i++) {
-							(find(obj.childNodes[i], arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
-						}
+					loop = obj.childNodes.length;
+					for (i = 0; i < loop; i++) {
+						(find(obj.childNodes[i], arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
