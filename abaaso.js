@@ -1865,16 +1865,26 @@ var abaaso = function(){
 			 * @returns {mixed} Instance or Array of Instances containing arg, alternating odd or even
 			 */
 			alt = function(obj, state) {
-				if (obj.childNodes.length > 0) {
-					var i, loop = obj.childNodes.length, instances = [];
+				var i, loop, instances = [];
+
+				if (obj instanceof Array) {
+					loop = obj.length;
+					for (i = 0; i < loop; i++) {
+						(i.even() === state) ? instances.push(obj[i]) : void(0);
+					}
+					obj = instances;
+				}
+				else if (obj.childNodes.length > 0) {
+					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
 						(i.even() === state) ? instances.push(obj.childNodes[i]) : void(0);
 					}
-					return instances;
+					obj = instances;
 				}
 				else {
 					obj = undefined;
 				}
+
 				return obj;
 			};
 
