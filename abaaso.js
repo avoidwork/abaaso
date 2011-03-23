@@ -1857,8 +1857,9 @@ var abaaso = function(){
 		 * Returns an instance or array of instances
 		 *
 		 * Selectors "contains(string)", "even", "first", "has(tag)", "last", "not(tag)", "odd" are optional
+		 * Selectors can be delimited with . or :
 		 *
-		 * @param arg {string} Comma delimited string of target #id, .class, tag and :/.selector
+		 * @param arg {string} Comma delimited string of target #id, .class, tag and :selector
 		 * @param nodelist {boolean} [Optional] True will return a NodeList (by reference) for tags & classes
 		 * @returns {mixed} Instance or Array of Instances
 		 */
