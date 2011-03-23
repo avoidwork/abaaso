@@ -108,7 +108,7 @@ var abaaso = function(){
 		 * Returns the first Array node
 		 *
 		 * @param instance {array} The array
-		 * @returns {mixed} The last node of the array
+		 * @returns {mixed} The first node of the array
 		 */
 		first : function(instance) {
 			try {
@@ -1856,7 +1856,9 @@ var abaaso = function(){
 		/**
 		 * Returns an instance or array of instances
 		 *
-		 * @param arg {string} Comma delimited string of target #id, .class or tagNames
+		 * Selectors "contains(string)", "even", "first", "has(tag)", "last", "not(tag)", "odd" are optional
+		 *
+		 * @param arg {string} Comma delimited string of target #id, .class, tag and :/.selector
 		 * @param nodelist {boolean} [Optional] True will return a NodeList (by reference) for tags & classes
 		 * @returns {mixed} Instance or Array of Instances
 		 */
