@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.5.1
+ * @version 1.3.6
  */
 var abaaso = function(){
 	/**
@@ -1947,10 +1947,15 @@ var abaaso = function(){
 				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
+					var x, loop2;
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						((find(obj[i], arg) === true)
-						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
+						loop2 = obj[i].childNodes.length;
+						for (x = 0; x < loop2; x++) {
+							obj[i].genID();
+							((find(obj[i].childNodes[x], arg) === true)
+							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
+						}
 					}
 					instances = instances.indexed();
 					return instances;
@@ -1977,10 +1982,15 @@ var abaaso = function(){
 				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
+					var x, loop2;
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						((find(obj[i], arg) === false)
-						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
+						loop2 = obj[i].childNodes.length;
+						for (x = 0; x < loop2; x++) {
+							obj[i].genID();
+							(find(obj[i].childNodes[x], arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
+												    : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
+						}
 					}
 					instances = instances.indexed();
 				}
@@ -2727,7 +2737,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.5.1"
+		version         : "1.3.6"
 	};
 }();
 
