@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.7
+ * @version 1.3.8
  */
 var abaaso = function(){
 	/**
@@ -1901,10 +1901,10 @@ var abaaso = function(){
 			};
 
 			/**
-			 * Finds an HTMLElement type (arg) in a NodeList (obj)
+			 * Tests obj against arg
 			 *
-			 * @param obj {object} NodeList to search
-			 * @param arg {string} The HTMLElement type to find
+			 * @param obj {string} Property to test
+			 * @param arg {string} String to test for, can be comma delimited or a wildcard
 			 * @returns {boolean} True if found
 			 */
 			find = function(obj, arg) {
@@ -1912,7 +1912,7 @@ var abaaso = function(){
 				var i, pattern, loop = arg.length, instances = [];
 				for (i = 0; i < loop; i++) {
 					pattern = new RegExp(arg[i].replace("*", ".*"), "ig");
-					(pattern.test(obj.nodeName)) ? instances.push(arg[i]) : void(0);
+					(pattern.test(obj)) ? instances.push(arg[i]) : void(0);
 				}
 				return (instances.length > 0) ? true : false;
 			};
@@ -1960,7 +1960,7 @@ var abaaso = function(){
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
 							obj[i].genID();
-							((find(obj[i].childNodes[x], arg) === true)
+							((find(obj[i].childNodes[x].nodeName, arg) === true)
 							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 						}
 					}
@@ -1969,8 +1969,36 @@ var abaaso = function(){
 				else {
 					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
-						(find(obj.childNodes[i], arg) === true) ? instances.push(obj.childNodes[i]) : void(0);
+						(find(obj.childNodes[i].nodeName, arg) === true) ? instances.push(obj.childNodes[i]) : void(0);
 					}
+				}
+
+				return instances;
+			};
+
+			/**
+			 * Tests if HTMLElement (obj) matches HTMLElements (arg)
+			 *
+			 * @param obj {object} HTMLElement to search
+			 * @param arg {string} HTMLElement type to find, can be comma delimited
+			 * @returns {mixed} Instance or Array of Instances containing arg
+			 */
+			is = function(obj, arg) {
+				var i, loop, instances = [];
+
+				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
+
+				if (obj instanceof Array) {
+					loop = obj.length;
+					for (i = 0; i < loop; i++) {
+						obj[i].genID();
+						((find(obj[i].nodeName, arg) === true)
+						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
+					}
+					instances = instances.indexed();
+				}
+				else {
+					(find(obj.nodeName, arg) === true) ? instances.push(obj) : void(0);
 				}
 
 				return instances;
@@ -1995,8 +2023,8 @@ var abaaso = function(){
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
 							obj[i].genID();
-							(find(obj[i].childNodes[x], arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
-												    : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
+							(find(obj[i].childNodes[x].nodeName, arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
+												             : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
 						}
 					}
 					instances = instances.indexed();
@@ -2004,7 +2032,7 @@ var abaaso = function(){
 				else {
 					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
-						(find(obj.childNodes[i], arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
+						(find(obj.childNodes[i].nodeName, arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
@@ -2097,6 +2125,9 @@ var abaaso = function(){
 							break;
 						case "has":
 							obj = has(obj, args[i].toString().replace(/.*\(|'|"|\)/g, ""));
+							break;
+						case "is":
+							obj = is(obj, args[i].toString().replace(/.*\(|'|"|\)/g, ""));
 							break;
 						case "last":
 							obj = obj.last();
@@ -2744,7 +2775,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.7"
+		version         : "1.3.8"
 	};
 }();
 
