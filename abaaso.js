@@ -1857,6 +1857,7 @@ var abaaso = function(){
 		 * Returns an instance or array of instances
 		 *
 		 * Selectors "contains(string)", "even", "first", "has(tag)", "last", "not(tag)", "odd" are optional
+		 * The "has" and "not" selectors accept comma delimited strings, which can include wildcards, e.g. ":has(d*, l*)"
 		 * Selectors can be delimited with . or :
 		 *
 		 * @param arg {string} Comma delimited string of target #id, .class, tag and :selector
