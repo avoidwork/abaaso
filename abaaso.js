@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.6
+ * @version 1.3.7
  */
 var abaaso = function(){
 	/**
@@ -1907,7 +1907,13 @@ var abaaso = function(){
 			 * @returns {boolean} True if found
 			 */
 			find = function(obj, arg) {
-				return ((obj.nodeType == 1) && (obj.nodeName.toLowerCase() == arg)) ? true : false;
+				arg = arg.split(/\s*,\s*/);
+				var i, pattern, loop = arg.length, instances = [];
+				for (i = 0; i < loop; i++) {
+					pattern = new RegExp(arg[i].replace("*", ".*"), "ig");
+					(pattern.test(obj.nodeName)) ? instances.push(arg[i]) : void(0);
+				}
+				return (instances.length > 0) ? true : false;
 			};
 
 			/**
@@ -1958,15 +1964,15 @@ var abaaso = function(){
 						}
 					}
 					instances = instances.indexed();
-					return instances;
 				}
 				else {
 					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
-						(find(obj.childNodes[i], arg) === true) ? instances.push(obj[i]) : void(0);
+						(find(obj.childNodes[i], arg) === true) ? instances.push(obj.childNodes[i]) : void(0);
 					}
-					return (instances.length == 1) ? obj : undefined;
 				}
+
+				return instances;
 			};
 
 			/**
@@ -2737,7 +2743,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.6"
+		version         : "1.3.7"
 	};
 }();
 
