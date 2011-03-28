@@ -2699,7 +2699,7 @@ var abaaso = function(){
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onresize = function() { abaaso.fire("resize"); };
-			abaaso.timer["clean"] = setInterval(function(){ abaaso.clean(); }, 100);
+			abaaso.timer["clean"] = setInterval(function(){ abaaso.clean(); }, 120000);
 
 			if (typeof(document.getElementsByClassName) == "undefined") {
 				document.getElementsByClassName = function(arg) {
