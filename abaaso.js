@@ -329,14 +329,14 @@ var abaaso = function(){
 		 * @returns {boolean} A boolean representing if the URI has expired
 		 */
 		expired : function(uri) {
-			var result = ((this.items[uri] !== undefined)
-				      && (((this.items[uri].headers.Expires !== undefined)
-					   && (new Date(this.items[uri].headers.Expires) < new Date()))
+			var result = ((cache.items[uri] !== undefined)
+				      && (((cache.items[uri].headers.Expires !== undefined)
+					   && (new Date(cache.items[uri].headers.Expires) < new Date()))
 					  || ((client.ms > 0)
-					      && (this.items[uri].headers.Date !== undefined)
-					      && (new Date(this.items[uri].headers.Date).setMilliseconds(new Date(this.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
+					      && (cache.items[uri].headers.Date !== undefined)
+					      && (new Date(cache.items[uri].headers.Date).setMilliseconds(new Date(cache.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
 					  || ((client.ms > 0)
-					      && (new Date(this.items[uri].epoch).setMilliseconds(new Date(this.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
+					      && (new Date(cache.items[uri].epoch).setMilliseconds(new Date(cache.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
 			return result;
 		},
 
@@ -351,24 +351,24 @@ var abaaso = function(){
 			try {
 				expire = (expire === false) ? false : true;
 
-				if (this.items[uri] === undefined) {
+				if (cache.items[uri] === undefined) {
 					return false;
 				}
 				else {
-					if (this.items[uri].headers !== undefined) {
-						if (((this.items[uri].headers.Pragma !== undefined)
-						    && (this.items[uri].headers.Pragma == "no-cache")
+					if (cache.items[uri].headers !== undefined) {
+						if (((cache.items[uri].headers.Pragma !== undefined)
+						    && (cache.items[uri].headers.Pragma == "no-cache")
 						    && (expire))
-						    || (this.expired(this.items[uri]))) {
-							this.expire(uri);
+						    || (cache.expired(cache.items[uri]))) {
+							cache.expire(uri);
 							return false;
 						}
 						else {
-							return this.items[uri];
+							return cache.items[uri];
 						}
 					}
 					else {
-						return this.items[uri];
+						return cache.items[uri];
 					}
 				}
 			}
@@ -387,8 +387,8 @@ var abaaso = function(){
 		 */
 		set : function(uri, property, value) {
 			try {
-				(this.items[uri] === undefined) ? this.items[uri] = {} : void(0);
-				this.items[uri][property] = value;
+				(cache.items[uri] === undefined) ? cache.items[uri] = {} : void(0);
+				cache.items[uri][property] = value;
 			}
 			catch (e) {
 				error(e);
@@ -2699,7 +2699,7 @@ var abaaso = function(){
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onresize = function() { abaaso.fire("resize"); };
-			abaaso.timer["clean"] = setInterval(function(){ abaaso.clean(); }, 12000);
+			abaaso.timer["clean"] = setInterval(function(){ abaaso.clean(); }, 100);
 
 			if (typeof(document.getElementsByClassName) == "undefined") {
 				document.getElementsByClassName = function(arg) {
