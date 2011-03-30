@@ -2161,11 +2161,11 @@ var abaaso = function(){
 				}
 			}
 
-			if (obj instanceof Array) {
-				obj = (obj.length === 0) ? undefined : ((obj.length == 1) ? obj.first() : obj);
+			if (obj === null) {
+				obj = undefined;
 			}
-			else if (obj === null) {
-			       obj = undefined;
+			else if (obj instanceof Array) {
+				obj = (obj.length === 0) ? undefined : ((obj.length == 1) ? obj.first() : obj);
 			}
 
 			return obj;
