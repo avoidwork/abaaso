@@ -2794,13 +2794,11 @@ switch (true) {
 	case abaaso.client.chrome:
 	case abaaso.client.firefox:
 	case abaaso.client.safari:
-		document.addEventListener("DOMContentLoaded", function(){
-			abaaso.init();
-		}, false);
+		document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
 		break;
 	default:
 		abaaso.timer.init = setInterval(function(){
-			if ((document.readyState == "loaded") || (document.readyState == "complete")) {
+			if (/loaded|complete/.test(document.readyState)) {
 				clearInterval(abaaso.timer.init);
 				abaaso.init();
 				abaaso.fire("render").un("render");
