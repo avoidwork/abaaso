@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.3
+ * @version 1.3.9.4
  */
 var abaaso = function(){
 	/**
@@ -57,7 +57,7 @@ var abaaso = function(){
 		contains : function(instance, arg) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
@@ -93,7 +93,7 @@ var abaaso = function(){
 			try {
 				if ((!array1 instanceof Array)
 				    && (!array2 instanceof Array)) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				return array1.filter(function(key) {return (array2.indexOf(key) < 0);});
@@ -113,7 +113,7 @@ var abaaso = function(){
 		first : function(instance) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				return instance[0];
@@ -134,7 +134,7 @@ var abaaso = function(){
 		index : function(instance, arg) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				var i = instance.length;
@@ -162,7 +162,7 @@ var abaaso = function(){
 		indexed : function(instance) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				var o, i = 0, indexed = [];
@@ -190,7 +190,7 @@ var abaaso = function(){
 		keys : function(instance) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				var keys = [],
@@ -217,7 +217,7 @@ var abaaso = function(){
 		last : function(instance) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				return (instance.length > 1) ? instance[(instance.length - 1)] : instance[0];
@@ -242,7 +242,7 @@ var abaaso = function(){
 		remove : function(instance, start, end) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 
 				var remaining;
@@ -270,7 +270,7 @@ var abaaso = function(){
 		total : function(instance) {
 			try {
 				if (!instance instanceof Array) {
-					throw label.error.expectedArray;
+					throw new Error(label.error.expectedArray);
 				}
 				var i = 0, arg;
 				for (arg in instance) {
@@ -441,7 +441,7 @@ var abaaso = function(){
 			try {
 				if ((uri == "")
 				    || (!success instanceof Function)) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				uri.toString().on("afterDelete", function(){
@@ -470,7 +470,7 @@ var abaaso = function(){
 			try {
 				if ((uri == "")
 				    || (!success instanceof Function)) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				uri.toString().fire("beforeGet");
@@ -500,7 +500,7 @@ var abaaso = function(){
 				    || (!success instanceof Function)
 				    || (args === undefined)
 				    || (typeof args != "object")) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				uri.toString().fire("beforePut");
@@ -528,7 +528,7 @@ var abaaso = function(){
 				if ((uri == "")
 				    || (!success instanceof Function)
 				    || (args == "")) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				uri.toString().fire("beforePost");
@@ -554,7 +554,7 @@ var abaaso = function(){
 			try {
 				if ((uri == "")
 				    || (!success instanceof Function)) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				uri.toString().fire("beforeJSONP");
@@ -582,7 +582,7 @@ var abaaso = function(){
 			if (((type.toLowerCase() == "post")
 			     || (type.toLowerCase() == "put"))
 			    && (typeof args != "object")) {
-				throw label.error.invalidArguments;
+				throw new Error(label.error.invalidArguments);
 			}
 
 			if (type.toLowerCase() == "jsonp") {
@@ -683,10 +683,10 @@ var abaaso = function(){
 						(fn !== undefined) ? fn(uri.response) : void(0);
 					}
 					else if (xhr.status == 401) {
-						throw label.error.serverUnauthorized;
+						throw new Error(label.error.serverUnauthorized);
 					}
 					else {
-						throw label.error.serverError;
+						throw new Error(label.error.serverError);
 					}
 				}
 			}
@@ -774,7 +774,7 @@ var abaaso = function(){
 				}
 
 				if (isNaN(span)) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				expire = new Date();
@@ -832,13 +832,13 @@ var abaaso = function(){
 				if ((record === undefined)
 				    || ((typeof(record) != "string")
 					&& (typeof(record) != "number"))) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				if (typeof(record) == "string") {
 					key = this.keys[record];
 					if (key === undefined) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 					delete this.records[key.index];
 					delete this.keys[record];
@@ -872,7 +872,7 @@ var abaaso = function(){
 				}
 				else if (record instanceof Array) {
 					if (isNaN(record[0]) || isNaN(record[1])) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					start = record[0] - 1;
@@ -904,7 +904,7 @@ var abaaso = function(){
 			try {
 				if ((key === undefined)
 				    || (typeof(data) != "object")) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				var record = ((this.keys[key] === undefined) && (this.records[key] === undefined)) ? undefined : this.get(key),
@@ -981,7 +981,7 @@ var abaaso = function(){
 						return obj;
 					}
 					else {
-						throw label.error.elementNotFound;
+						throw new Error(label.error.elementNotFound);
 					}
 				}
 			}
@@ -1007,7 +1007,7 @@ var abaaso = function(){
 		create : function(type, args, id) {
 			try {
 				if (type === undefined) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				var obj, target;
@@ -1024,7 +1024,7 @@ var abaaso = function(){
 				}
 
 				if (target === undefined) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				obj = document.createElement(type);
@@ -1231,7 +1231,7 @@ var abaaso = function(){
 			obj = (typeof obj == "object") ? obj : $(obj);
 
 			if (obj === undefined) {
-				throw label.error.invalidArguments;
+				throw new Error(label.error.invalidArguments);
 			}
 
 			var left = null,
@@ -1305,7 +1305,7 @@ var abaaso = function(){
 					args = args || {};
 
 					if (obj === undefined) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					obj.fire("beforeUpdate");
@@ -1340,7 +1340,7 @@ var abaaso = function(){
 						return obj;
 					}
 					else {
-						throw label.error.elementNotFound;
+						throw new Error(label.error.elementNotFound);
 					}
 				}
 			}
@@ -1591,7 +1591,7 @@ var abaaso = function(){
 					    || (!fn instanceof Function)
 					    || ((standby)
 						&& (id === undefined))) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					(l[o] === undefined) ? l[o] = [] : void(0);
@@ -1662,7 +1662,7 @@ var abaaso = function(){
 					    || (o == "")
 					    || (obj === undefined)
 					    || (event === undefined)) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					var listeners = observer.list(obj, event).active;
@@ -1705,7 +1705,7 @@ var abaaso = function(){
 		list : function(obj, event) {
 			try {
 				if (obj === undefined) {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				var l = observer.listeners,
@@ -1822,7 +1822,7 @@ var abaaso = function(){
 					    || (l[o][event] === undefined)
 					    || (l[o][event].active === undefined)
 					    || (l[o][event].active[id] === undefined)) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
@@ -1830,14 +1830,14 @@ var abaaso = function(){
 					if (typeof(listener) == "string") {
 						if ((l[o][event].standby[listener] === undefined)
 						    || (l[o][event].standby[listener].fn === undefined)) {
-							throw label.error.invalidArguments;
+							throw new Error(label.error.invalidArguments);
 						}
 						else {
 							listener = l[o][event].standby[listener].fn;
 						}
 					}
 					else if (!listener instanceof Function) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					l[o][event].standby[sId] = {"fn" : l[o][event].active[id].fn};
@@ -2234,7 +2234,7 @@ var abaaso = function(){
 		genID : function(obj) {
 			try {
 				if (typeof(obj) != "object") {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				if ((obj instanceof Array) || (obj.id != "")) {
@@ -2280,13 +2280,13 @@ var abaaso = function(){
 				}
 				else {
 					if (abaaso.loading.url === null) {
-						throw label.error.elementNotFound;
+						throw new Error(label.error.elementNotFound);
 					}
 
 					obj = (typeof(obj) == "object") ? obj : $(obj);
 
 					if (obj === undefined) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					// Setting loading image
@@ -2321,7 +2321,7 @@ var abaaso = function(){
 		proto : function(obj, type) {
 			try {
 				if (typeof obj != "object") {
-					throw label.error.invalidArguments;
+					throw new Error(label.error.invalidArguments);
 				}
 
 				/**
@@ -2723,7 +2723,7 @@ var abaaso = function(){
 					if ((this === void 0)
 					    || (this === null)
 					    || (typeof fn !== "function")) {
-						throw label.error.invalidArguments;
+						throw new Error(label.error.invalidArguments);
 					}
 
 					var i      = null,
@@ -2745,7 +2745,16 @@ var abaaso = function(){
 			}
 
 			abaaso.fire("ready").un("ready");
-			(!client.ie) ? window.onload = function() { abaaso.fire("render").un("render"); } : void(0);
+
+			if (!client.ie) {
+				abaaso.timer.render = setInterval(function(){
+					if (/loaded|complete/.test(document.readyState)) {
+						clearInterval(abaaso.timer.render);
+						abaaso.fire("render").un("render");
+					}
+				}, 10);
+			}
+
 			delete abaaso.init;
 			},
 		jsonp           : client.jsonp,
@@ -2781,7 +2790,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.3"
+		version         : "1.3.9.4"
 	};
 }();
 
