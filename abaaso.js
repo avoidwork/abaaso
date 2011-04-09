@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.6
+ * @version 1.3.9.7
  */
 var abaaso = function(){
 	/**
@@ -2061,7 +2061,7 @@ var abaaso = function(){
 			switch (arg.charAt(0)) {
 				case ".":
 					obj = document.getElementsByClassName(arg.substring(1));
-					((nodelist === false) && (!client.ie)) ? obj = Array.prototype.slice.call(obj) : void(0);
+					((nodelist === false) && ((!client.ie) || (client.version > 8))) ? obj = Array.prototype.slice.call(obj) : void(0);
 					break;
 				case "#":
 					obj = document.getElementById(arg.substring(1));
@@ -2069,7 +2069,7 @@ var abaaso = function(){
 				case ":":
 					obj = document.body.getElementsByTagName("*");
 					if (nodelist === false) {
-						if (!client.ie) {
+						if ((!client.ie) || (client.version > 8)) {
 							obj = Array.prototype.slice.call(obj);
 						}
 						else {
@@ -2084,7 +2084,7 @@ var abaaso = function(){
 				default:
 					obj = document.getElementsByTagName(arg);
 					if (nodelist === false) {
-						if (!client.ie) {
+						if ((!client.ie) || (client.version > 8)) {
 							obj = Array.prototype.slice.call(obj);
 						}
 						else {
@@ -2191,7 +2191,7 @@ var abaaso = function(){
 		error : function(e) {
 			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
 			(e.number !== undefined) ? (err.number = (e.number & 0xFFFF)) : void(0);
-			((!client.ie) && (console)) ? console.error(err.message) : void(0);
+			(typeof(console) != "undefined") ? console.error(err.message) : void(0);
 			(error.events === undefined) ? error.events = [] : void(0);
 			error.events.push(err);
 		},
@@ -2680,11 +2680,11 @@ var abaaso = function(){
 				else { return parseInt(navigator.appVersion); }
 			}();
 			client.css3 = function(){
-				if ((client.chrome) && (parseInt(client.version) >= 6))  { return true; }
-				if ((client.firefox) && (parseInt(client.version) >= 3)) { return true; }
-				if ((client.ie) && (parseInt(client.version) >= 9))      { return true; }
-				if ((client.opera) && (parseInt(client.version >= 9)))   { return true; }
-				if ((client.safari) && (parseInt(client.version >= 5)))  { return true; }
+				if ((client.chrome) && (parseInt(client.version) > 5))  { return true; }
+				if ((client.firefox) && (parseInt(client.version) > 2)) { return true; }
+				if ((client.ie) && (parseInt(client.version) > 8))      { return true; }
+				if ((client.opera) && (parseInt(client.version > 8)))   { return true; }
+				if ((client.safari) && (parseInt(client.version > 4)))  { return true; }
 				else { return false; }
 			}();
 
@@ -2698,7 +2698,7 @@ var abaaso = function(){
 
 			utility.proto(Array.prototype, "array");
 			utility.proto(Element.prototype, "element");
-			((abaaso.client.ie) && (typeof(HTMLDocument) != "undefined")) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
+			((abaaso.client.ie) && (abaaso.client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onresize = function() { abaaso.fire("resize"); };
@@ -2749,7 +2749,7 @@ var abaaso = function(){
 
 			abaaso.fire("ready").un("ready");
 
-			if (!client.ie) {
+			if ((!client.ie) || (client.version > 8)) {
 				abaaso.timer.render = setInterval(function(){
 					if (/loaded|complete/.test(document.readyState)) {
 						clearInterval(abaaso.timer.render);
@@ -2793,7 +2793,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.6"
+		version         : "1.3.9.7"
 	};
 }();
 
@@ -2806,6 +2806,7 @@ switch (true) {
 	case abaaso.client.chrome:
 	case abaaso.client.firefox:
 	case abaaso.client.safari:
+	case ((abaaso.client.ie) && (abaaso.client.version > 8)):
 		document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
 		break;
 	default:
