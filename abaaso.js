@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.5
+ * @version 1.3.9.6
  */
 var abaaso = function(){
 	/**
@@ -2364,10 +2364,6 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.create(type, args, this);
 							}},
-						{name: "fade", fn: function(arg) {
-							this.genID();
-							abaaso.fx.fade("#"+this.id, arg);
-							}},
 						{name: "get", fn: function(uri) {
 							this.fire("beforeGet");
 							var cached = cache.get(uri);
@@ -2386,18 +2382,11 @@ var abaaso = function(){
 							}
 							return this;
 							}},
-						{name: "move", fn: function(pos, ms) {
-							this.genID();
-							abaaso.fx.move(this, pos, ms);
-							}},
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							((this.id === undefined)
 							 || (this.id == "")) ? this.genID() : void(0);
 							return abaaso.on(this, event, listener, id, scope, standby);
-							}},
-						{name: "opacity", fn: function(arg) { // Requires the fx module
-							return abaaso.fx.opacity(this, arg);
 							}},
 						{name: "position", fn: function() {
 							this.genID();
@@ -2406,10 +2395,6 @@ var abaaso = function(){
 						{name: "text", fn: function(arg) {
 							this.genID();
 							return abaaso.update(this, {innerHTML: arg});
-							}},
-						{name: "slide", fn: function(ms, pos, elastic) {
-							this.genID();
-							abaaso.fx.slide("#"+this.id, ms, pos, elastic);
 							}}
 					],
 					number  : [
@@ -2808,7 +2793,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.5"
+		version         : "1.3.9.6"
 	};
 }();
 
