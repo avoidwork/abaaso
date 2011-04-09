@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.4
+ * @version 1.3.9.5
  */
 var abaaso = function(){
 	/**
@@ -405,27 +405,14 @@ var abaaso = function(){
 		/**
 		 * Public properties
 		 */
-		css3	: (function(){
-				if ((this.chrome) && (parseInt(client.version) >= 6)) { return true; }
-				if ((this.firefox) && (parseInt(client.version) >= 3)) { return true; }
-				if ((this.ie) && (parseInt(client.version) >= 9)) { return true; }
-				if ((this.opera) && (parseInt(client.version >= 9))) { return true; }
-				if ((this.safari) && (parseInt(client.version >= 5))) { return true; }
-				else { return false; }}),
-		chrome	: (navigator.userAgent.toLowerCase().indexOf("chrome") > -1) ? true : false,
-		firefox : (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false,
-		ie	: (navigator.userAgent.toLowerCase().indexOf("msie") > -1) ? true : false,
+		css3	: null,
+		chrome	: null,
+		firefox : null,
+		ie	: null,
 		ms	: 0,
-		opera	: (navigator.userAgent.toLowerCase().indexOf("opera") > -1) ? true : false,
-		safari	: (navigator.userAgent.toLowerCase().indexOf("safari") > -1) ? true : false,
-		version	: (function(){
-				if (this.chrome) { return navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, ""); }
-				if (this.firefox) { return navigator.userAgent.replace(/(.*Firefox\/)/gi, ""); }
-				if (this.ie) { return navigator.userAgent.replace(/(.*MSIE|;.*)/gi, ""); }
-				if (this.opera) { return navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, ""); }
-				if (this.safari) { return navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, ""); }
-				else { return parseInt(navigator.appVersion); }
-				}),
+		opera	: null,
+		safari	: null,
+		version	: null,
 
 		/**
 		 * Sends a DELETE to the URI
@@ -2693,9 +2680,40 @@ var abaaso = function(){
 		id              : "abaaso",
 		init            : function() {
 			abaaso.ready = true;
+
+			client.chrome  = (navigator.userAgent.toLowerCase().indexOf("chrome") > -1)  ? true : false;
+			client.firefox = (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false;
+			client.ie      = (navigator.userAgent.toLowerCase().indexOf("msie") > -1)    ? true : false;
+			client.opera   = (navigator.userAgent.toLowerCase().indexOf("opera") > -1)   ? true : false;
+			client.safari  = (navigator.userAgent.toLowerCase().indexOf("safari") > -1)  ? true : false;
+			client.version = function(){
+				if (client.chrome)  { return navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, ""); }
+				if (client.firefox) { return navigator.userAgent.replace(/(.*Firefox\/)/gi, ""); }
+				if (client.ie)      { return navigator.userAgent.replace(/(.*MSIE|;.*)/gi, ""); }
+				if (client.opera)   { return navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, ""); }
+				if (client.safari)  { return navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, ""); }
+				else { return parseInt(navigator.appVersion); }
+			}();
+			client.css3 = function(){
+				if ((client.chrome) && (parseInt(client.version) >= 6))  { return true; }
+				if ((client.firefox) && (parseInt(client.version) >= 3)) { return true; }
+				if ((client.ie) && (parseInt(client.version) >= 9))      { return true; }
+				if ((client.opera) && (parseInt(client.version >= 9)))   { return true; }
+				if ((client.safari) && (parseInt(client.version >= 5)))  { return true; }
+				else { return false; }
+			}();
+
+			abaaso.client.chrome  = client.chrome;
+			abaaso.client.firefox = client.firefox;
+			abaaso.client.ie      = client.ie;
+			abaaso.client.opera   = client.opera;
+			abaaso.client.safari  = client.safari;
+			abaaso.client.version = client.version;
+			abaaso.client.css3    = client.css3;
+
 			utility.proto(Array.prototype, "array");
 			utility.proto(Element.prototype, "element");
-			(client.ie) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
+			((abaaso.client.ie) && (typeof(HTMLDocument) != "undefined")) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onresize = function() { abaaso.fire("resize"); };
@@ -2790,7 +2808,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.4"
+		version         : "1.3.9.5"
 	};
 }();
 
