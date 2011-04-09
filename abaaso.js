@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.7
+ * @version 1.3.9.8
  */
 var abaaso = function(){
 	/**
@@ -2364,6 +2364,12 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.create(type, args, this);
 							}},
+						{name: "disable", fn: function() {
+							return abaaso.el.disable(this);
+							}},
+						{name: "enable", fn: function() {
+							return abaaso.el.enable(this);
+							}},
 						{name: "get", fn: function(uri) {
 							this.fire("beforeGet");
 							var cached = cache.get(uri);
@@ -2382,6 +2388,10 @@ var abaaso = function(){
 							}
 							return this;
 							}},
+						{name: "hide", fn: function() {
+							this.genID();
+							return abaaso.el.hide(this);
+							}},
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							((this.id === undefined)
@@ -2392,9 +2402,20 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.position(this);
 							}},
+						{name: "loading", fn: function() {
+							return abaaso.loading.create(this);
+							}},
+						{name: "show", fn: function() {
+							this.genID();
+							return abaaso.el.show(this);
+							}},
 						{name: "text", fn: function(arg) {
 							this.genID();
 							return abaaso.update(this, {innerHTML: arg});
+							}},
+						{name: "update", fn: function(args) {
+							this.genID();
+							return abaaso.update(this, args);
 							}}
 					],
 					number  : [
@@ -2420,18 +2441,12 @@ var abaaso = function(){
 						{name: "destroy", fn: function() {
 							abaaso.destroy(this);
 							}},
-						{name: "disable", fn: function() {
-							return abaaso.el.disable(this);
-							}},
 						{name: "domID", fn: function() {
 							if (!this instanceof String) {
 								this.genID();
 								return abaaso.domID(this.id);
 							}
 							return abaaso.domID(this);
-							}},
-						{name: "enable", fn: function() {
-							return abaaso.el.enable(this);
 							}},
 						{name: "fire", fn: function(event) {
 							((!this instanceof String)
@@ -2442,32 +2457,17 @@ var abaaso = function(){
 						{name: "genID", fn: function() {
 							return abaaso.genID(this);
 							}},
-						{name: "hide", fn: function() {
-							this.genID();
-							return abaaso.el.hide(this);
-							}},
 						{name: "listeners", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
 								     || (this.id == ""))) ? this.genID() : void(0);
 							return abaaso.listeners(this, event);
 							}},
-						{name: "loading", fn: function() {
-							return abaaso.loading.create(this);
-							}},
-						{name: "show", fn: function() {
-							this.genID();
-							return abaaso.el.show(this);
-							}},
 						{name: "un", fn: function(event, id) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
 								     || (this.id == ""))) ? this.genID() : void(0);
 							return abaaso.un(this, event, id);
-							}},
-						{name: "update", fn: function(args) {
-							this.genID();
-							return abaaso.update(this, args);
 							}}
 					],
 					string  : [
@@ -2793,7 +2793,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.7"
+		version         : "1.3.9.8"
 	};
 }();
 
