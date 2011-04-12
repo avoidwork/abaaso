@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.11
+ * @version 1.3.9.12
  */
 var abaaso = function(){
 	/**
@@ -2791,7 +2791,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.11"
+		version         : "1.3.9.12"
 	};
 }();
 
@@ -2803,6 +2803,7 @@ var $ = function(arg, nodelist) {
 switch (true) {
 	case abaaso.client.chrome:
 	case abaaso.client.firefox:
+	case abaaso.client.opera:
 	case abaaso.client.safari:
 	case ((abaaso.client.ie) && (abaaso.client.version > 8)):
 		document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
