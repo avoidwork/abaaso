@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.12
+ * @version 1.3.9.13
  */
 var abaaso = function(){
 	/**
@@ -405,14 +405,14 @@ var abaaso = function(){
 		/**
 		 * Public properties
 		 */
-		css3	: null,
-		chrome	: null,
-		firefox : null,
-		ie	: null,
-		ms	: 0,
-		opera	: null,
-		safari	: null,
-		version	: null,
+		chrome  : (function(){ return (navigator.userAgent.toLowerCase().indexOf("chrome") > -1)  ? true : false; })(),
+		css3    : false,
+		firefox : (function(){ return (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false; })(),
+		ie      : (function(){ return (navigator.userAgent.toLowerCase().indexOf("msie") > -1)    ? true : false; })(),
+		ms      : 0,
+		opera   : (function(){ return (navigator.userAgent.toLowerCase().indexOf("opera") > -1)   ? true : false; })(),
+		safari  : (function(){ return (navigator.userAgent.toLowerCase().indexOf("safari") > -1)  ? true : false; })(),
+		version : null,
 
 		/**
 		 * Sends a DELETE to the URI
@@ -2664,39 +2664,28 @@ var abaaso = function(){
 		init            : function() {
 			abaaso.ready = true;
 
-			client.chrome  = (navigator.userAgent.toLowerCase().indexOf("chrome") > -1)  ? true : false;
-			client.firefox = (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false;
-			client.ie      = (navigator.userAgent.toLowerCase().indexOf("msie") > -1)    ? true : false;
-			client.opera   = (navigator.userAgent.toLowerCase().indexOf("opera") > -1)   ? true : false;
-			client.safari  = (navigator.userAgent.toLowerCase().indexOf("safari") > -1)  ? true : false;
-			client.version = function(){
-				if (client.chrome)  { return navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, ""); }
-				if (client.firefox) { return navigator.userAgent.replace(/(.*Firefox\/)/gi, ""); }
-				if (client.ie)      { return navigator.userAgent.replace(/(.*MSIE|;.*)/gi, ""); }
-				if (client.opera)   { return navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, ""); }
-				if (client.safari)  { return navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, ""); }
-				else { return parseInt(navigator.appVersion); }
-			}();
-			client.css3 = function(){
-				if ((client.chrome) && (parseInt(client.version) > 5))  { return true; }
-				if ((client.firefox) && (parseInt(client.version) > 2)) { return true; }
-				if ((client.ie) && (parseInt(client.version) > 8))      { return true; }
-				if ((client.opera) && (parseInt(client.version > 8)))   { return true; }
-				if ((client.safari) && (parseInt(client.version > 4)))  { return true; }
-				else { return false; }
-			}();
-
-			abaaso.client.chrome  = client.chrome;
-			abaaso.client.firefox = client.firefox;
-			abaaso.client.ie      = client.ie;
-			abaaso.client.opera   = client.opera;
-			abaaso.client.safari  = client.safari;
+			client.version = (function(){
+					if (client.chrome)  { return parseInt(navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, "").trim()); }
+					if (client.firefox) { return parseInt(navigator.userAgent.replace(/(.*Firefox\/)/gi, "").trim()); }
+					if (client.ie)      { return parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "").trim()); }
+					if (client.opera)   { return parseInt(navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, "").trim()); }
+					if (client.safari)  { return parseInt(navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, "").trim()); }
+					else { return parseInt(navigator.appVersion); }
+				})();
+			client.css3    = (function(){
+					if ((client.chrome) && (client.version > 5))  { return true; }
+					if ((client.firefox) && (client.version > 2)) { return true; }
+					if ((client.ie) && (client.version > 8))      { return true; }
+					if ((client.opera) && (client.version > 8))   { return true; }
+					if ((client.safari) && (client.version > 4))  { return true; }
+					else { return false; }
+				})();
 			abaaso.client.version = client.version;
 			abaaso.client.css3    = client.css3;
 
 			utility.proto(Array.prototype, "array");
 			utility.proto(Element.prototype, "element");
-			((abaaso.client.ie) && (abaaso.client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
+			((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onresize = function() { abaaso.fire("resize"); };
@@ -2791,7 +2780,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.12"
+		version         : "1.3.9.13"
 	};
 }();
 
