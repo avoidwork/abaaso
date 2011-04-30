@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.001
+ * @version 1.4.002
  */
 var abaaso = function(){
 	/**
@@ -802,6 +802,9 @@ var abaaso = function(){
 		/**
 		 * Clears the data object
 		 *
+		 * Events:     beforeClear    Fires before the data is cleared
+		 *             afterClear     Fires after the data is cleared
+		 *
 		 * @returns {Object} The data object being cleared
 		 */
 		clear : function() {
@@ -814,6 +817,9 @@ var abaaso = function(){
 
 		/**
 		 * Deletes a record based on key or index
+		 *
+		 * Events:     beforeDelete    Fires before the record is deleted
+		 *             afterDelete     Fires after the record is deleted
 		 *
 		 * @param record {Mixed} The record key or index
 		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
@@ -955,6 +961,9 @@ var abaaso = function(){
 
 		/**
 		 * Sets a new or existing record
+		 *
+		 * Events:     beforeSet    Fires before the record is set
+		 *             afterSet     Fires after the record is set
 		 *
 		 * @param key {Mixed} Integer or String to use as a Primary Key
 		 * @param data {Object} Key:Value pairs to set as field values
@@ -2464,12 +2473,16 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.hide(this);
 							}},
-						{name: "jsonp", fn: function(uri) {
+						{name: "jsonp", fn: function(uri, property) {
 							var target = this,
+							    arg = property,
 							    response,
 							    fn = function(response){
-								var self = target;
-								self.text(abaaso.json.decode(response).text);
+								var self = target,
+								    prop = arg,
+								    text = (property !== undefined) ? response[prop] : response;
+
+								self.text(text);
 								};
 							abaaso.client.jsonp(uri, fn);
 							return this;
@@ -2864,7 +2877,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.001"
+		version         : "1.4.002"
 	};
 }();
 
