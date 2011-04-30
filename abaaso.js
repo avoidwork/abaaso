@@ -2303,7 +2303,7 @@ var abaaso = function(){
 					throw new Error(label.error.invalidArguments);
 				}
 
-				if ((obj instanceof Array) || (obj instanceof String)) {
+				if ((obj instanceof Array) || (obj.id != "")) {
 					return obj;
 				}
 
