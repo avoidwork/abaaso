@@ -815,7 +815,8 @@ var abaaso = function(){
 		/**
 		 * Deletes a record based on key or index
 		 *
-		 * @param record {mixed} The record key or index
+		 * @param record {Mixed} The record key or index
+		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
 		 * @returns {Object} The data object containing the record
 		 */
 		del : function(record, reindex) {
