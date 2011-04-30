@@ -818,8 +818,10 @@ var abaaso = function(){
 		 * @param record {mixed} The record key or index
 		 * @returns {Object} The data object containing the record
 		 */
-		del : function(record) {
+		del : function(record, reindex) {
 			try {
+				reindex = (reindex === false) ? false : true;
+
 				var key, index;
 
 				if ((record === undefined)
@@ -844,7 +846,10 @@ var abaaso = function(){
 					delete this.keys[key];
 				}
 
+				(reindex === true) ? this.reindex() : void(0);
+
 				this.parent.fire("afterDelete");
+
 				return this;
 			}
 			catch (e) {
@@ -926,11 +931,25 @@ var abaaso = function(){
 
 		/**
 		 * Reindexes the data object
-		 * 
-		 * @todo Implement this!
+		 *
+		 * @returns {Object} The data object
 		 */
 		reindex : function() {
-			void(0)
+			var i, n = 0, loop = this.records.length, key, index;
+			for (i = 0; i < loop; i++) {
+				if (this.records[i] !== undefined) {
+					key   = this.records[i].key;
+					index = parseInt(this.keys[key].index);
+					if (index != n) {
+						this.records[n] = this.records[i];
+						this.keys[key].index = n;
+						delete this.records[i];
+					}
+					n++
+				}
+			}
+			(n > 0) ? this.records.length = n : void(0);
+			return this;
 		},
 
 		/**
@@ -953,11 +972,11 @@ var abaaso = function(){
 
 				if (record === undefined) {
 					this.keys[key] = {};
-					index = this.records.total() + 1;
+					index = (this.records.length - 1) + 1;
 					this.keys[key].index = index;
-					this.records[index] = data;
-					this.records[index].key = key;
-					this.records[index].index = index;
+					this.records[index] = {};
+					this.records[index].data = data;
+					this.records[index].key  = key;
 					record = this.records[index];
 				}
 				else {
@@ -1711,8 +1730,6 @@ var abaaso = function(){
 					    || (event === undefined)) {
 						throw new Error(label.error.invalidArguments);
 					}
-
-					console.log(o + " fired "+event);
 
 					var listeners = observer.list(obj, event).active;
 
