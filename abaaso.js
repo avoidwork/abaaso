@@ -584,9 +584,9 @@ var abaaso = function(){
 				uri = uri.replace(/callback=\?/, "callback=abaaso.callback."+uid);
 
 				abaaso.callback[uid] = function(response) {
-					curi.fire("afterJSONP");
 					fn(response);
 					delete abaaso.callback[uid];
+					curi.fire("afterJSONP");
 					};
 
 				el.create("script", {src: uri, type: "text/javascript"}, head);
@@ -2471,6 +2471,19 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.hide(this);
 							}},
+						{name: "jsonp", fn: function(uri) {
+							var target = this,
+							    response,
+							    fn = function(response){
+								var self = target;
+								self.text(response.toString());
+								};
+							abaaso.client.jsonp(uri, fn);
+							return this;
+							}},
+						{name: "loading", fn: function() {
+							return abaaso.loading.create(this);
+							}},
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							((this.id === undefined)
@@ -2480,9 +2493,6 @@ var abaaso = function(){
 						{name: "position", fn: function() {
 							this.genID();
 							return abaaso.el.position(this);
-							}},
-						{name: "loading", fn: function() {
-							return abaaso.loading.create(this);
 							}},
 						{name: "show", fn: function() {
 							this.genID();
