@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.3.9.13
+ * @version 1.4.000
  */
 var abaaso = function(){
 	/**
@@ -801,16 +801,22 @@ var abaaso = function(){
 
 		/**
 		 * Clears the data object
+		 *
+		 * @returns {Object} The data object being cleared
 		 */
 		clear : function() {
+			this.parent.fire("beforeClear");
 			this.keys    = [];
 			this.records = [];
+			this.parent.fire("afterClear");
+			return this;
 		},
 
 		/**
 		 * Deletes a record based on key or index
 		 *
 		 * @param record {mixed} The record key or index
+		 * @returns {Object} The data object containing the record
 		 */
 		del : function(record) {
 			try {
@@ -821,6 +827,8 @@ var abaaso = function(){
 					&& (typeof record != "number"))) {
 					throw new Error(label.error.invalidArguments);
 				}
+
+				this.parent.fire("beforeDelete");
 
 				if (typeof record == "string") {
 					key = this.keys[record];
@@ -835,9 +843,13 @@ var abaaso = function(){
 					delete this.records[record];
 					delete this.keys[key];
 				}
+
+				this.parent.fire("afterDelete");
+				return this;
 			}
 			catch (e) {
 				error(e);
+				return undefined;
 			}
 		},
 
@@ -853,6 +865,8 @@ var abaaso = function(){
 			try {
 				var r = [],
 				    i, start, end;
+
+				this.parent.fire("beforeGet");
 
 				if (typeof record == "string") {
 					return (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
@@ -882,17 +896,57 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Registers an instance on an Object
+		 *
+		 * @param {Object} obj The Object to register with
+		 * @returns {Object} The Object registered with
+		 */
+		register : function(obj) {
+			try {
+				if (obj instanceof Array) {
+					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					while (i--) {
+						this.register(obj[i]);
+					}
+				}
+				else {
+					obj = (typeof obj == "object") ? obj : $(obj);
+					abaaso.genID(obj);
+					abaaso.define("data", this, obj);
+					abaaso.define("data.parent", obj.id, obj);
+					delete obj.data.register;
+				}
+				return obj;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Reindexes the data object
+		 * 
+		 * @todo Implement this!
+		 */
+		reindex : function() {
+			void(0)
+		},
+
+		/**
 		 * Sets a new or existing record
 		 *
-		 * @param key {mixed} Integer or String to use as a Primary Key
-		 * @param data {object} Key:Value pairs to set as field values
+		 * @param key {Mixed} Integer or String to use as a Primary Key
+		 * @param data {Object} Key:Value pairs to set as field values
 		 */
 		set : function(key, data) {
 			try {
 				if ((key === undefined)
-				    || (typeof data != "object")) {
+				    || (key === undefined)) {
 					throw new Error(label.error.invalidArguments);
 				}
+
+				this.parent.fire("beforeSet");
 
 				var record = ((this.keys[key] === undefined) && (this.records[key] === undefined)) ? undefined : this.get(key),
 				    arg, index;
@@ -907,13 +961,20 @@ var abaaso = function(){
 					record = this.records[index];
 				}
 				else {
-					for (arg in data) {
-						record[arg] = data[arg];
+					if (typeof(data) == "object") {
+						for (arg in data) {
+							record[arg] = data[arg];
+						}
+						this.records[record.index] = record;
 					}
-					this.records[record.index] = record;
+					else {
+						this.records[record.index] = data;
+					}
 				}
 
-				return record;
+				this.parent.fire("afterSet");
+
+				return this;
 			}
 			catch (e) {
 				error(e);
@@ -1651,6 +1712,8 @@ var abaaso = function(){
 						throw new Error(label.error.invalidArguments);
 					}
 
+					console.log(o + " fired "+event);
+
 					var listeners = observer.list(obj, event).active;
 
 					if (listeners !== undefined) {
@@ -2222,7 +2285,7 @@ var abaaso = function(){
 					throw new Error(label.error.invalidArguments);
 				}
 
-				if ((obj instanceof Array) || (obj.id != "")) {
+				if ((obj instanceof Array) || (obj instanceof String)) {
 					return obj;
 				}
 
@@ -2780,7 +2843,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.3.9.13"
+		version         : "1.4.000"
 	};
 }();
 
