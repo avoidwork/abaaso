@@ -1957,20 +1957,15 @@ var abaaso = function(){
 					for (i = 0; i < loop; i++) {
 						(i.even() === state) ? instances.push(obj[i]) : void(0);
 					}
-					obj = instances;
 				}
 				else if ((obj.childNodes) && (obj.childNodes.length > 0)) {
 					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
 						(i.even() === state) ? instances.push(obj.childNodes[i]) : void(0);
 					}
-					obj = instances;
-				}
-				else {
-					obj = undefined;
 				}
 
-				return obj;
+				return instances;
 			};
 
 			/**
@@ -2183,6 +2178,7 @@ var abaaso = function(){
 				loop = args.length;
 				for (i = 0; i < loop; i++) {
 					if (obj === undefined) {
+						obj = [];
 						break;
 					}
 
@@ -2222,16 +2218,13 @@ var abaaso = function(){
 					}
 
 					if (obj instanceof Array) {
-						(obj.length === 0) ? obj = undefined : ((obj.length == 1) ? obj = obj.first() : void(0));
+						(obj.length === 0) ? obj = (((i + 1) == loop) ? [] : undefined) : void(0);
 					}
 				}
 			}
 
 			if (obj === null) {
 				obj = undefined;
-			}
-			else if (obj instanceof Array) {
-				obj = (obj.length === 0) ? undefined : ((obj.length == 1) ? obj.first() : obj);
 			}
 
 			return obj;
