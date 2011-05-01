@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.005
+ * @version 1.4.006
  */
 var abaaso = function(){
 	/**
@@ -536,16 +536,19 @@ var abaaso = function(){
 		 * @param uri {string} URI to load as a SCRIPT element
 		 * @param success {function} A handler function to execute once a response has been received
 		 * @param failure {function} [Optional] A handler function to execute on error
+		 * @param callback {string} [Optional] The callback variable to add to the JSONP request
 		 */
-		jsonp : function(uri, success, failure) {
+		jsonp : function(uri, success, failure, callback) {
 			try {
 				if ((uri == "")
 				    || (!success instanceof Function)) {
 					throw new Error(label.error.invalidArguments);
 				}
 
+				callback = (callback !== undefined) ? callback : null;
+
 				uri.fire("beforeJSONP");
-				client.request(uri, success, "JSONP", null, failure);
+				client.request(uri, success, "JSONP", callback, failure);
 			}
 			catch (e) {
 				error(e);
@@ -561,7 +564,7 @@ var abaaso = function(){
 		 * @param uri {string} The resource to interact with
 		 * @param fn {function} A handler function to execute when an appropriate response been received
 		 * @param type {string} The type of request (DELETE/GET/POST/PUT/JSONP)
-		 * @param args {mixed} Data to send with the request
+		 * @param args {mixed} Data to send with the request, or a custom JSONP handler parameter name
 		 * @param ffn {function} [Optional] A handler function to execute on error
 		 * @private
 		 */
@@ -573,15 +576,16 @@ var abaaso = function(){
 			}
 
 			if (type.toLowerCase() == "jsonp") {
-				var uid  = 'acb' + utility.id(),
+				var uid  = "a" + utility.id(),
 				    curi = uri,
-				    head = document.getElementsByTagName("head")[0];
+				    head = $("head")[0];
 
-				do uid = 'acb' + utility.id();
+				do uid = "a" + utility.id();
 				while (abaaso.callback[uid] !== undefined);
 
+				(args === null) ? args = "callback" : void(0);
+				uri  = uri.replace(args + "=?", args + "=abaaso.callback." + uid);
 				uri += "&"+new Date().getTime().toString();
-				uri = uri.replace(/callback=\?/, "callback=abaaso.callback."+uid);
 
 				abaaso.callback[uid] = function(response) {
 					fn(response);
@@ -2473,7 +2477,7 @@ var abaaso = function(){
 							this.genID();
 							return abaaso.el.hide(this);
 							}},
-						{name: "jsonp", fn: function(uri, property) {
+						{name: "jsonp", fn: function(uri, property, callback) {
 							var target = this,
 							    arg = property,
 							    response,
@@ -2496,7 +2500,7 @@ var abaaso = function(){
 
 								self.text(text);
 								};
-							abaaso.client.jsonp(uri, fn);
+							abaaso.client.jsonp(uri, fn, null, callback);
 							return this;
 							}},
 						{name: "loading", fn: function() {
@@ -2889,7 +2893,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.005"
+		version         : "1.4.006"
 	};
 }();
 
