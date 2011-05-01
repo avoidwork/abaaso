@@ -34,11 +34,12 @@
  * Events:    ready      Fires when the DOM is available (safe for GUI creation)
  *            render     Fires when the window resources have loaded (safe for visual fx)
  *            resize     Fires when the window resizes
+ *            hashChange Fires when window.location.hash changes
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.007
+ * @version 1.4.008
  */
 var abaaso = function(){
 	/**
@@ -2811,6 +2812,7 @@ var abaaso = function(){
 			((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
+			window.onhashchange = function() { abaaso.fire("hashChange"); };
 			window.onresize = function() { abaaso.fire("resize"); };
 			abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
 
@@ -2903,7 +2905,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.007"
+		version         : "1.4.008"
 	};
 }();
 
