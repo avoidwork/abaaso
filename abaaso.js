@@ -38,7 +38,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.006
+ * @version 1.4.007
  */
 var abaaso = function(){
 	/**
@@ -1275,6 +1275,9 @@ var abaaso = function(){
 		/**
 		 * Hides an Element if it's visible
 		 *
+		 * Events:    beforeHide    Fires before the object is hidden
+		 *            afterHide     Fires after the object is hidden
+		 *
 		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
 		 * @returns {mixed} Instance or Array of Instances
 		 */
@@ -1290,9 +1293,11 @@ var abaaso = function(){
 				}
 				else {
 					obj = (typeof obj == "object") ? obj : $(obj);
+					obj.fire("beforeHide");
 					(obj.old === undefined) ? obj.old = {} : void(0);
 					obj.old.display   = obj.style.display;
 					obj.style.display = "none";
+					obj.fire("afterHide");
 					return obj;
 				}
 			}
@@ -1334,6 +1339,9 @@ var abaaso = function(){
 		/**
 		 * Shows an Element if it's not visible
 		 *
+		 * Events:    beforeEnable    Fires before the object is visible
+		 *            afterEnable     Fires after the object is visible
+		 *
 		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
 		 * @returns {mixed} Instance or Array of Instances
 		 */
@@ -1349,9 +1357,11 @@ var abaaso = function(){
 				}
 				else {
 					obj = (typeof obj == "object") ? obj : $(obj);
+					obj.fire("beforeShow");
 					obj.style.display = ((obj.old !== undefined)
 							     && (obj.old.display !== undefined)
 							     && (obj.old.display != "")) ? obj.old.display : "inherit";
+					obj.fire("afterShow");
 					return obj;
 				}
 			}
@@ -2893,7 +2903,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.006"
+		version         : "1.4.007"
 	};
 }();
 
