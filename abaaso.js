@@ -1645,14 +1645,14 @@ var abaaso = function(){
 	 */
 	var observer = {
 		/**
-		 * If true, events fired are written to the console
-		 */
-		debug : false,
-		
-		/**
 		 * Array of event listeners
 		 */
 		listeners : [],
+
+		/**
+		 * If true, events fired are written to the console
+		 */
+		log : false,
 
 		/**
 		 * Adds a handler to an event
@@ -1761,7 +1761,7 @@ var abaaso = function(){
 						throw new Error(label.error.invalidArguments);
 					}
 
-					(abaaso.observer.debug === true) ? utility.log(o + " fired " + event) : void(0);
+					(abaaso.observer.log === true) ? utility.log(o + " fired " + event) : void(0);
 					
 					var listeners = observer.list(obj, event).active;
 
@@ -2775,7 +2775,7 @@ var abaaso = function(){
 		mouse           : mouse,
 		number          : number,
 		observer        : {
-			debug   : observer.debug,
+			log     : observer.log,
 			add     : observer.add,
 			fire    : observer.fire,
 			list    : observer.list,
