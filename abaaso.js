@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.008
+ * @version 1.4.009
  */
 var abaaso = function(){
 	/**
@@ -1645,6 +1645,11 @@ var abaaso = function(){
 	 */
 	var observer = {
 		/**
+		 * If true, events fired are written to the console
+		 */
+		debug : false,
+		
+		/**
 		 * Array of event listeners
 		 */
 		listeners : [],
@@ -1756,6 +1761,8 @@ var abaaso = function(){
 						throw new Error(label.error.invalidArguments);
 					}
 
+					(abaaso.observer.debug === true) ? utility.log(o + " fired " + event) : void(0);
+					
 					var listeners = observer.list(obj, event).active;
 
 					if (listeners !== undefined) {
@@ -2394,6 +2401,21 @@ var abaaso = function(){
 				return undefined;
 			}
 		},
+		
+		/**
+		 * Writes argument to the console
+		 *
+		 * @param arg {string} The string to write to the console
+		 * @returns undefined;
+		 */
+		log : function(arg) {
+			try {
+				console.log(arg);
+			}
+			catch (e) {
+				error(e);
+			}
+		},
 
 		/**
 		 * Sets methods on a prototype object
@@ -2753,6 +2775,7 @@ var abaaso = function(){
 		mouse           : mouse,
 		number          : number,
 		observer        : {
+			debug   : observer.debug,
 			add     : observer.add,
 			fire    : observer.fire,
 			list    : observer.list,
@@ -2905,7 +2928,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.008"
+		version         : "1.4.009"
 	};
 }();
 
