@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.009
+ * @version 1.4.010
  */
 var abaaso = function(){
 	/**
@@ -686,6 +686,21 @@ var abaaso = function(){
 				error(e);
 				(ffn instanceof Function) ? ffn(e) : void(0);
 			}
+		},
+		
+		
+		/**
+		 * Returns the visible area of the View
+		 *
+		 * @returns {array} Array as [x,y]
+		 */
+		size : function() {
+				var x = ((document.compatMode == "CSS1Compat")
+						 && (client.opera === false)) ? document.documentElement.clientWidth : document.body.clientWidth,
+				    y = ((document.compatMode == "CSS1Compat")
+						 && (client.opera === false)) ? document.documentElement.clientHeight : document.body.clientHeight;
+
+				return [x, y];
 		}
 	};
 
@@ -2761,7 +2776,8 @@ var abaaso = function(){
 			get     : client.get,
 			post    : client.post,
 			put     : client.put,
-			jsonp   : client.jsonp
+			jsonp   : client.jsonp,
+			size    : client.size
 			},
 		cookie          : cookie,
 		data            : data,
@@ -2928,7 +2944,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.009"
+		version         : "1.4.010"
 	};
 }();
 
