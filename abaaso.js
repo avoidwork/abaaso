@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.012
+ * @version 1.4.013
  */
 var abaaso = function(){
 	/**
@@ -2560,23 +2560,29 @@ var abaaso = function(){
 							    arg = property,
 							    response,
 							    fn = function(response){
-								var self = target,
-								    node = response,
-								    prop = arg, i, loop;
-
-								if (prop !== undefined) {
-									prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-									loop = prop.length;
-									for (i = 0; i < loop; i++) {
-										node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
-									}
-									text = node;
-								}
-								else {
-									text = response;
-								}
-
-								self.text(text);
+										var self = target,
+											node = response,
+											prop = arg, i, loop;
+				
+										try {
+												if (prop !== undefined) {
+													prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
+													loop = prop.length;
+													for (i = 0; i < loop; i++) {
+														node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
+													}
+													text = node;
+												}
+												else {
+													text = response;
+												}
+										}
+										catch (e) {
+												text = abaaso.label.error.serverError;
+												abaaso.error(e);
+										}
+				
+										self.text(text);
 								};
 							abaaso.client.jsonp(uri, fn, null, callback);
 							return this;
@@ -2979,7 +2985,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.012"
+		version         : "1.4.013"
 	};
 }();
 
