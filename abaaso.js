@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.010
+ * @version 1.4.011
  */
 var abaaso = function(){
 	/**
@@ -692,7 +692,8 @@ var abaaso = function(){
 		/**
 		 * Returns the visible area of the View
 		 *
-		 * @returns {array} Array as [x,y]
+		 * @private
+		 * @returns {object} Object describing the size of the View {x:?, y:?}
 		 */
 		size : function() {
 				var x = ((document.compatMode == "CSS1Compat")
@@ -700,7 +701,7 @@ var abaaso = function(){
 				    y = ((document.compatMode == "CSS1Compat")
 						 && (client.opera === false)) ? document.documentElement.clientHeight : document.body.clientHeight;
 
-				return [x, y];
+				return {x: x, y: y};
 		}
 	};
 
@@ -2769,6 +2770,7 @@ var abaaso = function(){
 			ms      : client.ms,
 			opera   : client.opera,
 			safari  : client.safari,
+			size    : {x:0, y:0},
 			version : client.version,
 
 			// Methods
@@ -2776,8 +2778,7 @@ var abaaso = function(){
 			get     : client.get,
 			post    : client.post,
 			put     : client.put,
-			jsonp   : client.jsonp,
-			size    : client.size
+			jsonp   : client.jsonp
 			},
 		cookie          : cookie,
 		data            : data,
@@ -2845,6 +2846,7 @@ var abaaso = function(){
 				})();
 			abaaso.client.version = client.version;
 			abaaso.client.css3    = client.css3;
+			abaaso.client.size    = client.size();
 
 			utility.proto(Array.prototype, "array");
 			utility.proto(Element.prototype, "element");
@@ -2852,7 +2854,7 @@ var abaaso = function(){
 			utility.proto(Number.prototype, "number");
 			utility.proto(String.prototype, "string");
 			window.onhashchange = function() { abaaso.fire("hashChange"); };
-			window.onresize = function() { abaaso.fire("resize"); };
+			window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize"); };
 			abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
 
 			if (typeof document.getElementsByClassName == "undefined") {
@@ -2944,13 +2946,11 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.010"
+		version         : "1.4.011"
 	};
 }();
 
-var $ = function(arg, nodelist) {
-	return abaaso.$(arg, nodelist);
-};
+var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 
 // Registering events
 switch (true) {
