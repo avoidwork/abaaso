@@ -390,7 +390,7 @@ var abaaso = function(){
 			try {
 				if (cache.items[uri] === undefined) {
 					cache.items[uri] = {};
-					cache.items[uri].permission = null;
+					cache.items[uri].permission = 0;
 				}
 
 				(property == "permission") ? cache.items[uri][property] |= value
@@ -662,7 +662,27 @@ var abaaso = function(){
 					 * @todo Implement!
 					 */
 					bit = function(args) {
-						return 4;
+						if (!args instanceof Array) {
+							throw Error(abaaso.label.error.expectedArray);
+						}
+
+						var result = 0,
+						    loop   = args.length,
+						    i;
+
+						for (i = 0; i < loop; i++) {
+							switch (args[i].toLowerCase()) {
+								case "get":
+									result |= 4;
+								case "post":
+								case "put":
+									result |= 2;
+								case "delete":
+									result |= 1;
+							}
+						}
+
+						return result;
 					}
 
 					for (i = 0; i < loop; i++) {
