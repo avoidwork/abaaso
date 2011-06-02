@@ -445,7 +445,12 @@ var abaaso = function(){
 						cache.expire(uri);
 						uri.un("afterDelete", "expire");
 					}, "expire").fire("beforeDelete");
-				client.request(uri, success, "DELETE", null, failure);
+
+				var cached = cache.get(uri);
+				((!cached)
+				 || ((cached.permission == 0)
+					 || (cached.permission & 1))) ? client.request(uri, success, "DELETE", null, failure)
+				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
 				error(e);
@@ -471,8 +476,13 @@ var abaaso = function(){
 				}
 
 				uri.fire("beforeGet");
+
 				var cached = cache.get(uri);
-				(!cached) ? client.request(uri, success, "GET", null, failure) : success(cached.response);
+				((!cached)
+				 || ((cached.permission == 0)
+					 || (cached.permission & 4))) ? client.request(uri, success, "GET", null, failure)
+				                                  : (cached) ? success(cached.response)
+												             : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
 				error(e);
@@ -501,7 +511,12 @@ var abaaso = function(){
 				}
 
 				uri.fire("beforePut");
-				client.request(uri, success, "PUT", args, failure);
+
+				var cached = cache.get(uri);
+				((!cached)
+				 || ((cached.permission == 0)
+					 || (cached.permission & 2))) ? client.request(uri, success, "PUT", args, failure)
+				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
 				error(e);
@@ -529,7 +544,12 @@ var abaaso = function(){
 				}
 
 				uri.fire("beforePost");
-				client.request(uri, success, "POST", args, failure);
+
+				var cached = cache.get(uri);
+				((!cached)
+				 || ((cached.permission == 0)
+					 || (cached.permission & 2))) ? client.request(uri, success, "POST", args, failure)
+				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
 				error(e);
