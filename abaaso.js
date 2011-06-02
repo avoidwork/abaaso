@@ -698,7 +698,8 @@ var abaaso = function(){
 					}
 
 					cache.set(uri, "headers", items);
-					(accept !== null) ? cache.set(uri, "permission", bit(value.split(","))) : void(0);
+					(accept !== null) ? cache.set(uri, "permission", bit(accept.split(",")))
+					                  : cache.set(uri, "permission", bit([type]));
 				}
 				else if (xhr.readyState == 4) {
 					if ((xhr.status == 200)
