@@ -2929,10 +2929,12 @@ var abaaso = function(){
 		clean           : cache.clean,
 		create          : el.create,
 		css             : el.css,
+		decode          : json.decode,
 		define          : utility.define,
 		del             : client.del,
 		destroy         : el.destroy,
 		domID           : utility.domID,
+		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
 			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
