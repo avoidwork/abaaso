@@ -393,8 +393,12 @@ var abaaso = function(){
 					cache.items[uri].permission = 0;
 				}
 
-				(property == "permission") ? cache.items[uri][property] |= value
-				                           : cache.items[uri][property]  = value;
+				// Setting the permission bit
+				(property == "permission") ? cache.items[uri].permission |= value
+				                           : cache.items[uri][property]   = value;
+
+				// Unsetting the permission bit
+				(property == "!permission") ? cache.items[uri].permission &= ~value : void(0);
 			}
 			catch (e) {
 				error(e);
@@ -729,6 +733,10 @@ var abaaso = function(){
 					}
 					else if (xhr.status == 401) {
 						throw new Error(abaaso.label.error.serverUnauthorized);
+					}
+					else if (xhr.status == 405) {
+						cache.set(uri, "!permission", bit([type]));
+						throw new Error(abaaso.label.error.serverInvalidMethod);
 					}
 					else {
 						throw new Error(abaaso.label.error.serverError);
@@ -1652,21 +1660,22 @@ var abaaso = function(){
 		 * Error messages
 		 */
 		error : {
-			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota.",
-			databaseNotSupported  : "Client does not support local database storage.",
-			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder.",
-			elementNotCreated     : "Could not create the Element.",
-			elementNotFound       : "Could not find the Element.",
-			expectedArray         : "Expected an Array.",
-			expectedArrayObject   : "Expected an Array or Object.",
-			expectedBoolean       : "Expected a Boolean value.",
-			expectedNumber        : "Expected a Number.",
-			expectedObject        : "Expected an Object.",
-			invalidArguments      : "One or more arguments is invalid.",
-			invalidDate           : "Invalid Date.",
+			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota",
+			databaseNotSupported  : "Client does not support local database storage",
+			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder",
+			elementNotCreated     : "Could not create the Element",
+			elementNotFound       : "Could not find the Element",
+			expectedArray         : "Expected an Array",
+			expectedArrayObject   : "Expected an Array or Object",
+			expectedBoolean       : "Expected a Boolean value",
+			expectedNumber        : "Expected a Number",
+			expectedObject        : "Expected an Object",
+			invalidArguments      : "One or more arguments is invalid",
+			invalidDate           : "Invalid Date",
 			invalidFields         : "The following required fields are invalid: ",
-			serverError           : "A server error has occurred.",
-			serverUnauthorized    : "Unauthorized to access URI."
+			serverError           : "A server error has occurred",
+			serverInvalidMethod   : "Invalid method on the URI",
+			serverUnauthorized    : "Unauthorized to access URI"
 		}
 	};
 
