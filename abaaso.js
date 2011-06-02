@@ -393,12 +393,9 @@ var abaaso = function(){
 					cache.items[uri].permission = 0;
 				}
 
-				// Setting the permission bit
 				(property == "permission") ? cache.items[uri].permission |= value
-				                           : cache.items[uri][property]   = value;
-
-				// Unsetting the permission bit
-				(property == "!permission") ? cache.items[uri].permission &= ~value : void(0);
+				                           : (property == "!permission") ? cache.items[uri].permission &= ~value
+										                                 : cache.items[uri][property]   = value;
 			}
 			catch (e) {
 				error(e);
