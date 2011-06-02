@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.4.013
+ * @version 1.5.tech
  */
 var abaaso = function(){
 	/**
@@ -389,7 +389,8 @@ var abaaso = function(){
 		set : function(uri, property, value) {
 			try {
 				(cache.items[uri] === undefined) ? cache.items[uri] = {} : void(0);
-				cache.items[uri][property] = value;
+				(property == "permission") ? cache.items[uri][property] |= value
+				                           : cache.items[uri][property]  = value;
 			}
 			catch (e) {
 				error(e);
@@ -619,6 +620,9 @@ var abaaso = function(){
 		 * Headers are cached, if an expiration is set it will be used to control the local cache
 		 * If abaaso.state.header is set, a state change is possible
 		 *
+		 * Permissions are handled if the ACCEPT header is received; a bit is set on the cached
+		 * resource
+		 *
 		 * Events:     afterXHR    Fires after the XmlHttpRequest response is received
 		 *
 		 * @param xhr {object} XMLHttpRequest object
@@ -634,7 +638,28 @@ var abaaso = function(){
 					var headers = xhr.getAllResponseHeaders().split("\n"),
 					    i       = null,
 					    loop    = headers.length,
-					    items   = {};
+					    items   = {},
+						accept  = null
+						bit;
+
+					/**
+					 * Returns a bit value based on the array contents
+					 *
+					 *   1 --d delete
+					 *   2 -w- write
+					 *   3 -wd write and delete
+					 *   4 r-- read
+					 *   5 r-x read and delete
+					 *   6 rw- read and write
+					 *   7 rwx read, write and delete
+					 *
+					 * @param args {array} The commands the URI accepts
+					 * @returns {integer} To be set as a bit
+					 * @todo Implement!
+					 */
+					bit = function(args) {
+						return 4;
+					}
 
 					for (i = 0; i < loop; i++) {
 						if (headers[i] != "") {
@@ -643,10 +668,13 @@ var abaaso = function(){
 
 							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 							items[header] = value;
+
+							(header.toLowerString() == "accept") ? accept = value : void(0);
 						}
 					}
 
 					cache.set(uri, "headers", items);
+					(accept !== null) ? cache.set(uri, "permission", bit(value.split(","))) : void(0);
 				}
 				else if (xhr.readyState == 4) {
 					if ((xhr.status == 200)
@@ -687,8 +715,8 @@ var abaaso = function(){
 				(ffn instanceof Function) ? ffn(e) : void(0);
 			}
 		},
-		
-		
+
+
 		/**
 		 * Returns the visible area of the View
 		 *
@@ -1387,7 +1415,7 @@ var abaaso = function(){
 				return undefined;
 			}
 		},
-		
+
 		/**
 		 * Returns the size of the Object
 		 *
@@ -1400,7 +1428,7 @@ var abaaso = function(){
 				if (obj === undefined) {
 					throw new Error(abaaso.label.error.invalidArguments);
 				}
-				
+
 				/**
 				 * Casts n to a number or returns zero
 				 *
@@ -1408,12 +1436,12 @@ var abaaso = function(){
 				 * @returns {integer} The casted value or zero
 				 */
 				var num = function(n) {
-					return (!isNaN(parseInt(n))) ? parseInt(n) : 0;	
+					return (!isNaN(parseInt(n))) ? parseInt(n) : 0;
 				};
 
 				var x = obj.offsetHeight + num(obj.style.paddingTop) + num(obj.style.paddingBottom) + num(obj.style.borderTop) + num(obj.style.borderBottom),
 					y = obj.offsetWidth + num(obj.style.paddingLeft) + num(obj.style.paddingRight) + num(obj.style.borderLeft) + num(obj.style.borderRight);
-				
+
 				return {x:x, y:y};
 		},
 
@@ -1807,7 +1835,7 @@ var abaaso = function(){
 					}
 
 					(abaaso.observer.log === true) ? utility.log(o + " fired " + event) : void(0);
-					
+
 					var listeners = observer.list(obj, event).active;
 
 					if (listeners !== undefined) {
@@ -2446,7 +2474,7 @@ var abaaso = function(){
 				return undefined;
 			}
 		},
-		
+
 		/**
 		 * Writes argument to the console
 		 *
@@ -2563,7 +2591,7 @@ var abaaso = function(){
 										var self = target,
 											node = response,
 											prop = arg, i, loop;
-				
+
 										try {
 												if (prop !== undefined) {
 													prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
@@ -2581,7 +2609,7 @@ var abaaso = function(){
 												text = abaaso.label.error.serverError;
 												abaaso.error(e);
 										}
-				
+
 										self.text(text);
 								};
 							abaaso.client.jsonp(uri, fn, null, callback);
@@ -2985,7 +3013,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.4.013"
+		version         : "1.5.tech"
 	};
 }();
 
