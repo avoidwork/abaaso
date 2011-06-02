@@ -388,7 +388,11 @@ var abaaso = function(){
 		 */
 		set : function(uri, property, value) {
 			try {
-				(cache.items[uri] === undefined) ? cache.items[uri] = {} : void(0);
+				if (cache.items[uri] === undefined) {
+					cache.items[uri] = {};
+					cache.items[uri].permission = null;
+				}
+
 				(property == "permission") ? cache.items[uri][property] |= value
 				                           : cache.items[uri][property]  = value;
 			}
