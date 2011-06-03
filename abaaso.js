@@ -2959,8 +2959,8 @@ var abaaso = function(){
 
 		// Methods & Properties
 		$               : utility.$,
-		clear           : el.clear,
 		clean           : cache.clean,
+		clear           : el.clear,
 		clone           : utility.clone,
 		create          : el.create,
 		css             : el.css,
