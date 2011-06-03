@@ -695,7 +695,6 @@ var abaaso = function(){
 					 *
 					 * @param args {array} The commands the URI accepts
 					 * @returns {integer} To be set as a bit
-					 * @todo Implement!
 					 */
 					bit = function(args) {
 						try {
