@@ -664,7 +664,7 @@ var abaaso = function(){
 					    i       = null,
 					    loop    = headers.length,
 					    items   = {},
-						accept  = null
+						accept  = null,
 						bit;
 
 					/**
@@ -683,27 +683,33 @@ var abaaso = function(){
 					 * @todo Implement!
 					 */
 					bit = function(args) {
-						if (!args instanceof Array) {
-							throw Error(abaaso.label.error.expectedArray);
-						}
-
-						var result = 0,
-						    loop   = args.length,
-						    i;
-
-						for (i = 0; i < loop; i++) {
-							switch (args[i].toLowerCase()) {
-								case "get":
-									result |= 4;
-								case "post":
-								case "put":
-									result |= 2;
-								case "delete":
-									result |= 1;
+						try {
+							if (!args instanceof Array) {
+								throw Error(label.error.expectedArray);
 							}
-						}
 
-						return result;
+							var result = 0,
+								loop   = args.length,
+								i;
+
+							for (i = 0; i < loop; i++) {
+								switch (args[i].toLowerCase()) {
+									case "get":
+										result |= 4;
+									case "post":
+									case "put":
+										result |= 2;
+									case "delete":
+										result |= 1;
+								}
+							}
+
+							return result;
+						}
+						catch (e) {
+							error(e);
+							return 0;
+						}
 					}
 
 					for (i = 0; i < loop; i++) {
@@ -714,7 +720,7 @@ var abaaso = function(){
 							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 							items[header] = value;
 
-							(header.toLowerString() == "accept") ? accept = value : void(0);
+							(header.toLowerCase() == "accept") ? accept = value : void(0);
 						}
 					}
 
@@ -2386,6 +2392,34 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Clones an Object
+		 *
+		 * @param obj {object} Object to clone
+		 * @returns {object} A clone of the Object
+		 */
+		clone: function(obj) {
+			try {
+				if (typeof obj != "object") {
+					throw Error(label.error.expectedObject);
+				}
+
+				var clone, p;
+
+				(typeof obj.prototype == "object") ? clone.prototype = obj.prototype : void(0);
+
+				for (p in obj) {
+					clone[p] = obj[p];
+				}
+
+				return clone;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Allows deep setting of properties without knowing
 		 * if the structure is valid
 		 *
@@ -2927,6 +2961,7 @@ var abaaso = function(){
 		$               : utility.$,
 		clear           : el.clear,
 		clean           : cache.clean,
+		clone           : utility.clone,
 		create          : el.create,
 		css             : el.css,
 		decode          : json.decode,
