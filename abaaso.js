@@ -590,8 +590,15 @@ var abaaso = function(){
 		 * @returns {bit} Permission bit
 		 */
 		permission : function (uri) {
-			var cached = cache.get(uri, false);
-			return (!cached) ? 0 : cached.permission;
+			var cached = cache.get(uri, false),
+			    bit    = (!cached) ? 0 : cached.permission,
+				result = {bit: bit, allows: []};
+
+			(bit & 1) ? result.allows.push("DELETE") : void(0);
+			(bit & 2) ? (function(){ result.allows.push("PUT"); result.allows.push("PUT"); })() : void(0);
+			(bit & 4) ? result.allows.push("GET") : void(0);
+
+			return result;
 		},
 
 		/**
