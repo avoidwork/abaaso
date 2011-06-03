@@ -584,6 +584,17 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Returns the permission of the cached URI
+		 *
+		 * @param uri {string} URI to retrieve permission from
+		 * @returns {bit} Permission bit
+		 */
+		permission : function (uri) {
+			var cached = cache.get(uri, false);
+			return (!cached) ? 0 : cached.permission;
+		},
+
+		/**
 		 * Creates an XmlHttpRequest to a URI
 		 *
 		 * Events:     beforeXHR    Fires before the XmlHttpRequest is made
@@ -700,11 +711,14 @@ var abaaso = function(){
 								switch (args[i].toLowerCase()) {
 									case "get":
 										result |= 4;
+										break;
 									case "post":
 									case "put":
 										result |= 2;
+										break;
 									case "delete":
 										result |= 1;
+										break;
 								}
 							}
 
@@ -2937,7 +2951,8 @@ var abaaso = function(){
 			get     : client.get,
 			post    : client.post,
 			put     : client.put,
-			jsonp   : client.jsonp
+			jsonp   : client.jsonp,
+			permission : client.permission
 			},
 		cookie          : cookie,
 		data            : data,
@@ -3095,6 +3110,7 @@ var abaaso = function(){
 
 			return abaaso.observer.add(obj, event, listener, id, scope, standby);
 			},
+		permission      : client.permission,
 		position        : el.position,
 		post            : client.post,
 		put             : client.put,
