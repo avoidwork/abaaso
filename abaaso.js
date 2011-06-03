@@ -631,6 +631,10 @@ var abaaso = function(){
 				uri.fire("beforeXHR");
 
 				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type, ffn); };
+				abaaso.timer[uri] = setTimeout(function(){
+					delete abaaso.timer[uri];
+					ffn();
+				}, 30000);
 				xhr.open(type.toUpperCase(), uri, true);
 				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
 				((cached !== false)
@@ -729,6 +733,9 @@ var abaaso = function(){
 					                  : cache.set(uri, "permission", bit([type]));
 				}
 				else if (xhr.readyState == 4) {
+					clearTimeout(abaaso.timer[uri]);
+					delete abaaso.timer[uri];
+
 					if ((xhr.status == 200)
 					    && (xhr.responseText != "")) {
 						var state  = null,
@@ -3061,6 +3068,7 @@ var abaaso = function(){
 				abaaso.timer.render = setInterval(function(){
 					if (/loaded|complete/.test(document.readyState)) {
 						clearInterval(abaaso.timer.render);
+						delete abaaso.timer.render;
 						abaaso.fire("render").un("render");
 					}
 				}, 10);
