@@ -2817,6 +2817,9 @@ var abaaso = function(){
 							scope = scope || this;
 							return abaaso.on(this, event, listener, id, scope, standby);
 							}},
+						{name: "permission", fn: function() {
+							return abaaso.permission(this);
+							}},
 						{name: "trim", fn: function(){
 							return this.replace(/^\s+|\s+$/, "");
 							}}
