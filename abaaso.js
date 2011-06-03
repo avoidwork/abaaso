@@ -445,7 +445,7 @@ var abaaso = function(){
 
 				var cached = cache.get(uri);
 				((!cached)
-				 || ((cached.permission == 0)
+				 || ((cached.permission === 0)
 					 || (cached.permission & 1))) ? client.request(uri, success, "DELETE", null, failure)
 				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
@@ -476,7 +476,7 @@ var abaaso = function(){
 
 				var cached = cache.get(uri);
 				((!cached)
-				 || ((cached.permission == 0)
+				 || ((cached.permission === 0)
 					 || (cached.permission & 4))) ? client.request(uri, success, "GET", null, failure)
 				                                  : (cached) ? success(cached.response)
 												             : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
@@ -511,7 +511,7 @@ var abaaso = function(){
 
 				var cached = cache.get(uri);
 				((!cached)
-				 || ((cached.permission == 0)
+				 || ((cached.permission === 0)
 					 || (cached.permission & 2))) ? client.request(uri, success, "PUT", args, failure)
 				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
@@ -544,7 +544,7 @@ var abaaso = function(){
 
 				var cached = cache.get(uri);
 				((!cached)
-				 || ((cached.permission == 0)
+				 || ((cached.permission === 0)
 					 || (cached.permission & 2))) ? client.request(uri, success, "POST", args, failure)
 				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
