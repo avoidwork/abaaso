@@ -1029,8 +1029,8 @@ var abaaso = function(){
 				else {
 					obj = (typeof obj == "object") ? obj : $(obj);
 					abaaso.genID(obj);
-					abaaso.define("data", this, obj);
-					abaaso.define("data.parent", obj.id, obj);
+					obj.data = utility.clone(this);
+					obj.data.parent = obj.id;
 					delete obj.data.register;
 				}
 				return obj;
@@ -2403,7 +2403,7 @@ var abaaso = function(){
 					throw Error(label.error.expectedObject);
 				}
 
-				var clone, p;
+				var clone = {}, p;
 
 				(typeof obj.prototype == "object") ? clone.prototype = obj.prototype : void(0);
 
