@@ -587,12 +587,12 @@ var abaaso = function(){
 		 * Returns the permission of the cached URI
 		 *
 		 * @param uri {string} URI to retrieve permission from
-		 * @returns {bit} Permission bit
+		 * @returns {object} Contains an array of available commands, the permission bit and a map
 		 */
 		permission : function (uri) {
 			var cached = cache.get(uri, false),
 			    bit    = (!cached) ? 0 : cached.permission,
-				result = {bit: bit, allows: []};
+				result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1}};
 
 			(bit & 1) ? result.allows.push("DELETE") : void(0);
 			(bit & 2) ? (function(){ result.allows.push("PUT"); result.allows.push("PUT"); })() : void(0);
