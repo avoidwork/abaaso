@@ -1123,7 +1123,7 @@ var abaaso = function(){
 					}
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					abaaso.genID(obj);
 					obj.data = utility.clone(this);
 					obj.data.parent = obj.id;
@@ -1240,7 +1240,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 
 					if (obj !== null) {
 						obj.fire("beforeClear");
@@ -1372,7 +1372,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					if (obj !== undefined) {
 						obj.fire("beforeDestroy");
 						observer.remove(obj.id);
@@ -1406,7 +1406,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					if ((obj !== undefined)
 					    && (obj.disabled !== undefined)) {
 						obj.fire("beforeDisable");
@@ -1441,7 +1441,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					if ((obj !== undefined)
 					    && (obj.disabled !== undefined)) {
 						obj.fire("beforeEnable");
@@ -1489,7 +1489,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					obj.fire("beforeHide");
 					(obj.old === undefined) ? obj.old = {} : void(0);
 					obj.old.display   = obj.style.display;
@@ -1511,7 +1511,7 @@ var abaaso = function(){
 		 * @returns {Array} An array containing the render position of the element
 		 */
 		position : function(obj) {
-			obj = (typeof obj == "object") ? obj : $(obj);
+			obj = utility.object(obj);
 
 			if (obj === undefined) {
 				throw new Error(label.error.invalidArguments);
@@ -1553,7 +1553,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					obj.fire("beforeShow");
 					obj.style.display = ((obj.old !== undefined)
 										 && (obj.old.display !== undefined)
@@ -1575,7 +1575,7 @@ var abaaso = function(){
 		 * @returns {Object} Object of the dimensions {x:, y:}
 		 */
 		size : function(obj) {
-				obj = (typeof obj == "object") ? obj : $(obj);
+				obj = utility.object(obj);
 
 				if (obj === undefined) {
 					throw new Error(label.error.invalidArguments);
@@ -1618,7 +1618,7 @@ var abaaso = function(){
 					return obj;
 				}
 				else {
-					obj = (typeof obj == "object") ? obj : $(obj);
+					obj = utility.object(obj);
 					args = args || {};
 
 					if (obj === undefined) {
