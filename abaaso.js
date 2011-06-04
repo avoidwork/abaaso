@@ -3047,7 +3047,7 @@ var abaaso = function(){
 																			&& (this.pattern[c[i].id.toLowerCase()])) ? this.pattern[c[i].id.toLowerCase()]
 																		                                              : "notEmpty");
 
-						t[p] = c[i].innerText;
+						t[p] = (typeof c[i].value != "undefined") ? c[i].value : c[i].innerText;
 					}
 
 					return this.test(t);
