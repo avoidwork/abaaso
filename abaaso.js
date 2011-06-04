@@ -1001,35 +1001,37 @@ var abaaso = function(){
 		/**
 		 * Finds needle in the haystack
 		 *
+		 * Events:     beforeFind    Fires before the search begins
+		 *             afterFind     Fires after the search has finished
+		 *
 		 * @param needle {Mixed} String, Number or Pattern to test for
 		 * @param haystack {Mixed} [Optional] The field(s) to search
 		 */
 		find : function(needle, haystack) {
+			needle   = needle   || undefined;
+			haystack = haystack || undefined;
+
 			try {
 				if (needle === undefined) {
 					throw Error(label.error.invalidArguments);
 				}
 
-				// Creating Array of needles
-				(!needle instanceof Array) ? needle = needle.split(",") : void(0);
-
-				var i;
+				var i, h = [], n = (typeof needle == "string") ? needle.split(",") : needle;
 
 				// Creating validate haystack
 				if ((haystack === undefined)
 					|| (!haystack instanceof Array)) {
-					if (haystack instanceof String) {
-						haystack = haystack.split(",");
-						for (i in haystack) {
-							if (this.records[0].data[haystack[i]] === undefined) {
+					if (typeof haystack == "string") {
+						h = haystack.split(",");
+						for (i in h) {
+							if (this.records[0].data[h[i]] === undefined) {
 								throw Error(label.error.invalidArguments);
 							}
 						}
 					}
 					else {
-						haystack = [];
 						for (i in this.records[0].data) {
-							haystack.push(i);
+							h.push(i);
 						}
 					}
 				}
@@ -1039,25 +1041,34 @@ var abaaso = function(){
 							throw Error(label.error.invalidArguments);
 						}
 					}
+					h = haystack;
 				}
 
 				var result = [],
-				    loop   = haystack.length,
-					loop2  = needle.length,
-					x, y, test;
+				    loop   = h.length,
+					loop2  = n.length,
+					x, y, f, r, s, p;
 
 				i = this.records.length
+
+				this.parentNode.id.fire("beforeFind");
 
 				// Finding all needles in the haystack
 				while (i--) {
 					for (x = 0; x < loop; x++) {
 						for (y = 0; y < loop2; y++) {
-							if (new RegExp(needle[y]).test(this.records[i].data.haystack[x])) {
+							f = h[x];
+							p = n[y];
+							r = new RegExp(p, "gi");
+							s = this.records[i].data[f];
+							if (r.test(s)) {
 								result.push(this.records[i]);
 							}
 						}
 					}
 				}
+
+				this.parentNode.id.fire("afterFind");
 
 				return result;
 			}
