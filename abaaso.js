@@ -568,7 +568,8 @@ var abaaso = function(){
 		 */
 		jsonp : function(uri, success, failure, callback) {
 			try {
-				if ((uri == "")
+				if ((uri === undefined)
+					|| (uri == "")
 				    || (!success instanceof Function)) {
 					throw new Error(label.error.invalidArguments);
 				}
@@ -990,6 +991,63 @@ var abaaso = function(){
 				this.parent.fire("afterDelete");
 
 				return this;
+			}
+			catch (e) {
+				error(e);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Finds needle in the haystack
+		 *
+		 * @param needle {mixed} String or number to find
+		 * @param {Mixed} haystack [Optional] The field(s) to search
+		 */
+		find : function(needle, haystack) {
+			try {
+				if (needle === undefined) {
+					throw Error(label.error.invalidArguments);
+				}
+
+				(!needle instanceof Array) ? needle = needle.split(",") : void(0);
+
+				if (!haystack instanceof Array) {
+					if (haystack instanceof String) {
+						haystack = haystack.split(",");
+					}
+					else {
+						haystack = [];
+						for (var i in this.records[0]) {
+							haystack.push(i);
+						}
+					}
+				}
+				else {
+					for (var i in haystack) {
+						if (!haystack[i] in this.records[0]) {
+							throw Error(label.error.invalidArguments);
+						}
+					}
+				}
+
+				var result = [],
+				    i      = this.records.length,
+				    loop   = haystack.length,
+					loop2  = needle.length,
+					x, y, test;
+
+				while (i--) {
+					for (x = 0; x < loop; x++) {
+						for (y = 0; y < loop2; y++) {
+							if (new RegExp(needle[y]).test(this.records[i].haystack[x])) {
+								result.push(this.records[i]);
+							}
+						}
+					}
+				}
+
+				return result;
 			}
 			catch (e) {
 				error(e);
