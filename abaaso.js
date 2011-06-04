@@ -1124,7 +1124,7 @@ var abaaso = function(){
 				}
 				else {
 					obj = utility.object(obj);
-					abaaso.genID(obj);
+					abaaso.genId(obj);
 					obj.data = utility.clone(this);
 					obj.data.parent = obj.id;
 					delete obj.data.register;
@@ -1272,7 +1272,7 @@ var abaaso = function(){
 		/**
 		 * Creates an element in document.body or a target element
 		 *
-		 * Element.genID() is executed if args doesn't contain an id
+		 * Element.genId() is executed if args doesn't contain an id
 		 *
 		 * Events:    beforeCreate    Fires after the object has been created, but not set
 		 *            afterCreate     Fires after the object has been appended to it's parent
@@ -1311,7 +1311,7 @@ var abaaso = function(){
 				 && (typeof args != "string")
 				 && (args.childNodes === undefined)
 				 && (args.id !== undefined)
-				 && ($("#"+args.id) === undefined)) ? obj.id = args.id : obj.genID();
+				 && ($("#"+args.id) === undefined)) ? obj.id = args.id : obj.genId();
 
 				((args !== undefined) && (args.id !== undefined)) ? delete args.id : void(0);
 
@@ -2284,7 +2284,7 @@ var abaaso = function(){
 					for (i = 0; i < loop; i++) {
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
-							obj[i].genID();
+							obj[i].genId();
 							((find(obj[i].childNodes[x].nodeName, arg) === true)
 							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 						}
@@ -2316,7 +2316,7 @@ var abaaso = function(){
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						obj[i].genID();
+						obj[i].genId();
 						((find(obj[i].nodeName, arg) === true)
 						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
 					}
@@ -2347,7 +2347,7 @@ var abaaso = function(){
 					for (i = 0; i < loop; i++) {
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
-							obj[i].genID();
+							obj[i].genId();
 							(find(obj[i].childNodes[x].nodeName, arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
 													     : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
 						}
@@ -2559,7 +2559,7 @@ var abaaso = function(){
 		 * @param id {String} The object.id value to encode
 		 * @returns {String} Returns a lowercase stripped string
 		 */
-		domID : function(id) {
+		domId : function(id) {
 			try {
 				return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 			}
@@ -2575,18 +2575,21 @@ var abaaso = function(){
 		 * @param obj {Mixed} The object to verify
 		 * @returns {Object} The object
 		 */
-		genID : function(obj) {
+		genId : function(obj) {
 			try {
 				if (typeof obj != "object") {
 					throw new Error(label.error.invalidArguments);
 				}
 
-				if ((obj instanceof Array) || (obj.id != "")) {
+				if ((obj instanceof Array)
+					|| (obj instanceof String)
+					|| ((typeof obj.id != "undefined")
+						&& (obj.id != ""))) {
 					return obj;
 				}
 
-				var id = "abaaso-" + utility.id();
-				do id  = "abaaso-" + utility.id();
+				var id;
+				do id = "abo-" + utility.id();
 				while ($("#"+id) !== undefined);
 				obj.id = id;
 
@@ -2640,7 +2643,7 @@ var abaaso = function(){
 					}
 
 					// Clearing target element
-					obj.genID();
+					obj.genId();
 					obj.clear();
 
 					// Creating loading image in target element
@@ -2744,7 +2747,7 @@ var abaaso = function(){
 					],
 					element : [
 						{name: "create", fn: function(type, args) {
-							this.genID();
+							this.genId();
 							return abaaso.create(type, args, this);
 							}},
 						{name: "disable", fn: function() {
@@ -2772,7 +2775,7 @@ var abaaso = function(){
 							return this;
 							}},
 						{name: "hide", fn: function() {
-							this.genID();
+							this.genId();
 							return abaaso.el.hide(this);
 							}},
 						{name: "jsonp", fn: function(uri, property, callback) {
@@ -2813,27 +2816,27 @@ var abaaso = function(){
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							((this.id === undefined)
-							 || (this.id == "")) ? this.genID() : void(0);
+							 || (this.id == "")) ? this.genId() : void(0);
 							return abaaso.on(this, event, listener, id, scope, standby);
 							}},
 						{name: "position", fn: function() {
-							this.genID();
+							this.genId();
 							return abaaso.el.position(this);
 							}},
 						{name: "show", fn: function() {
-							this.genID();
+							this.genId();
 							return abaaso.el.show(this);
 							}},
 						{name: "size", fn: function() {
-							this.genID();
+							this.genId();
 							return abaaso.el.size(this);
 							}},
 						{name: "text", fn: function(arg) {
-							this.genID();
+							this.genId();
 							return abaaso.update(this, {innerHTML: arg});
 							}},
 						{name: "update", fn: function(args) {
-							this.genID();
+							this.genId();
 							return abaaso.update(this, args);
 							}}
 					],
@@ -2853,39 +2856,39 @@ var abaaso = function(){
 						{name: "clear", fn: function() {
 							((typeof this == "object")
 							 && ((this.id === undefined)
-							     || (this.id == ""))) ? this.genID() : void(0);
+							     || (this.id == ""))) ? this.genId() : void(0);
 							(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
 							return this;
 							}},
 						{name: "destroy", fn: function() {
 							abaaso.destroy(this);
 							}},
-						{name: "domID", fn: function() {
+						{name: "domId", fn: function() {
 							if (!this instanceof String) {
-								this.genID();
-								return abaaso.domID(this.id);
+								this.genId();
+								return abaaso.domId(this.id);
 							}
-							return abaaso.domID(this);
+							return abaaso.domId(this);
 							}},
 						{name: "fire", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genID() : void(0);
+								     || (this.id == ""))) ? this.genId() : void(0);
 							return abaaso.fire(this, event);
 							}},
-						{name: "genID", fn: function() {
-							return abaaso.genID(this);
+						{name: "genId", fn: function() {
+							return abaaso.genId(this);
 							}},
 						{name: "listeners", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genID() : void(0);
+								     || (this.id == ""))) ? this.genId() : void(0);
 							return abaaso.listeners(this, event);
 							}},
 						{name: "un", fn: function(event, id) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genID() : void(0);
+								     || (this.id == ""))) ? this.genId() : void(0);
 							return abaaso.un(this, event, id);
 							}}
 					],
@@ -3079,7 +3082,7 @@ var abaaso = function(){
 		define          : utility.define,
 		del             : client.del,
 		destroy         : el.destroy,
-		domID           : utility.domID,
+		domId           : utility.domId,
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
@@ -3088,7 +3091,7 @@ var abaaso = function(){
 
 			return abaaso.observer.fire(obj, event);
 			},
-		genID           : utility.genID,
+		genId           : utility.genId,
 		get             : client.get,
 		id              : "abaaso",
 		init            : function() {
