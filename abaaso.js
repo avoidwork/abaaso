@@ -51,9 +51,9 @@ var abaaso = function(){
 		/**
 		 * Finds the index of arg(s) in instance
 		 *
-		 * @param instance {array} An instance of the array to search
-		 * @param arg {string} Comma delimited string of search values
-		 * @returns {mixed} Integer or an array of integers representing the location of the arg(s)
+		 * @param instance {Array} An instance of the array to search
+		 * @param arg {String} Comma delimited string of search values
+		 * @returns {Mixed} Integer or an array of integers representing the location of the arg(s)
 		 */
 		contains : function(instance, arg) {
 			try {
@@ -86,9 +86,9 @@ var abaaso = function(){
 		/**
 		 * Finds the difference between array1 and array2
 		 *
-		 * @param array1 {array} An array to compare against
-		 * @param array2 {array} An array to compare against
-		 * @returns {array} An array of the differences
+		 * @param array1 {Array} An array to compare against
+		 * @param array2 {Array} An array to compare against
+		 * @returns {Array} An array of the differences
 		 */
 		diff : function(array1, array2) {
 			try {
@@ -108,8 +108,8 @@ var abaaso = function(){
 		/**
 		 * Returns the first Array node
 		 *
-		 * @param instance {array} The array
-		 * @returns {mixed} The first node of the array
+		 * @param instance {Array} The array
+		 * @returns {Mixed} The first node of the array
 		 */
 		first : function(instance) {
 			try {
@@ -128,9 +128,9 @@ var abaaso = function(){
 		/**
 		 * Finds the index of arg in instance. Use contains() for multiple arguments
 		 *
-		 * @param instance {mixed} The entity to search
-		 * @param arg {mixed} The argument to find (string or integer)
-		 * @returns {integer} The position of arg in instance
+		 * @param instance {Mixed} The entity to search
+		 * @param arg {Mixed} The argument to find (string or integer)
+		 * @returns {Integer} The position of arg in instance
 		 */
 		index : function(instance, arg) {
 			try {
@@ -157,8 +157,8 @@ var abaaso = function(){
 		/**
 		 * Returns an Associative Array as an Indexed Array
 		 *
-		 * @param instance {array} The array to index
-		 * @param returns {array} The indexed array
+		 * @param instance {Array} The array to index
+		 * @param returns {Array} The indexed array
 		 */
 		indexed : function(instance) {
 			try {
@@ -185,8 +185,8 @@ var abaaso = function(){
 		/**
 		 * Returns the keys in the array
 		 *
-		 * @param instance {array} The array to extract keys from
-		 * @returns {array} An array of the keys in instance
+		 * @param instance {Array} The array to extract keys from
+		 * @returns {Array} An array of the keys in instance
 		 */
 		keys : function(instance) {
 			try {
@@ -212,8 +212,8 @@ var abaaso = function(){
 		/**
 		 * Returns the last node of the array
 		 *
-		 * @param instance {array} The array
-		 * @returns {mixed} The last node of the array
+		 * @param instance {Array} The array
+		 * @returns {Mixed} The last node of the array
 		 */
 		last : function(instance) {
 			try {
@@ -235,10 +235,10 @@ var abaaso = function(){
 		 * Events:    beforeRemove      Fires before modifying the array
 		 *            afterRemove       Fires after modifying the array
 		 *
-		 * @param instance {array} An instance of the array to use
-		 * @param start {integer} The starting position
-		 * @param end {integer} The ending position (optional)
-		 * @returns {array} A scrubbed array
+		 * @param instance {Array} An instance of the array to use
+		 * @param start {Integer} The starting position
+		 * @param end {Integer} The ending position (optional)
+		 * @returns {Array} A scrubbed array
 		 */
 		remove : function(instance, start, end) {
 			try {
@@ -265,8 +265,8 @@ var abaaso = function(){
 		/**
 		 * Gets the total keys in an Array
 		 *
-		 * @param instance {array} The array to iterate
-		 * @returns {integer} The number of keys in the Array
+		 * @param instance {Array} The array to iterate
+		 * @returns {Integer} The number of keys in the Array
 		 */
 		total : function(instance) {
 			try {
@@ -315,7 +315,7 @@ var abaaso = function(){
 		/**
 		 * Expires a URI from the local cache
 		 *
-		 * @param uri {string} The URI of the local representation
+		 * @param uri {String} The URI of the local representation
 		 * @returns undefined
 		 */
 		expire : function(uri) {
@@ -326,8 +326,8 @@ var abaaso = function(){
 		/**
 		 * Determines if a URI has expired
 		 *
-		 * @param uri {object} The cached URI object
-		 * @returns {boolean} A boolean representing if the URI has expired
+		 * @param uri {Object} The cached URI object
+		 * @returns {Boolean} A boolean representing if the URI has expired
 		 */
 		expired : function(uri) {
 			var result = ((cache.items[uri] !== undefined)
@@ -344,9 +344,9 @@ var abaaso = function(){
 		/**
 		 * Returns the cached object {headers, response} of the URI or false
 		 *
-		 * @param uri {string} The URI/Identifier for the resource to retrieve from cache
-		 * @param expire {boolean} [Optional] If 'false' the URI will not expire
-		 * @returns {mixed} Returns the URI object {headers, response} or false
+		 * @param uri {String} The URI/Identifier for the resource to retrieve from cache
+		 * @param expire {Boolean} [Optional] If 'false' the URI will not expire
+		 * @returns {Mixed} Returns the URI object {headers, response} or false
 		 */
 		get : function(uri, expire) {
 			try {
@@ -382,9 +382,9 @@ var abaaso = function(){
 		/**
 		 * Sets, or updates an item in cache.items
 		 *
-		 * @param uri {string} The URI to set or update
-		 * @param property {string} The property of the cached URI to set
-		 * @param value {mixed} The value to set
+		 * @param uri {String} The URI to set or update
+		 * @param property {String} The property of the cached URI to set
+		 * @param value {Mixed} The value to set
 		 */
 		set : function(uri, property, value) {
 			try {
@@ -427,9 +427,9 @@ var abaaso = function(){
 		 * Events:     beforeDelete    Fires before the DELETE request is made
 		 *             afterDelete     Fires after the DELETE response is received
 		 *
-		 * @param uri {string} URI to submit to
-		 * @param success {function} A handler function to execute once a response has been received
-		 * @param failure {function} [Optional] A handler function to execute on error
+		 * @param uri {String} URI to submit to
+		 * @param success {Function} A handler function to execute once a response has been received
+		 * @param failure {Function} [Optional] A handler function to execute on error
 		 */
 		del : function(uri, success, failure) {
 			try {
@@ -462,9 +462,9 @@ var abaaso = function(){
 		 * Events:     beforeGet    Fires before the GET request is made
 		 *             afterGet     Fires after the GET response is received
 		 *
-		 * @param uri {string} URI to submit to
-		 * @param success {function} A handler function to execute once a response has been received
-		 * @param failure {function} [Optional] A handler function to execute on error
+		 * @param uri {String} URI to submit to
+		 * @param success {Function} A handler function to execute once a response has been received
+		 * @param failure {Function} [Optional] A handler function to execute on error
 		 */
 		get : function(uri, success, failure) {
 			try {
@@ -494,10 +494,10 @@ var abaaso = function(){
 		 * Events:     beforePut    Fires before the PUT request is made
 		 *             afterPut     Fires after the PUT response is received
 		 *
-		 * @param uri {string} URI submit to
-		 * @param success {function} A handler function to execute once a response has been received
-		 * @param {args} PUT variables to include
-		 * @param failure {function} [Optional] A handler function to execute on error
+		 * @param uri {String} URI submit to
+		 * @param success {Function} A handler function to execute once a response has been received
+		 * @param args {String} PUT variables to include
+		 * @param failure {Function} [Optional] A handler function to execute on error
 		 */
 		put : function(uri, success, args, failure) {
 			try {
@@ -528,10 +528,10 @@ var abaaso = function(){
 		 * Events:     beforePost    Fires before the POST request is made
 		 *             afterPost     Fires after the POST response is received
 		 *
-		 * @param uri {string} URI submit to
-		 * @param success {function} A handler function to execute once a response has been received
-		 * @param {args} POST variables to include
-		 * @param failure {function} [Optional] A handler function to execute on error
+		 * @param uri {String} URI submit to
+		 * @param success {Function} A handler function to execute once a response has been received
+		 * @param args {String} POST variables to include
+		 * @param failure {Function} [Optional] A handler function to execute on error
 		 */
 		post : function(uri, success, args, failure) {
 			try {
@@ -561,10 +561,10 @@ var abaaso = function(){
 		 * Events:     beforeJSONP    Fires before the JSONP request is made
 		 *             afterJSONP     Fires after the JSONP response is received
 		 *
-		 * @param uri {string} URI to load as a SCRIPT element
-		 * @param success {function} A handler function to execute once a response has been received
-		 * @param failure {function} [Optional] A handler function to execute on error
-		 * @param callback {string} [Optional] The callback variable to add to the JSONP request
+		 * @param uri {String} URI to load as a SCRIPT element
+		 * @param success {Function} A handler function to execute once a response has been received
+		 * @param failure {Function} [Optional] A handler function to execute on error
+		 * @param callback {String} [Optional] The callback variable to add to the JSONP request
 		 */
 		jsonp : function(uri, success, failure, callback) {
 			try {
@@ -588,8 +588,8 @@ var abaaso = function(){
 		/**
 		 * Returns the permission of the cached URI
 		 *
-		 * @param uri {string} URI to retrieve permission from
-		 * @returns {object} Contains an array of available commands, the permission bit and a map
+		 * @param uri {String} URI to retrieve permission from
+		 * @returns {Object} Contains an array of available commands, the permission bit and a map
 		 */
 		permission : function (uri) {
 			var cached = cache.get(uri, false),
@@ -608,11 +608,11 @@ var abaaso = function(){
 		 *
 		 * Events:     beforeXHR    Fires before the XmlHttpRequest is made
 		 *
-		 * @param uri {string} The resource to interact with
-		 * @param fn {function} A handler function to execute when an appropriate response been received
-		 * @param type {string} The type of request (DELETE/GET/POST/PUT/JSONP)
-		 * @param args {mixed} Data to send with the request, or a custom JSONP handler parameter name
-		 * @param ffn {function} [Optional] A handler function to execute on error
+		 * @param uri {String} The resource to interact with
+		 * @param fn {Function} A handler function to execute when an appropriate response been received
+		 * @param type {String} The type of request (DELETE/GET/POST/PUT/JSONP)
+		 * @param args {Mixed} Data to send with the request, or a custom JSONP handler parameter name
+		 * @param ffn {Function} [Optional] A handler function to execute on error
 		 * @private
 		 */
 		request : function(uri, fn, type, args, ffn) {
@@ -674,11 +674,11 @@ var abaaso = function(){
 		 *
 		 * Events:     afterXHR    Fires after the XmlHttpRequest response is received
 		 *
-		 * @param xhr {object} XMLHttpRequest object
-		 * @param uri {string} The URI.value to cache
-		 * @param fn {function} A handler function to execute once a response has been received
-		 * @param type {string} The type of request
-		 * @param ffn {function} [Optional] A handler function to execute on error
+		 * @param xhr {Object} XMLHttpRequest object
+		 * @param uri {String} The URI.value to cache
+		 * @param fn {Function} A handler function to execute once a response has been received
+		 * @param type {String} The type of request
+		 * @param ffn {Function} [Optional] A handler function to execute on error
 		 * @private
 		 */
 		response : function(xhr, uri, fn, type, ffn) {
@@ -702,8 +702,8 @@ var abaaso = function(){
 					 *   6 rw- read and write
 					 *   7 rwx read, write and delete
 					 *
-					 * @param args {array} The commands the URI accepts
-					 * @returns {integer} To be set as a bit
+					 * @param args {Array} The commands the URI accepts
+					 * @returns {Integer} To be set as a bit
 					 */
 					bit = function(args) {
 						try {
@@ -805,7 +805,7 @@ var abaaso = function(){
 		 * Returns the visible area of the View
 		 *
 		 * @private
-		 * @returns {object} Object describing the size of the View {x:?, y:?}
+		 * @returns {Object} Object describing the size of the View {x:?, y:?}
 		 */
 		size : function() {
 			var x = ((document.compatMode == "CSS1Compat")
@@ -826,7 +826,7 @@ var abaaso = function(){
 		/**
 		 * Expires a cookie if it exists
 		 *
-		 * @param name {string} The name of the cookie to create
+		 * @param name {String} The name of the cookie to create
 		 */
 		expire : function(name) {
 			(this.get(name) !== undefined) ? this.set(name, "", "-1s") : void(0);
@@ -835,7 +835,7 @@ var abaaso = function(){
 		/**
 		 * Gets a cookie
 		 *
-		 * @returns {object} The requested cookie or undefined
+		 * @returns {Object} The requested cookie or undefined
 		 */
 		get : function(name) {
 			return this.list()[name];
@@ -844,7 +844,7 @@ var abaaso = function(){
 		/**
 		 * Gets the cookies for the domain
 		 *
-		 * @returns {object} Object containing the cookies
+		 * @returns {Object} Object containing the cookies
 		 */
 		list : function() {
 			var i      = null,
@@ -871,10 +871,10 @@ var abaaso = function(){
 		 *
 		 * The offset specifies a positive or negative span of time as day, hour, minute or second
 		 *
-		 * @param name {string} The name of the cookie to create
-		 * @param value {string} The value to set
-		 * @param offset {string} A positive or negative integer followed by "d", "h", "m" or "s"
-		 * @returns {object} The new cookie
+		 * @param name {String} The name of the cookie to create
+		 * @param value {String} The value to set
+		 * @param offset {String} A positive or negative integer followed by "d", "h", "m" or "s"
+		 * @returns {Object} The new cookie
 		 */
 		set : function(name, value, offset) {
 			offset = offset.toString() || "";
@@ -1001,8 +1001,8 @@ var abaaso = function(){
 		/**
 		 * Finds needle in the haystack
 		 *
-		 * @param {Mixed} needle String, Number or Pattern to test for
-		 * @param {Mixed} haystack [Optional] The field(s) to search
+		 * @param needle {Mixed} String, Number or Pattern to test for
+		 * @param haystack {Mixed} [Optional] The field(s) to search
 		 */
 		find : function(needle, haystack) {
 			try {
@@ -1071,7 +1071,7 @@ var abaaso = function(){
 		 *
 		 * If the key is an integer, cast to a string before sending as an argument!
 		 *
-		 * @param record {mixed} The record key (string),  index (integer) or array for pagination [start, end]
+		 * @param record {Mixed} The record key (string),  index (integer) or array for pagination [start, end]
 		 * @returns object
 		 */
 		get : function(record) {
@@ -1111,7 +1111,7 @@ var abaaso = function(){
 		/**
 		 * Registers an instance on an Object
 		 *
-		 * @param {Object} obj The Object to register with
+		 * @param obj {Object} The Object to register with
 		 * @returns {Object} The Object registered with
 		 */
 		register : function(obj) {
@@ -1226,8 +1226,8 @@ var abaaso = function(){
 		 * Events:    beforeClear    Fires before the Object is cleared
 		 *            afterClear     Fires after the Object is cleared
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {mixed} Instance or Array of Instances
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		clear : function(obj) {
 			try {
@@ -1277,10 +1277,10 @@ var abaaso = function(){
 		 * Events:    beforeCreate    Fires after the object has been created, but not set
 		 *            afterCreate     Fires after the object has been appended to it's parent
 		 *
-		 * @param type {string} Type of element to create
-		 * @param args {object} [Optional] Collection of properties to apply to the new element
-		 * @param id {mixed} [Optional] Target object or element.id value to append to
-		 * @returns {object} The elemented that was created
+		 * @param type {String} Type of element to create
+		 * @param args {Object} [Optional] Collection of properties to apply to the new element
+		 * @param id {Mixed} [Optional] Target object or element.id value to append to
+		 * @returns {Object} The elemented that was created
 		 */
 		create : function(type, args, id) {
 			try {
@@ -1331,8 +1331,8 @@ var abaaso = function(){
 		/**
 		 * Loads a CSS stylesheet into the View
 		 *
-		 * @param content {string} The CSS to put in a style tag
-		 * @returns {object} The style Element created
+		 * @param content {String} The CSS to put in a style tag
+		 * @returns {Object} The style Element created
 		 */
 		css : function(content) {
 			try {
@@ -1359,8 +1359,8 @@ var abaaso = function(){
 		 * Events:    beforeDestroy    Fires before the destroy starts
 		 *            afterDestroy     Fires after the destroy ends
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {mixed} Undefined or Array of Instances
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {Mixed} Undefined or Array of Instances
 		 */
 		destroy : function(obj) {
 			try {
@@ -1394,7 +1394,7 @@ var abaaso = function(){
 		 * Events:    beforeDisable    Fires before the disable starts
 		 *            afterDisable     Fires after the disable ends
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
 		 */
 		disable : function(obj) {
 			try {
@@ -1428,8 +1428,8 @@ var abaaso = function(){
 		 * Events:    beforeEnable    Fires before the enable starts
 		 *            afterEnable     Fires after the enable ends
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {mixed} Instance or Array of Instances
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		enable : function(obj) {
 			try {
@@ -1462,8 +1462,8 @@ var abaaso = function(){
 		 * Returns the ID of the element that triggered the event
 		 *
 		 * @param e {event} The event arguement sent to the listener
-		 * @param obj {object} The element whose listener called this function
-		 * @returns {string} The id of the element that triggered the event
+		 * @param obj {Object} The element whose listener called this function
+		 * @returns {String} The id of the element that triggered the event
 		 */
 		eventID : function(e, obj) {
 			return (window.event) ? window.event.srcElement.id : obj.id;
@@ -1475,8 +1475,8 @@ var abaaso = function(){
 		 * Events:    beforeHide    Fires before the object is hidden
 		 *            afterHide     Fires after the object is hidden
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {mixed} Instance or Array of Instances
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		hide : function(obj) {
 			try {
@@ -1507,8 +1507,8 @@ var abaaso = function(){
 		/**
 		 * Finds the position of an element
 		 *
-		 * @param id {string} Target object.id value
-		 * @returns {array} An array containing the render position of the element
+		 * @param id {String} Target object.id value
+		 * @returns {Array} An array containing the render position of the element
 		 */
 		position : function(obj) {
 			obj = (typeof obj == "object") ? obj : $(obj);
@@ -1539,8 +1539,8 @@ var abaaso = function(){
 		 * Events:    beforeEnable    Fires before the object is visible
 		 *            afterEnable     Fires after the object is visible
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {mixed} Instance or Array of Instances
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		show : function(obj) {
 			try {
@@ -1571,8 +1571,8 @@ var abaaso = function(){
 		/**
 		 * Returns the size of the Object
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {object} Object of the dimensions {x:, y:}
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @returns {Object} Object of the dimensions {x:, y:}
 		 */
 		size : function(obj) {
 				obj = (typeof obj == "object") ? obj : $(obj);
@@ -1584,8 +1584,8 @@ var abaaso = function(){
 				/**
 				 * Casts n to a number or returns zero
 				 *
-				 * @param n {mixed} The value to cast
-				 * @returns {integer} The casted value or zero
+				 * @param n {Mixed} The value to cast
+				 * @returns {Integer} The casted value or zero
 				 */
 				var num = function(n) {
 					return (!isNaN(parseInt(n))) ? parseInt(n) : 0;
@@ -1603,9 +1603,9 @@ var abaaso = function(){
 		 * Events:    beforeUpdate    Fires before the update starts
 		 *            afterUpdate     Fires after the update ends
 		 *
-		 * @param obj {mixed} Instance, Array of Instances of $() friendly ID
-		 * @param args {object} A collection of properties
-		 * @returns {mixed} Instance or Array of Instances
+		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @param args {Object} A collection of properties
+		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		update : function(obj, args) {
 			try {
@@ -1677,8 +1677,8 @@ var abaaso = function(){
 		/**
 		 * Returns true if the number is even
 		 *
-		 * @param arg {integer}
-		 * @returns {boolean}
+		 * @param arg {Integer}
+		 * @returns {Boolean}
 		 */
 		even : function(arg) {
 			try {
@@ -1693,8 +1693,8 @@ var abaaso = function(){
 		/**
 		 * Returns true if the number is odd
 		 *
-		 * @param arg {integer}
-		 * @returns {boolean}
+		 * @param arg {Integer}
+		 * @returns {Boolean}
 		 */
 		odd : function(arg) {
 			try {
@@ -1716,7 +1716,7 @@ var abaaso = function(){
 		/**
 		 * Decodes the argument into an object
 		 *
-		 * @param arg {string} The string to parse
+		 * @param arg {String} The string to parse
 		 */
 		decode : function(arg) {
 			try {
@@ -1731,7 +1731,7 @@ var abaaso = function(){
 		/**
 		 * Encodes a string, array or object to a JSON string
 		 *
-		 * @param arg {mixed} The entity to encode
+		 * @param arg {Mixed} The entity to encode
 		 */
 		encode : function(arg) {
 			try {
@@ -1822,8 +1822,8 @@ var abaaso = function(){
 		/**
 		 * Enables or disables mouse co-ordinate tracking
 		 *
-		 * @param n {mixed} Boolean to enable/disable tracking, or Mouse Event
-		 * @returns {object} abaaso.mouse
+		 * @param n {Mixed} Boolean to enable/disable tracking, or Mouse Event
+		 * @returns {Object} abaaso.mouse
 		 */
 		track : function(n) {
 			var m = abaaso.mouse;
@@ -1883,13 +1883,13 @@ var abaaso = function(){
 		/**
 		 * Adds a handler to an event
 		 *
-		 * @param obj {mixed} The object.id or instance of object firing the event
-		 * @param event {string} The event being fired
-		 * @param fn {function} The event handler
-		 * @param id {string} [Optional / Recommended] The id for the listener
-		 * @param scope {string} [Optional / Recommended] The id of the object or element to be set as 'this'
-		 * @param standby {boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
-		 * @returns {object} The object
+		 * @param obj {Mixed} The object.id or instance of object firing the event
+		 * @param event {String} The event being fired
+		 * @param fn {Function} The event handler
+		 * @param id {String} [Optional / Recommended] The id for the listener
+		 * @param scope {String} [Optional / Recommended] The id of the object or element to be set as 'this'
+		 * @param standby {Boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
+		 * @returns {Object} The object
 		 */
 		add : function(obj, event, fn, id, scope, standby) {
 			try {
@@ -1960,9 +1960,9 @@ var abaaso = function(){
 		/**
 		 * Fires an event
 		 *
-		 * @param obj {mixed} The object.id or instance of object firing the event
-		 * @param event {string} The event being fired
-		 * @returns {object} The object
+		 * @param obj {Mixed} The object.id or instance of object firing the event
+		 * @param event {String} The event being fired
+		 * @returns {Object} The object
 		 */
 		fire : function(obj, event) {
 			try {
@@ -2022,9 +2022,9 @@ var abaaso = function(){
 		/**
 		 * Lists the active and standby listeners for an object event
 		 *
-		 * @param obj {mixed} The object.id or instance of object firing the event
-		 * @param event {string} The event being fired
-		 * @returns {array} The listeners for object
+		 * @param obj {Mixed} The object.id or instance of object firing the event
+		 * @param event {String} The event being fired
+		 * @returns {Array} The listeners for object
 		 */
 		list : function(obj, event) {
 			try {
@@ -2047,10 +2047,10 @@ var abaaso = function(){
 		/**
 		 * Removes an event listener, or listeners
 		 *
-		 * @param obj {mixed} The object.id or instance of object firing the event
-		 * @param event {string} The event being fired
-		 * @param id {string} [Optional] The identifier for the listener
-		 * @returns {object} The object
+		 * @param obj {Mixed} The object.id or instance of object firing the event
+		 * @param event {String} The event being fired
+		 * @param id {String} [Optional] The identifier for the listener
+		 * @returns {Object} The object
 		 */
 		remove : function(obj, event, id) {
 			try {
@@ -2115,12 +2115,12 @@ var abaaso = function(){
 		/**
 		 * Replaces an active listener, moving it to the standby collection
 		 *
-		 * @param obj {mixed} The object.id or instance of object firing the event
-		 * @param event {string} The event
-		 * @param id {string} The identifier for the active listener
-		 * @param sId {string} The identifier for the new standby listener
-		 * @param listener {mixed} The standby id (string), or the new event listener (function)
-		 * @returns {object} The object
+		 * @param obj {Mixed} The object.id or instance of object firing the event
+		 * @param event {String} The event
+		 * @param id {String} The identifier for the active listener
+		 * @param sId {String} The identifier for the new standby listener
+		 * @param listener {Mixed} The standby id (string), or the new event listener (function)
+		 * @returns {Object} The object
 		 */
 		replace : function(obj, event, id, sId, listener) {
 			try {
@@ -2190,9 +2190,9 @@ var abaaso = function(){
 		 *
 		 * IDs cannot use dot notation, selectors can be delimited with . or :
 		 *
-		 * @param arg {string} Comma delimited string of target #id, .class, tag and :selector
-		 * @param nodelist {boolean} [Optional] True will return a NodeList (by reference) for tags & classes
-		 * @returns {mixed} Instance or Array of Instances
+		 * @param arg {String} Comma delimited string of target #id, .class, tag and :selector
+		 * @param nodelist {Boolean} [Optional] True will return a NodeList (by reference) for tags & classes
+		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		$ : function(arg, nodelist) {
 			var args, obj, i, loop, c, alt, find, contains, has, not, x,
@@ -2202,9 +2202,9 @@ var abaaso = function(){
 			/**
 			 * Looks for alternating HTMLElement (arg) in HTMLElement (obj)
 			 *
-			 * @param obj {object} HTMLElement to search
-			 * @param state {object} Boolean representing rows, true is even, false is odd
-			 * @returns {mixed} Instance or Array of Instances containing arg, alternating odd or even
+			 * @param obj {Object} HTMLElement to search
+			 * @param state {Object} Boolean representing rows, true is even, false is odd
+			 * @returns {Mixed} Instance or Array of Instances containing arg, alternating odd or even
 			 */
 			alt = function(obj, state) {
 				var i, loop, instances = [];
@@ -2228,9 +2228,9 @@ var abaaso = function(){
 			/**
 			 * Tests obj against arg
 			 *
-			 * @param obj {string} Property to test
-			 * @param arg {string} String to test for, can be comma delimited or a wildcard
-			 * @returns {boolean} True if found
+			 * @param obj {String} Property to test
+			 * @param arg {String} String to test for, can be comma delimited or a wildcard
+			 * @returns {Boolean} True if found
 			 */
 			find = function(obj, arg) {
 				arg = arg.split(/\s*,\s*/);
@@ -2245,9 +2245,9 @@ var abaaso = function(){
 			/**
 			 * Looks for arg in obj.innerHTML
 			 *
-			 * @param obj {object} HTMLElement to search
-			 * @param arg {mixed} String or Integer to find in obj
-			 * @returns {mixed} Instance or Array of Instances containing arg
+			 * @param obj {Object} HTMLElement to search
+			 * @param arg {Mixed} String or Integer to find in obj
+			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			contains = function(obj, arg) {
 				var i, loop, instances = [];
@@ -2269,9 +2269,9 @@ var abaaso = function(){
 			/**
 			 * Looks for HTMLElement (arg) in HTMLElement (obj)
 			 *
-			 * @param obj {object} HTMLElement to search
-			 * @param arg {string} HTMLElement type to find, can be comma delimited
-			 * @returns {mixed} Instance or Array of Instances containing arg
+			 * @param obj {Object} HTMLElement to search
+			 * @param arg {String} HTMLElement type to find, can be comma delimited
+			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			has = function(obj, arg) {
 				var i, loop, instances = [];
@@ -2304,9 +2304,9 @@ var abaaso = function(){
 			/**
 			 * Tests if HTMLElement (obj) matches HTMLElements (arg)
 			 *
-			 * @param obj {object} HTMLElement to search
-			 * @param arg {string} HTMLElement type to find, can be comma delimited
-			 * @returns {mixed} Instance or Array of Instances containing arg
+			 * @param obj {Object} HTMLElement to search
+			 * @param arg {String} HTMLElement type to find, can be comma delimited
+			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			is = function(obj, arg) {
 				var i, loop, instances = [];
@@ -2332,9 +2332,9 @@ var abaaso = function(){
 			/**
 			 * Finds and excludes HTMLElements (arg) in HTMLElement (obj)
 			 *
-			 * @param obj {object} HTMLElement to search
-			 * @param arg {string} HTMLElement type to exclude, can be comma delimited
-			 * @returns {mixed} Instance or Array of Instances containing arg
+			 * @param obj {Object} HTMLElement to search
+			 * @param arg {String} HTMLElement type to exclude, can be comma delimited
+			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			not = function(obj, arg) {
 				var i, loop, instances = [];
@@ -2490,8 +2490,8 @@ var abaaso = function(){
 		/**
 		 * Clones an Object
 		 *
-		 * @param obj {object} Object to clone
-		 * @returns {object} A clone of the Object
+		 * @param obj {Object} Object to clone
+		 * @returns {Object} A clone of the Object
 		 */
 		clone: function(obj) {
 			try {
@@ -2519,9 +2519,9 @@ var abaaso = function(){
 		 * Allows deep setting of properties without knowing
 		 * if the structure is valid
 		 *
-		 * @param args {string} Dot delimited string of the structure
-		 * @param value {mixed} The value to set
-		 * @param obj {object} The object to set the value on
+		 * @param args {String} Dot delimited string of the structure
+		 * @param value {Mixed} The value to set
+		 * @param obj {Object} The object to set the value on
 		 */
 		define: function(args, value, obj) {
 			args = args.split(".");
@@ -2543,7 +2543,7 @@ var abaaso = function(){
 		/**
 		 * Error handling, with history in .events[]
 		 *
-		 * @param e {mixed} Error object or message to display.
+		 * @param e {Mixed} Error object or message to display.
 		 */
 		error : function(e) {
 			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
@@ -2556,8 +2556,8 @@ var abaaso = function(){
 		/**
 		 * Encodes a string to a DOM friendly ID
 		 *
-		 * @param id {string} The object.id value to encode
-		 * @returns {string} Returns a lowercase stripped string
+		 * @param id {String} The object.id value to encode
+		 * @returns {String} Returns a lowercase stripped string
 		 */
 		domID : function(id) {
 			try {
@@ -2572,8 +2572,8 @@ var abaaso = function(){
 		/**
 		 * Generates an id property if obj does not have one
 		 *
-		 * @param obj {mixed} The object to verify
-		 * @returns {object} The object
+		 * @param obj {Mixed} The object to verify
+		 * @returns {Object} The object
 		 */
 		genID : function(obj) {
 			try {
@@ -2601,7 +2601,7 @@ var abaaso = function(){
 		/**
 		 * Generates a random number
 		 *
-		 * @returns {integer} Between 1 and 1-trillian
+		 * @returns {Integer} Between 1 and 1-trillian
 		 */
 		id : function() {
 			return Math.floor(Math.random() * 1000000000);
@@ -2610,7 +2610,7 @@ var abaaso = function(){
 		/**
 		 * Renders a loading icon in a target element
 		 *
-		 * @param id {string} Target object.id value
+		 * @param id {String} Target object.id value
 		 */
 		loading : function(obj) {
 			try {
@@ -2659,7 +2659,7 @@ var abaaso = function(){
 		/**
 		 * Writes argument to the console
 		 *
-		 * @param arg {string} The string to write to the console
+		 * @param arg {String} The string to write to the console
 		 * @returns undefined;
 		 */
 		log : function(arg) {
@@ -2674,8 +2674,8 @@ var abaaso = function(){
 		/**
 		 * Returns argument, or instance based on #object.id value
 		 *
-		 * @param obj {mixed} Object or #Object.id
-		 * @returns {object} Returns an instance of Object
+		 * @param obj {Mixed} Object or #Object.id
+		 * @returns {Object} Returns an instance of Object
 		 * @private
 		 */
 		object : function(obj) {
@@ -2685,8 +2685,8 @@ var abaaso = function(){
 		/**
 		 * Sets methods on a prototype object
 		 *
-		 * @param obj {object} Instance of Array, Element, String or Number
-		 * @param type {string} Identifier of obj, determines what arrays to apply
+		 * @param obj {Object} Instance of Array, Element, String or Number
+		 * @param type {String} Identifier of obj, determines what arrays to apply
 		 */
 		proto : function(obj, type) {
 			try {
@@ -2697,8 +2697,8 @@ var abaaso = function(){
 				/**
 				 * Applies a collection of methods onto an Object
 				 *
-				 * @param obj {object} The object to receive the methods
-				 * @param collection {array} The collection of methods to apply
+				 * @param obj {Object} The object to receive the methods
+				 * @param collection {Array} The collection of methods to apply
 				 */
 				var apply   = function(obj, collection) {
 					var i = collection.length;
@@ -2939,8 +2939,8 @@ var abaaso = function(){
 		/**
 		 * Returns the supplied argument, or false
 		 *
-		 * @param arg {boolean}
-		 * @returns {boolean}
+		 * @param arg {Boolean}
+		 * @returns {Boolean}
 		 */
 		bool : function(arg) {
 			switch (arg) {
@@ -2955,8 +2955,8 @@ var abaaso = function(){
 		/**
 		 * Validates args based on the type or pattern specified
 		 *
-		 * @param args {object} An object to test {id: [test || pattern]}
-		 * @returns {object} An object containing validation status and invalid instances
+		 * @param args {Object} An object to test {id: [test || pattern]}
+		 * @returns {Object} An object containing validation status and invalid instances
 		 */
 		test : function(args) {
 			try {
