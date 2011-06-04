@@ -941,10 +941,10 @@ var abaaso = function(){
 		 * @returns {Object} The data object being cleared
 		 */
 		clear : function() {
-			this.parent.fire("beforeClear");
+			this.parentNode.id.fire("beforeClear");
 			this.keys    = [];
 			this.records = [];
-			this.parent.fire("afterClear");
+			this.parentNode.id.fire("afterClear");
 			return this;
 		},
 
@@ -970,7 +970,7 @@ var abaaso = function(){
 					throw new Error(label.error.invalidArguments);
 				}
 
-				this.parent.fire("beforeDelete");
+				this.parentNode.id.fire("beforeDelete");
 
 				if (typeof record == "string") {
 					key = this.keys[record];
@@ -988,7 +988,7 @@ var abaaso = function(){
 
 				(reindex === true) ? this.reindex() : void(0);
 
-				this.parent.fire("afterDelete");
+				this.parentNode.id.fire("afterDelete");
 
 				return this;
 			}
@@ -1080,7 +1080,7 @@ var abaaso = function(){
 				var r = [],
 				    i, start, end;
 
-				this.parent.fire("beforeGet");
+				this.parentNode.id.fire("beforeGet");
 
 				if (typeof record == "string") {
 					return (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
@@ -1177,7 +1177,7 @@ var abaaso = function(){
 					throw new Error(label.error.invalidArguments);
 				}
 
-				this.parent.fire("beforeSet");
+				this.parentNode.id.fire("beforeSet");
 
 				var record = ((this.keys[key] === undefined) && (this.records[key] === undefined)) ? undefined : this.get(key),
 				    arg, index;
@@ -1203,7 +1203,7 @@ var abaaso = function(){
 					}
 				}
 
-				this.parent.fire("afterSet");
+				this.parentNode.id.fire("afterSet");
 
 				return this;
 			}
