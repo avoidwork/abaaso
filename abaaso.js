@@ -1013,11 +1013,13 @@ var abaaso = function(){
 				// Creating Array of needles
 				(!needle instanceof Array) ? needle = needle.split(",") : void(0);
 
+				var i;
+
 				// Creating validate haystack
 				if (!haystack instanceof Array) {
 					if (haystack instanceof String) {
 						haystack = haystack.split(",");
-						for (var i in haystack) {
+						for (i in haystack) {
 							if (this.records[0].data[haystack[i]] === undefined) {
 								throw Error(label.error.invalidArguments);
 							}
@@ -1025,13 +1027,13 @@ var abaaso = function(){
 					}
 					else {
 						haystack = [];
-						for (var i in this.records[0].data) {
+						for (i in this.records[0].data) {
 							haystack.push(i);
 						}
 					}
 				}
 				else {
-					for (var i in haystack) {
+					for (i in haystack) {
 						if (this.records[0].data[haystack[i]] === undefined) {
 							throw Error(label.error.invalidArguments);
 						}
@@ -1039,10 +1041,11 @@ var abaaso = function(){
 				}
 
 				var result = [],
-				    i      = this.records.length,
 				    loop   = haystack.length,
 					loop2  = needle.length,
 					x, y, test;
+
+				i = this.records.length
 
 				// Finding all needles in the haystack
 				while (i--) {
