@@ -61,7 +61,7 @@ var abaaso = function(){
 					throw new Error(label.error.expectedArray);
 				}
 
-				arg = (arg.toString().indexOf(",") > -1) ? arg.split(",") : arg;
+				arg = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
 
 				if (arg instanceof Array) {
 					var indexes = [],
@@ -751,7 +751,7 @@ var abaaso = function(){
 					}
 
 					cache.set(uri, "headers", items);
-					cache.set(uri, "permission", bit((accept !== null) ? accept.split(",") : [type]));
+					cache.set(uri, "permission", bit((accept !== null) ? accept.split(/\s*,\s*/) : [type]));
 				}
 				else if (xhr.readyState == 4) {
 					clearTimeout(abaaso.timer[uri]);
@@ -1016,13 +1016,13 @@ var abaaso = function(){
 					throw Error(label.error.invalidArguments);
 				}
 
-				var i, h = [], n = (typeof needle == "string") ? needle.split(",") : needle;
+				var i, h = [], n = (typeof needle == "string") ? needle.split(/\s*,\s*/) : needle;
 
 				// Creating validate haystack
 				if ((haystack === undefined)
 					|| (!haystack instanceof Array)) {
 					if (typeof haystack == "string") {
-						h = haystack.split(",");
+						h = haystack.split(/\s*,\s*/);
 						for (i in h) {
 							if (this.records[0].data[h[i]] === undefined) {
 								throw Error(label.error.invalidArguments);
@@ -2376,20 +2376,23 @@ var abaaso = function(){
 				return instances;
 			};
 
-			arg      = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
+			var a = (/[^.:]{1,}/gi.exec(arg) !== null) ? /[^.:]{1,}/gi.exec(arg)[0] : "",
+			    s = (/[.:]{1,}.*/gi.exec(arg) !== null) ? /[.:]{1,}.*/gi.exec(arg)[0] : "";
+
+			arg      = (a.indexOf(",") > -1) ? a.split(/\s*,\s*/) : a;
 			nodelist = (nodelist === true) ? true : false;
 
 			// Recursive processing, ends up below
 			if (arg instanceof Array) {
 				loop = arg.length;
 				for (i = 0; i < loop; i++) {
-					instances.push($(arg[i], nodelist));
+					instances.push($(arg[i] + s, nodelist));
 				}
 				return instances;
 			}
 
 			// Setting arg & args
-			args = arg.split(/\.|:/).slice(1);
+			args = s.split(/\.|:/).slice(1);
 			if (arg.charAt(0) == ":") {
 				arg = ":";
 			}
@@ -2790,6 +2793,39 @@ var abaaso = function(){
 							this.genId();
 							return abaaso.el.hide(this);
 							}},
+						{name: "isAlpha", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({string: this.innerHTML}).pass;
+							}},
+						{name: "isAlphaNum", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({string: this.innerHTML, number: this.innerHTML}).pass;
+							}},
+						{name: "isBoolean", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({"boolean": this.innerHTML}).pass;
+							}},
+						{name: "isDate", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({date: this.innerHTML}).pass;
+							}},
+						{name: "isDomain", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({domain: this.innerHTML}).pass;
+							}},
+						{name: "isEmail", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({email: this.innerHTML}).pass;
+							}},
+						{name: "isEmpty", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : !abaaso.validate.test({notEmpty: this.innerHTML}).pass;
+							}},
+						{name: "isIP", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({ip: this.innerHTML}).pass;
+							}},
+						{name: "isInt", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({integer: this.innerHTML}).pass;
+							}},
+						{name: "isNum", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({number: this.innerHTML}).pass;
+							}},
+						{name: "isPhone", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({phone: this.innerHTML}).pass;
+							}},
 						{name: "jsonp", fn: function(uri, property, callback) {
 							var target = this,
 							    arg = property,
@@ -2908,6 +2944,39 @@ var abaaso = function(){
 						{name: "capitalize", fn: function() {
 							return this.charAt(0).toUpperCase() + this.slice(1);
 							}},
+						{name: "isAlpha", fn: function() {
+							return abaaso.validate.test({string: this}).pass;
+							}},
+						{name: "isAlphaNum", fn: function() {
+							return abaaso.validate.test({string: this, number: this}).pass;
+							}},
+						{name: "isBoolean", fn: function() {
+							return abaaso.validate.test({"boolean": this}).pass;
+							}},
+						{name: "isDate", fn: function() {
+							return abaaso.validate.test({date: this}).pass;
+							}},
+						{name: "isDomain", fn: function() {
+							return abaaso.validate.test({domain: this}).pass;
+							}},
+						{name: "isEmail", fn: function() {
+							return abaaso.validate.test({email: this}).pass;
+							}},
+						{name: "isEmpty", fn: function() {
+							return !abaaso.validate.test({notEmpty: this}).pass;
+							}},
+						{name: "isIP", fn: function() {
+							return abaaso.validate.test({ip: this}).pass;
+							}},
+						{name: "isInt", fn: function() {
+							return abaaso.validate.test({integer: this}).pass;
+							}},
+						{name: "isNum", fn: function() {
+							return abaaso.validate.test({number: this}).pass;
+							}},
+						{name: "isPhone", fn: function() {
+							return abaaso.validate.test({phone: this}).pass;
+							}},
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							return abaaso.on(this, event, listener, id, scope, standby);
@@ -2941,82 +3010,81 @@ var abaaso = function(){
 		 * Regular expression patterns to test against
 		 */
 		pattern : {
+			"boolean": /^(0|1|true|false)?$/,
+			domain   : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
+			email    : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
+			notEmpty : /\w{1,}/,
 			domain   : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
 			ip       : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
 			integer  : /(^-?\d\d*$)/,
-			email    : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
 			number   : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/,
-			notEmpty : /\S/,
 			phone    : /^\([1-9]\d{2}\)\s?\d{3}\-\d{4}$/,
 			string   : /\w/
 		},
 
 		/**
-		 * Returns the supplied argument, or false
-		 *
-		 * @param arg {Boolean}
-		 * @returns {Boolean}
-		 */
-		bool : function(arg) {
-			switch (arg) {
-				case true:
-				case false:
-					return arg;
-				default:
-					return false;
-			}
-		},
-
-		/**
 		 * Validates args based on the type or pattern specified
 		 *
-		 * @param args {Object} An object to test {id: [test || pattern]}
+		 * @param args {Object} An object to test {(pattern[name] || /pattern/) : (value || #object.id)}
 		 * @returns {Object} An object containing validation status and invalid instances
 		 */
 		test : function(args) {
 			try {
 				var exception = false,
 				    invalid   = [],
-				    pattern   = validate.pattern,
 				    value     = null;
 
-				for (var i in args) {
-					value = ($(i).value) ? $(i).value : $(i).innerHTML;
-					switch (args[i]) {
-						case "boolean":
-							if (!validate.bool(value)) {
-								invalid.push(i);
-								exception = true;
-							}
-							break;
-						case "date":
-							value = new String(value);
-							if ((!pattern.notEmpty.test(value))
-							    || (!new Date(value))) {
-								invalid.push(i);
-								exception = true;
-							}
-							break;
-						case "domainip":
-							value = new String(value);
-							if ((!pattern.domain.test(value))
-							    || (!pattern.ip.test(value))) {
-								invalid.push(i);
-								exception = true;
-							}
-							break;
-						default:
-							value = new String(value);
-							var p = (pattern[args[i]]) ? pattern[args[i]] : args[i];
-							if (!p.test(value)) {
-								invalid.push(i);
-								exception = true;
-							}
-							break;
-					}
-				}
+				if ((typeof args.nodeName != "undefined")
+					&& (args.nodeName.toLowerCase() == "form")) {
+					var i, p, c, t = {}, loop;
 
-				return {pass: !exception, invalid: invalid};
+					c    = $("#"+args.id+":has(input,select)");
+					loop = c.length;
+
+					for (i = 0; i < loop; i++) {
+						p = (this.pattern[c[i].nodeName.toLowerCase()]) ? this.pattern[c[i].nodeName.toLowerCase()]
+						                                                : (((c[i].id.isEmpty() === false)
+																			&& (this.pattern[c[i].id.toLowerCase()])) ? this.pattern[c[i].id.toLowerCase()]
+																		                                              : "notEmpty");
+
+						t[p] = c[i].innerText;
+					}
+
+					return this.test(t);
+				}
+				else {
+					for (var i in args) {
+						value = new String((args[i].charAt(0) == "#") ? (($(args[i]) !== undefined)
+																		 ? (($(args[i]).value) ? $(args[i]).value
+																							   : $(args[i]).innerHTML)
+																		 : "")
+																	  : args[i]);
+						switch (i) {
+							case "date":
+								if (!new Date(value)) {
+									invalid.push({test: "date", value: args[i]});
+									exception = true;
+								}
+								break;
+							case "domainip":
+								if ((!this.pattern.domain.test(value))
+									|| (!this.pattern.ip.test(value))) {
+									invalid.push({test: "domainip", value: args[i]});
+									exception = true;
+								}
+								break;
+							default:
+								var p = (this.pattern[i] !== undefined) ? this.pattern[i] : i;
+								if (!p.test(value)) {
+									invalid.push({test: p, value: args[i]});
+									exception = true;
+								}
+								break;
+						}
+					}
+
+					return {pass: !exception, invalid: invalid};
+				}
 			}
 			catch (e) {
 				error(e);
