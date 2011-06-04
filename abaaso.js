@@ -3039,24 +3039,24 @@ var abaaso = function(){
 		array           : array,
 		callback        : [],
 		client          : {
-			// Properties
-			css3    : client.css3,
-			chrome  : client.chrome,
-			firefox : client.firefox,
-			ie      : client.ie,
-			ms      : client.ms,
-			opera   : client.opera,
-			safari  : client.safari,
-			size    : {x:0, y:0},
-			version : client.version,
+				// Properties
+				css3    : client.css3,
+				chrome  : client.chrome,
+				firefox : client.firefox,
+				ie      : client.ie,
+				ms      : client.ms,
+				opera   : client.opera,
+				safari  : client.safari,
+				size    : {x:0, y:0},
+				version : client.version,
 
-			// Methods
-			del     : client.del,
-			get     : client.get,
-			post    : client.post,
-			put     : client.put,
-			jsonp   : client.jsonp,
-			permission : client.permission
+				// Methods
+				del     : client.del,
+				get     : client.get,
+				post    : client.post,
+				put     : client.put,
+				jsonp   : client.jsonp,
+				permission : client.permission
 			},
 		cookie          : cookie,
 		data            : data,
@@ -3064,22 +3064,22 @@ var abaaso = function(){
 		json            : json,
 		label           : label,
 		loading         : {
-			create  : utility.loading,
-			url     : null
+				create  : utility.loading,
+				url     : null
 			},
 		mouse           : mouse,
 		number          : number,
 		observer        : {
-			log     : observer.log,
-			add     : observer.add,
-			fire    : observer.fire,
-			list    : observer.list,
-			remove  : observer.remove
+				log     : observer.log,
+				add     : observer.add,
+				fire    : observer.fire,
+				list    : observer.list,
+				remove  : observer.remove
 			},
 		state           : {
-			current : null,
-			header  : null,
-			previous: null
+				current : null,
+				header  : null,
+				previous: null
 			},
 		validate        : validate,
 
@@ -3098,136 +3098,138 @@ var abaaso = function(){
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
-			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
-			    event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
+				var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
+					event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
 
-			return abaaso.observer.fire(obj, event);
+				return abaaso.observer.fire(obj, event);
 			},
 		genId           : utility.genId,
 		get             : client.get,
 		id              : "abaaso",
 		init            : function() {
-			abaaso.ready = true;
+				abaaso.ready = true;
 
-			client.version = (function(){
-					if (client.chrome)  { return parseInt(navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, "").trim()); }
-					if (client.firefox) { return parseInt(navigator.userAgent.replace(/(.*Firefox\/)/gi, "").trim()); }
-					if (client.ie)      { return parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "").trim()); }
-					if (client.opera)   { return parseInt(navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, "").trim()); }
-					if (client.safari)  { return parseInt(navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, "").trim()); }
-					else { return parseInt(navigator.appVersion); }
-				})();
-			client.css3    = (function(){
-					if ((client.chrome) && (client.version > 5))  { return true; }
-					if ((client.firefox) && (client.version > 2)) { return true; }
-					if ((client.ie) && (client.version > 8))      { return true; }
-					if ((client.opera) && (client.version > 8))   { return true; }
-					if ((client.safari) && (client.version > 4))  { return true; }
-					else { return false; }
-				})();
-			abaaso.client.version = client.version;
-			abaaso.client.css3    = client.css3;
-			abaaso.client.size    = client.size();
+				client.version = (function(){
+						if (client.chrome)  { return parseInt(navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, "").trim()); }
+						if (client.firefox) { return parseInt(navigator.userAgent.replace(/(.*Firefox\/)/gi, "").trim()); }
+						if (client.ie)      { return parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "").trim()); }
+						if (client.opera)   { return parseInt(navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, "").trim()); }
+						if (client.safari)  { return parseInt(navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, "").trim()); }
+						else { return parseInt(navigator.appVersion); }
+					})();
+				client.css3    = (function(){
+						if ((client.chrome) && (client.version > 5))  { return true; }
+						if ((client.firefox) && (client.version > 2)) { return true; }
+						if ((client.ie) && (client.version > 8))      { return true; }
+						if ((client.opera) && (client.version > 8))   { return true; }
+						if ((client.safari) && (client.version > 4))  { return true; }
+						else { return false; }
+					})();
+				abaaso.client.version = client.version;
+				abaaso.client.css3    = client.css3;
+				abaaso.client.size    = client.size();
 
-			utility.proto(Array.prototype, "array");
-			utility.proto(Element.prototype, "element");
-			((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
-			utility.proto(Number.prototype, "number");
-			utility.proto(String.prototype, "string");
-			window.onhashchange = function() { abaaso.fire("hash"); };
-			window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize"); };
-			abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
+				utility.proto(Array.prototype, "array");
+				utility.proto(Element.prototype, "element");
+				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
+				utility.proto(Number.prototype, "number");
+				utility.proto(String.prototype, "string");
+				window.onhashchange = function() { abaaso.fire("hash"); };
+				window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize"); };
+				abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
 
-			if (typeof document.getElementsByClassName == "undefined") {
-				document.getElementsByClassName = function(arg) {
-					var nodes   = document.getElementsByTagName("*"),
-					    loop    = nodes.length,
-					    i       = null,
-					    obj     = [],
-					    pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
+				if (typeof document.getElementsByClassName == "undefined") {
+					document.getElementsByClassName = function(arg) {
+						var nodes   = document.getElementsByTagName("*"),
+							loop    = nodes.length,
+							i       = null,
+							obj     = [],
+							pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
 
-					for (i = 0; i < loop; i++) {
-						(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
-					}
-
-					return obj;
-				};
-			}
-
-			if (typeof Array.prototype.filter == "undefined") {
-				Array.prototype.filter = function(fn) {
-					"use strict";
-					if ((this === void 0)
-					    || (this === null)
-					    || (typeof fn !== "function")) {
-						throw new Error(label.error.invalidArguments);
-					}
-
-					var i      = null,
-					    t      = Object(this),
-					    loop   = t.length >>> 0,
-					    result = [],
-					    prop   = arguments[1]
-					    val    = null;
-
-					for (i = 0; i < loop; i++) {
-						if (i in t) {
-							val = t[i];
-							(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
+						for (i = 0; i < loop; i++) {
+							(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
 						}
-					}
 
-					return result;
+						return obj;
+					};
 				}
-			}
 
-			abaaso.fire("ready").un("ready");
+				if (typeof Array.prototype.filter == "undefined") {
+					Array.prototype.filter = function(fn) {
+						"use strict";
+						if ((this === void 0)
+							|| (this === null)
+							|| (typeof fn !== "function")) {
+							throw new Error(label.error.invalidArguments);
+						}
 
-			if ((!client.ie) || (client.version > 8)) {
-				abaaso.timer.render = setInterval(function(){
-					if (/loaded|complete/.test(document.readyState)) {
-						clearInterval(abaaso.timer.render);
-						delete abaaso.timer.render;
-						abaaso.fire("render").un("render");
+						var i      = null,
+							t      = Object(this),
+							loop   = t.length >>> 0,
+							result = [],
+							prop   = arguments[1]
+							val    = null;
+
+						for (i = 0; i < loop; i++) {
+							if (i in t) {
+								val = t[i];
+								(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
+							}
+						}
+
+						return result;
 					}
-				}, 10);
-			}
+				}
 
-			delete abaaso.init;
+				abaaso.fire("ready").un("ready");
+
+				if ((!client.ie) || (client.version > 8)) {
+					abaaso.timer.render = setInterval(function(){
+						if (/loaded|complete/.test(document.readyState)) {
+							clearInterval(abaaso.timer.render);
+							delete abaaso.timer.render;
+							abaaso.fire("render").un("render");
+						}
+					}, 10);
+				}
+
+				delete abaaso.init;
 			},
 		jsonp           : client.jsonp,
 		listeners       : function() {
-			var all   = (arguments[1] !== undefined) ? true : false;
-			var obj   = (all) ? arguments[0] : abaaso,
-			    event = (all) ? arguments[1] : arguments[0];
+				var all   = (arguments[1] !== undefined) ? true : false;
+				var obj   = (all) ? arguments[0] : abaaso,
+					event = (all) ? arguments[1] : arguments[0];
 
-			return abaaso.observer.list(obj, event);
+				return abaaso.observer.list(obj, event);
 			},
 		on              : function() {
-			var all      = (arguments[2] instanceof Function) ? true : false;
-			var obj      = (all) ? arguments[0] : abaaso,
-			    event    = (all) ? arguments[1] : arguments[0],
-			    listener = (all) ? arguments[2] : arguments[1],
-			    id       = (all) ? arguments[3] : arguments[2],
-			    scope    = (all) ? arguments[4] : arguments[3],
-			    standby  = (all) ? arguments[5] : arguments[4];
+				var all      = (arguments[2] instanceof Function) ? true : false;
+				var obj      = (all) ? arguments[0] : abaaso,
+					event    = (all) ? arguments[1] : arguments[0],
+					listener = (all) ? arguments[2] : arguments[1],
+					id       = (all) ? arguments[3] : arguments[2],
+					scope    = (all) ? arguments[4] : arguments[3],
+					standby  = (all) ? arguments[5] : arguments[4];
 
-			return abaaso.observer.add(obj, event, listener, id, scope, standby);
+				return abaaso.observer.add(obj, event, listener, id, scope, standby);
 			},
 		permission      : client.permission,
 		position        : el.position,
 		post            : client.post,
 		put             : client.put,
 		ready           : false,
-		store           : data.register,
+		store           : function(arg) {
+				return data.register.call(data, arg);
+			},
 		timer           : {},
 		un              : function() {
-			var all   = (typeof arguments[0] == "string") ? false : true;
-			var obj   = (all) ? arguments[0] : abaaso,
-			    event = (all) ? arguments[1] : arguments[0],
-			    id    = (all) ? arguments[2] : arguments[1];
+				var all   = (typeof arguments[0] == "string") ? false : true;
+				var obj   = (all) ? arguments[0] : abaaso,
+					event = (all) ? arguments[1] : arguments[0],
+					id    = (all) ? arguments[2] : arguments[1];
 
-			return abaaso.observer.remove(obj, event, id);
+				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
 		version         : "1.5.tech"
