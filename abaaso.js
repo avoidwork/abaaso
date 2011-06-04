@@ -1016,7 +1016,8 @@ var abaaso = function(){
 				var i;
 
 				// Creating validate haystack
-				if (!haystack instanceof Array) {
+				if ((haystack === undefined)
+					|| (!haystack instanceof Array)) {
 					if (haystack instanceof String) {
 						haystack = haystack.split(",");
 						for (i in haystack) {
@@ -1126,7 +1127,7 @@ var abaaso = function(){
 					obj = utility.object(obj);
 					abaaso.genId(obj);
 					obj.data = utility.clone(this);
-					obj.data.parent = obj.id;
+					obj.data.parentNode = obj; // Recursion, but expected I guess
 					delete obj.data.register;
 				}
 				return obj;
