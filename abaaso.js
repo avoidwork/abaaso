@@ -3219,6 +3219,7 @@ var abaaso = function(){
 		post            : client.post,
 		put             : client.put,
 		ready           : false,
+		store           : data.register,
 		timer           : {},
 		un              : function() {
 			var all   = (typeof arguments[0] == "string") ? false : true;
