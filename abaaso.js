@@ -1001,7 +1001,7 @@ var abaaso = function(){
 		/**
 		 * Finds needle in the haystack
 		 *
-		 * @param needle {mixed} String or number to find
+		 * @param {Mixed} needle String, Number or Pattern to test for
 		 * @param {Mixed} haystack [Optional] The field(s) to search
 		 */
 		find : function(needle, haystack) {
@@ -1010,22 +1010,29 @@ var abaaso = function(){
 					throw Error(label.error.invalidArguments);
 				}
 
+				// Creating Array of needles
 				(!needle instanceof Array) ? needle = needle.split(",") : void(0);
 
+				// Creating validate haystack
 				if (!haystack instanceof Array) {
 					if (haystack instanceof String) {
 						haystack = haystack.split(",");
+						for (var i in haystack) {
+							if (this.records[0].data[haystack[i]] === undefined) {
+								throw Error(label.error.invalidArguments);
+							}
+						}
 					}
 					else {
 						haystack = [];
-						for (var i in this.records[0]) {
+						for (var i in this.records[0].data) {
 							haystack.push(i);
 						}
 					}
 				}
 				else {
 					for (var i in haystack) {
-						if (!haystack[i] in this.records[0]) {
+						if (this.records[0].data[haystack[i]] === undefined) {
 							throw Error(label.error.invalidArguments);
 						}
 					}
@@ -1037,10 +1044,11 @@ var abaaso = function(){
 					loop2  = needle.length,
 					x, y, test;
 
+				// Finding all needles in the haystack
 				while (i--) {
 					for (x = 0; x < loop; x++) {
 						for (y = 0; y < loop2; y++) {
-							if (new RegExp(needle[y]).test(this.records[i].haystack[x])) {
+							if (new RegExp(needle[y]).test(this.records[i].data.haystack[x])) {
 								result.push(this.records[i]);
 							}
 						}
