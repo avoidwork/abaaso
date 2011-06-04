@@ -1109,7 +1109,7 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Registers an instance on an Object
+		 * Factory to create an instance on an Object
 		 *
 		 * @param obj {Object} The Object to register with
 		 * @returns {Object} The Object registered with
