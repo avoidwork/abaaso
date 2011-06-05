@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.005
+ * @version 1.5.006
  */
 var abaaso = function(){
 	/**
@@ -2797,37 +2797,37 @@ var abaaso = function(){
 							return abaaso.el.hide(this);
 							}},
 						{name: "isAlphaNum", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({alphanum: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({alphanum: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isBoolean", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({"boolean": this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isDate", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({date: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({date: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isDomain", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({domain: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({domain: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isEmail", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({email: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({email: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isEmpty", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : !abaaso.validate.test({notEmpty: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : !abaaso.validate.test({notEmpty: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isIP", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({ip: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({ip: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isInt", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({integer: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({integer: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isNumber", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({number: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({number: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isPhone", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({phone: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({phone: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isString", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({string: this.innerHTML}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({string: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "jsonp", fn: function(uri, property, callback) {
 							var target = this,
@@ -2889,7 +2889,10 @@ var abaaso = function(){
 						{name: "update", fn: function(args) {
 							this.genId();
 							return abaaso.update(this, args);
-							}}
+							}},
+						{name: "validate", fn: function() {
+							return (/form/gi.test(this.nodeName)) ? abaaso.validate.test(this) : abaaso.validate.test({notEmpty: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							}},
 					],
 					number  : [
 						{name: "isEven", fn: function() {
@@ -3015,12 +3018,11 @@ var abaaso = function(){
 		pattern : {
 			alphanum : /^[a-zA-Z0-9]*$/,
 			"boolean": /^(0|1|true|false)?$/,
-			domain   : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
+			domain   : /^([a-z0-9]([-a-z0-9]*[a-z0-9])?\\.)+((a[cdefgilmnoqrstuwxz]|aero|arpa)|(b[abdefghijmnorstvwyz]|biz)|(c[acdfghiklmnorsuvxyz]|cat|com|coop)|d[ejkmoz]|(e[ceghrstu]|edu)|f[ijkmor]|(g[abdefghilmnpqrstuwy]|gov)|h[kmnrtu]|(i[delmnoqrst]|info|int)|(j[emop]|jobs)|k[eghimnprwyz]|l[abcikrstuvy]|(m[acdghklmnopqrstuvwxyz]|mil|mobi|museum)|(n[acefgilopruz]|name|net)|(om|org)|(p[aefghklmnrstwy]|pro)|qa|r[eouw]|s[abcdeghijklmnortvyz]|(t[cdfghjklmnoprtvwz]|travel)|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw])$/i,
 			email    : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
-			notEmpty : /\w{1,}/,
-			domain   : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
 			ip       : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
 			integer  : /(^-?\d\d*$)/,
+			notEmpty : /\w{1,}/,
 			number   : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/,
 			phone    : /^\([1-9]\d{2}\)\s?\d{3}\-\d{4}$/,
 			string   : /\w/
@@ -3090,7 +3092,7 @@ var abaaso = function(){
 																	  : args[i]);
 						switch (i) {
 							case "date":
-								if (!new Date(value)) {
+								if (isNaN(new Date(value).getYear())) {
 									invalid.push({test: "date", value: args[i]});
 									exception = true;
 								}
@@ -3329,7 +3331,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.005"
+		version         : "1.5.006"
 	};
 }();
 
