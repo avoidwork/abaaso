@@ -2379,6 +2379,7 @@ var abaaso = function(){
 			var a = (/[^:]{1,}/gi.exec(arg) !== null) ? /[^:]{1,}/gi.exec(arg)[0] : "",
 			    s = (/[:]{1,}.*/gi.exec(arg) !== null) ? /[:]{1,}.*/gi.exec(arg)[0] : "";
 
+			(arg.charAt(0) == ":") ? a = arg : void(0);
 			arg      = (a.indexOf(",") > -1) ? a.split(/\s*,\s*/) : a;
 			nodelist = (nodelist === true) ? true : false;
 
