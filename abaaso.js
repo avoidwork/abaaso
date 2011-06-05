@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.002
+ * @version 1.5.003
  */
 var abaaso = function(){
 	/**
@@ -2796,11 +2796,8 @@ var abaaso = function(){
 							this.genId();
 							return abaaso.el.hide(this);
 							}},
-						{name: "isAlpha", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({string: this.innerHTML}).pass;
-							}},
 						{name: "isAlphaNum", fn: function() {
-							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({string: this.innerHTML, number: this.innerHTML}).pass;
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({alphanum: this.innerHTML}).pass;
 							}},
 						{name: "isBoolean", fn: function() {
 							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({"boolean": this.innerHTML}).pass;
@@ -2828,6 +2825,9 @@ var abaaso = function(){
 							}},
 						{name: "isPhone", fn: function() {
 							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({phone: this.innerHTML}).pass;
+							}},
+						{name: "isString", fn: function() {
+							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({string: this.innerHTML}).pass;
 							}},
 						{name: "jsonp", fn: function(uri, property, callback) {
 							var target = this,
@@ -2947,11 +2947,8 @@ var abaaso = function(){
 						{name: "capitalize", fn: function() {
 							return this.charAt(0).toUpperCase() + this.slice(1);
 							}},
-						{name: "isAlpha", fn: function() {
-							return abaaso.validate.test({string: this}).pass;
-							}},
 						{name: "isAlphaNum", fn: function() {
-							return abaaso.validate.test({string: this, number: this}).pass;
+							return abaaso.validate.test({alphanum: this}).pass;
 							}},
 						{name: "isBoolean", fn: function() {
 							return abaaso.validate.test({"boolean": this}).pass;
@@ -2979,6 +2976,9 @@ var abaaso = function(){
 							}},
 						{name: "isPhone", fn: function() {
 							return abaaso.validate.test({phone: this}).pass;
+							}},
+						{name: "isString", fn: function() {
+							return abaaso.validate.test({string: this}).pass;
 							}},
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
@@ -3013,6 +3013,7 @@ var abaaso = function(){
 		 * Regular expression patterns to test against
 		 */
 		pattern : {
+			alphanum : /^[a-zA-Z0-9]*$/,
 			"boolean": /^(0|1|true|false)?$/,
 			domain   : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?$/,
 			email    : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
@@ -3328,7 +3329,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.002"
+		version         : "1.5.003"
 	};
 }();
 
