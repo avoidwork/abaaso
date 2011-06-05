@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.007
+ * @version 1.5.008
  */
 var abaaso = function(){
 	/**
@@ -2803,31 +2803,31 @@ var abaaso = function(){
 							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
 							}},
 						{name: "isDate", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({date: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDate() : this.innerText.isDate();
 							}},
 						{name: "isDomain", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({domain: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDomain() : this.innerText.isDomain();
 							}},
 						{name: "isEmail", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({email: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmail() : this.innerText.isEmail();
 							}},
 						{name: "isEmpty", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : !abaaso.validate.test({notEmpty: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmpty() : this.innerText.isEmpty();
 							}},
 						{name: "isIP", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({ip: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isIP() : this.innerText.isIP();
 							}},
 						{name: "isInt", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({integer: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isInt() : this.innerText.isInt();
 							}},
 						{name: "isNumber", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({number: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isNumber() : this.innerText.isNumber();
 							}},
 						{name: "isPhone", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({phone: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isPhone() : this.innerText.isPhone();
 							}},
 						{name: "isString", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({string: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isString() : this.innerText.isString();
 							}},
 						{name: "jsonp", fn: function(uri, property, callback) {
 							var target = this,
@@ -2891,7 +2891,7 @@ var abaaso = function(){
 							return abaaso.update(this, args);
 							}},
 						{name: "validate", fn: function() {
-							return (/form/gi.test(this.nodeName)) ? abaaso.validate.test(this) : abaaso.validate.test({notEmpty: (typeof this.value != "undefined") ? this.value : this.innerText}).pass;
+							return (/form/gi.test(this.nodeName)) ? abaaso.validate.test(this).pass : (typeof this.value != "undefined") ? !this.value.isEmpty() : !this.innerText.isEmpty();
 							}},
 					],
 					number  : [
@@ -3331,7 +3331,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.007"
+		version         : "1.5.008"
 	};
 }();
 
