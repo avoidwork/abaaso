@@ -3035,22 +3035,47 @@ var abaaso = function(){
 				    value     = null;
 
 				if ((typeof args.nodeName != "undefined")
-					&& (args.nodeName.toLowerCase() == "form")) {
-					var i, p, c, t = {}, loop;
+					&& (/form/gi.test(args.nodeName))) {
+					var i, p, v, c, o, x, t = {}, loop, loop2, result, invalid = [], tracked = {};
+
+					(args.id.isEmpty()) ? args.genId() : void(0);
 
 					c    = $("#"+args.id+":has(input,select)");
 					loop = c.length;
 
 					for (i = 0; i < loop; i++) {
+						v = null;
 						p = (this.pattern[c[i].nodeName.toLowerCase()]) ? this.pattern[c[i].nodeName.toLowerCase()]
 						                                                : (((c[i].id.isEmpty() === false)
 																			&& (this.pattern[c[i].id.toLowerCase()])) ? this.pattern[c[i].id.toLowerCase()]
 																		                                              : "notEmpty");
 
-						t[p] = (typeof c[i].value != "undefined") ? c[i].value : c[i].innerText;
+						if (/(radio|checkbox)/gi.test(c[i].type)) {
+							if (c[i].name in tracked) { continue; }
+							o = document.getElementsByName(c[i].name);
+							loop2 = o.length;
+							for (x = 0; x < loop2; x++) {
+								if (o[x].checked) {
+									v = o[x].value;
+									tracked[c[i].name] = true;
+									continue;
+								}
+							}
+						}
+						else if (/select/gi.test(c[i].type)) {
+							v = c[i].options[c[i].selectedIndex].value;
+						}
+						else {
+							v = (typeof c[i].value != "undefined") ? c[i].value : c[i].innerText;
+						}
+
+						(v === null) ? v = "" : void(0);
+						t[p] = v;
 					}
 
-					return this.test(t);
+					result = this.test(t);
+
+					return result;
 				}
 				else {
 					for (var i in args) {
