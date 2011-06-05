@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.000
+ * @version 1.5.001
  */
 var abaaso = function(){
 	/**
@@ -2200,7 +2200,7 @@ var abaaso = function(){
 		 * Selectors "contains(string)", "even", "first", "has(tag)", "last", "not(tag)", "odd" are optional
 		 * The "has" and "not" selectors accept comma delimited strings, which can include wildcards, e.g. ":has(d*, l*)"
 		 *
-		 * IDs cannot use dot notation, selectors can be delimited with . or :
+		 * Selectors can be delimited with :
 		 *
 		 * @param arg {String} Comma delimited string of target #id, .class, tag and :selector
 		 * @param nodelist {Boolean} [Optional] True will return a NodeList (by reference) for tags & classes
@@ -2376,10 +2376,9 @@ var abaaso = function(){
 				return instances;
 			};
 
-			var a = (/[^.:]{1,}/gi.exec(arg) !== null) ? /[^.:]{1,}/gi.exec(arg)[0] : "",
-			    s = (/[.:]{1,}.*/gi.exec(arg) !== null) ? /[.:]{1,}.*/gi.exec(arg)[0] : "";
+			var a = (/[^:]{1,}/gi.exec(arg) !== null) ? /[^:]{1,}/gi.exec(arg)[0] : "",
+			    s = (/[:]{1,}.*/gi.exec(arg) !== null) ? /[:]{1,}.*/gi.exec(arg)[0] : "";
 
-			(arg.charAt(0) == ".") ? a = "." + a : void(0);
 			arg      = (a.indexOf(",") > -1) ? a.split(/\s*,\s*/) : a;
 			nodelist = (nodelist === true) ? true : false;
 
@@ -2393,7 +2392,7 @@ var abaaso = function(){
 			}
 
 			// Setting arg & args
-			args = s.split(/\.|:/).slice(1);
+			args = s.split(/:/).slice(1);
 			if (arg.charAt(0) == ":") {
 				arg = ":";
 			}
@@ -3326,7 +3325,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.000"
+		version         : "1.5.001"
 	};
 }();
 
