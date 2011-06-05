@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.006
+ * @version 1.5.007
  */
 var abaaso = function(){
 	/**
@@ -3018,7 +3018,7 @@ var abaaso = function(){
 		pattern : {
 			alphanum : /^[a-zA-Z0-9]*$/,
 			"boolean": /^(0|1|true|false)?$/,
-			domain   : /^([a-z0-9]([-a-z0-9]*[a-z0-9])?\\.)+((a[cdefgilmnoqrstuwxz]|aero|arpa)|(b[abdefghijmnorstvwyz]|biz)|(c[acdfghiklmnorsuvxyz]|cat|com|coop)|d[ejkmoz]|(e[ceghrstu]|edu)|f[ijkmor]|(g[abdefghilmnpqrstuwy]|gov)|h[kmnrtu]|(i[delmnoqrst]|info|int)|(j[emop]|jobs)|k[eghimnprwyz]|l[abcikrstuvy]|(m[acdghklmnopqrstuvwxyz]|mil|mobi|museum)|(n[acefgilopruz]|name|net)|(om|org)|(p[aefghklmnrstwy]|pro)|qa|r[eouw]|s[abcdeghijklmnortvyz]|(t[cdfghjklmnoprtvwz]|travel)|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw])$/i,
+			domain   : /^[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/,
 			email    : /^([0-9a-zA-Z]+([_.-]?[0-9a-zA-Z]+)*@[0-9a-zA-Z]+[0-9,a-z,A-Z,.,-]*(.){1}[a-zA-Z]{2,4})+$/,
 			ip       : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
 			integer  : /(^-?\d\d*$)/,
@@ -3331,7 +3331,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.006"
+		version         : "1.5.007"
 	};
 }();
 
