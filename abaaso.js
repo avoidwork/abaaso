@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.004
+ * @version 1.5.005
  */
 var abaaso = function(){
 	/**
@@ -2820,7 +2820,7 @@ var abaaso = function(){
 						{name: "isInt", fn: function() {
 							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({integer: this.innerHTML}).pass;
 							}},
-						{name: "isNum", fn: function() {
+						{name: "isNumber", fn: function() {
 							return (this.nodeName.toLowerCase() == "form") ? false : abaaso.validate.test({number: this.innerHTML}).pass;
 							}},
 						{name: "isPhone", fn: function() {
@@ -2971,7 +2971,7 @@ var abaaso = function(){
 						{name: "isInt", fn: function() {
 							return abaaso.validate.test({integer: this}).pass;
 							}},
-						{name: "isNum", fn: function() {
+						{name: "isNumber", fn: function() {
 							return abaaso.validate.test({number: this}).pass;
 							}},
 						{name: "isPhone", fn: function() {
@@ -3329,7 +3329,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.004"
+		version         : "1.5.005"
 	};
 }();
 
