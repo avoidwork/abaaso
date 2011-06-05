@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.008
+ * @version 1.5.009
  */
 var abaaso = function(){
 	/**
@@ -61,7 +61,7 @@ var abaaso = function(){
 					throw new Error(label.error.expectedArray);
 				}
 
-				arg = (arg.toString().indexOf(",") > -1) ? arg.split(/\s*,\s*/) : arg;
+				(/,/.test(arg)) ? arg = arg.split(/\s*,\s*/) : void(0);
 
 				if (arg instanceof Array) {
 					var indexes = [],
@@ -412,13 +412,13 @@ var abaaso = function(){
 		/**
 		 * Public properties
 		 */
-		chrome  : (function(){ return (navigator.userAgent.toLowerCase().indexOf("chrome") > -1)  ? true : false; })(),
+		chrome  : (function(){ return (/chrome/i.test(navigator.userAgent))  ? true : false; })(),
 		css3    : false,
-		firefox : (function(){ return (navigator.userAgent.toLowerCase().indexOf("firefox") > -1) ? true : false; })(),
-		ie      : (function(){ return (navigator.userAgent.toLowerCase().indexOf("msie") > -1)    ? true : false; })(),
+		firefox : (function(){ return (/firefox/i.test(navigator.userAgent)) ? true : false; })(),
+		ie      : (function(){ return (/msie/i.test(navigator.userAgent))    ? true : false; })(),
 		ms      : 0,
-		opera   : (function(){ return (navigator.userAgent.toLowerCase().indexOf("opera") > -1)   ? true : false; })(),
-		safari  : (function(){ return (navigator.userAgent.toLowerCase().indexOf("safari") > -1)  ? true : false; })(),
+		opera   : (function(){ return (/opera/i.test(navigator.userAgent))   ? true : false; })(),
+		safari  : (function(){ return (/safari/i.test(navigator.userAgent))  ? true : false; })(),
 		version : null,
 
 		/**
@@ -2264,17 +2264,20 @@ var abaaso = function(){
 			contains = function(obj, arg) {
 				var i, loop, instances = [];
 
-				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
+				((obj instanceof Array)
+				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						(obj[i].innerHTML.indexOf(arg) >= 0) ? instances.push(obj[i]) : void(0);
+						(new RegExp(arg).test(obj[i].innerHTML)) ? instances.push(obj[i]) : void(0);
 					}
 					return (instances.length == 1) ? instances[0] : instances;
 				}
 				else {
-					return ((obj != null) && (arg != null) && (obj.innerHTML.indexOf(arg) >= 0)) ? obj : undefined;
+					return ((obj !== null)
+							&& (arg !== null)
+							&& (new RegExp(arg).test(obj[i].innerHTML))) ? obj : undefined;
 				}
 			};
 
@@ -2288,7 +2291,8 @@ var abaaso = function(){
 			has = function(obj, arg) {
 				var i, loop, instances = [];
 
-				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
+				((obj instanceof Array)
+				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
 					var x, loop2;
@@ -2323,7 +2327,8 @@ var abaaso = function(){
 			is = function(obj, arg) {
 				var i, loop, instances = [];
 
-				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
+				((obj instanceof Array)
+				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
 					loop = obj.length;
@@ -2418,7 +2423,8 @@ var abaaso = function(){
 					break;
 				case ":":
 					obj = document.body.getElementsByTagName("*");
-					if ((obj !== null) && (nodelist === false)) {
+					if ((obj !== null)
+						&& (nodelist === false)) {
 						if ((!client.ie) || (client.version > 8)) {
 							obj = Array.prototype.slice.call(obj);
 						}
@@ -2433,7 +2439,8 @@ var abaaso = function(){
 					break;
 				default:
 					obj = document.getElementsByTagName(arg);
-					if ((obj !== null) && (nodelist === false)) {
+					if ((obj !== null)
+						&& (nodelist === false)) {
 						if ((!client.ie) || (client.version > 8)) {
 							obj = Array.prototype.slice.call(obj);
 						}
@@ -2449,7 +2456,9 @@ var abaaso = function(){
 			}
 
 			// Processing selector(s)
-			if ((obj !== null) && (args.length) && (args.length > 0)) {
+			if ((obj !== null)
+				&& (args.length)
+				&& (args.length > 0)) {
 				loop = args.length;
 				for (i = 0; i < loop; i++) {
 					if (obj === undefined) {
@@ -3331,7 +3340,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.008"
+		version         : "1.5.009"
 	};
 }();
 
