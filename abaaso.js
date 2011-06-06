@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.009
+ * @version 1.5.010
  */
 var abaaso = function(){
 	/**
@@ -2244,7 +2244,7 @@ var abaaso = function(){
 		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		$ : function(arg, nodelist) {
-			var args, obj, i, loop, c, alt, find, contains, has, not, x,
+			var args, obj, i, loop, c, alt, find, contains, has, not, x, s,
 			    document  = window.document,
 			    instances = [];
 
@@ -2261,13 +2261,13 @@ var abaaso = function(){
 				if (obj instanceof Array) {
 					loop = obj.length;
 					for (i = 0; i < loop; i++) {
-						(i.even() === state) ? instances.push(obj[i]) : void(0);
+						(i.isEven() === state) ? instances.push(obj[i]) : void(0);
 					}
 				}
 				else if ((obj.childNodes) && (obj.childNodes.length > 0)) {
 					loop = obj.childNodes.length;
 					for (i = 0; i < loop; i++) {
-						(i.even() === state) ? instances.push(obj.childNodes[i]) : void(0);
+						(i.isEven() === state) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
@@ -2421,7 +2421,7 @@ var abaaso = function(){
 			nodelist = (nodelist === true) ? true : false;
 
 			// Recursive processing, ends up below
-			(arg.indexOf(",") > -1) ? arg = arg.split(/\s*,\s*/) : void(0);
+			(/,/.test(arg)) ? arg = arg.split(/\s*,\s*/) : void(0);
 			if (arg instanceof Array) {
 				loop = arg.length;
 
@@ -2432,26 +2432,23 @@ var abaaso = function(){
 				return instances;
 			}
 
-			// Setting arg & args
-			a = args;
-			s = (/:.*/gi.exec(arg[1]) !== null) ? /:.*/gi.exec(arg)[0].slice(1) : "";
-
-			args = s.split(/:/); // Splitting selectors
-			if (arg.charAt(0) == ":") {
-				arg = ":";
-			}
-			else if (arg.charAt(0) == ".") {
-				arg = ((args.length) && (args.length > 0)) ? new String("."+args[0]) : new String(arg);
-				args = args.splice(1);
+			if (/:/.test(arg)) {
+				s   = (/:.*/gi.exec(arg) !== null) ? /:.*/gi.exec(arg)[0].slice(1) : "";
+				arg = (/.*:/.exec(arg) !== null) ? ((/.*:/.exec(arg)[0].slice(0, -1) != "") ? /.*:/.exec(arg)[0].slice(0, -1)
+													                                        : ":")
+				                                 : ":";
 			}
 			else {
-				arg = ((args.length) && (args.length > 0)) ? new String(arg.split(/\.|:/)[0]) : new String(arg);
+				s = "";
 			}
+
+			(arg.charAt(0) != ":") ? arg = new String(arg) : void(0);
+			args = (s == "") ? [] : s.split(/:/);
 
 			// Getting instance(s)
 			switch (arg.charAt(0)) {
 				case ".":
-					obj = document.getElementsByClassName(arg.substring(1));
+					obj = document.getElementsByClassName(arg.slice(1));
 					((obj !== null) && (nodelist === false) && ((!client.ie) || (client.version > 8))) ? obj = Array.prototype.slice.call(obj) : void(0);
 					break;
 				case "#":
@@ -3360,7 +3357,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.009"
+		version         : "1.5.010"
 	};
 }();
 
