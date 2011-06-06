@@ -333,11 +333,11 @@ var abaaso = function(){
 			var result = ((cache.items[uri] !== undefined)
 				      && (((cache.items[uri].headers.Expires !== undefined)
 					   && (new Date(cache.items[uri].headers.Expires) < new Date()))
-					  || ((client.ms > 0)
+					  || ((abaaso.client.expire > 0)
 					      && (cache.items[uri].headers.Date !== undefined)
-					      && (new Date(cache.items[uri].headers.Date).setMilliseconds(new Date(cache.items[uri].headers.Date).getMilliseconds() + client.ms) > new Date()))
-					  || ((client.ms > 0)
-					      && (new Date(cache.items[uri].epoch).setMilliseconds(new Date(cache.items[uri].epoch).getMilliseconds() + client.ms) > new Date())))) ? true : false;
+					      && (new Date(cache.items[uri].headers.Date).setMilliseconds(new Date(cache.items[uri].headers.Date).getMilliseconds() + abaaso.client.expire) > new Date()))
+					  || ((abaaso.client.expire > 0)
+					      && (new Date(cache.items[uri].epoch).setMilliseconds(new Date(cache.items[uri].epoch).getMilliseconds() + abaaso.client.expire) > new Date())))) ? true : false;
 			return result;
 		},
 
@@ -413,13 +413,50 @@ var abaaso = function(){
 		 * Public properties
 		 */
 		chrome  : (function(){ return /chrome/i.test(navigator.userAgent) })(),
-		css3    : false,
+		css3    : (function(){
+			switch (true) {
+				case ((this.chrome) && (this.version > 5)):
+				case ((this.firefox) && (this.version > 2)):
+				case ((this.ie) && (this.version > 8)):
+				case ((this.opera) && (this.version > 8)):
+				case ((this.safari) && (this.version > 4)):
+					this.css3 = true;
+					return true;
+				default:
+					this.css3 = false;
+					return false;
+			}
+			}),
+		expire  : 0,
 		firefox : (function(){ return /firefox/i.test(navigator.userAgent) })(),
 		ie      : (function(){ return /msie/i.test(navigator.userAgent) })(),
-		ms      : 0,
 		opera   : (function(){ return /opera/i.test(navigator.userAgent) })(),
 		safari  : (function(){ return /safari/i.test(navigator.userAgent) })(),
-		version : null,
+		version : (function(){
+			var version = 0;
+			switch (true) {
+				case this.chrome:
+					version = navigator.userAgent.replace(/(.*chrome\/|safari.*)/gi, "").trim();
+					break;
+				case this.firefox:
+					version = navigator.userAgent.replace(/(.*firefox\/)/gi, "").trim();
+					break;
+				case this.ie:
+					version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "").trim();
+					break;
+				case this.opera:
+					version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "").trim();
+					break;
+				case this.safari:
+					version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "").trim();
+					break;
+				default:
+					version = navigator.appVersion;
+			}
+			version      = (isNaN(parseInt(version))) ? 0 : parseInt(version);
+			this.version = version;
+			return version;
+			}),
 
 		/**
 		 * Sends a DELETE to the URI
@@ -3147,15 +3184,15 @@ var abaaso = function(){
 		callback        : [],
 		client          : {
 				// Properties
-				css3    : client.css3,
+				css3    : null,
 				chrome  : client.chrome,
+				expire  : client.expire,
 				firefox : client.firefox,
 				ie      : client.ie,
-				ms      : client.ms,
 				opera   : client.opera,
 				safari  : client.safari,
 				size    : {x:0, y:0},
-				version : client.version,
+				version : null,
 
 				// Methods
 				del     : client.del,
@@ -3216,41 +3253,8 @@ var abaaso = function(){
 		init            : function() {
 				abaaso.ready = true;
 
-				client.version = (function(){
-					var version = 0;
-					switch (true) {
-						case client.chrome:
-							version = navigator.userAgent.replace(/(.*chrome\/|safari.*)/gi, "").trim();
-							break;
-						case client.firefox:
-							version = navigator.userAgent.replace(/(.*firefox\/)/gi, "").trim();
-							break;
-						case client.ie:
-							version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "").trim();
-							break;
-						case client.opera:
-							version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "").trim();
-							break;
-						case client.safari:
-							version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "").trim();
-							break;
-						default:
-							version = navigator.appVersion;
-					}
-					return (isNaN(version)) ? 0 : parseInt(version);
-					})();
-
-				client.css3    = (function(){
-						if ((client.chrome) && (client.version > 5))  { return true; }
-						if ((client.firefox) && (client.version > 2)) { return true; }
-						if ((client.ie) && (client.version > 8))      { return true; }
-						if ((client.opera) && (client.version > 8))   { return true; }
-						if ((client.safari) && (client.version > 4))  { return true; }
-						else { return false; }
-					})();
-
-				abaaso.client.version = client.version;
-				abaaso.client.css3    = client.css3;
+				abaaso.client.version = client.version();
+				abaaso.client.css3    = client.css3();
 				abaaso.client.size    = client.size();
 
 				utility.proto(Array.prototype, "array");
