@@ -2381,26 +2381,25 @@ var abaaso = function(){
 				return instances;
 			};
 
-			var a = (/[^:]{1,}/gi.exec(arg) !== null) ? /[^:]{1,}/gi.exec(arg)[0] : "",
-			    s = (/[:]{1,}.*/gi.exec(arg) !== null) ? /[:]{1,}.*/gi.exec(arg)[0] : "";
-
-			(arg.charAt(0) == ":") ? a = arg : void(0);
-
-			arg      = (a.indexOf(",") > -1) ? a.split(/\s*,\s*/) : a;
 			nodelist = (nodelist === true) ? true : false;
 
 			// Recursive processing, ends up below
+			(arg.indexOf(",") > -1) ? arg = arg.split(/\s*,\s*/) : void(0);
 			if (arg instanceof Array) {
 				loop = arg.length;
+
 				(arg[0].charAt(0) == ":") ? s = "" : void(0);
 				for (i = 0; i < loop; i++) {
-					instances.push($(arg[i] + s, nodelist));
+					instances.push($(arg[i], nodelist));
 				}
 				return instances;
 			}
 
 			// Setting arg & args
-			args = s.split(/:/).slice(1);
+			a = args;
+			s = (/:.*/gi.exec(arg[1]) !== null) ? /:.*/gi.exec(arg)[0].slice(1) : "";
+
+			args = s.split(/:/); // Splitting selectors
 			if (arg.charAt(0) == ":") {
 				arg = ":";
 			}
