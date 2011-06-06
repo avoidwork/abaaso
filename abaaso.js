@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.010
+ * @version 1.5.011
  */
 var abaaso = function(){
 	/**
@@ -2393,7 +2393,8 @@ var abaaso = function(){
 			not = function(obj, arg) {
 				var i, loop, instances = [];
 
-				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
+				((obj instanceof Array)
+				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
 					var x, loop2;
@@ -2402,8 +2403,10 @@ var abaaso = function(){
 						loop2 = obj[i].childNodes.length;
 						for (x = 0; x < loop2; x++) {
 							obj[i].genId();
-							(find(obj[i].childNodes[x].nodeName, arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
-													     : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
+							(find(obj[i].childNodes[x].nodeName, arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i]
+																					                                     : void(0))
+							                                                     : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]
+																														 : void(0));
 						}
 					}
 					instances = instances.indexed();
@@ -2433,9 +2436,9 @@ var abaaso = function(){
 			}
 
 			if (/:/.test(arg)) {
-				s   = (/:.*/gi.exec(arg) !== null) ? /:.*/gi.exec(arg)[0].slice(1) : "";
-				arg = (/.*:/.exec(arg) !== null) ? ((/.*:/.exec(arg)[0].slice(0, -1) != "") ? /.*:/.exec(arg)[0].slice(0, -1)
-													                                        : ":")
+				s   = (/:.*/.exec(arg) !== null) ? /:.*/.exec(arg)[0].slice(1) : "";
+				arg = (/.*:/.exec(arg) !== null) ? (!(/.*:/.exec(arg)[0].slice(0, -1).isEmpty()) ? /.*:/.exec(arg)[0].slice(0, -1)
+													                                             : ":")
 				                                 : ":";
 			}
 			else {
@@ -2443,13 +2446,15 @@ var abaaso = function(){
 			}
 
 			(arg.charAt(0) != ":") ? arg = new String(arg) : void(0);
-			args = (s == "") ? [] : s.split(/:/);
+			args = (s.isEmpty()) ? [] : s.split(/:/);
 
 			// Getting instance(s)
 			switch (arg.charAt(0)) {
 				case ".":
 					obj = document.getElementsByClassName(arg.slice(1));
-					((obj !== null) && (nodelist === false) && ((!client.ie) || (client.version > 8))) ? obj = Array.prototype.slice.call(obj) : void(0);
+					((obj !== null)
+					 && (nodelist === false)
+					 && ((!client.ie) || (client.version > 8))) ? obj = Array.prototype.slice.call(obj) : void(0);
 					break;
 				case "#":
 					obj = document.getElementById(arg.substring(1));
@@ -2585,15 +2590,19 @@ var abaaso = function(){
 		 */
 		define: function(args, value, obj) {
 			args = args.split(".");
-			obj  = obj || this;
+			obj  = utility.object(obj) || this;
 
 			var i = null,
 			    l = args.length,
 			    p = obj;
 
 			for (i = 0; i < l; i++) {
-				(p[args[i]] === undefined) ? p[args[i]] = ((i+1 < l) ? {} : ((value !== undefined) ? value : null))
-							   : ((i+1 >= l) ? (p[args[i]] = (value !== undefined) ? value : null) : void(0));
+				(p[args[i]] === undefined) ? p[args[i]] = ((i+1 < l) ? {}
+														             : ((value !== undefined) ? value
+																		                      : null))
+							               : ((i+1 >= l) ? (p[args[i]] = (value !== undefined) ? value
+															                                   : null)
+											             : void(0));
 				p = p[args[i]];
 			}
 
@@ -2603,7 +2612,7 @@ var abaaso = function(){
 		/**
 		 * Error handling, with history in .events[]
 		 *
-		 * @param e {Mixed} Error object or message to display.
+		 * @param e {Mixed} Error object or message to display
 		 */
 		error : function(e) {
 			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
@@ -2707,7 +2716,7 @@ var abaaso = function(){
 					obj.clear();
 
 					// Creating loading image in target element
-					$("#"+obj.id).create("div", {id: obj.id+"_loading", style: "text-align:center"});
+					$("#"+obj.id).create("div", {id: obj.id+"_loading", "class": "loading"});
 					$("#"+obj.id+"_loading").create("img", {alt: label.common.loading, src: abaaso.loading.image.src});
 
 					return obj;
@@ -3357,7 +3366,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.010"
+		version         : "1.5.011"
 	};
 }();
 
