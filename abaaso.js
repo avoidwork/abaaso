@@ -412,13 +412,13 @@ var abaaso = function(){
 		/**
 		 * Public properties
 		 */
-		chrome  : (function(){ return (/chrome/i.test(navigator.userAgent))  ? true : false; })(),
+		chrome  : (function(){ return /chrome/i.test(navigator.userAgent) })(),
 		css3    : false,
-		firefox : (function(){ return (/firefox/i.test(navigator.userAgent)) ? true : false; })(),
-		ie      : (function(){ return (/msie/i.test(navigator.userAgent))    ? true : false; })(),
+		firefox : (function(){ return /firefox/i.test(navigator.userAgent) })(),
+		ie      : (function(){ return /msie/i.test(navigator.userAgent) })(),
 		ms      : 0,
-		opera   : (function(){ return (/opera/i.test(navigator.userAgent))   ? true : false; })(),
-		safari  : (function(){ return (/safari/i.test(navigator.userAgent))  ? true : false; })(),
+		opera   : (function(){ return /opera/i.test(navigator.userAgent) })(),
+		safari  : (function(){ return /safari/i.test(navigator.userAgent) })(),
 		version : null,
 
 		/**
@@ -3217,13 +3217,29 @@ var abaaso = function(){
 				abaaso.ready = true;
 
 				client.version = (function(){
-						if (client.chrome)  { return parseInt(navigator.userAgent.replace(/(.*Chrome\/|Safari.*)/gi, "").trim()); }
-						if (client.firefox) { return parseInt(navigator.userAgent.replace(/(.*Firefox\/)/gi, "").trim()); }
-						if (client.ie)      { return parseInt(navigator.userAgent.replace(/(.*MSIE|;.*)/gi, "").trim()); }
-						if (client.opera)   { return parseInt(navigator.userAgent.replace(/(.*Opera\/|\(.*)/gi, "").trim()); }
-						if (client.safari)  { return parseInt(navigator.userAgent.replace(/(.*Version\/|Safari.*)/gi, "").trim()); }
-						else { return parseInt(navigator.appVersion); }
+					var version = 0;
+					switch (true) {
+						case client.chrome:
+							version = navigator.userAgent.replace(/(.*chrome\/|safari.*)/gi, "").trim();
+							break;
+						case client.firefox:
+							version = navigator.userAgent.replace(/(.*firefox\/)/gi, "").trim();
+							break;
+						case client.ie:
+							version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "").trim();
+							break;
+						case client.opera:
+							version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "").trim();
+							break;
+						case client.safari:
+							version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "").trim();
+							break;
+						default:
+							version = navigator.appVersion;
+					}
+					return (isNaN(version)) ? 0 : parseInt(version);
 					})();
+
 				client.css3    = (function(){
 						if ((client.chrome) && (client.version > 5))  { return true; }
 						if ((client.firefox) && (client.version > 2)) { return true; }
@@ -3232,6 +3248,7 @@ var abaaso = function(){
 						if ((client.safari) && (client.version > 4))  { return true; }
 						else { return false; }
 					})();
+
 				abaaso.client.version = client.version;
 				abaaso.client.css3    = client.css3;
 				abaaso.client.size    = client.size();
