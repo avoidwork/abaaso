@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, avoidwork inc.
+ * Copyright (c) 2012, avoidwork inc.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.011
+ * @version 1.5.012
  */
 var abaaso = function(){
 	/**
@@ -470,7 +470,7 @@ var abaaso = function(){
 		 */
 		del : function(uri, success, failure) {
 			try {
-				if ((uri == "")
+				if ((uri.isEmpty())
 				    || (!success instanceof Function)) {
 					throw new Error(label.error.invalidArguments);
 				}
@@ -505,7 +505,7 @@ var abaaso = function(){
 		 */
 		get : function(uri, success, failure) {
 			try {
-				if ((uri == "")
+				if ((uri.isEmpty())
 				    || (!success instanceof Function)) {
 					throw new Error(label.error.invalidArguments);
 				}
@@ -538,7 +538,7 @@ var abaaso = function(){
 		 */
 		put : function(uri, success, args, failure) {
 			try {
-				if ((uri == "")
+				if ((uri.isEmpty())
 				    || (!success instanceof Function)
 				    || (args === undefined)
 				    || (typeof args != "object")) {
@@ -572,9 +572,9 @@ var abaaso = function(){
 		 */
 		post : function(uri, success, args, failure) {
 			try {
-				if ((uri == "")
+				if ((uri.isEmpty())
 				    || (!success instanceof Function)
-				    || (args == "")) {
+				    || (args.isEmpty())) {
 					throw new Error(label.error.invalidArguments);
 				}
 
@@ -606,7 +606,7 @@ var abaaso = function(){
 		jsonp : function(uri, success, failure, callback) {
 			try {
 				if ((uri === undefined)
-					|| (uri == "")
+					|| (uri.isEmpty())
 				    || (!success instanceof Function)) {
 					throw new Error(label.error.invalidArguments);
 				}
@@ -2030,7 +2030,7 @@ var abaaso = function(){
 					    i;
 
 					if ((o === undefined)
-					    || (o == "")
+					    || (o.isEmpty())
 					    || (obj === undefined)
 					    || (event === undefined)) {
 						throw new Error(label.error.invalidArguments);
@@ -2707,7 +2707,7 @@ var abaaso = function(){
 					obj.clear();
 
 					// Creating loading image in target element
-					$("#"+obj.id).create("div", {id: obj.id+"_loading", style: "text-align:center"});
+					$("#"+obj.id).create("div", {id: obj.id+"_loading", "class": "loading"});
 					$("#"+obj.id+"_loading").create("img", {alt: label.common.loading, src: abaaso.loading.image.src});
 
 					return obj;
@@ -2909,7 +2909,7 @@ var abaaso = function(){
 						{name: "on", fn: function(event, listener, id, scope, standby) {
 							scope = scope || this;
 							((this.id === undefined)
-							 || (this.id == "")) ? this.genId() : void(0);
+							 || (this.id.isEmpty())) ? this.genId() : void(0);
 							return abaaso.on(this, event, listener, id, scope, standby);
 							}},
 						{name: "position", fn: function() {
@@ -2952,7 +2952,7 @@ var abaaso = function(){
 						{name: "clear", fn: function() {
 							((typeof this == "object")
 							 && ((this.id === undefined)
-							     || (this.id == ""))) ? this.genId() : void(0);
+							     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
 							return this;
 							}},
@@ -2969,7 +2969,7 @@ var abaaso = function(){
 						{name: "fire", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genId() : void(0);
+								     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							return abaaso.fire(this, event);
 							}},
 						{name: "genId", fn: function() {
@@ -2978,13 +2978,13 @@ var abaaso = function(){
 						{name: "listeners", fn: function(event) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genId() : void(0);
+								     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							return abaaso.listeners(this, event);
 							}},
 						{name: "un", fn: function(event, id) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
-								     || (this.id == ""))) ? this.genId() : void(0);
+								     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							return abaaso.un(this, event, id);
 							}}
 					],
@@ -3357,7 +3357,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.011"
+		version         : "1.5.012"
 	};
 }();
 
