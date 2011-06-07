@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.010
+ * @version 1.5.011
  */
 var abaaso = function(){
 	/**
@@ -2434,8 +2434,8 @@ var abaaso = function(){
 
 			if (/:/.test(arg)) {
 				s   = (/:.*/gi.exec(arg) !== null) ? /:.*/gi.exec(arg)[0].slice(1) : "";
-				arg = (/.*:/.exec(arg) !== null) ? ((/.*:/.exec(arg)[0].slice(0, -1) != "") ? /.*:/.exec(arg)[0].slice(0, -1)
-													                                        : ":")
+				arg = (/.*:/.exec(arg) !== null) ? ((!/.*:/.exec(arg)[0].slice(0, -1).isEmpty()) ? /.*:/.exec(arg)[0].slice(0, -1)
+													                                             : ":")
 				                                 : ":";
 			}
 			else {
@@ -2443,7 +2443,7 @@ var abaaso = function(){
 			}
 
 			(arg.charAt(0) != ":") ? arg = new String(arg) : void(0);
-			args = (s == "") ? [] : s.split(/:/);
+			args = (s.isEmpty()) ? [] : s.split(/:/);
 
 			// Getting instance(s)
 			switch (arg.charAt(0)) {
@@ -3357,7 +3357,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.010"
+		version         : "1.5.011"
 	};
 }();
 
