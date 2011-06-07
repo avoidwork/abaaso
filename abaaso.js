@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.013
+ * @version 1.5.014
  */
 var abaaso = function(){
 	/**
@@ -78,7 +78,7 @@ var abaaso = function(){
 				return instance.index(arg);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -100,7 +100,7 @@ var abaaso = function(){
 				return array1.filter(function(key) {return (array2.indexOf(key) < 0);});
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -120,7 +120,7 @@ var abaaso = function(){
 				return instance[0];
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -149,7 +149,7 @@ var abaaso = function(){
 				return -1;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return -1;
 			}
 		},
@@ -177,7 +177,7 @@ var abaaso = function(){
 				return indexed;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -204,7 +204,7 @@ var abaaso = function(){
 				return keys;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -224,7 +224,7 @@ var abaaso = function(){
 				return (instance.length > 1) ? instance[(instance.length - 1)] : instance[0];
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -257,7 +257,7 @@ var abaaso = function(){
 				return instance;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -280,7 +280,7 @@ var abaaso = function(){
 				return i;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return -1;
 			}
 		}
@@ -374,7 +374,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -398,7 +398,7 @@ var abaaso = function(){
 										                                 : cache.items[uri][property]   = value;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 			}
 		}
 	};
@@ -488,7 +488,7 @@ var abaaso = function(){
 				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
@@ -520,7 +520,7 @@ var abaaso = function(){
 												             : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
@@ -554,7 +554,7 @@ var abaaso = function(){
 				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
@@ -587,7 +587,7 @@ var abaaso = function(){
 				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
@@ -617,7 +617,7 @@ var abaaso = function(){
 				client.request(uri, success, "JSONP", callback, failure);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				(failure instanceof Function) ? failure(e) : void(0);
 			}
 		},
@@ -770,7 +770,7 @@ var abaaso = function(){
 							return result;
 						}
 						catch (e) {
-							error(e);
+							error(e, arguments, this);
 							return 0;
 						}
 					}
@@ -832,7 +832,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				(ffn instanceof Function) ? ffn(e) : void(0);
 			}
 		},
@@ -1030,7 +1030,7 @@ var abaaso = function(){
 				return this;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1110,7 +1110,7 @@ var abaaso = function(){
 				return result;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1152,7 +1152,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1181,7 +1181,7 @@ var abaaso = function(){
 				return obj;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1256,7 +1256,7 @@ var abaaso = function(){
 				return this;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 			void(0);
@@ -1313,7 +1313,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1372,7 +1372,7 @@ var abaaso = function(){
 				return obj;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1397,7 +1397,7 @@ var abaaso = function(){
 				return ss;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1432,7 +1432,7 @@ var abaaso = function(){
 				}
 			}
 			catch(e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1466,7 +1466,7 @@ var abaaso = function(){
 				}
 			}
 			catch(e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1502,7 +1502,7 @@ var abaaso = function(){
 				}
 			}
 			catch(e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1548,7 +1548,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1612,7 +1612,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1711,7 +1711,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -1734,7 +1734,7 @@ var abaaso = function(){
 				return ((arg % 2) === 0);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1750,7 +1750,7 @@ var abaaso = function(){
 				return !((arg % 2) === 0);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -1772,7 +1772,7 @@ var abaaso = function(){
 				return JSON.parse(arg);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1787,7 +1787,7 @@ var abaaso = function(){
 				return JSON.stringify(arg);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -1896,7 +1896,7 @@ var abaaso = function(){
 						console.log(m.pos.x + " : " + m.pos.y);
 					}
 					catch (e) {
-						abaaso.error(e);
+						abaaso.error(e, arguments, this);
 					}
 				}
 			}
@@ -2001,7 +2001,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2025,8 +2025,7 @@ var abaaso = function(){
 				}
 				else {
 					obj     = utility.object(obj);
-					var l   = observer.listeners,
-					    o   = (obj.id !== undefined) ? obj.id : obj.toString(),
+					var o   = (obj.id !== undefined) ? obj.id : obj.toString(),
 					    i;
 
 					if ((o === undefined)
@@ -2063,7 +2062,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2088,7 +2087,7 @@ var abaaso = function(){
 				return (l[o] !== undefined) ? (((event !== undefined) && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2156,7 +2155,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2219,7 +2218,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2570,7 +2569,7 @@ var abaaso = function(){
 				return clone;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2603,14 +2602,18 @@ var abaaso = function(){
 		/**
 		 * Error handling, with history in .events[]
 		 *
-		 * @param e {Mixed} Error object or message to display.
+		 * @param e {Mixed} Error object or message to display
+		 * @param args {Array} Array of arguments from the callstack
+		 * @param scope {Mixed} Object that triggered the Error
 		 */
-		error : function(e) {
-			var err = {name: ((typeof e == "object") ? e.name : "TypeError"), message: (typeof e == "object") ? e.message : e};
-			(e.number !== undefined) ? (err.number = (e.number & 0xFFFF)) : void(0);
-			(typeof console != "undefined") ? console.error(err.message) : void(0);
+		error : function(e, args, scope) {
+			e.arguments = args;
+			e.scope     = scope;
+			(e.number !== undefined) ? (e.number = (e.number & 0xFFFF)) : void(0);
+			(e.type   === undefined) ? e.type = "TypeError" : void(0);
+			(typeof console != "undefined") ? console.error(e.message) : void(0);
 			(error.events === undefined) ? error.events = [] : void(0);
-			error.events.push(err);
+			error.events.push(e);
 		},
 
 		/**
@@ -2624,7 +2627,7 @@ var abaaso = function(){
 				return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2656,7 +2659,7 @@ var abaaso = function(){
 				return obj;
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2714,7 +2717,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2730,7 +2733,7 @@ var abaaso = function(){
 				console.log(arg);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 			}
 		},
 
@@ -2895,7 +2898,7 @@ var abaaso = function(){
 										}
 										catch (e) {
 												text = abaaso.label.error.serverError;
-												abaaso.error(e);
+												abaaso.error(e, arguments, this);
 										}
 
 										self.text(text);
@@ -3043,7 +3046,7 @@ var abaaso = function(){
 				apply(obj, methods.shared);
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 			}
 		}
 	};
@@ -3160,7 +3163,7 @@ var abaaso = function(){
 				}
 			}
 			catch (e) {
-				error(e);
+				error(e, arguments, this);
 				return {pass: false, invalid: {}};
 			}
 		}
@@ -3357,7 +3360,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.013"
+		version         : "1.5.014"
 	};
 }();
 
