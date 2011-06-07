@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.014
+ * @version 1.5.015
  */
 var abaaso = function(){
 	/**
@@ -2600,6 +2600,23 @@ var abaaso = function(){
 		},
 
 		/**
+		 * Defers the execution of Function by at least the supplied milliseconds
+		 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine
+		 *
+		 * @param fn {Function} The function to defer execution of
+		 * @param ms {Integer} Milliseconds to defer execution
+		 * @returns undefined
+		 */
+		defer : function(fn, ms) {
+			var id = utility.genId(),
+			    op = function() {
+					delete abaaso.timer[id];
+					fn();
+				};
+			abaaso.timer[id] = setTimeout(op, ms);
+		},
+
+		/**
 		 * Error handling, with history in .events[]
 		 *
 		 * @param e {Mixed} Error object or message to display
@@ -2633,30 +2650,32 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Generates an id property if obj does not have one
+		 * Generates an ID value
 		 *
-		 * @param obj {Mixed} The object to verify
-		 * @returns {Object} The object
+		 * @param obj {Mixed} [Optional] Object to set ID on
+		 * @returns {Mixed} Object if supplied, or the ID
 		 */
 		genId : function(obj) {
 			try {
-				if (typeof obj != "object") {
-					throw new Error(label.error.invalidArguments);
-				}
-
-				if ((obj instanceof Array)
-					|| (obj instanceof String)
-					|| ((typeof obj.id != "undefined")
-						&& (obj.id != ""))) {
+				if ((typeof obj != "undefined")
+					&& ((obj instanceof Array)
+						|| (obj instanceof String)
+						|| ((typeof obj.id != "undefined")
+							&& (obj.id != "")))) {
 					return obj;
 				}
 
 				var id;
-				do id = "abo-" + utility.id();
-				while ($("#"+id) !== undefined);
-				obj.id = id;
+				do id = "a" + utility.id();
+				while ($("#" + id) !== undefined);
 
-				return obj;
+				if (typeof obj == "object") {
+					obj.id = id;
+					return obj;
+				}
+				else {
+					return id;
+				}
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -3235,6 +3254,7 @@ var abaaso = function(){
 		create          : el.create,
 		css             : el.css,
 		decode          : json.decode,
+		defer           : utility.defer,
 		define          : utility.define,
 		del             : client.del,
 		destroy         : el.destroy,
@@ -3360,7 +3380,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.014"
+		version         : "1.5.015"
 	};
 }();
 
