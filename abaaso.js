@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.012
+ * @version 1.5.013
  */
 var abaaso = function(){
 	/**
@@ -436,19 +436,19 @@ var abaaso = function(){
 			var version = 0;
 			switch (true) {
 				case this.chrome:
-					version = navigator.userAgent.replace(/(.*chrome\/|safari.*)/gi, "").trim();
+					version = navigator.userAgent.replace(/(.*chrome\/|safari.*)/gi, "");
 					break;
 				case this.firefox:
-					version = navigator.userAgent.replace(/(.*firefox\/)/gi, "").trim();
+					version = navigator.userAgent.replace(/(.*firefox\/)/gi, "");
 					break;
 				case this.ie:
-					version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "").trim();
+					version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "");
 					break;
 				case this.opera:
-					version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "").trim();
+					version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "");
 					break;
 				case this.safari:
-					version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "").trim();
+					version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "");
 					break;
 				default:
 					version = navigator.appVersion;
@@ -3357,7 +3357,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.012"
+		version         : "1.5.013"
 	};
 }();
 
