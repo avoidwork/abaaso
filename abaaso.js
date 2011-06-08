@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.015
+ * @version 1.5.016
  */
 var abaaso = function(){
 	/**
@@ -457,6 +457,44 @@ var abaaso = function(){
 			this.version = version;
 			return version;
 			}),
+
+		/**
+		 * Quick way to see if a URI allows a specific command
+		 *
+		 * @param uri {String} URI
+		 * @param command {String} Command to query for
+		 * @returns {Boolean} True if the command is available
+		 */
+		allow : function(uri, command) {
+			try {
+				if ((uri.isEmpty())
+					|| (command.isEmpty())) {
+					throw new Error(label.error.invalidArguments);
+				}
+
+				var result;
+
+				switch (true) {
+					case (/delete/i.test(command)):
+						result = ((uri.permission(command).bit & 1) === 0) ? false : true
+						break;
+					case (/get/i.test(command)):
+						result = ((uri.permission(command).bit & 4) === 0) ? false : true
+						break;
+					case (/post|put/i.test(command)):
+						result = ((uri.permission(command).bit & 2) === 0) ? false : true
+						break;
+					default:
+						result = false;
+				}
+
+				return result;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
 
 		/**
 		 * Sends a DELETE to the URI
@@ -3011,6 +3049,9 @@ var abaaso = function(){
 							}}
 					],
 					string  : [
+						{name: "allow", fn: function(arg) {
+							return abaaso.allow(this, arg);
+							}},
 						{name: "capitalize", fn: function() {
 							return this.charAt(0).toUpperCase() + this.slice(1);
 							}},
@@ -3149,29 +3190,37 @@ var abaaso = function(){
 				}
 				else {
 					for (var i in args) {
+						if ((i === undefined)
+							|| (args[i] === undefined)) {
+							invalid.push({test: i, value: args[i]});
+							exception = true;
+							continue;
+						}
+
 						value = new String((args[i].charAt(0) == "#") ? (($(args[i]) !== undefined)
 																		 ? (($(args[i]).value) ? $(args[i]).value
 																							   : $(args[i]).innerHTML)
 																		 : "")
 																	  : args[i]);
+
 						switch (i) {
 							case "date":
 								if (isNaN(new Date(value).getYear())) {
-									invalid.push({test: "date", value: args[i]});
+									invalid.push({test: i, value: value});
 									exception = true;
 								}
 								break;
 							case "domainip":
 								if ((!this.pattern.domain.test(value))
 									|| (!this.pattern.ip.test(value))) {
-									invalid.push({test: "domainip", value: args[i]});
+									invalid.push({test: i, value: value});
 									exception = true;
 								}
 								break;
 							default:
 								var p = (this.pattern[i] !== undefined) ? this.pattern[i] : i;
 								if (!p.test(value)) {
-									invalid.push({test: p, value: args[i]});
+									invalid.push({test: i, value: value});
 									exception = true;
 								}
 								break;
@@ -3248,6 +3297,7 @@ var abaaso = function(){
 
 		// Methods & Properties
 		$               : utility.$,
+		allow           : client.allow,
 		clean           : cache.clean,
 		clear           : el.clear,
 		clone           : utility.clone,
@@ -3380,7 +3430,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.015"
+		version         : "1.5.016"
 	};
 }();
 
