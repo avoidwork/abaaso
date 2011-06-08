@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.017
+ * @version 1.5.018
  */
 var abaaso = function(){
 	/**
@@ -523,11 +523,15 @@ var abaaso = function(){
 						}, "expire")
 				   .fire("beforeDelete");
 
-				var cached = cache.get(uri);
-				((!cached)
-				 || ((cached.permission === 0)
-					 || (cached.permission & 1))) ? client.request(uri, success, "DELETE", null, failure)
-				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
+				switch (uri.allow("delete")) {
+					case undefined:
+					case true:
+						client.request(uri, success, "DELETE", null, failure);
+						break;
+					case false:
+						failure();
+						break;
+				}
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -554,12 +558,15 @@ var abaaso = function(){
 
 				uri.fire("beforeGet");
 
-				var cached = cache.get(uri);
-				((!cached)
-				 || ((cached.permission === 0)
-					 || (cached.permission & 4))) ? client.request(uri, success, "GET", null, failure)
-				                                  : (cached) ? success(cached.response)
-												             : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
+				switch (uri.allow("get")) {
+					case undefined:
+					case true:
+						client.request(uri, success, "GET", null, failure);
+						break;
+					case false:
+						failure();
+						break;
+				}
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -589,11 +596,15 @@ var abaaso = function(){
 
 				uri.fire("beforePut");
 
-				var cached = cache.get(uri);
-				((!cached)
-				 || ((cached.permission === 0)
-					 || (cached.permission & 2))) ? client.request(uri, success, "PUT", args, failure)
-				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
+				switch (uri.allow("put")) {
+					case undefined:
+					case true:
+						client.request(uri, success, "PUT", args, failure);
+						break;
+					case false:
+						failure();
+						break;
+				}
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -622,11 +633,15 @@ var abaaso = function(){
 
 				uri.fire("beforePost");
 
-				var cached = cache.get(uri);
-				((!cached)
-				 || ((cached.permission === 0)
-					 || (cached.permission & 2))) ? client.request(uri, success, "POST", args, failure)
-				                                  : failure((typeof cached.response != "undefined") ? cached.response : label.error.serverInvalidMethod);
+				switch (uri.allow("post")) {
+					case undefined:
+					case true:
+						client.request(uri, success, "POST", args, failure);
+						break;
+					case false:
+						failure();
+						break;
+				}
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -3434,7 +3449,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.017"
+		version         : "1.5.018"
 	};
 }();
 
