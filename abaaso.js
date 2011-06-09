@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.018
+ * @version 1.5.019
  */
 var abaaso = function(){
 	/**
@@ -501,185 +501,6 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Sends a DELETE to the URI
-		 *
-		 * Events:     beforeDelete    Fires before the DELETE request is made
-		 *             afterDelete     Fires after the DELETE response is received
-		 *
-		 * @param uri {String} URI to submit to
-		 * @param success {Function} A handler function to execute once a response has been received
-		 * @param failure {Function} [Optional] A handler function to execute on error
-		 */
-		del : function(uri, success, failure) {
-			try {
-				if ((uri.isEmpty())
-				    || (!success instanceof Function)) {
-					throw new Error(label.error.invalidArguments);
-				}
-
-				uri.on("afterDelete", function(){
-						cache.expire(uri);
-						uri.un("afterDelete", "expire");
-						}, "expire")
-				   .fire("beforeDelete");
-
-				switch (uri.allow("delete")) {
-					case undefined:
-					case true:
-						client.request(uri, success, "DELETE", null, failure);
-						break;
-					case false:
-						failure();
-						break;
-				}
-			}
-			catch (e) {
-				error(e, arguments, this);
-				(failure instanceof Function) ? failure(e) : void(0);
-			}
-		},
-
-		/**
-		 * Sends a GET to the URI
-		 *
-		 * Events:     beforeGet    Fires before the GET request is made
-		 *             afterGet     Fires after the GET response is received
-		 *
-		 * @param uri {String} URI to submit to
-		 * @param success {Function} A handler function to execute once a response has been received
-		 * @param failure {Function} [Optional] A handler function to execute on error
-		 */
-		get : function(uri, success, failure) {
-			try {
-				if ((uri.isEmpty())
-				    || (!success instanceof Function)) {
-					throw new Error(label.error.invalidArguments);
-				}
-
-				uri.fire("beforeGet");
-
-				switch (uri.allow("get")) {
-					case undefined:
-					case true:
-						client.request(uri, success, "GET", null, failure);
-						break;
-					case false:
-						failure();
-						break;
-				}
-			}
-			catch (e) {
-				error(e, arguments, this);
-				(failure instanceof Function) ? failure(e) : void(0);
-			}
-		},
-
-		/**
-		 * Sends a PUT to the URI
-		 *
-		 * Events:     beforePut    Fires before the PUT request is made
-		 *             afterPut     Fires after the PUT response is received
-		 *
-		 * @param uri {String} URI submit to
-		 * @param success {Function} A handler function to execute once a response has been received
-		 * @param args {String} PUT variables to include
-		 * @param failure {Function} [Optional] A handler function to execute on error
-		 */
-		put : function(uri, success, args, failure) {
-			try {
-				if ((uri.isEmpty())
-				    || (!success instanceof Function)
-				    || (args === undefined)
-				    || (typeof args != "object")) {
-					throw new Error(label.error.invalidArguments);
-				}
-
-				uri.fire("beforePut");
-
-				switch (uri.allow("put")) {
-					case undefined:
-					case true:
-						client.request(uri, success, "PUT", args, failure);
-						break;
-					case false:
-						failure();
-						break;
-				}
-			}
-			catch (e) {
-				error(e, arguments, this);
-				(failure instanceof Function) ? failure(e) : void(0);
-			}
-		},
-
-		/**
-		 * Sends a POST to the URI
-		 *
-		 * Events:     beforePost    Fires before the POST request is made
-		 *             afterPost     Fires after the POST response is received
-		 *
-		 * @param uri {String} URI submit to
-		 * @param success {Function} A handler function to execute once a response has been received
-		 * @param args {String} POST variables to include
-		 * @param failure {Function} [Optional] A handler function to execute on error
-		 */
-		post : function(uri, success, args, failure) {
-			try {
-				if ((uri.isEmpty())
-				    || (!success instanceof Function)
-				    || (args.isEmpty())) {
-					throw new Error(label.error.invalidArguments);
-				}
-
-				uri.fire("beforePost");
-
-				switch (uri.allow("post")) {
-					case undefined:
-					case true:
-						client.request(uri, success, "POST", args, failure);
-						break;
-					case false:
-						failure();
-						break;
-				}
-			}
-			catch (e) {
-				error(e, arguments, this);
-				(failure instanceof Function) ? failure(e) : void(0);
-			}
-		},
-
-		/**
-		 * Cross-site JSONP request
-		 *
-		 * Events:     beforeJSONP    Fires before the JSONP request is made
-		 *             afterJSONP     Fires after the JSONP response is received
-		 *
-		 * @param uri {String} URI to load as a SCRIPT element
-		 * @param success {Function} A handler function to execute once a response has been received
-		 * @param failure {Function} [Optional] A handler function to execute on error
-		 * @param callback {String} [Optional] The callback variable to add to the JSONP request
-		 */
-		jsonp : function(uri, success, failure, callback) {
-			try {
-				if ((uri === undefined)
-					|| (uri.isEmpty())
-				    || (!success instanceof Function)) {
-					throw new Error(label.error.invalidArguments);
-				}
-
-				callback = (callback !== undefined) ? callback : null;
-
-				uri.fire("beforeJSONP");
-				client.request(uri, success, "JSONP", callback, failure);
-			}
-			catch (e) {
-				error(e, arguments, this);
-				(failure instanceof Function) ? failure(e) : void(0);
-			}
-		},
-
-		/**
 		 * Returns the permission of the cached URI
 		 *
 		 * @param uri {String} URI to retrieve permission from
@@ -698,63 +519,90 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Creates an XmlHttpRequest to a URI
+		 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 		 *
 		 * Events:     beforeXHR    Fires before the XmlHttpRequest is made
+		 *             before[type] Fires before the XmlHttpRequest is made, type specific
+		 *             failure      Fires on error
+		 *             received     Fires on XHR readystate 2, clears the timeout only!
+		 *             success      Fires XmlHttpRequest response 400
+		 *             timeout      Fires 30s after XmlHttpRequest is made
 		 *
 		 * @param uri {String} The resource to interact with
-		 * @param fn {Function} A handler function to execute when an appropriate response been received
 		 * @param type {String} The type of request (DELETE/GET/POST/PUT/JSONP)
+		 * @param success {Function} A handler function to execute when an appropriate response been received
+		 * @param failure {Function} [Optional] A handler function to execute on error
 		 * @param args {Mixed} Data to send with the request, or a custom JSONP handler parameter name
-		 * @param ffn {Function} [Optional] A handler function to execute on error
 		 * @private
 		 */
-		request : function(uri, fn, type, args, ffn) {
-			if (((type.toLowerCase() == "post")
-			     || (type.toLowerCase() == "put"))
-			    && (typeof args != "object")) {
+		request : function(uri, type, success, failure, args) {
+			if ((/post|put/i.test(type))
+				&& (typeof args != "object")) {
 				throw new Error(label.error.invalidArguments);
 			}
 
-			if (type.toLowerCase() == "jsonp") {
-				var uid  = "a" + utility.id(),
-				    curi = uri,
-				    head = $("head")[0];
+			if (/jsonp/i.test(type)) {
+				var curi = new String(uri), uid, p;
 
 				do uid = "a" + utility.id();
 				while (abaaso.callback[uid] !== undefined);
 
-				(args === null) ? args = "callback" : void(0);
-				uri  = uri.replace(args + "=?", args + "=abaaso.callback." + uid);
+				(args === undefined) ? args = "callback" : void(0);
+				p = new RegExp(args+"=?");
+
+				uri  = uri.replace(p, args + "=abaaso.callback." + uid);
 				uri += "&"+new Date().getTime().toString();
 
-				abaaso.callback[uid] = function(response) {
-					fn(response);
+				abaaso.callback[uid] = function(arg){
 					delete abaaso.callback[uid];
+					success(arg);
 					curi.fire("afterJSONP");
-					};
+				};
 
-				el.create("script", {src: uri, type: "text/javascript"}, head);
+				el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
 			}
 			else {
 				var xhr     = new XMLHttpRequest(),
-				    payload = ((type.toLowerCase() == "post")
-					       || (type.toLowerCase() == "put")) ? args : null,
-				    cached  = cache.get(uri, false);
+				    payload = (/post|put/i.test(type)) ? args : null,
+				    cached  = cache.get(uri, false),
+					timer   = function(){
+						clearTimeout(abaaso.timer[uri]);
+						delete abaaso.timer[uri];
+						uri.un("timeout");
+					};
 
-				uri.fire("beforeXHR");
+				switch (type.toLowerCase()) {
+					case "delete":
+						uri.on("afterDelete", function(){
+							cache.expire(uri);
+							uri.un("afterDelete", "expire");
+							}, "expire");
+						break;
+				}
 
-				xhr.onreadystatechange = function() { client.response(xhr, uri, fn, type, ffn); };
-				abaaso.timer[uri] = setTimeout(function(){
-					delete abaaso.timer[uri];
-					ffn();
-				}, 30000);
+				uri.on("received",   function(){ this.un("received"); timer(); })
+				   .on("timeout",    timer)
+				   .on("success",    function(arg){ this.un("success"); (success instanceof Function) ? success(arg) : void(0); })
+				   .on("failure",    function(){ this.un("failure"); (failure instanceof Function) ? failure() : void(0); })
+				   .fire("beforeXHR")
+				   .fire("before" + type.toLowerCase().capitalize());
+
+				if (uri.allow(type) === false) {
+					uri.fire("failure");
+					return uri;
+				}
+
+				abaaso.timer[uri] = setTimeout(function(){ uri.fire("timeout"); }, 30000);
+
+				xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
 				xhr.open(type.toUpperCase(), uri, true);
 				(payload !== null) ? xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8") : void(0);
 				((cached !== false)
 				 && (cached.headers.ETag !== undefined)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
 				xhr.send(payload);
 			}
+
+			return uri;
 		},
 
 		/**
@@ -775,7 +623,7 @@ var abaaso = function(){
 		 * @param ffn {Function} [Optional] A handler function to execute on error
 		 * @private
 		 */
-		response : function(xhr, uri, fn, type, ffn) {
+		response : function(xhr, uri, type) {
 			try {
 				if (xhr.readyState == 2) {
 					var headers = xhr.getAllResponseHeaders().split("\n"),
@@ -783,7 +631,7 @@ var abaaso = function(){
 					    loop    = headers.length,
 					    items   = {},
 						accept  = null,
-						bit;
+						bit, o;
 
 					/**
 					 * Returns a bit value based on the array contents
@@ -833,14 +681,14 @@ var abaaso = function(){
 					}
 
 					for (i = 0; i < loop; i++) {
-						if (headers[i] != "") {
+						if (!headers[i].isEmpty()) {
 							var header    = headers[i].toString(),
 							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 
 							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 							items[header] = value;
 
-							(header.toLowerCase() == "accept") ? accept = value : void(0);
+							(/accept/i.test(header)) ? accept = value : void(0);
 						}
 					}
 
@@ -848,11 +696,10 @@ var abaaso = function(){
 					cache.set(uri, "permission", bit((accept !== null) ? accept.split(/\s*,\s*/) : [type]));
 				}
 				else if (xhr.readyState == 4) {
-					clearTimeout(abaaso.timer[uri]);
-					delete abaaso.timer[uri];
+					uri.fire("received");
 
 					if ((xhr.status == 200)
-					    && (xhr.responseText != "")) {
+					    && (!xhr.responseText.isEmpty())) {
 						var state  = null,
 						    s      = abaaso.state;
 
@@ -863,18 +710,20 @@ var abaaso = function(){
 
 						uri.fire("afterXHR");
 						uri.fire("after"+type.toLowerCase().capitalize());
-						uri = cache.get(uri, false);
+
+						o = cache.get(uri, false);
+
+						uri.fire("success", o.response);
 
 						if ((s.header !== null)
-						    && (state = uri.headers[s.header]) && (state !== undefined)) {
+						    && (state = uri.headers[s.header])
+							&& (state !== undefined)) {
 							s.previous = s.current;
 							s.current  = state;
 							((s.previous !== null)
 							 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current) : void(0);
 							abaaso.fire(state);
 						}
-
-						(fn !== undefined) ? fn(uri.response) : void(0);
 					}
 					else if (xhr.status == 401) {
 						throw new Error(label.error.serverUnauthorized);
@@ -890,7 +739,7 @@ var abaaso = function(){
 			}
 			catch (e) {
 				error(e, arguments, this);
-				(ffn instanceof Function) ? ffn(e) : void(0);
+				uri.fire("failure");
 			}
 		},
 
@@ -1898,6 +1747,7 @@ var abaaso = function(){
 			invalidArguments      : "One or more arguments is invalid",
 			invalidDate           : "Invalid Date",
 			invalidFields         : "The following required fields are invalid: ",
+			propertyNotFound      : "Could not find the requested property",
 			serverError           : "A server error has occurred",
 			serverInvalidMethod   : "Invalid method on the URI",
 			serverUnauthorized    : "Unauthorized to access URI"
@@ -2068,9 +1918,10 @@ var abaaso = function(){
 		 *
 		 * @param obj {Mixed} The object.id or instance of object firing the event
 		 * @param event {String} The event being fired
+		 * @param arg {Mixed} [Optional] Argument supplied to the listener
 		 * @returns {Object} The object
 		 */
-		fire : function(obj, event) {
+		fire : function(obj, event, arg) {
 			try {
 				if (obj instanceof Array) {
 					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
@@ -2106,10 +1957,10 @@ var abaaso = function(){
 									    fn       = listeners[i].fn,
 									    scope    = (instance !== undefined) ? instance : listeners[i].scope;
 
-									fn.call(scope);
+									(typeof arg != "undefined") ? fn.call(scope) : fn.apply(scope, arg);
 								}
 								else {
-									listeners[i].fn();
+									(typeof arg != "undefined") ? listeners[i].fn() : listeners[i].fn(arg);
 								}
 							}
 						}
@@ -2952,34 +2803,34 @@ var abaaso = function(){
 							}},
 						{name: "jsonp", fn: function(uri, property, callback) {
 							var target = this,
-							    arg = property,
-							    response,
+							    arg    = property,
 							    fn = function(response){
-										var self = target,
-											node = response,
-											prop = arg, i, loop;
+									var self = target,
+										node = response,
+										prop = arg, i, loop, result;
 
-										try {
-												if (prop !== undefined) {
-													prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-													loop = prop.length;
-													for (i = 0; i < loop; i++) {
-														node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
-													}
-													text = node;
+									try {
+											if (prop !== undefined) {
+												prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
+												loop = prop.length;
+												for (i = 0; i < loop; i++) {
+													node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
+													if (node === undefined) { throw new Error(abaaso.label.error.propertyNotFound); }
 												}
-												else {
-													text = response;
-												}
-										}
-										catch (e) {
-												text = abaaso.label.error.serverError;
-												abaaso.error(e, arguments, this);
-										}
+												result = node;
+											}
+											else {
+												result = response;
+											}
+									}
+									catch (e) {
+											result = abaaso.label.error.serverError;
+											abaaso.error(e, arguments, this);
+									}
 
-										self.text(text);
+									self.text(result);
 								};
-							abaaso.client.jsonp(uri, fn, null, callback);
+							abaaso.jsonp(uri, fn, null, callback);
 							return this;
 							}},
 						{name: "loading", fn: function() {
@@ -3045,11 +2896,11 @@ var abaaso = function(){
 							}
 							return abaaso.domId(this);
 							}},
-						{name: "fire", fn: function(event) {
+						{name: "fire", fn: function(event, args) {
 							((!this instanceof String)
 								 && ((this.id === undefined)
 								     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							return abaaso.fire(this, event);
+							return abaaso.fire(this, event, args);
 							}},
 						{name: "genId", fn: function() {
 							return abaaso.genId(this);
@@ -3282,11 +3133,11 @@ var abaaso = function(){
 				version : null,
 
 				// Methods
-				del     : client.del,
-				get     : client.get,
-				post    : client.post,
-				put     : client.put,
-				jsonp   : client.jsonp,
+				del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
+				get     : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
+				post    : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
+				put     : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
+				jsonp   : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
 				permission : client.permission
 			},
 		cookie          : cookie,
@@ -3325,19 +3176,20 @@ var abaaso = function(){
 		decode          : json.decode,
 		defer           : utility.defer,
 		define          : utility.define,
-		del             : client.del,
+		del             : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
 		destroy         : el.destroy,
 		domId           : utility.domId,
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
 				var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
-					event = (arguments[1] === undefined) ? arguments[0] : arguments[1];
+					event = (arguments[1] === undefined) ? arguments[0] : arguments[1],
+					arg   = (arguments[2] === undefined) ? arguments[1] : arguments[2];
 
-				return abaaso.observer.fire(obj, event);
+				return abaaso.observer.fire(obj, event, arg);
 			},
 		genId           : utility.genId,
-		get             : client.get,
+		get             : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
 		id              : "abaaso",
 		init            : function() {
 				abaaso.ready = true;
@@ -3412,7 +3264,7 @@ var abaaso = function(){
 
 				delete abaaso.init;
 			},
-		jsonp           : client.jsonp,
+		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
 				var all   = (arguments[1] !== undefined) ? true : false;
 				var obj   = (all) ? arguments[0] : abaaso,
@@ -3433,8 +3285,8 @@ var abaaso = function(){
 			},
 		permission      : client.permission,
 		position        : el.position,
-		post            : client.post,
-		put             : client.put,
+		post            : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
+		put             : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
 		ready           : false,
 		store           : function(arg) {
 				return data.register.call(data, arg);
@@ -3449,7 +3301,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.018"
+		version         : "1.5.019"
 	};
 }();
 
