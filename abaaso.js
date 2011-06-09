@@ -565,12 +565,11 @@ var abaaso = function(){
 				var xhr     = new XMLHttpRequest(),
 				    payload = (/post|put/i.test(type)) ? args : null,
 				    cached  = cache.get(uri, false),
+					uid     = genId(),
 					timer   = function(){
 						clearTimeout(abaaso.timer[uri]);
 						delete abaaso.timer[uri];
-						uri.un("failure")
-						   .un("received")
-						   .un("success")
+						uri.un("received")
 						   .un("timeout");
 					};
 
@@ -583,10 +582,10 @@ var abaaso = function(){
 						break;
 				}
 
-				uri.on("received",   function(){ timer(); })
+				uri.on("received",   timer)
 				   .on("timeout",    timer)
-				   .on("success",    function(arg){ this.un("success"); (success instanceof Function) ? success(arg) : void(0); })
-				   .on("failure",    function(){ timer(); (failure instanceof Function) ? failure() : void(0); })
+				   .on("success",    function(arg){ uri.un("success", uid); (success instanceof Function) ? success(arg) : void(0); }, uid)
+				   .on("failure",    function(){ timer(); uri.un("failure", uid); (failure instanceof Function) ? failure() : void(0); }, uid)
 				   .fire("beforeXHR")
 				   .fire("before" + type.toLowerCase().capitalize());
 
