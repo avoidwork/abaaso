@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.022
+ * @version 1.5.023
  */
 var abaaso = function(){
 	/**
@@ -521,12 +521,11 @@ var abaaso = function(){
 		/**
 		 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 		 *
-		 * Events:     beforeXHR    Fires before the XmlHttpRequest is made
-		 *             before[type] Fires before the XmlHttpRequest is made, type specific
-		 *             failure      Fires on error
-		 *             received     Fires on XHR readystate 2, clears the timeout only!
-		 *             success      Fires XmlHttpRequest response 400
-		 *             timeout      Fires 30s after XmlHttpRequest is made
+		 * Events:     beforeXHR      Fires before the XmlHttpRequest is made
+		 *             before[type]   Fires before the XmlHttpRequest is made, type specific
+		 *             failed[type]   Fires on error
+		 *             received[type] Fires on XHR readystate 2, clears the timeout only!
+		 *             timeout[type]  Fires 30s after XmlHttpRequest is made
 		 *
 		 * @param uri {String} The resource to interact with
 		 * @param type {String} The type of request (DELETE/GET/POST/PUT/JSONP)
@@ -565,12 +564,13 @@ var abaaso = function(){
 				var xhr     = new XMLHttpRequest(),
 				    payload = (/post|put/i.test(type)) ? args : null,
 				    cached  = cache.get(uri, false),
-					uid     = utility.genId(),
+					typed   = type.toLowerCase().capitalize(),
 					timer   = function(){
-						clearTimeout(abaaso.timer[uri]);
-						delete abaaso.timer[uri];
-						uri.un("received")
-						   .un("timeout");
+						clearTimeout(abaaso.timer[typed + "-" + uri]);
+						delete abaaso.timer[typed + "-" + uri];
+						uri.un("received" + typed)
+						   .un("timeout"  + typed)
+						   .fire("failed" + typed);
 					};
 
 				switch (type.toLowerCase()) {
@@ -578,23 +578,23 @@ var abaaso = function(){
 						uri.on("afterDelete", function(){
 							cache.expire(uri);
 							uri.un("afterDelete", "expire");
-							}, "expire");
+						}, "expire");
 						break;
 				}
 
-				uri.on("received",   timer)
-				   .on("timeout",    timer)
-				   .on("success",    function(arg){ uri.un("success", uid); (success instanceof Function) ? success(arg) : void(0); }, uid)
-				   .on("failure",    function(){ timer(); uri.un("failure", uid); (failure instanceof Function) ? failure() : void(0); }, uid)
+				uri.on("received" + typed, timer)
+				   .on("timeout"  + typed, timer)
+				   .on("after"    + typed, function(arg){ (success instanceof Function) ? success(arg) : void(0); })
+				   .on("failed"   + typed, function(){ (failure instanceof Function) ? failure() : void(0); })
 				   .fire("beforeXHR")
-				   .fire("before" + type.toLowerCase().capitalize());
+				   .fire("before" + typed);
 
 				if (uri.allow(type) === false) {
-					uri.fire("failure");
+					uri.fire("failed" + typed);
 					return uri;
 				}
 
-				abaaso.timer[uri] = setTimeout(function(){ uri.fire("timeout"); }, 30000);
+				abaaso.timer[typed + "-" + uri] = setTimeout(function(){ uri.fire("timeout" + typed); }, 30000);
 
 				xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
 				xhr.open(type.toUpperCase(), uri, true);
@@ -630,8 +630,10 @@ var abaaso = function(){
 		 */
 		response : function(xhr, uri, type) {
 			try {
+				var typed = type.toLowerCase().capitalize();
+
 				if (xhr.readyState == 2) {
-					uri.fire("received");
+					uri.fire("received" + typed);
 
 					var headers = xhr.getAllResponseHeaders().split("\n"),
 					    i       = null,
@@ -714,11 +716,10 @@ var abaaso = function(){
 						}
 
 						uri.fire("afterXHR");
-						uri.fire("after"+type.toLowerCase().capitalize());
 
 						o = cache.get(uri, false);
 
-						uri.fire("success", o.response);
+						uri.fire("after" + typed, o.response);
 
 						if ((s.header !== null)
 						    && (state = uri.headers[s.header])
@@ -744,7 +745,7 @@ var abaaso = function(){
 			}
 			catch (e) {
 				error(e, arguments, this);
-				uri.fire("failure");
+				uri.fire("failed" + typed);
 			}
 		},
 
@@ -3306,7 +3307,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.022"
+		version         : "1.5.023"
 	};
 }();
 
