@@ -615,6 +615,9 @@ var abaaso = function(){
 		 * resource
 		 *
 		 * Events:     afterXHR    Fires after the XmlHttpRequest response is received
+		 *             after[type] Fires after the XmlHttpRequest response is received, type specific
+		 *             success     Fires if a 400 response is received
+		 *             failure     Fires if an exception is thrown
 		 *
 		 * @param xhr {Object} XMLHttpRequest object
 		 * @param uri {String} The URI.value to cache
@@ -626,6 +629,8 @@ var abaaso = function(){
 		response : function(xhr, uri, type) {
 			try {
 				if (xhr.readyState == 2) {
+					uri.fire("received");
+
 					var headers = xhr.getAllResponseHeaders().split("\n"),
 					    i       = null,
 					    loop    = headers.length,
@@ -696,8 +701,6 @@ var abaaso = function(){
 					cache.set(uri, "permission", bit((accept !== null) ? accept.split(/\s*,\s*/) : [type]));
 				}
 				else if (xhr.readyState == 4) {
-					uri.fire("received");
-
 					if ((xhr.status == 200)
 					    && (!xhr.responseText.isEmpty())) {
 						var state  = null,
