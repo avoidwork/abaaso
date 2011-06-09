@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.021
+ * @version 1.5.022
  */
 var abaaso = function(){
 	/**
@@ -565,7 +565,7 @@ var abaaso = function(){
 				var xhr     = new XMLHttpRequest(),
 				    payload = (/post|put/i.test(type)) ? args : null,
 				    cached  = cache.get(uri, false),
-					uid     = genId(),
+					uid     = utility.genId(),
 					timer   = function(){
 						clearTimeout(abaaso.timer[uri]);
 						delete abaaso.timer[uri];
@@ -3306,7 +3306,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.021"
+		version         : "1.5.022"
 	};
 }();
 
