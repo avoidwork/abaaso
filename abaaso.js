@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.019
+ * @version 1.5.020
  */
 var abaaso = function(){
 	/**
@@ -568,7 +568,10 @@ var abaaso = function(){
 					timer   = function(){
 						clearTimeout(abaaso.timer[uri]);
 						delete abaaso.timer[uri];
-						uri.un("timeout");
+						uri.un("failure")
+						   .un("received")
+						   .un("success")
+						   .un("timeout");
 					};
 
 				switch (type.toLowerCase()) {
@@ -580,7 +583,7 @@ var abaaso = function(){
 						break;
 				}
 
-				uri.on("received",   function(){ this.un("received"); timer(); })
+				uri.on("received",   function(){ timer(); })
 				   .on("timeout",    timer)
 				   .on("success",    function(arg){ this.un("success"); (success instanceof Function) ? success(arg) : void(0); })
 				   .on("failure",    function(){ this.un("failure"); (failure instanceof Function) ? failure() : void(0); })
@@ -1930,7 +1933,7 @@ var abaaso = function(){
 					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
 					for (i = 0; i < loop; i++) {
-						this.fire(obj[i], event);
+						this.fire(obj[i], event, arg);
 					}
 					return obj;
 				}
@@ -3304,7 +3307,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.019"
+		version         : "1.5.020"
 	};
 }();
 
