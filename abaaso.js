@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.026
+ * @version 1.5.027
  */
 var abaaso = function(){
 	/**
@@ -3129,34 +3129,34 @@ var abaaso = function(){
 		array           : array,
 		callback        : [],
 		client          : {
-				// Properties
-				css3    : null,
-				chrome  : client.chrome,
-				expire  : client.expire,
-				firefox : client.firefox,
-				ie      : client.ie,
-				opera   : client.opera,
-				safari  : client.safari,
-				size    : {x:0, y:0},
-				version : null,
+			// Properties
+			css3    : null,
+			chrome  : client.chrome,
+			expire  : client.expire,
+			firefox : client.firefox,
+			ie      : client.ie,
+			opera   : client.opera,
+			safari  : client.safari,
+			size    : {x:0, y:0},
+			version : null,
 
-				// Methods
-				del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
-				get     : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
-				post    : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
-				put     : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
-				jsonp   : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
-				permission : client.permission
-			},
+			// Methods
+			del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
+			get     : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
+			post    : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
+			put     : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
+			jsonp   : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
+			permission : client.permission
+		},
 		cookie          : cookie,
 		data            : data,
 		el              : el,
 		json            : json,
 		label           : label,
 		loading         : {
-				create  : utility.loading,
-				url     : null
-			},
+			create  : utility.loading,
+			url     : null
+		},
 		mouse           : mouse,
 		number          : number,
 		observer        : {
@@ -3167,10 +3167,10 @@ var abaaso = function(){
 				remove  : observer.remove
 			},
 		state           : {
-				current : null,
-				header  : null,
-				previous: null
-			},
+			current : null,
+			header  : null,
+			previous: null
+		},
 		validate        : validate,
 
 		// Methods & Properties
@@ -3190,16 +3190,17 @@ var abaaso = function(){
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
-				var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
-					event = (arguments[1] === undefined) ? arguments[0] : arguments[1],
-					arg   = (arguments[2] === undefined) ? arguments[1] : arguments[2];
+			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
+				event = (arguments[1] === undefined) ? arguments[0] : arguments[1],
+				arg   = (arguments[2] === undefined) ? arguments[1] : arguments[2];
 
-				return abaaso.observer.fire(obj, event, arg);
-			},
+			return abaaso.observer.fire(obj, event, arg);
+		},
 		genId           : utility.genId,
 		get             : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
 		id              : "abaaso",
 		init            : function() {
+			try {
 				abaaso.ready = true;
 
 				abaaso.client.version = client.version();
@@ -3271,45 +3272,51 @@ var abaaso = function(){
 				}
 
 				delete abaaso.init;
-			},
+				return abaaso;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
 		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
-				var all   = (arguments[1] !== undefined) ? true : false;
-				var obj   = (all) ? arguments[0] : abaaso,
-					event = (all) ? arguments[1] : arguments[0];
+			var all   = (arguments[1] !== undefined) ? true : false;
+			var obj   = (all) ? arguments[0] : abaaso,
+				event = (all) ? arguments[1] : arguments[0];
 
-				return abaaso.observer.list(obj, event);
-			},
+			return abaaso.observer.list(obj, event);
+		},
 		on              : function() {
-				var all      = (arguments[2] instanceof Function) ? true : false;
-				var obj      = (all) ? arguments[0] : abaaso,
-					event    = (all) ? arguments[1] : arguments[0],
-					listener = (all) ? arguments[2] : arguments[1],
-					id       = (all) ? arguments[3] : arguments[2],
-					scope    = (all) ? arguments[4] : arguments[3],
-					standby  = (all) ? arguments[5] : arguments[4];
+			var all      = (arguments[2] instanceof Function) ? true : false;
+			var obj      = (all) ? arguments[0] : abaaso,
+				event    = (all) ? arguments[1] : arguments[0],
+				listener = (all) ? arguments[2] : arguments[1],
+				id       = (all) ? arguments[3] : arguments[2],
+				scope    = (all) ? arguments[4] : arguments[3],
+				standby  = (all) ? arguments[5] : arguments[4];
 
-				return abaaso.observer.add(obj, event, listener, id, scope, standby);
-			},
+			return abaaso.observer.add(obj, event, listener, id, scope, standby);
+		},
 		permission      : client.permission,
 		position        : el.position,
 		post            : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
 		put             : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
 		ready           : false,
 		store           : function(arg) {
-				return data.register.call(data, arg);
-			},
+			return data.register.call(data, arg);
+		},
 		timer           : {},
 		un              : function() {
-				var all   = (typeof arguments[0] == "string") ? false : true;
-				var obj   = (all) ? arguments[0] : abaaso,
-					event = (all) ? arguments[1] : arguments[0],
-					id    = (all) ? arguments[2] : arguments[1];
+			var all   = (typeof arguments[0] == "string") ? false : true;
+			var obj   = (all) ? arguments[0] : abaaso,
+				event = (all) ? arguments[1] : arguments[0],
+				id    = (all) ? arguments[2] : arguments[1];
 
-				return abaaso.observer.remove(obj, event, id);
-			},
+			return abaaso.observer.remove(obj, event, id);
+		},
 		update          : el.update,
-		version         : "1.5.026"
+		version         : "1.5.027"
 	};
 }();
 
