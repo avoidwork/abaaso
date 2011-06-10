@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.028
+ * @version 1.5.029
  */
 var abaaso = function(){
 	/**
@@ -2533,7 +2533,7 @@ var abaaso = function(){
 		},
 
 		/**
-		 * Error handling, with history in .events[]
+		 * Error handling, with history in .log
 		 *
 		 * @param e {Mixed} Error object or message to display
 		 * @param args {Array} Array of arguments from the callstack
@@ -2545,8 +2545,8 @@ var abaaso = function(){
 			(e.number !== undefined) ? (e.number = (e.number & 0xFFFF)) : void(0);
 			(e.type   === undefined) ? e.type = "TypeError" : void(0);
 			(typeof console != "undefined") ? console.error(e.message) : void(0);
-			(error.events === undefined) ? error.events = [] : void(0);
-			error.events.push({arguments: e.arguments, number: e.number, scope: e.scope, timestamp: new Date().toUTCString(), type: e.type});
+			(error.log === undefined) ? error.log = [] : void(0);
+			error.log.push({arguments: e.arguments, number: e.number, scope: e.scope, timestamp: new Date().toUTCString(), type: e.type});
 		},
 
 		/**
@@ -3316,7 +3316,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.028"
+		version         : "1.5.029"
 	};
 }();
 
