@@ -33,14 +33,13 @@
  *
  * Events:    ready      Fires when the DOM is available (safe for GUI creation)
  *            render     Fires when the window resources have loaded (safe for visual fx)
- *            resize     Fires when the window resizes, the client.size Object is a parameter for listeners
- *            hash       Fires when window.location.hash changes, location.hash without # is a parameter for listeners
- *            error      Fires when an Error is caught & logged, the logged Object is a parameter for listeners
+ *            resize     Fires when the window resizes
+ *            hash       Fires when window.location.hash changes
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.031
+ * @version 1.5.030
  */
 var abaaso = function(){
 	/**
@@ -1966,10 +1965,10 @@ var abaaso = function(){
 									    fn       = listeners[i].fn,
 									    scope    = (instance !== undefined) ? instance : listeners[i].scope;
 
-									(typeof arg != "undefined") ? fn.apply(scope, arg) : fn.call(scope);
+									(typeof arg != "undefined") ? fn.call(scope) : fn.apply(scope, arg);
 								}
 								else {
-									(typeof arg != "undefined") ? listeners[i].fn(arg) : listeners[i].fn();
+									(typeof arg != "undefined") ? listeners[i].fn() : listeners[i].fn(arg);
 								}
 							}
 						}
@@ -2547,9 +2546,7 @@ var abaaso = function(){
 			(e.type   === undefined) ? e.type = "TypeError" : void(0);
 			(typeof console != "undefined") ? console.error(e.message) : void(0);
 			(error.log === undefined) ? error.log = [] : void(0);
-			e = {arguments: e.arguments, message: e.message, number: e.number, scope: e.scope, timestamp: new Date().toUTCString(), type: e.type};
-			error.log.push(e);
-			abaaso.fire("error", e);
+			error.log.push({arguments: e.arguments, message: e.message, number: e.number, scope: e.scope, timestamp: new Date().toUTCString(), type: e.type});
 		},
 
 		/**
@@ -3215,8 +3212,8 @@ var abaaso = function(){
 				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 				utility.proto(Number.prototype, "number");
 				utility.proto(String.prototype, "string");
-				window.onhashchange = function() { abaaso.observer.fire(abaaso, "hash", location.hash.replace(/#/, "")); };
-				window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
+				window.onhashchange = function() { abaaso.fire("hash"); };
+				window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize"); };
 				abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
 
 				if (typeof document.getElementsByClassName == "undefined") {
@@ -3319,7 +3316,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.031"
+		version         : "1.5.030"
 	};
 }();
 
