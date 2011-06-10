@@ -29,7 +29,7 @@
  * abaaso
  *
  * abaaso provides a set of classes and object prototyping to ease the creation
- * and maintenance of RESTful JavaScript applications.
+ * and maintenance of RESTful JavaScript applications
  *
  * Events:    ready      Fires when the DOM is available (safe for GUI creation)
  *            render     Fires when the window resources have loaded (safe for visual fx)
@@ -39,7 +39,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.024
+ * @version 1.5.025
  */
 var abaaso = function(){
 	/**
@@ -456,7 +456,7 @@ var abaaso = function(){
 			version      = (isNaN(parseInt(version))) ? 0 : parseInt(version);
 			this.version = version;
 			return version;
-			}),
+		}),
 
 		/**
 		 * Quick way to see if a URI allows a specific command
@@ -718,11 +718,10 @@ var abaaso = function(){
 							cache.set(uri, "response", xhr.responseText);
 						}
 
-						uri.fire("afterXHR");
-
 						o = cache.get(uri, false);
 
 						uri.fire("after" + typed, o.response);
+						uri.fire("afterXHR");
 
 						if ((s.header !== null)
 						    && (state = uri.headers[s.header])
@@ -3310,7 +3309,7 @@ var abaaso = function(){
 				return abaaso.observer.remove(obj, event, id);
 			},
 		update          : el.update,
-		version         : "1.5.024"
+		version         : "1.5.025"
 	};
 }();
 
