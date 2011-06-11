@@ -2582,7 +2582,7 @@ var abaaso = abaaso || function(){
 			try {
 				if ((typeof obj != "undefined")
 					&& ((obj instanceof Array)
-						|| (obj instanceof String)
+						|| (typeof obj == "string")
 						|| ((typeof obj.id != "undefined")
 							&& (obj.id != "")))) {
 					return obj;
@@ -2898,21 +2898,21 @@ var abaaso = abaaso || function(){
 							((typeof this == "object")
 							 && ((this.id === undefined)
 							     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
+							(typeof this == "string") ? (this.constructor = new String("")) : abaaso.clear(this);
 							return this;
 							}},
 						{name: "destroy", fn: function() {
 							abaaso.destroy(this);
 							}},
 						{name: "domId", fn: function() {
-							if (!this instanceof String) {
+							if (typeof this != "string") {
 								this.genId();
 								return abaaso.domId(this.id);
 							}
 							return abaaso.domId(this);
 							}},
 						{name: "fire", fn: function(event, args) {
-							((!this instanceof String)
+							((typeof this != "string")
 								 && ((this.id === undefined)
 								     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							return abaaso.fire.call(this, event, args);
@@ -2921,13 +2921,13 @@ var abaaso = abaaso || function(){
 							return abaaso.genId(this);
 							}},
 						{name: "listeners", fn: function(event) {
-							((!this instanceof String)
+							((typeof this != "string")
 								 && ((this.id === undefined)
 								     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							return abaaso.listeners(this, event);
 							}},
 						{name: "un", fn: function(event, id) {
-							((!this instanceof String)
+							((typeof this != "string")
 								 && ((this.id === undefined)
 								     || (this.id.isEmpty()))) ? this.genId() : void(0);
 							return abaaso.un(this, event, id);
