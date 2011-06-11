@@ -33,13 +33,14 @@
  *
  * Events:    ready      Fires when the DOM is available (safe for GUI creation)
  *            render     Fires when the window resources have loaded (safe for visual fx)
- *            resize     Fires when the window resizes
- *            hash       Fires when window.location.hash changes
+ *            resize     Fires when the window resizes, parameter for listeners is client.size Object
+ *            hash       Fires when window.location.hash changes, parameter for listeners is the hash value
+ *            error      Fires when an Error is caught, parameter for listeners is the logged Object
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.030
+ * @version 1.5.031
  */
 var abaaso = function(){
 	/**
@@ -1965,10 +1966,10 @@ var abaaso = function(){
 									    fn       = listeners[i].fn,
 									    scope    = (instance !== undefined) ? instance : listeners[i].scope;
 
-									(typeof arg != "undefined") ? fn.call(scope) : fn.apply(scope, arg);
+									(arg === undefined) ? fn.call(scope) : fn.call(scope, arg);
 								}
 								else {
-									(typeof arg != "undefined") ? listeners[i].fn() : listeners[i].fn(arg);
+									(arg === undefined) ? listeners[i].fn() : listeners[i].fn(arg);
 								}
 							}
 						}
@@ -2540,13 +2541,19 @@ var abaaso = function(){
 		 * @param scope {Mixed} Object that triggered the Error
 		 */
 		error : function(e, args, scope) {
-			e.arguments = args;
-			e.scope     = scope;
-			(e.number !== undefined) ? (e.number = (e.number & 0xFFFF)) : void(0);
-			(e.type   === undefined) ? e.type = "TypeError" : void(0);
-			(typeof console != "undefined") ? console.error(e.message) : void(0);
+			var o = {
+				arguments : args,
+				message   : e.message,
+				number    : (e.number !== undefined) ? (e.number & 0xFFFF) : undefined,
+				scope     : scope,
+				timestamp : new Date().toUTCString(),
+				type      : (e.type   !== undefined) ? e.type : "TypeError"
+				};
+
+			(typeof console != "undefined") ? console.error(o.message) : void(0);
 			(error.log === undefined) ? error.log = [] : void(0);
-			error.log.push({arguments: e.arguments, message: e.message, number: e.number, scope: e.scope, timestamp: new Date().toUTCString(), type: e.type});
+			error.log.push(o);
+			abaaso.fire("error", o)
 		},
 
 		/**
@@ -3192,7 +3199,7 @@ var abaaso = function(){
 		fire            : function() {
 			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
 				event = (arguments[1] === undefined) ? arguments[0] : arguments[1],
-				arg   = (arguments[2] === undefined) ? arguments[1] : arguments[2];
+				arg   = (arguments[2] === undefined) ? undefined : arguments[2];
 
 			return abaaso.observer.fire(obj, event, arg);
 		},
@@ -3212,8 +3219,8 @@ var abaaso = function(){
 				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 				utility.proto(Number.prototype, "number");
 				utility.proto(String.prototype, "string");
-				window.onhashchange = function() { abaaso.fire("hash"); };
-				window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize"); };
+				window.onhashchange = function() { abaaso.fire("hash", location.hash); };
+				window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
 				abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
 
 				if (typeof document.getElementsByClassName == "undefined") {
@@ -3316,7 +3323,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.030"
+		version         : "1.5.031"
 	};
 }();
 
