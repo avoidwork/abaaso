@@ -40,9 +40,9 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.032
+ * @version 1.5.033
  */
-var abaaso = function(){
+var abaaso = abaaso || function(){
 	/**
 	 * Array methods
 	 *
@@ -588,8 +588,8 @@ var abaaso = function(){
 
 				uri.on("received" + typed, timer)
 				   .on("timeout"  + typed, fail)
-				   .on("after"    + typed, function(arg){ (success instanceof Function) ? success(arg) : void(0); })
-				   .on("failed"   + typed, function(){ (failure instanceof Function) ? failure() : void(0); })
+				   .on("after"    + typed, function(arg){ (typeof success == "function") ? success(arg) : void(0); })
+				   .on("failed"   + typed, function(){ (typeof failure == "function") ? failure() : void(0); })
 				   .fire("before" + typed)
 				   .fire("beforeXHR");
 
@@ -1876,7 +1876,7 @@ var abaaso = function(){
 
 					if ((o === undefined)
 					    || (event === undefined)
-					    || (!fn instanceof Function)
+					    || (typeof fn != "function")
 					    || ((standby)
 						&& (id === undefined))) {
 						throw new Error(label.error.invalidArguments);
@@ -2124,7 +2124,7 @@ var abaaso = function(){
 							listener = l[o][event].standby[listener].fn;
 						}
 					}
-					else if (!listener instanceof Function) {
+					else if (typeof listener != "function") {
 						throw new Error(label.error.invalidArguments);
 					}
 
@@ -3207,6 +3207,7 @@ var abaaso = function(){
 		id              : "abaaso",
 		init            : function() {
 			try {
+				abaaso.constructor = abaaso;
 				abaaso.ready = true;
 
 				abaaso.client.version = client.version();
@@ -3294,7 +3295,7 @@ var abaaso = function(){
 			return abaaso.observer.list(obj, event);
 		},
 		on              : function() {
-			var all      = (arguments[2] instanceof Function) ? true : false;
+			var all      = (typeof arguments[2] == "function") ? true : false;
 			var obj      = (all) ? arguments[0] : abaaso,
 				event    = (all) ? arguments[1] : arguments[0],
 				listener = (all) ? arguments[2] : arguments[1],
@@ -3322,27 +3323,29 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.032"
+		version         : "1.5.033"
 	};
 }();
 
-var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
+if (typeof abaaso.init == "function") {
+	var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 
-// Registering events
-switch (true) {
-	case abaaso.client.chrome:
-	case abaaso.client.firefox:
-	case abaaso.client.opera:
-	case abaaso.client.safari:
-	case ((abaaso.client.ie) && (abaaso.client.version > 8)):
-		document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
-		break;
-	default:
-		abaaso.timer.init = setInterval(function(){
-			if (/loaded|complete/.test(document.readyState)) {
-				clearInterval(abaaso.timer.init);
-				abaaso.init();
-				abaaso.fire("render").un("render");
-			}
-		}, 10);
+	// Registering events
+	switch (true) {
+		case abaaso.client.chrome:
+		case abaaso.client.firefox:
+		case abaaso.client.opera:
+		case abaaso.client.safari:
+		case ((abaaso.client.ie) && (abaaso.client.version > 8)):
+			document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
+			break;
+		default:
+			abaaso.timer.init = setInterval(function(){
+				if (/loaded|complete/.test(document.readyState)) {
+					clearInterval(abaaso.timer.init);
+					abaaso.init();
+					abaaso.fire("render").un("render");
+				}
+			}, 10);
+	}
 }
