@@ -40,7 +40,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.031
+ * @version 1.5.032
  */
 var abaaso = function(){
 	/**
@@ -2915,7 +2915,7 @@ var abaaso = function(){
 							((!this instanceof String)
 								 && ((this.id === undefined)
 								     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							return abaaso.fire(this, event, args);
+							return abaaso.fire.call(this, event, args);
 							}},
 						{name: "genId", fn: function() {
 							return abaaso.genId(this);
@@ -3197,11 +3197,10 @@ var abaaso = function(){
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
-			var obj   = (arguments[1] === undefined) ? abaaso : arguments[0],
-				event = (arguments[1] === undefined) ? arguments[0] : arguments[1],
-				arg   = (arguments[2] === undefined) ? undefined : arguments[2];
+			var event = (arguments[0] === undefined) ? undefined : arguments[0],
+				arg   = (arguments[1] === undefined) ? undefined : arguments[1];
 
-			return abaaso.observer.fire(obj, event, arg);
+			return abaaso.observer.fire(this, event, arg);
 		},
 		genId           : utility.genId,
 		get             : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
@@ -3323,7 +3322,7 @@ var abaaso = function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.031"
+		version         : "1.5.032"
 	};
 }();
 
