@@ -40,7 +40,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.035
+ * @version 1.5.036
  */
 var abaaso = abaaso || function(){
 	/**
@@ -544,6 +544,8 @@ var abaaso = abaaso || function(){
 			if (/jsonp/i.test(type)) {
 				var curi = new String(uri), uid;
 
+				curi.on("afterJSONP", function(arg){ success(arg); });
+
 				do uid = "a" + utility.id();
 				while (abaaso.callback[uid] !== undefined);
 
@@ -553,8 +555,8 @@ var abaaso = abaaso || function(){
 
 				abaaso.callback[uid] = function(arg){
 					delete abaaso.callback[uid];
-					success(arg);
-					curi.fire("afterJSONP");
+					curi.fire("afterJSONP", arg)
+					    .un("afterJSONP");
 				};
 
 				el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
@@ -1891,6 +1893,7 @@ var abaaso = abaaso || function(){
 						(id !== undefined) ? l[o][event].active[id] = item : l[o][event].active.push(item);
 						instance = (o != "abaaso") ? $("#"+o) : null;
 						((instance !== null)
+						 && (event != "afterJSONP")
 						 && (instance !== undefined)) ? ((typeof instance.addEventListener == "function")
 										 ? instance.addEventListener(event, function(e){
 											(!e) ? e = window.event : void(0);
@@ -2042,6 +2045,7 @@ var abaaso = abaaso || function(){
 							delete l[o][event];
 							instance = (o != "abaaso") ? $("#"+o) : null;
 							((instance !== null)
+							 && (event != "afterJSONP")
 							 && (instance !== undefined)) ? ((typeof instance.removeEventListener == "function")
 											 ? instance.removeEventListener(event, function(e){
 												(!e) ? e = window.event : void(0);
@@ -3217,9 +3221,10 @@ var abaaso = abaaso || function(){
 				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 				utility.proto(Number.prototype, "number");
 				utility.proto(String.prototype, "string");
+				
 				window.onhashchange = function() { abaaso.fire("hash", location.hash); };
-				window.onresize = function() { abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
-				abaaso.timer.clean = setInterval(function(){ abaaso.clean(); }, 120000);
+				window.onresize     = function() { abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
+				abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
 
 				if (typeof document.getElementsByClassName == "undefined") {
 					document.getElementsByClassName = function(arg) {
@@ -3321,7 +3326,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.035"
+		version         : "1.5.036"
 	};
 }();
 
