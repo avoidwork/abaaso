@@ -40,7 +40,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.5.036
+ * @version 1.6.tech
  */
 var abaaso = abaaso || function(){
 	/**
@@ -413,9 +413,11 @@ var abaaso = abaaso || function(){
 		/**
 		 * Public properties
 		 */
-		chrome  : (function(){ return /chrome/i.test(navigator.userAgent) })(),
+		android : (function(){ return /android/i.test(navigator.userAgent); })(),
+		chrome  : (function(){ return /chrome/i.test(navigator.userAgent); })(),
 		css3    : (function(){
 			switch (true) {
+				case (this.android):
 				case ((this.chrome) && (this.version > 5)):
 				case ((this.firefox) && (this.version > 2)):
 				case ((this.ie) && (this.version > 8)):
@@ -429,10 +431,15 @@ var abaaso = abaaso || function(){
 			}
 			}),
 		expire  : 0,
-		firefox : (function(){ return /firefox/i.test(navigator.userAgent) })(),
-		ie      : (function(){ return /msie/i.test(navigator.userAgent) })(),
-		opera   : (function(){ return /opera/i.test(navigator.userAgent) })(),
-		safari  : (function(){ return /safari/i.test(navigator.userAgent) })(),
+		firefox : (function(){ return /firefox/i.test(navigator.userAgent); })(),
+		ie      : (function(){ return /msie/i.test(navigator.userAgent); })(),
+		ios     : (function(){ return undefined; })(),
+		linux   : (function(){ return /linux|bsd|unix/i.test(navigator.userAgent); })(),
+		mobile  : (function(){ return undefined; })(),
+		opera   : (function(){ return /opera/i.test(navigator.userAgent); })(),
+		safari  : (function(){ return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
+		tablet  : (function(){ return undefined; })(),
+		windows : (function(){ return /windows/i.test(navigator.userAgent); })(),
 		version : (function(){
 			var version = 0;
 			switch (true) {
@@ -3139,15 +3146,21 @@ var abaaso = abaaso || function(){
 		callback        : [],
 		client          : {
 			// Properties
+			android : client.android,
 			css3    : null,
 			chrome  : client.chrome,
 			expire  : client.expire,
 			firefox : client.firefox,
 			ie      : client.ie,
+			ios     : client.ios,
+			linux   : client.linux,
+			mobile  : client.mobile,
 			opera   : client.opera,
 			safari  : client.safari,
+			tablet  : client.tablet,
 			size    : {x:0, y:0},
 			version : null,
+			windows : client.windows,
 
 			// Methods
 			del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
@@ -3326,7 +3339,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.5.036"
+		version         : "1.6.tech"
 	};
 }();
 
