@@ -418,6 +418,8 @@ var abaaso = abaaso || function(){
 		css3    : (function(){
 			switch (true) {
 				case (this.android):
+				case (this.ios):
+				case (this.tablet):
 				case ((this.chrome) && (this.version > 5)):
 				case ((this.firefox) && (this.version > 2)):
 				case ((this.ie) && (this.version > 8)):
@@ -435,11 +437,14 @@ var abaaso = abaaso || function(){
 		ie      : (function(){ return /msie/i.test(navigator.userAgent); })(),
 		ios     : (function(){ return /ipad|iphone/i.test(navigator.userAgent); })(),
 		linux   : (function(){ return /linux|bsd|unix/i.test(navigator.userAgent); })(),
+		meego   : (function(){ return /meego/i.test(navigator.userAgent); })(),
 		mobile  : (function(){ return /ipad|iphone|android/i.test(navigator.userAgent); })(),
+		playbook: (function(){ return /playbook/i.test(navigator.userAgent); })(),
 		opera   : (function(){ return /opera/i.test(navigator.userAgent); })(),
 		osx     : (function(){ return /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function(){ return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function(){ return /ipad/i.test(navigator.userAgent); })(),
+		tablet  : (function(){ return /ipad|playbook|meego|webos/i.test(navigator.userAgent); })(),
+		webos   : (function(){ return /webos/i.test(navigator.userAgent); })(),
 		windows : (function(){ return /windows/i.test(navigator.userAgent); })(),
 		version : (function(){
 			var version = 0;
@@ -3155,13 +3160,16 @@ var abaaso = abaaso || function(){
 			ie      : client.ie,
 			ios     : client.ios,
 			linux   : client.linux,
+			meego   : client.meego,
 			mobile  : client.mobile,
 			opera   : client.opera,
 			osx     : client.osx,
+			playbook: client.playbook,
 			safari  : client.safari,
 			tablet  : client.tablet,
 			size    : {x:0, y:0},
 			version : null,
+			webos   : client.webos,
 			windows : client.windows,
 
 			// Methods
