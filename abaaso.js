@@ -414,11 +414,11 @@ var abaaso = abaaso || function(){
 		 * Public properties
 		 */
 		android : (function(){ return /android/i.test(navigator.userAgent); })(),
+		blackberry : (function(){ return /blackberry/i.test(navigator.userAgent); })(),
 		chrome  : (function(){ return /chrome/i.test(navigator.userAgent); })(),
 		css3    : (function(){
 			switch (true) {
-				case (this.android):
-				case (this.ios):
+				case (this.mobile):
 				case (this.tablet):
 				case ((this.chrome) && (this.version > 5)):
 				case ((this.firefox) && (this.version > 2)):
@@ -438,12 +438,14 @@ var abaaso = abaaso || function(){
 		ios     : (function(){ return /ipad|iphone/i.test(navigator.userAgent); })(),
 		linux   : (function(){ return /linux|bsd|unix/i.test(navigator.userAgent); })(),
 		meego   : (function(){ return /meego/i.test(navigator.userAgent); })(),
-		mobile  : (function(){ return /ipad|iphone|android/i.test(navigator.userAgent); })(),
+		mobile  : (function(){ return /android|blackberry|ipad|iphone|meego|webos/i.test(navigator.userAgent); })(),
 		playbook: (function(){ return /playbook/i.test(navigator.userAgent); })(),
 		opera   : (function(){ return /opera/i.test(navigator.userAgent); })(),
 		osx     : (function(){ return /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function(){ return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function(){ return /ipad|playbook|meego|webos/i.test(navigator.userAgent); })(),
+		tablet  : (function(){ return ((/android|ipad|playbook|meego|webos/i.test(navigator.userAgent))
+			                           && ((client.size.x >= 1000)
+			                            || (client.size.y >= 1000))) ? true : false; })(),
 		webos   : (function(){ return /webos/i.test(navigator.userAgent); })(),
 		windows : (function(){ return /windows/i.test(navigator.userAgent); })(),
 		version : (function(){
@@ -3153,6 +3155,7 @@ var abaaso = abaaso || function(){
 		client          : {
 			// Properties
 			android : client.android,
+			blackberry : client.blackberry,
 			css3    : null,
 			chrome  : client.chrome,
 			expire  : client.expire,
