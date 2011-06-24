@@ -1809,8 +1809,8 @@ var abaaso = abaaso || function(){
 			var m = abaaso.mouse;
 			if (typeof n == "object") {
 				var x, y, c = false;
-				x = (n.pageX) ? n.pageX : (document.body.scrollTop + n.clientX);
-				y = (n.pageY) ? n.pageY : (document.body.scrollLeft + n.clientY);
+				x = (n.pageX) ? n.pageX : ((((client.ie) && (client.version == 8)) ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
+				y = (n.pageY) ? n.pageY : ((((client.ie) && (client.version == 8)) ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
 
 				if (m.pos.x != x) {
 					m.pos.x = x;
