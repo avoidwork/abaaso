@@ -888,7 +888,7 @@ var abaaso = abaaso || function(){
 	};
 
 	/**
-	 * Template data store object, to be put on a widget with define()
+	 * Template data store object, to be put on a widget with register()
 	 *
 	 * Do not use this directly!
 	 *
@@ -898,6 +898,10 @@ var abaaso = abaaso || function(){
 		// Associative arrays of records
 		keys    : [],
 		records : [],
+
+		// URI the data store represents
+		// If supplied, CRUD operations will fire corresponding XHR requests
+		uri     : null,
 
 		/**
 		 * Clears the data object
@@ -924,6 +928,7 @@ var abaaso = abaaso || function(){
 		 * @param record {Mixed} The record key or index
 		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
 		 * @returns {Object} The data object containing the record
+		 * @todo implement RESTful delete
 		 */
 		del : function(record, reindex) {
 			try {
@@ -953,9 +958,11 @@ var abaaso = abaaso || function(){
 					delete this.keys[key];
 				}
 
-				(reindex === true) ? this.reindex() : void(0);
+				/*(uri !== null) ? abaaso.del(uri, function(){
+					this.parentNode.id.fire("afterDelete");
+				});*/
 
-				this.parentNode.id.fire("afterDelete");
+				(reindex === true) ? this.reindex() : void(0);
 
 				return this;
 			}
