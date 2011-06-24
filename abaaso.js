@@ -3372,6 +3372,7 @@ if (typeof abaaso.init == "function") {
 			abaaso.timer.init = setInterval(function(){
 				if (/loaded|complete/.test(document.readyState)) {
 					clearInterval(abaaso.timer.init);
+					delete abaaso.timer.init;
 					abaaso.init();
 					abaaso.fire("render").un("render");
 				}
