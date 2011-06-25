@@ -889,6 +889,7 @@ var abaaso = abaaso || function(){
 
 	/**
 	 * Template data store object, to be put on a widget with register()
+	 * RESTful behavior is supported, by setting the 'uri' property
 	 *
 	 * Do not use this directly!
 	 *
@@ -899,12 +900,11 @@ var abaaso = abaaso || function(){
 		keys    : [],
 		records : [],
 
-		// URI the data store represents
-		// If supplied, CRUD operations will fire corresponding XHR requests
+		// URI the data store represents (RESTful behavior)
 		uri     : null,
 
 		/**
-		 * Clears the data object
+		 * Clears the data object, unsets the uri property
 		 *
 		 * Events:     beforeClear    Fires before the data is cleared
 		 *             afterClear     Fires after the data is cleared
@@ -913,6 +913,7 @@ var abaaso = abaaso || function(){
 		 */
 		clear : function() {
 			this.parentNode.id.fire("beforeClear");
+			this.uri     = null;
 			this.keys    = [];
 			this.records = [];
 			this.parentNode.id.fire("afterClear");
@@ -928,13 +929,14 @@ var abaaso = abaaso || function(){
 		 * @param record {Mixed} The record key or index
 		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
 		 * @returns {Object} The data object containing the record
-		 * @todo implement RESTful delete
 		 */
 		del : function(record, reindex) {
 			try {
 				reindex = (reindex === false) ? false : true;
 
-				var key, index;
+				var id = this.parentNode.id,
+				    guid = abaaso.genId(),
+				    key;
 
 				if ((record === undefined)
 				    || ((typeof record != "string")
@@ -942,32 +944,34 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.invalidArguments);
 				}
 
-				this.parentNode.id.fire("beforeDelete");
-
 				if (typeof record == "string") {
-					key = this.keys[record];
-					if (key === undefined) {
-						throw new Error(label.error.invalidArguments);
-					}
-					delete this.records[key.index];
-					delete this.keys[record];
+					key    = record;
+					record = this.keys[key];
+					if (key === undefined) { throw new Error(label.error.invalidArguments); }
+					record = record.index;
 				}
 				else {
-					key = this.records[record].key;
-					delete this.records[record];
-					delete this.keys[key];
+					key = this.records[record];
+					if (key === undefined) { throw new Error(label.error.invalidArguments); }
+					key = key.key;
 				}
 
-				/*(uri !== null) ? abaaso.del(uri, function(){
-					this.parentNode.id.fire("afterDelete");
-				});*/
+				id.on("beforeDelete", function(){
+					delete this.records[record];
+					delete this.keys[key];
+					(reindex === true) ? this.reindex() : void(0);
+				}, guid, this);
 
-				(reindex === true) ? this.reindex() : void(0);
+				id.fire("beforeDelete");
+
+				(this.uri === null) ? id.fire("afterDelete")
+				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("afterDelete"); });
 
 				return this;
 			}
 			catch (e) {
 				error(e, arguments, this);
+				this.parentNode.id.un("beforeDelete", guid);
 				return undefined;
 			}
 		},
@@ -1142,7 +1146,7 @@ var abaaso = abaaso || function(){
 					n++
 				}
 			}
-			(n > 0) ? this.records.length = n : void(0);
+			this.records.length = n;
 			return this;
 		},
 
@@ -1169,7 +1173,7 @@ var abaaso = abaaso || function(){
 
 				if (record === undefined) {
 					this.keys[key] = {};
-					index = (this.records.length - 1) + 1;
+					index = this.records.length;
 					this.keys[key].index = index;
 					this.records[index] = {};
 					this.records[index].data = data;
