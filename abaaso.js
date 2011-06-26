@@ -957,6 +957,7 @@ var abaaso = abaaso || function(){
 				}
 
 				id.on("afterDelete", function(){
+					id.un("afterDelete", guid);
 					delete this.records[record];
 					delete this.keys[key];
 					(reindex === true) ? this.reindex() : void(0);
@@ -971,7 +972,6 @@ var abaaso = abaaso || function(){
 			}
 			catch (e) {
 				error(e, arguments, this);
-				this.parentNode.id.un("beforeDelete", guid);
 				return undefined;
 			}
 		},
