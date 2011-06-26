@@ -649,7 +649,54 @@ var abaaso = abaaso || function(){
 		 */
 		response : function(xhr, uri, type) {
 			try {
-				var typed = type.toLowerCase().capitalize();
+				var typed = type.toLowerCase().capitalize(), bit;
+
+				/**
+				 * Returns a bit value based on the array contents
+				 *
+				 *   1 --d delete
+				 *   2 -w- write
+				 *   3 -wd write and delete
+				 *   4 r-- read
+				 *   5 r-x read and delete
+				 *   6 rw- read and write
+				 *   7 rwx read, write and delete
+				 *
+				 * @param args {Array} The commands the URI accepts
+				 * @returns {Integer} To be set as a bit
+				 */
+				bit = function(args) {
+					try {
+						if (!args instanceof Array) {
+							throw Error(label.error.expectedArray);
+						}
+
+						var result = 0,
+							loop   = args.length,
+							i;
+
+						for (i = 0; i < loop; i++) {
+							switch (args[i].toLowerCase()) {
+								case "get":
+									result |= 4;
+									break;
+								case "post":
+								case "put":
+									result |= 2;
+									break;
+								case "delete":
+									result |= 1;
+									break;
+							}
+						}
+
+						return result;
+					}
+					catch (e) {
+						error(e, arguments, this);
+						return 0;
+					}
+				};
 
 				if (xhr.readyState == 2) {
 					uri.fire("received" + typed);
@@ -659,54 +706,7 @@ var abaaso = abaaso || function(){
 					    loop    = headers.length,
 					    items   = {},
 						accept  = null,
-						bit, o;
-
-					/**
-					 * Returns a bit value based on the array contents
-					 *
-					 *   1 --d delete
-					 *   2 -w- write
-					 *   3 -wd write and delete
-					 *   4 r-- read
-					 *   5 r-x read and delete
-					 *   6 rw- read and write
-					 *   7 rwx read, write and delete
-					 *
-					 * @param args {Array} The commands the URI accepts
-					 * @returns {Integer} To be set as a bit
-					 */
-					bit = function(args) {
-						try {
-							if (!args instanceof Array) {
-								throw Error(label.error.expectedArray);
-							}
-
-							var result = 0,
-								loop   = args.length,
-								i;
-
-							for (i = 0; i < loop; i++) {
-								switch (args[i].toLowerCase()) {
-									case "get":
-										result |= 4;
-										break;
-									case "post":
-									case "put":
-										result |= 2;
-										break;
-									case "delete":
-										result |= 1;
-										break;
-								}
-							}
-
-							return result;
-						}
-						catch (e) {
-							error(e, arguments, this);
-							return 0;
-						}
-					}
+						o;
 
 					for (i = 0; i < loop; i++) {
 						if (!headers[i].isEmpty()) {
@@ -753,7 +753,7 @@ var abaaso = abaaso || function(){
 						throw new Error(label.error.serverUnauthorized);
 					}
 					else if (xhr.status == 405) {
-						cache.set(uri, "!permission", bit([type]));
+						cache.set(uri, "!permission", bit(type));
 						throw new Error(label.error.serverInvalidMethod);
 					}
 					else {
@@ -956,7 +956,7 @@ var abaaso = abaaso || function(){
 					key = key.key;
 				}
 
-				id.on("beforeDelete", function(){
+				id.on("afterDelete", function(){
 					delete this.records[record];
 					delete this.keys[key];
 					(reindex === true) ? this.reindex() : void(0);
