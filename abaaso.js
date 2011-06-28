@@ -1784,7 +1784,7 @@ var abaaso = abaaso || function(){
 			invalidFields         : "The following required fields are invalid: ",
 			propertyNotFound      : "Could not find the requested property",
 			serverError           : "A server error has occurred",
-			serverInvalidMethod   : "Invalid method on the URI",
+			serverInvalidMethod   : "Method not allowed",
 			serverUnauthorized    : "Unauthorized to access URI"
 		}
 	};
