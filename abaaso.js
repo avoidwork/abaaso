@@ -1162,14 +1162,15 @@ var abaaso = abaaso || function(){
 		set : function(key, data) {
 			try {
 				if ((key === undefined)
-				    || (key === undefined)) {
+				    || (data === undefined)) {
 					throw new Error(label.error.invalidArguments);
 				}
 
-				this.parentNode.id.fire("beforeSet");
-
 				var record = ((this.keys[key] === undefined) && (this.records[key] === undefined)) ? undefined : this.get(key),
+				    id     = this.parentNode.id,
 				    arg, index;
+
+				id.fire("beforeSet");
 
 				if (record === undefined) {
 					this.keys[key] = {};
@@ -1192,7 +1193,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				this.parentNode.id.fire("afterSet");
+				id.fire("afterSet");
 
 				return this;
 			}
