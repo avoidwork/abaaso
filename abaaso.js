@@ -1051,6 +1051,7 @@ var abaaso = abaaso || function(){
 				return result;
 			}
 			catch (e) {
+
 				error(e, arguments, this);
 				return undefined;
 			}
@@ -1061,18 +1062,22 @@ var abaaso = abaaso || function(){
 		 *
 		 * If the key is an integer, cast to a string before sending as an argument!
 		 *
-		 * @param record {Mixed} The record key (string),  index (integer) or array for pagination [start, end]
+		 * Events:     beforeGet    Fires before getting the record
+		 *             afterGet     Fires after getting the record
+		 *
+		 * @param record {Mixed} The record key (String),  index (Integer) or Array for pagination [start, end]
 		 * @returns object
 		 */
 		get : function(record) {
 			try {
-				var r = [],
+				var r  = [],
+				    id = this.parentNode.id,
 				    i, start, end;
 
-				this.parentNode.id.fire("beforeGet");
+				id.fire("beforeGet");
 
 				if (typeof record == "string") {
-					return (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
+					r = (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
 				}
 				else if (record instanceof Array) {
 					if (isNaN(record[0]) || isNaN(record[1])) {
@@ -1085,12 +1090,14 @@ var abaaso = abaaso || function(){
 					for (i = start; i < end; i++) {
 						(this.records[i] !== undefined) ? r.push(this.records[i]) : void(0);
 					}
-
-					return r;
 				}
 				else {
-					return this.records[record];
+					r = this.records[record];
 				}
+
+				id.fire("afterGet");
+
+				return r;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -1158,42 +1165,55 @@ var abaaso = abaaso || function(){
 		 *
 		 * @param key {Mixed} Integer or String to use as a Primary Key
 		 * @param data {Object} Key:Value pairs to set as field values
+		 * @todo finish this implementation of REST!
 		 */
 		set : function(key, data) {
 			try {
-				if ((key === undefined)
-				    || (data === undefined)) {
-					throw new Error(label.error.invalidArguments);
+				switch (true) {
+					case (key === undefined):
+					case (data === undefined):
+					case (data instanceof Array):
+					case (data instanceof Number):
+					case (data instanceof String):
+					case (typeof(data) != "object"):
+						throw new Error(label.error.invalidArguments);
 				}
 
-				var record = ((this.keys[key] === undefined) && (this.records[key] === undefined)) ? undefined : this.get(key),
+				var record = ((this.keys[key] === undefined)
+				              && (this.records[key] === undefined)) ? undefined : this.get(key),
 				    id     = this.parentNode.id,
+				    guid   = abaaso.genId(),
 				    arg, index;
+
+				id.on("afterSet", function(){
+					id.un("afterSet", guid);
+					if (record === undefined) {
+						this.keys[key] = {};
+						index = this.records.length;
+						this.keys[key].index = index;
+						this.records[index] = {};
+						this.records[index].data = data;
+						this.records[index].key  = key;
+						record = this.records[index];
+					}
+					else {
+						if (typeof(data) == "object") {
+							for (arg in data) {
+								record[arg] = data[arg];
+							}
+							this.records[record.index] = record;
+						}
+						else {
+							this.records[record.index] = data;
+						}
+					}
+				}, guid, this);
 
 				id.fire("beforeSet");
 
-				if (record === undefined) {
-					this.keys[key] = {};
-					index = this.records.length;
-					this.keys[key].index = index;
-					this.records[index] = {};
-					this.records[index].data = data;
-					this.records[index].key  = key;
-					record = this.records[index];
-				}
-				else {
-					if (typeof(data) == "object") {
-						for (arg in data) {
-							record[arg] = data[arg];
-						}
-						this.records[record.index] = record;
-					}
-					else {
-						this.records[record.index] = data;
-					}
-				}
-
-				id.fire("afterSet");
+				(this.uri === null) ? id.fire("afterSet")
+				                    : (record === undefined) ? abaaso.post(this.uri+"/"+key, function(){ id.fire("afterSet"); }, data)
+				                                             : abaaso.put(this.uri+"/"+key, function(){ id.fire("afterSet"); }, data);
 
 				return this;
 			}
