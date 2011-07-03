@@ -552,7 +552,7 @@ var abaaso = abaaso || function(){
 		 */
 		request : function(uri, type, success, failure, args) {
 			if ((/post|put/i.test(type))
-				&& (typeof args != "object")) {
+				&& (args === undefined)) {
 				throw new Error(label.error.invalidArguments);
 			}
 
@@ -724,40 +724,48 @@ var abaaso = abaaso || function(){
 					cache.set(uri, "permission", bit((accept !== null) ? accept.split(/\s*,\s*/) : [type]));
 				}
 				else if (xhr.readyState == 4) {
-					if ((xhr.status == 200)
-					    && (!xhr.responseText.isEmpty())) {
-						var state  = null,
-						    s      = abaaso.state;
+					switch (true) {
+							case ((xhr.status == 200)
+							      && ((/options/i.test(type)
+							          || (!xhr.responseText.isEmpty())))):
+								var state  = null,
+								    s      = abaaso.state;
 
-						if (type != "DELETE") {
-							cache.set(uri, "epoch", new Date());
-							cache.set(uri, "response", xhr.responseText);
-						}
+								if (!/delete|options/i.test(type)) {
+									cache.set(uri, "epoch", new Date());
+									cache.set(uri, "response", xhr.responseText);
+								}
 
-						o = cache.get(uri, false);
+								o = cache.get(uri, false);
 
-						uri.fire("afterXHR");
-						uri.fire("after" + typed, o.response);
+								(/options/i.test(type)) ? cache.expire(uri) : void(0);
 
-						if ((s.header !== null)
-						    && (state = uri.headers[s.header])
-							&& (state !== undefined)) {
-							s.previous = s.current;
-							s.current  = state;
-							((s.previous !== null)
-							 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current) : void(0);
-							abaaso.fire(state);
-						}
-					}
-					else if (xhr.status == 401) {
-						throw new Error(label.error.serverUnauthorized);
-					}
-					else if (xhr.status == 405) {
-						cache.set(uri, "!permission", bit(type));
-						throw new Error(label.error.serverInvalidMethod);
-					}
-					else {
-						throw new Error(label.error.serverError);
+								uri.fire("afterXHR");
+								uri.fire("after" + typed, (/options/i.test(type)) ? o.headers : o.response);
+
+								if ((s.header !== null)
+								    && (state = uri.headers[s.header])
+									&& (state !== undefined)) {
+									s.previous = s.current;
+									s.current  = state;
+									((s.previous !== null)
+									 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current)
+									                          : void(0);
+									abaaso.fire(state);
+								}
+								break;
+							case (xhr.status == 301):
+								throw new Error(label.error.serverError);
+								break;
+							case (xhr.status == 401):
+								throw new Error(label.error.serverUnauthorized);
+								break;
+							case (xhr.status == 405):
+								cache.set(uri, "!permission", bit(type));
+								throw new Error(label.error.serverInvalidMethod);
+								break;
+							default:
+								throw new Error(label.error.serverError);
 					}
 				}
 			}
@@ -1212,8 +1220,8 @@ var abaaso = abaaso || function(){
 				id.fire("beforeSet");
 
 				(this.uri === null) ? id.fire("afterSet")
-				                    : (record === undefined) ? abaaso.post(this.uri+"/"+key, function(){ id.fire("afterSet"); }, data)
-				                                             : abaaso.put(this.uri+"/"+key, function(){ id.fire("afterSet"); }, data);
+				                    : (record === undefined) ? abaaso.post(this.uri+"/"+key, function(){ id.fire("afterSet"); }, undefined, data)
+				                                             : abaaso.put(this.uri+"/"+key, function(){ id.fire("afterSet"); }, undefined, data);
 
 				return this;
 			}
@@ -3210,6 +3218,7 @@ var abaaso = abaaso || function(){
 			// Methods
 			del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
 			get     : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
+			options : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
 			post    : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
 			put     : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
 			jsonp   : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
@@ -3366,6 +3375,7 @@ var abaaso = abaaso || function(){
 
 			return abaaso.observer.add(obj, event, listener, id, scope, standby);
 		},
+		options         : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
 		permission      : client.permission,
 		position        : el.position,
 		post            : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
