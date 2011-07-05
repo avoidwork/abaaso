@@ -28,14 +28,11 @@
 /**
  * abaaso
  *
- * abaaso provides a set of classes and object prototyping to ease the creation
- * and maintenance of RESTful JavaScript applications
- *
- * Events:    ready      Fires when the DOM is available (safe for GUI creation)
- *            render     Fires when the window resources have loaded (safe for visual fx)
- *            resize     Fires when the window resizes, parameter for listeners is client.size Object
- *            hash       Fires when window.location.hash changes, parameter for listeners is the hash value
- *            error      Fires when an Error is caught, parameter for listeners is the logged Object
+ * Events:    ready      Fires when the DOM is available; safe for GUI creation & module registration [abaaso.define()]
+ *            render     Fires when the window resources have loaded; safe for CSS skin injection & module setup (visual fx, etc.)
+ *            resize     Fires when the window resizes; parameter for listeners is abaaso.client.size
+ *            hash       Fires when window.location.hash changes; parameter for listeners is the hash value
+ *            error      Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log)
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
