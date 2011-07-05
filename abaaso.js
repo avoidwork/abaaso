@@ -933,6 +933,8 @@ var abaaso = abaaso || function(){
 		 *
 		 * Events:     beforeDelete    Fires before the record is deleted
 		 *             afterDelete     Fires after the record is deleted
+		 *             syncDelete      Fires when the local store is updated
+		 *             failedDelete    Fires if the store is RESTful and the action is denied
 		 *
 		 * @param record {Mixed} The record key or index
 		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
@@ -975,7 +977,7 @@ var abaaso = abaaso || function(){
 				id.fire("beforeDelete");
 
 				(this.uri === null) ? id.fire("syncDelete")
-				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("syncDelete"); });
+				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("syncDelete"); }, function(){ id.fire("failedDelete"); });
 
 				return this;
 			}
@@ -1171,10 +1173,11 @@ var abaaso = abaaso || function(){
 		 *
 		 * Events:     beforeSet    Fires before the record is set
 		 *             afterSet     Fires after the record is set
+		 *             syncSet      Fires when the local store is updated
+		 *             failedSet    Fires if the store is RESTful and the action is denied
 		 *
 		 * @param key {Mixed} Integer or String to use as a Primary Key
 		 * @param data {Object} Key:Value pairs to set as field values
-		 * @todo finish this implementation of REST!
 		 */
 		set : function(key, data) {
 			try {
@@ -1222,8 +1225,7 @@ var abaaso = abaaso || function(){
 				id.fire("beforeSet");
 
 				(this.uri === null) ? id.fire("syncSet")
-				                    : (record === undefined) ? abaaso.post(this.uri+"/"+key, function(){ id.fire("syncSet"); }, undefined, data)
-				                                             : abaaso.put(this.uri+"/"+key, function(){ id.fire("syncSet"); }, undefined, data);
+				                    : abaaso[((record === undefined) ? "post" : "put")](this.uri+"/"+key, function(){ id.fire("syncSet"); }, function(){ id.fire("failedSet"); }, data);
 
 				return this;
 			}
