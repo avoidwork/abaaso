@@ -1658,7 +1658,8 @@ var abaaso = abaaso || function(){
 									obj.opacity(args[i]);
 									break;
 								case "class":
-									((client.ie) && (client.version < 8)) ? i = "className" : void(0);
+									obj.setAttribute(((client.ie) && (client.version < 8)) ? "className" : "class", args[i]);
+									break;
 								case "id":
 									var o = observer.listeners;
 									if (o[obj.id] !== undefined) {
