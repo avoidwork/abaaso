@@ -964,17 +964,18 @@ var abaaso = abaaso || function(){
 					key = key.key;
 				}
 
-				id.on("afterDelete", function(){
-					id.un("afterDelete", guid);
+				id.on("syncDelete", function(){
+					id.un("syncDelete", guid);
 					delete this.records[record];
 					delete this.keys[key];
 					(reindex === true) ? this.reindex() : void(0);
+					id.fire("afterDelete");
 				}, guid, this);
 
 				id.fire("beforeDelete");
 
-				(this.uri === null) ? id.fire("afterDelete")
-				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("afterDelete"); });
+				(this.uri === null) ? id.fire("syncDelete")
+				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("syncDelete"); });
 
 				return this;
 			}
@@ -1193,8 +1194,8 @@ var abaaso = abaaso || function(){
 				    guid   = abaaso.genId(),
 				    arg, index;
 
-				id.on("afterSet", function(){
-					id.un("afterSet", guid);
+				id.on("syncSet", function(){
+					id.un("syncSet", guid);
 					if (record === undefined) {
 						this.keys[key] = {};
 						index = this.records.length;
@@ -1215,13 +1216,14 @@ var abaaso = abaaso || function(){
 							this.records[record.index] = data;
 						}
 					}
+					id.fire("afterSet");
 				}, guid, this);
 
 				id.fire("beforeSet");
 
-				(this.uri === null) ? id.fire("afterSet")
-				                    : (record === undefined) ? abaaso.post(this.uri+"/"+key, function(){ id.fire("afterSet"); }, undefined, data)
-				                                             : abaaso.put(this.uri+"/"+key, function(){ id.fire("afterSet"); }, undefined, data);
+				(this.uri === null) ? id.fire("syncSet")
+				                    : (record === undefined) ? abaaso.post(this.uri+"/"+key, function(){ id.fire("syncSet"); }, undefined, data)
+				                                             : abaaso.put(this.uri+"/"+key, function(){ id.fire("syncSet"); }, undefined, data);
 
 				return this;
 			}
