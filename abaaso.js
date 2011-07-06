@@ -2427,7 +2427,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.prototype.cast.call(obj))
+						                                                         : Array.cast.call(obj))
 						                      : void(0);
 					break;
 				case "#":
@@ -2438,7 +2438,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.prototype.cast.call(obj))
+						                                                         : Array.cast.call(obj))
 						                      : void(0);
 					break;
 				default:
@@ -2446,7 +2446,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.prototype.cast.call(obj))
+						                                                         : Array.cast.call(obj))
 						                      : void(0);
 					break;
 			}
@@ -3328,9 +3328,9 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				if (typeof Array.prototype.cast != "function") {
+				if (typeof Array.cast != "function") {
 					try {
-						Array.prototype.cast = function() {
+						Array.cast = function() {
 							var a = [], i, loop = this.length;
 							for (var i = 0; i < loop; i++) {
 								a.push(this[i]);
