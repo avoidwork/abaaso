@@ -2424,42 +2424,30 @@ var abaaso = abaaso || function(){
 			switch (arg.charAt(0)) {
 				case ".":
 					obj = document.getElementsByClassName(arg.slice(1));
-					((obj !== null) && (nodelist === false) && ((!client.ie) || (client.version > 8))) ? obj = Array.prototype.slice.call(obj) : void(0);
+					((obj !== null)
+					 && (nodelist === false)) ? (obj = ((!client.ie)
+					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
+						                                                         : Array.prototype.fromNodeList.call(obj))
+						                      : void(0);
 					break;
 				case "#":
 					obj = document.getElementById(arg.substring(1));
 					break;
 				case ":":
 					obj = document.body.getElementsByTagName("*");
-					if ((obj !== null)
-						&& (nodelist === false)) {
-						if ((!client.ie) || (client.version > 8)) {
-							obj = Array.prototype.slice.call(obj);
-						}
-						else {
-							var a = [], i, loop = obj.length;
-							for (var i = 0; i < loop; i++) {
-								a.push(obj[i]);
-							}
-							obj = a;
-						}
-					}
+					((obj !== null)
+					 && (nodelist === false)) ? (obj = ((!client.ie)
+					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
+						                                                         : Array.prototype.fromNodeList.call(obj))
+						                      : void(0);
 					break;
 				default:
 					obj = document.getElementsByTagName(arg);
-					if ((obj !== null)
-						&& (nodelist === false)) {
-						if ((!client.ie) || (client.version > 8)) {
-							obj = Array.prototype.slice.call(obj);
-						}
-						else {
-							var a = [], i, loop = obj.length;
-							for (var i = 0; i < loop; i++) {
-								a.push(obj[i]);
-							}
-							obj = a;
-						}
-					}
+					((obj !== null)
+					 && (nodelist === false)) ? (obj = ((!client.ie)
+					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
+						                                                         : Array.prototype.fromNodeList.call(obj))
+						                      : void(0);
 					break;
 			}
 
@@ -3295,7 +3283,7 @@ var abaaso = abaaso || function(){
 				window.onresize     = function() { abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
 				abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
 
-				if (typeof document.getElementsByClassName == "undefined") {
+				if (typeof document.getElementsByClassName != "function") {
 					document.getElementsByClassName = function(arg) {
 						var nodes   = document.getElementsByTagName("*"),
 							loop    = nodes.length,
@@ -3311,7 +3299,7 @@ var abaaso = abaaso || function(){
 					};
 				}
 
-				if (typeof Array.prototype.filter == "undefined") {
+				if (typeof Array.prototype.filter != "function") {
 					Array.prototype.filter = function(fn) {
 						"use strict";
 						if ((this === void 0)
@@ -3335,6 +3323,21 @@ var abaaso = abaaso || function(){
 						}
 
 						return result;
+					}
+				}
+
+				if (typeof Array.prototype.fromNodeList != "function") {
+					try {
+						Array.prototype.fromNodeList = function() {
+							var a = [], i, loop = this.length;
+							for (var i = 0; i < loop; i++) {
+								a.push(this[i]);
+							}
+							return a;
+						}
+					}
+					catch (e) {
+						error(e, arguments, this);
 					}
 				}
 
