@@ -47,6 +47,33 @@ var abaaso = abaaso || function(){
 	 */
 	var array = {
 		/**
+		 * Returns an Object (NodeList, etc.) as an Array
+		 *
+		 * @param obj {Object} Object to cast
+		 * @returns {Array} Object as an Array
+		 */
+		cast : function(obj) {
+			try {
+				if (typeof obj != "object") {
+					throw new Error(label.error.expectedObject);
+				}
+
+				var o   = [],
+				    nth = obj.length,
+				    i;
+
+				for (var i = 0; i < nth; i++) {
+					o.push(obj[i]);
+				}
+
+				return o;
+			}
+			catch (e) {
+				error(e, arguments, this);
+			}
+		},
+
+		/**
 		 * Finds the index of arg(s) in instance
 		 *
 		 * @param instance {Array} An instance of the array to search
@@ -63,10 +90,10 @@ var abaaso = abaaso || function(){
 
 				if (arg instanceof Array) {
 					var indexes = [],
-					    loop    = args.length,
+					    nth     = args.length,
 					    i       = null;
 
-					for (i = 0; i < loop; i++) {
+					for (i = 0; i < nth; i++) {
 						indexes[i] = instance.index(arg[i]);
 					}
 
@@ -669,10 +696,10 @@ var abaaso = abaaso || function(){
 						}
 
 						var result = 0,
-							loop   = args.length,
+							nth    = args.length,
 							i;
 
-						for (i = 0; i < loop; i++) {
+						for (i = 0; i < nth; i++) {
 							switch (args[i].toLowerCase()) {
 								case "get":
 									result |= 4;
@@ -700,12 +727,12 @@ var abaaso = abaaso || function(){
 
 					var headers = xhr.getAllResponseHeaders().split("\n"),
 					    i       = null,
-					    loop    = headers.length,
+					    nth     = headers.length,
 					    items   = {},
 						accept  = null,
 						o;
 
-					for (i = 0; i < loop; i++) {
+					for (i = 0; i < nth; i++) {
 						if (!headers[i].isEmpty()) {
 							var header    = headers[i].toString(),
 							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
@@ -820,7 +847,7 @@ var abaaso = abaaso || function(){
 		 */
 		list : function() {
 			var i      = null,
-			    loop   = null,
+			    nth    = null,
 			    item   = null,
 			    items  = null,
 			    result = {};
@@ -828,9 +855,9 @@ var abaaso = abaaso || function(){
 			if ((document.cookie)
 			    && (document.cookie != '')) {
 				items = document.cookie.split(';');
-				loop  = items.length;
+				nth   = items.length;
 
-				for (i = 0; i < loop; i++) {
+				for (i = 0; i < nth; i++) {
 					item = items[i].split("=");
 					result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
 				}
@@ -1031,8 +1058,8 @@ var abaaso = abaaso || function(){
 				}
 
 				var result = [],
-				    loop   = h.length,
-					loop2  = n.length,
+				    nth    = h.length,
+					nth2   = n.length,
 					x, y, f, r, s, p;
 
 				i = this.records.length
@@ -1041,8 +1068,8 @@ var abaaso = abaaso || function(){
 
 				// Finding all needles in the haystack
 				while (i--) {
-					for (x = 0; x < loop; x++) {
-						for (y = 0; y < loop2; y++) {
+					for (x = 0; x < nth; x++) {
+						for (y = 0; y < nth2; y++) {
 							f = h[x];
 							p = n[y];
 							r = new RegExp(p, "gi");
@@ -1148,20 +1175,27 @@ var abaaso = abaaso || function(){
 		 * @returns {Object} The data object
 		 */
 		reindex : function() {
-			var i, n = 0, loop = this.records.length, key, index;
-			for (i = 0; i < loop; i++) {
+			var n   = 0,
+			    nth = this.records.length,
+			    key, index, i;
+
+			for (i = 0; i < nth; i++) {
 				if (this.records[i] !== undefined) {
 					key   = this.records[i].key;
 					index = parseInt(this.keys[key].index);
+
 					if (index != n) {
 						this.records[n] = this.records[i];
 						this.keys[key].index = n;
 						delete this.records[i];
 					}
+
 					n++
 				}
 			}
+
 			this.records.length = n;
+
 			return this;
 		},
 
@@ -1252,11 +1286,13 @@ var abaaso = abaaso || function(){
 		clear : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.clear(obj[i]);
 					}
+
 					return obj;
 				}
 				else {
@@ -1265,17 +1301,19 @@ var abaaso = abaaso || function(){
 					if (obj !== null) {
 						obj.fire("beforeClear");
 
-						if (typeof obj.reset == "function") {
-							obj.reset();
-						}
-						else if (obj.value !== undefined) {
-							obj.update({innerHTML: "", value: ""});
-						}
-						else {
-							obj.update({innerHTML: ""});
+						switch (true) {
+							case (typeof obj.reset == "function"):
+								obj.reset();
+								break;
+							case (obj.value !== undefined):
+								obj.update({innerHTML: "", value: ""});
+								break;
+							default:
+								obj.update({innerHTML: ""});
 						}
 
 						obj.fire("afterClear");
+
 						return obj;
 					}
 					else {
@@ -1501,11 +1539,13 @@ var abaaso = abaaso || function(){
 		hide : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.hide(obj[i]);
 					}
+
 					return obj;
 				}
 				else {
@@ -1565,11 +1605,13 @@ var abaaso = abaaso || function(){
 		show : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.show(obj[i]);
 					}
+
 					return obj;
 				}
 				else {
@@ -1630,11 +1672,13 @@ var abaaso = abaaso || function(){
 		update : function(obj, args) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.update(obj[i], args);
 					}
+
 					return obj;
 				}
 				else {
@@ -1916,17 +1960,19 @@ var abaaso = abaaso || function(){
 		add : function(obj, event, fn, id, scope, standby) {
 			try {
 				if (obj instanceof Array) {
-					var loop = ((obj.length) && (!isNaN(obj.length))) ? obj.length : obj.total(),
+					var nth  = ((obj.length) && (!isNaN(obj.length))) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.add(obj[i], event, fn, id, ((scope === false) ? obj[i] : scope), standby);
 					}
+
 					return obj;
 				}
 				else {
 					var instance = null,
-						   l = observer.listeners,
-						   o = (obj.id !== undefined) ? obj.id : obj;
+					    l        = observer.listeners,
+					    o        = (obj.id !== undefined) ? obj.id : obj;
 
 					obj     = utility.object(obj);
 					standby = (standby === true) ? true : false;
@@ -1991,11 +2037,13 @@ var abaaso = abaaso || function(){
 		fire : function(obj, event, arg) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.fire(obj[i], event, arg);
 					}
+
 					return obj;
 				}
 				else {
@@ -2078,11 +2126,13 @@ var abaaso = abaaso || function(){
 		remove : function(obj, event, id) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.remove(obj[i], event, id);
 					}
+
 					return obj;
 				}
 				else {
@@ -2149,11 +2199,13 @@ var abaaso = abaaso || function(){
 		replace : function(obj, event, id, sId, listener) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+
+					for (i = 0; i < nth; i++) {
 						this.replace(obj[i], event, id, sId, listener);
 					}
+
 					return obj;
 				}
 				else {
@@ -2219,7 +2271,7 @@ var abaaso = abaaso || function(){
 		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		$ : function(arg, nodelist) {
-			var args, obj, i, loop, c, alt, find, contains, has, not, x, s,
+			var args, obj, i, nth, nth2, c, alt, find, contains, has, not, x, s,
 			    document  = window.document,
 			    instances = [];
 
@@ -2231,17 +2283,17 @@ var abaaso = abaaso || function(){
 			 * @returns {Mixed} Instance or Array of Instances containing arg, alternating odd or even
 			 */
 			alt = function(obj, state) {
-				var i, loop, instances = [];
+				var i, nth, instances = [];
 
 				if (obj instanceof Array) {
-					loop = obj.length;
-					for (i = 0; i < loop; i++) {
+					nth = obj.length;
+					for (i = 0; i < nth; i++) {
 						(i.isEven() === state) ? instances.push(obj[i]) : void(0);
 					}
 				}
 				else if ((obj.childNodes) && (obj.childNodes.length > 0)) {
-					loop = obj.childNodes.length;
-					for (i = 0; i < loop; i++) {
+					nth = obj.childNodes.length;
+					for (i = 0; i < nth; i++) {
 						(i.isEven() === state) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
@@ -2258,8 +2310,8 @@ var abaaso = abaaso || function(){
 			 */
 			find = function(obj, arg) {
 				arg = arg.split(/\s*,\s*/);
-				var i, pattern, loop = arg.length, instances = [];
-				for (i = 0; i < loop; i++) {
+				var i, pattern, nth = arg.length, instances = [];
+				for (i = 0; i < nth; i++) {
 					pattern = new RegExp(arg[i].replace("*", ".*"), "ig");
 					(pattern.test(obj)) ? instances.push(arg[i]) : void(0);
 				}
@@ -2274,14 +2326,14 @@ var abaaso = abaaso || function(){
 			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			contains = function(obj, arg) {
-				var i, loop, instances = [];
+				var i, nth, instances = [];
 
 				((obj instanceof Array)
 				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
-					loop = obj.length;
-					for (i = 0; i < loop; i++) {
+					nth = obj.length;
+					for (i = 0; i < nth; i++) {
 						(new RegExp(arg).test(obj[i].innerHTML)) ? instances.push(obj[i]) : void(0);
 					}
 					return (instances.length == 1) ? instances[0] : instances;
@@ -2301,17 +2353,17 @@ var abaaso = abaaso || function(){
 			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			has = function(obj, arg) {
-				var i, loop, instances = [];
+				var i, nth, instances = [];
 
 				((obj instanceof Array)
 				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
-					var x, loop2;
-					loop = obj.length;
-					for (i = 0; i < loop; i++) {
-						loop2 = obj[i].childNodes.length;
-						for (x = 0; x < loop2; x++) {
+					var x, nth2;
+					nth = obj.length;
+					for (i = 0; i < nth; i++) {
+						nth2 = obj[i].childNodes.length;
+						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
 							((find(obj[i].childNodes[x].nodeName, arg) === true)
 							 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
@@ -2320,8 +2372,8 @@ var abaaso = abaaso || function(){
 					instances = instances.indexed();
 				}
 				else {
-					loop = obj.childNodes.length;
-					for (i = 0; i < loop; i++) {
+					nth = obj.childNodes.length;
+					for (i = 0; i < nth; i++) {
 						(find(obj.childNodes[i].nodeName, arg) === true) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
@@ -2337,14 +2389,14 @@ var abaaso = abaaso || function(){
 			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			is = function(obj, arg) {
-				var i, loop, instances = [];
+				var i, nth, instances = [];
 
 				((obj instanceof Array)
 				 && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
-					loop = obj.length;
-					for (i = 0; i < loop; i++) {
+					nth = obj.length;
+					for (i = 0; i < nth; i++) {
 						obj[i].genId();
 						((find(obj[i].nodeName, arg) === true)
 						 && (instances[obj[i].id] === undefined)) ? instances[obj[i].id] = obj[i] : void(0);
@@ -2366,16 +2418,16 @@ var abaaso = abaaso || function(){
 			 * @returns {Mixed} Instance or Array of Instances containing arg
 			 */
 			not = function(obj, arg) {
-				var i, loop, instances = [];
+				var i, nth, instances = [];
 
 				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
 
 				if (obj instanceof Array) {
-					var x, loop2;
-					loop = obj.length;
-					for (i = 0; i < loop; i++) {
-						loop2 = obj[i].childNodes.length;
-						for (x = 0; x < loop2; x++) {
+					var x, nth2;
+					nth = obj.length;
+					for (i = 0; i < nth; i++) {
+						nth2 = obj[i].childNodes.length;
+						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
 							(find(obj[i].childNodes[x].nodeName, arg) === false) ? ((instances[obj[i].id] === undefined) ? instances[obj[i].id] = obj[i] : void(0))
 													     : ((instances[obj[i].id] !== undefined) ? delete instances[obj[i].id]   : void(0));
@@ -2384,8 +2436,8 @@ var abaaso = abaaso || function(){
 					instances = instances.indexed();
 				}
 				else {
-					loop = obj.childNodes.length;
-					for (i = 0; i < loop; i++) {
+					nth = obj.childNodes.length;
+					for (i = 0; i < nth; i++) {
 						(find(obj.childNodes[i].nodeName, arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
@@ -2398,10 +2450,10 @@ var abaaso = abaaso || function(){
 			// Recursive processing, ends up below
 			(/,/.test(arg)) ? arg = arg.split(/\s*,\s*/) : void(0);
 			if (arg instanceof Array) {
-				loop = arg.length;
+				nth = arg.length;
 
 				(arg[0].charAt(0) == ":") ? s = "" : void(0);
-				for (i = 0; i < loop; i++) {
+				for (i = 0; i < nth; i++) {
 					instances.push($(arg[i], nodelist));
 				}
 				return instances;
@@ -2427,7 +2479,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.cast.call(obj))
+						                                                         : abaaso.array.cast(obj))
 						                      : void(0);
 					break;
 				case "#":
@@ -2438,7 +2490,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.cast.call(obj))
+						                                                         : abaaso.array.cast(obj))
 						                      : void(0);
 					break;
 				default:
@@ -2446,7 +2498,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.cast.call(obj))
+						                                                         : abaaso.array.cast(obj))
 						                      : void(0);
 					break;
 			}
@@ -2455,8 +2507,8 @@ var abaaso = abaaso || function(){
 			if ((obj !== null)
 				&& (args.length)
 				&& (args.length > 0)) {
-				loop = args.length;
-				for (i = 0; i < loop; i++) {
+				nth = args.length;
+				for (i = 0; i < nth; i++) {
 					if (obj === undefined) {
 						obj = [];
 						break;
@@ -2488,9 +2540,9 @@ var abaaso = abaaso || function(){
 							obj = alt(obj, false);
 							break
 						default:
-							loop = (obj.length) ? obj.length : 0;
+							nth2 = (obj.length) ? obj.length : 0;
 							instances = [];
-							for (x = 0; x < loop; x++) {
+							for (x = 0; x < nth2; x++) {
 								c = obj[x].className.split(" ");
 								(c.index(args[i]) > -1) ? instances.push(obj[x]) : void(0);
 							}
@@ -2498,7 +2550,7 @@ var abaaso = abaaso || function(){
 					}
 
 					if (obj instanceof Array) {
-						(obj.length === 0) ? obj = (((i + 1) == loop) ? [] : undefined) : void(0);
+						(obj.length === 0) ? obj = (((i + 1) == nth) ? [] : undefined) : void(0);
 					}
 				}
 			}
@@ -2670,9 +2722,9 @@ var abaaso = abaaso || function(){
 		loading : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var loop = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth = (!isNaN(obj.length)) ? obj.length : obj.total(),
 					    i    = null;
-					for (i = 0; i < loop; i++) {
+					for (i = 0; i < nth; i++) {
 						this.loading(obj[i]);
 					}
 					return arg;
@@ -2869,13 +2921,13 @@ var abaaso = abaaso || function(){
 							    fn = function(response){
 									var self = target,
 										node = response,
-										prop = arg, i, loop, result;
+										prop = arg, i, nth, result;
 
 									try {
 											if (prop !== undefined) {
 												prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-												loop = prop.length;
-												for (i = 0; i < loop; i++) {
+												nth = prop.length;
+												for (i = 0; i < nth; i++) {
 													node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
 													if (node === undefined) { throw new Error(abaaso.label.error.propertyNotFound); }
 												}
@@ -3079,14 +3131,14 @@ var abaaso = abaaso || function(){
 
 				if ((typeof args.nodeName != "undefined")
 					&& (/form/gi.test(args.nodeName))) {
-					var i, p, v, c, o, x, t = {}, loop, loop2, result, invalid = [], tracked = {};
+					var i, p, v, c, o, x, t = {}, nth, nth2, result, invalid = [], tracked = {};
 
 					(args.id.isEmpty()) ? args.genId() : void(0);
 
 					c    = $("#"+args.id+":has(input,select)");
-					loop = c.length;
+					nth = c.length;
 
-					for (i = 0; i < loop; i++) {
+					for (i = 0; i < nth; i++) {
 						v = null;
 						p = (this.pattern[c[i].nodeName.toLowerCase()]) ? this.pattern[c[i].nodeName.toLowerCase()]
 						                                                : (((c[i].id.isEmpty() === false)
@@ -3096,8 +3148,8 @@ var abaaso = abaaso || function(){
 						if (/(radio|checkbox)/gi.test(c[i].type)) {
 							if (c[i].name in tracked) { continue; }
 							o = document.getElementsByName(c[i].name);
-							loop2 = o.length;
-							for (x = 0; x < loop2; x++) {
+							nth2 = o.length;
+							for (x = 0; x < nth2; x++) {
 								if (o[x].checked) {
 									v = o[x].value;
 									tracked[c[i].name] = true;
@@ -3288,12 +3340,12 @@ var abaaso = abaaso || function(){
 				if (typeof document.getElementsByClassName != "function") {
 					document.getElementsByClassName = function(arg) {
 						var nodes   = document.getElementsByTagName("*"),
-							loop    = nodes.length,
+							nth    = nodes.length,
 							i       = null,
 							obj     = [],
 							pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
 
-						for (i = 0; i < loop; i++) {
+						for (i = 0; i < nth; i++) {
 							(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
 						}
 
@@ -3312,12 +3364,12 @@ var abaaso = abaaso || function(){
 
 						var i      = null,
 							t      = Object(this),
-							loop   = t.length >>> 0,
+							nth   = t.length >>> 0,
 							result = [],
 							prop   = arguments[1]
 							val    = null;
 
-						for (i = 0; i < loop; i++) {
+						for (i = 0; i < nth; i++) {
 							if (i in t) {
 								val = t[i];
 								(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
@@ -3325,21 +3377,6 @@ var abaaso = abaaso || function(){
 						}
 
 						return result;
-					}
-				}
-
-				if (typeof Array.cast != "function") {
-					try {
-						Array.cast = function() {
-							var a = [], i, loop = this.length;
-							for (var i = 0; i < loop; i++) {
-								a.push(this[i]);
-							}
-							return a;
-						}
-					}
-					catch (e) {
-						error(e, arguments, this);
 					}
 				}
 
