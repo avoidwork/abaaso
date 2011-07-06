@@ -50,20 +50,28 @@ var abaaso = abaaso || function(){
 		 * Returns an Object (NodeList, etc.) as an Array
 		 *
 		 * @param obj {Object} Object to cast
+		 * @param key {Boolean} [Optional] Returns key or value, only applies to Objects without a length property
 		 * @returns {Array} Object as an Array
 		 */
-		cast : function(obj) {
+		cast : function(obj, key) {
 			try {
 				if (typeof obj != "object") {
 					throw new Error(label.error.expectedObject);
 				}
 
-				var o   = [],
-				    nth = obj.length,
-				    i;
+				key   = (key === true) ? true : false;
+				var o = [], i;
 
-				for (var i = 0; i < nth; i++) {
-					o.push(obj[i]);
+				if (typeof obj.length != "undefined") {
+					var nth = obj.length;
+					for (i = 0; i < nth; i++) {
+						o.push(obj[i]);
+					}
+				}
+				else {
+					for (i in obj) {
+						o.push((key) ? i : obj[i]);
+					}
 				}
 
 				return o;
@@ -1213,7 +1221,7 @@ var abaaso = abaaso || function(){
 		set : function(key, data) {
 			try {
 				switch (true) {
-					case (key === undefined):
+					case ((key === undefined) && (this.uri === null)):
 					case (data === undefined):
 					case (data instanceof Array):
 					case (data instanceof Number):
@@ -1228,9 +1236,14 @@ var abaaso = abaaso || function(){
 				    guid   = abaaso.genId(),
 				    arg, index;
 
-				id.on("syncSet", function(){
+				id.on("syncSet", function(arg){
 					id.un("syncSet", guid);
 					if (record === undefined) {
+						if (key === undefined) {
+							data = abaaso.decode(arg);
+							key  = array.cast(data).first();
+						}
+
 						this.keys[key] = {};
 						index = this.records.length;
 						this.keys[key].index = index;
@@ -1256,7 +1269,7 @@ var abaaso = abaaso || function(){
 				id.fire("beforeSet");
 
 				(this.uri === null) ? id.fire("syncSet")
-				                    : abaaso[((record === undefined) ? "post" : "put")](this.uri+"/"+key, function(){ id.fire("syncSet"); }, function(){ id.fire("failedSet"); }, data);
+				                    : abaaso[((key === undefined) ? "post" : "put")](this.uri+"/"+key, function(arg){ id.fire("syncSet", arg); }, function(){ id.fire("failedSet"); }, data);
 
 				return this;
 			}
