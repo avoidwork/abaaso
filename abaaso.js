@@ -2427,7 +2427,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.prototype.fromNodeList.call(obj))
+						                                                         : Array.prototype.cast.call(obj))
 						                      : void(0);
 					break;
 				case "#":
@@ -2438,7 +2438,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.prototype.fromNodeList.call(obj))
+						                                                         : Array.prototype.cast.call(obj))
 						                      : void(0);
 					break;
 				default:
@@ -2446,7 +2446,7 @@ var abaaso = abaaso || function(){
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
 					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : Array.prototype.fromNodeList.call(obj))
+						                                                         : Array.prototype.cast.call(obj))
 						                      : void(0);
 					break;
 			}
@@ -3269,6 +3269,8 @@ var abaaso = abaaso || function(){
 				abaaso.constructor = abaaso;
 				abaaso.ready = true;
 
+				delete abaaso.init;
+
 				abaaso.client.version = client.version();
 				abaaso.client.css3    = client.css3();
 				abaaso.client.size    = client.size();
@@ -3326,9 +3328,9 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				if (typeof Array.prototype.fromNodeList != "function") {
+				if (typeof Array.prototype.cast != "function") {
 					try {
-						Array.prototype.fromNodeList = function() {
+						Array.prototype.cast = function() {
 							var a = [], i, loop = this.length;
 							for (var i = 0; i < loop; i++) {
 								a.push(this[i]);
@@ -3341,8 +3343,6 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				abaaso.fire("ready").un("ready");
-
 				if ((!client.ie) || (client.version > 8)) {
 					abaaso.timer.render = setInterval(function(){
 						if (/loaded|complete/.test(document.readyState)) {
@@ -3353,7 +3353,8 @@ var abaaso = abaaso || function(){
 					}, 10);
 				}
 
-				delete abaaso.init;
+				abaaso.fire("ready").un("ready");
+
 				return abaaso;
 			}
 			catch (e) {
