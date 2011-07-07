@@ -1320,6 +1320,41 @@ var abaaso = abaaso || function(){
 				error(e, arguments, this);
 				return undefined;
 			}
+		},
+
+		/**
+		 * Syncs the data store with a URI representation
+		 *
+		 * Events:     beforeSync    Fires before syncing the data store
+		 *             afterSync     Fires after syncing the data store
+		 *
+		 * @returns {Object} The data object
+		 */
+		sync : function() {
+			try {
+				if ((this.uri === null) || (this.uri.isEmpty())) {
+					throw Error(label.error.invalidArguments);
+				}
+				var success, failure;
+
+				success = function(json){
+					this.parentNode.id.fire("afterSync");
+				};
+
+				failure = function(){
+					this.parentNode.id.fire("failedSync");
+				};
+
+				this.parentNode.id.fire("beforeSync");
+
+				abaaso.get(this.uri, success, failure);
+
+				return this;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return this;
+			}
 		}
 	};
 
