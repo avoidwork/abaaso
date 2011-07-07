@@ -953,7 +953,15 @@ var abaaso = abaaso || function(){
 		records : [],
 
 		// URI the data store represents (RESTful behavior)
-		uri     : null,
+		_uri     : null,
+
+		get uri() {
+			return this._uri;
+		},
+
+		set uri(arg) {
+			this._uri = arg + "hi hi";
+		},
 
 		/**
 		 * Clears the data object, unsets the uri property
@@ -1235,7 +1243,7 @@ var abaaso = abaaso || function(){
 				(key === null) ? key = undefined : void(0);
 
 				switch (true) {
-					case ((key === undefined) && (this.uri === null)):
+					case (((key === undefined) || (key.isEmpty())) && (this.uri === null)):
 					case (data === undefined):
 					case (data instanceof Array):
 					case (data instanceof Number):
