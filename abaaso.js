@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.000
+ * @version 1.6.001
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1255,6 +1255,12 @@ var abaaso = abaaso || function(){
 					if (record === undefined) {
 						if (key === undefined) {
 							data = abaaso.decode(arg);
+
+							if (data === undefined) {
+								this.parentNode.id.fire("failedSet");
+								throw Error(label.error.expectedObject);
+							}
+
 							key  = array.cast(data).first();
 							delete data[array.cast(data, true).first()];
 						}
@@ -1284,7 +1290,7 @@ var abaaso = abaaso || function(){
 				id.fire("beforeSet");
 
 				(this.uri === null) ? id.fire("syncSet")
-				                    : abaaso[((key === undefined) ? "post" : "put")](this.uri+"/"+key, function(arg){ id.fire("syncSet", arg); }, function(){ id.fire("failedSet"); }, data);
+				                    : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncSet", arg); }, function(){ id.fire("failedSet"); }, data);
 
 				return this;
 			}
@@ -1292,7 +1298,6 @@ var abaaso = abaaso || function(){
 				error(e, arguments, this);
 				return undefined;
 			}
-			void(0);
 		}
 	};
 
@@ -3465,7 +3470,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.000"
+		version         : "1.6.001"
 	};
 }();
 
