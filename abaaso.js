@@ -952,16 +952,9 @@ var abaaso = abaaso || function(){
 		keys    : [],
 		records : [],
 
-		// URI the data store represents (RESTful behavior)
+		// URI the data store represents (RESTful behavior),
+		// has a getter & setter as 'uri'
 		_uri     : null,
-
-		get uri() {
-			return this._uri;
-		},
-
-		set uri(arg) {
-			this._uri = arg + "hi hi";
-		},
 
 		/**
 		 * Clears the data object, unsets the uri property
@@ -1171,6 +1164,9 @@ var abaaso = abaaso || function(){
 		/**
 		 * Factory to create an instance on an Object
 		 *
+		 * Events:     beforeDataStore    Fires before registering the data store
+		 *             afterDataStore     Fires after registering the data store
+		 *
 		 * @param obj {Object} The Object to register with
 		 * @returns {Object} The Object registered with
 		 */
@@ -1185,9 +1181,20 @@ var abaaso = abaaso || function(){
 				else {
 					obj = utility.object(obj);
 					abaaso.genId(obj);
+					obj.id.fire("beforeDataStore");
 					obj.data = utility.clone(this);
 					obj.data.parentNode = obj; // Recursion, but expected I guess
 					delete obj.data.register;
+					Object.defineProperty(obj.data, "uri", {
+						get : function(){
+							return this._uri;
+						},
+						set : function(arg){
+							this._uri = arg;
+							this.sync();
+						}
+					});
+					obj.id.fire("afterDataStore");
 				}
 				return obj;
 			}
@@ -1200,12 +1207,17 @@ var abaaso = abaaso || function(){
 		/**
 		 * Reindexes the data object
 		 *
+		 * Events:     beforeReindex    Fires before reindexing the data store
+		 *             afterReindex     Fires after reindexing the data store
+		 *
 		 * @returns {Object} The data object
 		 */
 		reindex : function() {
 			var n   = 0,
 			    nth = this.records.length,
 			    key, index, i;
+
+			this.parentNode.id.fire("beforeReindex");
 
 			for (i = 0; i < nth; i++) {
 				if (this.records[i] !== undefined) {
@@ -1223,6 +1235,8 @@ var abaaso = abaaso || function(){
 			}
 
 			this.records.length = n;
+
+			this.parentNode.id.fire("afterReindex");
 
 			return this;
 		},
