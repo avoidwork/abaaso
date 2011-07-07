@@ -1232,6 +1232,8 @@ var abaaso = abaaso || function(){
 		 */
 		set : function(key, data) {
 			try {
+				(key === null) ? key = undefined : void(0);
+
 				switch (true) {
 					case ((key === undefined) && (this.uri === null)):
 					case (data === undefined):
@@ -1254,6 +1256,7 @@ var abaaso = abaaso || function(){
 						if (key === undefined) {
 							data = abaaso.decode(arg);
 							key  = array.cast(data).first();
+							delete data[array.cast(data, true).first()];
 						}
 
 						this.keys[key] = {};
