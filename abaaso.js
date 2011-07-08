@@ -1337,8 +1337,21 @@ var abaaso = abaaso || function(){
 				}
 				var success, failure;
 
-				success = function(json){
-					this.parentNode.id.fire("afterSync");
+				success = function(arg){
+					try {
+						var data = abaaso.decode(arg);
+						if (data === undefined) {
+							throw Error(label.error.expectedObject);
+						}
+
+						// exec set() on each record?
+
+						this.parentNode.id.fire("afterSync");
+					}
+					catch (e) {
+						this.parentNode.id.fire("failedSync");
+						error(e, arguments, this);
+					}
 				};
 
 				failure = function(){
