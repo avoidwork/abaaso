@@ -948,6 +948,9 @@ var abaaso = abaaso || function(){
 	 * @class
 	 */
 	var data = {
+		// Identifies the key field in a data object
+		key     : null,
+
 		// Associative arrays of records
 		keys    : [],
 		records : [],
@@ -957,33 +960,54 @@ var abaaso = abaaso || function(){
 		_uri     : null,
 
 		/**
+		 * Batch sets or deletes data in the store
+		 *
+		 * Events:     beforeDataBatch    Fires before the batch is queued
+		 *             afterDataBatch     Fires after the batch is queued
+		 *
+		 * @returns {Object} The data store
+		 */
+		batch : function(action, data) {
+			try {
+				this.parentNode.id.fire("beforeDataBatch");
+				// iterate data if key is set
+				this.parentNode.id.fire("afterDataBatch");
+				return this;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Clears the data object, unsets the uri property
 		 *
-		 * Events:     beforeClear    Fires before the data is cleared
-		 *             afterClear     Fires after the data is cleared
+		 * Events:     beforeDataClear    Fires before the data is cleared
+		 *             afterDataClear     Fires after the data is cleared
 		 *
-		 * @returns {Object} The data object being cleared
+		 * @returns {Object} The data store being cleared
 		 */
 		clear : function() {
-			this.parentNode.id.fire("beforeClear");
+			this.parentNode.id.fire("beforeDataClear");
 			this.uri     = null;
 			this.keys    = [];
 			this.records = [];
-			this.parentNode.id.fire("afterClear");
+			this.parentNode.id.fire("afterDataClear");
 			return this;
 		},
 
 		/**
 		 * Deletes a record based on key or index
 		 *
-		 * Events:     beforeDelete    Fires before the record is deleted
-		 *             afterDelete     Fires after the record is deleted
-		 *             syncDelete      Fires when the local store is updated
-		 *             failedDelete    Fires if the store is RESTful and the action is denied
+		 * Events:     beforeDataDelete    Fires before the record is deleted
+		 *             afterDataDelete     Fires after the record is deleted
+		 *             syncDataDelete      Fires when the local store is updated
+		 *             failedDataDelete    Fires if the store is RESTful and the action is denied
 		 *
 		 * @param record {Mixed} The record key or index
 		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
-		 * @returns {Object} The data object containing the record
+		 * @returns {Object} The data store
 		 */
 		del : function(record, reindex) {
 			try {
@@ -1011,18 +1035,18 @@ var abaaso = abaaso || function(){
 					key = key.key;
 				}
 
-				id.on("syncDelete", function(){
-					id.un("syncDelete", guid);
+				id.on("syncDataDelete", function(){
+					id.un("syncDataDelete", guid);
 					delete this.records[record];
 					delete this.keys[key];
 					(reindex === true) ? this.reindex() : void(0);
-					id.fire("afterDelete");
+					id.fire("afterDataDelete");
 				}, guid, this);
 
-				id.fire("beforeDelete");
+				id.fire("beforeDataDelete");
 
-				(this.uri === null) ? id.fire("syncDelete")
-				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("syncDelete"); }, function(){ id.fire("failedDelete"); });
+				(this.uri === null) ? id.fire("syncDataDelete")
+				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("syncDataDelete"); }, function(){ id.fire("failedDataDelete"); });
 
 				return this;
 			}
@@ -1035,11 +1059,12 @@ var abaaso = abaaso || function(){
 		/**
 		 * Finds needle in the haystack
 		 *
-		 * Events:     beforeFind    Fires before the search begins
-		 *             afterFind     Fires after the search has finished
+		 * Events:     beforeDataFind    Fires before the search begins
+		 *             afterDataFind     Fires after the search has finished
 		 *
 		 * @param needle {Mixed} String, Number or Pattern to test for
 		 * @param haystack {Mixed} [Optional] The field(s) to search
+		 * @returns {Array} Array of results
 		 */
 		find : function(needle, haystack) {
 			needle   = needle   || undefined;
@@ -1052,7 +1077,7 @@ var abaaso = abaaso || function(){
 
 				var i, h = [], n = (typeof needle == "string") ? needle.split(/\s*,\s*/) : needle;
 
-				// Creating validate haystack
+				// Creating valid haystack
 				if ((haystack === undefined)
 					|| (!haystack instanceof Array)) {
 					if (typeof haystack == "string") {
@@ -1085,7 +1110,7 @@ var abaaso = abaaso || function(){
 
 				i = this.records.length
 
-				this.parentNode.id.fire("beforeFind");
+				this.parentNode.id.fire("beforeDataFind");
 
 				// Finding all needles in the haystack
 				while (i--) {
@@ -1102,7 +1127,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				this.parentNode.id.fire("afterFind");
+				this.parentNode.id.fire("afterDataFind");
 
 				return result;
 			}
@@ -1118,11 +1143,11 @@ var abaaso = abaaso || function(){
 		 *
 		 * If the key is an integer, cast to a string before sending as an argument!
 		 *
-		 * Events:     beforeGet    Fires before getting the record
-		 *             afterGet     Fires after getting the record
+		 * Events:     beforeDataGet    Fires before getting the record
+		 *             afterDataGet     Fires after getting the record
 		 *
 		 * @param record {Mixed} The record key (String),  index (Integer) or Array for pagination [start, end]
-		 * @returns object
+		 * @returns {Object} Data store record
 		 */
 		get : function(record) {
 			try {
@@ -1130,7 +1155,7 @@ var abaaso = abaaso || function(){
 				    id = this.parentNode.id,
 				    i, start, end;
 
-				id.fire("beforeGet");
+				id.fire("beforeDataGet");
 
 				if (typeof record == "string") {
 					r = (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
@@ -1151,7 +1176,7 @@ var abaaso = abaaso || function(){
 					r = this.records[record];
 				}
 
-				id.fire("afterGet");
+				id.fire("afterDataGet");
 
 				return r;
 			}
@@ -1205,19 +1230,19 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
-		 * Reindexes the data object
+		 * Reindexes the data store
 		 *
-		 * Events:     beforeReindex    Fires before reindexing the data store
-		 *             afterReindex     Fires after reindexing the data store
+		 * Events:     beforeDataReindex    Fires before reindexing the data store
+		 *             afterDataReindex     Fires after reindexing the data store
 		 *
-		 * @returns {Object} The data object
+		 * @returns {Object} The data store
 		 */
 		reindex : function() {
 			var n   = 0,
 			    nth = this.records.length,
 			    key, index, i;
 
-			this.parentNode.id.fire("beforeReindex");
+			this.parentNode.id.fire("beforeDataReindex");
 
 			for (i = 0; i < nth; i++) {
 				if (this.records[i] !== undefined) {
@@ -1236,7 +1261,7 @@ var abaaso = abaaso || function(){
 
 			this.records.length = n;
 
-			this.parentNode.id.fire("afterReindex");
+			this.parentNode.id.fire("afterDataReindex");
 
 			return this;
 		},
@@ -1244,13 +1269,14 @@ var abaaso = abaaso || function(){
 		/**
 		 * Sets a new or existing record
 		 *
-		 * Events:     beforeSet    Fires before the record is set
-		 *             afterSet     Fires after the record is set
-		 *             syncSet      Fires when the local store is updated
-		 *             failedSet    Fires if the store is RESTful and the action is denied
+		 * Events:     beforeDataSet    Fires before the record is set
+		 *             afterDataSet     Fires after the record is set
+		 *             syncDataSet      Fires when the local store is updated
+		 *             failedDataSet    Fires if the store is RESTful and the action is denied
 		 *
 		 * @param key {Mixed} Integer or String to use as a Primary Key
 		 * @param data {Object} Key:Value pairs to set as field values
+		 * @returns {Object} The data store
 		 */
 		set : function(key, data) {
 			try {
@@ -1272,14 +1298,14 @@ var abaaso = abaaso || function(){
 				    guid   = abaaso.genId(),
 				    arg, index;
 
-				id.on("syncSet", function(arg){
-					id.un("syncSet", guid);
+				id.on("syncDataSet", function(arg){
+					id.un("syncDataSet", guid);
 					if (record === undefined) {
 						if (key === undefined) {
 							data = abaaso.decode(arg);
 
 							if (data === undefined) {
-								this.parentNode.id.fire("failedSet");
+								this.parentNode.id.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
 
@@ -1306,13 +1332,13 @@ var abaaso = abaaso || function(){
 							this.records[record.index] = data;
 						}
 					}
-					id.fire("afterSet");
+					id.fire("afterDataSet");
 				}, guid, this);
 
-				id.fire("beforeSet");
+				id.fire("beforeDataSet");
 
-				(this.uri === null) ? id.fire("syncSet")
-				                    : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncSet", arg); }, function(){ id.fire("failedSet"); }, data);
+				(this.uri === null) ? id.fire("syncDataSet")
+				                    : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncDataSet", arg); }, function(){ id.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -1325,10 +1351,10 @@ var abaaso = abaaso || function(){
 		/**
 		 * Syncs the data store with a URI representation
 		 *
-		 * Events:     beforeSync    Fires before syncing the data store
-		 *             afterSync     Fires after syncing the data store
+		 * Events:     beforeDataSync    Fires before syncing the data store
+		 *             afterDataSync     Fires after syncing the data store
 		 *
-		 * @returns {Object} The data object
+		 * @returns {Object} The data store
 		 */
 		sync : function() {
 			try {
@@ -1340,25 +1366,26 @@ var abaaso = abaaso || function(){
 				success = function(arg){
 					try {
 						var data = abaaso.decode(arg);
+
 						if (data === undefined) {
 							throw Error(label.error.expectedObject);
 						}
 
-						// exec set() on each record?
+						this.batch("set", data);
 
-						this.parentNode.id.fire("afterSync");
+						this.parentNode.id.fire("afterDataSync");
 					}
 					catch (e) {
-						this.parentNode.id.fire("failedSync");
+						this.parentNode.id.fire("failedDataSync");
 						error(e, arguments, this);
 					}
 				};
 
 				failure = function(){
-					this.parentNode.id.fire("failedSync");
+					this.parentNode.id.fire("failedDataSync");
 				};
 
-				this.parentNode.id.fire("beforeSync");
+				this.parentNode.id.fire("beforeDataSync");
 
 				abaaso.get(this.uri, success, failure);
 
