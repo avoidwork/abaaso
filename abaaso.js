@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.002
+ * @version 1.6.003
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1219,14 +1219,15 @@ var abaaso = abaaso || function(){
 		 *             afterDataStore     Fires after registering the data store
 		 *
 		 * @param obj {Object} The Object to register with
+		 * @param data {Mixed} [Optional] Data to set with this.batch
 		 * @returns {Object} The Object registered with
 		 */
-		register : function(obj) {
+		register : function(obj, data) {
 			try {
 				if (obj instanceof Array) {
 					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
 					while (i--) {
-						this.register(obj[i]);
+						this.register(obj[i], data);
 					}
 				}
 				else {
@@ -1254,6 +1255,7 @@ var abaaso = abaaso || function(){
 							}
 						}
 					});
+					(typeof data == "object") ? obj.data.batch("set", data) : void(0);
 					obj.id.fire("afterDataStore");
 				}
 				return obj;
@@ -3592,8 +3594,8 @@ var abaaso = abaaso || function(){
 		post            : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
 		put             : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
 		ready           : false,
-		store           : function(arg) {
-			return data.register.call(data, arg);
+		store           : function(arg, args) {
+			return data.register.call(data, arg, args);
 		},
 		timer           : {},
 		un              : function() {
@@ -3605,7 +3607,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.002"
+		version         : "1.6.003"
 	};
 }();
 
