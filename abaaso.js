@@ -2835,7 +2835,7 @@ var abaaso = abaaso || function(){
 				scope     : scope,
 				timestamp : new Date().toUTCString(),
 				type      : (e.type   !== undefined) ? e.type : "TypeError"
-				};
+			};
 
 			(typeof console != "undefined") ? console.error(o.message) : void(0);
 			(error.log === undefined) ? error.log = [] : void(0);
