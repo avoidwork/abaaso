@@ -28,8 +28,8 @@
 /**
  * abaaso
  *
- * Events:    ready      Fires when the DOM is available; safe for GUI creation & module registration [abaaso.define()]
- *            render     Fires when the window resources have loaded; safe for CSS skin injection & module setup (visual fx, etc.)
+ * Events:    ready      Fires when the DOM is available
+ *            render     Fires when the window resources have loaded
  *            resize     Fires when the window resizes; parameter for listeners is abaaso.client.size
  *            hash       Fires when window.location.hash changes; parameter for listeners is the hash value
  *            error      Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log)
@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.001
+ * @version 1.6.002
  */
 var abaaso = abaaso || function(){
 	/**
@@ -940,7 +940,9 @@ var abaaso = abaaso || function(){
 	};
 
 	/**
-	 * Template data store object, to be put on a widget with register()
+	 * Template data store, use abaaso.store(obj) or abaaso.data.register(obj)
+	 * to register it with an Object
+	 *
 	 * RESTful behavior is supported, by setting the 'key' & 'uri' properties
 	 *
 	 * Do not use this directly!
@@ -948,7 +950,7 @@ var abaaso = abaaso || function(){
 	 * @class
 	 */
 	var data = {
-		// Identifies the key field in a PUT response
+		// Identifies the key in a POST response
 		key     : null,
 
 		// Associative arrays of records
@@ -967,28 +969,37 @@ var abaaso = abaaso || function(){
 		 *
 		 * @param type {String} The type of action to perform
 		 * @param obj {Mixed} Array of keys or indexes to delete, or Object containing multiple records to set
+		 * @param sync {Boolean} [Optional] True if called by data.sync
 		 * @returns {Object} The data store
 		 */
-		batch : function(type, obj) {
+		batch : function(type, obj, sync) {
 			type = type.toString().toLowerCase() || undefined;
+			sync = (sync === true) ? true : false;
 
 			try {
 				switch (true) {
 					case ((type != "set") && (type != "del")):
 					case (typeof obj != "object"):
-					case ((type == "set") && (!obj instanceof Object)):
 						throw Error(label.error.invalidArguments);
 				}
 
-				var id = this.parentNode.id
-				    i;
+				var id = this.parentNode.id,
+				    i, loop;
 
 				id.fire("beforeDataBatch");
 
-				for (i in obj) {
-					(type == "del") ? this.del(i, false) : this.set(i, obj[i]);
+				if (obj instanceof Array) {
+					for (i = 0, loop = obj.length; i < loop; i++) {
+						(type == "del") ? this.del(i, false) : this.set(new String(i).toString(), obj[i], sync);
+					}
+				}
+				else {
+					for (i in obj) {
+						(type == "del") ? this.del(i, false) : this.set(i, obj[i], sync);
+					}
 				}
 
+				(type == "del") ? this.reindex() : void(0);
 				id.fire("afterDataBatch");
 				return this;
 			}
@@ -1193,7 +1204,6 @@ var abaaso = abaaso || function(){
 				}
 
 				id.fire("afterDataGet");
-
 				return r;
 			}
 			catch (e) {
@@ -1231,8 +1241,17 @@ var abaaso = abaaso || function(){
 							return this._uri;
 						},
 						set : function(arg){
-							this._uri = arg;
-							this.sync();
+							try {
+								if (arg.isEmpty()) {
+									throw Error(label.error.invalidArguments);
+								}
+								this._uri = arg;
+								this.sync();
+							}
+							catch (e) {
+								error(e, arguments, this);
+								return undefined;
+							}
 						}
 					});
 					obj.id.fire("afterDataStore");
@@ -1294,11 +1313,13 @@ var abaaso = abaaso || function(){
 		 *
 		 * @param key {Mixed} Integer or String to use as a Primary Key
 		 * @param data {Object} Key:Value pairs to set as field values
+		 * @param sync {Boolean} [Optional] True if called by data.sync
 		 * @returns {Object} The data store
 		 */
-		set : function(key, data) {
+		set : function(key, data, sync) {
 			try {
 				(key === null) ? key = undefined : void(0);
+				sync = (sync === true) ? true : false;
 
 				switch (true) {
 					case (((key === undefined) || (key.isEmpty())) && (this.uri === null)):
@@ -1354,7 +1375,8 @@ var abaaso = abaaso || function(){
 
 				id.fire("beforeDataSet");
 
-				(this.uri === null) ? id.fire("syncDataSet")
+				(this.uri === null)
+				 || (sync === true) ? id.fire("syncDataSet")
 				                    : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncDataSet", arg); }, function(){ id.fire("failedDataSet"); }, data);
 
 				return this;
@@ -1375,34 +1397,36 @@ var abaaso = abaaso || function(){
 		 */
 		sync : function() {
 			try {
-				switch (true) {
-					case ((this.uri === null) || (this.uri.isEmpty())):
-					case ((this.key === null) || (this.key.isEmpty())):
-						throw Error(label.error.invalidArguments);
+				if ((this.uri === null) || (this.uri.isEmpty())) {
+					throw Error(label.error.invalidArguments);
 				}
 
-				var id = this.parentNode.id,
-				    success, failure;
+				var id   = this.parentNode.id,
+				    guid = abaaso.genId();
 
-				success = function(arg){
+				this.uri.on("afterGet", function(arg){
+					this.uri.un("afterGet", guid);
 					try {
-						arg = abaaso.decode(arg);
-						if (arg === undefined) {
+						var data = abaaso.decode(arg);
+						if (data === undefined) {
 							throw Error(label.error.expectedObject);
 						}
-						this.batch("set", arg);
+						this.batch("set", data, true);
 						id.fire("afterDataSync");
 					}
 					catch (e) {
 						id.fire("failedDataSync");
 						error(e, arguments, this);
 					}
-				};
+				}, guid, this);
 
-				failure = function(){ id.fire("failedDataSync"); };
+				this.uri.on("failedGet", function(){
+					this.uri.un("afterGet", guid);
+					id.fire("failedDataSync");
+				}, guid, this);
 
 				id.fire("beforeDataSync");
-				abaaso.get(this.uri, success, failure);
+				abaaso.get(this.uri);
 				return this;
 			}
 			catch (e) {
@@ -3581,7 +3605,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.001"
+		version         : "1.6.002"
 	};
 }();
 
