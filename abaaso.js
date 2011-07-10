@@ -966,7 +966,7 @@ var abaaso = abaaso || function(){
 		 *             afterDataBatch     Fires after the batch is queued
 		 *
 		 * @param type {String} The type of action to perform
-		 * @param obj {Object} Object containing multiple records to perform an action on
+		 * @param obj {Mixed} Array of keys or indexes to delete, or Object containing multiple records to set
 		 * @returns {Object} The data store
 		 */
 		batch : function(type, obj) {
