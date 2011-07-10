@@ -941,14 +941,14 @@ var abaaso = abaaso || function(){
 
 	/**
 	 * Template data store object, to be put on a widget with register()
-	 * RESTful behavior is supported, by setting the 'uri' property
+	 * RESTful behavior is supported, by setting the 'key' & 'uri' properties
 	 *
 	 * Do not use this directly!
 	 *
 	 * @class
 	 */
 	var data = {
-		// Identifies the key field in a data object
+		// Identifies the key field in a PUT response
 		key     : null,
 
 		// Associative arrays of records
@@ -970,7 +970,9 @@ var abaaso = abaaso || function(){
 		batch : function(action, data) {
 			try {
 				this.parentNode.id.fire("beforeDataBatch");
+				// if this.key is set, try to find it in the data, otherwise use the first property!
 				// iterate data if key is set
+				//this[action](data);
 				this.parentNode.id.fire("afterDataBatch");
 				return this;
 			}
@@ -1013,7 +1015,7 @@ var abaaso = abaaso || function(){
 			try {
 				reindex = (reindex === false) ? false : true;
 
-				var id = this.parentNode.id,
+				var id   = this.parentNode.id,
 				    guid = abaaso.genId(),
 				    key;
 
@@ -1067,9 +1069,6 @@ var abaaso = abaaso || function(){
 		 * @returns {Array} Array of results
 		 */
 		find : function(needle, haystack) {
-			needle   = needle   || undefined;
-			haystack = haystack || undefined;
-
 			try {
 				if (needle === undefined) {
 					throw Error(label.error.invalidArguments);
@@ -1132,7 +1131,6 @@ var abaaso = abaaso || function(){
 				return result;
 			}
 			catch (e) {
-
 				error(e, arguments, this);
 				return undefined;
 			}
@@ -1267,7 +1265,10 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
-		 * Sets a new or existing record
+		 * Creates or updates an existing record
+		 *
+		 * If a POST is issued, and the data.key property is not set the
+		 * first property of the response object will be used as the key
 		 *
 		 * Events:     beforeDataSet    Fires before the record is set
 		 *             afterDataSet     Fires after the record is set
@@ -1302,15 +1303,14 @@ var abaaso = abaaso || function(){
 					id.un("syncDataSet", guid);
 					if (record === undefined) {
 						if (key === undefined) {
-							data = abaaso.decode(arg);
+							arg = abaaso.decode(arg);
 
-							if (data === undefined) {
+							if (arg === undefined) {
 								this.parentNode.id.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
 
-							key  = array.cast(data).first();
-							delete data[array.cast(data, true).first()];
+							key = (this.key === null) ? array.cast(arg).first() : arg[this.key];
 						}
 
 						this.keys[key] = {};
