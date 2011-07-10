@@ -965,15 +965,31 @@ var abaaso = abaaso || function(){
 		 * Events:     beforeDataBatch    Fires before the batch is queued
 		 *             afterDataBatch     Fires after the batch is queued
 		 *
+		 * @param type {String} The type of action to perform
+		 * @param obj {Object} Object containing multiple records to perform an action on
 		 * @returns {Object} The data store
 		 */
-		batch : function(action, data) {
+		batch : function(type, obj) {
+			type = type.toString().toLowerCase() || undefined;
+
 			try {
-				this.parentNode.id.fire("beforeDataBatch");
-				// if this.key is set, try to find it in the data, otherwise use the first property!
-				// iterate data if key is set
-				//this[action](data);
-				this.parentNode.id.fire("afterDataBatch");
+				switch (true) {
+					case ((type != "set") && (type != "del")):
+					case (typeof obj != "object"):
+					case ((type == "set") && (!obj instanceof Object)):
+						throw Error(label.error.invalidArguments);
+				}
+
+				var id = this.parentNode.id
+				    i;
+
+				id.fire("beforeDataBatch");
+
+				for (i in obj) {
+					(type == "del") ? this.del(i, false) : this.set(i, obj[i]);
+				}
+
+				id.fire("afterDataBatch");
 				return this;
 			}
 			catch (e) {
@@ -991,11 +1007,12 @@ var abaaso = abaaso || function(){
 		 * @returns {Object} The data store being cleared
 		 */
 		clear : function() {
-			this.parentNode.id.fire("beforeDataClear");
+			var id = this.parentNode.id;
+			id.fire("beforeDataClear");
 			this.uri     = null;
 			this.keys    = [];
 			this.records = [];
-			this.parentNode.id.fire("afterDataClear");
+			id.fire("afterDataClear");
 			return this;
 		},
 
@@ -1028,12 +1045,16 @@ var abaaso = abaaso || function(){
 				if (typeof record == "string") {
 					key    = record;
 					record = this.keys[key];
-					if (key === undefined) { throw new Error(label.error.invalidArguments); }
+					if (key === undefined) {
+						throw new Error(label.error.invalidArguments);
+					}
 					record = record.index;
 				}
 				else {
 					key = this.records[record];
-					if (key === undefined) { throw new Error(label.error.invalidArguments); }
+					if (key === undefined) {
+						throw new Error(label.error.invalidArguments);
+					}
 					key = key.key;
 				}
 
@@ -1074,44 +1095,42 @@ var abaaso = abaaso || function(){
 					throw Error(label.error.invalidArguments);
 				}
 
-				var i, h = [], n = (typeof needle == "string") ? needle.split(/\s*,\s*/) : needle;
+				var h      = [],
+				    n      = (typeof needle == "string") ? needle.split(/\s*,\s*/) : needle,
+				    result = [],
+				    nth    = h.length,
+					nth2   = n.length,
+					id     = this.parentNode.id,
+					x, y, f, r, s, p, i;
 
-				// Creating valid haystack
 				if ((haystack === undefined)
 					|| (!haystack instanceof Array)) {
 					if (typeof haystack == "string") {
 						h = haystack.split(/\s*,\s*/);
 						for (i in h) {
-							if (this.records[0].data[h[i]] === undefined) {
+							if (this.records.first().data[h[i]] === undefined) {
 								throw Error(label.error.invalidArguments);
 							}
 						}
 					}
 					else {
-						for (i in this.records[0].data) {
+						for (i in this.records.first().data) {
 							h.push(i);
 						}
 					}
 				}
 				else {
 					for (i in haystack) {
-						if (this.records[0].data[haystack[i]] === undefined) {
+						if (this.records.first().data[haystack[i]] === undefined) {
 							throw Error(label.error.invalidArguments);
 						}
 					}
 					h = haystack;
 				}
 
-				var result = [],
-				    nth    = h.length,
-					nth2   = n.length,
-					x, y, f, r, s, p;
-
 				i = this.records.length
+				id.fire("beforeDataFind");
 
-				this.parentNode.id.fire("beforeDataFind");
-
-				// Finding all needles in the haystack
 				while (i--) {
 					for (x = 0; x < nth; x++) {
 						for (y = 0; y < nth2; y++) {
@@ -1126,8 +1145,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				this.parentNode.id.fire("afterDataFind");
-
+				id.fire("afterDataFind");
 				return result;
 			}
 			catch (e) {
@@ -1238,9 +1256,10 @@ var abaaso = abaaso || function(){
 		reindex : function() {
 			var n   = 0,
 			    nth = this.records.length,
+			    id  = this.parentNode.id,
 			    key, index, i;
 
-			this.parentNode.id.fire("beforeDataReindex");
+			id.fire("beforeDataReindex");
 
 			for (i = 0; i < nth; i++) {
 				if (this.records[i] !== undefined) {
@@ -1258,9 +1277,7 @@ var abaaso = abaaso || function(){
 			}
 
 			this.records.length = n;
-
-			this.parentNode.id.fire("afterDataReindex");
-
+			id.fire("afterDataReindex");
 			return this;
 		},
 
@@ -1358,37 +1375,34 @@ var abaaso = abaaso || function(){
 		 */
 		sync : function() {
 			try {
-				if ((this.uri === null) || (this.uri.isEmpty())) {
-					throw Error(label.error.invalidArguments);
+				switch (true) {
+					case ((this.uri === null) || (this.uri.isEmpty())):
+					case ((this.key === null) || (this.key.isEmpty())):
+						throw Error(label.error.invalidArguments);
 				}
-				var success, failure;
+
+				var id = this.parentNode.id,
+				    success, failure;
 
 				success = function(arg){
 					try {
-						var data = abaaso.decode(arg);
-
-						if (data === undefined) {
+						arg = abaaso.decode(arg);
+						if (arg === undefined) {
 							throw Error(label.error.expectedObject);
 						}
-
-						this.batch("set", data);
-
-						this.parentNode.id.fire("afterDataSync");
+						this.batch("set", arg);
+						id.fire("afterDataSync");
 					}
 					catch (e) {
-						this.parentNode.id.fire("failedDataSync");
+						id.fire("failedDataSync");
 						error(e, arguments, this);
 					}
 				};
 
-				failure = function(){
-					this.parentNode.id.fire("failedDataSync");
-				};
+				failure = function(){ id.fire("failedDataSync"); };
 
-				this.parentNode.id.fire("beforeDataSync");
-
+				id.fire("beforeDataSync");
 				abaaso.get(this.uri, success, failure);
-
 				return this;
 			}
 			catch (e) {
