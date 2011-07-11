@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.008
+ * @version 1.6.009
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1257,6 +1257,34 @@ var abaaso = abaaso || function(){
 					delete obj.data.register;
 
 					switch (true) {
+						case ((client.ie) && (client.version == 8)):
+							var fn = function(){
+								if (obj.data._uri != obj.data.uri) {
+									clearInterval(abaaso.timer[obj.id+"Uri"]);
+									delete abaaso.timer[obj.id+"Uri"];
+									obj.data._uri = obj.data.uri;
+									if ((!obj.data.uri.isEmpty()) && (obj.data.uri !== null)) {
+										var uri  = obj.data.uri,
+										    guid = abaaso.genId();
+										uri.on("afterJSONP", function(data){
+											var id  = this.parentNode.id,
+											    uid = abaaso.genId();
+											id.on("afterDataBatch", function(){
+												id.un("afterDataBatch", uid);
+												id.fire("afterDataSync");
+											}, uid, this);
+											id.on("afterDataSync", function(){
+												id.un("afterDataSync", uid);
+												abaaso.timer[obj.id+"Uri"] = setInterval(fn, 1000);
+											}, uid, this);
+											id.fire("beforeDataSync");
+											this.batch("set", data);
+										}, guid, obj.data);
+									}
+								}
+							};
+							abaaso.timer[obj.id+"Uri"] = setInterval(fn, 1000);
+							break;
 						case (typeof Object.defineProperty == "undefined"):
 							obj.data.__defineGetter__("uri", getter);
 							obj.data.__defineSetter__("uri", setter);
@@ -3515,7 +3543,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.008"
+		version         : "1.6.009"
 	};
 }();
 
