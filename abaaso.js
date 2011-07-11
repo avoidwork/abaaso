@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.006
+ * @version 1.6.007
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1231,49 +1231,45 @@ var abaaso = abaaso || function(){
 					}
 				}
 				else {
+					var getter, setter;
+					getter = function(){ return this._uri; };
+					setter = function(arg){
+						try {
+							if ((!arg instanceof String) || (arg.isEmpty())) {
+								throw Error(label.error.invalidArguments);
+							}
+							this._uri = arg;
+							this.sync();
+						}
+						catch (e) {
+							error(e, arguments, this);
+							return undefined;
+						}
+					};
+
 					obj = utility.object(obj);
 					abaaso.genId(obj);
+
 					obj.id.fire("beforeDataStore");
+
 					obj.data = utility.clone(this);
 					obj.data.parentNode = obj; // Recursion, but expected I guess
 					delete obj.data.register;
-					if (client.ie) {
-						Object.defineProperty(obj.data, "uri", {
-							get : function(){
-								return this._uri;
-							},
-							set : function(arg){
-								try {
-									if (arg.isEmpty()) {
-										throw Error(label.error.invalidArguments);
-									}
-									this._uri = arg;
-									this.sync();
-								}
-								catch (e) {
-									error(e, arguments, this);
-									return undefined;
-								}
-							}
-						});
+
+					switch (true) {
+						case ((client.ie) && (client.version == 8)):
+							void(0);
+							break;
+						case (client.opera):
+							obj.data.__defineGetter__("uri", getter);
+							obj.data.__defineSetter__("uri", setter);
+							break;
+						default:
+							Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
 					}
-					else {
-						obj.data.__defineGetter__("uri", function(){ return this._uri; });
-						obj.data.__defineSetter__("uri", function(arg){
-							try {
-								if ((!arg instanceof String) || (arg.isEmpty())) {
-									throw Error(label.error.invalidArguments);
-								}
-								this._uri = arg;
-								this.sync();
-							}
-							catch (e) {
-								error(e, arguments, this);
-								return undefined;
-							}
-						});
-					}
+
 					(typeof data == "object") ? obj.data.batch("set", data) : void(0);
+
 					obj.id.fire("afterDataStore");
 				}
 				return obj;
@@ -3632,7 +3628,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.006"
+		version         : "1.6.007"
 	};
 }();
 
