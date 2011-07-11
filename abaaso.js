@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.004
+ * @version 1.6.005
  */
 var abaaso = abaaso || function(){
 	/**
@@ -2831,16 +2831,16 @@ var abaaso = abaaso || function(){
 			var o = {
 				arguments : args,
 				message   : e.message,
-				number    : (e.number !== undefined) ? (e.number & 0xFFFF) : undefined,
+				number    : (typeof e.number != "undefined") ? (e.number & 0xFFFF) : undefined,
 				scope     : scope,
 				timestamp : new Date().toUTCString(),
-				type      : (e.type   !== undefined) ? e.type : "TypeError"
+				type      : (typeof e.type   != "undefined") ? e.type : "TypeError"
 			};
 
 			(typeof console != "undefined") ? console.error(o.message) : void(0);
-			(error.log === undefined) ? error.log = [] : void(0);
+			(typeof error.log == "undefined") ? error.log = [] : void(0);
 			error.log.push(o);
-			abaaso.fire("error", o)
+			abaaso.fire("error", o);
 		},
 
 		/**
@@ -2995,10 +2995,17 @@ var abaaso = abaaso || function(){
 				 * @param obj {Object} The object to receive the methods
 				 * @param collection {Array} The collection of methods to apply
 				 */
-				var apply   = function(obj, collection) {
-					var i = collection.length;
-					while (i--) {
-						obj[collection[i].name] = collection[i].fn;
+				var apply = function(obj, collection) {
+					try {
+						var i = collection.length;
+						while (i--) {
+							abaaso.define(collection[i].name, collection[i].fn, obj);
+						}
+						return obj;
+					}
+					catch (e) {
+						error(e, arguments, this);
+						return undefined;
 					}
 				}
 
@@ -3516,8 +3523,8 @@ var abaaso = abaaso || function(){
 				abaaso.client.size    = client.size();
 
 				utility.proto(Array.prototype, "array");
-				utility.proto(Element.prototype, "element");
-				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
+				((typeof Element != "undefined") && (typeof Element.prototype != "undefined")) ? utility.proto(Element.prototype, "element") : void(0);
+				((typeof HTMLDocument != "undefined") && (typeof HTMLDocument.prototype != "undefined")) ? utility.proto(HTMLDocument.prototype, "element") : void(0);
 				utility.proto(Number.prototype, "number");
 				utility.proto(String.prototype, "string");
 				
@@ -3625,7 +3632,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.004"
+		version         : "1.6.005"
 	};
 }();
 
