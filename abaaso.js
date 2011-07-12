@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.009
+ * @version 1.6.010
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1235,7 +1235,7 @@ var abaaso = abaaso || function(){
 					getter = function(){ return this._uri; };
 					setter = function(arg){
 						try {
-							if ((!arg instanceof String) || (arg.isEmpty())) {
+							if (arg.isEmpty()) {
 								throw Error(label.error.invalidArguments);
 							}
 							this._uri = arg;
@@ -1257,34 +1257,11 @@ var abaaso = abaaso || function(){
 					delete obj.data.register;
 
 					switch (true) {
-						case ((client.ie) && (client.version == 8)):
-							var fn = function(){
-								if (obj.data._uri != obj.data.uri) {
-									clearInterval(abaaso.timer[obj.id+"Uri"]);
-									delete abaaso.timer[obj.id+"Uri"];
-									obj.data._uri = obj.data.uri;
-									if ((!obj.data.uri.isEmpty()) && (obj.data.uri !== null)) {
-										var uri  = obj.data.uri,
-										    guid = abaaso.genId();
-										uri.on("afterJSONP", function(data){
-											var id  = this.parentNode.id,
-											    uid = abaaso.genId();
-											id.on("afterDataBatch", function(){
-												id.un("afterDataBatch", uid);
-												id.fire("afterDataSync");
-											}, uid, this);
-											id.on("afterDataSync", function(){
-												id.un("afterDataSync", uid);
-												abaaso.timer[obj.id+"Uri"] = setInterval(fn, 1000);
-											}, uid, this);
-											id.fire("beforeDataSync");
-											this.batch("set", data);
-										}, guid, obj.data);
-									}
-								}
-							};
-							abaaso.timer[obj.id+"Uri"] = setInterval(fn, 1000);
-							break;
+						case ((abaaso.client.ie) && (abaaso.client.version == 8)):
+							// Pure hackery, only exists when needed
+							obj.data.uri    = null;
+							obj.data.getUri = function(){ return obj.data.uri; };
+							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
 						case (typeof Object.defineProperty == "undefined"):
 							obj.data.__defineGetter__("uri", getter);
 							obj.data.__defineSetter__("uri", setter);
@@ -1294,7 +1271,6 @@ var abaaso = abaaso || function(){
 					}
 
 					(typeof data == "object") ? obj.data.batch("set", data) : void(0);
-
 					obj.id.fire("afterDataStore");
 				}
 				return obj;
@@ -3543,7 +3519,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.009"
+		version         : "1.6.010"
 	};
 }();
 
