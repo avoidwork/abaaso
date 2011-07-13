@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.015
+ * @version 1.6.016
  */
 var abaaso = abaaso || function(){
 	/**
@@ -3035,25 +3035,25 @@ var abaaso = abaaso || function(){
 				// Collection of methods to add to prototypes
 				var i,
 				    methods = {
-					array   : {contains : function(arg) { return abaaso.array.contains(this, arg); },
-					           diff     : function(arg) { return abaaso.array.diff(this, arg); },
-					           first    : function() { return abaaso.array.first(this); },
-					           index    : function(arg) { return abaaso.array.index(this, arg); },
-					           indexed  : function() { return abaaso.array.indexed(this); },
-					           keys     : function() { return abaaso.array.keys(this); },
-					           last     : function(arg) { return abaaso.array.last(this); },
+					array   : {contains : function(arg) { return $.array.contains(this, arg); },
+					           diff     : function(arg) { return $.array.diff(this, arg); },
+					           first    : function() { return $.array.first(this); },
+					           index    : function(arg) { return $.array.index(this, arg); },
+					           indexed  : function() { return $.array.indexed(this); },
+					           keys     : function() { return $.array.keys(this); },
+					           last     : function(arg) { return $.array.last(this); },
 					           on       : function(event, listener, id, scope, standby) {
 					           		scope = (scope === true) ? true : false;
-					           		return abaaso.on(this, event, listener, id, scope, standby);
+					           		return $.on(this, event, listener, id, scope, standby);
 					           },
-					           remove   : function(arg) { return abaaso.array.remove(this, arg); },
-					           total    : function() { return abaaso.array.total(this); }},
+					           remove   : function(arg) { return $.array.remove(this, arg); },
+					           total    : function() { return $.array.total(this); }},
 					element : {create   : function(type, args) {
 									this.genId();
-									return abaaso.create(type, args, this);
+									return $.create(type, args, this);
 							  },
-							  disable   : function() { return abaaso.el.disable(this); },
-							  enable    : function() { return abaaso.el.enable(this); },
+							  disable   : function() { return $.el.disable(this); },
+							  enable    : function() { return $.el.enable(this); },
 							  get       : function(uri) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
@@ -3064,7 +3064,7 @@ var abaaso = abaaso || function(){
 											this.text(cache.get(uri, false).response);
 											this.fire("afterGet");
 											}, guid, this);
-										abaaso.get(uri);
+										$.get(uri);
 									}
 									else {
 										this.text(cached.response);
@@ -3074,10 +3074,10 @@ var abaaso = abaaso || function(){
 							  },
 							  hide     : function() {
 									this.genId();
-									return abaaso.el.hide(this);
+									return $.el.hide(this);
 							  },
-							  isAlphaNum: function() { return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({alphanum: (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
-						      isBoolean: function() { return (/form/gi.test(this.nodeName)) ? false : abaaso.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
+							  isAlphaNum: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({alphanum: (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
+						      isBoolean: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
 						      isDate   : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDate() : this.innerText.isDate(); },
 						      isDomain : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDomain() : this.innerText.isDomain(); },
 						      isEmail  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmail() : this.innerText.isEmail(); },
@@ -3101,7 +3101,7 @@ var abaaso = abaaso || function(){
 														nth = prop.length;
 														for (i = 0; i < nth; i++) {
 															node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
-															if (node === undefined) { throw new Error(abaaso.label.error.propertyNotFound); }
+															if (node === undefined) { throw new Error($.label.error.propertyNotFound); }
 														}
 														result = node;
 													}
@@ -3110,103 +3110,103 @@ var abaaso = abaaso || function(){
 													}
 											}
 											catch (e) {
-													result = abaaso.label.error.serverError;
+													result = $.label.error.serverError;
 													$.error(e, arguments, this);
 											}
 
 											self.text(result);
 										};
-									abaaso.jsonp(uri, fn, null, callback);
+									$.jsonp(uri, fn, null, callback);
 									return this;
 							   },
-							   loading  : function() { return abaaso.loading.create(this); },
+							   loading  : function() { return $.loading.create(this); },
 					           on       : function(event, listener, id, scope, standby) {
 									scope = scope || this;
 									((this.id === undefined)
 									 || (this.id.isEmpty())) ? this.genId() : void(0);
-									return abaaso.on(this, event, listener, id, scope, standby);
+									return $.on(this, event, listener, id, scope, standby);
 							   },
 					           position : function() {
 									this.genId();
-									return abaaso.el.position(this);
+									return $.el.position(this);
 							   },
 							   show     : function() {
 									this.genId();
-									return abaaso.el.show(this);
+									return $.el.show(this);
 							   },
 							   size     : function() {
 									this.genId();
-									return abaaso.el.size(this);
+									return $.el.size(this);
 							   },
 							   text     : function(arg) {
 									this.genId();
-									(typeof this.value != "undefined") ? abaaso.update(this, {value: arg}) : void(0);
-									(typeof this.innerHTML != "undefined") ? abaaso.update(this, {innerHTML: arg}) : void(0);
+									(typeof this.value != "undefined") ? $.update(this, {value: arg}) : void(0);
+									(typeof this.innerHTML != "undefined") ? $.update(this, {innerHTML: arg}) : void(0);
 									return this;
 							   },
 							   update   : function(args) {
 									this.genId();
-									return abaaso.update(this, args);
+									return $.update(this, args);
 							   },
-							   validate  : function() { return (/form/gi.test(this.nodeName)) ? abaaso.validate.test(this).pass : (typeof this.value != "undefined") ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
-					number  : {isEven   : function() { return abaaso.number.even(this); },
-					           isOdd    : function() { return abaaso.number.odd(this); },
+							   validate  : function() { return (/form/gi.test(this.nodeName)) ? $.validate.test(this).pass : (typeof this.value != "undefined") ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+					number  : {isEven   : function() { return $.number.even(this); },
+					           isOdd    : function() { return $.number.odd(this); },
 					           on       : function(event, listener, id, scope, standby) {
 									scope = scope || this;
-					           		return abaaso.on(this, event, listener, id, scope, standby);
+					           		return $.on(this, event, listener, id, scope, standby);
 					           }},
 					shared  : {clear    : function() {
 									((typeof this == "object")
 									 && ((this.id === undefined)
 									     || (this.id.isEmpty()))) ? this.genId() : void(0);
-									(this instanceof String) ? (this.constructor = new String("")) : abaaso.clear(this);
+									(this instanceof String) ? (this.constructor = new String("")) : $.clear(this);
 									return this;
 							   },
-							   destroy  : function() { abaaso.destroy(this); },
+							   destroy  : function() { $.destroy(this); },
 							   domId    : function() {
 							   		if (!this instanceof String) {
 							   			this.genId();
-							   			return abaaso.domId(this.id);
+							   			return $.domId(this.id);
 							   		}
-							   		return abaaso.domId(this);
+							   		return $.domId(this);
 							   },
 							   fire     : function(event, args) {
 							   		((!this instanceof String)
 							   		 && ((this.id === undefined)
 							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							   		return abaaso.fire.call(this, event, args);
+							   		return $.fire.call(this, event, args);
 							   },
 							   genId    : function() { return $.genId(this); },
 							   listeners: function(event) {
 							   		((!this instanceof String)
 							   		 && ((this.id === undefined)
 							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							   		return abaaso.listeners(this, event);
+							   		return $.listeners(this, event);
 							   },
 							   un       : function(event, id) {
 							   		((!this instanceof String)
 							   		 && ((this.id === undefined)
 							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							   		return abaaso.un(this, event, id);
+							   		return $.un(this, event, id);
 							   }},
-					string  : {allow    : function(arg) { return abaaso.allow(this, arg); },
+					string  : {allow    : function(arg) { return $.allow(this, arg); },
 							   capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
-							   isAlphaNum: function() { return abaaso.validate.test({alphanum: this}).pass; },
-							   isBoolean: function() { return abaaso.validate.test({"boolean": this}).pass; },
-							   isDate   : function() { return abaaso.validate.test({date: this}).pass; },
-							   isDomain : function() { return abaaso.validate.test({domain: this}).pass; },
-							   isEmail  : function() { return abaaso.validate.test({email: this}).pass; },
-							   isEmpty  : function() { return !abaaso.validate.test({notEmpty: this}).pass; },
-							   isIP     : function() { return abaaso.validate.test({ip: this}).pass; },
-							   isInt    : function() { return abaaso.validate.test({integer: this}).pass; },
-							   isNumber : function() { return abaaso.validate.test({number: this}).pass; },
-							   isPhone  : function() { return abaaso.validate.test({phone: this}).pass; },
-							   isString : function() { return abaaso.validate.test({string: this}).pass; },
+							   isAlphaNum: function() { return $.validate.test({alphanum: this}).pass; },
+							   isBoolean: function() { return $.validate.test({"boolean": this}).pass; },
+							   isDate   : function() { return $.validate.test({date: this}).pass; },
+							   isDomain : function() { return $.validate.test({domain: this}).pass; },
+							   isEmail  : function() { return $.validate.test({email: this}).pass; },
+							   isEmpty  : function() { return !$.validate.test({notEmpty: this}).pass; },
+							   isIP     : function() { return $.validate.test({ip: this}).pass; },
+							   isInt    : function() { return $.validate.test({integer: this}).pass; },
+							   isNumber : function() { return $.validate.test({number: this}).pass; },
+							   isPhone  : function() { return $.validate.test({phone: this}).pass; },
+							   isString : function() { return $.validate.test({string: this}).pass; },
 							   on       : function(event, listener, id, scope, standby) {
 					           		scope = scope || this;
-					           		return abaaso.on(this, event, listener, id, scope, standby);
+					           		return $.on(this, event, listener, id, scope, standby);
 					           },
-					           permission: function() { return abaaso.permission(this); },
+					           permission: function() { return $.permission(this); },
 					           trim     : function(){ return this.replace(/^\s+|\s+$/, ""); }}
 				};
 
@@ -3273,10 +3273,10 @@ var abaaso = abaaso || function(){
 
 					for (i = 0; i < nth; i++) {
 						v = null;
-						p = (this.pattern[c[i].nodeName.toLowerCase()]) ? this.pattern[c[i].nodeName.toLowerCase()]
-						                                                : (((c[i].id.isEmpty() === false)
-																			&& (this.pattern[c[i].id.toLowerCase()])) ? this.pattern[c[i].id.toLowerCase()]
-																		                                              : "notEmpty");
+						p = (validate.pattern[c[i].nodeName.toLowerCase()]) ? validate.pattern[c[i].nodeName.toLowerCase()]
+						                                                    : (((c[i].id.isEmpty() === false)
+																			   && (validate.pattern[c[i].id.toLowerCase()])) ? validate.pattern[c[i].id.toLowerCase()]
+																		                                                     : "notEmpty");
 
 						if (/(radio|checkbox)/gi.test(c[i].type)) {
 							if (c[i].name in tracked) { continue; }
@@ -3328,14 +3328,14 @@ var abaaso = abaaso || function(){
 								}
 								break;
 							case "domainip":
-								if ((!this.pattern.domain.test(value))
-									|| (!this.pattern.ip.test(value))) {
+								if ((!validate.pattern.domain.test(value))
+									|| (!validate.pattern.ip.test(value))) {
 									invalid.push({test: i, value: value});
 									exception = true;
 								}
 								break;
 							default:
-								var p = (this.pattern[i] !== undefined) ? this.pattern[i] : i;
+								var p = (validate.pattern[i] !== undefined) ? validate.pattern[i] : i;
 								if (!p.test(value)) {
 									invalid.push({test: i, value: value});
 									exception = true;
@@ -3574,7 +3574,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.015"
+		version         : "1.6.016"
 	};
 }();
 
