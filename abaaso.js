@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.016
+ * @version 1.6.017
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1584,7 +1584,7 @@ var abaaso = abaaso || function(){
 		css : function(content) {
 			try {
 				var ss, css;
-				ss = this.create("style", {type: "text/css"}, $("head")[0]);
+				ss = $.create("style", {type: "text/css"}, $("head")[0]);
 				if (ss.styleSheet) {
 					ss.styleSheet.cssText = content;
 				}
@@ -2823,9 +2823,10 @@ var abaaso = abaaso || function(){
 		 * @param value {Mixed} The value to set
 		 * @param obj {Object} The object to set the value on
 		 */
-		define: function(args, value, obj) {
+		define : function(args, value, obj) {
 			args = args.split(".");
 			obj  = obj || this;
+			(obj === $) ? obj = abaaso : void(0);
 
 			var i = null,
 			    l = args.length,
@@ -2849,7 +2850,7 @@ var abaaso = abaaso || function(){
 		 * @returns undefined
 		 */
 		defer : function(fn, ms) {
-			var id = utility.genId(),
+			var id = $.genId(),
 			    op = function() {
 					delete abaaso.timer[id];
 					fn();
@@ -3441,9 +3442,10 @@ var abaaso = abaaso || function(){
 		error           : utility.error,
 		fire            : function() {
 			var event = (arguments[0] === undefined) ? undefined : arguments[0],
-				arg   = (arguments[1] === undefined) ? undefined : arguments[1];
+				arg   = (arguments[1] === undefined) ? undefined : arguments[1],
+				obj   = (this === $) ? abaaso : this;
 
-			return abaaso.observer.fire(this, event, arg);
+			return abaaso.observer.fire(obj, event, arg);
 		},
 		genId           : utility.genId,
 		get             : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
@@ -3456,13 +3458,6 @@ var abaaso = abaaso || function(){
 				abaaso.client.version = client.version();
 				abaaso.client.css3    = client.css3();
 				abaaso.client.size    = client.size();
-
-				// Hooking abaaso into global helper, it's superficial
-				abaaso.alias($, abaaso);
-				delete $.$;
-				delete $.callback;
-				delete $.timer;
-				$.constructor = abaaso.constructor = abaaso;
 
 				utility.proto(Array, "array");
 				utility.proto(Element, "element");
@@ -3517,17 +3512,17 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				if ((!client.ie) || (client.version > 8)) {
+				if ((!$.ie) || ($.version > 8)) {
 					abaaso.timer.render = setInterval(function(){
 						if (/loaded|complete/.test(document.readyState)) {
 							clearInterval(abaaso.timer.render);
 							delete abaaso.timer.render;
-							abaaso.fire("render").un("render");
+							$.fire("render").un("render");
 						}
 					}, 10);
 				}
 
-				abaaso.fire("ready").un("ready");
+				$.fire("ready").un("ready");
 
 				return abaaso;
 			}
@@ -3538,15 +3533,15 @@ var abaaso = abaaso || function(){
 		},
 		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
-			var all   = (arguments[1] !== undefined) ? true : false;
-			var obj   = (all) ? arguments[0] : abaaso,
+			var all   = (arguments[1] !== undefined) ? true : false,
+			    obj   = (all) ? arguments[0] : abaaso,
 				event = (all) ? arguments[1] : arguments[0];
 
 			return abaaso.observer.list(obj, event);
 		},
 		on              : function() {
-			var all      = (typeof arguments[2] == "function") ? true : false;
-			var obj      = (all) ? arguments[0] : abaaso,
+			var all      = (typeof arguments[2] == "function") ? true : false,
+			    obj      = (all) ? arguments[0] : abaaso,
 				event    = (all) ? arguments[1] : arguments[0],
 				listener = (all) ? arguments[2] : arguments[1],
 				id       = (all) ? arguments[3] : arguments[2],
@@ -3566,28 +3561,35 @@ var abaaso = abaaso || function(){
 		},
 		timer           : {},
 		un              : function() {
-			var all   = (typeof arguments[0] == "string") ? false : true;
-			var obj   = (all) ? arguments[0] : abaaso,
+			var all   = (typeof arguments[0] == "string") ? false : true,
+			    obj   = (all) ? arguments[0] : abaaso,
 				event = (all) ? arguments[1] : arguments[0],
 				id    = (all) ? arguments[2] : arguments[1];
 
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.016"
+		version         : "1.6.017"
 	};
 }();
 
 if (typeof abaaso.init == "function") {
 	var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 
+	// Hooking abaaso into global helper, it's superficial
+	abaaso.alias($, abaaso);
+	delete $.$;
+	delete $.callback;
+	delete $.init;
+	delete $.timer;
+
 	// Registering events
 	switch (true) {
-		case abaaso.client.chrome:
-		case abaaso.client.firefox:
-		case abaaso.client.opera:
-		case abaaso.client.safari:
-		case ((abaaso.client.ie) && (abaaso.client.version > 8)):
+		case $.client.chrome:
+		case $.client.firefox:
+		case $.client.opera:
+		case $.client.safari:
+		case (($.client.ie) && ($.client.version > 8)):
 			document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
 			break;
 		default:
@@ -3596,7 +3598,7 @@ if (typeof abaaso.init == "function") {
 					clearInterval(abaaso.timer.init);
 					delete abaaso.timer.init;
 					abaaso.init();
-					abaaso.fire("render").un("render");
+					$.fire("render").un("render");
 				}
 			}, 10);
 	}
