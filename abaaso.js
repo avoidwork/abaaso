@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.012
+ * @version 1.6.013
  */
 var abaaso = abaaso || function(){
 	/**
@@ -2752,6 +2752,35 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
+		 * Creates an alias of origin on obj
+		 *
+		 * @param obj {Object} Object to alias origin
+		 * @param obj {Object} Object providing structure to obj
+		 * @returns {Object} Object to alias origin
+		 */
+		alias : function(obj, origin){
+			try {
+				var i;
+				for (i in origin) {
+					(function(){
+						var b = i;
+						if (typeof origin[b] == "function") {
+							obj[b] = function(){ return origin[b].apply(this, arguments); };
+						}
+						else if (origin[b] instanceof Object) {
+							(typeof obj[b] == "undefined") ? obj[b] = {} : void(0);
+							abaaso.alias(obj[b], origin[b]);
+						}
+					})();
+				}
+				return obj;
+			}
+			catch (e) {
+				abaaso.error(e, arguments, this);
+			}
+		},
+
+		/**
 		 * Clones an Object
 		 *
 		 * @param obj {Object} Object to clone
@@ -2829,9 +2858,13 @@ var abaaso = abaaso || function(){
 		 * @param scope {Mixed} Object that triggered the Error
 		 */
 		error : function(e, args, scope) {
+			if (e === undefined) {
+				return;
+			}
+
 			var o = {
 				arguments : args,
-				message   : e.message,
+				message   : (typeof e.message != "undefined") ? e.message : e,
 				number    : (typeof e.number != "undefined") ? (e.number & 0xFFFF) : undefined,
 				scope     : scope,
 				timestamp : new Date().toUTCString(),
@@ -3377,6 +3410,7 @@ var abaaso = abaaso || function(){
 
 		// Methods & Properties
 		$               : utility.$,
+		alias           : utility.alias,
 		allow           : client.allow,
 		clean           : cache.clean,
 		clear           : el.clear,
@@ -3402,9 +3436,7 @@ var abaaso = abaaso || function(){
 		id              : "abaaso",
 		init            : function() {
 			try {
-				abaaso.constructor = abaaso;
 				abaaso.ready = true;
-
 				delete abaaso.init;
 
 				abaaso.client.version = client.version();
@@ -3475,18 +3507,12 @@ var abaaso = abaaso || function(){
 				}
 
 				// Hooking abaaso into global helper, it's superficial
-				for (var a in abaaso) { abaaso.define(a, abaaso[a], $); }
+				abaaso.alias($, abaaso);
 				delete $.$;
-				delete $.observer;
-				$.client.request  = function(){ return abaaso.client.request.apply(this, arguments); }
-				$.client.response = function(){ return abaaso.client.response.apply(this, arguments); }
-				$.get   = function(){ return abaaso.get.apply(this, arguments); }
-				$.del   = function(){ return abaaso.del.apply(this, arguments); }
-				$.put   = function(){ return abaaso.put.apply(this, arguments); }
-				$.post  = function(){ return abaaso.post.apply(this, arguments); }
-				$.jsonp = function(){ return abaaso.jsonp.apply(this, arguments); }
-				$.on = function(){ return abaaso.on.apply(this, arguments); }
-				$.un = function(){ return abaaso.un.apply(this, arguments); }
+				delete $.callback;
+				$.constructor = abaaso.constructor = abaaso;
+				$.id = abaaso.id;
+				$.version = abaaso.version;
 
 				abaaso.fire("ready").un("ready");
 
@@ -3535,7 +3561,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.012"
+		version         : "1.6.013"
 	};
 }();
 
