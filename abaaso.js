@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.011
+ * @version 1.6.012
  */
 var abaaso = abaaso || function(){
 	/**
@@ -81,7 +81,7 @@ var abaaso = abaaso || function(){
 				return o;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 			}
 		},
 
@@ -115,7 +115,7 @@ var abaaso = abaaso || function(){
 				return instance.index(arg);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -137,7 +137,7 @@ var abaaso = abaaso || function(){
 				return array1.filter(function(key) {return (array2.indexOf(key) < 0);});
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -157,7 +157,7 @@ var abaaso = abaaso || function(){
 				return instance[0];
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -186,7 +186,7 @@ var abaaso = abaaso || function(){
 				return -1;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return -1;
 			}
 		},
@@ -214,7 +214,7 @@ var abaaso = abaaso || function(){
 				return indexed;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -241,7 +241,7 @@ var abaaso = abaaso || function(){
 				return keys;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -261,7 +261,7 @@ var abaaso = abaaso || function(){
 				return (instance.length > 1) ? instance[(instance.length - 1)] : instance[0];
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -294,7 +294,7 @@ var abaaso = abaaso || function(){
 				return instance;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -317,7 +317,7 @@ var abaaso = abaaso || function(){
 				return i;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return -1;
 			}
 		}
@@ -411,7 +411,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -435,7 +435,7 @@ var abaaso = abaaso || function(){
 										                                 : cache.items[uri][property]   = value;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 			}
 		}
 	};
@@ -547,7 +547,7 @@ var abaaso = abaaso || function(){
 				return result;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -741,7 +741,7 @@ var abaaso = abaaso || function(){
 						return result;
 					}
 					catch (e) {
-						error(e, arguments, this);
+						abaaso.error(e, arguments, this);
 						return 0;
 					}
 				};
@@ -818,7 +818,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				uri.fire("failed" + typed);
 			}
 		},
@@ -1008,7 +1008,7 @@ var abaaso = abaaso || function(){
 				return this;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1089,7 +1089,7 @@ var abaaso = abaaso || function(){
 				return this;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1164,7 +1164,7 @@ var abaaso = abaaso || function(){
 				return result;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1211,7 +1211,7 @@ var abaaso = abaaso || function(){
 				return r;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1246,7 +1246,7 @@ var abaaso = abaaso || function(){
 							this.sync();
 						}
 						catch (e) {
-							error(e, arguments, this);
+							abaaso.error(e, arguments, this);
 							return undefined;
 						}
 					};
@@ -1280,7 +1280,7 @@ var abaaso = abaaso || function(){
 				return obj;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1403,7 +1403,7 @@ var abaaso = abaaso || function(){
 				return this;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1437,7 +1437,7 @@ var abaaso = abaaso || function(){
 					}
 					catch (e) {
 						id.fire("failedDataSync");
-						error(e, arguments, this);
+						abaaso.error(e, arguments, this);
 					}
 				}, guid, this);
 
@@ -1451,7 +1451,7 @@ var abaaso = abaaso || function(){
 				return this;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return this;
 			}
 		}
@@ -1511,7 +1511,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1570,7 +1570,7 @@ var abaaso = abaaso || function(){
 				return obj;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1595,7 +1595,7 @@ var abaaso = abaaso || function(){
 				return ss;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1630,7 +1630,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch(e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1664,7 +1664,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch(e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1700,7 +1700,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch(e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1748,7 +1748,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1814,7 +1814,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1916,7 +1916,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -1939,7 +1939,7 @@ var abaaso = abaaso || function(){
 				return ((arg % 2) === 0);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1955,7 +1955,7 @@ var abaaso = abaaso || function(){
 				return !((arg % 2) === 0);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -1977,7 +1977,7 @@ var abaaso = abaaso || function(){
 				return JSON.parse(arg);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1992,7 +1992,7 @@ var abaaso = abaaso || function(){
 				return JSON.stringify(arg);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2210,7 +2210,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2274,7 +2274,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2299,7 +2299,7 @@ var abaaso = abaaso || function(){
 				return (l[o] !== undefined) ? (((event !== undefined) && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2370,7 +2370,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2435,7 +2435,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2774,7 +2774,7 @@ var abaaso = abaaso || function(){
 				return clone;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2839,8 +2839,8 @@ var abaaso = abaaso || function(){
 			};
 
 			(typeof console != "undefined") ? console.error(o.message) : void(0);
-			(typeof error.log == "undefined") ? error.log = [] : void(0);
-			error.log.push(o);
+			(typeof abaaso.error.log == "undefined") ? abaaso.error.log = [] : void(0);
+			abaaso.error.log.push(o);
 			abaaso.fire("error", o);
 		},
 
@@ -2855,7 +2855,7 @@ var abaaso = abaaso || function(){
 				return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2889,7 +2889,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2947,7 +2947,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2963,7 +2963,7 @@ var abaaso = abaaso || function(){
 				console.log(arg);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 			}
 		},
 
@@ -3176,7 +3176,7 @@ var abaaso = abaaso || function(){
 				for (i in methods.shared) { obj.prototype[i] = methods.shared[i]; }
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 			}
 		}
 	};
@@ -3301,15 +3301,13 @@ var abaaso = abaaso || function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return {pass: false, invalid: {}};
 			}
 		}
 	};
 
-	// Declaring private global instances
-	var $     = utility.$,
-	    error = utility.error;
+	var error = utility.error;
 
 	/**
 	 * Returned to the client
@@ -3476,12 +3474,26 @@ var abaaso = abaaso || function(){
 					}, 10);
 				}
 
+				// Hooking abaaso into global helper, it's superficial
+				for (var a in abaaso) { abaaso.define(a, abaaso[a], $); }
+				delete $.$;
+				delete $.observer;
+				$.client.request  = function(){ return abaaso.client.request.apply(this, arguments); }
+				$.client.response = function(){ return abaaso.client.response.apply(this, arguments); }
+				$.get   = function(){ return abaaso.get.apply(this, arguments); }
+				$.del   = function(){ return abaaso.del.apply(this, arguments); }
+				$.put   = function(){ return abaaso.put.apply(this, arguments); }
+				$.post  = function(){ return abaaso.post.apply(this, arguments); }
+				$.jsonp = function(){ return abaaso.jsonp.apply(this, arguments); }
+				$.on = function(){ return abaaso.on.apply(this, arguments); }
+				$.un = function(){ return abaaso.un.apply(this, arguments); }
+
 				abaaso.fire("ready").un("ready");
 
 				return abaaso;
 			}
 			catch (e) {
-				error(e, arguments, this);
+				abaaso.error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -3523,7 +3535,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.011"
+		version         : "1.6.012"
 	};
 }();
 
