@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.014
+ * @version 1.6.015
  */
 var abaaso = abaaso || function(){
 	/**
@@ -3250,6 +3250,14 @@ var abaaso = abaaso || function(){
 		 */
 		test : function(args) {
 			try {
+				switch (true){
+					case (args === undefined):
+					case (args === null):
+					case (!args instanceof Object):
+						throw Error(label.error.expectedObject);
+						break;
+				}
+
 				var exception = false,
 				    invalid   = [],
 				    value     = null;
@@ -3449,6 +3457,13 @@ var abaaso = abaaso || function(){
 				abaaso.client.css3    = client.css3();
 				abaaso.client.size    = client.size();
 
+				// Hooking abaaso into global helper, it's superficial
+				abaaso.alias($, abaaso);
+				delete $.$;
+				delete $.callback;
+				delete $.timer;
+				$.constructor = abaaso.constructor = abaaso;
+
 				utility.proto(Array, "array");
 				utility.proto(Element, "element");
 				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument, "element") : void(0);
@@ -3512,13 +3527,6 @@ var abaaso = abaaso || function(){
 					}, 10);
 				}
 
-				// Hooking abaaso into global helper, it's superficial
-				abaaso.alias($, abaaso);
-				delete $.$;
-				delete $.callback;
-				delete $.timer;
-				$.constructor = abaaso.constructor = abaaso;
-
 				abaaso.fire("ready").un("ready");
 
 				return abaaso;
@@ -3566,7 +3574,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.014"
+		version         : "1.6.015"
 	};
 }();
 
