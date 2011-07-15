@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.018
+ * @version 1.6.019
  */
 var abaaso = abaaso || function(){
 	/**
@@ -799,7 +799,7 @@ var abaaso = abaaso || function(){
 									((s.previous !== null)
 									 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current)
 									                          : void(0);
-									abaaso.fire(state);
+									$.fire(state);
 								}
 								break;
 							case (xhr.status == 301):
@@ -972,39 +972,57 @@ var abaaso = abaaso || function(){
 		 *             afterDataBatch     Fires after the batch is queued
 		 *
 		 * @param type {String} The type of action to perform
-		 * @param obj {Mixed} Array of keys or indexes to delete, or Object containing multiple records to set
+		 * @param data {Mixed} Array of keys or indexes to delete, or Object containing multiple records to set
 		 * @param sync {Boolean} [Optional] True if called by data.sync
 		 * @returns {Object} The data store
 		 */
-		batch : function(type, obj, sync) {
+		batch : function(type, data, sync) {
 			type = type.toString().toLowerCase() || undefined;
 			sync = (sync === true) ? true : false;
 
 			try {
 				switch (true) {
 					case ((type != "set") && (type != "del")):
-					case (typeof obj != "object"):
+					case (typeof data != "object"):
 						throw Error(label.error.invalidArguments);
 				}
 
-				var id = this.parentNode.id,
-				    i, loop;
+				var obj = this.parentNode,
+				    i, loop, key;
 
-				id.fire("beforeDataBatch");
+				obj.fire("beforeDataBatch");
 
-				if (obj instanceof Array) {
-					for (i = 0, loop = obj.length; i < loop; i++) {
-						(type == "del") ? this.del(i, false) : this.set(new String(i).toString(), obj[i], sync);
+				if (data instanceof Array) {
+					for (i = 0, loop = data.length; i < loop; i++) {
+						switch (true) {
+							case (type == "del"):
+								this.del(data[i], false);
+								break;
+							case (type == "set"):
+								key = (typeof data[i][this.key] != "undefined") ? this.key : i
+								(key != i) ? delete data[i][key] : void(0);
+								this.set(key, data[i], sync);
+								break;
+						}
 					}
 				}
 				else {
-					for (i in obj) {
-						(type == "del") ? this.del(i, false) : this.set(i, obj[i], sync);
+					for (i in data) {
+						switch (true) {
+							case (type == "del"):
+								this.del(data[i], false);
+								break;
+							case (type == "set"):
+								key = (typeof data[i][this.key] != "undefined") ? this.key : i
+								(key != i) ? delete data[i][key] : void(0);
+								this.set(key, data[i], sync);
+								break;
+						}
 					}
 				}
 
 				(type == "del") ? this.reindex() : void(0);
-				id.fire("afterDataBatch");
+				obj.fire("afterDataBatch");
 				return this;
 			}
 			catch (e) {
@@ -1022,12 +1040,12 @@ var abaaso = abaaso || function(){
 		 * @returns {Object} The data store being cleared
 		 */
 		clear : function() {
-			var id = this.parentNode.id;
-			id.fire("beforeDataClear");
+			var obj = this.parentNode;
+			obj.fire("beforeDataClear");
 			this.uri     = null;
 			this.keys    = [];
 			this.records = [];
-			id.fire("afterDataClear");
+			obj.fire("afterDataClear");
 			return this;
 		},
 
@@ -1047,7 +1065,7 @@ var abaaso = abaaso || function(){
 			try {
 				reindex = (reindex === false) ? false : true;
 
-				var id   = this.parentNode.id,
+				var obj  = this.parentNode,
 				    guid = $.genId(),
 				    key;
 
@@ -1073,18 +1091,19 @@ var abaaso = abaaso || function(){
 					key = key.key;
 				}
 
-				id.on("syncDataDelete", function(){
-					id.un("syncDataDelete", guid);
+				obj.on("syncDataDelete", function(){
+					obj.un("syncDataDelete", guid);
 					delete this.records[record];
 					delete this.keys[key];
 					(reindex === true) ? this.reindex() : void(0);
-					id.fire("afterDataDelete");
+					obj.fire("afterDataDelete");
+					return this;
 				}, guid, this);
 
-				id.fire("beforeDataDelete");
+				obj.fire("beforeDataDelete");
 
-				(this.uri === null) ? id.fire("syncDataDelete")
-				                    : abaaso.del(this.uri+"/"+key, function(){ id.fire("syncDataDelete"); }, function(){ id.fire("failedDataDelete"); });
+				(this.uri === null) ? obj.fire("syncDataDelete")
+				                    : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
 
 				return this;
 			}
@@ -1115,8 +1134,10 @@ var abaaso = abaaso || function(){
 				    result = [],
 				    nth    = h.length,
 					nth2   = n.length,
-					id     = this.parentNode.id,
+					obj    = this.parentNode,
 					x, y, f, r, s, p, i;
+
+				obj.fire("beforeDataFind");
 
 				if ((haystack === undefined)
 					|| (!haystack instanceof Array)) {
@@ -1144,7 +1165,6 @@ var abaaso = abaaso || function(){
 				}
 
 				i = this.records.length
-				id.fire("beforeDataFind");
 
 				while (i--) {
 					for (x = 0; x < nth; x++) {
@@ -1160,7 +1180,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				id.fire("afterDataFind");
+				obj.fire("afterDataFind");
 				return result;
 			}
 			catch (e) {
@@ -1182,11 +1202,11 @@ var abaaso = abaaso || function(){
 		 */
 		get : function(record) {
 			try {
-				var r  = [],
-				    id = this.parentNode.id,
+				var r   = [],
+				    obj = this.parentNode,
 				    i, start, end;
 
-				id.fire("beforeDataGet");
+				obj.fire("beforeDataGet");
 
 				if (typeof record == "string") {
 					r = (this.keys[record] !== undefined) ? this.records[this.keys[record].index] : undefined;
@@ -1207,7 +1227,7 @@ var abaaso = abaaso || function(){
 					r = this.records[record];
 				}
 
-				id.fire("afterDataGet");
+				obj.fire("afterDataGet");
 				return r;
 			}
 			catch (e) {
@@ -1254,7 +1274,13 @@ var abaaso = abaaso || function(){
 					obj = utility.object(obj);
 					$.genId(obj);
 
-					obj.id.fire("beforeDataStore");
+					// Hooking in the observer
+					(typeof obj.fire == "undefined") ? obj.fire = function(){ return $.fire.apply(this, arguments); } : void(0);
+					(typeof obj.listeners == "undefined") ? obj.listeners = function(){ return $.listeners.apply(this, arguments); } : void(0);
+					(typeof obj.on == "undefined")   ? obj.on   = function(){ return $.on.apply(this, arguments); }   : void(0);
+					(typeof obj.un == "undefined")   ? obj.un   = function(){ return $.un.apply(this, arguments); }   : void(0);
+
+					obj.fire("beforeDataStore");
 
 					obj.data = utility.clone(this);
 					obj.data.parentNode = obj; // Recursion, but expected I guess
@@ -1275,7 +1301,7 @@ var abaaso = abaaso || function(){
 					}
 
 					(typeof data == "object") ? obj.data.batch("set", data) : void(0);
-					obj.id.fire("afterDataStore");
+					obj.fire("afterDataStore");
 				}
 				return obj;
 			}
@@ -1296,10 +1322,10 @@ var abaaso = abaaso || function(){
 		reindex : function() {
 			var n   = 0,
 			    nth = this.records.length,
-			    id  = this.parentNode.id,
+			    obj = this.parentNode,
 			    key, index, i;
 
-			id.fire("beforeDataReindex");
+			obj.fire("beforeDataReindex");
 
 			for (i = 0; i < nth; i++) {
 				if (this.records[i] !== undefined) {
@@ -1317,7 +1343,7 @@ var abaaso = abaaso || function(){
 			}
 
 			this.records.length = n;
-			id.fire("afterDataReindex");
+			obj.fire("afterDataReindex");
 			return this;
 		},
 
@@ -1362,7 +1388,7 @@ var abaaso = abaaso || function(){
 					id.un("syncDataSet", guid);
 					if (record === undefined) {
 						if (key === undefined) {
-							arg = abaaso.decode(arg);
+							arg = $.decode(arg);
 
 							if (arg === undefined) {
 								this.parentNode.id.fire("failedDataSet");
@@ -1372,9 +1398,9 @@ var abaaso = abaaso || function(){
 							key = (this.key === null) ? array.cast(arg).first() : arg[this.key];
 						}
 
-						this.keys[key] = {};
+						this.keys[data[key]] = {};
 						index = this.records.length;
-						this.keys[key].index = index;
+						this.keys[data[key]].index = index;
 						this.records[index] = {};
 						this.records[index].data = data;
 						this.records[index].key  = key;
@@ -1396,9 +1422,9 @@ var abaaso = abaaso || function(){
 
 				id.fire("beforeDataSet");
 
-				(this.uri === null)
-				 || (sync === true) ? id.fire("syncDataSet")
-				                    : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncDataSet", arg); }, function(){ id.fire("failedDataSet"); }, data);
+				((this.uri === null)
+				 || (sync === true)) ? id.fire("syncDataSet")
+				                     : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -1422,32 +1448,33 @@ var abaaso = abaaso || function(){
 					throw Error(label.error.invalidArguments);
 				}
 
-				var id   = this.parentNode.id,
-				    guid = $.genId();
+				var obj  = this.parentNode,
+				    guid = $.genId(),
+				    success, failure;
 
 				this.uri.on("afterGet", function(arg){
 					this.uri.un("afterGet", guid);
 					try {
-						var data = abaaso.decode(arg);
+						var data = $.decode(arg);
 						if (data === undefined) {
 							throw Error(label.error.expectedObject);
 						}
 						this.batch("set", data, true);
-						id.fire("afterDataSync");
+						obj.fire("afterDataSync");
 					}
 					catch (e) {
-						id.fire("failedDataSync");
+						obj.fire("failedDataSync");
 						$.error(e, arguments, this);
 					}
 				}, guid, this);
 
 				this.uri.on("failedGet", function(){
 					this.uri.un("afterGet", guid);
-					id.fire("failedDataSync");
+					obj.fire("failedDataSync");
 				}, guid, this);
 
-				id.fire("beforeDataSync");
-				abaaso.get(this.uri);
+				obj.fire("beforeDataSync");
+				$.get(this.uri);
 				return this;
 			}
 			catch (e) {
@@ -3043,10 +3070,6 @@ var abaaso = abaaso || function(){
 					           indexed  : function() { return $.array.indexed(this); },
 					           keys     : function() { return $.array.keys(this); },
 					           last     : function(arg) { return $.array.last(this); },
-					           on       : function(event, listener, id, scope, standby) {
-					           		scope = (scope === true) ? true : false;
-					           		return $.on(this, event, listener, id, scope, standby);
-					           },
 					           remove   : function(arg) { return $.array.remove(this, arg); },
 					           total    : function() { return $.array.total(this); }},
 					element : {create   : function(type, args) {
@@ -3570,7 +3593,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.018"
+		version         : "1.6.019"
 	};
 }();
 
