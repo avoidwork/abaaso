@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.031
+ * @version 1.6.032
  */
 var abaaso = abaaso || function(){
 	/**
@@ -272,26 +272,26 @@ var abaaso = abaaso || function(){
 		 * Events:    beforeRemove      Fires before modifying the array
 		 *            afterRemove       Fires after modifying the array
 		 *
-		 * @param instance {Array} An instance of the array to use
+		 * @param obj {Array} Array to remove from
 		 * @param start {Integer} The starting position
 		 * @param end {Integer} The ending position (optional)
 		 * @returns {Array} A scrubbed array
 		 */
-		remove : function(instance, start, end) {
+		remove : function(obj, start, end) {
 			try {
-				if (!instance instanceof Array) {
+				if (!obj instanceof Array) {
 					throw new Error(label.error.expectedArray);
 				}
 
-				var remaining;
 				start = start || 0;
-				instance.fire("beforeRemove");
-				remaining = instance.slice((end || start)+1 || instance.length);
-				instance.length = (start < 0) ? (instance.length + start) : start;
-				instance.push.apply(obj, remaining);
-				instance.fire("afterRemove");
 
-				return instance;
+				var length    = obj.length,
+				    remaining = obj.slice((end || start)+1 || length);
+
+				obj.length = (start < 0) ? (length + start) : start;
+				obj.push.apply(obj, remaining);
+
+				return obj;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -964,9 +964,12 @@ var abaaso = abaaso || function(){
 		// Identifies the key in a POST response
 		key     : null,
 
-		// Associative arrays of records
+		// Record storage
 		keys    : [],
-		records : [],
+		records : {},
+
+		// Total records in the store
+		total   : 0,
 
 		// URI the data store represents (RESTful behavior),
 		// has a getter & setter as 'uri'
@@ -1052,7 +1055,7 @@ var abaaso = abaaso || function(){
 			var obj = this.parentNode;
 			obj.fire("beforeDataClear");
 			this.uri     = null;
-			this.keys    = [];
+			this.keys    = {};
 			this.records = [];
 			obj.fire("afterDataClear");
 			return this;
@@ -1073,6 +1076,18 @@ var abaaso = abaaso || function(){
 		del : function(record, reindex) {
 			try {
 				reindex = (reindex === false) ? false : true;
+
+				if (record instanceof Array) {
+					for (var i = 0, loop = record.length; i < loop; i++) {
+						var guid = $.genId();
+						(i == loop) ? this.on("afterDataDelete", function(){
+							this.un("afterDataDelete", guid);
+							(reindex === true) ? this.reindex() : void(0);
+						}, guid, this) : void(0);
+						this.del(record[i], false);
+					}
+					return this;
+				}
 
 				var obj  = this.parentNode,
 				    guid = $.genId(),
@@ -1102,8 +1117,9 @@ var abaaso = abaaso || function(){
 
 				obj.on("syncDataDelete", function(){
 					obj.un("syncDataDelete", guid);
-					delete this.records[record];
+					this.records.remove(record);
 					delete this.keys[key];
+					this.total--;
 					(reindex === true) ? this.reindex() : void(0);
 					obj.fire("afterDataDelete");
 					return this;
@@ -1294,8 +1310,9 @@ var abaaso = abaaso || function(){
 
 					obj.fire("beforeDataStore");
 					obj.data = utility.clone(this);
-					obj.data.keys    = [];
+					obj.data.keys    = {};
 					obj.data.records = [];
+					obj.data.total   = 0;
 					obj.data.parentNode = obj; // Recursion, but expected I guess
 					delete obj.data.register;
 
@@ -1419,6 +1436,7 @@ var abaaso = abaaso || function(){
 						this.records[index].key  = key;
 						record = this.records[index];
 						(this.key !== null) ? delete this.records[index].data[this.key] : void(0);
+						this.total++;
 					}
 					else {
 						if (typeof(data) == "object") {
@@ -3614,7 +3632,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.031"
+		version         : "1.6.032"
 	};
 }();
 
