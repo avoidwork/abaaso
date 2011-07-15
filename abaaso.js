@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.028
+ * @version 1.6.029
  */
 var abaaso = abaaso || function(){
 	/**
@@ -615,6 +615,7 @@ var abaaso = abaaso || function(){
 			else {
 				var xhr     = new XMLHttpRequest(),
 				    payload = (/post|put/i.test(type)) ? args : null,
+				    headers = ((/get/i.test(type)) && (args instanceof Object)) ? args : null,
 				    cached  = cache.get(uri, false),
 					typed   = type.toLowerCase().capitalize(),
 					timer   = function(){
@@ -662,6 +663,12 @@ var abaaso = abaaso || function(){
 							break;
 						default:
 							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+					}
+				}
+
+				if (headers !== null) {
+					for (i in headers) {
+						xhr.setRequestHeader(i, headers[i]);
 					}
 				}
 
@@ -3088,7 +3095,7 @@ var abaaso = abaaso || function(){
 							  },
 							  disable   : function() { return $.el.disable(this); },
 							  enable    : function() { return $.el.enable(this); },
-							  get       : function(uri) {
+							  get       : function(uri, headers) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
 									    guid   = $.genId();
@@ -3098,7 +3105,7 @@ var abaaso = abaaso || function(){
 											this.text(cache.get(uri, false).response);
 											this.fire("afterGet");
 											}, guid, this);
-										$.get(uri);
+										$.get(uri, undefined, undefined, headers);
 									}
 									else {
 										this.text(cached.response);
@@ -3424,7 +3431,7 @@ var abaaso = abaaso || function(){
 
 			// Methods
 			del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
-			get     : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
+			get     : function(uri, success, failure, headers){ client.request(uri, "GET", success, failure, headers); },
 			options : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
 			post    : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
 			put     : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
@@ -3481,7 +3488,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.fire(obj, event, arg);
 		},
 		genId           : utility.genId,
-		get             : function(uri, success, failure){ client.request(uri, "GET", success, failure); },
+		get             : function(uri, success, failure, headers){ client.request(uri, "GET", success, failure, headers); },
 		id              : "abaaso",
 		init            : function() {
 			try {
@@ -3604,7 +3611,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.028"
+		version         : "1.6.029"
 	};
 }();
 
