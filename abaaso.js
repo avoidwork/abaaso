@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.030
+ * @version 1.6.031
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1294,6 +1294,8 @@ var abaaso = abaaso || function(){
 
 					obj.fire("beforeDataStore");
 					obj.data = utility.clone(this);
+					obj.data.keys    = [];
+					obj.data.records = [];
 					obj.data.parentNode = obj; // Recursion, but expected I guess
 					delete obj.data.register;
 
@@ -1376,7 +1378,7 @@ var abaaso = abaaso || function(){
 		 */
 		set : function(key, data, sync) {
 			try {
-				(key === null) ? key = undefined : void(0);
+				key = (key === null) ? undefined : key.toString();
 				sync = (sync === true) ? true : false;
 
 				switch (true) {
@@ -1395,11 +1397,11 @@ var abaaso = abaaso || function(){
 				    guid   = $.genId(),
 				    arg, index;
 
-				obj.on("syncDataSet", function(arg){
+				obj.on("syncDataSet", function(){
 					obj.un("syncDataSet", guid);
 					if (record === undefined) {
 						if (key === undefined) {
-							arg = $.decode(arg);
+							arg = $.decode(arguments[0]);
 
 							if (arg === undefined) {
 								obj.fire("failedDataSet");
@@ -3612,7 +3614,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.030"
+		version         : "1.6.031"
 	};
 }();
 
