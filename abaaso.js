@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.029
+ * @version 1.6.030
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1007,7 +1007,7 @@ var abaaso = abaaso || function(){
 								break;
 							case (type == "set"):
 								key = ((this.key !== null)
-								       || (typeof data[i][this.key] != "undefined")) ? this.key : i;
+								       && (typeof data[i][this.key] != "undefined")) ? this.key : i;
 								(key == i) ? key = key.toString() : void(0);
 								this.set(key, data[i], sync);
 								break;
@@ -1022,7 +1022,7 @@ var abaaso = abaaso || function(){
 								break;
 							case (type == "set"):
 								key = ((this.key !== null)
-								       || (typeof data[i][this.key] != "undefined")) ? this.key : i;
+								       && (typeof data[i][this.key] != "undefined")) ? this.key : i;
 								(key != i) ? delete data[i][key] : key = key.toString();
 								this.set(key, data[i], sync);
 								break;
@@ -1408,14 +1408,15 @@ var abaaso = abaaso || function(){
 
 							key = (this.key === null) ? array.cast(arg).first() : arg[this.key];
 						}
-						this.keys[data[key]] = {};
+						(typeof data[key] != "undefined") ? key = data[key] : void(0);
+						this.keys[key] = {};
 						index = this.records.length;
-						this.keys[data[key]].index = index;
+						this.keys[key].index = index;
 						this.records[index] = {};
 						this.records[index].data = data;
-						this.records[index].key  = data[key];
+						this.records[index].key  = key;
 						record = this.records[index];
-						delete this.records[index].data[this.key];
+						(this.key !== null) ? delete this.records[index].data[this.key] : void(0);
 					}
 					else {
 						if (typeof(data) == "object") {
@@ -1435,7 +1436,7 @@ var abaaso = abaaso || function(){
 
 				((this.uri === null)
 				 || (sync === true)) ? obj.fire("syncDataSet")
-				                     : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
+				                     : $[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -3611,7 +3612,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.029"
+		version         : "1.6.030"
 	};
 }();
 
