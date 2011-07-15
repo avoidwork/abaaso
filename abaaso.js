@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.032
+ * @version 1.6.033
  */
 var abaaso = abaaso || function(){
 	/**
@@ -966,7 +966,7 @@ var abaaso = abaaso || function(){
 
 		// Record storage
 		keys    : [],
-		records : {},
+		records : [],
 
 		// Total records in the store
 		total   : 0,
@@ -998,12 +998,12 @@ var abaaso = abaaso || function(){
 				}
 
 				var obj = this.parentNode,
-				    i, loop, key;
+				    i, nth, key;
 
 				obj.fire("beforeDataBatch");
 
 				if (data instanceof Array) {
-					for (i = 0, loop = data.length; i < loop; i++) {
+					for (i = 0, nth = data.length; i < nth; i++) {
 						switch (true) {
 							case (type == "del"):
 								this.del(data[i], false);
@@ -1055,7 +1055,7 @@ var abaaso = abaaso || function(){
 			var obj = this.parentNode;
 			obj.fire("beforeDataClear");
 			this.uri     = null;
-			this.keys    = {};
+			this.keys    = [];
 			this.records = [];
 			obj.fire("afterDataClear");
 			return this;
@@ -1078,13 +1078,8 @@ var abaaso = abaaso || function(){
 				reindex = (reindex === false) ? false : true;
 
 				if (record instanceof Array) {
-					for (var i = 0, loop = record.length; i < loop; i++) {
-						var guid = $.genId();
-						(i == loop) ? this.on("afterDataDelete", function(){
-							this.un("afterDataDelete", guid);
-							(reindex === true) ? this.reindex() : void(0);
-						}, guid, this) : void(0);
-						this.del(record[i], false);
+					for (var i = 0, nth = record.length; i < nth; i++) {
+						this.del(record[i], (((i + 1) === nth) ? true : false));
 					}
 					return this;
 				}
@@ -1310,7 +1305,7 @@ var abaaso = abaaso || function(){
 
 					obj.fire("beforeDataStore");
 					obj.data = utility.clone(this);
-					obj.data.keys    = {};
+					obj.data.keys    = [];
 					obj.data.records = [];
 					obj.data.total   = 0;
 					obj.data.parentNode = obj; // Recursion, but expected I guess
@@ -1350,29 +1345,20 @@ var abaaso = abaaso || function(){
 		 * @returns {Object} The data store
 		 */
 		reindex : function() {
-			var n   = 0,
-			    nth = this.records.length,
+			var nth = this.total,
 			    obj = this.parentNode,
-			    key, index, i;
+			    i;
 
 			obj.fire("beforeDataReindex");
-
-			for (i = 0; i < nth; i++) {
-				if (this.records[i] !== undefined) {
-					key   = this.records[i].key;
-					index = parseInt(this.keys[key].index);
-
-					if (index != n) {
-						this.records[n] = this.records[i];
-						this.keys[key].index = n;
-						delete this.records[i];
-					}
-
-					n++
+			for(i = 0; i < nth; i++) {
+				if (this.records[i].key.isNumber()) {
+					delete this.keys[this.records[i].key];
+					this.keys[i.toString()] = {};
+					this.keys[i.toString()].index = i;
+					this.records[i].key = i.toString();
 				}
 			}
-
-			this.records.length = n;
+			this.keys.length = this.total;
 			obj.fire("afterDataReindex");
 			return this;
 		},
@@ -3632,7 +3618,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.032"
+		version         : "1.6.033"
 	};
 }();
 
