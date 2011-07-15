@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.023
+ * @version 1.6.024
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1279,11 +1279,13 @@ var abaaso = abaaso || function(){
 					// Hooking in the observer
 					(typeof obj.fire == "undefined") ? obj.fire = function(){ return $.fire.apply(this, arguments); } : void(0);
 					(typeof obj.listeners == "undefined") ? obj.listeners = function(){ return $.listeners.apply(this, arguments); } : void(0);
-					(typeof obj.on == "undefined")   ? obj.on   = function(){ return $.on.apply(this, arguments); }   : void(0);
-					(typeof obj.un == "undefined")   ? obj.un   = function(){ return $.un.apply(this, arguments); }   : void(0);
+					(typeof obj.on == "undefined") ? obj.on = function(event, listener, id, scope, standby) {
+						scope = scope || this;
+						return $.on(this, event, listener, id, scope, standby);
+					} : void(0);
+					(typeof obj.un == "undefined") ? obj.un = function(event, id) { return $.un(this, event, id); } : void(0);
 
 					obj.fire("beforeDataStore");
-
 					obj.data = utility.clone(this);
 					obj.data.parentNode = obj; // Recursion, but expected I guess
 					delete obj.data.register;
@@ -1382,18 +1384,18 @@ var abaaso = abaaso || function(){
 
 				var record = ((this.keys[key] === undefined)
 				              && (this.records[key] === undefined)) ? undefined : this.get(key),
-				    id     = this.parentNode.id,
+				    obj    = this.parentNode,
 				    guid   = $.genId(),
 				    arg, index;
 
-				id.on("syncDataSet", function(arg){
-					id.un("syncDataSet", guid);
+				obj.on("syncDataSet", function(arg){
+					obj.un("syncDataSet", guid);
 					if (record === undefined) {
 						if (key === undefined) {
 							arg = $.decode(arg);
 
 							if (arg === undefined) {
-								this.parentNode.id.fire("failedDataSet");
+								obj.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
 
@@ -1419,14 +1421,14 @@ var abaaso = abaaso || function(){
 							this.records[record.index] = data;
 						}
 					}
-					id.fire("afterDataSet");
+					obj.fire("afterDataSet");
 				}, guid, this);
 
-				id.fire("beforeDataSet");
+				obj.fire("beforeDataSet");
 
 				((this.uri === null)
-				 || (sync === true)) ? id.fire("syncDataSet")
-				                     : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ id.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
+				 || (sync === true)) ? obj.fire("syncDataSet")
+				                     : abaaso[((key === undefined) ? "post" : "put")]((key === undefined) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -1465,8 +1467,8 @@ var abaaso = abaaso || function(){
 						obj.fire("afterDataSync");
 					}
 					catch (e) {
-						obj.fire("failedDataSync");
 						$.error(e, arguments, this);
+						obj.fire("failedDataSync");
 					}
 				}, guid, this);
 
@@ -3599,7 +3601,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.023"
+		version         : "1.6.024"
 	};
 }();
 
