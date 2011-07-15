@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.019
+ * @version 1.6.020
  */
 var abaaso = abaaso || function(){
 	/**
@@ -999,8 +999,9 @@ var abaaso = abaaso || function(){
 								this.del(data[i], false);
 								break;
 							case (type == "set"):
-								key = (typeof data[i][this.key] != "undefined") ? this.key : i
-								(key != i) ? delete data[i][key] : void(0);
+								key = ((this.key !== null)
+								       || (typeof data[i][this.key] != "undefined")) ? this.key : i;
+								(key != i) ? delete data[i][key] : key = key.toString();
 								this.set(key, data[i], sync);
 								break;
 						}
@@ -1013,8 +1014,9 @@ var abaaso = abaaso || function(){
 								this.del(data[i], false);
 								break;
 							case (type == "set"):
-								key = (typeof data[i][this.key] != "undefined") ? this.key : i
-								(key != i) ? delete data[i][key] : void(0);
+								key = ((this.key !== null)
+								       || (typeof data[i][this.key] != "undefined")) ? this.key : i;
+								(key != i) ? delete data[i][key] : key = key.toString();
 								this.set(key, data[i], sync);
 								break;
 						}
@@ -3593,7 +3595,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.019"
+		version         : "1.6.020"
 	};
 }();
 
