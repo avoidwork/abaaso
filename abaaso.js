@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.033
+ * @version 1.6.034
  */
 var abaaso = abaaso || function(){
 	/**
@@ -1077,13 +1077,6 @@ var abaaso = abaaso || function(){
 			try {
 				reindex = (reindex === false) ? false : true;
 
-				if (record instanceof Array) {
-					for (var i = 0, nth = record.length; i < nth; i++) {
-						this.del(record[i], (((i + 1) === nth) ? true : false));
-					}
-					return this;
-				}
-
 				var obj  = this.parentNode,
 				    guid = $.genId(),
 				    key;
@@ -1354,9 +1347,9 @@ var abaaso = abaaso || function(){
 				if (this.records[i].key.isNumber()) {
 					delete this.keys[this.records[i].key];
 					this.keys[i.toString()] = {};
-					this.keys[i.toString()].index = i;
 					this.records[i].key = i.toString();
 				}
+				this.keys[this.records[i].key].index = i;
 			}
 			this.keys.length = this.total;
 			obj.fire("afterDataReindex");
@@ -3618,7 +3611,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.033"
+		version         : "1.6.034"
 	};
 }();
 
