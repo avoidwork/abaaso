@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.037
+ * @version 1.6.038
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -2153,7 +2153,7 @@ var abaaso = abaaso || function(){
 				else {
 					(document.removeEventListener) ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track);
 				}
-				m.enabled = n;
+				$.mouse.enabled = m.enabled = n;
 			}
 			return m;
 		}
@@ -3613,7 +3613,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.037"
+		version         : "1.6.038"
 	};
 }();
 
