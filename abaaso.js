@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.041
+ * @version 1.6.043
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -2165,9 +2165,9 @@ var abaaso = abaaso || function(){
 	 */
 	var observer = {
 		/**
-		 * Array of event listeners
+		 * Collection event listeners
 		 */
-		listeners : [],
+		listeners : {},
 
 		/**
 		 * If true, events fired are written to the console
@@ -2198,30 +2198,36 @@ var abaaso = abaaso || function(){
 					return obj;
 				}
 				else {
-					var instance = null,
-					    l        = observer.listeners,
-					    o        = (obj.id !== undefined) ? obj.id : obj;
-
 					obj     = utility.object(obj);
+					((id === undefined) || (id.toString().isEmpty())) ? id = utility.id().toString() : void(0);
 					standby = (standby === true) ? true : false;
 
-					if ((o === undefined)
-					    || (event === undefined)
-					    || (typeof fn != "function")
-					    || ((standby)
-						&& (id === undefined))) {
-						throw new Error(label.error.invalidArguments);
+					var instance = null,
+					    l        = observer.listeners,
+					    o        = (obj.id !== undefined) ? obj.id : obj,
+					    item;
+
+					switch (true) {
+						case (o === undefined):
+						case (event === undefined):
+						case (typeof fn != "function"):
+						case ((standby) && (id === undefined)):
+							throw new Error(label.error.invalidArguments);
 					}
 
-					(l[o] === undefined) ? l[o] = [] : void(0);
-					(l[o][event] === undefined) ? l[o][event] = [] : void(0);
-					(l[o][event].active === undefined) ? l[o][event].active = [] : void(0);
+					switch (true) {
+						case (l[o] === undefined):
+							l[o] = {};
+						case (l[o][event] === undefined):
+							l[o][event] = {};
+						case (l[o][event].active === undefined):
+							l[o][event].active = {};
+					}
 
-					var item = {fn: fn};
-					((scope !== undefined) && (scope !== null)) ? item.scope = scope : void(0);
+					item = {fn: fn, scope: scope};
 
 					if (!standby) {
-						(id !== undefined) ? l[o][event].active[id] = item : l[o][event].active.push(item);
+						l[o][event].active[id] = item;
 						instance = (o != "abaaso") ? $("#"+o) : null;
 						((instance !== null)
 						 && (event != "afterJSONP")
@@ -2241,7 +2247,7 @@ var abaaso = abaaso || function(){
 						                              : void(0);
 					}
 					else {
-						(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
+						(l[o][event].standby === undefined) ? l[o][event].standby = {} : void(0);
 						l[o][event].standby[id] = item;
 					}
 
@@ -2275,37 +2281,28 @@ var abaaso = abaaso || function(){
 					return obj;
 				}
 				else {
-					obj     = utility.object(obj);
-					var o   = (obj.id !== undefined) ? obj.id : obj.toString(),
-					    i;
+					obj   = utility.object(obj);
+					var o = (obj.id !== undefined) ? obj.id : obj.toString(),
+					    l, i, c, f, s;
 
-					if ((o === undefined)
-					    || (o.isEmpty())
-					    || (obj === undefined)
-					    || (event === undefined)) {
-						throw new Error(label.error.invalidArguments);
+					switch (true) {
+						case (o === undefined):
+						case (o.isEmpty()):
+						case (obj === undefined):
+						case (event === undefined):
+							throw new Error(label.error.invalidArguments);
 					}
 
 					(abaaso.observer.log === true) ? utility.log(o + " fired " + event) : void(0);
 
-					var listeners = observer.list(obj, event).active;
+					l = observer.list(obj, event).active;
 
-					if (listeners !== undefined) {
-						for (i in listeners) {
-							if ((listeners[i] !== undefined)
-							    && (typeof listeners[i] != "function")
-							    && (listeners[i].fn)) {
-								if (listeners[i].scope !== undefined) {
-									var instance = (typeof listeners[i].scope == "object") ? listeners[i].scope : $("#"+listeners[i].scope),
-									    fn       = listeners[i].fn,
-									    scope    = (instance !== undefined) ? instance : listeners[i].scope;
-
-									(arg === undefined) ? fn.call(scope) : fn.call(scope, arg);
-								}
-								else {
-									(arg === undefined) ? listeners[i].fn() : listeners[i].fn(arg);
-								}
-							}
+					if (l !== undefined) {
+						for (i in l) {
+							c = (typeof l[i].scope == "object") ? l[i].scope : $("#"+l[i].scope);
+							f = l[i].fn;
+							s = (c !== undefined) ? c : abaaso;
+							(arg === undefined) ? f.call(s) : f.call(s, arg);
 						}
 					}
 
@@ -2335,7 +2332,7 @@ var abaaso = abaaso || function(){
 				var l = this.listeners,
 				    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-				return (l[o] !== undefined) ? (((event !== undefined) && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
+				return (l[o] !== undefined) ? (((event !== undefined) && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : {};
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -2369,43 +2366,43 @@ var abaaso = abaaso || function(){
 					    o        = (obj.id !== undefined) ? obj.id : obj.toString(),
 					    l        = observer.listeners;
 
-					if ((o === undefined)
-					    || (event === undefined)
-					    || (l[o] === undefined)
-					    || (l[o][event] === undefined)) {
-						return obj;
+					switch (true) {
+						case (o === undefined):
+						case (event === undefined):
+						case (l[o] === undefined):
+						case (l[o][event] === undefined):
+							return obj;
 					}
-					else {
-						if (id === undefined) {
-							delete l[o][event];
-							instance = (o != "abaaso") ? $("#"+o) : null;
-							((instance !== null)
-							 && (event != "afterJSONP")
-							 && (instance !== undefined)) ? ((typeof instance.removeEventListener == "function")
-											 ? instance.removeEventListener(event, function(e){
-												(!e) ? e = window.event : void(0);
-												e.cancelBubble = true;
-												(typeof e.stopPropagation == "function") ? e.stopPropagation() : void(0);
-												instance.fire(event);
-											   }, false)
-											 : instance.detachEvent("on" + event, function(e){
-												(!e) ? e = window.event : void(0);
-												e.cancelBubble = true;
-												(typeof e.stopPropagation == "function") ? e.stopPropagation() : void(0);
-												instance.fire(event);
-											   })) : void(0);
-						}
-						else if (l[o][event].active[id] !== undefined) {
-							delete l[o][event].active[id];
 
-							if ((l[o][event].standby !== undefined)
-							    && (l[o][event].standby[id] !== undefined)) {
-								delete l[o][event].standby[id];
-							}
-						}
-
-						return obj;
+					if (id === undefined) {
+						delete l[o][event];
+						instance = (o != "abaaso") ? $("#"+o) : null;
+						((instance !== null)
+						 && (event != "afterJSONP")
+						 && (instance !== undefined)) ? ((typeof instance.removeEventListener == "function")
+										 ? instance.removeEventListener(event, function(e){
+											(!e) ? e = window.event : void(0);
+											e.cancelBubble = true;
+											(typeof e.stopPropagation == "function") ? e.stopPropagation() : void(0);
+											instance.fire(event);
+										   }, false)
+										 : instance.detachEvent("on" + event, function(e){
+											(!e) ? e = window.event : void(0);
+											e.cancelBubble = true;
+											(typeof e.stopPropagation == "function") ? e.stopPropagation() : void(0);
+											instance.fire(event);
+										   })) : void(0);
 					}
+					else if (l[o][event].active[id] !== undefined) {
+						delete l[o][event].active[id];
+
+						if ((l[o][event].standby !== undefined)
+						    && (l[o][event].standby[id] !== undefined)) {
+							delete l[o][event].standby[id];
+						}
+					}
+
+					return obj;
 				}
 			}
 			catch (e) {
@@ -2441,29 +2438,31 @@ var abaaso = abaaso || function(){
 					var l = observer.listeners,
 					    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-					if ((o === undefined)
-					    || (event === undefined)
-					    || (id === undefined)
-					    || (sId === undefined)
-					    || (l[o] === undefined)
-					    || (l[o][event] === undefined)
-					    || (l[o][event].active === undefined)
-					    || (l[o][event].active[id] === undefined)) {
-						throw new Error(label.error.invalidArguments);
+					switch (true) {
+						case (o === undefined):
+						case (event === undefined):
+						case (id === undefined):
+						case (sId === undefined):
+					    case (l[o] === undefined):
+					    case (l[o][event] === undefined):
+					    case (l[o][event].active === undefined):
+					    case (l[o][event].active[id] === undefined):
+							throw new Error(label.error.invalidArguments);
 					}
 
-					(l[o][event].standby === undefined) ? l[o][event].standby = [] : void(0);
+					(l[o][event].standby === undefined) ? l[o][event].standby = {} : void(0);
 
 					if (typeof listener == "string") {
-						if ((l[o][event].standby[listener] === undefined)
-						    || (l[o][event].standby[listener].fn === undefined)) {
-							throw new Error(label.error.invalidArguments);
+						switch (true) {
+							case (l[o][event].standby[listener] === undefined):
+							case (l[o][event].standby[listener].fn === undefined):
+								throw new Error(label.error.invalidArguments);
 						}
-						else {
-							listener = l[o][event].standby[listener].fn;
-						}
+
+						listener = l[o][event].standby[listener].fn;
 					}
-					else if (typeof listener != "function") {
+
+					if (typeof listener != "function") {
 						throw new Error(label.error.invalidArguments);
 					}
 
@@ -3486,7 +3485,6 @@ var abaaso = abaaso || function(){
 		id              : "abaaso",
 		init            : function() {
 			try {
-				abaaso.ready = true;
 				delete abaaso.init;
 
 				$.client.version = abaaso.client.version = client.version();
@@ -3546,6 +3544,9 @@ var abaaso = abaaso || function(){
 					}
 				}
 
+				abaaso.ready = true;
+				$.fire("ready").un("ready");
+
 				if ((!$.ie) || ($.version > 8)) {
 					abaaso.timer.render = setInterval(function(){
 						if (/loaded|complete/.test(document.readyState)) {
@@ -3555,8 +3556,6 @@ var abaaso = abaaso || function(){
 						}
 					}, 10);
 				}
-
-				$.fire("ready").un("ready");
 
 				return abaaso;
 			}
@@ -3597,7 +3596,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.041"
+		version         : "1.6.043"
 	};
 }();
 
@@ -3609,6 +3608,7 @@ if (typeof abaaso.init == "function") {
 	delete $.$;
 	delete $.callback;
 	delete $.init;
+	delete $.observer.log;
 	delete $.timer;
 
 	// Registering events
