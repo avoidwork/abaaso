@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.043
+ * @version 1.6.044
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -57,33 +57,27 @@ var abaaso = abaaso || function(){
 		 */
 		cast : function(obj, key) {
 			try {
-				switch (true) {
-					case ((typeof obj != "object") && (!obj instanceof NodeList)):
-						throw new Error(label.error.expectedObject);
-				}
-				if (typeof obj != "object") {
+				if ((typeof obj != "object")
+				    && (!obj instanceof NodeList)) {
 					throw new Error(label.error.expectedObject);
 				}
 
 				key   = (key === true) ? true : false;
-				var o = [], i;
+				var o = [], i, nth;
 
-				if (typeof obj.length != "undefined") {
-					var nth = obj.length;
-					for (i = 0; i < nth; i++) {
-						o.push(obj[i]);
-					}
-				}
-				else {
-					for (i in obj) {
-						o.push((key) ? i : obj[i]);
-					}
+				switch (true) {
+					case (typeof obj.length != "undefined"):
+						for (i = 0, nth = obj.length; i < nth; i++) { o.push(obj[i]); }
+						break;
+					default:
+						for (i in obj) { o.push((key) ? i : obj[i]); }
 				}
 
 				return o;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
+				return undefined;
 			}
 		},
 
@@ -304,17 +298,17 @@ var abaaso = abaaso || function(){
 		/**
 		 * Gets the total keys in an Array
 		 *
-		 * @param instance {Array} The array to iterate
-		 * @returns {Integer} The number of keys in the Array
+		 * @param obj {Array} Array to iterate
+		 * @returns {Integer} Number of keys in Array
 		 */
-		total : function(instance) {
+		total : function(obj) {
 			try {
-				if (!instance instanceof Array) {
+				if (!obj instanceof Array) {
 					throw new Error(label.error.expectedArray);
 				}
 				var i = 0, arg;
-				for (arg in instance) {
-					(typeof instance[arg] != "function") ? i++ : void(0);
+				for (arg in obj) {
+					(typeof obj[arg] != "function") ? i++ : void(0);
 				}
 				return i;
 			}
@@ -1745,17 +1739,6 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
-		 * Returns the ID of the element that triggered the event
-		 *
-		 * @param e {event} The event arguement sent to the listener
-		 * @param obj {Object} The element whose listener called this function
-		 * @returns {String} The id of the element that triggered the event
-		 */
-		eventID : function(e, obj) {
-			return (window.event) ? window.event.srcElement.id : obj.id;
-		},
-
-		/**
 		 * Hides an Element if it's visible
 		 *
 		 * Events:    beforeHide    Fires before the object is hidden
@@ -1779,8 +1762,7 @@ var abaaso = abaaso || function(){
 				else {
 					obj = utility.object(obj);
 					obj.fire("beforeHide");
-					(obj.old === undefined) ? obj.old = {} : void(0);
-					obj.old.display   = obj.style.display;
+					obj["data-display"] = obj.style.display;
 					obj.style.display = "none";
 					obj.fire("afterHide");
 					return obj;
@@ -1845,9 +1827,8 @@ var abaaso = abaaso || function(){
 				else {
 					obj = utility.object(obj);
 					obj.fire("beforeShow");
-					obj.style.display = ((obj.old !== undefined)
-										 && (obj.old.display !== undefined)
-										 && (obj.old.display != "")) ? obj.old.display : "inherit";
+					obj.style.display = ((obj["data-display"] !== undefined)
+					                     && (!obj["data-display"].isEmpty())) ? obj["data-display"] : "inherit";
 					obj.fire("afterShow");
 					return obj;
 				}
@@ -1913,44 +1894,41 @@ var abaaso = abaaso || function(){
 					obj = utility.object(obj);
 					args = args || {};
 
+					var i;
+
 					if (obj === undefined) {
 						throw new Error(label.error.invalidArguments);
 					}
 
 					obj.fire("beforeUpdate");
 
-					if (obj) {
-						for (var i in args) {
-							switch(i) {
-								case "innerHTML":
-								case "type":
-								case "src":
-									obj[i] = args[i];
-									break;
-								case "opacity": // Requires the fx module
-									obj.opacity(args[i]);
-									break;
-								case "class":
-									obj.setAttribute(((client.ie) && (client.version < 8)) ? "className" : "class", args[i]);
-									break;
-								case "id":
-									var o = observer.listeners;
-									if (o[obj.id] !== undefined) {
-										o[args[i]] = [].concat(o[obj.id]);
-										delete o[obj.id];
-									}
-								default:
-									obj.setAttribute(i, args[i]);
-									break;
-							}
+					for (i in args) {
+						switch(i) {
+							case "innerHTML":
+							case "type":
+							case "src":
+								obj[i] = args[i];
+								break;
+							case "opacity": // Requires the fx module
+								obj.opacity(args[i]);
+								break;
+							case "class":
+								obj.setAttribute(((client.ie) && (client.version < 8)) ? "className" : "class", args[i]);
+								break;
+							case "id":
+								var o = observer.listeners;
+								if (o[obj.id] !== undefined) {
+									o[args[i]] = $.clone(o[obj.id]);
+									delete o[obj.id];
+								}
+							default:
+								obj.setAttribute(i, args[i]);
+								break;
 						}
 
 						obj.fire("afterUpdate");
 
 						return obj;
-					}
-					else {
-						throw new Error(label.error.elementNotFound);
 					}
 				}
 			}
@@ -2136,14 +2114,7 @@ var abaaso = abaaso || function(){
 					c = true;
 				}
 
-				if ((c === true) && (m.log === true)) {
-					try {
-						console.log(m.pos.x + " : " + m.pos.y);
-					}
-					catch (e) {
-						$.error(e, arguments, this);
-					}
-				}
+				((c === true) && (m.log === true)) ? utility.log(m.pos.x + " : " + m.pos.y) : void(0);
 			}
 			else if (typeof n == "boolean") {
 				if (n === true) {
@@ -3092,10 +3063,10 @@ var abaaso = abaaso || function(){
 					element : {create   : function(type, args) {
 									this.genId();
 									return $.create(type, args, this);
-							  },
-							  disable   : function() { return $.el.disable(this); },
-							  enable    : function() { return $.el.enable(this); },
-							  get       : function(uri, headers) {
+							   },
+							   disable   : function() { return $.el.disable(this); },
+							   enable    : function() { return $.el.enable(this); },
+							   get       : function(uri, headers) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
 									    guid   = $.genId();
@@ -3112,23 +3083,23 @@ var abaaso = abaaso || function(){
 										this.fire("afterGet");
 									}
 									return this;
-							  },
-							  hide     : function() {
+							   },
+							   hide     : function() {
 									this.genId();
 									return $.el.hide(this);
-							  },
-							  isAlphaNum: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({alphanum: (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
-						      isBoolean: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
-						      isDate   : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDate() : this.innerText.isDate(); },
-						      isDomain : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDomain() : this.innerText.isDomain(); },
-						      isEmail  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmail() : this.innerText.isEmail(); },
-						      isEmpty  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmpty() : this.innerText.isEmpty(); },
-						      isIP     : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isIP() : this.innerText.isIP(); },
-						      isInt    : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isInt() : this.innerText.isInt(); },
-						      isNumber : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isNumber() : this.innerText.isNumber(); },
-						      isPhone  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isPhone() : this.innerText.isPhone(); },
-						      isString : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isString() : this.innerText.isString(); },
-						      jsonp    : function(uri, property, callback) {
+							   },
+							   isAlphaNum: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({alphanum: (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
+						       isBoolean: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
+						       isDate   : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDate() : this.innerText.isDate(); },
+						       isDomain : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDomain() : this.innerText.isDomain(); },
+						       isEmail  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmail() : this.innerText.isEmail(); },
+						       isEmpty  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isEmpty() : this.innerText.isEmpty(); },
+						       isIP     : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isIP() : this.innerText.isIP(); },
+						       isInt    : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isInt() : this.innerText.isInt(); },
+						       isNumber : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isNumber() : this.innerText.isNumber(); },
+						       isPhone  : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isPhone() : this.innerText.isPhone(); },
+						       isString : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isString() : this.innerText.isString(); },
+						       jsonp    : function(uri, property, callback) {
 									var target = this,
 									    arg    = property,
 									    fn = function(response){
@@ -3596,7 +3567,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.043"
+		version         : "1.6.044"
 	};
 }();
 
