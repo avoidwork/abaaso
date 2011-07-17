@@ -2199,7 +2199,7 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj     = utility.object(obj);
-					((id === undefined) || (id.toString().isEmpty())) ? id = utility.id().toString() : void(0);
+					((id === undefined) || (!/\w/.test(id))) ? id = utility.id().toString() : void(0);
 					standby = (standby === true) ? true : false;
 
 					var instance = null,
