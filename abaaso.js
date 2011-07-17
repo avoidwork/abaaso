@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.038
+ * @version 1.6.039
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -1291,7 +1291,6 @@ var abaaso = abaaso || function(){
 
 					// Hooking in the observer
 					(typeof obj.fire == "undefined") ? obj.fire = function(){ return $.fire.apply(this, arguments); } : void(0);
-					(typeof obj.listeners == "undefined") ? obj.listeners = function(){ return $.listeners.apply(this, arguments); } : void(0);
 					(typeof obj.on == "undefined") ? obj.on = function(event, listener, id, scope, standby) {
 						scope = scope || this;
 						return $.on(this, event, listener, id, scope, standby);
@@ -2333,7 +2332,7 @@ var abaaso = abaaso || function(){
 				}
 
 				obj   = utility.object(obj);
-				var l = observer.listeners,
+				var l = this.listeners,
 				    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
 				return (l[o] !== undefined) ? (((event !== undefined) && (l[o][event] !== undefined)) ? l[o][event] : l[o]) : [];
@@ -2490,7 +2489,7 @@ var abaaso = abaaso || function(){
 		/**
 		 * Returns an instance or array of instances
 		 *
-		 * Selectors "contains(string)", "even", "first", "has(tag)", "last", "not(tag)", "odd" are optional
+		 * Selectors "contains(string)", "even", "first", "has(tag)", "is(tag)", "last", "not(tag)", "odd" are optional
 		 * The "has" and "not" selectors accept comma delimited strings, which can include wildcards, e.g. ":has(d*, l*)"
 		 *
 		 * Selectors can be delimited with :
@@ -3220,12 +3219,6 @@ var abaaso = abaaso || function(){
 							   		return $.fire.call(this, event, args);
 							   },
 							   genId    : function() { return $.genId(this); },
-							   listeners: function(event) {
-							   		((!this instanceof String)
-							   		 && ((this.id === undefined)
-							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
-							   		return $.listeners(this, event);
-							   },
 							   un       : function(event, id) {
 							   		((!this instanceof String)
 							   		 && ((this.id === undefined)
@@ -3575,13 +3568,6 @@ var abaaso = abaaso || function(){
 			}
 		},
 		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
-		listeners       : function() {
-			var all   = (arguments[1] !== undefined) ? true : false,
-			    obj   = (all) ? arguments[0] : abaaso,
-				event = (all) ? arguments[1] : arguments[0];
-
-			return abaaso.observer.list(obj, event);
-		},
 		on              : function() {
 			var all      = (typeof arguments[2] == "function") ? true : false,
 			    obj      = (all) ? arguments[0] : abaaso,
@@ -3613,7 +3599,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.038"
+		version         : "1.6.039"
 	};
 }();
 
