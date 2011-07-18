@@ -3223,7 +3223,7 @@ var abaaso = abaaso || function(){
 					           		scope = scope || this;
 					           		return $.on(this, event, listener, id, scope, standby);
 					           },
-					           options  : function() { return $.options(this); },
+					           options  : function(arg) { return $.options(this, arg); },
 					           permission: function() { return $.permission(this); },
 					           trim     : function(){ return this.replace(/^\s+|\s+$/, ""); }}
 				};
