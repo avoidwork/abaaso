@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.049
+ * @version 1.6.050
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -961,7 +961,7 @@ var abaaso = abaaso || function(){
 		key     : null,
 
 		// Record storage
-		keys    : [],
+		keys    : {},
 		records : [],
 
 		// Total records in the store
@@ -1266,11 +1266,11 @@ var abaaso = abaaso || function(){
 					getter = function(){ return this._uri; };
 					setter = function(arg){
 						try {
-							if (arg.isEmpty()) {
+							if ((arg !== null) && (arg.isEmpty())) {
 								throw Error(label.error.invalidArguments);
 							}
 							this._uri = arg;
-							this.sync();
+							(arg !== null) ? this.sync() : void(0);
 						}
 						catch (e) {
 							$.error(e, arguments, this);
@@ -1298,7 +1298,7 @@ var abaaso = abaaso || function(){
 
 					obj.fire("beforeDataStore");
 					obj.data = utility.clone(this);
-					obj.data.keys    = [];
+					obj.data.keys    = {};
 					obj.data.records = [];
 					obj.data.total   = 0;
 					obj.data.parentNode = obj; // Recursion, but expected I guess
@@ -1351,7 +1351,6 @@ var abaaso = abaaso || function(){
 				}
 				this.keys[this.records[i].key].index = i;
 			}
-			this.keys.length = this.total;
 			obj.fire("afterDataReindex");
 			return this;
 		},
@@ -3588,7 +3587,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.049"
+		version         : "1.6.050"
 	};
 }();
 
