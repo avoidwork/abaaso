@@ -2391,6 +2391,9 @@ var abaaso = abaaso || function(){
 						throw Error(label.error.invalidArguments);
 				}
 
+				$.state.previous = abaaso.state.previous = $.state.current;
+				$.state.current  = abaaso.state.current  = state;
+
 				var l = observer.listeners,
 				    i, x;
 
@@ -3389,23 +3392,7 @@ var abaaso = abaaso || function(){
 				remove  : observer.remove
 			},
 		state           : {
-			change  : function(state){
-				try {
-					switch (true) {
-						case (typeof state != "string"):
-						case (state.isEmpty()):
-							throw Error(label.error.invalidArguments);
-					}
-					$.state.previous = abaaso.state.previous = $.state.current;
-					$.state.current  = abaaso.state.current  = state;
-					observer.replace(abaaso, state, $.state.previous, state, state)
-					return $.fire(state);
-				}
-				catch (e) {
-					$.error(e, arguments, this);
-					return undefined;
-				}
-			},
+			change  : function(state){ return observer.replace(state); },
 			current : null,
 			header  : null,
 			previous: null
@@ -3536,10 +3523,10 @@ var abaaso = abaaso || function(){
 				listener = (all) ? arguments[2] : arguments[1],
 				id       = (all) ? arguments[3] : arguments[2],
 				scope    = (all) ? arguments[4] : arguments[3],
-				standby  = (all) ? arguments[5] : arguments[4];
+				state    = (all) ? arguments[5] : arguments[4];
 				(scope === undefined) ? scope = abaaso : void(0);
 
-			return observer.add(obj, event, listener, id, scope, standby);
+			return observer.add(obj, event, listener, id, scope, state);
 		},
 		options         : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
 		permission      : client.permission,
