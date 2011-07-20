@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.052
+ * @version 1.6.053
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -797,12 +797,7 @@ var abaaso = abaaso || function(){
 								if ((s.header !== null)
 								    && (state = uri.headers[s.header])
 									&& (state !== undefined)) {
-									s.previous = s.current;
-									s.current  = state;
-									((s.previous !== null)
-									 && (s.current !== null)) ? observer.replace(abaaso, state, s.previous, s.current, s.current)
-									                          : void(0);
-									$.fire(state);
+									$.state.change(state);
 								}
 								break;
 							case (xhr.status == 301):
@@ -2158,17 +2153,17 @@ var abaaso = abaaso || function(){
 		 * @param fn {Function} The event handler
 		 * @param id {String} [Optional / Recommended] The id for the listener
 		 * @param scope {String} [Optional / Recommended] The id of the object or element to be set as 'this'
-		 * @param standby {Boolean} [Optional] Add to the standby collection; the id parameter is [Required] if true
+		 * @param state {String} [Optional] The state the listener is for
 		 * @returns {Object} The object
 		 */
-		add : function(obj, event, fn, id, scope, standby) {
+		add : function(obj, event, fn, id, scope, state) {
 			try {
 				if (obj instanceof Array) {
 					var nth  = ((obj.length) && (!isNaN(obj.length))) ? obj.length : obj.total(),
 					    i    = null;
 
 					for (i = 0; i < nth; i++) {
-						this.add(obj[i], event, fn, id, ((scope === false) ? obj[i] : scope), standby);
+						this.add(obj[i], event, fn, id, ((scope === undefined) ? obj[i] : scope), state);
 					}
 
 					return obj;
@@ -2176,7 +2171,6 @@ var abaaso = abaaso || function(){
 				else {
 					obj     = utility.object(obj);
 					((id === undefined) || (!/\w/.test(id))) ? id = utility.id().toString() : void(0);
-					standby = (standby === true) ? true : false;
 
 					var instance = null,
 					    l        = observer.listeners,
@@ -2187,7 +2181,6 @@ var abaaso = abaaso || function(){
 						case (o === undefined):
 						case (event === undefined):
 						case (typeof fn != "function"):
-						case ((standby) && (id === undefined)):
 							throw new Error(label.error.invalidArguments);
 					}
 
@@ -2198,11 +2191,13 @@ var abaaso = abaaso || function(){
 							l[o][event] = {};
 						case (l[o][event].active === undefined):
 							l[o][event].active = {};
+						case (l[o][event].standby === undefined):
+							l[o][event].standby = {};
 					}
 
 					item = {fn: fn, scope: scope};
 
-					if (!standby) {
+					if (state === undefined) {
 						l[o][event].active[id] = item;
 						instance = (o != "abaaso") ? $("#"+o) : null;
 						((instance !== null)
@@ -2223,8 +2218,8 @@ var abaaso = abaaso || function(){
 						                              : void(0);
 					}
 					else {
-						(l[o][event].standby === undefined) ? l[o][event].standby = {} : void(0);
-						l[o][event].standby[id] = item;
+						(l[o][event].standby[state] === undefined) ? l[o][event].standby[state] = {} : void(0);
+						l[o][event].standby[state][id] = item;
 					}
 
 					return obj;
@@ -2371,11 +2366,6 @@ var abaaso = abaaso || function(){
 					}
 					else if (l[o][event].active[id] !== undefined) {
 						delete l[o][event].active[id];
-
-						if ((l[o][event].standby !== undefined)
-						    && (l[o][event].standby[id] !== undefined)) {
-							delete l[o][event].standby[id];
-						}
 					}
 
 					return obj;
@@ -2388,65 +2378,30 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
-		 * Replaces an active listener, moving it to the standby collection
+		 * Replaces active listeners with the relevant standby listeners
 		 *
-		 * @param obj {Mixed} The object.id or instance of object firing the event
-		 * @param event {String} The event
-		 * @param id {String} The identifier for the active listener
-		 * @param sId {String} The identifier for the new standby listener
-		 * @param listener {Mixed} The standby id (string), or the new event listener (function)
+		 * @param state {String} The new application state
 		 * @returns {Object} The object
 		 */
-		replace : function(obj, event, id, sId, listener) {
+		replace : function(state) {
 			try {
-				if (obj instanceof Array) {
-					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) {
-						this.replace(obj[i], event, id, sId, listener);
-					}
-
-					return obj;
+				switch (true) {
+					case (typeof state != "string"):
+					case (state.isEmpty()):
+						throw Error(label.error.invalidArguments);
 				}
-				else {
-					obj   = utility.object(obj);
-					var l = observer.listeners,
-					    o = (obj.id !== undefined) ? obj.id : obj.toString();
 
-					switch (true) {
-						case (o === undefined):
-						case (event === undefined):
-						case (id === undefined):
-						case (sId === undefined):
-					    case (l[o] === undefined):
-					    case (l[o][event] === undefined):
-					    case (l[o][event].active === undefined):
-					    case (l[o][event].active[id] === undefined):
-							throw new Error(label.error.invalidArguments);
+				var l = observer.listeners,
+				    i, x;
+
+				for (i in l) {
+					for (e in l[i]) {
+						l[i][e].standby[$.state.previous] = l[i][e].active;
+						l[i][e].active = (l[i][e].standby[$.state.current] !== undefined) ? l[i][e].standby[$.state.current] : {};
 					}
-
-					(l[o][event].standby === undefined) ? l[o][event].standby = {} : void(0);
-
-					if (typeof listener == "string") {
-						switch (true) {
-							case (l[o][event].standby[listener] === undefined):
-							case (l[o][event].standby[listener].fn === undefined):
-								throw new Error(label.error.invalidArguments);
-						}
-
-						listener = l[o][event].standby[listener].fn;
-					}
-
-					if (typeof listener != "function") {
-						throw new Error(label.error.invalidArguments);
-					}
-
-					l[o][event].standby[sId] = {"fn" : l[o][event].active[id].fn};
-					l[o][event].active[id]   = {"fn" : listener};
-
-					return obj;
 				}
+
+				return obj;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -3434,6 +3389,23 @@ var abaaso = abaaso || function(){
 				remove  : observer.remove
 			},
 		state           : {
+			change  : function(state){
+				try {
+					switch (true) {
+						case (typeof state != "string"):
+						case (state.isEmpty()):
+							throw Error(label.error.invalidArguments);
+					}
+					$.state.previous = abaaso.state.previous = $.state.current;
+					$.state.current  = abaaso.state.current  = state;
+					observer.replace(abaaso, state, $.state.previous, state, state)
+					return $.fire(state);
+				}
+				catch (e) {
+					$.error(e, arguments, this);
+					return undefined;
+				}
+			},
 			current : null,
 			header  : null,
 			previous: null
@@ -3567,7 +3539,7 @@ var abaaso = abaaso || function(){
 				standby  = (all) ? arguments[5] : arguments[4];
 				(scope === undefined) ? scope = abaaso : void(0);
 
-			return abaaso.observer.add(obj, event, listener, id, scope, standby);
+			return observer.add(obj, event, listener, id, scope, standby);
 		},
 		options         : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
 		permission      : client.permission,
@@ -3581,14 +3553,15 @@ var abaaso = abaaso || function(){
 		timer           : {},
 		un              : function() {
 			var all   = (typeof arguments[0] == "string") ? false : true,
-			    obj   = (all) ? arguments[0] : abaaso,
+			    obj   = (all) ? arguments[0] : this,
 				event = (all) ? arguments[1] : arguments[0],
 				id    = (all) ? arguments[2] : arguments[1];
+				(obj === $) ? obj = abaaso : void(0);
 
-			return abaaso.observer.remove(obj, event, id);
+			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.052"
+		version         : "1.6.053"
 	};
 }();
 
@@ -3601,6 +3574,7 @@ if (typeof abaaso.init == "function") {
 	delete $.callback;
 	delete $.init;
 	delete $.observer.log;
+	delete $.state.header;
 	delete $.timer;
 
 	// Registering events
