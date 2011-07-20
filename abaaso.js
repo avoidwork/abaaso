@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.053
+ * @version 1.6.056
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -794,10 +794,11 @@ var abaaso = abaaso || function(){
 								uri.fire("afterXHR");
 								uri.fire("after" + typed, (/options/i.test(type)) ? o.headers : o.response);
 
+								// HATEOAS
 								if ((s.header !== null)
 								    && (state = uri.headers[s.header])
 									&& (state !== undefined)) {
-									$.state.change(state);
+									(typeof abaaso.state.change == "function") ? abaaso.state.change(state) : abaaso.state.current = state;
 								}
 								break;
 							case (xhr.status == 301):
@@ -1304,7 +1305,6 @@ var abaaso = abaaso || function(){
 						case (($.client.ie) && ($.client.version == 8)):
 							// Pure hackery, only exists when needed
 							obj.data.uri    = null;
-							obj.data.getUri = function(){ return obj.data.uri; };
 							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
 						case (typeof Object.defineProperty == "undefined"):
 							obj.data.__defineGetter__("uri", getter);
@@ -2385,26 +2385,19 @@ var abaaso = abaaso || function(){
 		 */
 		replace : function(state) {
 			try {
-				switch (true) {
-					case (typeof state != "string"):
-					case (state.isEmpty()):
-						throw Error(label.error.invalidArguments);
-				}
-
-				$.state.previous = abaaso.state.previous = $.state.current;
-				$.state.current  = abaaso.state.current  = state;
-
-				var l = observer.listeners,
-				    i, x;
+				var l = this.listeners,
+				    i, e;
 
 				for (i in l) {
 					for (e in l[i]) {
 						l[i][e].standby[$.state.previous] = l[i][e].active;
-						l[i][e].active = (l[i][e].standby[$.state.current] !== undefined) ? l[i][e].standby[$.state.current] : {};
+						l[i][e].active = (l[i][e].standby[state] !== undefined) ? l[i][e].standby[state] : {};
+						(l[i][e].standby[state] !== undefined) ? delete l[i][e].standby[state] : void(0);
 					}
 				}
 
-				return obj;
+				$.fire(state);
+				return abaaso;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -3392,10 +3385,9 @@ var abaaso = abaaso || function(){
 				remove  : observer.remove
 			},
 		state           : {
-			change  : function(state){ return observer.replace(state); },
-			current : null,
-			header  : null,
-			previous: null
+			_current    : null,
+			header      : null,
+			previous    : null
 		},
 		validate        : validate,
 
@@ -3427,85 +3419,126 @@ var abaaso = abaaso || function(){
 		get             : function(uri, success, failure, headers){ client.request(uri, "GET", success, failure, headers); },
 		id              : "abaaso",
 		init            : function() {
-			try {
-				delete abaaso.init;
+			// Stopping multiple executions
+			delete abaaso.init;
 
-				$.client.version = abaaso.client.version = client.version();
-				$.client.css3    = abaaso.client.css3    = client.css3();
-				$.client.size    = abaaso.client.size    = client.size();
+			// Describing the Client
+			$.client.version = abaaso.client.version = client.version();
+			$.client.css3    = abaaso.client.css3    = client.css3();
+			$.client.size    = abaaso.client.size    = client.size();
+			$.state.current  = abaaso.state._current;
 
-				utility.proto(Array, "array");
-				utility.proto(Element, "element");
-				((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument, "element") : void(0);
-				utility.proto(Number, "number");
-				utility.proto(String, "string");
-				
-				window.onhashchange = function() { abaaso.fire("hash", location.hash); };
-				window.onresize     = function() { $.client.size = abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
-				abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
+			// Hooking abaaso into native Objects
+			utility.proto(Array, "array");
+			utility.proto(Element, "element");
+			((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument, "element") : void(0);
+			utility.proto(Number, "number");
+			utility.proto(String, "string");
+			
+			// Setting events & garbage collection
+			window.onhashchange = function() { abaaso.fire("hash", location.hash); };
+			window.onresize     = function() { $.client.size = abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
+			abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
 
-				if (typeof document.getElementsByClassName != "function") {
-					document.getElementsByClassName = function(arg) {
-						var nodes   = document.getElementsByTagName("*"),
-							nth    = nodes.length,
-							i       = null,
-							obj     = [],
-							pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
-
-						for (i = 0; i < nth; i++) {
-							(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
-						}
-
-						return obj;
-					};
-				}
-
-				if (typeof Array.prototype.filter != "function") {
-					Array.prototype.filter = function(fn) {
-						"use strict";
-						if ((this === void 0)
-							|| (this === null)
-							|| (typeof fn !== "function")) {
-							throw new Error(label.error.invalidArguments);
-						}
-
-						var i      = null,
-							t      = Object(this),
-							nth   = t.length >>> 0,
-							result = [],
-							prop   = arguments[1]
-							val    = null;
-
-						for (i = 0; i < nth; i++) {
-							if (i in t) {
-								val = t[i];
-								(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
-							}
-						}
-
-						return result;
+			// abaaso.state.current getter/setter
+			var getter, setter;
+			getter = function(){ return this._current; };
+			setter = function(arg){
+				try {
+					switch (true) {
+						case (arg === null):
+						case (typeof arg != "string"):
+						case (arg.isEmpty()):
+						case (this.previous == arg):
+							throw Error(label.error.invalidArguments);
+							break;
 					}
+
+					$.state.previous = this.previous = this._current;
+					$.state.current  = this._current = arg;
+
+					return observer.replace(arg);
 				}
+				catch (e) {
+					$.error(e, arguments, this);
+					return undefined;
+				}
+			};
 
-				abaaso.ready = true;
-				$.fire("ready").un("ready");
+			switch (true) {
+				case (($.client.ie) && ($.client.version == 8)):
+					// Pure hackery, only exists when needed
+					abaaso.state.current = null;
+					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
+				case (typeof Object.defineProperty == "undefined"):
+					abaaso.state.__defineGetter__("current", getter);
+					abaaso.state.__defineSetter__("current", setter);
+					break;
+				default:
+					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
+			}
 
-				if ((!$.ie) || ($.version > 8)) {
-					abaaso.timer.render = setInterval(function(){
-						if (/loaded|complete/.test(document.readyState)) {
-							clearInterval(abaaso.timer.render);
-							delete abaaso.timer.render;
-							$.fire("render").un("render");
+			// Adding an essential method if not present
+			if (typeof document.getElementsByClassName != "function") {
+				document.getElementsByClassName = function(arg) {
+					var nodes   = document.getElementsByTagName("*"),
+						nth    = nodes.length,
+						i       = null,
+						obj     = [],
+						pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
+
+					for (i = 0; i < nth; i++) {
+						(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
+					}
+
+					return obj;
+				};
+			}
+
+			// Adding an essential method if not present
+			if (typeof Array.prototype.filter != "function") {
+				Array.prototype.filter = function(fn) {
+					"use strict";
+					if ((this === void 0)
+						|| (this === null)
+						|| (typeof fn !== "function")) {
+						throw new Error(label.error.invalidArguments);
+					}
+
+					var i      = null,
+						t      = Object(this),
+						nth   = t.length >>> 0,
+						result = [],
+						prop   = arguments[1]
+						val    = null;
+
+					for (i = 0; i < nth; i++) {
+						if (i in t) {
+							val = t[i];
+							(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
 						}
-					}, 10);
-				}
+					}
 
-				return abaaso;
+					return result;
+				}
 			}
-			catch (e) {
-				$.error(e, arguments, this);
-				return undefined;
+
+			// All setup!
+			abaaso.ready = true;
+			$.fire("ready").un("ready");
+
+			// Setting render event
+			if ((!$.ie) || ($.version > 8)) {
+				abaaso.timer.render = setInterval(function(){
+					if (/loaded|complete/.test(document.readyState)) {
+						clearInterval(abaaso.timer.render);
+						delete abaaso.timer.render;
+						$.fire("render").un("render");
+					}
+				}, 10);
 			}
+
+			return abaaso;
 		},
 		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
@@ -3548,7 +3581,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.053"
+		version         : "1.6.056"
 	};
 }();
 
