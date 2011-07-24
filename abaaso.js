@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.059
+ * @version 1.6.060
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -1745,7 +1745,7 @@ var abaaso = abaaso || function(){
 		 * Events:    beforeHide    Fires before the object is hidden
 		 *            afterHide     Fires after the object is hidden
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @param obj {Mixed} Instance, Array of Instances or $() friendly ID
 		 * @returns {Mixed} Instance or Array of Instances
 		 */
 		hide : function(obj) {
@@ -1776,32 +1776,60 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
+		 * Returns a Boolean indidcating if the Object is hidden
+		 *
+		 * @param obj {Mixed} Instance or $() friendly ID
+		 * @returns {Boolean} Indicates if Object is hidden
+		 */
+		hidden : function(obj) {
+			try {
+				obj = utility.object(obj);
+
+				if (obj === undefined) {
+					throw new Error(label.error.invalidArguments);
+				}
+
+				return (obj.style.display == "none") ? true : false;
+			}
+			catch (e) {
+				$.error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Finds the position of an element
 		 *
 		 * @param id {String} Target object.id value
 		 * @returns {Array} An array containing the render position of the element
 		 */
 		position : function(obj) {
-			obj = utility.object(obj);
+			try {
+				obj = utility.object(obj);
 
-			if (obj === undefined) {
-				throw new Error(label.error.invalidArguments);
-			}
-
-			var left = null,
-			     top = null;
-
-			if (obj.offsetParent) {
-				left = obj.offsetLeft;
-				top  = obj.offsetTop;
-
-				while (obj = obj.offsetParent) {
-					left += obj.offsetLeft;
-					top  += obj.offsetTop;
+				if (obj === undefined) {
+					throw new Error(label.error.invalidArguments);
 				}
-			}
 
-			return [left, top];
+				var left = null,
+				     top = null;
+
+				if (obj.offsetParent) {
+					left = obj.offsetLeft;
+					top  = obj.offsetTop;
+
+					while (obj = obj.offsetParent) {
+						left += obj.offsetLeft;
+						top  += obj.offsetTop;
+					}
+				}
+
+				return [left, top];
+			}
+			catch (e) {
+				$.error(e, arguments, this);
+				return undefined;
+			}
 		},
 
 		/**
@@ -3045,6 +3073,10 @@ var abaaso = abaaso || function(){
 									this.genId();
 									return $.el.hide(this);
 							   },
+							   hidden     : function() {
+									this.genId();
+									return $.el.hidden(this);
+							   },
 							   isAlphaNum: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({alphanum: (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
 						       isBoolean: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({"boolean": (typeof this.value != "undefined") ? this.value : this.innerText}).pass; },
 						       isDate   : function() { return (/form/gi.test(this.nodeName)) ? false : (typeof this.value != "undefined") ? this.value.isDate() : this.innerText.isDate(); },
@@ -3582,7 +3614,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.059"
+		version         : "1.6.060"
 	};
 }();
 
