@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.058
+ * @version 1.6.059
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -263,20 +263,19 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
-		 * Removes arg from instance without destroying and re-creating instance
-		 *
-		 * Events:    beforeRemove      Fires before modifying the array
-		 *            afterRemove       Fires after modifying the array
+		 * Removes indexes from an Array without recreating it
 		 *
 		 * @param obj {Array} Array to remove from
-		 * @param start {Integer} The starting position
-		 * @param end {Integer} The ending position (optional)
-		 * @returns {Array} A scrubbed array
+		 * @param start {Integer} Starting index
+		 * @param end {Integer} [Optional] Ending index
+		 * @returns {Array} The Array
 		 */
 		remove : function(obj, start, end) {
 			try {
-				if (!obj instanceof Array) {
-					throw new Error(label.error.expectedArray);
+				switch (true) {
+					case (!obj instanceof Array):
+					case (!start.toString().isNumber()):
+						throw new Error(label.error.invalidArguments);
 				}
 
 				start = start || 0;
@@ -2722,7 +2721,7 @@ var abaaso = abaaso || function(){
 		 * Creates an alias of origin on obj
 		 *
 		 * @param obj {Object} Object to alias origin
-		 * @param obj {Object} Object providing structure to obj
+		 * @param origin {Object} Object providing structure to obj
 		 * @returns {Object} Object to alias origin
 		 */
 		alias : function(obj, origin){
@@ -3583,7 +3582,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.058"
+		version         : "1.6.059"
 	};
 }();
 
