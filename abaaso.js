@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.057
+ * @version 1.6.058
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -791,16 +791,17 @@ var abaaso = abaaso || function(){
 
 								(/options/i.test(type)) ? cache.expire(uri) : void(0);
 
-								uri.fire("afterXHR");
-								uri.fire("after" + typed, (/options/i.test(type)) ? o.headers : o.response);
-
 								// HATEOAS
-								if ((s.header !== null)
-								    && (state = uri.headers[s.header])
+								if ((/options/i.test(type) === false)
+									&& (s.header !== null)
+								    && (state = o.headers[s.header])
 									&& (state !== undefined)
 								    && (state != abaaso.state.current)) {
 									(typeof abaaso.state.change == "function") ? abaaso.state.change(state) : abaaso.state.current = state;
 								}
+
+								uri.fire("afterXHR");
+								uri.fire("after" + typed, (/options/i.test(type)) ? o.headers : o.response);
 								break;
 							case (xhr.status == 301):
 								throw new Error(label.error.serverError);
@@ -3582,7 +3583,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.057"
+		version         : "1.6.058"
 	};
 }();
 
