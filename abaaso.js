@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.060
+ * @version 1.6.061
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -652,6 +652,9 @@ var abaaso = abaaso || function(){
 
 				if (payload !== null) {
 					switch (true) {
+						case (payload instanceof Document):
+							xhr.setRequestHeader("Content-type", "application/xml");
+							break;
 						case (payload instanceof Object):
 							xhr.setRequestHeader("Content-type", "application/json");
 							payload = json.encode(payload);
@@ -783,7 +786,7 @@ var abaaso = abaaso || function(){
 
 								if (!/delete|options/i.test(type)) {
 									cache.set(uri, "epoch", new Date());
-									cache.set(uri, "response", xhr.responseText);
+									cache.set(uri, "response", (xhr.responseXML === null) ? xhr.responseText : xhr.responseXML);
 								}
 
 								o = cache.get(uri, false);
@@ -3356,6 +3359,64 @@ var abaaso = abaaso || function(){
 		}
 	};
 
+	/**
+	 * XML methods
+	 *
+	 * @class
+	 */
+	var xml = {
+		/**
+		 * Returns XML Object
+		 *
+		 * @param arg {String} XML String
+		 * @returns {Object} XML Object
+		 */
+		decode : function(arg) {
+			try {
+				switch (true) {
+					case (arg === undefined):
+					case (!arg instanceof String):
+					case (arg.isEmpty()):
+						throw Error(label.error.invalidArguments);
+				}
+
+				var xml;
+
+				if (client.ie) {
+					xml = new ActiveXObject("Microsoft.XMLDOM");
+					xml.async = "false";
+					xml.loadXML(arg);
+				}
+				else {
+					xml = new DOMParser().parseFromString(arg, "text/xml");
+				}
+
+				return xml;
+			}
+			catch (e) {
+				$.error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Returns XML String
+		 *
+		 * @param arg {Object} XML Object
+		 * @returns {String} XML String
+		 * @todo Implement this
+		 */
+		encode : function(arg) {
+			try {
+				return undefined;
+			}
+			catch (e) {
+				$.error(e, arguments, this);
+				return undefined;
+			}
+		}
+	};
+
 	var error = utility.error;
 
 	/**
@@ -3423,6 +3484,7 @@ var abaaso = abaaso || function(){
 			previous    : null
 		},
 		validate        : validate,
+		xml             : xml,
 
 		// Methods & Properties
 		$               : utility.$,
@@ -3614,7 +3676,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.060"
+		version         : "1.6.061"
 	};
 }();
 
