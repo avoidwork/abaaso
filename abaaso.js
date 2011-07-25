@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.061
+ * @version 1.6.062
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -3366,7 +3366,7 @@ var abaaso = abaaso || function(){
 	 */
 	var xml = {
 		/**
-		 * Returns XML Object
+		 * Returns XML (Document) Object from a String
 		 *
 		 * @param arg {String} XML String
 		 * @returns {Object} XML Object
@@ -3400,9 +3400,9 @@ var abaaso = abaaso || function(){
 		},
 
 		/**
-		 * Returns XML String
+		 * Returns XML String from an Object or Array
 		 *
-		 * @param arg {Object} XML Object
+		 * @param arg {Mixed} Object or Array to cast to XML String
 		 * @returns {String} XML String
 		 * @todo Implement this
 		 */
@@ -3416,8 +3416,6 @@ var abaaso = abaaso || function(){
 			}
 		}
 	};
-
-	var error = utility.error;
 
 	/**
 	 * Returned to the client
@@ -3676,7 +3674,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.061"
+		version         : "1.6.062"
 	};
 }();
 
