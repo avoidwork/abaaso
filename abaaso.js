@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.066
+ * @version 1.6.067
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -778,15 +778,15 @@ var abaaso = abaaso || function(){
 				}
 				else if (xhr.readyState == 4) {
 					switch (true) {
-							case ((xhr.status == 200)
-							      && ((/options/i.test(type)
-							          || (!xhr.responseText.isEmpty())))):
+							case (/200/.test(xhr.status)):
 								var state  = null,
 								    s      = abaaso.state;
 
 								if (!/delete|options/i.test(type)) {
 									cache.set(uri, "epoch", new Date());
-									cache.set(uri, "response", (/xml/.test(cache.get(uri, false).headers["Content-Type"])) ? ((client.ie) ? xhr.responseXML.xml : xhr.responseXML) : xhr.responseText);
+									cache.set(uri, "response", (/xml/.test(cache.get(uri, false).headers["Content-Type"])) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
+									                                                                                                                                        : xhr.responseXML)
+									                                                                                       : xhr.responseText);
 								}
 
 								o = cache.get(uri, false);
@@ -794,7 +794,7 @@ var abaaso = abaaso || function(){
 								/options/i.test(type) ? cache.expire(uri) : void(0);
 
 								// HATEOAS
-								if ((/options/i.test(type) === false)
+								if (!/options/i.test(type)
 									&& (s.header !== null)
 								    && (state = o.headers[s.header])
 									&& !/undefined/.test(typeof state)
@@ -805,13 +805,13 @@ var abaaso = abaaso || function(){
 								uri.fire("afterXHR");
 								uri.fire("after" + typed, (/options/i.test(type)) ? o.headers : o.response);
 								break;
-							case (xhr.status == 301):
+							case (/301/.test(xhr.status)):
 								throw new Error(label.error.serverError);
 								break;
-							case (xhr.status == 401):
+							case (/401/.test(xhr.status)):
 								throw new Error(label.error.serverUnauthorized);
 								break;
-							case (xhr.status == 405):
+							case (/405/.test(xhr.status)):
 								cache.set(uri, "!permission", bit(type));
 								throw new Error(label.error.serverInvalidMethod);
 								break;
@@ -3674,7 +3674,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.066"
+		version         : "1.6.067"
 	};
 }();
 
