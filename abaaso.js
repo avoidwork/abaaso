@@ -387,14 +387,12 @@ var abaaso = abaaso || function(){
 			try {
 				expire = (expire === false) ? false : true;
 
-				if (cache.items[uri] === undefined) {
+				if (/undefined/.test(typeof cache.items[uri])) {
 					return false;
 				}
 				else {
-					if (cache.items[uri].headers !== undefined) {
-						if (((cache.items[uri].headers.Pragma !== undefined)
-						    && (/no-cache/i.test(cache.items[uri].headers.Pragma))
-						    && (expire))
+					if (!/undefined/.test(typeof cache.items[uri].headers)) {
+						if ((!/undefined/.test(typeof cache.items[uri].headers.Pragma) && /no-cache/i.test(cache.items[uri].headers.Pragma) && expire)
 						    || (cache.expired(cache.items[uri]))) {
 							cache.expire(uri);
 							return false;
@@ -585,8 +583,7 @@ var abaaso = abaaso || function(){
 		 * @private
 		 */
 		request : function(uri, type, success, failure, args) {
-			if (/post|put/i.test(type)
-				&& /undefined/.test(typeof args)) {
+			if (/post|put/i.test(type) && args === undefined) {
 				throw new Error(label.error.invalidArguments);
 			}
 
@@ -2200,12 +2197,12 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj     = utility.object(obj);
-					(/undefined/.test(typeof id) || !/\w/.test(id)) ? id = utility.id().toString() : void(0);
+					(/undefined/.test(typeof id) || !/\w/.test(id)) ? id = $.genId() : void(0);
 
 					var instance = null,
 					    l        = observer.listeners,
 					    o        = !/undefined/.test(typeof obj.id) ? obj.id : obj,
-					    efn;
+					    efn, item;
 
 					switch (true) {
 						case (/undefined/.test(typeof o)):
@@ -2631,7 +2628,7 @@ var abaaso = abaaso || function(){
 			if (arg instanceof Array) {
 				nth = arg.length;
 
-				/[:{0,0}]/.test(arg[0]) ? s = "" : void(0);
+				/^(:)/.test(arg[0]) ? s = "" : void(0);
 				for (i = 0; i < nth; i++) {
 					instances.push($(arg[i], nodelist));
 				}
@@ -2648,13 +2645,11 @@ var abaaso = abaaso || function(){
 				s = "";
 			}
 
-			//!/[:{0,0}]/.test(arg) ? arg = new String(arg) : void(0);
-			//(arg.charAt(0) != ":") ? arg = new String(arg) : void(0);
-			args = (s.isEmpty()) ? [] : s.split(/:/);
+			args = !/\w/.test(s) ? [] : s.split(/:/);
 
 			// Getting instance(s)
 			switch (true) {
-				case (/[.{0,0}]/.test(arg)):
+				case (/^(\.)/.test(arg)):
 					obj = document.getElementsByClassName(arg.slice(1));
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
@@ -2662,10 +2657,10 @@ var abaaso = abaaso || function(){
 						                                                         : abaaso.array.cast(obj))
 						                      : void(0);
 					break;
-				case (/[#{0,0}]/.test(arg)):
+				case (/^(#)/.test(arg)):
 					obj = document.getElementById(arg.substring(1));
 					break;
-				case (/[:{0,0}]/.test(arg)):
+				case (/^(:)/.test(arg)):
 					obj = document.body.getElementsByTagName("*");
 					((obj !== null)
 					 && (nodelist === false)) ? (obj = ((!client.ie)
@@ -2900,12 +2895,11 @@ var abaaso = abaaso || function(){
 		 */
 		genId : function(obj) {
 			try {
-				if (!/undefined/.test(typeof obj)
-					&& ((obj instanceof Array)
-						|| (obj instanceof String)
-						|| (!/undefined/.test(typeof obj.id)
-							&& (obj.id != "")))) {
-					return obj;
+				switch (true) {
+					case (obj instanceof Array):
+					case (obj instanceof String):
+					case (!/undefined/.test(typeof obj) && !/undefined/.test(typeof obj.id) && !obj.id.isEmpty()):
+						return obj;
 				}
 
 				var id;
@@ -3008,7 +3002,7 @@ var abaaso = abaaso || function(){
 		 * @private
 		 */
 		object : function(obj) {
-			return /object/.test(typeof obj) ? obj : (/[#{0,0}]/.test(obj) ? $(obj) : obj);
+			return /object/.test(typeof obj) ? obj : (/^(#)/.test(obj) ? $(obj) : obj);
 		},
 
 		/**
@@ -3305,17 +3299,16 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					for (var i in args) {
-						if (/undefined/.test(typeof i)
-						    || /undefined/.test(typeof args[i])) {
+						if (/undefined/.test(typeof i) || /undefined/.test(typeof args[i])) {
 							invalid.push({test: i, value: args[i]});
 							exception = true;
 							continue;
 						}
 
-						value = /[#{0,0}]/.test(args[i]) ? (!/undefined/.test(typeof $(args[i])) ? (($(args[i]).value) ? $(args[i]).value
-						                                                                                               : $(args[i]).innerHTML)
-						                                                                         : "")
-						                                 : args[i];
+						value = /^(#)/.test(args[i]) ? (!/undefined/.test(typeof $(args[i])) ? (($(args[i]).value) ? $(args[i]).value
+						                                                                                           : $(args[i]).innerHTML)
+						                                                                     : "")
+						                             : args[i];
 
 						switch (i) {
 							case "date":
@@ -3532,9 +3525,8 @@ var abaaso = abaaso || function(){
 				try {
 					switch (true) {
 						case (arg === null):
-						case (!/string/.test(typeof arg)):
-						case (arg.isEmpty()):
-						case (this.previous == arg):
+						case (!/string/.test(typeof arg) || !/\w/.test(arg)):
+						case (new RegExp("^"+this.previous+"$", "i").test(arg)):
 							throw Error(label.error.invalidArguments);
 							break;
 					}
@@ -3613,7 +3605,7 @@ var abaaso = abaaso || function(){
 			$.fire("ready").un("ready");
 
 			// Setting render event
-			if ((!$.ie) || ($.version > 8)) {
+			if (!$.ie || ($.version > 8)) {
 				abaaso.timer.render = setInterval(function(){
 					if (/loaded|complete/.test(document.readyState)) {
 						clearInterval(abaaso.timer.render);
@@ -3688,7 +3680,7 @@ if (/function/.test(typeof abaaso.init)) {
 		case $.client.firefox:
 		case $.client.opera:
 		case $.client.safari:
-		case (($.client.ie) && ($.client.version > 8)):
+		case ($.client.ie && ($.client.version > 8)):
 			document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
 			break;
 		default:
