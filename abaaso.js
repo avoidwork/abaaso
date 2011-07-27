@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.064
+ * @version 1.6.065
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -2097,6 +2097,21 @@ var abaaso = abaaso || function(){
 			serverError           : "A server error has occurred",
 			serverInvalidMethod   : "Method not allowed",
 			serverUnauthorized    : "Unauthorized to access URI"
+		},
+
+		months : {
+			"1"  : "January",
+			"2"  : "February",
+			"3"  : "March",
+			"4"  : "April",
+			"5"  : "May",
+			"6"  : "June",
+			"7"  : "July",
+			"8"  : "August",
+			"9"  : "September",
+			"10" : "October",
+			"11" : "November",
+			"12" : "December"
 		}
 	};
 
@@ -3659,7 +3674,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.064"
+		version         : "1.6.065"
 	};
 }();
 
