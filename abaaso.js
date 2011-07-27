@@ -360,17 +360,19 @@ var abaaso = abaaso || function(){
 		 * Determines if a URI has expired
 		 *
 		 * @param uri {Object} The cached URI object
-		 * @returns {Boolean} A boolean representing if the URI has expired
+		 * @returns {Boolean} True if the URI has expired
 		 */
 		expired : function(uri) {
-			var result = (!/undefined/.test(typeof cache.items[uri])
-			              && ((!/undefined/.test(typeof cache.items[uri].headers.Expires)
-			                  && (new Date(cache.items[uri].headers.Expires) < new Date()))
-			                  || (abaaso.client.expire > 0
-			                      && !/undefined/.test(typeof cache.items[uri].headers.Date)
-			                      && (new Date(cache.items[uri].headers.Date).setMilliseconds(new Date(cache.items[uri].headers.Date).getMilliseconds() + abaaso.client.expire) > new Date()))
-			                  || ((abaaso.client.expire > 0)
-			                      && (new Date(cache.items[uri].epoch).setMilliseconds(new Date(cache.items[uri].epoch).getMilliseconds() + abaaso.client.expire) > new Date())))) ? true : false;
+			var o      = abaaso.client,
+			    c      = cache.items[uri],
+			    epoch  = (c !== undefined) ? new Date(c.epoch) : null,
+			    expire = ((c !== undefined) && (c.headers.Expires !== undefined)) ? new Date(c.headers.Expires) : null,
+			    now    = new Date(),
+			    date   = ((c !== undefined) && (c.headers.Date !== undefined)) ? new Date(c.headers.Date) : null,
+			    result = ((c !== undefined)
+			              && ((expire !== null && expire < now)
+			                  || (date !== null && date.setMilliseconds(date.getMilliseconds() + o.expire) < now)
+			                  || (o.expire > 0 && epoch.setMilliseconds(epoch.getMilliseconds() + o.expire) < now))) ? true : false;
 			return result;
 		},
 
@@ -385,13 +387,13 @@ var abaaso = abaaso || function(){
 			try {
 				expire = (expire === false) ? false : true;
 
-				if (/undefined/.test(typeof cache.items[uri])) {
+				if (cache.items[uri] === undefined) {
 					return false;
 				}
 				else {
-					if (!/undefined/.test(typeof cache.items[uri].headers)) {
-						if (((!/undefined/.test(typeof cache.items[uri].headers.Pragma))
-						    && (cache.items[uri].headers.Pragma == "no-cache")
+					if (cache.items[uri].headers !== undefined) {
+						if (((cache.items[uri].headers.Pragma !== undefined)
+						    && (/no-cache/i.test(cache.items[uri].headers.Pragma))
 						    && (expire))
 						    || (cache.expired(cache.items[uri]))) {
 							cache.expire(uri);
