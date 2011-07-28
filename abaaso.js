@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.072
+ * @version 1.6.073
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -515,7 +515,7 @@ var abaaso = abaaso || function(){
 
 				var result;
 
-				if (cache.get(uri, false) === false) {
+				if (!cache.get(uri, false)) {
 					return undefined;
 				}
 
@@ -633,7 +633,7 @@ var abaaso = abaaso || function(){
 				   .fire("before" + typed)
 				   .fire("beforeXHR");
 
-				if ((!/options/i.test(type)) && (uri.allow(type) === false)) {
+				if (!/options/i.test(type) && uri.allow(type) === false) {
 					uri.fire("failed" + typed);
 					return uri;
 				}
@@ -2580,8 +2580,8 @@ var abaaso = abaaso || function(){
 						nth2 = obj[i].childNodes.length;
 						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
-							find(obj[i].childNodes[x].nodeName, arg) === false ? /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0)
-							                                                   : !/undefined/.test(typeof instances[obj[i].id]) ? delete instances[obj[i].id] : void(0);
+							!find(obj[i].childNodes[x].nodeName, arg) ? /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0)
+							                                          : !/undefined/.test(typeof instances[obj[i].id]) ? delete instances[obj[i].id] : void(0);
 						}
 					}
 					instances = instances.indexed();
@@ -2589,7 +2589,7 @@ var abaaso = abaaso || function(){
 				else {
 					nth = obj.childNodes.length;
 					for (i = 0; i < nth; i++) {
-						find(obj.childNodes[i].nodeName, arg) === false ? instances.push(obj.childNodes[i]) : void(0);
+						!find(obj.childNodes[i].nodeName, arg) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
@@ -2626,24 +2626,24 @@ var abaaso = abaaso || function(){
 			switch (true) {
 				case /^(\.)/.test(arg):
 					obj = document.getElementsByClassName(arg.slice(1));
-					obj !== null && nodelist === false ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
-						                                                                          : abaaso.array.cast(obj)))
-						                               : void(0);
+					obj !== null && !nodelist ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
+						                                                                 : abaaso.array.cast(obj)))
+						                      : void(0);
 					break;
 				case /^(#)/.test(arg):
 					obj = document.getElementById(arg.substring(1));
 					break;
 				case /^(:)/.test(arg):
 					obj = document.body.getElementsByTagName("*");
-					obj !== null && nodelist === false ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
-						                                                                          : abaaso.array.cast(obj)))
-						                               : void(0);
+					obj !== null && !nodelist ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
+						                                                                 : abaaso.array.cast(obj)))
+						                      : void(0);
 					break;
 				default:
 					obj = document.getElementsByTagName(arg);
-					obj !== null && nodelist === false ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
-						                                                                          : abaaso.array.cast(obj)))
-						                               : void(0);
+					obj !== null && !nodelist ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
+						                                                                 : abaaso.array.cast(obj)))
+						                      : void(0);
 					break;
 			}
 
@@ -3611,7 +3611,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.072"
+		version         : "1.6.073"
 	};
 }();
 
