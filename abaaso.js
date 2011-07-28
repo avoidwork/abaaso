@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.067
+ * @version 1.6.068
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -57,8 +57,7 @@ var abaaso = abaaso || function(){
 		 */
 		cast : function(obj, key) {
 			try {
-				if ((!/object/.test(typeof obj))
-				    && (!obj instanceof NodeList)) {
+				if (!/object/.test(typeof obj) && (!obj instanceof NodeList)) {
 					throw new Error(label.error.expectedObject);
 				}
 
@@ -66,7 +65,7 @@ var abaaso = abaaso || function(){
 				var o = [], i, nth;
 
 				switch (true) {
-					case (/\d/.test(typeof obj.length)):
+					case /\d/.test(typeof obj.length):
 						for (i = 0, nth = obj.length; i < nth; i++) { o.push(obj[i]); }
 						break;
 					default:
@@ -273,8 +272,8 @@ var abaaso = abaaso || function(){
 		remove : function(obj, start, end) {
 			try {
 				switch (true) {
-					case (!obj instanceof Array):
-					case (!start.toString().isNumber()):
+					case !obj instanceof Array:
+					case !start.toString().isNumber():
 						throw new Error(label.error.invalidArguments);
 				}
 
@@ -450,13 +449,13 @@ var abaaso = abaaso || function(){
 		chrome  : (function(){ return /chrome/i.test(navigator.userAgent); })(),
 		css3    : (function(){
 			switch (true) {
-				case (this.mobile):
-				case (this.tablet):
-				case ((this.chrome) && (this.version > 5)):
-				case ((this.firefox) && (this.version > 2)):
-				case ((this.ie) && (this.version > 8)):
-				case ((this.opera) && (this.version > 8)):
-				case ((this.safari) && (this.version > 4)):
+				case this.mobile:
+				case this.tablet:
+				case this.chrome  && this.version > 5:
+				case this.firefox && this.version > 2:
+				case this.ie      && this.version > 8:
+				case this.opera   && this.version > 8:
+				case this.safari  && this.version > 4:
 					this.css3 = true;
 					return true;
 				default:
@@ -475,9 +474,7 @@ var abaaso = abaaso || function(){
 		opera   : (function(){ return /opera/i.test(navigator.userAgent); })(),
 		osx     : (function(){ return /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function(){ return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function(){ return ((/android|ipad|playbook|meego|webos/i.test(navigator.userAgent))
-			                           && ((client.size.x >= 1000)
-			                            || (client.size.y >= 1000))) ? true : false; })(),
+		tablet  : (function(){ return /android|ipad|playbook|meego|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000) ? true : false; })(),
 		webos   : (function(){ return /webos/i.test(navigator.userAgent); })(),
 		windows : (function(){ return /windows/i.test(navigator.userAgent); })(),
 		version : (function(){
@@ -527,14 +524,14 @@ var abaaso = abaaso || function(){
 				}
 
 				switch (true) {
-					case (/delete/i.test(command)):
-						result = ((uri.permission(command).bit & 1) === 0) ? false : true
+					case /delete/i.test(command):
+						result = (uri.permission(command).bit & 1) === 0 ? false : true
 						break;
-					case (/get/i.test(command)):
-						result = ((uri.permission(command).bit & 4) === 0) ? false : true
+					case /get/i.test(command):
+						result = (uri.permission(command).bit & 4) === 0 ? false : true
 						break;
-					case (/post|put/i.test(command)):
-						result = ((uri.permission(command).bit & 2) === 0) ? false : true
+					case /post|put/i.test(command):
+						result = (uri.permission(command).bit & 2) === 0 ? false : true
 						break;
 					default:
 						result = false;
@@ -635,8 +632,8 @@ var abaaso = abaaso || function(){
 
 				uri.on("received" + typed, timer)
 				   .on("timeout"  + typed, fail)
-				   .on("after"    + typed, function(arg){ (/function/.test(typeof success)) ? success(arg) : void(0); })
-				   .on("failed"   + typed, function(){ (/function/.test(typeof failure)) ? failure() : void(0); })
+				   .on("after"    + typed, function(arg){ /function/.test(typeof success) ? success(arg) : void(0); })
+				   .on("failed"   + typed, function(){ /function/.test(typeof failure) ? failure() : void(0); })
 				   .fire("before" + typed)
 				   .fire("beforeXHR");
 
@@ -652,10 +649,10 @@ var abaaso = abaaso || function(){
 
 				if (payload !== null) {
 					switch (true) {
-						case (payload instanceof Document):
+						case payload instanceof Document:
 							xhr.setRequestHeader("Content-type", "application/xml");
 							break;
-						case (payload instanceof Object):
+						case payload instanceof Object:
 							xhr.setRequestHeader("Content-type", "application/json");
 							payload = json.encode(payload);
 							break;
@@ -670,8 +667,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				(/object/.test(typeof cached)
-				 && !/undefined/.test(typeof cached.headers.ETag)) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
+				/object/.test(typeof cached) && !/undefined/.test(typeof cached.headers.ETag) ? xhr.setRequestHeader("ETag", cached.headers.ETag) : void(0);
 
 				xhr.send(payload);
 			}
@@ -774,19 +770,19 @@ var abaaso = abaaso || function(){
 					}
 
 					cache.set(uri, "headers", items);
-					cache.set(uri, "permission", bit((allow !== null) ? allow.split(/\s*,\s*/) : [type]));
+					cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
 				}
 				else if (xhr.readyState == 4) {
 					switch (true) {
-							case (/200/.test(xhr.status)):
+							case /200/.test(xhr.status):
 								var state  = null,
 								    s      = abaaso.state;
 
 								if (!/delete|options/i.test(type)) {
 									cache.set(uri, "epoch", new Date());
-									cache.set(uri, "response", (/xml/.test(cache.get(uri, false).headers["Content-Type"])) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
-									                                                                                                                                        : xhr.responseXML)
-									                                                                                       : xhr.responseText);
+									cache.set(uri, "response", /xml/.test(cache.get(uri, false).headers["Content-Type"]) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
+									                                                                                                                                      : xhr.responseXML)
+									                                                                                     : xhr.responseText);
 								}
 
 								o = cache.get(uri, false);
@@ -803,15 +799,15 @@ var abaaso = abaaso || function(){
 								}
 
 								uri.fire("afterXHR");
-								uri.fire("after" + typed, (/options/i.test(type)) ? o.headers : o.response);
+								uri.fire("after" + typed, /options/i.test(type) ? o.headers : o.response);
 								break;
-							case (/301/.test(xhr.status)):
+							case /301/.test(xhr.status):
 								throw new Error(label.error.serverError);
 								break;
-							case (/401/.test(xhr.status)):
+							case /401/.test(xhr.status):
 								throw new Error(label.error.serverUnauthorized);
 								break;
-							case (/405/.test(xhr.status)):
+							case /405/.test(xhr.status):
 								cache.set(uri, "!permission", bit(type));
 								throw new Error(label.error.serverInvalidMethod);
 								break;
@@ -988,8 +984,8 @@ var abaaso = abaaso || function(){
 
 			try {
 				switch (true) {
-					case (!/set|del/.test(type)):
-					case (!/object/.test(typeof data)):
+					case !/set|del/.test(type):
+					case !/object/.test(typeof data):
 						throw Error(label.error.invalidArguments);
 				}
 
@@ -1005,7 +1001,7 @@ var abaaso = abaaso || function(){
 								this.del(data[i], false);
 								break;
 							case "set":
-								key = ((this.key !== null) && (!/undefined/.test(typeof data[i][this.key]))) ? this.key : i;
+								key = this.key !== null && !/undefined/.test(typeof data[i][this.key]) ? this.key : i;
 								this.set(key, data[i], sync);
 								break;
 						}
@@ -1013,12 +1009,12 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					for (i in data) {
-						switch (true) {
-							case (type == "del"):
+						switch (type) {
+							case "del":
 								this.del(data[i], false);
 								break;
-							case (type == "set"):
-								key = ((this.key !== null) && (!/undefined/.test(typeof data[i][this.key]))) ? this.key : i;
+							case "set":
+								key = this.key !== null && !/undefined/.test(typeof data[i][this.key]) ? this.key : i;
 								(key != i) ? delete data[i][key] : key = key.toString();
 								this.set(key, data[i], sync);
 								break;
@@ -1026,7 +1022,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				(type == "del") ? this.reindex() : void(0);
+				/del/.test(type) ? this.reindex() : void(0);
 				obj.fire("afterDataBatch");
 				return this;
 			}
@@ -1282,16 +1278,16 @@ var abaaso = abaaso || function(){
 
 					// Hooking in the observer
 					switch (true) {
-						case (/undefined/.test(typeof obj.fire)):
+						case /undefined/.test(typeof obj.fire):
 							obj.fire = function(){ return $.fire.apply(this, arguments); };
-						case (/undefined/.test(typeof obj.listeners)):
+						case /undefined/.test(typeof obj.listeners):
 							obj.listeners = function(){ return $.listeners.apply(this, arguments); };
-						case (/undefined/.test(typeof obj.on)):
+						case /undefined/.test(typeof obj.on):
 							obj.on = function(event, listener, id, scope, standby) {
 								scope = scope || this;
 								return $.on(this, event, listener, id, scope, standby);
 							};
-						case (/undefined/.test(typeof obj.un)):
+						case /undefined/.test(typeof obj.un):
 							obj.un = function(event, id) { return $.un(this, event, id); };
 					}
 
@@ -1304,11 +1300,11 @@ var abaaso = abaaso || function(){
 					delete obj.data.register;
 
 					switch (true) {
-						case (($.client.ie) && ($.client.version == 8)):
+						case $.client.ie && $.client.version == 8:
 							// Pure hackery, only exists when needed
 							obj.data.uri    = null;
 							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
-						case (/undefined/.test(typeof Object.defineProperty)):
+						case /undefined/.test(typeof Object.defineProperty):
 							obj.data.__defineGetter__("uri", getter);
 							obj.data.__defineSetter__("uri", setter);
 							break;
@@ -1360,7 +1356,7 @@ var abaaso = abaaso || function(){
 		 * first property of the response object will be used as the key
 		 *
 		 * Events:     beforeDataSet    Fires before the record is set
-		 *             afterDataSet     Fires after the record is set
+		 *             afterDataSet     Fires after the record is set, the record is the argument for listeners
 		 *             syncDataSet      Fires when the local store is updated
 		 *             failedDataSet    Fires if the store is RESTful and the action is denied
 		 *
@@ -1375,17 +1371,16 @@ var abaaso = abaaso || function(){
 				sync = (sync === true) ? true : false;
 
 				switch (true) {
-					case (((/undefined/.test(typeof key)) || (key.isEmpty())) && (this.uri === null)):
-					case (/undefined/.test(typeof data)):
-					case (data instanceof Array):
-					case (data instanceof Number):
-					case (data instanceof String):
-					case (!/object/.test(typeof(data))):
+					case (/undefined/.test(typeof key) || key.isEmpty()) && this.uri === null:
+					case /undefined/.test(typeof data):
+					case data instanceof Array:
+					case data instanceof Number:
+					case data instanceof String:
+					case !/object/.test(typeof data):
 						throw new Error(label.error.invalidArguments);
 				}
 
-				var record = ((/undefined/.test(typeof this.keys[key]))
-				              && (/undefined/.test(typeof this.records[key]))) ? undefined : this.get(key),
+				var record = /undefined/.test(typeof this.keys[key]) && /undefined/.test(typeof this.records[key]) ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    guid   = $.genId(),
 				    arg, index, record;
@@ -1433,7 +1428,7 @@ var abaaso = abaaso || function(){
 
 				((this.uri === null)
 				 || (sync === true)) ? obj.fire("syncDataSet")
-				                     : $[(/undefined/.test(typeof key)) ? "post" : "put"](/undefined/.test(typeof key) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
+				                     : $[/undefined/.test(typeof key) ? "post" : "put"](/undefined/.test(typeof key) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -1527,10 +1522,10 @@ var abaaso = abaaso || function(){
 						obj.fire("beforeClear");
 
 						switch (true) {
-							case (/function/.test(typeof obj.reset)):
+							case /function/.test(typeof obj.reset):
 								obj.reset();
 								break;
-							case (!/undefined/.test(typeof obj.value)):
+							case !/undefined/.test(typeof obj.value):
 								obj.update({innerHTML: "", value: ""});
 								break;
 							default:
@@ -1599,7 +1594,7 @@ var abaaso = abaaso || function(){
 				(!/undefined/.test(typeof args) && !/undefined/.test(typeof args.id)) ? delete args.id : void(0);
 
 				obj.fire("beforeCreate");
-				(/object/.test(typeof args) && /undefined/.test(typeof args.childNodes)) ? obj.update(args) : void(0);
+				/object/.test(typeof args) && /undefined/.test(typeof args.childNodes) ? obj.update(args) : void(0);
 				target.appendChild(obj);
 				obj.fire("afterCreate");
 				return obj;
@@ -2145,7 +2140,7 @@ var abaaso = abaaso || function(){
 		track : function(n) {
 			var m = abaaso.mouse;
 			switch (true) {
-				case (/object/.test(typeof n)):
+				case /object/.test(typeof n):
 					var x, y, c = false;
 					x = (n.pageX) ? n.pageX : ((((client.ie) && (client.version == 8)) ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
 					y = (n.pageY) ? n.pageY : ((((client.ie) && (client.version == 8)) ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
@@ -2162,7 +2157,7 @@ var abaaso = abaaso || function(){
 
 					((c === true) && (m.log === true)) ? utility.log(m.pos.x + " : " + m.pos.y) : void(0);
 					break;
-				case (/boolean/.test(typeof n)):
+				case /boolean/.test(typeof n):
 					(n === true) ? ((document.addEventListener)    ? document.addEventListener("mousemove", abaaso.mouse.track, false)    : document.attachEvent("onmousemove", abaaso.mouse.track))
 					             : ((document.removeEventListener) ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track));
 					$.mouse.enabled = m.enabled = n;
@@ -2206,14 +2201,14 @@ var abaaso = abaaso || function(){
 					    i    = null;
 
 					for (i = 0; i < nth; i++) {
-						this.add(obj[i], event, fn, id, ((/undefined/.test(typeof scope)) ? obj[i] : scope), state);
+						this.add(obj[i], event, fn, id, /undefined/.test(typeof scope) ? obj[i] : scope, state);
 					}
 
 					return obj;
 				}
 				else {
 					obj     = utility.object(obj);
-					(/undefined/.test(typeof id) || !/\w/.test(id)) ? id = $.genId() : void(0);
+					/undefined/.test(typeof id) || !/\w/.test(id) ? id = $.genId() : void(0);
 
 					var instance = null,
 					    l        = observer.listeners,
@@ -2221,20 +2216,20 @@ var abaaso = abaaso || function(){
 					    efn, item;
 
 					switch (true) {
-						case (/undefined/.test(typeof o)):
-						case (/undefined/.test(typeof event)):
-						case (!/function/.test(typeof fn)):
+						case /undefined/.test(typeof o):
+						case /undefined/.test(typeof event):
+						case !/function/.test(typeof fn):
 							throw new Error(label.error.invalidArguments);
 					}
 
 					switch (true) {
-						case (/undefined/.test(typeof l[o])):
+						case /undefined/.test(typeof l[o]):
 							l[o] = {};
-						case (/undefined/.test(typeof l[o][event])):
+						case /undefined/.test(typeof l[o][event]):
 							l[o][event] = {};
-						case (/undefined/.test(typeof l[o][event].active)):
+						case /undefined/.test(typeof l[o][event].active):
 							l[o][event].active = {};
-						case (/undefined/.test(typeof l[o][event].standby)):
+						case /undefined/.test(typeof l[o][event].standby):
 							l[o][event].standby = {};
 					}
 
@@ -2251,8 +2246,8 @@ var abaaso = abaaso || function(){
 					    };
 						((instance !== null)
 						 && !/afterjsonp/i.test(event)
-						 && !/undefined/.test(typeof instance)) ? ((/function/.test(typeof instance.addEventListener)) ? instance.addEventListener(event, efn, false)
-															                                                           : instance.attachEvent("on" + event, efn))
+						 && !/undefined/.test(typeof instance)) ? (/function/.test(typeof instance.addEventListener) ? instance.addEventListener(event, efn, false)
+															                                                         : instance.attachEvent("on" + event, efn))
 						                                        : void(0);
 					}
 					else {
@@ -2295,14 +2290,14 @@ var abaaso = abaaso || function(){
 					    l, i, c, f, s;
 
 					switch (true) {
-						case (/undefined/.test(typeof o)):
-						case (o.isEmpty()):
-						case (/undefined/.test(typeof obj)):
-						case (/undefined/.test(typeof event)):
+						case /undefined/.test(typeof o):
+						case o.isEmpty():
+						case /undefined/.test(typeof obj):
+						case /undefined/.test(typeof event):
 							throw new Error(label.error.invalidArguments);
 					}
 
-					(abaaso.observer.log === true) ? utility.log(o + " fired " + event) : void(0);
+					abaaso.observer.log === true ? utility.log(o + " fired " + event) : void(0);
 
 					l = observer.list(obj, event).active;
 
@@ -2341,9 +2336,8 @@ var abaaso = abaaso || function(){
 				var l = this.listeners,
 				    o = !/undefined/.test(typeof obj.id) ? obj.id : obj.toString();
 
-				return !/undefined/.test(typeof l[o]) ? ((!/undefined/.test(typeof event)
-				                                         && !/undefined/.test(typeof l[o][event])) ? $.clone(l[o][event])
-				                                                                                   : $.clone(l[o]))
+				return !/undefined/.test(typeof l[o]) ? (!/undefined/.test(typeof event) && !/undefined/.test(typeof l[o][event]) ? $.clone(l[o][event])
+				                                                                                                                  : $.clone(l[o]))
 				                                      : {};
 			}
 			catch (e) {
@@ -2380,10 +2374,10 @@ var abaaso = abaaso || function(){
 					    efn;
 
 					switch (true) {
-						case (/undefined/.test(typeof o)):
-						case (/undefined/.test(typeof event)):
-						case (/undefined/.test(typeof l[o])):
-						case (/undefined/.test(typeof l[o][event])):
+						case /undefined/.test(typeof o):
+						case /undefined/.test(typeof event):
+						case /undefined/.test(typeof l[o]):
+						case /undefined/.test(typeof l[o][event]):
 							return obj;
 					}
 
@@ -2476,20 +2470,18 @@ var abaaso = abaaso || function(){
 			 */
 			alt = function(obj, state) {
 				var i, nth, instances = [];
-
 				if (obj instanceof Array) {
 					nth = obj.length;
 					for (i = 0; i < nth; i++) {
-						(i.isEven() === state) ? instances.push(obj[i]) : void(0);
+						i.isEven() === state ? instances.push(obj[i]) : void(0);
 					}
 				}
 				else if ((obj.childNodes) && (obj.childNodes.length > 0)) {
 					nth = obj.childNodes.length;
 					for (i = 0; i < nth; i++) {
-						(i.isEven() === state) ? instances.push(obj.childNodes[i]) : void(0);
+						i.isEven() === state ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
-
 				return instances;
 			};
 
@@ -2502,12 +2494,11 @@ var abaaso = abaaso || function(){
 			 */
 			find = function(obj, arg) {
 				arg = arg.split(/\s*,\s*/);
-				var i, pattern, nth = arg.length, instances = [];
+				var i, nth = arg.length, instances = [];
 				for (i = 0; i < nth; i++) {
-					pattern = new RegExp(arg[i].replace("*", ".*"), "ig");
-					(pattern.test(obj)) ? instances.push(arg[i]) : void(0);
+					new RegExp(arg[i].replace("*", ".*"), "ig").test(obj) ? instances.push(arg[i]) : void(0);
 				}
-				return (instances.length > 0) ? true : false;
+				return instances.length > 0 ? true : false;
 			};
 
 			/**
@@ -2519,21 +2510,16 @@ var abaaso = abaaso || function(){
 			 */
 			contains = function(obj, arg) {
 				var i, nth, instances = [];
-
-				((obj instanceof Array)
-				 && (obj.length == 1)) ? obj = obj.first() : void(0);
-
+				obj instanceof Array && obj.length == 1 ? obj = obj.first() : void(0);
 				if (obj instanceof Array) {
 					nth = obj.length;
 					for (i = 0; i < nth; i++) {
-						(new RegExp(arg).test(obj[i].innerHTML)) ? instances.push(obj[i]) : void(0);
+						new RegExp(arg).test(obj[i].innerHTML) ? instances.push(obj[i]) : void(0);
 					}
-					return (instances.length == 1) ? instances[0] : instances;
+					return instances.length == 1 ? instances[0] : instances;
 				}
 				else {
-					return ((obj !== null)
-							&& (arg !== null)
-							&& (new RegExp(arg).test(obj[i].innerHTML))) ? obj : undefined;
+					return obj !== null && arg !== null && new RegExp(arg).test(obj[i].innerHTML) ? obj : undefined;
 				}
 			};
 
@@ -2546,10 +2532,7 @@ var abaaso = abaaso || function(){
 			 */
 			has = function(obj, arg) {
 				var i, nth, instances = [];
-
-				((obj instanceof Array)
-				 && (obj.length == 1)) ? obj = obj.first() : void(0);
-
+				obj instanceof Array && obj.length == 1 ? obj = obj.first() : void(0);
 				if (obj instanceof Array) {
 					var x, nth2;
 					nth = obj.length;
@@ -2557,8 +2540,7 @@ var abaaso = abaaso || function(){
 						nth2 = obj[i].childNodes.length;
 						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
-							((find(obj[i].childNodes[x].nodeName, arg) === true)
-							 && (/undefined/.test(typeof instances[obj[i].id]))) ? instances[obj[i].id] = obj[i] : void(0);
+							find(obj[i].childNodes[x].nodeName, arg) === true && /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0);
 						}
 					}
 					instances = instances.indexed();
@@ -2566,7 +2548,7 @@ var abaaso = abaaso || function(){
 				else {
 					nth = obj.childNodes.length;
 					for (i = 0; i < nth; i++) {
-						(find(obj.childNodes[i].nodeName, arg) === true) ? instances.push(obj.childNodes[i]) : void(0);
+						find(obj.childNodes[i].nodeName, arg) === true ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
@@ -2582,23 +2564,18 @@ var abaaso = abaaso || function(){
 			 */
 			is = function(obj, arg) {
 				var i, nth, instances = [];
-
-				((obj instanceof Array)
-				 && (obj.length == 1)) ? obj = obj.first() : void(0);
-
+				obj instanceof Array && obj.length == 1 ? obj = obj.first() : void(0);
 				if (obj instanceof Array) {
 					nth = obj.length;
 					for (i = 0; i < nth; i++) {
 						obj[i].genId();
-						((find(obj[i].nodeName, arg) === true)
-						 && (/undefined/.test(typeof instances[obj[i].id]))) ? instances[obj[i].id] = obj[i] : void(0);
+						find(obj[i].nodeName, arg) === true && /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0);
 					}
 					instances = instances.indexed();
 				}
 				else {
-					(find(obj.nodeName, arg) === true) ? instances.push(obj) : void(0);
+					find(obj.nodeName, arg === true) ? instances.push(obj) : void(0);
 				}
-
 				return instances;
 			};
 
@@ -2611,9 +2588,7 @@ var abaaso = abaaso || function(){
 			 */
 			not = function(obj, arg) {
 				var i, nth, instances = [];
-
-				((obj instanceof Array) && (obj.length == 1)) ? obj = obj.first() : void(0);
-
+				obj instanceof Array && obj.length == 1 ? obj = obj.first() : void(0);
 				if (obj instanceof Array) {
 					var x, nth2;
 					nth = obj.length;
@@ -2621,8 +2596,8 @@ var abaaso = abaaso || function(){
 						nth2 = obj[i].childNodes.length;
 						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
-							(find(obj[i].childNodes[x].nodeName, arg) === false) ? (/undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0))
-							                                                     : (!/undefined/.test(typeof instances[obj[i].id]) ? delete instances[obj[i].id] : void(0));
+							find(obj[i].childNodes[x].nodeName, arg) === false ? /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0)
+							                                                   : !/undefined/.test(typeof instances[obj[i].id]) ? delete instances[obj[i].id] : void(0);
 						}
 					}
 					instances = instances.indexed();
@@ -2630,7 +2605,7 @@ var abaaso = abaaso || function(){
 				else {
 					nth = obj.childNodes.length;
 					for (i = 0; i < nth; i++) {
-						(find(obj.childNodes[i].nodeName, arg) === false) ? instances.push(obj.childNodes[i]) : void(0);
+						find(obj.childNodes[i].nodeName, arg) === false ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
@@ -2665,24 +2640,20 @@ var abaaso = abaaso || function(){
 
 			// Getting instance(s)
 			switch (true) {
-				case (/^(\.)/.test(arg)):
+				case /^(\.)/.test(arg):
 					obj = document.getElementsByClassName(arg.slice(1));
-					((obj !== null)
-					 && (nodelist === false)) ? (obj = ((!client.ie)
-					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : abaaso.array.cast(obj))
-						                      : void(0);
+					obj !== null && nodelist === false ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
+						                                                                          : abaaso.array.cast(obj)))
+						                               : void(0);
 					break;
-				case (/^(#)/.test(arg)):
+				case /^(#)/.test(arg):
 					obj = document.getElementById(arg.substring(1));
 					break;
-				case (/^(:)/.test(arg)):
+				case /^(:)/.test(arg):
 					obj = document.body.getElementsByTagName("*");
-					((obj !== null)
-					 && (nodelist === false)) ? (obj = ((!client.ie)
-					                                    || (client.version > 8)) ? Array.prototype.slice.call(obj)
-						                                                         : abaaso.array.cast(obj))
-						                      : void(0);
+					obj !== null && nodelist === false ? (obj = (!client.ie || client.version > 8 ? Array.prototype.slice.call(obj)
+						                                                                          : abaaso.array.cast(obj)))
+						                               : void(0);
 					break;
 				default:
 					obj = document.getElementsByTagName(arg);
@@ -2767,15 +2738,15 @@ var abaaso = abaaso || function(){
 					(function(){
 						var b = i;
 						switch (true) {
-							case (/function/.test(typeof origin[b])):
+							case /function/.test(typeof origin[b]):
 								obj[b] = function(){ return origin[b].apply(this, arguments); };
 								break;
-							case (origin[b] instanceof Object):
+							case origin[b] instanceof Object:
 								/undefined/.test(typeof obj[b]) ? obj[b] = {} : void(0);
 								(function(){ abaaso.alias(obj[b], origin[b]); })();
 								break;
-							case (/boolean|number|string/.test(typeof origin[b])):
-							case (origin[b] === null):
+							case /boolean|number|string/.test(typeof origin[b]):
+							case origin[b] === null:
 								obj[b] = origin[b];
 								break;
 						}
@@ -2835,8 +2806,8 @@ var abaaso = abaaso || function(){
 			    p = obj;
 
 			for (i = 0; i < l; i++) {
-				(/undefined/.test(typeof p[args[i]])) ? p[args[i]] = ((i + 1 < l) ? {} : (!/undefined/.test(typeof value) ? value : null))
-							                          : ((i + 1 >= l) ? (p[args[i]] = !/undefined/.test(typeof value) ? value : null) : void(0));
+				/undefined/.test(typeof p[args[i]]) ? p[args[i]] = (i + 1 < l ? {} : (!/undefined/.test(typeof value) ? value : null))
+							                        : (i + 1 >= l ? (p[args[i]] = !/undefined/.test(typeof value) ? value : null) : void(0));
 				p = p[args[i]];
 			}
 
@@ -2912,9 +2883,9 @@ var abaaso = abaaso || function(){
 		genId : function(obj) {
 			try {
 				switch (true) {
-					case (obj instanceof Array):
-					case (obj instanceof String):
-					case (!/undefined/.test(typeof obj) && !/undefined/.test(typeof obj.id) && !obj.id.isEmpty()):
+					case obj instanceof Array:
+					case obj instanceof String:
+					case !/undefined/.test(typeof obj) && !/undefined/.test(typeof obj.id) && !obj.id.isEmpty():
 						return obj;
 				}
 
@@ -3081,17 +3052,17 @@ var abaaso = abaaso || function(){
 									this.genId();
 									return $.el.hidden(this);
 							   },
-							   isAlphaNum: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({alphanum: !/undefined/.test(typeof this.value) ? this.value : this.innerText}).pass; },
-						       isBoolean: function() { return (/form/gi.test(this.nodeName)) ? false : $.validate.test({"boolean": !/undefined/.test(typeof this.value) ? this.value : this.innerText}).pass; },
-						       isDate   : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isDate()   : this.innerText.isDate(); },
-						       isDomain : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isDomain() : this.innerText.isDomain(); },
-						       isEmail  : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isEmail()  : this.innerText.isEmail(); },
-						       isEmpty  : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isEmpty()  : this.innerText.isEmpty(); },
-						       isIP     : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isIP()     : this.innerText.isIP(); },
-						       isInt    : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isInt()    : this.innerText.isInt(); },
-						       isNumber : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isNumber() : this.innerText.isNumber(); },
-						       isPhone  : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isPhone()  : this.innerText.isPhone(); },
-						       isString : function() { return (/form/gi.test(this.nodeName)) ? false : !/undefined/.test(typeof this.value) ? this.value.isString() : this.innerText.isString(); },
+							   isAlphaNum: function() { return /form/gi.test(this.nodeName) ? false : $.validate.test({alphanum: !/undefined/.test(typeof this.value) ? this.value : this.innerText}).pass; },
+						       isBoolean: function() { return /form/gi.test(this.nodeName) ? false : $.validate.test({"boolean": !/undefined/.test(typeof this.value) ? this.value : this.innerText}).pass; },
+						       isDate   : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isDate()   : this.innerText.isDate(); },
+						       isDomain : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isDomain() : this.innerText.isDomain(); },
+						       isEmail  : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isEmail()  : this.innerText.isEmail(); },
+						       isEmpty  : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isEmpty()  : this.innerText.isEmpty(); },
+						       isIP     : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isIP()     : this.innerText.isIP(); },
+						       isInt    : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isInt()    : this.innerText.isInt(); },
+						       isNumber : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isNumber() : this.innerText.isNumber(); },
+						       isPhone  : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isPhone()  : this.innerText.isPhone(); },
+						       isString : function() { return /form/gi.test(this.nodeName) ? false : !/undefined/.test(typeof this.value) ? this.value.isString() : this.innerText.isString(); },
 						       jsonp    : function(uri, property, callback) {
 									var target = this,
 									    arg    = property,
@@ -3129,8 +3100,7 @@ var abaaso = abaaso || function(){
 							   loading  : function() { return $.loading.create(this); },
 					           on       : function(event, listener, id, scope, standby) {
 									scope = scope || this;
-									(/undefined/.test(typeof this.id)
-									 || (this.id.isEmpty())) ? this.genId() : void(0);
+									/undefined/.test(typeof this.id) || this.id.isEmpty() ? this.genId() : void(0);
 									return $.on(this, event, listener, id, scope, standby);
 							   },
 					           position : function() {
@@ -3155,7 +3125,7 @@ var abaaso = abaaso || function(){
 									this.genId();
 									return $.update(this, args);
 							   },
-							   validate  : function() { return (/form/gi.test(this.nodeName)) ? $.validate.test(this).pass : !/undefined/.test(typeof this.value) ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+							   validate  : function() { return /form/gi.test(this.nodeName) ? $.validate.test(this).pass : !/undefined/.test(typeof this.value) ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 					number  : {isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
 					           on       : function(event, listener, id, scope, standby) {
@@ -3163,10 +3133,8 @@ var abaaso = abaaso || function(){
 					           		return $.on(this, event, listener, id, scope, standby);
 					           }},
 					shared  : {clear    : function() {
-									(/object/.test(typeof this)
-									 && (/undefined/.test(typeof this.id)
-									     || (this.id.isEmpty()))) ? this.genId() : void(0);
-									(this instanceof String) ? (this.constructor = new String("")) : $.clear(this);
+									/object/.test(typeof this) && (/undefined/.test(typeof this.id) || this.id.isEmpty()) ? this.genId() : void(0);
+									this instanceof String ? this.constructor = new String("") : $.clear(this);
 									return this;
 							   },
 							   destroy  : function() { $.destroy(this); },
@@ -3178,22 +3146,16 @@ var abaaso = abaaso || function(){
 							   		return $.domId(this);
 							   },
 							   fire     : function(event, args) {
-							   		((!this instanceof String)
-							   		 && ((/undefined/.test(typeof this.id))
-							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
+							   		!this instanceof String && (/undefined/.test(typeof this.id) || this.id.isEmpty()) ? this.genId() : void(0);
 							   		return $.fire.call(this, event, args);
 							   },
 							   genId    : function() { return $.genId(this); },
 							   listeners: function(event) {
-							   		((!this instanceof String)
-							   		 && ((/undefined/.test(typeof this.id))
-							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
+							   		!this instanceof String && (/undefined/.test(typeof this.id) || this.id.isEmpty()) ? this.genId() : void(0);
 							   		return $.listeners(this, event);
 							   },
 							   un       : function(event, id) {
-							   		((!this instanceof String)
-							   		 && (/undefined/.test(typeof this.id)
-							   		     || (this.id.isEmpty()))) ? this.genId() : void(0);
+							   		!this instanceof String && (/undefined/.test(typeof this.id) || this.id.isEmpty()) ? this.genId() : void(0);
 							   		return $.un(this, event, id);
 							   }},
 					string  : {allow    : function(arg) { return $.allow(this, arg); },
@@ -3259,9 +3221,9 @@ var abaaso = abaaso || function(){
 		test : function(args) {
 			try {
 				switch (true){
-					case (/undefined/.test(typeof args)):
-					case (args === null):
-					case (!args instanceof Object):
+					case /undefined/.test(typeof args):
+					case args === null:
+					case !args instanceof Object:
 						throw Error(label.error.expectedObject);
 						break;
 				}
@@ -3270,21 +3232,19 @@ var abaaso = abaaso || function(){
 				    invalid   = [],
 				    value     = null;
 
-				if (!/undefined/.test(typeof args.nodeName)
-				    && /form/gi.test(args.nodeName)) {
+				if (!/undefined/.test(typeof args.nodeName) && /form/gi.test(args.nodeName)) {
 					var i, p, v, c, o, x, t = {}, nth, nth2, result, invalid = [], tracked = {};
 
-					(args.id.isEmpty()) ? args.genId() : void(0);
+					args.id.isEmpty() ? args.genId() : void(0);
 
 					c    = $("#"+args.id+":has(input,select)");
 					nth = c.length;
 
 					for (i = 0; i < nth; i++) {
 						v = null;
-						p = (validate.pattern[c[i].nodeName.toLowerCase()]) ? validate.pattern[c[i].nodeName.toLowerCase()]
-						                                                    : (((c[i].id.isEmpty() === false)
-																			   && (validate.pattern[c[i].id.toLowerCase()])) ? validate.pattern[c[i].id.toLowerCase()]
-																		                                                     : "notEmpty");
+						p = validate.pattern[c[i].nodeName.toLowerCase()] ? validate.pattern[c[i].nodeName.toLowerCase()]
+						                                                  : ((!c[i].id.isEmpty() && validate.pattern[c[i].id.toLowerCase()]) ? validate.pattern[c[i].id.toLowerCase()]
+						                                                                                                                    : "notEmpty");
 
 						if (/(radio|checkbox)/gi.test(c[i].type)) {
 							if (c[i].name in tracked) { continue; }
@@ -3375,9 +3335,9 @@ var abaaso = abaaso || function(){
 		decode : function(arg) {
 			try {
 				switch (true) {
-					case (/undefined/.test(typeof arg)):
-					case (!arg instanceof String):
-					case (arg.isEmpty()):
+					case /undefined/.test(typeof arg):
+					case !arg instanceof String:
+					case arg.isEmpty():
 						throw Error(label.error.invalidArguments);
 				}
 
@@ -3540,9 +3500,9 @@ var abaaso = abaaso || function(){
 			setter = function(arg){
 				try {
 					switch (true) {
-						case (arg === null):
-						case (!/string/.test(typeof arg) || !/\w/.test(arg)):
-						case (new RegExp("^"+this.previous+"$", "i").test(arg)):
+						case arg === null:
+						case !/string/.test(typeof arg) || !/\w/.test(arg):
+						case new RegExp("^"+this.previous+"$", "i").test(arg):
 							throw Error(label.error.invalidArguments);
 							break;
 					}
@@ -3559,11 +3519,11 @@ var abaaso = abaaso || function(){
 			};
 
 			switch (true) {
-				case (($.client.ie) && ($.client.version == 8)):
+				case $.client.ie && $.client.version == 8:
 					// Pure hackery, only exists when needed
 					abaaso.state.current = null;
 					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
-				case (/undefined/.test(typeof Object.defineProperty)):
+				case /undefined/.test(typeof Object.defineProperty):
 					abaaso.state.__defineGetter__("current", getter);
 					abaaso.state.__defineSetter__("current", setter);
 					break;
@@ -3674,7 +3634,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.067"
+		version         : "1.6.068"
 	};
 }();
 
@@ -3696,7 +3656,7 @@ if (/function/.test(typeof abaaso.init)) {
 		case $.client.firefox:
 		case $.client.opera:
 		case $.client.safari:
-		case ($.client.ie && ($.client.version > 8)):
+		case $.client.ie && $.client.version > 8:
 			document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
 			break;
 		default:
