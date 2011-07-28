@@ -1367,8 +1367,8 @@ var abaaso = abaaso || function(){
 		 */
 		set : function(key, data, sync) {
 			try {
-				key = (key === null) ? undefined : key.toString();
-				sync = (sync === true) ? true : false;
+				key  = key === null  ? undefined : key.toString();
+				sync = sync === true ? true : false;
 
 				switch (true) {
 					case (/undefined/.test(typeof key) || key.isEmpty()) && this.uri === null:
