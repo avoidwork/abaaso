@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.074
+ * @version 1.6.075
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -200,7 +200,7 @@ var abaaso = abaaso || function(){
 				var o, i = 0, indexed = [];
 				for (o in instance) {
 					if (!/function/.test(typeof instance[o])) {
-						indexed[i] = (instance[o] instanceof Array) ? instance[o].indexed() : instance[o];
+						indexed[i] = instance[o] instanceof Array ? instance[o].indexed() : instance[o];
 						i++
 					}
 				}
@@ -252,7 +252,7 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.expectedArray);
 				}
 
-				return (instance.length > 1) ? instance[(instance.length - 1)] : instance[0];
+				return instance.length > 1 ? instance[(instance.length - 1)] : instance[0];
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -365,11 +365,11 @@ var abaaso = abaaso || function(){
 			    epoch  = !/undefined/.test(typeof c) ? new Date(c.epoch) : null,
 			    expire = !/undefined/.test(typeof c) && !/undefined/.test(typeof c.headers.Expires) ? new Date(c.headers.Expires) : null,
 			    now    = new Date(),
-			    date   = !/undefined/.test(typeof c) && !/undefined/.test(typeof c.headers.Date) ? new Date(c.headers.Date) : null,
-			    result = (!/undefined/.test(typeof c) && ((expire !== null && expire < now)
-			                                              || (date !== null && date.setMilliseconds(date.getMilliseconds() + o.expire) < now)
-			                                              || (o.expire > 0 && epoch.setMilliseconds(epoch.getMilliseconds() + o.expire) < now))) ? true : false;
-			return result;
+			    date   = !/undefined/.test(typeof c) && !/undefined/.test(typeof c.headers.Date) ? new Date(c.headers.Date) : null;
+
+			return !/undefined/.test(typeof c) && ((expire !== null && expire < now)
+			                                       || (date !== null && date.setMilliseconds(date.getMilliseconds() + o.expire) < now)
+			                                       || (o.expire > 0 && epoch.setMilliseconds(epoch.getMilliseconds() + o.expire) < now));
 		},
 
 		/**
@@ -471,7 +471,7 @@ var abaaso = abaaso || function(){
 		opera   : (function(){ return /opera/i.test(navigator.userAgent); })(),
 		osx     : (function(){ return /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function(){ return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function(){ return /android|ipad|playbook|meego|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000) ? true : false; })(),
+		tablet  : (function(){ return /android|ipad|playbook|meego|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); })(),
 		webos   : (function(){ return /webos/i.test(navigator.userAgent); })(),
 		windows : (function(){ return /windows/i.test(navigator.userAgent); })(),
 		version : (function(){
@@ -743,73 +743,75 @@ var abaaso = abaaso || function(){
 					}
 				};
 
-				if (xhr.readyState == 2) {
-					uri.fire("received" + typed);
+				switch (true) {
+					case /2/.test(xhr.readyState):
+						uri.fire("received" + typed);
 
-					var headers = xhr.getAllResponseHeaders().split("\n"),
-					    i       = null,
-					    nth     = headers.length,
-					    items   = {},
-						allow   = null,
-						o;
+						var headers = xhr.getAllResponseHeaders().split("\n"),
+						    i       = null,
+						    nth     = headers.length,
+						    items   = {},
+							allow   = null,
+							o;
 
-					for (i = 0; i < nth; i++) {
-						if (!headers[i].isEmpty()) {
-							var header    = headers[i].toString(),
-							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+						for (i = 0; i < nth; i++) {
+							if (!headers[i].isEmpty()) {
+								var header    = headers[i].toString(),
+								    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 
-							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-							items[header] = value;
+								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+								items[header] = value;
 
-							/allow/i.test(header) ? allow = value : void(0);
+								/allow/i.test(header) ? allow = value : void(0);
+							}
 						}
-					}
 
-					cache.set(uri, "headers", items);
-					cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
-				}
-				else if (xhr.readyState == 4) {
-					switch (true) {
-							case /200/.test(xhr.status):
-								var state  = null,
-								    s      = abaaso.state;
+						cache.set(uri, "headers", items);
+						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
+						break;
+					case /4/.test(xhr.readyState):
+						switch (true) {
+								case /200/.test(xhr.status):
+									var state  = null,
+									    s      = abaaso.state;
 
-								if (!/delete|options/i.test(type)) {
-									cache.set(uri, "epoch", new Date());
-									cache.set(uri, "response", /xml/.test(cache.get(uri, false).headers["Content-Type"]) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
-									                                                                                                                                      : xhr.responseXML)
-									                                                                                     : xhr.responseText);
-								}
+									if (!/delete|options/i.test(type)) {
+										cache.set(uri, "epoch", new Date());
+										cache.set(uri, "response", /xml/.test(cache.get(uri, false).headers["Content-Type"]) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
+										                                                                                                                                      : xhr.responseXML)
+										                                                                                     : xhr.responseText);
+									}
 
-								o = cache.get(uri, false);
+									o = cache.get(uri, false);
 
-								/options/i.test(type) ? cache.expire(uri) : void(0);
+									/options/i.test(type) ? cache.expire(uri) : void(0);
 
-								// HATEOAS
-								if (!/options/i.test(type)
-									&& (s.header !== null)
-								    && (state = o.headers[s.header])
-									&& !/undefined/.test(typeof state)
-								    && !new RegExp(state).test(abaaso.state.current)) {
-									/function/.test(typeof abaaso.state.change) ? abaaso.state.change(state) : abaaso.state.current = state;
-								}
+									// HATEOAS
+									if (!/options/i.test(type)
+										&& (s.header !== null)
+									    && (state = o.headers[s.header])
+										&& !/undefined/.test(typeof state)
+									    && !new RegExp(state).test(abaaso.state.current)) {
+										/function/.test(typeof abaaso.state.change) ? abaaso.state.change(state) : abaaso.state.current = state;
+									}
 
-								uri.fire("afterXHR");
-								uri.fire("after" + typed, /options/i.test(type) ? o.headers : o.response);
-								break;
-							case /301/.test(xhr.status):
-								throw new Error(label.error.serverError);
-								break;
-							case /401/.test(xhr.status):
-								throw new Error(label.error.serverUnauthorized);
-								break;
-							case /405/.test(xhr.status):
-								cache.set(uri, "!permission", bit(type));
-								throw new Error(label.error.serverInvalidMethod);
-								break;
-							default:
-								throw new Error(label.error.serverError);
-					}
+									uri.fire("afterXHR");
+									uri.fire("after" + typed, /options/i.test(type) ? o.headers : o.response);
+									break;
+								case /301/.test(xhr.status):
+									throw new Error(label.error.serverError);
+									break;
+								case /401/.test(xhr.status):
+									throw new Error(label.error.serverUnauthorized);
+									break;
+								case /405/.test(xhr.status):
+									cache.set(uri, "!permission", bit(type));
+									throw new Error(label.error.serverInvalidMethod);
+									break;
+								default:
+									throw new Error(label.error.serverError);
+						}
+						break;
 				}
 			}
 			catch (e) {
@@ -1009,7 +1011,7 @@ var abaaso = abaaso || function(){
 								break;
 							case "set":
 								key = this.key !== null && !/undefined/.test(typeof data[i][this.key]) ? this.key : i;
-								(key != i) ? delete data[i][key] : key = key.toString();
+								key != i ? delete data[i][key] : key = key.toString();
 								this.set(key, data[i], sync);
 								break;
 						}
@@ -1097,8 +1099,8 @@ var abaaso = abaaso || function(){
 
 				obj.fire("beforeDataDelete");
 
-				(this.uri === null) ? obj.fire("syncDataDelete")
-				                    : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
+				this.uri === null ? obj.fire("syncDataDelete")
+				                  : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
 
 				return this;
 			}
@@ -1257,7 +1259,7 @@ var abaaso = abaaso || function(){
 								throw Error(label.error.invalidArguments);
 							}
 							this._uri = arg;
-							(arg !== null) ? this.sync() : void(0);
+							arg !== null ? this.sync() : void(0);
 						}
 						catch (e) {
 							$.error(e, arguments, this);
@@ -1292,7 +1294,7 @@ var abaaso = abaaso || function(){
 					delete obj.data.register;
 
 					switch (true) {
-						case $.client.ie && $.client.version == 8:
+						case $.client.ie && /8/.test($.client.version):
 							// Pure hackery, only exists when needed
 							obj.data.uri    = null;
 							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
@@ -1388,10 +1390,10 @@ var abaaso = abaaso || function(){
 								throw Error(label.error.expectedObject);
 							}
 
-							key = (this.key === null) ? array.cast(arg).first() : arg[this.key];
+							key = this.key === null ? array.cast(arg).first() : arg[this.key];
 							key = key.toString();
 						}
-						(!/undefined/.test(typeof data[key])) ? key = data[key] : void(0);
+						!/undefined/.test(typeof data[key]) ? key = data[key] : void(0);
 						this.keys[key] = {};
 						index = this.records.length;
 						this.keys[key].index = index;
@@ -1399,7 +1401,7 @@ var abaaso = abaaso || function(){
 						this.records[index].data = data;
 						this.records[index].key  = key;
 						record = this.records[index];
-						(this.key !== null) ? delete this.records[index].data[this.key] : void(0);
+						this.key !== null ? delete this.records[index].data[this.key] : void(0);
 						this.total++;
 					}
 					else {
@@ -1774,7 +1776,7 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.invalidArguments);
 				}
 
-				return /none/.test(obj.style.display) || (!/undefined/.test(typeof obj.hidden) && obj.hidden) ? true : false;
+				return /none/.test(obj.style.display) || (!/undefined/.test(typeof obj.hidden) && obj.hidden);
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -2130,8 +2132,8 @@ var abaaso = abaaso || function(){
 			switch (true) {
 				case /object/.test(typeof n):
 					var x, y, c = false;
-					x = (n.pageX) ? n.pageX : ((client.ie && client.version == 8 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
-					y = (n.pageY) ? n.pageY : ((client.ie && client.version == 8 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
+					x = (n.pageX) ? n.pageX : ((client.ie && /8/.test(client.version) ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
+					y = (n.pageY) ? n.pageY : ((client.ie && /8/.test(client.version) ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
 
 					if (m.pos.x != x) {
 						$.mouse.pos.x = m.pos.x = x;
@@ -2482,7 +2484,7 @@ var abaaso = abaaso || function(){
 				for (i = 0; i < nth; i++) {
 					new RegExp(arg[i].replace("*", ".*"), "ig").test(obj) ? instances.push(arg[i]) : void(0);
 				}
-				return instances.length > 0 ? true : false;
+				return instances.length > 0;
 			};
 
 			/**
@@ -2697,7 +2699,7 @@ var abaaso = abaaso || function(){
 				}
 			}
 
-			(obj === null) ? obj = undefined : void(0);
+			obj === null ? obj = undefined : void(0);
 			return obj;
 		},
 
@@ -3242,7 +3244,7 @@ var abaaso = abaaso || function(){
 							v = !/undefined/.test(typeof c[i].value) ? c[i].value : c[i].innerText;
 						}
 
-						(v === null) ? v = "" : void(0);
+						v === null ? v = "" : void(0);
 						t[p] = v;
 					}
 
@@ -3442,7 +3444,7 @@ var abaaso = abaaso || function(){
 		fire            : function() {
 			var event = /undefined/.test(typeof arguments[0]) ? undefined : arguments[0],
 				arg   = /undefined/.test(typeof arguments[1]) ? undefined : arguments[1],
-				obj   = (this === $) ? abaaso : this;
+				obj   = this === $ ? abaaso : this;
 
 			return abaaso.observer.fire(obj, event, arg);
 		},
@@ -3462,7 +3464,7 @@ var abaaso = abaaso || function(){
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
 			utility.proto(Element, "element");
-			((client.ie) && (client.version == 8)) ? utility.proto(HTMLDocument, "element") : void(0);
+			client.ie && /8/.test(client.version) ? utility.proto(HTMLDocument, "element") : void(0);
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
 			
@@ -3496,7 +3498,7 @@ var abaaso = abaaso || function(){
 			};
 
 			switch (true) {
-				case $.client.ie && $.client.version == 8:
+				case $.client.ie && /8/.test($.client.version):
 					// Pure hackery, only exists when needed
 					abaaso.state.current = null;
 					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
@@ -3518,7 +3520,7 @@ var abaaso = abaaso || function(){
 						pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
 
 					for (i = 0; i < nth; i++) {
-						(pattern.test(nodes[i].className)) ? obj.push(nodes[i]) : void(0);
+						pattern.test(nodes[i].className) ? obj.push(nodes[i]) : void(0);
 					}
 
 					return obj;
@@ -3529,15 +3531,13 @@ var abaaso = abaaso || function(){
 			if (/undefined/.test(typeof Array.prototype.filter)) {
 				Array.prototype.filter = function(fn) {
 					"use strict";
-					if ((this === void 0)
-						|| (this === null)
-						|| !/function/.test(typeof fn)) {
+					if (this === void 0 || this === null || !/function/.test(typeof fn)) {
 						throw new Error(label.error.invalidArguments);
 					}
 
 					var i      = null,
 						t      = Object(this),
-						nth   = t.length >>> 0,
+						nth    = t.length >>> 0,
 						result = [],
 						prop   = arguments[1]
 						val    = null;
@@ -3545,7 +3545,7 @@ var abaaso = abaaso || function(){
 					for (i = 0; i < nth; i++) {
 						if (i in t) {
 							val = t[i];
-							(fn.call(prop, val, i, t)) ? result.push(val) : void(0);
+							fn.call(prop, val, i, t) ? result.push(val) : void(0);
 						}
 					}
 
@@ -3572,21 +3572,21 @@ var abaaso = abaaso || function(){
 		},
 		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
-			var all   = (arguments[1] !== undefined) ? true : false,
-			    obj   = (all) ? arguments[0] : this,
-				event = (all) ? arguments[1] : arguments[0];
-				(obj === $) ? obj = abaaso : void(0);
+			var all   = !/undefined/.test(typeof arguments[1]) ? true : false,
+			    obj   = all ? arguments[0] : this,
+				event = all ? arguments[1] : arguments[0];
+				obj === $   ? obj = abaaso : void(0);
 
 			return observer.list(obj, event);
 		},
 		on              : function() {
 			var all      = /function/.test(typeof arguments[2]) ? true : false,
-			    obj      = (all) ? arguments[0] : abaaso,
-				event    = (all) ? arguments[1] : arguments[0],
-				listener = (all) ? arguments[2] : arguments[1],
-				id       = (all) ? arguments[3] : arguments[2],
-				scope    = (all) ? arguments[4] : arguments[3],
-				state    = (all) ? arguments[5] : arguments[4];
+			    obj      = all ? arguments[0] : abaaso,
+				event    = all ? arguments[1] : arguments[0],
+				listener = all ? arguments[2] : arguments[1],
+				id       = all ? arguments[3] : arguments[2],
+				scope    = all ? arguments[4] : arguments[3],
+				state    = all ? arguments[5] : arguments[4];
 				/undefined/.test(typeof scope) ? scope = abaaso : void(0);
 
 			return observer.add(obj, event, listener, id, scope, state);
@@ -3603,15 +3603,15 @@ var abaaso = abaaso || function(){
 		timer           : {},
 		un              : function() {
 			var all   = /string/.test(typeof arguments[0]) ? false : true,
-			    obj   = (all) ? arguments[0] : this,
-				event = (all) ? arguments[1] : arguments[0],
-				id    = (all) ? arguments[2] : arguments[1];
-				(obj === $) ? obj = abaaso : void(0);
+			    obj   = all ? arguments[0] : this,
+				event = all ? arguments[1] : arguments[0],
+				id    = all ? arguments[2] : arguments[1];
+				obj === $   ? obj = abaaso : void(0);
 
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.074"
+		version         : "1.6.075"
 	};
 }();
 
