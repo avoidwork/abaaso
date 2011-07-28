@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.070
+ * @version 1.6.071
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -495,7 +495,7 @@ var abaaso = abaaso || function(){
 				default:
 					version = navigator.appVersion;
 			}
-			version      = isNaN(parseInt(version)) ? 0 : parseInt(version);
+			version      = /\d/.test(parseInt(version)) ? parseInt(version) : 0;
 			this.version = version;
 			return version;
 		}),
@@ -909,7 +909,7 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				if (isNaN(span)) {
+				if (!/\d/.test(span)) {
 					throw new Error(label.error.invalidArguments);
 				}
 
@@ -930,7 +930,7 @@ var abaaso = abaaso || function(){
 						break;
 				}
 			}
-			(expire != "") ? expire = "; expires=" + expire.toUTCString() : void(0);
+			/\w/.test(expire) ? expire = "; expires=" + expire.toUTCString() : void(0);
 			document.cookie = name.toString().trim() + "=" + value + expire + "; path=/";
 			return this.get(name);
 		}
@@ -1206,7 +1206,7 @@ var abaaso = abaaso || function(){
 					r = !/undefined/.test(typeof this.keys[record]) ? this.records[this.keys[record].index] : undefined;
 				}
 				else if (record instanceof Array) {
-					if (isNaN(record[0]) || isNaN(record[1])) {
+					if (!/\d/.test(record[0]) || !/\d/.test(record[1])) {
 						throw new Error(label.error.invalidArguments);
 					}
 
@@ -1243,7 +1243,7 @@ var abaaso = abaaso || function(){
 		register : function(obj, data) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					var i = /\d/.test(obj.length) ? obj.length : obj.total();
 					while (i--) {
 						this.register(obj[i], data);
 					}
@@ -1497,7 +1497,7 @@ var abaaso = abaaso || function(){
 		clear : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
+					var nth  = /\d/.test(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
 					for (i = 0; i < nth; i++) {
@@ -1633,7 +1633,7 @@ var abaaso = abaaso || function(){
 		destroy : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					var i = /\d/.test(obj.length) ? obj.length : obj.total();
 					while (i--) {
 						this.destroy(obj[i]);
 					}
@@ -1667,7 +1667,7 @@ var abaaso = abaaso || function(){
 		disable : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = (!isNaN(obj.length)) ? obj.length : obj.total();
+					var i = /\d/.test(obj.length) ? obj.length : obj.total();
 					while (i--) {
 						this.disable(obj[i]);
 					}
@@ -1736,7 +1736,7 @@ var abaaso = abaaso || function(){
 		hide : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
+					var nth  = /\d/.test(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
 					for (i = 0; i < nth; i++) {
@@ -1829,7 +1829,7 @@ var abaaso = abaaso || function(){
 		show : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = /\d/.test(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
 					for (i = 0; i < nth; i++) {
@@ -1872,7 +1872,7 @@ var abaaso = abaaso || function(){
 				 * @returns {Integer} The casted value or zero
 				 */
 				var num = function(n) {
-					return !isNaN(parseInt(n)) ? parseInt(n) : 0;
+					return /\d/.test(parseInt(n)) ? parseInt(n) : 0;
 				};
 
 				var x = obj.offsetHeight + num(obj.style.paddingTop) + num(obj.style.paddingBottom) + num(obj.style.borderTop) + num(obj.style.borderBottom),
@@ -2261,7 +2261,7 @@ var abaaso = abaaso || function(){
 		fire : function(obj, event, arg) {
 			try {
 				if (obj instanceof Array) {
-					var nth  = (!isNaN(obj.length)) ? obj.length : obj.total(),
+					var nth  = /\d/.test(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
 					for (i = 0; i < nth; i++) {
@@ -3053,7 +3053,7 @@ var abaaso = abaaso || function(){
 														prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
 														nth = prop.length;
 														for (i = 0; i < nth; i++) {
-															node = (isNaN(prop[i])) ? node[prop[i]] : node[parseInt(prop[i])];
+															node = !/\d/.test(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
 															if (/undefined/.test(typeof node)) {
 																throw new Error($.label.error.propertyNotFound);
 															}
@@ -3265,7 +3265,7 @@ var abaaso = abaaso || function(){
 
 						switch (i) {
 							case "date":
-								if (isNaN(new Date(value).getYear())) {
+								if (!/\d/.test(new Date(value).getYear())) {
 									invalid.push({test: i, value: value});
 									exception = true;
 								}
@@ -3611,7 +3611,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.070"
+		version         : "1.6.071"
 	};
 }();
 
