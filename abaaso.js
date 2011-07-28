@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.073
+ * @version 1.6.074
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -69,7 +69,7 @@ var abaaso = abaaso || function(){
 						for (i = 0, nth = obj.length; i < nth; i++) { o.push(obj[i]); }
 						break;
 					default:
-						for (i in obj) { o.push((key) ? i : obj[i]); }
+						for (i in obj) { o.push(key ? i : obj[i]); }
 				}
 
 				return o;
@@ -337,7 +337,7 @@ var abaaso = abaaso || function(){
 		clean : function() {
 			var uri;
 			for (uri in cache.items) {
-				!/function/.test(typeof cache.items[uri]) && cache.expired(uri) === true ? cache.expire(uri) : void(0);
+				!/function/.test(typeof cache.items[uri]) && cache.expired(uri) ? cache.expire(uri) : void(0);
 			}
 			return;
 		},
@@ -1090,7 +1090,7 @@ var abaaso = abaaso || function(){
 					this.records.remove(record);
 					delete this.keys[key];
 					this.total--;
-					(reindex === true) ? this.reindex() : void(0);
+					reindex ? this.reindex() : void(0);
 					obj.fire("afterDataDelete");
 					return this;
 				}, guid, this);
@@ -1418,8 +1418,8 @@ var abaaso = abaaso || function(){
 
 				obj.fire("beforeDataSet");
 
-				(this.uri === null || sync === true) ? obj.fire("syncDataSet")
-				                                     : $[/undefined/.test(typeof key) ? "post" : "put"](/undefined/.test(typeof key) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
+				this.uri === null || sync ? obj.fire("syncDataSet")
+				                          : $[/undefined/.test(typeof key) ? "post" : "put"](/undefined/.test(typeof key) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -2143,11 +2143,11 @@ var abaaso = abaaso || function(){
 						c = true;
 					}
 
-					c === true && m.log === true ? utility.log(m.pos.x + " : " + m.pos.y) : void(0);
+					c && m.log ? utility.log(m.pos.x + " : " + m.pos.y) : void(0);
 					break;
 				case /boolean/.test(typeof n):
-					n === true ? (!/undefined/.test(typeof document.addEventListener) ? document.addEventListener("mousemove", abaaso.mouse.track, false) : document.attachEvent("onmousemove", abaaso.mouse.track))
-					             : (!/undefined/.test(typeof document.removeEventListener) ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track));
+					n ? !/undefined/.test(typeof document.addEventListener) ? document.addEventListener("mousemove", abaaso.mouse.track, false) : document.attachEvent("onmousemove", abaaso.mouse.track)
+					  : !/undefined/.test(typeof document.removeEventListener) ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track);
 					$.mouse.enabled = m.enabled = n;
 					break;
 			}
@@ -2283,7 +2283,7 @@ var abaaso = abaaso || function(){
 							throw new Error(label.error.invalidArguments);
 					}
 
-					abaaso.observer.log === true ? utility.log(o + " fired " + event) : void(0);
+					abaaso.observer.log ? utility.log(o + " fired " + event) : void(0);
 
 					l = observer.list(obj, event).active;
 
@@ -2524,7 +2524,7 @@ var abaaso = abaaso || function(){
 						nth2 = obj[i].childNodes.length;
 						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
-							find(obj[i].childNodes[x].nodeName, arg) === true && /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0);
+							find(obj[i].childNodes[x].nodeName, arg) && /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0);
 						}
 					}
 					instances = instances.indexed();
@@ -2532,7 +2532,7 @@ var abaaso = abaaso || function(){
 				else {
 					nth = obj.childNodes.length;
 					for (i = 0; i < nth; i++) {
-						find(obj.childNodes[i].nodeName, arg) === true ? instances.push(obj.childNodes[i]) : void(0);
+						find(obj.childNodes[i].nodeName, arg) ? instances.push(obj.childNodes[i]) : void(0);
 					}
 				}
 
@@ -2553,12 +2553,12 @@ var abaaso = abaaso || function(){
 					nth = obj.length;
 					for (i = 0; i < nth; i++) {
 						obj[i].genId();
-						find(obj[i].nodeName, arg) === true && /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0);
+						find(obj[i].nodeName, arg) && /undefined/.test(typeof instances[obj[i].id]) ? instances[obj[i].id] = obj[i] : void(0);
 					}
 					instances = instances.indexed();
 				}
 				else {
-					find(obj.nodeName, arg === true) ? instances.push(obj) : void(0);
+					find(obj.nodeName, arg) ? instances.push(obj) : void(0);
 				}
 				return instances;
 			};
@@ -3611,7 +3611,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.073"
+		version         : "1.6.074"
 	};
 }();
 
