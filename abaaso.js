@@ -37,7 +37,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.076
+ * @version 1.6.077
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -1207,9 +1207,9 @@ var abaaso = abaaso || function(){
 					getter = function(){ return this._uri; };
 					setter = function(arg){
 						try {
-							if ((arg !== null) && (arg.isEmpty())) {
+							if (arg !== null && arg.isEmpty())
 								throw Error(label.error.invalidArguments);
-							}
+
 							this._uri = arg;
 							if (arg !== null) this.sync();
 						}
@@ -1402,9 +1402,9 @@ var abaaso = abaaso || function(){
 					this.uri.un("afterGet", guid);
 					try {
 						var data = $.decode(arg);
-						if (/undefined/.test(typeof data)) {
+						if (/undefined/.test(typeof data))
 							throw Error(label.error.expectedObject);
-						}
+
 						this.batch("set", data, true);
 						obj.fire("afterDataSync");
 					}
@@ -1451,10 +1451,7 @@ var abaaso = abaaso || function(){
 					var nth  = /\d/.test(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
-					for (i = 0; i < nth; i++) {
-						this.clear(obj[i]);
-					}
-
+					for (i = 0; i < nth; i++) { this.clear(obj[i]); }
 					return obj;
 				}
 				else {
@@ -2747,12 +2744,8 @@ var abaaso = abaaso || function(){
 		 */
 		genId : function(obj) {
 			try {
-				switch (true) {
-					case obj instanceof Array:
-					case obj instanceof String:
-					case !/undefined/.test(typeof obj) && !/undefined/.test(typeof obj.id) && !obj.id.isEmpty():
+				if (obj instanceof Array || obj instanceof String || (!/undefined/.test(typeof obj) && !/undefined/.test(typeof obj.id) && !obj.id.isEmpty()))
 						return obj;
-				}
 
 				var id;
 				do id = "a" + utility.id();
@@ -2861,9 +2854,8 @@ var abaaso = abaaso || function(){
 		 */
 		proto : function(obj, type) {
 			try {
-				if (!/function|object/.test(typeof obj)) {
+				if (!/function|object/.test(typeof obj))
 						throw new Error(label.error.invalidArguments);
-				}
 
 				// Collection of methods to add to prototypes
 				var i,
@@ -3080,13 +3072,8 @@ var abaaso = abaaso || function(){
 		 */
 		test : function(args) {
 			try {
-				switch (true){
-					case /undefined/.test(typeof args):
-					case args === null:
-					case !args instanceof Object:
+				if (/undefined/.test(typeof args) || args === null || !args instanceof Object)
 						throw Error(label.error.expectedObject);
-						break;
-				}
 
 				var exception = false,
 				    invalid   = [],
@@ -3194,12 +3181,8 @@ var abaaso = abaaso || function(){
 		 */
 		decode : function(arg) {
 			try {
-				switch (true) {
-					case /undefined/.test(typeof arg):
-					case !arg instanceof String:
-					case arg.isEmpty():
-						throw Error(label.error.invalidArguments);
-				}
+				if (/undefined/.test(typeof arg) ||  !arg instanceof String || arg.isEmpty())
+					throw Error(label.error.invalidArguments);
 
 				var xml;
 
@@ -3359,17 +3342,11 @@ var abaaso = abaaso || function(){
 			getter = function(){ return this._current; };
 			setter = function(arg){
 				try {
-					switch (true) {
-						case arg === null:
-						case !/string/.test(typeof arg) || !/\w/.test(arg):
-						case new RegExp("^"+this.previous+"$", "i").test(arg):
+					if (arg === null || !/string/.test(typeof arg) || !/\w/.test(arg) || new RegExp("^"+this.previous+"$", "i").test(arg))
 							throw Error(label.error.invalidArguments);
-							break;
-					}
 
 					$.state.previous = this.previous = this._current;
 					$.state.current  = this._current = arg;
-
 					return observer.replace(arg);
 				}
 				catch (e) {
@@ -3488,7 +3465,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.076"
+		version         : "1.6.077"
 	};
 }();
 
