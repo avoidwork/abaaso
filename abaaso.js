@@ -745,8 +745,8 @@ var abaaso = abaaso || function(){
 									if (/options/i.test(type)) cache.expire(uri);
 
 									// HATEOAS triggered
-									if (!/options/i.test(type) && s.header !== null && (state = o.headers[s.header]) && !/undefined/.test(typeof state) && !new RegExp(state).test(abaaso.state.current))
-										/function/.test(typeof abaaso.state.change) ? abaaso.state.change(state) : abaaso.state.current = state;
+									if (!/options/i.test(type) && s.header !== null && (state = o.headers[s.header]) && !/undefined/.test(typeof state) && !new RegExp(state).test(s.current))
+										/function/.test(typeof s.change) ? s.change(state) : s.current = state;
 
 									uri.fire("afterXHR");
 									switch (true) {
