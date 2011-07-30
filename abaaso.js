@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.082
+ * @version 1.6.083
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -3139,7 +3139,7 @@ var abaaso = abaaso || function(){
 		 */
 		decode : function(arg) {
 			try {
-				if (/undefined/.test(typeof arg) ||  !arg instanceof String || arg.isEmpty())
+				if (/undefined/.test(typeof arg) || !arg instanceof String || arg.isEmpty())
 					throw Error(label.error.invalidArguments);
 
 				var xml;
@@ -3171,6 +3171,7 @@ var abaaso = abaaso || function(){
 
 				wrap = wrap === false ? false : true;
 				var xml  = wrap ? "<xml>" : "",
+					top  = arguments[2] === false ? false : true,
 				    node, i;
 
 				node = function(name, value) {
@@ -3184,11 +3185,12 @@ var abaaso = abaaso || function(){
 						xml += node("item", arg);
 						break
 					case /object/.test(typeof arg):
-						for (i in arg) { xml += $.xml.encode(arg[i], /object/.test(typeof arg[i]) ? true : false).replace(/item|xml/g, i); }
+						for (i in arg) { xml += $.xml.encode(arg[i], /object/.test(typeof arg[i]) ? true : false, false).replace(/item|xml/g, /\d/.test(i) ? "item" + i : i); }
 						break;
 				}
 
 				xml += wrap ? "</xml>" : "";
+				if (top) xml = "<?xml version=\"1.0\" encoding=\"UTF8\"?>" + xml;
 				return xml;
 			}
 			catch (e) {
@@ -3444,7 +3446,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.082"
+		version         : "1.6.083"
 	};
 }();
 
