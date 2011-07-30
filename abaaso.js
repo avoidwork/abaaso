@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.078
+ * @version 1.6.079
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -2179,13 +2179,8 @@ var abaaso = abaaso || function(){
 					var o = !/undefined/.test(typeof obj.id) ? obj.id : obj.toString(),
 					    l, i, c, f, s;
 
-					switch (true) {
-						case /undefined/.test(typeof o):
-						case o.isEmpty():
-						case /undefined/.test(typeof obj):
-						case /undefined/.test(typeof event):
+					if (/undefined/.test(typeof o) || o.isEmpty() || /undefined/.test(typeof obj) || /undefined/.test(typeof event))
 							throw new Error(label.error.invalidArguments);
-					}
 
 					if (abaaso.observer.log) utility.log("[" + o + "] " + event);
 					$.observer.fired = abaaso.observer.fired++;
@@ -2725,7 +2720,7 @@ var abaaso = abaaso || function(){
 		genId : function(obj) {
 			try {
 				if (obj instanceof Array || obj instanceof String || (!/undefined/.test(typeof obj) && !/undefined/.test(typeof obj.id) && !obj.id.isEmpty()))
-						return obj;
+					return obj;
 
 				var id;
 				do id = "a" + utility.id();
@@ -2863,10 +2858,9 @@ var abaaso = abaaso || function(){
 									var cached = cache.get(uri),
 									    guid   = $.genId();
 									if (!cached) {
-										uri.on("afterGet", function() {
+										uri.on("afterGet", function(arg) {
 											uri.un("afterGet", guid);
-											this.text(cache.get(uri, false).response);
-											this.fire("afterGet");
+											this.text(arg).fire("afterGet");
 											}, guid, this);
 										$.get(uri, undefined, undefined, headers);
 									}
@@ -2894,7 +2888,7 @@ var abaaso = abaaso || function(){
 						       jsonp    : function(uri, property, callback) {
 									var target = this,
 									    arg    = property,
-									    fn = function(response){
+									    fn = function(response) {
 											var self = target,
 												node = response,
 												prop = arg, i, nth, result;
@@ -2910,9 +2904,7 @@ var abaaso = abaaso || function(){
 														}
 														result = node;
 													}
-													else {
-														result = response;
-													}
+													else { result = response; }
 											}
 											catch (e) {
 													result = $.label.error.serverError;
@@ -3058,7 +3050,7 @@ var abaaso = abaaso || function(){
 					var i, p, v, c, o, x, t = {}, nth, nth2, result, invalid = [], tracked = {};
 
 					if (args.id.isEmpty()) args.genId();
-					c    = $("#"+args.id+":has(input,select)");
+					c = $("#"+args.id+":has(input,select)");
 					nth = c.length;
 					for (i = 0; i < nth; i++) {
 						v = null;
@@ -3217,12 +3209,12 @@ var abaaso = abaaso || function(){
 			windows : client.windows,
 
 			// Methods
-			del     : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
-			get     : function(uri, success, failure, headers){ client.request(uri, "GET", success, failure, headers); },
-			options : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
-			post    : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
-			put     : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
-			jsonp   : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
+			del     : function(uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
+			get     : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+			options : function(uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
+			post    : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
+			put     : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
+			jsonp   : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 			permission : client.permission
 		},
 		cookie          : cookie,
@@ -3264,7 +3256,7 @@ var abaaso = abaaso || function(){
 		decode          : json.decode,
 		defer           : utility.defer,
 		define          : utility.define,
-		del             : function(uri, success, failure){ client.request(uri, "DELETE", success, failure); },
+		del             : function(uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
 		destroy         : el.destroy,
 		domId           : utility.domId,
 		encode          : json.encode,
@@ -3277,7 +3269,7 @@ var abaaso = abaaso || function(){
 			return abaaso.observer.fire(obj, event, arg);
 		},
 		genId           : utility.genId,
-		get             : function(uri, success, failure, headers){ client.request(uri, "GET", success, failure, headers); },
+		get             : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
 		id              : "abaaso",
 		init            : function() {
 			// Stopping multiple executions
@@ -3388,7 +3380,7 @@ var abaaso = abaaso || function(){
 
 			return abaaso;
 		},
-		jsonp           : function(uri, success, failure, callback){ client.request(uri, "JSONP", success, failure, callback); },
+		jsonp           : function(uri, success, failure, callback){ return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
 			var all   = !/undefined/.test(typeof arguments[1]) ? true : false,
 			    obj   = all ? arguments[0] : this,
@@ -3409,11 +3401,11 @@ var abaaso = abaaso || function(){
 
 			return observer.add(obj, event, listener, id, scope, state);
 		},
-		options         : function(uri, success, failure){ client.request(uri, "OPTIONS", success, failure); },
+		options         : function(uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 		permission      : client.permission,
 		position        : el.position,
-		post            : function(uri, success, failure, args){ client.request(uri, "POST", success, failure, args); },
-		put             : function(uri, success, failure, args){ client.request(uri, "PUT", success, failure, args); },
+		post            : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
+		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 		ready           : false,
 		store           : function(arg, args) {
 			return data.register.call(data, arg, args);
@@ -3429,7 +3421,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.078"
+		version         : "1.6.079"
 	};
 }();
 
