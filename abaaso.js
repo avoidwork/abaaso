@@ -28,16 +28,22 @@
 /**
  * abaaso
  *
- * Events:    ready      Fires when the DOM is available
- *            render     Fires when the window resources have loaded
- *            resize     Fires when the window resizes; parameter for listeners is abaaso.client.size
- *            hash       Fires when window.location.hash changes; parameter for listeners is the hash value
- *            error      Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log)
+ * Events:
+ *
+ *   ready         Fires when the DOM is available
+ *   render        Fires when the window resources have loaded
+ *   resize        Fires when the window resizes; parameter for listeners is abaaso.client.size
+ *   afterCreate   Fires after an Element is created; parameter for listeners is the (new) Element
+ *   afterDestroy  Fires after an Element is destroyed; parameter for listeners is the (removed) Element.id value
+ *   beforeCreate  Fires when an Element is about to be created; parameter for listeners is the (new) Element.id value
+ *   beforeDestroy Fires when an Element is about to be destroyed; parameter for listeners is the (to be removed) Element
+ *   error         Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
+ *   hash          Fires when window.location.hash changes; parameter for listeners is the hash value
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.077
+ * @version 1.6.078
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -61,6 +67,7 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.expectedObject);
 
 				key   = key === true ? true : false;
+
 				var o = [], i, nth;
 
 				switch (true) {
@@ -70,7 +77,6 @@ var abaaso = abaaso || function(){
 					default:
 						for (i in obj) { o.push(key ? i : obj[i]); }
 				}
-
 				return o;
 			}
 			catch (e) {
@@ -92,15 +98,14 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.expectedArray);
 
 				if (/,/.test(arg)) arg = arg.split(/\s*,\s*/);
-
 				if (arg instanceof Array) {
 					var indexes = [],
 					    nth     = args.length,
 					    i       = null;
+
 					for (i = 0; i < nth; i++) { indexes[i] = instance.index(arg[i]); }
 					return indexes;
 				}
-
 				return instance.index(arg);
 			}
 			catch (e) {
@@ -162,11 +167,7 @@ var abaaso = abaaso || function(){
 
 				var i = instance.length;
 
-				while (i--) {
-					if (instance[i] == arg)
-						return i;
-				}
-
+				while (i--) { if (instance[i] == arg) return i; }
 				return -1;
 			}
 			catch (e) {
@@ -187,6 +188,7 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.expectedArray);
 
 				var o, i = 0, indexed = [];
+
 				for (o in instance) {
 					if (!/function/.test(typeof instance[o])) {
 						indexed[i] = instance[o] instanceof Array ? instance[o].indexed() : instance[o];
@@ -258,6 +260,7 @@ var abaaso = abaaso || function(){
 						throw new Error(label.error.invalidArguments);
 
 				start = start || 0;
+
 				var length    = obj.length,
 				    remaining = obj.slice((end || start)+1 || length);
 
@@ -283,6 +286,7 @@ var abaaso = abaaso || function(){
 					throw new Error(label.error.expectedArray);
 
 				var i = 0, arg;
+
 				for (arg in obj) { if (!/function/.test(typeof obj[arg])) i++; }
 				return i;
 			}
@@ -313,6 +317,7 @@ var abaaso = abaaso || function(){
 		 */
 		clean : function() {
 			var uri;
+
 			for (uri in cache.items) { if (!/function/.test(typeof cache.items[uri]) && cache.expired(uri)) cache.expire(uri); }
 			return;
 		},
@@ -358,21 +363,15 @@ var abaaso = abaaso || function(){
 			try {
 				expire = expire === false ? false : true;
 
-				if (/undefined/.test(typeof cache.items[uri]))
-					return false;
-
+				if (/undefined/.test(typeof cache.items[uri])) return false;
 				if (!/undefined/.test(typeof cache.items[uri].headers)) {
 					if ((!/undefined/.test(typeof cache.items[uri].headers.Pragma) && /no-cache/i.test(cache.items[uri].headers.Pragma) && expire) || cache.expired(cache.items[uri])) {
 						cache.expire(uri);
 						return false;
 					}
-					else {
-						return cache.items[uri];
-					}
+					else { return cache.items[uri]; }
 				}
-				else {
-					return cache.items[uri];
-				}
+				else { return cache.items[uri]; }
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -386,6 +385,7 @@ var abaaso = abaaso || function(){
 		 * @param uri {String} The URI to set or update
 		 * @param property {String} The property of the cached URI to set
 		 * @param value {Mixed} The value to set
+		 * @returns {Mixed} Returns the URI object {headers, response} or undefined
 		 */
 		set : function(uri, property, value) {
 			try {
@@ -393,13 +393,14 @@ var abaaso = abaaso || function(){
 					cache.items[uri] = {};
 					cache.items[uri].permission = 0;
 				}
-
 				/permission/.test(property) ? cache.items[uri].permission |= value
-				                          : (/!permission/.test(property) ? cache.items[uri].permission &= ~value
-										                                  : cache.items[uri][property]   =  value);
+				                            : (/!permission/.test(property) ? cache.items[uri].permission &= ~value
+				                                                            : cache.items[uri][property]   =  value);
+				return cache.items[uri];
 			}
 			catch (e) {
 				$.error(e, arguments, this);
+				return undefined;
 			}
 		}
 	};
@@ -484,10 +485,10 @@ var abaaso = abaaso || function(){
 				if (uri.isEmpty() || command.isEmpty())
 					throw new Error(label.error.invalidArguments);
 
-				if (!cache.get(uri, false))
-					return undefined;
+				if (!cache.get(uri, false)) return undefined;
 
 				var result;
+
 				switch (true) {
 					case /delete/i.test(command):
 						result = (uri.permission(command).bit & 1) === 0 ? false : true
@@ -501,7 +502,6 @@ var abaaso = abaaso || function(){
 					default:
 						result = false;
 				}
-
 				return result;
 			}
 			catch (e) {
@@ -558,13 +558,11 @@ var abaaso = abaaso || function(){
 
 					if (/undefined/.test(typeof args)) args = "callback";
 					uri  = uri.replace(args + "=?", args + "=abaaso.callback." + uid);
-
 					abaaso.callback[uid] = function(arg){
 						delete abaaso.callback[uid];
 						curi.fire("afterJSONP", arg)
 						    .un("afterJSONP");
 					};
-
 					el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
 				}
 				else {
@@ -584,13 +582,11 @@ var abaaso = abaaso || function(){
 							uri.fire("failed" + typed);
 						};
 
-					switch (type.toLowerCase()) {
-						case "delete":
-							uri.on("afterDelete", function(){
-								cache.expire(uri);
-								uri.un("afterDelete", "expire");
-							}, "expire");
-							break;
+					if (/delete/i.test(type)) {
+						uri.on("afterDelete", function(){
+							cache.expire(uri);
+							uri.un("afterDelete", "expire");
+						}, "expire");
 					}
 
 					uri.on("received" + typed, timer)
@@ -614,6 +610,7 @@ var abaaso = abaaso || function(){
 						switch (true) {
 							case payload instanceof Document:
 								xhr.setRequestHeader("Content-type", "application/xml");
+								payload = client.ie ? payload.xml : (new XMLSerializer()).serializeToString(payload);
 								break;
 							case payload instanceof Object:
 								xhr.setRequestHeader("Content-type", "application/json");
@@ -624,9 +621,7 @@ var abaaso = abaaso || function(){
 						}
 					}
 
-					if (headers !== null)
-						for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
-
+					if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
 					if (/object/.test(typeof cached) && !/undefined/.test(typeof cached.headers.ETag)) xhr.setRequestHeader("ETag", cached.headers.ETag);
 					xhr.send(payload);
 				}
@@ -649,6 +644,8 @@ var abaaso = abaaso || function(){
 		 *
 		 * Events:     afterXHR    Fires after the XmlHttpRequest response is received
 		 *             after[type] Fires after the XmlHttpRequest response is received, type specific
+		 *             reset       Fires if a 206 response is received
+		 *             moved       Fires if a 301 response is received
 		 *             success     Fires if a 400 response is received
 		 *             failure     Fires if an exception is thrown
 		 *
@@ -700,7 +697,6 @@ var abaaso = abaaso || function(){
 									break;
 							}
 						}
-
 						return result;
 					}
 					catch (e) {
@@ -727,27 +723,24 @@ var abaaso = abaaso || function(){
 
 								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 								items[header] = value;
-
 								if (/allow/i.test(header)) allow = value;
 							}
 						}
-
 						cache.set(uri, "headers", items);
 						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
 						break;
 					case /4/.test(xhr.readyState):
 						switch (true) {
-								case /200/.test(xhr.status):
+								case /200|204|205|301/.test(xhr.status):
 									var state  = null,
 									    s      = abaaso.state;
 
-									if (!/delete|options/i.test(type)) {
+									if (!/delete|options/i.test(type) && /200|301/.test(xhr.status)) {
 										cache.set(uri, "epoch", new Date());
 										cache.set(uri, "response", /xml/.test(cache.get(uri, false).headers["Content-Type"]) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
 										                                                                                                                                      : xhr.responseXML)
 										                                                                                     : xhr.responseText);
 									}
-
 									o = cache.get(uri, false);
 									if (/options/i.test(type)) cache.expire(uri);
 
@@ -756,13 +749,22 @@ var abaaso = abaaso || function(){
 										/function/.test(typeof abaaso.state.change) ? abaaso.state.change(state) : abaaso.state.current = state;
 
 									uri.fire("afterXHR");
-									uri.fire("after" + typed, /options/i.test(type) ? o.headers : o.response);
-									break;
-								case /301/.test(xhr.status):
-									throw new Error(label.error.serverError);
+									switch (true) {
+										case /200/.test(xhr.status):
+											uri.fire("after" + typed, /options/i.test(type) ? o.headers : o.response);
+											break;
+										case /205/.test(xhr.status):
+											uri.fire("reset");
+										case /301/.test(xhr.status):
+											uri.fire("moved", o.response);
+											break;
+									}
 									break;
 								case /401/.test(xhr.status):
 									throw new Error(label.error.serverUnauthorized);
+									break;
+								case /403/.test(xhr.status):
+									throw new Error(label.error.serverForbidden);
 									break;
 								case /405/.test(xhr.status):
 									cache.set(uri, "!permission", bit(type));
@@ -870,9 +872,8 @@ var abaaso = abaaso || function(){
 					}
 				}
 
-				if (!/\d/.test(span)) {
+				if (!/\d/.test(span))
 					throw new Error(label.error.invalidArguments);
-				}
 
 				expire = new Date();
 
@@ -945,7 +946,6 @@ var abaaso = abaaso || function(){
 				    i, nth, key;
 
 				obj.fire("beforeDataBatch");
-
 				if (data instanceof Array) {
 					for (i = 0, nth = data.length; i < nth; i++) {
 						switch (type) {
@@ -973,7 +973,6 @@ var abaaso = abaaso || function(){
 						}
 					}
 				}
-
 				if (/del/.test(type)) this.reindex();
 				obj.fire("afterDataBatch");
 				return this;
@@ -1053,10 +1052,8 @@ var abaaso = abaaso || function(){
 				}, guid, this);
 
 				obj.fire("beforeDataDelete");
-
 				this.uri === null ? obj.fire("syncDataDelete")
 				                  : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
-
 				return this;
 			}
 			catch (e) {
@@ -1099,23 +1096,17 @@ var abaaso = abaaso || function(){
 							}
 						}
 					}
-					else {
-						for (i in this.records.first().data) {
-							h.push(i);
-						}
-					}
+					else { for (i in this.records.first().data) { h.push(i); } }
 				}
 				else {
 					for (i in haystack) {
-						if (/undefined/.test(typeof this.records.first().data[haystack[i]])) {
+						if (/undefined/.test(typeof this.records.first().data[haystack[i]]))
 							throw Error(label.error.invalidArguments);
-						}
 					}
 					h = haystack;
 				}
 
 				i = this.records.length
-
 				while (i--) {
 					for (x = 0; x < nth; x++) {
 						for (y = 0; y < nth2; y++) {
@@ -1123,9 +1114,7 @@ var abaaso = abaaso || function(){
 							p = n[y];
 							r = new RegExp(p, "gi");
 							s = this.records[i].data[f];
-							if (r.test(s)) {
-								result.push(this.records[i]);
-							}
+							if (r.test(s)) result.push(this.records[i]);
 						}
 					}
 				}
@@ -1157,24 +1146,16 @@ var abaaso = abaaso || function(){
 				    i, start, end;
 
 				obj.fire("beforeDataGet");
-
-				if (/string/.test(typeof record)) {
-					r = !/undefined/.test(typeof this.keys[record]) ? this.records[this.keys[record].index] : undefined;
-				}
+				if (/string/.test(typeof record)) r = !/undefined/.test(typeof this.keys[record]) ? this.records[this.keys[record].index] : undefined;
 				else if (record instanceof Array) {
-					if (!/\d/.test(record[0]) || !/\d/.test(record[1])) {
+					if (!/\d/.test(record[0]) || !/\d/.test(record[1]))
 						throw new Error(label.error.invalidArguments);
-					}
 
 					start = record[0] - 1;
 					end   = record[1] - 1;
-
 					for (i = start; i < end; i++) { if (!/undefined/.test(typeof this.records[i])) r.push(this.records[i]); }
 				}
-				else {
-					r = this.records[record];
-				}
-
+				else { r = this.records[record]; }
 				obj.fire("afterDataGet");
 				return r;
 			}
@@ -1198,9 +1179,7 @@ var abaaso = abaaso || function(){
 			try {
 				if (obj instanceof Array) {
 					var i = /\d/.test(obj.length) ? obj.length : obj.total();
-					while (i--) {
-						this.register(obj[i], data);
-					}
+					while (i--) { this.register(obj[i], data); }
 				}
 				else {
 					var getter, setter;
@@ -1242,20 +1221,20 @@ var abaaso = abaaso || function(){
 					obj.data.keys    = {};
 					obj.data.records = [];
 					obj.data.total   = 0;
-					obj.data.parentNode = obj; // Recursion, but expected
+					obj.data.parentNode = obj; // Recursion, useful
 					delete obj.data.register;
 
 					switch (true) {
-						case $.client.ie && /8/.test($.client.version):
-							// Pure hackery, only exists when needed
-							obj.data.uri    = null;
-							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
-						case /undefined/.test(typeof Object.defineProperty):
+						case (!client.ie || client.version > 8) && /function/.test(typeof Object.defineProperty):
+							Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
+							break;
+						case /function/.test(typeof obj.data.__defineGetter__):
 							obj.data.__defineGetter__("uri", getter);
 							obj.data.__defineSetter__("uri", setter);
 							break;
-						default:
-							Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
+						default: // Only exists when no getters/setters
+							obj.data.uri    = null;
+							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
 					}
 
 					if (/object/.test(typeof data)) obj.data.batch("set", data);
@@ -1361,15 +1340,12 @@ var abaaso = abaaso || function(){
 							for (arg in data) { record[arg] = data[arg]; }
 							this.records[record.index] = record;
 						}
-						else {
-							this.records[record.index] = data;
-						}
+						else { this.records[record.index] = data; }
 					}
 					obj.fire("afterDataSet", record);
 				}, guid, this);
 
 				obj.fire("beforeDataSet");
-
 				this.uri === null || sync ? obj.fire("syncDataSet")
 				                          : $[/undefined/.test(typeof key) ? "post" : "put"](/undefined/.test(typeof key) ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
@@ -1503,7 +1479,7 @@ var abaaso = abaaso || function(){
 				if (/undefined/.test(typeof type))
 					throw new Error(label.error.invalidArguments);
 
-				var obj, target;
+				var obj, uid, target;
 
 				switch (true) {
 					case !/undefined/.test(typeof id):
@@ -1520,20 +1496,22 @@ var abaaso = abaaso || function(){
 				if (/undefined/.test(typeof target))
 					throw new Error(label.error.invalidArguments);
 
-				obj = document.createElement(type);
-
-				!/undefined/.test(typeof args)
-				  && !/string/.test(typeof args)
-				  && /undefined/.test(typeof args.childNodes)
-				  && !/undefined/.test(typeof args.id)
-				  && /undefined/.test(typeof $("#"+args.id)) ? obj.id = args.id : obj.genId();
+				uid = !/undefined/.test(typeof args)
+				       && !/string/.test(typeof args)
+				       && /undefined/.test(typeof args.childNodes)
+				       && !/undefined/.test(typeof args.id)
+				       && /undefined/.test(typeof $("#"+args.id)) ? args.id : $.genId();
 
 				if (!/undefined/.test(typeof args) && !/undefined/.test(typeof args.id)) delete args.id;
 
-				obj.fire("beforeCreate");
+				$.fire("beforeCreate", uid);
+				uid.fire("beforeCreate");
+				obj = document.createElement(type);
+				obj.id = uid;
 				if (/object/.test(typeof args) && /undefined/.test(typeof args.childNodes)) obj.update(args);
 				target.appendChild(obj);
 				obj.fire("afterCreate");
+				$.fire("afterCreate", obj);
 				return obj;
 			}
 			catch (e) {
@@ -1584,10 +1562,13 @@ var abaaso = abaaso || function(){
 				else {
 					obj = utility.object(obj);
 					if (!/undefined/.test(typeof obj)) {
+						var id = obj.id
+						$.fire("beforeDestroy", obj);
 						obj.fire("beforeDestroy");
-						observer.remove(obj.id);
+						observer.remove(id);
 						obj.parentNode.removeChild(obj);
 						obj.fire("afterDestroy");
+						$.fire("afterDestroy", id);
 					}
 					return undefined;
 				}
@@ -1683,8 +1664,14 @@ var abaaso = abaaso || function(){
 				else {
 					obj = utility.object(obj);
 					obj.fire("beforeHide");
-					obj["data-display"] = obj.style.display;
-					obj.style.display = "none";
+					switch (true) {
+						case /boolean/.test(typeof obj.hidden):
+							obj.hidden = true;
+							break;
+						default:
+							obj["data-display"] = obj.style.display;
+							obj.style.display = "none";
+					}
 					obj.fire("afterHide");
 					return obj;
 				}
@@ -1704,7 +1691,10 @@ var abaaso = abaaso || function(){
 		hidden : function(obj) {
 			try {
 				obj = utility.object(obj);
-				if (/undefined/.test(typeof obj)) { throw new Error(label.error.invalidArguments); }
+
+				if (/undefined/.test(typeof obj))
+					throw new Error(label.error.invalidArguments);
+
 				return /none/.test(obj.style.display) || (!/undefined/.test(typeof obj.hidden) && obj.hidden);
 			}
 			catch (e) {
@@ -1768,7 +1758,13 @@ var abaaso = abaaso || function(){
 				else {
 					obj = utility.object(obj);
 					obj.fire("beforeShow");
-					obj.style.display = !/undefined/.test(typeof obj["data-display"]) && !obj["data-display"].isEmpty() ? obj["data-display"] : "inherit";
+					switch (true) {
+						case /boolean/.test(typeof obj.hidden):
+							obj.hidden = false;
+							break;
+						default:
+							obj.style.display = !/undefined/.test(typeof obj["data-display"]) && !obj["data-display"].isEmpty() ? obj["data-display"] : "inherit";
+					}
 					obj.fire("afterShow");
 					return obj;
 				}
@@ -1788,9 +1784,8 @@ var abaaso = abaaso || function(){
 		size : function(obj) {
 				obj = utility.object(obj);
 
-				if (/undefined/.test(typeof obj)) {
+				if (/undefined/.test(typeof obj))
 					throw new Error(label.error.invalidArguments);
-				}
 
 				/**
 				 * Casts n to a number or returns zero
@@ -1999,9 +1994,10 @@ var abaaso = abaaso || function(){
 			invalidDate           : "Invalid Date",
 			invalidFields         : "The following required fields are invalid: ",
 			propertyNotFound      : "Could not find the requested property",
-			serverError           : "A server error has occurred",
+			serverError           : "Server error has occurred",
+			serverForbidden       : "Forbidden to access URI",
 			serverInvalidMethod   : "Method not allowed",
-			serverUnauthorized    : "Unauthorized to access URI"
+			serverUnauthorized    : "Authorization required to access URI"
 		},
 
 		months : {
@@ -2052,19 +2048,17 @@ var abaaso = abaaso || function(){
 			switch (true) {
 				case /object/.test(typeof n):
 					var x, y, c = false;
+
 					x = (n.pageX) ? n.pageX : ((client.ie && /8/.test(client.version) ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
 					y = (n.pageY) ? n.pageY : ((client.ie && /8/.test(client.version) ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
-
-					if (m.pos.x != x) {
-						$.mouse.pos.x = m.pos.x = x;
-						c = true;
+					switch (true) {
+						case m.pos.x != x:
+							$.mouse.pos.x = m.pos.x = x;
+							c = true;
+						case m.pos.y != y:
+							$.mouse.pos.y = m.pos.y = y;
+							c = true;
 					}
-
-					if (m.pos.y != y) {
-						$.mouse.pos.y = m.pos.y = y;
-						c = true;
-					}
-
 					if (c && m.log) utility.log(m.pos.x + " : " + m.pos.y);
 					break;
 				case /boolean/.test(typeof n):
@@ -2122,12 +2116,8 @@ var abaaso = abaaso || function(){
 					    o        = !/undefined/.test(typeof obj.id) ? obj.id : obj,
 					    efn, item;
 
-					switch (true) {
-						case /undefined/.test(typeof o):
-						case /undefined/.test(typeof event):
-						case !/function/.test(typeof fn):
-							throw new Error(label.error.invalidArguments);
-					}
+					if (/undefined/.test(typeof o) || /undefined/.test(typeof event) || !/function/.test(typeof fn))
+						throw new Error(label.error.invalidArguments);
 
 					switch (true) {
 						case /undefined/.test(typeof l[o]):
@@ -2158,7 +2148,6 @@ var abaaso = abaaso || function(){
 						if (/undefined/.test(typeof l[o][event].standby[state])) l[o][event].standby[state] = {};
 						l[o][event].standby[state][id] = item;
 					}
-
 					return obj;
 				}
 			}
@@ -2198,7 +2187,8 @@ var abaaso = abaaso || function(){
 							throw new Error(label.error.invalidArguments);
 					}
 
-					if (abaaso.observer.log) utility.log(o + " fired " + event);
+					if (abaaso.observer.log) utility.log("[" + o + "] " + event);
+					$.observer.fired = abaaso.observer.fired++;
 					l = observer.list(obj, event).active;
 
 					if (!/undefined/.test(typeof l)) {
@@ -2209,7 +2199,6 @@ var abaaso = abaaso || function(){
 							/undefined/.test(typeof arg) ? f.call(s) : f.call(s, arg);
 						}
 					}
-
 					return obj;
 				}
 			}
@@ -2290,10 +2279,7 @@ var abaaso = abaaso || function(){
 						if (instance !== null && !/afterjsonp/i.test(event) && !/undefined/.test(typeof instance))
 							/function/.test(typeof instance.removeEventListener) ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
 					}
-					else if (!/undefined/.test(typeof l[o][event].active[id])) {
-						delete l[o][event].active[id];
-					}
-
+					else if (!/undefined/.test(typeof l[o][event].active[id])) { delete l[o][event].active[id]; }
 					return obj;
 				}
 			}
@@ -2321,7 +2307,6 @@ var abaaso = abaaso || function(){
 						if (!/undefined/.test(typeof l[i][e].standby[state])) delete l[i][e].standby[state];
 					}
 				}
-
 				$.fire(state);
 				return abaaso;
 			}
@@ -2437,7 +2422,6 @@ var abaaso = abaaso || function(){
 					nth = obj.childNodes.length;
 					for (i = 0; i < nth; i++) { if (find(obj.childNodes[i].nodeName, arg)) instances.push(obj.childNodes[i]); }
 				}
-
 				return instances;
 			};
 
@@ -2459,9 +2443,7 @@ var abaaso = abaaso || function(){
 					}
 					instances = instances.indexed();
 				}
-				else {
-					if (find(obj.nodeName, arg)) instances.push(obj);
-				}
+				else { if (find(obj.nodeName, arg)) instances.push(obj); }
 				return instances;
 			};
 
@@ -2506,16 +2488,14 @@ var abaaso = abaaso || function(){
 				return instances;
 			}
 
+			// Getting selectors
 			if (/:/.test(arg)) {
 				s   = /:.*/gi.exec(arg) !== null ? /:.*/gi.exec(arg)[0].slice(1) : "";
 				arg = /.*:/.exec(arg) !== null ? (!/.*:/.exec(arg)[0].slice(0, -1).isEmpty() ? /.*:/.exec(arg)[0].slice(0, -1)
 													                                         : ":")
 				                               : ":";
 			}
-			else {
-				s = "";
-			}
-
+			else { s = ""; }
 			args = !/\w/.test(s) ? [] : s.split(/:/);
 
 			// Getting instance(s)
@@ -2575,7 +2555,7 @@ var abaaso = abaaso || function(){
 							obj = alt(obj, false);
 							break
 						default:
-							nth2 = (obj.length) ? obj.length : 0;
+							nth2 = /\d/.test(obj.length) ? obj.length : 0;
 							instances = [];
 							for (x = 0; x < nth2; x++) {
 								c = obj[x].className.split(" ");
@@ -2585,8 +2565,7 @@ var abaaso = abaaso || function(){
 					}
 
 					if (obj instanceof Array)
-						if (obj.length === 0)
-							obj = (i + 1) == nth ? [] : undefined;
+						if (obj.length === 0) obj = (i + 1) == nth ? [] : undefined;
 				}
 			}
 			if (obj === null) obj = undefined;
@@ -2625,6 +2604,7 @@ var abaaso = abaaso || function(){
 			}
 			catch (e) {
 				$.error(e, arguments, this);
+				return undefined;
 			}
 		},
 
@@ -2804,11 +2784,10 @@ var abaaso = abaaso || function(){
 					}
 
 					// Clearing target element
-					obj.genId();
 					obj.clear();
 
 					// Creating loading image in target element
-					obj.create("div", {id: obj.id+"_loading", "class": "loading"})
+					obj.create("div", {"class": "loading"})
 					   .create("img", {alt: label.common.loading, src: l.image.src});
 
 					return obj;
@@ -2900,10 +2879,6 @@ var abaaso = abaaso || function(){
 							   hide     : function() {
 									this.genId();
 									return $.el.hide(this);
-							   },
-							   hidden     : function() {
-									this.genId();
-									return $.el.hidden(this);
 							   },
 							   isAlphaNum: function() { return /form/gi.test(this.nodeName) ? false : $.validate.test({alphanum: !/undefined/.test(typeof this.value) ? this.value : this.innerText}).pass; },
 						       isBoolean: function() { return /form/gi.test(this.nodeName) ? false : $.validate.test({"boolean": !/undefined/.test(typeof this.value) ? this.value : this.innerText}).pass; },
@@ -3083,41 +3058,36 @@ var abaaso = abaaso || function(){
 					var i, p, v, c, o, x, t = {}, nth, nth2, result, invalid = [], tracked = {};
 
 					if (args.id.isEmpty()) args.genId();
-
 					c    = $("#"+args.id+":has(input,select)");
 					nth = c.length;
-
 					for (i = 0; i < nth; i++) {
 						v = null;
 						p = validate.pattern[c[i].nodeName.toLowerCase()] ? validate.pattern[c[i].nodeName.toLowerCase()]
 						                                                  : ((!c[i].id.isEmpty() && validate.pattern[c[i].id.toLowerCase()]) ? validate.pattern[c[i].id.toLowerCase()]
 						                                                                                                                     : "notEmpty");
-
-						if (/(radio|checkbox)/gi.test(c[i].type)) {
-							if (c[i].name in tracked) { continue; }
-							o = document.getElementsByName(c[i].name);
-							nth2 = o.length;
-							for (x = 0; x < nth2; x++) {
-								if (o[x].checked) {
-									v = o[x].value;
-									tracked[c[i].name] = true;
-									continue;
+						switch (true) {
+							case /radio|checkbox/gi.test(c[i].type):
+								if (c[i].name in tracked) { continue; }
+								o = document.getElementsByName(c[i].name);
+								nth2 = o.length;
+								for (x = 0; x < nth2; x++) {
+									if (o[x].checked) {
+										v = o[x].value;
+										tracked[c[i].name] = true;
+										continue;
+									}
 								}
-							}
+								break;
+							case /select/gi.test(c[i].type):
+								v = c[i].options[c[i].selectedIndex].value;
+								break;
+							default:
+								v = !/undefined/.test(typeof c[i].value) ? c[i].value : c[i].innerText;
 						}
-						else if (/select/gi.test(c[i].type)) {
-							v = c[i].options[c[i].selectedIndex].value;
-						}
-						else {
-							v = !/undefined/.test(typeof c[i].value) ? c[i].value : c[i].innerText;
-						}
-
 						if (v === null) v = "";
 						t[p] = v;
 					}
-
 					result = this.test(t);
-
 					return result;
 				}
 				else {
@@ -3127,12 +3097,10 @@ var abaaso = abaaso || function(){
 							exception = true;
 							continue;
 						}
-
 						value = /^(#)/.test(args[i]) ? (!/undefined/.test(typeof $(args[i])) ? (($(args[i]).value) ? $(args[i]).value
 						                                                                                           : $(args[i]).innerHTML)
 						                                                                     : "")
 						                             : args[i];
-
 						switch (i) {
 							case "date":
 								if (!/\d/.test(new Date(value).getYear())) {
@@ -3141,8 +3109,7 @@ var abaaso = abaaso || function(){
 								}
 								break;
 							case "domainip":
-								if ((!validate.pattern.domain.test(value))
-									|| (!validate.pattern.ip.test(value))) {
+								if (!validate.pattern.domain.test(value) || !validate.pattern.ip.test(value)) {
 									invalid.push({test: i, value: value});
 									exception = true;
 								}
@@ -3156,7 +3123,6 @@ var abaaso = abaaso || function(){
 								break;
 						}
 					}
-
 					return {pass: !exception, invalid: invalid};
 				}
 			}
@@ -3191,10 +3157,7 @@ var abaaso = abaaso || function(){
 					xml.async = "false";
 					xml.loadXML(arg);
 				}
-				else {
-					xml = new DOMParser().parseFromString(arg, "text/xml");
-				}
-
+				else { xml = new DOMParser().parseFromString(arg, "text/xml"); }
 				return xml;
 			}
 			catch (e) {
@@ -3248,7 +3211,7 @@ var abaaso = abaaso || function(){
 			playbook: client.playbook,
 			safari  : client.safari,
 			tablet  : client.tablet,
-			size    : {x:0, y:0},
+			size    : {x: 0, y: 0},
 			version : null,
 			webos   : client.webos,
 			windows : client.windows,
@@ -3277,6 +3240,7 @@ var abaaso = abaaso || function(){
 				log     : observer.log,
 				add     : observer.add,
 				fire    : observer.fire,
+				fired   : 0,
 				list    : observer.list,
 				remove  : observer.remove
 			},
@@ -3465,7 +3429,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.077"
+		version         : "1.6.078"
 	};
 }();
 
