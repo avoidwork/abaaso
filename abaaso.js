@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.080
+ * @version 1.6.081
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -3163,11 +3163,28 @@ var abaaso = abaaso || function(){
 		 *
 		 * @param arg {Mixed} Object or Array to cast to XML String
 		 * @returns {String} XML String
-		 * @todo Implement this
 		 */
-		encode : function(arg) {
+		encode : function(arg, wrap) {
 			try {
-				return undefined;
+				if (/undefined/.test(typeof arg))
+					throw Error(label.error.invalidArguments);
+
+				wrap = wrap === false ? false : true;
+				var xml  = wrap ? "<xml>" : "",
+				    node = function(name, value) { return "<n>v</n>".replace(/n/g, name).replace(/v/, value); },
+				    i;
+
+				switch (true) {
+					case /boolean|number|string/.test(typeof arg):
+						xml += node("item", arg);
+						break
+					case /object/.test(typeof arg):
+						for (i in arg) { xml += $.xml.encode(arg[i], /object/.test(typeof arg[i]) ? true : false).replace(/item|xml/g, i); }
+						break;
+				}
+
+				xml += wrap ? "</xml>" : "";
+				return xml;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -3422,7 +3439,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.080"
+		version         : "1.6.081"
 	};
 }();
 
