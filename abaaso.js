@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.083
+ * @version 1.6.084
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -706,7 +706,7 @@ var abaaso = abaaso || function(){
 				};
 
 				switch (true) {
-					case /2/.test(xhr.readyState):
+					case /^2$/.test(xhr.readyState):
 						uri.fire("received" + typed);
 
 						var headers = xhr.getAllResponseHeaders().split("\n"),
@@ -729,9 +729,9 @@ var abaaso = abaaso || function(){
 						cache.set(uri, "headers", items);
 						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
 						break;
-					case /4/.test(xhr.readyState):
+					case /^4$/.test(xhr.readyState):
 						switch (true) {
-								case /200|204|205|301/.test(xhr.status):
+								case /^(200|204|205|301)$/.test(xhr.status):
 									var state  = null,
 									    s      = abaaso.state;
 
@@ -750,23 +750,23 @@ var abaaso = abaaso || function(){
 
 									uri.fire("afterXHR");
 									switch (true) {
-										case /200/.test(xhr.status):
+										case /^200$/.test(xhr.status):
 											uri.fire("after" + typed, /options/i.test(type) ? o.headers : o.response);
 											break;
-										case /205/.test(xhr.status):
+										case /^205$/.test(xhr.status):
 											uri.fire("reset");
-										case /301/.test(xhr.status):
+										case /^301$/.test(xhr.status):
 											uri.fire("moved", o.response);
 											break;
 									}
 									break;
-								case /401/.test(xhr.status):
+								case /^401$/.test(xhr.status):
 									throw new Error(label.error.serverUnauthorized);
 									break;
-								case /403/.test(xhr.status):
+								case /^403$/.test(xhr.status):
 									throw new Error(label.error.serverForbidden);
 									break;
-								case /405/.test(xhr.status):
+								case /^405$/.test(xhr.status):
 									cache.set(uri, "!permission", bit(type));
 									throw new Error(label.error.serverInvalidMethod);
 									break;
@@ -939,7 +939,7 @@ var abaaso = abaaso || function(){
 			sync = sync === true ? true : false;
 
 			try {
-				if (!/set|del/.test(type) || !/object/.test(typeof data))
+				if (!/^(set|del)$/.test(type) || !/object/.test(typeof data))
 						throw Error(label.error.invalidArguments);
 
 				var obj = this.parentNode,
@@ -2049,8 +2049,8 @@ var abaaso = abaaso || function(){
 				case /object/.test(typeof n):
 					var x, y, c = false;
 
-					x = (n.pageX) ? n.pageX : ((client.ie && /8/.test(client.version) ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
-					y = (n.pageY) ? n.pageY : ((client.ie && /8/.test(client.version) ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
+					x = (n.pageX) ? n.pageX : ((client.ie && /^8$/.test(client.version) ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
+					y = (n.pageY) ? n.pageY : ((client.ie && /^8$/.test(client.version) ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
 					switch (true) {
 						case m.pos.x != x:
 							$.mouse.pos.x = m.pos.x = x;
@@ -3309,7 +3309,7 @@ var abaaso = abaaso || function(){
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
 			utility.proto(Element, "element");
-			if (client.ie && /8/.test(client.version)) utility.proto(HTMLDocument, "element");
+			if (client.ie && /^8$/.test(client.version)) utility.proto(HTMLDocument, "element");
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
 			
@@ -3337,7 +3337,7 @@ var abaaso = abaaso || function(){
 			};
 
 			switch (true) {
-				case $.client.ie && /8/.test($.client.version):
+				case $.client.ie && /^8$/.test($.client.version):
 					// Pure hackery, only exists when needed
 					abaaso.state.current = null;
 					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
@@ -3394,7 +3394,7 @@ var abaaso = abaaso || function(){
 
 			// Setting render event
 			if (!$.ie || $.version > 8) {
-				abaaso.timer.render = setInterval(function(){
+				abaaso.timer.render = setInterval(function() {
 					if (/loaded|complete/.test(document.readyState)) {
 						clearInterval(abaaso.timer.render);
 						delete abaaso.timer.render;
@@ -3405,7 +3405,7 @@ var abaaso = abaaso || function(){
 
 			return abaaso;
 		},
-		jsonp           : function(uri, success, failure, callback){ return client.request(uri, "JSONP", success, failure, callback); },
+		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
 			var all   = !/undefined/.test(typeof arguments[1]) ? true : false,
 			    obj   = all ? arguments[0] : this,
@@ -3446,7 +3446,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.083"
+		version         : "1.6.084"
 	};
 }();
 
@@ -3469,7 +3469,7 @@ if (/function/.test(typeof abaaso.init)) {
 		case $.client.opera:
 		case $.client.safari:
 		case $.client.ie && $.client.version > 8:
-			document.addEventListener("DOMContentLoaded", function(){ abaaso.init(); }, false);
+			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
 			break;
 		default:
 			abaaso.timer.init = setInterval(function(){
