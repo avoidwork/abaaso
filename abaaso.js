@@ -3171,7 +3171,7 @@ var abaaso = abaaso || function(){
 
 				wrap = wrap === false ? false : true;
 				var xml  = wrap ? "<xml>" : "",
-					top  = arguments[2] === false ? false : true,
+				    top  = arguments[2] === false ? false : true,
 				    node, i;
 
 				node = function(name, value) {
