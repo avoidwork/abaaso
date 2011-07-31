@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.084
+ * @version 1.6.085
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -608,9 +608,12 @@ var abaaso = abaaso || function(){
 
 					if (payload !== null) {
 						switch (true) {
+							case !/undefined/.test(typeof payload.xml):
+								payload = payload.xml;
 							case payload instanceof Document:
+								payload = $.xml.decode(payload);
+							case /string/.test(typeof payload) && /<[^>]+>[^<]*]+>/.test(payload):
 								xhr.setRequestHeader("Content-type", "application/xml");
-								payload = client.ie ? payload.xml : (new XMLSerializer()).serializeToString(payload);
 								break;
 							case payload instanceof Object:
 								xhr.setRequestHeader("Content-type", "application/json");
@@ -3446,7 +3449,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.084"
+		version         : "1.6.085"
 	};
 }();
 
