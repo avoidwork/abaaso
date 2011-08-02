@@ -3406,15 +3406,13 @@ var abaaso = abaaso || function(){
 			$.fire("ready").un("ready");
 
 			// Setting render event
-			if (!$.ie || $.version > 8) {
-				abaaso.timer.render = setInterval(function() {
-					if (/loaded|complete/.test(document.readyState)) {
-						clearInterval(abaaso.timer.render);
-						delete abaaso.timer.render;
-						$.fire("render").un("render");
-					}
-				}, 10);
-			}
+			abaaso.timer.render = setInterval(function() {
+				if (/loaded|complete/.test(document.readyState)) {
+					clearInterval(abaaso.timer.render);
+					delete abaaso.timer.render;
+					$.fire("render").un("render");
+				}
+			}, 10);
 
 			return abaaso;
 		},
@@ -3488,7 +3486,6 @@ if (/function/.test(typeof abaaso.init)) {
 					clearInterval(abaaso.timer.init);
 					delete abaaso.timer.init;
 					abaaso.init();
-					$.fire("render").un("render");
 				}
 			}, 10);
 	}
