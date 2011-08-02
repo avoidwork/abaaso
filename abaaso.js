@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.086
+ * @version 1.6.087
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -3359,16 +3359,17 @@ var abaaso = abaaso || function(){
 			};
 
 			switch (true) {
-				case $.client.ie && /^8$/.test($.client.version):
-					// Pure hackery, only exists when needed
-					abaaso.state.current = null;
-					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
-				case /undefined/.test(typeof Object.defineProperty):
+				case (!client.ie || client.version > 8) && /function/.test(typeof Object.defineProperty):
+					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
+					break;
+				case /function/.test(typeof abaaso.state.__defineGetter__):
 					abaaso.state.__defineGetter__("current", getter);
 					abaaso.state.__defineSetter__("current", setter);
 					break;
 				default:
-					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
+					// Pure hackery, only exists when needed
+					abaaso.state.current = null;
+					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
 			}
 
 			// Adding an essential method if not present
@@ -3412,8 +3413,7 @@ var abaaso = abaaso || function(){
 
 			// All setup!
 			abaaso.ready = true;
-			$.fire("ready").un("ready");
-			return abaaso;
+			return $.fire("ready").un("ready");
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
@@ -3442,9 +3442,7 @@ var abaaso = abaaso || function(){
 		post            : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
 		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 		ready           : false,
-		store           : function(arg, args) {
-			return data.register.call(data, arg, args);
-		},
+		store           : function(arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
 		un              : function() {
 			var all   = /string/.test(typeof arguments[0]) ? false : true,
@@ -3456,7 +3454,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.086"
+		version         : "1.6.087"
 	};
 }();
 
