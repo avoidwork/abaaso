@@ -3325,20 +3325,10 @@ var abaaso = abaaso || function(){
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
 			
-			// Garbage collection & resize event
+			// Setting events & garbage collection
+			window.onhashchange = function() { abaaso.fire("hash", location.hash); };
+			window.onresize     = function() { $.client.size = abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
 			abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
-			var rfn = function() {
-				$.client.size = abaaso.client.size = client.size();
-				abaaso.fire("resize", abaaso.client.size);
-			};
-			switch (true) {
-				case !/undefined/.test(typeof document.addEventListener):
-					document.addEventListener("resize", rfn, false);
-					break;
-				case !/undefined/.test(typeof window.attachEvent):
-					window.attachEvent("onresize", rfn);
-					break;
-			}
 
 			// abaaso.state.current getter/setter
 			var getter, setter;
@@ -3413,7 +3403,20 @@ var abaaso = abaaso || function(){
 
 			// All setup!
 			abaaso.ready = true;
-			return $.fire("ready").un("ready");
+			$.fire("ready").un("ready");
+
+			// Setting render event
+			if (!$.ie || $.version > 8) {
+				abaaso.timer.render = setInterval(function() {
+					if (/loaded|complete/.test(document.readyState)) {
+						clearInterval(abaaso.timer.render);
+						delete abaaso.timer.render;
+						$.fire("render").un("render");
+					}
+				}, 10);
+			}
+
+			return abaaso;
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
@@ -3472,15 +3475,21 @@ if (/function/.test(typeof abaaso.init)) {
 
 	// Registering events
 	switch (true) {
-		case !/undefined/.test(typeof document.addEventListener):
-			document.addEventListener("DOMContentLoaded", (function(){ abaaso.init(); }), false);
-			document.addEventListener("load", (function(){ $.fire("render").un("render"); }), false);
-			document.addEventListener("hashchange", (function(){ $.fire("hash", location.hash); }), false);
+		case $.client.chrome:
+		case $.client.firefox:
+		case $.client.opera:
+		case $.client.safari:
+		case $.client.ie && $.client.version > 8:
+			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
 			break;
-		case !/undefined/.test(typeof window.attachEvent):
-			window.attachEvent("onreadystatechange", (function(){ if (/loaded|complete/.test(document.readyState)) abaaso.init(); }));
-			window.attachEvent("onload", (function(){ $.fire("render").un("render"); }));
-			window.attachEvent("onhashchange", (function() { abaaso.fire("hash", location.hash); }));
-			break;
+		default:
+			abaaso.timer.init = setInterval(function(){
+				if (/loaded|complete/.test(document.readyState)) {
+					clearInterval(abaaso.timer.init);
+					delete abaaso.timer.init;
+					abaaso.init();
+					$.fire("render").un("render");
+				}
+			}, 10);
 	}
 }
