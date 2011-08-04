@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.090
+ * @version 1.6.091
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -734,15 +734,29 @@ var abaaso = abaaso || function(){
 					case /^4$/.test(xhr.readyState):
 						switch (true) {
 								case /^(200|204|205|301)$/.test(xhr.status):
-									var state  = null,
-									    s      = abaaso.state;
+									var state = null, s = abaaso.state, r, t;
 
 									if (!/delete|options/i.test(type) && /200|301/.test(xhr.status)) {
+										t = cache.get(uri, false).headers["Content-Type"];
+
+										switch (true) {
+											case /xml/.test(t):
+												r = xml.decode(!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml : xhr.responseXML);
+												break;
+											case /json/.test(t):
+												r = json.decode(xhr.responseText);
+												break;
+											default:
+												r = xhr.responseText;
+										}
+
+										if (/undefined/.test(typeof r))
+											throw Error(label.error.serverError);
+
 										cache.set(uri, "epoch", new Date());
-										cache.set(uri, "response", /xml/.test(cache.get(uri, false).headers["Content-Type"]) ? (!/undefined/.test(typeof xhr.responseXML.xml) ? xhr.responseXML.xml
-										                                                                                                                                      : xhr.responseXML)
-										                                                                                     : xhr.responseText);
+										cache.set(uri, "response", r);
 									}
+
 									o = cache.get(uri, false);
 									if (/options/i.test(type)) cache.expire(uri);
 
@@ -1316,7 +1330,7 @@ var abaaso = abaaso || function(){
 					obj.un("syncDataSet", guid);
 					if (/undefined/.test(typeof record)) {
 						if (/undefined/.test(typeof key)) {
-							arg = $.decode(arguments[0]);
+							arg = arguments[0];
 
 							if (/undefined/.test(typeof arg)) {
 								obj.fire("failedDataSet");
@@ -1379,7 +1393,7 @@ var abaaso = abaaso || function(){
 				this.uri.on("afterGet", function(arg){
 					this.uri.un("afterGet", guid);
 					try {
-						var data = $.decode(arg);
+						var data = arg;
 						if (/undefined/.test(typeof data))
 							throw Error(label.error.expectedObject);
 
@@ -3460,7 +3474,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.090"
+		version         : "1.6.091"
 	};
 }();
 
