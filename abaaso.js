@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.089
+ * @version 1.6.090
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -3102,8 +3102,14 @@ var abaaso = abaaso || function(){
 									exception = true;
 								}
 								break;
+							case "domain":
+								if (!validate.pattern.domain.test(value.replace(/.*\/\//, ""))) {
+									invalid.push({test: i, value: value});
+									exception = true;
+								}
+								break;
 							case "domainip":
-								if (!validate.pattern.domain.test(value) || !validate.pattern.ip.test(value)) {
+								if (!validate.pattern.domain.test(value.replace(/.*\/\//, "")) || !validate.pattern.ip.test(value)) {
 									invalid.push({test: i, value: value});
 									exception = true;
 								}
@@ -3454,7 +3460,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.089"
+		version         : "1.6.090"
 	};
 }();
 
