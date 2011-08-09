@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.093
+ * @version 1.6.094
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -720,12 +720,14 @@ var abaaso = abaaso || function(){
 						    o, header, value;
 
 						for (i = 0; i < nth; i++) {
-							var header    = headers[i].toString(),
-							    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+							if (!headers[i].isEmpty()) {
+								var header    = headers[i].toString(),
+								    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 
-							header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-							items[header] = value;
-							if (header.toLowerCase() == "allow") allow = value;
+								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+								items[header] = value;
+								if (header.toLowerCase() == "allow") allow = value;
+							}
 						}
 						cache.set(uri, "headers", items);
 						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
@@ -740,7 +742,6 @@ var abaaso = abaaso || function(){
 
 								if (!/delete|options/i.test(type) && /200|301/.test(xhr.status)) {
 									t = typeof cache.get(uri, false).headers == "object" ? cache.get(uri, false).headers["Content-Type"] : "";
-
 									switch (true) {
 										case /xml/.test(t):
 											r = xml.decode(typeof xhr.responseXML.xml != "undefined" ? xhr.responseXML.xml : xhr.responseXML);
@@ -1860,7 +1861,7 @@ var abaaso = abaaso || function(){
 								obj.opacity(args[i]);
 								break;
 							case "class":
-								obj.setAttribute(client.ie && client.version < 9 ? "className" : "class", args[i]);
+								client.ie && client.version < 9 ? obj.className = args[i] : obj.setAttribute("class", args[i]);
 								break;
 							case "id":
 								var o = observer.listeners;
@@ -2394,7 +2395,7 @@ var abaaso = abaaso || function(){
 				if (obj instanceof Array) {
 					nth = obj.length;
 					for (i = 0; i < nth; i++) { if (new RegExp(arg).test(obj[i].innerHTML)) instances.push(obj[i]); }
-					return /^1$/.test(instances.length) ? instances[0] : instances;
+					return instances.length == 1 ? instances[0] : instances;
 				}
 				else {
 					return obj !== null && arg !== null && new RegExp(arg).test(obj[i].innerHTML) ? obj : undefined;
@@ -2513,7 +2514,7 @@ var abaaso = abaaso || function(){
 					obj = document.getElementById(arg.substring(1));
 					break;
 				case ":":
-					obj = document.body.getElementsByTagName("*");
+					obj = document.getElementsByTagName("*");
 					if (obj !== null && !nodelist)
 						obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
 					break;
@@ -3468,7 +3469,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.093"
+		version         : "1.6.094"
 	};
 }();
 
