@@ -809,8 +809,8 @@ var abaaso = abaaso || function(){
 		 * @returns {Object} Object describing the size of the View {x:?, y:?}
 		 */
 		size : function() {
-			var x = document.compatMode == "css1compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
-			    y = document.compatMode == "css1compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
+			var x = document.compatMode == "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
+			    y = document.compatMode == "CSS1Compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
 
 			return {x: x, y: y};
 		}
@@ -1109,9 +1109,8 @@ var abaaso = abaaso || function(){
 					if (typeof haystack == "string") {
 						h = haystack.split(/\s*,\s*/);
 						for (i in h) {
-							if (typeof this.records.first().data[h[i]] == "undefined") {
+							if (typeof this.records.first().data[h[i]] == "undefined")
 								throw Error(label.error.invalidArguments);
-							}
 						}
 					}
 					else { for (i in this.records.first().data) { h.push(i); } }
@@ -2057,7 +2056,7 @@ var abaaso = abaaso || function(){
 		track : function(n) {
 			var m = abaaso.mouse;
 			switch (true) {
-				case /object/.test(typeof n):
+				case typeof n == "object":
 					var x, y, c = false;
 
 					x = (n.pageX) ? n.pageX : ((client.ie && client.version == 8 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
@@ -2072,7 +2071,7 @@ var abaaso = abaaso || function(){
 					}
 					if (c && m.log) utility.log(m.pos.x + " : " + m.pos.y);
 					break;
-				case /boolean/.test(typeof n):
+				case typeof n == "boolean":
 					n ? typeof document.addEventListener != "undefined" ? document.addEventListener("mousemove", abaaso.mouse.track, false) : document.attachEvent("onmousemove", abaaso.mouse.track)
 					  : typeof document.removeEventListener != "undefined" ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track);
 					$.mouse.enabled = m.enabled = n;
@@ -2836,7 +2835,7 @@ var abaaso = abaaso || function(){
 		 */
 		proto : function(obj, type) {
 			try {
- 				if (typeof obj != "function")
+ 				if (typeof obj != "function" && typeof obj != "object")
 						throw new Error(label.error.invalidArguments);
 
 				// Collection of methods to add to prototypes
@@ -3349,7 +3348,7 @@ var abaaso = abaaso || function(){
 			getter = function(){ return this._current; };
 			setter = function(arg){
 				try {
-					if (arg === null || typeof arg != "string" || !/\w/.test(arg) || this.current == arg)
+					if (arg === null || typeof arg != "string" || this.current == arg || arg.isEmpty())
 							throw Error(label.error.invalidArguments);
 
 					$.state.previous = this.previous = this._current;
