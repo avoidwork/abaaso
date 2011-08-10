@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.094
+ * @version 1.6.095
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -744,7 +744,7 @@ var abaaso = abaaso || function(){
 									t = typeof cache.get(uri, false).headers == "object" ? cache.get(uri, false).headers["Content-Type"] : "";
 									switch (true) {
 										case /xml/.test(t):
-											r = xml.decode(typeof xhr.responseXML.xml != "undefined" ? xhr.responseXML.xml : xhr.responseXML);
+											r = xml.decode(typeof xhr.responseXML.xml != "undefined" ? xhr.responseXML.xml : xhr.responseText);
 											break;
 										case /json/.test(t):
 											r = json.decode(xhr.responseText);
@@ -3154,7 +3154,7 @@ var abaaso = abaaso || function(){
 		 */
 		decode : function(arg) {
 			try {
-				if (typeof arg == "undefined" || !arg instanceof String || arg.isEmpty())
+				if (typeof arg != "string" || arg.isEmpty())
 					throw Error(label.error.invalidArguments);
 
 				var xml;
@@ -3469,7 +3469,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.094"
+		version         : "1.6.095"
 	};
 }();
 
