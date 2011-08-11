@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.095
+ * @version 1.6.096
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -2483,7 +2483,7 @@ var abaaso = abaaso || function(){
 				return instances;
 			};
 
-			nodelist = nodelist === true ? true : false;
+			if (nodelist !== true) nodelist = false;
 
 			// Recursive processing, ends up below
 			if (/,/.test(arg)) arg = arg.split(/\s*,\s*/);
@@ -3469,7 +3469,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.095"
+		version         : "1.6.096"
 	};
 }();
 
