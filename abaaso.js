@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.098
+ * @version 1.6.099
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -63,7 +63,7 @@ var abaaso = abaaso || function(){
 		 */
 		cast : function(obj, key) {
 			try {
-				if (typeof obj != "object")
+				if (typeof obj !== "object")
 					throw new Error(label.error.expectedObject);
 
 				key   = (key === true);
@@ -166,7 +166,7 @@ var abaaso = abaaso || function(){
 
 				var i = instance.length;
 
-				while (i--) { if (instance[i] == arg) return i; }
+				while (i--) { if (instance[i] === arg) return i; }
 				return -1;
 			}
 			catch (e) {
@@ -189,7 +189,7 @@ var abaaso = abaaso || function(){
 				var o, i = 0, indexed = [];
 
 				for (o in instance) {
-					if (typeof instance[o] != "function") {
+					if (typeof instance[o] !== "function") {
 						indexed[i] = instance[o] instanceof Array ? instance[o].indexed() : instance[o];
 						i++
 					}
@@ -217,7 +217,7 @@ var abaaso = abaaso || function(){
 				var keys = [],
 				    i    = null;
 
-				for (i in instance) { if (typeof instance[i] != "function") keys.push(i); }
+				for (i in instance) { if (typeof instance[i] !== "function") keys.push(i); }
 				return keys;
 			}
 			catch (e) {
@@ -286,7 +286,7 @@ var abaaso = abaaso || function(){
 
 				var i = 0, arg;
 
-				for (arg in obj) { if (typeof obj[arg] != "function") i++; }
+				for (arg in obj) { if (typeof obj[arg] !== "function") i++; }
 				return i;
 			}
 			catch (e) {
@@ -328,7 +328,7 @@ var abaaso = abaaso || function(){
 		 * @returns undefined
 		 */
 		expire : function(uri) {
-			if (typeof cache.items[uri] != "undefined") delete cache.items[uri];
+			if (typeof cache.items[uri] !== "undefined") delete cache.items[uri];
 			return;
 		},
 
@@ -341,12 +341,12 @@ var abaaso = abaaso || function(){
 		expired : function(uri) {
 			var o      = abaaso.client,
 			    c      = cache.items[uri],
-			    epoch  = typeof c != "undefined" ? new Date(c.epoch) : null,
-			    expire = typeof c != "undefined" && typeof c.headers.Expires != "undefined" ? new Date(c.headers.Expires) : null,
+			    epoch  = typeof c !== "undefined" ? new Date(c.epoch) : null,
+			    expire = typeof c !== "undefined" && typeof c.headers.Expires !== "undefined" ? new Date(c.headers.Expires) : null,
 			    now    = new Date(),
-			    date   = typeof c != "undefined" && typeof c.headers.Date != "undefined" ? new Date(c.headers.Date) : null;
+			    date   = typeof c !== "undefined" && typeof c.headers.Date !== "undefined" ? new Date(c.headers.Date) : null;
 
-			return typeof c != "undefined" && ((expire !== null && expire < now)
+			return typeof c !== "undefined" && ((expire !== null && expire < now)
 			                                   || (date !== null && date.setMilliseconds(date.getMilliseconds() + o.expire) < now)
 			                                   || (o.expire > 0 && epoch.setMilliseconds(epoch.getMilliseconds() + o.expire) < now));
 		},
@@ -362,9 +362,9 @@ var abaaso = abaaso || function(){
 			try {
 				expire = expire === false ? false : true;
 
-				if (typeof cache.items[uri] == "undefined") return false;
-				if (typeof cache.items[uri].headers != "undefined") {
-					if ((typeof cache.items[uri].headers.Pragma != "undefined" && cache.items[uri].headers.Pragma == "no-cache" && expire) || cache.expired(cache.items[uri])) {
+				if (typeof cache.items[uri] === "undefined") return false;
+				if (typeof cache.items[uri].headers !== "undefined") {
+					if ((typeof cache.items[uri].headers.Pragma !== "undefined" && cache.items[uri].headers.Pragma === "no-cache" && expire) || cache.expired(cache.items[uri])) {
 						cache.expire(uri);
 						return false;
 					}
@@ -388,12 +388,12 @@ var abaaso = abaaso || function(){
 		 */
 		set : function(uri, property, value) {
 			try {
-				if (typeof cache.items[uri] == "undefined") {
+				if (typeof cache.items[uri] === "undefined") {
 					cache.items[uri] = {};
 					cache.items[uri].permission = 0;
 				}
-				property == "permission" ? cache.items[uri].permission |= value
-				                         : (property == "!permission" ? cache.items[uri].permission &= ~value
+				property === "permission" ? cache.items[uri].permission |= value
+				                         : (property === "!permission" ? cache.items[uri].permission &= ~value
 				                                                      : cache.items[uri][property]   =  value);
 				return cache.items[uri];
 			}
@@ -489,10 +489,10 @@ var abaaso = abaaso || function(){
 				var result;
 
 				switch (true) {
-					case command.toLowerCase() == "delete":
+					case command.toLowerCase() === "delete":
 						result = !((uri.permission(command).bit & 1) === 0);
 						break;
-					case command.toLowerCase() == "get":
+					case command.toLowerCase() === "get":
 						result = !((uri.permission(command).bit & 4) === 0);
 						break;
 					case /post|put/i.test(command):
@@ -544,18 +544,18 @@ var abaaso = abaaso || function(){
 		 */
 		request : function(uri, type, success, failure, args) {
 			try {
-				if (/post|put/i.test(type) && typeof args == "undefined")
+				if (/post|put/i.test(type) && typeof args === "undefined")
 					throw new Error(label.error.invalidArguments);
 
-				if (type.toLowerCase() == "jsonp") {
+				if (type.toLowerCase() === "jsonp") {
 					var curi = new String(uri), uid;
 
 					curi.on("afterJSONP", function(arg){ success(arg); });
 
 					do uid = "a" + utility.id();
-					while (typeof abaaso.callback[uid] != "undefined");
+					while (typeof abaaso.callback[uid] !== "undefined");
 
-					if (typeof args == "undefined") args = "callback";
+					if (typeof args === "undefined") args = "callback";
 					uri = uri.replace(args + "=?", args + "=abaaso.callback." + uid);
 					abaaso.callback[uid] = function(arg){
 						delete abaaso.callback[uid];
@@ -568,8 +568,8 @@ var abaaso = abaaso || function(){
 					type = type.toLowerCase();
 					var xhr     = new XMLHttpRequest(),
 					    payload = /post|put/i.test(type) ? args : null,
-					    headers = type == "get" && args instanceof Object ? args : null,
-					    cached  = type == "options" ? false : cache.get(uri, false),
+					    headers = type === "get" && args instanceof Object ? args : null,
+					    cached  = type === "options" ? false : cache.get(uri, false),
 						typed   = type.capitalize(),
 						timer   = function(){
 							clearTimeout(abaaso.timer[typed + "-" + uri]);
@@ -582,7 +582,7 @@ var abaaso = abaaso || function(){
 							uri.fire("failed" + typed);
 						};
 
-					if (type == "delete") {
+					if (type === "delete") {
 						uri.on("afterDelete", function(){
 							cache.expire(uri);
 							uri.un("afterDelete", "expire");
@@ -591,12 +591,12 @@ var abaaso = abaaso || function(){
 
 					uri.on("received" + typed, timer)
 					   .on("timeout"  + typed, fail)
-					   .on("after"    + typed, function(arg){ if (typeof success == "function") success(arg); })
-					   .on("failed"   + typed, function(){ if (typeof failure == "function") failure(); })
+					   .on("after"    + typed, function(arg){ if (typeof success === "function") success(arg); })
+					   .on("failed"   + typed, function(){ if (typeof failure === "function") failure(); })
 					   .fire("before" + typed)
 					   .fire("beforeXHR");
 
-					if (type != "options" && uri.allow(type) === false) {
+					if (type !== "options" && uri.allow(type) === false) {
 						uri.fire("failed" + typed);
 						return uri;
 					}
@@ -608,11 +608,11 @@ var abaaso = abaaso || function(){
 
 					if (payload !== null) {
 						switch (true) {
-							case typeof payload.xml != "undefined":
+							case typeof payload.xml !== "undefined":
 								payload = payload.xml;
 							case payload instanceof Document:
 								payload = $.xml.decode(payload);
-							case typeof payload == "string" && /<[^>]+>[^<]*]+>/.test(payload):
+							case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
 								xhr.setRequestHeader("Content-type", "application/xml");
 								break;
 							case payload instanceof Object:
@@ -625,7 +625,7 @@ var abaaso = abaaso || function(){
 					}
 
 					if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
-					if (typeof cached == "object" && typeof cached.headers.ETag != "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
+					if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
 					xhr.send(payload);
 				}
 				return uri;
@@ -709,7 +709,7 @@ var abaaso = abaaso || function(){
 				};
 
 				switch (true) {
-					case xhr.readyState == 2:
+					case xhr.readyState === 2:
 						uri.fire("received" + typed);
 
 						var headers = xhr.getAllResponseHeaders().split("\n"),
@@ -726,13 +726,13 @@ var abaaso = abaaso || function(){
 
 								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 								items[header] = value;
-								if (header.toLowerCase() == "allow") allow = value;
+								if (header.toLowerCase() === "allow") allow = value;
 							}
 						}
 						cache.set(uri, "headers", items);
 						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
 						break;
-					case xhr.readyState == 4:
+					case xhr.readyState === 4:
 						switch (xhr.status) {
 							case 200:
 							case 204:
@@ -741,10 +741,10 @@ var abaaso = abaaso || function(){
 								var state = null, s = abaaso.state, r, t;
 
 								if (!/delete|options/i.test(type) && /200|301/.test(xhr.status)) {
-									t = typeof cache.get(uri, false).headers == "object" ? cache.get(uri, false).headers["Content-Type"] : "";
+									t = typeof cache.get(uri, false).headers === "object" ? cache.get(uri, false).headers["Content-Type"] : "";
 									switch (true) {
 										case /xml/.test(t):
-											r = xml.decode(typeof xhr.responseXML.xml != "undefined" ? xhr.responseXML.xml : xhr.responseText);
+											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseText);
 											break;
 										case /json/.test(t):
 											r = json.decode(xhr.responseText);
@@ -753,7 +753,7 @@ var abaaso = abaaso || function(){
 											r = xhr.responseText;
 									}
 
-									if (typeof r == "undefined")
+									if (typeof r === "undefined")
 										throw Error(label.error.serverError);
 
 									cache.set(uri, "epoch", new Date());
@@ -761,16 +761,16 @@ var abaaso = abaaso || function(){
 								}
 
 								o = cache.get(uri, false);
-								if (type == "options") cache.expire(uri);
+								if (type === "options") cache.expire(uri);
 
 								// HATEOAS triggered
-								if (type != "options" && s.header !== null && (state = o.headers[s.header]) && typeof state != "undefined" && !new s.current != state)
-									typeof s.change == "function" ? s.change(state) : s.current = state;
+								if (type !== "options" && s.header !== null && (state = o.headers[s.header]) && typeof state !== "undefined" && !new s.current !== state)
+									typeof s.change === "function" ? s.change(state) : s.current = state;
 
 								uri.fire("afterXHR");
 								switch (xhr.status) {
 									case 200:
-										uri.fire("after" + typed, type == "options" ? o.headers : o.response);
+										uri.fire("after" + typed, type === "options" ? o.headers : o.response);
 										break;
 									case 205:
 										uri.fire("reset");
@@ -810,8 +810,8 @@ var abaaso = abaaso || function(){
 		 * @returns {Object} Object describing the size of the View {x:?, y:?}
 		 */
 		size : function() {
-			var x = document.compatMode == "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
-			    y = document.compatMode == "CSS1Compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
+			var x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
+			    y = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
 
 			return {x: x, y: y};
 		}
@@ -829,7 +829,7 @@ var abaaso = abaaso || function(){
 		 * @param name {String} The name of the cookie to create
 		 */
 		expire : function(name) {
-			if (typeof this.get(name) != "undefined") this.set(name, "", "-1s");
+			if (typeof this.get(name) !== "undefined") this.set(name, "", "-1s");
 		},
 
 		/**
@@ -853,7 +853,7 @@ var abaaso = abaaso || function(){
 			    items  = null,
 			    result = {};
 
-			if (typeof document.cookie != "undefined" && !document.cookie.isEmpty()) {
+			if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
 				items = document.cookie.split(';');
 				nth   = items.length;
 
@@ -958,7 +958,7 @@ var abaaso = abaaso || function(){
 			sync = (sync === true);
 
 			try {
-				if (!/^(set|del)$/.test(type) || typeof data != "object")
+				if (!/^(set|del)$/.test(type) || typeof data !== "object")
 						throw Error(label.error.invalidArguments);
 
 				var obj = this.parentNode,
@@ -972,7 +972,7 @@ var abaaso = abaaso || function(){
 								this.del(data[i], false);
 								break;
 							case "set":
-								key = this.key !== null && typeof data[i][this.key] != "undefined" ? this.key : i;
+								key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
 								this.set(key, data[i], sync);
 								break;
 						}
@@ -985,14 +985,14 @@ var abaaso = abaaso || function(){
 								this.del(data[i], false);
 								break;
 							case "set":
-								key = this.key !== null && typeof data[i][this.key] != "undefined" ? this.key : i;
-								key != i ? delete data[i][key] : key = key.toString();
+								key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
+								key !== i ? delete data[i][key] : key = key.toString();
 								this.set(key, data[i], sync);
 								break;
 						}
 					}
 				}
-				if (type == "del") this.reindex();
+				if (type === "del") this.reindex();
 				obj.fire("afterDataBatch");
 				return this;
 			}
@@ -1035,7 +1035,7 @@ var abaaso = abaaso || function(){
 		 */
 		del : function(record, reindex) {
 			try {
-				if (typeof record == "undefined" || (typeof record != "number" || typeof record != "string"))
+				if (typeof record === "undefined" || (typeof record !== "number" || typeof record !== "string"))
 					throw new Error(label.error.invalidArguments);
 
 				reindex = reindex === false ? false : true;
@@ -1044,17 +1044,17 @@ var abaaso = abaaso || function(){
 				    guid = $.genId(),
 				    key;
 
-				if (typeof record == "string") {
+				if (typeof record === "string") {
 					key    = record;
 					record = this.keys[key];
-					if (typeof key == "undefined")
+					if (typeof key === "undefined")
 						throw new Error(label.error.invalidArguments);
 
 					record = record.index;
 				}
 				else {
 					key = this.records[record];
-					if (typeof key == "undefined")
+					if (typeof key === "undefined")
 						throw new Error(label.error.invalidArguments);
 
 					key = key.key;
@@ -1093,11 +1093,11 @@ var abaaso = abaaso || function(){
 		 */
 		find : function(needle, haystack) {
 			try {
-				if (typeof needle == "undefined")
+				if (typeof needle === "undefined")
 					throw Error(label.error.invalidArguments);
 
 				var h      = [],
-				    n      = typeof needle == "string" ? needle.split(/\s*,\s*/) : needle,
+				    n      = typeof needle === "string" ? needle.split(/\s*,\s*/) : needle,
 				    result = [],
 				    nth    = h.length,
 					nth2   = n.length,
@@ -1106,11 +1106,11 @@ var abaaso = abaaso || function(){
 
 				obj.fire("beforeDataFind");
 
-				if (typeof haystack == "undefined" || !haystack instanceof Array) {
-					if (typeof haystack == "string") {
+				if (typeof haystack === "undefined" || !haystack instanceof Array) {
+					if (typeof haystack === "string") {
 						h = haystack.split(/\s*,\s*/);
 						for (i in h) {
-							if (typeof this.records.first().data[h[i]] == "undefined")
+							if (typeof this.records.first().data[h[i]] === "undefined")
 								throw Error(label.error.invalidArguments);
 						}
 					}
@@ -1118,7 +1118,7 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					for (i in haystack) {
-						if (typeof this.records.first().data[haystack[i]] == "undefined")
+						if (typeof this.records.first().data[haystack[i]] === "undefined")
 							throw Error(label.error.invalidArguments);
 					}
 					h = haystack;
@@ -1164,14 +1164,14 @@ var abaaso = abaaso || function(){
 				    i, start, end;
 
 				obj.fire("beforeDataGet");
-				if (typeof record == "string") r = typeof this.keys[record] != "undefined" ? this.records[this.keys[record].index] : undefined;
+				if (typeof record === "string") r = typeof this.keys[record] !== "undefined" ? this.records[this.keys[record].index] : undefined;
 				else if (record instanceof Array) {
 					if (!!isNaN(record[0]) || !!isNaN(record[1]))
 						throw new Error(label.error.invalidArguments);
 
 					start = record[0] - 1;
 					end   = record[1] - 1;
-					for (i = start; i < end; i++) { if (typeof this.records[i] != "undefined") r.push(this.records[i]); }
+					for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
 				}
 				else { r = this.records[record]; }
 				obj.fire("afterDataGet");
@@ -1221,16 +1221,16 @@ var abaaso = abaaso || function(){
 
 					// Hooking in the observer
 					switch (true) {
-						case typeof obj.fire == "undefined":
+						case typeof obj.fire === "undefined":
 							obj.fire = function(){ return $.fire.apply(this, arguments); };
-						case typeof obj.listeners == "undefined":
+						case typeof obj.listeners === "undefined":
 							obj.listeners = function(){ return $.listeners.apply(this, arguments); };
-						case typeof obj.on == "undefined":
+						case typeof obj.on === "undefined":
 							obj.on = function(event, listener, id, scope, standby) {
 								scope = scope || this;
 								return $.on(this, event, listener, id, scope, standby);
 							};
-						case typeof obj.un == "undefined":
+						case typeof obj.un === "undefined":
 							obj.un = function(event, id) { return $.un(this, event, id); };
 					}
 
@@ -1243,10 +1243,10 @@ var abaaso = abaaso || function(){
 					delete obj.data.register;
 
 					switch (true) {
-						case (!client.ie || client.version > 8) && typeof Object.defineProperty == "function":
+						case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
 							Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
 							break;
-						case typeof obj.data.__defineGetter__ == "function":
+						case typeof obj.data.__defineGetter__ === "function":
 							obj.data.__defineGetter__("uri", getter);
 							obj.data.__defineSetter__("uri", setter);
 							break;
@@ -1255,7 +1255,7 @@ var abaaso = abaaso || function(){
 							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
 					}
 
-					if (typeof data == "object") obj.data.batch("set", data);
+					if (typeof data === "object") obj.data.batch("set", data);
 					obj.fire("afterDataStore");
 				}
 				return obj;
@@ -1314,27 +1314,27 @@ var abaaso = abaaso || function(){
 				sync = (sync === true);
 
 				switch (true) {
-					case (typeof key == "undefined" || key.isEmpty()) && this.uri === null:
-					case typeof data == "undefined":
+					case (typeof key === "undefined" || key.isEmpty()) && this.uri === null:
+					case typeof data === "undefined":
 					case data instanceof Array:
 					case data instanceof Number:
 					case data instanceof String:
-					case typeof data != "object":
+					case typeof data !== "object":
 						throw new Error(label.error.invalidArguments);
 				}
 
-				var record = typeof this.keys[key] == "undefined" && typeof this.records[key] == "undefined" ? undefined : this.get(key),
+				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    guid   = $.genId(),
 				    arg, index, record;
 
 				obj.on("syncDataSet", function(){
 					obj.un("syncDataSet", guid);
-					if (typeof record == "undefined") {
-						if (typeof key == "undefined") {
+					if (typeof record === "undefined") {
+						if (typeof key === "undefined") {
 							arg = arguments[0];
 
-							if (typeof arg == "undefined") {
+							if (typeof arg === "undefined") {
 								obj.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
@@ -1342,7 +1342,7 @@ var abaaso = abaaso || function(){
 							key = this.key === null ? array.cast(arg).first() : arg[this.key];
 							key = key.toString();
 						}
-						if (typeof data[key] != "undefined") key = data[key];
+						if (typeof data[key] !== "undefined") key = data[key];
 						this.keys[key] = {};
 						index = this.records.length;
 						this.keys[key].index = index;
@@ -1354,7 +1354,7 @@ var abaaso = abaaso || function(){
 						this.total++;
 					}
 					else {
-						if (typeof data == "object") {
+						if (typeof data === "object") {
 							for (arg in data) { record[arg] = data[arg]; }
 							this.records[record.index] = record;
 						}
@@ -1365,7 +1365,7 @@ var abaaso = abaaso || function(){
 
 				obj.fire("beforeDataSet");
 				this.uri === null || sync ? obj.fire("syncDataSet")
-				                          : $[typeof key == "undefined" ? "post" : "put"](typeof key == "undefined" ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
+				                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
@@ -1396,7 +1396,7 @@ var abaaso = abaaso || function(){
 					this.uri.un("afterGet", guid);
 					try {
 						var data = arg;
-						if (typeof data == "undefined")
+						if (typeof data === "undefined")
 							throw Error(label.error.expectedObject);
 
 						this.batch("set", data, true);
@@ -1455,10 +1455,10 @@ var abaaso = abaaso || function(){
 						obj.fire("beforeClear");
 
 						switch (true) {
-							case typeof obj.reset == "function":
+							case typeof obj.reset === "function":
 								obj.reset();
 								break;
-							case typeof obj.value != "undefined":
+							case typeof obj.value !== "undefined":
 								obj.update({innerHTML: "", value: ""});
 								break;
 							default:
@@ -1494,39 +1494,39 @@ var abaaso = abaaso || function(){
 		 */
 		create : function(type, args, id) {
 			try {
-				if (typeof type == "undefined")
+				if (typeof type === "undefined")
 					throw new Error(label.error.invalidArguments);
 
 				var obj, uid, target;
 
 				switch (true) {
-					case typeof id != "undefined":
-						target = typeof id == "object" ? id : $(id);
+					case typeof id !== "undefined":
+						target = typeof id === "object" ? id : $(id);
 						break;
-					case typeof args != "undefined" && (typeof args == "string" || typeof args.childNodes != "undefined"):
+					case typeof args !== "undefined" && (typeof args === "string" || typeof args.childNodes !== "undefined"):
 						target = args;
-						if (typeof target == "string") target = $(target);
+						if (typeof target === "string") target = $(target);
 						break;
 					default:
 						target = document.body;
 				}
 
-				if (typeof target == "undefined")
+				if (typeof target === "undefined")
 					throw new Error(label.error.invalidArguments);
 
-				uid = typeof args != "undefined"
-				       && typeof args != "string"
-				       && typeof args.childNodes == "undefined"
-				       && typeof args.id != "undefined"
-				       && typeof $("#"+args.id) == "undefined" ? args.id : $.genId();
+				uid = typeof args !== "undefined"
+				       && typeof args !== "string"
+				       && typeof args.childNodes === "undefined"
+				       && typeof args.id !== "undefined"
+				       && typeof $("#"+args.id) === "undefined" ? args.id : $.genId();
 
-				if (typeof args != "undefined" && typeof args.id != "undefined") delete args.id;
+				if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
 				$.fire("beforeCreate", uid);
 				uid.fire("beforeCreate");
 				obj = document.createElement(type);
 				obj.id = uid;
-				if (typeof args == "object" && typeof args.childNodes == "undefined") obj.update(args);
+				if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
 				target.appendChild(obj);
 				obj.fire("afterCreate");
 				$.fire("afterCreate", obj);
@@ -1579,7 +1579,7 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj = utility.object(obj);
-					if (typeof obj != "undefined") {
+					if (typeof obj !== "undefined") {
 						var id = obj.id
 						$.fire("beforeDestroy", obj);
 						obj.fire("beforeDestroy");
@@ -1614,7 +1614,7 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj = utility.object(obj);
-					if (typeof obj != "undefined" && typeof obj.disabled != "undefined") {
+					if (typeof obj !== "undefined" && typeof obj.disabled !== "undefined") {
 						obj.fire("beforeDisable");
 						obj.disabled = true;
 						obj.fire("afterDisable");
@@ -1646,7 +1646,7 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj = utility.object(obj);
-					if (typeof obj != "undefined" && typeof obj.disabled != "undefined") {
+					if (typeof obj !== "undefined" && typeof obj.disabled !== "undefined") {
 						obj.fire("beforeEnable");
 						obj.disabled = false;
 						obj.fire("afterEnable");
@@ -1683,7 +1683,7 @@ var abaaso = abaaso || function(){
 					obj = utility.object(obj);
 					obj.fire("beforeHide");
 					switch (true) {
-						case typeof obj.hidden == "boolean":
+						case typeof obj.hidden === "boolean":
 							obj.hidden = true;
 							break;
 						default:
@@ -1710,10 +1710,10 @@ var abaaso = abaaso || function(){
 			try {
 				obj = utility.object(obj);
 
-				if (typeof obj == "undefined")
+				if (typeof obj === "undefined")
 					throw new Error(label.error.invalidArguments);
 
-				return obj.style.display == "none" || (typeof obj.hidden != "undefined" && obj.hidden);
+				return obj.style.display === "none" || (typeof obj.hidden !== "undefined" && obj.hidden);
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -1731,7 +1731,7 @@ var abaaso = abaaso || function(){
 			try {
 				obj = utility.object(obj);
 
-				if (typeof obj == "undefined")
+				if (typeof obj === "undefined")
 					throw new Error(label.error.invalidArguments);
 
 				var left = null,
@@ -1777,11 +1777,11 @@ var abaaso = abaaso || function(){
 					obj = utility.object(obj);
 					obj.fire("beforeShow");
 					switch (true) {
-						case typeof obj.hidden == "boolean":
+						case typeof obj.hidden === "boolean":
 							obj.hidden = false;
 							break;
 						default:
-							obj.style.display = typeof obj["data-display"] != "undefined" && !obj["data-display"].isEmpty() ? obj["data-display"] : "inherit";
+							obj.style.display = typeof obj["data-display"] !== "undefined" && !obj["data-display"].isEmpty() ? obj["data-display"] : "inherit";
 					}
 					obj.fire("afterShow");
 					return obj;
@@ -1802,7 +1802,7 @@ var abaaso = abaaso || function(){
 		size : function(obj) {
 				obj = utility.object(obj);
 
-				if (typeof obj == "undefined")
+				if (typeof obj === "undefined")
 					throw new Error(label.error.invalidArguments);
 
 				/**
@@ -1844,7 +1844,7 @@ var abaaso = abaaso || function(){
 					obj = utility.object(obj);
 					args = args || {};
 
-					if (typeof obj == "undefined")
+					if (typeof obj === "undefined")
 						throw new Error(label.error.invalidArguments);
 
 					obj.fire("beforeUpdate");
@@ -1865,7 +1865,7 @@ var abaaso = abaaso || function(){
 								break;
 							case "id":
 								var o = observer.listeners;
-								if (typeof o[obj.id] != "undefined") {
+								if (typeof o[obj.id] !== "undefined") {
 									o[args[i]] = $.clone(o[obj.id]);
 									delete o[obj.id];
 								}
@@ -2057,24 +2057,24 @@ var abaaso = abaaso || function(){
 		track : function(n) {
 			var m = abaaso.mouse;
 			switch (true) {
-				case typeof n == "object":
+				case typeof n === "object":
 					var x, y, c = false;
 
-					x = (n.pageX) ? n.pageX : ((client.ie && client.version == 8 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
-					y = (n.pageY) ? n.pageY : ((client.ie && client.version == 8 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
+					x = (n.pageX) ? n.pageX : ((client.ie && client.version === 8 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
+					y = (n.pageY) ? n.pageY : ((client.ie && client.version === 8 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
 					switch (true) {
-						case m.pos.x != x:
+						case m.pos.x !== x:
 							$.mouse.pos.x = m.pos.x = x;
 							c = true;
-						case m.pos.y != y:
+						case m.pos.y !== y:
 							$.mouse.pos.y = m.pos.y = y;
 							c = true;
 					}
 					if (c && m.log) utility.log(m.pos.x + " : " + m.pos.y);
 					break;
-				case typeof n == "boolean":
-					n ? typeof document.addEventListener != "undefined" ? document.addEventListener("mousemove", abaaso.mouse.track, false) : document.attachEvent("onmousemove", abaaso.mouse.track)
-					  : typeof document.removeEventListener != "undefined" ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track);
+				case typeof n === "boolean":
+					n ? typeof document.addEventListener !== "undefined" ? document.addEventListener("mousemove", abaaso.mouse.track, false) : document.attachEvent("onmousemove", abaaso.mouse.track)
+					  : typeof document.removeEventListener !== "undefined" ? document.removeEventListener("mousemove", abaaso.mouse.track, false) : document.detachEvent("onmousemove", abaaso.mouse.track);
 					$.mouse.enabled = m.enabled = n;
 					break;
 			}
@@ -2120,43 +2120,43 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj = utility.object(obj);
-					if (typeof id == "undefined" || !/\w/.test(id)) id = $.genId();
+					if (typeof id === "undefined" || !/\w/.test(id)) id = $.genId();
 
 					var instance = null,
 					    l        = observer.listeners,
-					    o        = typeof obj.id != "undefined" ? obj.id : obj,
+					    o        = typeof obj.id !== "undefined" ? obj.id : obj,
 					    efn, item;
 
-					if (typeof o == "undefined" || typeof event == "undefined" || typeof fn != "function")
+					if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function")
 						throw new Error(label.error.invalidArguments);
 
 					switch (true) {
-						case typeof l[o] == "undefined":
+						case typeof l[o] === "undefined":
 							l[o] = {};
-						case typeof l[o][event] == "undefined":
+						case typeof l[o][event] === "undefined":
 							l[o][event] = {};
-						case typeof l[o][event].active == "undefined":
+						case typeof l[o][event].active === "undefined":
 							l[o][event].active = {};
-						case typeof l[o][event].standby == "undefined":
+						case typeof l[o][event].standby === "undefined":
 							l[o][event].standby = {};
 					}
 
 					item = {fn: fn, scope: scope};
 
-					if (typeof state == "undefined") {
+					if (typeof state === "undefined") {
 						l[o][event].active[id] = item;
-						instance = o != "abaaso" ? $("#"+o) : null;
+						instance = o !== "abaaso" ? $("#"+o) : null;
 						efn = function(e) {
 					    	if (!e) e = window.event;
 					    	e.cancelBubble = true;
-					    	if (typeof e.stopPropagation == "function") e.stopPropagation();
+					    	if (typeof e.stopPropagation === "function") e.stopPropagation();
 					    	instance.fire(event);
 					    };
-						if (instance !== null && event.toLowerCase() != "afterjsonp" && typeof instance != "undefined")
-							typeof instance.addEventListener == "function" ? instance.addEventListener(event, efn, false) : instance.attachEvent("on" + event, efn);
+						if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
+							typeof instance.addEventListener === "function" ? instance.addEventListener(event, efn, false) : instance.attachEvent("on" + event, efn);
 					}
 					else {
-						if (typeof l[o][event].standby[state] == "undefined") l[o][event].standby[state] = {};
+						if (typeof l[o][event].standby[state] === "undefined") l[o][event].standby[state] = {};
 						l[o][event].standby[state][id] = item;
 					}
 					return obj;
@@ -2187,22 +2187,22 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					obj   = utility.object(obj);
-					var o = typeof obj.id != "undefined" ? obj.id : obj.toString(),
+					var o = typeof obj.id !== "undefined" ? obj.id : obj.toString(),
 					    l, i, c, f, s;
 
-					if (typeof o == "undefined" || o.isEmpty() || typeof obj == "undefined" || typeof event == "undefined")
+					if (typeof o === "undefined" || o.isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 							throw new Error(label.error.invalidArguments);
 
 					if (abaaso.observer.log) utility.log("[" + o + "] " + event);
 					$.observer.fired = abaaso.observer.fired++;
 					l = observer.list(obj, event).active;
 
-					if (typeof l != "undefined") {
+					if (typeof l !== "undefined") {
 						for (i in l) {
-							c = typeof l[i].scope == "object" ? l[i].scope : $("#"+l[i].scope);
+							c = typeof l[i].scope === "object" ? l[i].scope : $("#"+l[i].scope);
 							f = l[i].fn;
-							s = typeof c != "undefined" ? c : abaaso;
-							typeof arg == "undefined" ? f.call(s) : f.call(s, arg);
+							s = typeof c !== "undefined" ? c : abaaso;
+							typeof arg === "undefined" ? f.call(s) : f.call(s, arg);
 						}
 					}
 					return obj;
@@ -2223,14 +2223,14 @@ var abaaso = abaaso || function(){
 		 */
 		list : function(obj, event) {
 			try {
-				if (typeof obj == "undefined")
+				if (typeof obj === "undefined")
 					throw new Error(label.error.invalidArguments);
 
 				obj   = utility.object(obj);
 				var l = this.listeners,
-				    o = typeof obj.id != "undefined" ? obj.id : obj.toString();
+				    o = typeof obj.id !== "undefined" ? obj.id : obj.toString();
 
-				return typeof l[o] != "undefined" ? (typeof event != "undefined" && typeof l[o][event] != "undefined" ? $.clone(l[o][event])
+				return typeof l[o] !== "undefined" ? (typeof event !== "undefined" && typeof l[o][event] !== "undefined" ? $.clone(l[o][event])
 				                                                                                                      : $.clone(l[o]))
 				                                  : {};
 			}
@@ -2260,32 +2260,32 @@ var abaaso = abaaso || function(){
 				else {
 					obj          = utility.object(obj);
 					var instance = null,
-					    o        = typeof obj.id != "undefined" ? obj.id : obj.toString(),
+					    o        = typeof obj.id !== "undefined" ? obj.id : obj.toString(),
 					    l        = observer.listeners,
 					    efn;
 
 					switch (true) {
-						case typeof o == "undefined":
-						case typeof event == "undefined":
-						case typeof l[o] == "undefined":
-						case typeof l[o][event] == "undefined":
+						case typeof o === "undefined":
+						case typeof event === "undefined":
+						case typeof l[o] === "undefined":
+						case typeof l[o][event] === "undefined":
 							return obj;
 					}
 
-					if (typeof id == "undefined") {
+					if (typeof id === "undefined") {
 						delete l[o][event];
-						instance = (o != "abaaso") ? $("#"+o) : null;
+						instance = (o !== "abaaso") ? $("#"+o) : null;
 						efn = function(e) {
 					    	if (!e) e = window.event;
 					    	e.cancelBubble = true;
-					    	if (typeof e.stopPropagation == "function") e.stopPropagation();
+					    	if (typeof e.stopPropagation === "function") e.stopPropagation();
 					    	instance.fire(event);
 					    };
 
-						if (instance !== null && event.toLowerCase() != "afterjsonp" && typeof instance != "undefined")
-							typeof instance.removeEventListener == "function" ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
+						if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
+							typeof instance.removeEventListener === "function" ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
 					}
-					else if (typeof l[o][event].active[id] != "undefined") { delete l[o][event].active[id]; }
+					else if (typeof l[o][event].active[id] !== "undefined") { delete l[o][event].active[id]; }
 					return obj;
 				}
 			}
@@ -2309,8 +2309,8 @@ var abaaso = abaaso || function(){
 				for (i in l) {
 					for (e in l[i]) {
 						l[i][e].standby[$.state.previous] = l[i][e].active;
-						l[i][e].active = typeof l[i][e].standby[state] != "undefined" ? l[i][e].standby[state] : {};
-						if (typeof l[i][e].standby[state] != "undefined") delete l[i][e].standby[state];
+						l[i][e].active = typeof l[i][e].standby[state] !== "undefined" ? l[i][e].standby[state] : {};
+						if (typeof l[i][e].standby[state] !== "undefined") delete l[i][e].standby[state];
 					}
 				}
 				$.fire(state);
@@ -2360,7 +2360,7 @@ var abaaso = abaaso || function(){
 						nth = obj.length;
 						for (i = 0; i < nth; i++) { if (i.isEven() === state) instances.push(obj[i]); }
 						break;
-					case typeof obj.childNodes != "undefined" && obj.childNodes.length > 0:
+					case typeof obj.childNodes !== "undefined" && obj.childNodes.length > 0:
 						nth = obj.childNodes.length;
 						for (i = 0; i < nth; i++) { if (i.isEven() === state) instances.push(obj.childNodes[i]); }
 						break;
@@ -2395,7 +2395,7 @@ var abaaso = abaaso || function(){
 				if (obj instanceof Array) {
 					nth = obj.length;
 					for (i = 0; i < nth; i++) { if (new RegExp(arg).test(obj[i].innerHTML)) instances.push(obj[i]); }
-					return instances.length == 1 ? instances[0] : instances;
+					return instances.length === 1 ? instances[0] : instances;
 				}
 				else {
 					return obj !== null && arg !== null && new RegExp(arg).test(obj[i].innerHTML) ? obj : undefined;
@@ -2419,7 +2419,7 @@ var abaaso = abaaso || function(){
 						nth2 = obj[i].childNodes.length;
 						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
-							if (find(obj[i].childNodes[x].nodeName, arg) && typeof instances[obj[i].id] == "undefined") instances[obj[i].id] = obj[i];
+							if (find(obj[i].childNodes[x].nodeName, arg) && typeof instances[obj[i].id] === "undefined") instances[obj[i].id] = obj[i];
 						}
 					}
 					instances = instances.indexed();
@@ -2445,7 +2445,7 @@ var abaaso = abaaso || function(){
 					nth = obj.length;
 					for (i = 0; i < nth; i++) {
 						obj[i].genId();
-						if (find(obj[i].nodeName, arg) && typeof instances[obj[i].id] == "undefined") instances[obj[i].id] = obj[i];
+						if (find(obj[i].nodeName, arg) && typeof instances[obj[i].id] === "undefined") instances[obj[i].id] = obj[i];
 					}
 					instances = instances.indexed();
 				}
@@ -2470,8 +2470,8 @@ var abaaso = abaaso || function(){
 						nth2 = obj[i].childNodes.length;
 						for (x = 0; x < nth2; x++) {
 							obj[i].genId();
-							!find(obj[i].childNodes[x].nodeName, arg) ? (function(){ if (typeof instances[obj[i].id] == "undefined") instances[obj[i].id] = obj[i]; })()
-							                                          : (function(){ if (typeof instances[obj[i].id] != "undefined") delete instances[obj[i].id]; })();
+							!find(obj[i].childNodes[x].nodeName, arg) ? (function(){ if (typeof instances[obj[i].id] === "undefined") instances[obj[i].id] = obj[i]; })()
+							                                          : (function(){ if (typeof instances[obj[i].id] !== "undefined") delete instances[obj[i].id]; })();
 						}
 					}
 					instances = instances.indexed();
@@ -2525,10 +2525,10 @@ var abaaso = abaaso || function(){
 			}
 
 			// Processing selector(s)
-			if (obj !== null && typeof args.length != "undefined" && args.length > 0) {
+			if (obj !== null && typeof args.length !== "undefined" && args.length > 0) {
 				nth = args.length;
 				for (i = 0; i < nth; i++) {
-					if (typeof obj == "undefined") {
+					if (typeof obj === "undefined") {
 						obj = [];
 						break;
 					}
@@ -2569,7 +2569,7 @@ var abaaso = abaaso || function(){
 					}
 
 					if (obj instanceof Array)
-						if (obj.length === 0) obj = (i + 1) == nth ? [] : undefined;
+						if (obj.length === 0) obj = (i + 1) === nth ? [] : undefined;
 				}
 			}
 			if (obj === null) obj = undefined;
@@ -2590,11 +2590,11 @@ var abaaso = abaaso || function(){
 					(function(){
 						var b = i;
 						switch (true) {
-							case typeof origin[b] == "function":
+							case typeof origin[b] === "function":
 								obj[b] = function(){ return origin[b].apply(this, arguments); };
 								break;
 							case origin[b] instanceof Object:
-								if (typeof obj[b] == "undefined") obj[b] = {};
+								if (typeof obj[b] === "undefined") obj[b] = {};
 								(function(){ abaaso.alias(obj[b], origin[b]); })();
 								break;
 							case /boolean|number|string/.test(typeof origin[b]):
@@ -2620,12 +2620,12 @@ var abaaso = abaaso || function(){
 		 */
 		clone: function(obj) {
 			try {
-				if (typeof obj != "object")
+				if (typeof obj !== "object")
 					throw Error(label.error.expectedObject);
 
 				var clone = {}, p;
-				if (typeof obj.constructor == "object") clone.constructor = obj.constructor;
-				if (typeof obj.prototype == "object") clone.prototype  = obj.prototype;
+				if (typeof obj.constructor === "object") clone.constructor = obj.constructor;
+				if (typeof obj.prototype === "object") clone.prototype  = obj.prototype;
 				for (p in obj) { clone[p] = obj[p]; }
 				return clone;
 			}
@@ -2653,8 +2653,8 @@ var abaaso = abaaso || function(){
 			    p = obj;
 
 			for (i = 0; i < l; i++) {
-				typeof p[args[i]] == "undefined" ? p[args[i]] = (i + 1 < l ? {} : ((typeof value != "undefined") ? value : null))
-							                     : (function(){ if (i + 1 >= l) p[args[i]] = typeof value != "undefined" ? value : null; })();
+				typeof p[args[i]] === "undefined" ? p[args[i]] = (i + 1 < l ? {} : ((typeof value !== "undefined") ? value : null))
+							                     : (function(){ if (i + 1 >= l) p[args[i]] = typeof value !== "undefined" ? value : null; })();
 				p = p[args[i]];
 			}
 
@@ -2686,20 +2686,20 @@ var abaaso = abaaso || function(){
 		 * @param scope {Mixed} Object that triggered the Error
 		 */
 		error : function(e, args, scope) {
-			if (typeof e == "undefined")
+			if (typeof e === "undefined")
 				return;
 
 			var o = {
 				arguments : args,
-				message   : typeof e.message != "undefined" ? e.message : e,
-				number    : typeof e.number != "undefined" ? (e.number & 0xFFFF) : undefined,
+				message   : typeof e.message !== "undefined" ? e.message : e,
+				number    : typeof e.number !== "undefined" ? (e.number & 0xFFFF) : undefined,
 				scope     : scope,
 				timestamp : new Date().toUTCString(),
-				type      : typeof e.type != "undefined" ? e.type : "TypeError"
+				type      : typeof e.type !== "undefined" ? e.type : "TypeError"
 			};
 
-			if (typeof console != "undefined") console.error(o.message);
-			if (typeof abaaso.error.log == "undefined") abaaso.error.log = [];
+			if (typeof console !== "undefined") console.error(o.message);
+			if (typeof abaaso.error.log === "undefined") abaaso.error.log = [];
 			abaaso.error.log.push(o);
 			abaaso.fire("error", o);
 		},
@@ -2728,14 +2728,14 @@ var abaaso = abaaso || function(){
 		 */
 		genId : function(obj) {
 			try {
-				if (obj instanceof Array || obj instanceof String || (typeof obj != "undefined" && typeof obj.id != "undefined" && !obj.id.isEmpty()))
+				if (obj instanceof Array || obj instanceof String || (typeof obj !== "undefined" && typeof obj.id !== "undefined" && !obj.id.isEmpty()))
 					return obj;
 
 				var id;
 				do id = "a" + utility.id();
-				while (typeof $("#" + id) != "undefined");
+				while (typeof $("#" + id) !== "undefined");
 
-				if (typeof obj == "object") {
+				if (typeof obj === "object") {
 					obj.id = id;
 					return obj;
 				}
@@ -2777,11 +2777,11 @@ var abaaso = abaaso || function(){
 
 					obj = utility.object(obj);
 
-					if (typeof obj == "undefined")
+					if (typeof obj === "undefined")
 						throw new Error(label.error.invalidArguments);
 
 					// Setting loading image
-					if (typeof l.image == "undefined") {
+					if (typeof l.image === "undefined") {
 						l.image     = new Image();
 						l.image.src = l.url;
 					}
@@ -2825,7 +2825,7 @@ var abaaso = abaaso || function(){
 		 * @private
 		 */
 		object : function(obj) {
-			return typeof obj == "object" ? obj : (obj.toString().charAt(0) == "#" ? $(obj) : obj);
+			return typeof obj === "object" ? obj : (obj.toString().charAt(0) === "#" ? $(obj) : obj);
 		},
 
 		/**
@@ -2836,7 +2836,7 @@ var abaaso = abaaso || function(){
 		 */
 		proto : function(obj, type) {
 			try {
- 				if (typeof obj != "function" && typeof obj != "object")
+ 				if (typeof obj !== "function" && typeof obj !== "object")
 						throw new Error(label.error.invalidArguments);
 
 				// Collection of methods to add to prototypes
@@ -2882,17 +2882,17 @@ var abaaso = abaaso || function(){
 									this.genId();
 									return $.el.hide(this);
 							   },
-							   isAlphaNum: function() { return this.nodeName == "FORM" ? false : $.validate.test({alphanum: typeof this.value != "undefined" ? this.value : this.innerText}).pass; },
-						       isBoolean: function() { return this.nodeName == "FORM" ? false : $.validate.test({"boolean": typeof this.value != "undefined" ? this.value : this.innerText}).pass; },
-						       isDate   : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
-						       isDomain : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
-						       isEmail  : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
-						       isEmpty  : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
-						       isIP     : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
-						       isInt    : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
-						       isNumber : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
-						       isPhone  : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isPhone()  : this.innerText.isPhone(); },
-						       isString : function() { return this.nodeName == "FORM" ? false : typeof this.value != "undefined" ? this.value.isString() : this.innerText.isString(); },
+							   isAlphaNum: function() { return this.nodeName === "FORM" ? false : $.validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+						       isBoolean: function() { return this.nodeName === "FORM" ? false : $.validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+						       isDate   : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
+						       isDomain : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
+						       isEmail  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
+						       isEmpty  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
+						       isIP     : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
+						       isInt    : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
+						       isNumber : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
+						       isPhone  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : this.innerText.isPhone(); },
+						       isString : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isString() : this.innerText.isString(); },
 						       jsonp    : function(uri, property, callback) {
 									var target = this,
 									    arg    = property,
@@ -2902,12 +2902,12 @@ var abaaso = abaaso || function(){
 												prop = arg, i, nth, result;
 
 											try {
-													if (typeof prop != "undefined") {
+													if (typeof prop !== "undefined") {
 														prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
 														nth = prop.length;
 														for (i = 0; i < nth; i++) {
 															node = !!isNaN(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
-															if (typeof node == "undefined")
+															if (typeof node === "undefined")
 																throw new Error($.label.error.propertyNotFound);
 														}
 														result = node;
@@ -2927,7 +2927,7 @@ var abaaso = abaaso || function(){
 							   loading  : function() { return $.loading.create(this); },
 					           on       : function(event, listener, id, scope, standby) {
 									scope = scope || this;
-									if (typeof this.id == "undefined" || this.id.isEmpty()) this.genId();
+									if (typeof this.id === "undefined" || this.id.isEmpty()) this.genId();
 									return $.on(this, event, listener, id, scope, standby);
 							   },
 					           position : function() {
@@ -2945,15 +2945,15 @@ var abaaso = abaaso || function(){
 							   text     : function(arg) {
 							   		var args = {};
 									this.genId();
-									if (typeof this.value != "undefined") args.value = arg;
-									if (typeof this.innerHTML != "undefined") args.innerHTML = arg;
+									if (typeof this.value !== "undefined") args.value = arg;
+									if (typeof this.innerHTML !== "undefined") args.innerHTML = arg;
 									return this.update(args);
 							   },
 							   update   : function(args) {
 									this.genId();
 									return $.update(this, args);
 							   },
-							   validate  : function() { return this.nodeName == "FORM" ? $.validate.test(this).pass : typeof this.value != "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+							   validate  : function() { return this.nodeName === "FORM" ? $.validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 					number  : {isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
 					           on       : function(event, listener, id, scope, standby) {
@@ -2961,7 +2961,7 @@ var abaaso = abaaso || function(){
 					           		return $.on(this, event, listener, id, scope, standby);
 					           }},
 					shared  : {clear    : function() {
-									if (typeof this == "object" && (typeof this.id == "undefined" || this.id.isEmpty())) this.genId();
+									if (typeof this === "object" && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
 									this instanceof String ? this.constructor = new String("") : $.clear(this);
 									return this;
 							   },
@@ -2974,16 +2974,16 @@ var abaaso = abaaso || function(){
 							   		return $.domId(this);
 							   },
 							   fire     : function(event, args) {
-							   		if (!this instanceof String && (typeof this.id == "undefined" || this.id.isEmpty())) this.genId();
+							   		if (!this instanceof String && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
 							   		return $.fire.call(this, event, args);
 							   },
 							   genId    : function() { return $.genId(this); },
 							   listeners: function(event) {
-							   		if (!this instanceof String && (typeof this.id == "undefined" || this.id.isEmpty())) this.genId();
+							   		if (!this instanceof String && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
 							   		return $.listeners(this, event);
 							   },
 							   un       : function(event, id) {
-							   		if (!this instanceof String && (typeof this.id == "undefined" || this.id.isEmpty())) this.genId();
+							   		if (!this instanceof String && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
 							   		return $.un(this, event, id);
 							   }},
 					string  : {allow    : function(arg) { return $.allow(this, arg); },
@@ -3048,14 +3048,14 @@ var abaaso = abaaso || function(){
 		 */
 		test : function(args) {
 			try {
-				if (typeof args == "undefined" || args === null || !args instanceof Object)
+				if (typeof args === "undefined" || args === null || !args instanceof Object)
 						throw Error(label.error.expectedObject);
 
 				var exception = false,
 				    invalid   = [],
 				    value     = null;
 
-				if (typeof args.nodeName != "undefined" && args.nodeName == "FORM") {
+				if (typeof args.nodeName !== "undefined" && args.nodeName === "FORM") {
 					var i, p, v, c, o, x, t = {}, nth, nth2, result, invalid = [], tracked = {};
 
 					if (args.id.isEmpty()) args.genId();
@@ -3083,7 +3083,7 @@ var abaaso = abaaso || function(){
 								v = c[i].options[c[i].selectedIndex].value;
 								break;
 							default:
-								v = typeof c[i].value != "undefined" ? c[i].value : c[i].innerText;
+								v = typeof c[i].value !== "undefined" ? c[i].value : c[i].innerText;
 						}
 						if (v === null) v = "";
 						t[p] = v;
@@ -3093,12 +3093,12 @@ var abaaso = abaaso || function(){
 				}
 				else {
 					for (var i in args) {
-						if (typeof i == "undefined" || typeof args[i] == "undefined") {
+						if (typeof i === "undefined" || typeof args[i] === "undefined") {
 							invalid.push({test: i, value: args[i]});
 							exception = true;
 							continue;
 						}
-						value = args[i].charAt(0) == "#" ? (typeof $(args[i]) != "undefined" ? (($(args[i]).value) ? $(args[i]).value
+						value = args[i].charAt(0) === "#" ? (typeof $(args[i]) !== "undefined" ? (($(args[i]).value) ? $(args[i]).value
 						                                                                                           : $(args[i]).innerHTML)
 						                                                                     : "")
 						                             : args[i];
@@ -3122,7 +3122,7 @@ var abaaso = abaaso || function(){
 								}
 								break;
 							default:
-								var p = typeof validate.pattern[i] != "undefined" ? validate.pattern[i] : i;
+								var p = typeof validate.pattern[i] !== "undefined" ? validate.pattern[i] : i;
 								if (!p.test(value)) {
 									invalid.push({test: i, value: value});
 									exception = true;
@@ -3154,7 +3154,7 @@ var abaaso = abaaso || function(){
 		 */
 		decode : function(arg) {
 			try {
-				if (typeof arg != "string" || arg.isEmpty())
+				if (typeof arg !== "string" || arg.isEmpty())
 					throw Error(label.error.invalidArguments);
 
 				var xml;
@@ -3181,11 +3181,11 @@ var abaaso = abaaso || function(){
 		 */
 		encode : function(arg, wrap) {
 			try {
-				if (typeof arg == "undefined")
+				if (typeof arg === "undefined")
 					throw Error(label.error.invalidArguments);
 
 				switch (true) {
-					case arg !== null && typeof arg.xml != "undefined":
+					case arg !== null && typeof arg.xml !== "undefined":
 						xml = arg.xml;
 						break;
 					case arg instanceof Document:
@@ -3204,13 +3204,13 @@ var abaaso = abaaso || function(){
 						}
 
 						switch (true) {
-							case typeof arg == "boolean":
-							case typeof arg == "number":
-							case typeof arg == "string":
+							case typeof arg === "boolean":
+							case typeof arg === "number":
+							case typeof arg === "string":
 								xml += node("item", arg);
 								break
-							case typeof arg == "object":
-								for (i in arg) { xml += $.xml.encode(arg[i], (typeof arg[i] == "object"), false).replace(/item|xml/g, !isNaN(i) ? "item" : i); }
+							case typeof arg === "object":
+								for (i in arg) { xml += $.xml.encode(arg[i], (typeof arg[i] === "object"), false).replace(/item|xml/g, !isNaN(i) ? "item" : i); }
 								break;
 						}
 
@@ -3312,8 +3312,8 @@ var abaaso = abaaso || function(){
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
-			var event = typeof arguments[0] == "undefined" ? undefined : arguments[0],
-				arg   = typeof arguments[1] == "undefined" ? undefined : arguments[1],
+			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
+				arg   = typeof arguments[1] === "undefined" ? undefined : arguments[1],
 				obj   = this === $ ? abaaso : this;
 
 			return abaaso.observer.fire(obj, event, arg);
@@ -3335,7 +3335,7 @@ var abaaso = abaaso || function(){
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
 			utility.proto(Element, "element");
-			if (client.ie && client.version == 8) utility.proto(HTMLDocument, "element");
+			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
 			
@@ -3349,7 +3349,7 @@ var abaaso = abaaso || function(){
 			getter = function(){ return this._current; };
 			setter = function(arg){
 				try {
-					if (arg === null || typeof arg != "string" || this.current == arg || arg.isEmpty())
+					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
 							throw Error(label.error.invalidArguments);
 
 					$.state.previous = this.previous = this._current;
@@ -3363,10 +3363,10 @@ var abaaso = abaaso || function(){
 			};
 
 			switch (true) {
-				case (!client.ie || client.version > 8) && typeof Object.defineProperty == "function":
+				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
 					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
 					break;
-				case typeof abaaso.state.__defineGetter__ == "function":
+				case typeof abaaso.state.__defineGetter__ === "function":
 					abaaso.state.__defineGetter__("current", getter);
 					abaaso.state.__defineSetter__("current", setter);
 					break;
@@ -3377,7 +3377,7 @@ var abaaso = abaaso || function(){
 			}
 
 			// Adding an essential method if not present
-			if (typeof document.getElementsByClassName == "undefined") {
+			if (typeof document.getElementsByClassName === "undefined") {
 				document.getElementsByClassName = function(arg) {
 					var nodes   = document.getElementsByTagName("*"),
 						nth    = nodes.length,
@@ -3391,10 +3391,10 @@ var abaaso = abaaso || function(){
 			}
 
 			// Adding an essential method if not present
-			if (typeof Array.prototype.filter == "undefined") {
+			if (typeof Array.prototype.filter === "undefined") {
 				Array.prototype.filter = function(fn) {
 					"use strict";
-					if (this === void 0 || this === null || typeof fn != "function")
+					if (this === void 0 || this === null || typeof fn !== "function")
 						throw new Error(label.error.invalidArguments);
 
 					var i      = null,
@@ -3432,7 +3432,7 @@ var abaaso = abaaso || function(){
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
-			var all   = (typeof arguments[1] != "undefined"),
+			var all   = (typeof arguments[1] !== "undefined"),
 			    obj   = all ? arguments[0] : this,
 				event = all ? arguments[1] : arguments[0];
 				if (obj === $) obj = abaaso;
@@ -3440,14 +3440,14 @@ var abaaso = abaaso || function(){
 			return observer.list(obj, event);
 		},
 		on              : function() {
-			var all      = (typeof arguments[2] == "function"),
+			var all      = (typeof arguments[2] === "function"),
 			    obj      = all ? arguments[0] : abaaso,
 				event    = all ? arguments[1] : arguments[0],
 				listener = all ? arguments[2] : arguments[1],
 				id       = all ? arguments[3] : arguments[2],
 				scope    = all ? arguments[4] : arguments[3],
 				state    = all ? arguments[5] : arguments[4];
-				if (typeof scope == "undefined") scope = abaaso;
+				if (typeof scope === "undefined") scope = abaaso;
 
 			return observer.add(obj, event, listener, id, scope, state);
 		},
@@ -3460,7 +3460,7 @@ var abaaso = abaaso || function(){
 		store           : function(arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
 		un              : function() {
-			var all   = typeof arguments[0] == "string" ? false : true,
+			var all   = typeof arguments[0] === "string" ? false : true,
 			    obj   = all ? arguments[0] : this,
 				event = all ? arguments[1] : arguments[0],
 				id    = all ? arguments[2] : arguments[1];
@@ -3469,11 +3469,11 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.098"
+		version         : "1.6.099"
 	};
 }();
 
-if (typeof abaaso.init == "function") {
+if (typeof abaaso.init === "function") {
 	var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
 
 	// Hooking abaaso into global helper, it's superficial
@@ -3487,7 +3487,7 @@ if (typeof abaaso.init == "function") {
 
 	// Registering events
 	switch (true) {
-		case typeof document.addEventListener == "function":
+		case typeof document.addEventListener === "function":
 			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
 			break;
 		default:
