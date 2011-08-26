@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.096
+ * @version 1.6.097
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -63,10 +63,10 @@ var abaaso = abaaso || function(){
 		 */
 		cast : function(obj, key) {
 			try {
-				if (!/object/.test(typeof obj))
+				if (typeof obj != "object")
 					throw new Error(label.error.expectedObject);
 
-				key   = key === true ? true : false;
+				key   = (key === true);
 				var o = [], i, nth;
 
 				switch (true) {
@@ -955,7 +955,7 @@ var abaaso = abaaso || function(){
 		 */
 		batch : function(type, data, sync) {
 			type = type.toString().toLowerCase() || undefined;
-			sync = sync === true ? true : false;
+			sync = (sync === true);
 
 			try {
 				if (!/^(set|del)$/.test(type) || typeof data != "object")
@@ -1311,11 +1311,11 @@ var abaaso = abaaso || function(){
 		set : function(key, data, sync) {
 			try {
 				key  = key === null  ? undefined : key.toString();
-				sync = sync === true ? true : false;
+				sync = (sync === true);
 
 				switch (true) {
 					case (typeof key == "undefined" || key.isEmpty()) && this.uri === null:
-					case /undefined/.test(typeof data):
+					case typeof data == "undefined":
 					case data instanceof Array:
 					case data instanceof Number:
 					case data instanceof String:
@@ -1354,7 +1354,7 @@ var abaaso = abaaso || function(){
 						this.total++;
 					}
 					else {
-						if (/object/.test(typeof(data))) {
+						if (typeof data == "object") {
 							for (arg in data) { record[arg] = data[arg]; }
 							this.records[record.index] = record;
 						}
@@ -2149,7 +2149,7 @@ var abaaso = abaaso || function(){
 						efn = function(e) {
 					    	if (!e) e = window.event;
 					    	e.cancelBubble = true;
-					    	if (/function/.test(typeof e.stopPropagation)) e.stopPropagation();
+					    	if (typeof e.stopPropagation == "function") e.stopPropagation();
 					    	instance.fire(event);
 					    };
 						if (instance !== null && event.toLowerCase() != "afterjsonp" && typeof instance != "undefined")
@@ -2620,7 +2620,7 @@ var abaaso = abaaso || function(){
 		 */
 		clone: function(obj) {
 			try {
-				if (!/object/.test(typeof obj))
+				if (typeof obj != "object")
 					throw Error(label.error.expectedObject);
 
 				var clone = {}, p;
@@ -3122,7 +3122,7 @@ var abaaso = abaaso || function(){
 								}
 								break;
 							default:
-								var p = !/undefined/.test(typeof validate.pattern[i]) ? validate.pattern[i] : i;
+								var p = typeof validate.pattern[i] != "undefined" ? validate.pattern[i] : i;
 								if (!p.test(value)) {
 									invalid.push({test: i, value: value});
 									exception = true;
@@ -3181,7 +3181,7 @@ var abaaso = abaaso || function(){
 		 */
 		encode : function(arg, wrap) {
 			try {
-				if (/undefined/.test(typeof arg))
+				if (typeof arg == "undefined")
 					throw Error(label.error.invalidArguments);
 
 				switch (true) {
@@ -3209,8 +3209,8 @@ var abaaso = abaaso || function(){
 							case typeof arg == "string":
 								xml += node("item", arg);
 								break
-							case /object/.test(typeof arg):
-								for (i in arg) { xml += $.xml.encode(arg[i], /object/.test(typeof arg[i]) ? true : false, false).replace(/item|xml/g, !isNaN(i) ? "item" : i); }
+							case typeof arg == "object":
+								for (i in arg) { xml += $.xml.encode(arg[i], (typeof arg[i] == "object"), false).replace(/item|xml/g, !isNaN(i) ? "item" : i); }
 								break;
 						}
 
@@ -3432,7 +3432,7 @@ var abaaso = abaaso || function(){
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
-			var all   = typeof arguments[1] != "undefined" ? true : false,
+			var all   = (typeof arguments[1] != "undefined"),
 			    obj   = all ? arguments[0] : this,
 				event = all ? arguments[1] : arguments[0];
 				if (obj === $) obj = abaaso;
@@ -3440,7 +3440,7 @@ var abaaso = abaaso || function(){
 			return observer.list(obj, event);
 		},
 		on              : function() {
-			var all      = typeof arguments[2] == "function" ? true : false,
+			var all      = (typeof arguments[2] == "function"),
 			    obj      = all ? arguments[0] : abaaso,
 				event    = all ? arguments[1] : arguments[0],
 				listener = all ? arguments[2] : arguments[1],
@@ -3469,7 +3469,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.096"
+		version         : "1.6.097"
 	};
 }();
 
