@@ -43,7 +43,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @namespace
- * @version 1.6.097
+ * @version 1.6.098
  */
 var abaaso = abaaso || function(){
 	"use strict";
@@ -3469,7 +3469,7 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.097"
+		version         : "1.6.098"
 	};
 }();
 
@@ -3487,11 +3487,7 @@ if (typeof abaaso.init == "function") {
 
 	// Registering events
 	switch (true) {
-		case $.client.chrome:
-		case $.client.firefox:
-		case $.client.opera:
-		case $.client.safari:
-		case $.client.ie && $.client.version > 8:
+		case typeof document.addEventListener == "function":
 			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
 			break;
 		default:
