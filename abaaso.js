@@ -45,7 +45,7 @@
  * @namespace
  * @version 1.6.099
  */
-var abaaso = abaaso || function(){
+var abaaso = abaaso || (function(){
 	"use strict";
 
 	/**
@@ -3380,7 +3380,7 @@ var abaaso = abaaso || function(){
 			if (typeof document.getElementsByClassName === "undefined") {
 				document.getElementsByClassName = function(arg) {
 					var nodes   = document.getElementsByTagName("*"),
-						nth    = nodes.length,
+						nth     = nodes.length,
 						i       = null,
 						obj     = [],
 						pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
@@ -3469,9 +3469,9 @@ var abaaso = abaaso || function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.099"
+		version         : "1.6.100"
 	};
-}();
+})();
 
 if (typeof abaaso.init === "function") {
 	var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
