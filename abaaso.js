@@ -41,9 +41,9 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.105
+ * @version 1.6.106
  */
-var abaaso = abaaso || (function(){
+var $, abaaso = abaaso || (function(){
 	"use strict";
 
 	/**
@@ -79,7 +79,7 @@ var abaaso = abaaso || (function(){
 				return o;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -109,7 +109,7 @@ var abaaso = abaaso || (function(){
 				return obj.index(arg);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -130,7 +130,7 @@ var abaaso = abaaso || (function(){
 				return array1.filter(function(key){return (array2.indexOf(key) < 0);});
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -150,7 +150,7 @@ var abaaso = abaaso || (function(){
 				return obj[0];
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -174,7 +174,7 @@ var abaaso = abaaso || (function(){
 				return -1;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return -1;
 			}
 		},
@@ -203,7 +203,7 @@ var abaaso = abaaso || (function(){
 				return indexed;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -227,7 +227,7 @@ var abaaso = abaaso || (function(){
 				return keys;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -247,7 +247,7 @@ var abaaso = abaaso || (function(){
 				return obj.length > 1 ? obj[(obj.length - 1)] : obj.first();
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -276,7 +276,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -299,7 +299,7 @@ var abaaso = abaaso || (function(){
 				return i;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return -1;
 			}
 		}
@@ -384,7 +384,7 @@ var abaaso = abaaso || (function(){
 				else { return cache.items[uri]; }
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -410,7 +410,7 @@ var abaaso = abaaso || (function(){
 				return cache.items[uri];
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -515,7 +515,7 @@ var abaaso = abaaso || (function(){
 				return result;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -718,7 +718,7 @@ var abaaso = abaaso || (function(){
 						return result;
 					}
 					catch (e) {
-						$.error(e, arguments, this);
+						error(e, arguments, this);
 						return 0;
 					}
 				};
@@ -812,7 +812,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				uri.fire("failed" + typed);
 			}
 			return uri;
@@ -1024,7 +1024,7 @@ var abaaso = abaaso || (function(){
 				return this;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1071,7 +1071,7 @@ var abaaso = abaaso || (function(){
 				reindex = (reindex !== false);
 
 				var obj  = this.parentNode,
-				    guid = $.genId(),
+				    guid = utility.genId(),
 				    key;
 
 				if (typeof record === "string") {
@@ -1106,7 +1106,7 @@ var abaaso = abaaso || (function(){
 				return this;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1172,7 +1172,7 @@ var abaaso = abaaso || (function(){
 				return result;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1210,7 +1210,7 @@ var abaaso = abaaso || (function(){
 				return r;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1244,7 +1244,7 @@ var abaaso = abaaso || (function(){
 							if (arg !== null) this.sync();
 						}
 						catch (e) {
-							$.error(e, arguments, this);
+							error(e, arguments, this);
 							return undefined;
 						}
 					};
@@ -1294,7 +1294,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1360,7 +1360,7 @@ var abaaso = abaaso || (function(){
 
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
-				    guid   = $.genId(),
+				    guid   = utility.genId(),
 				    arg, index, record;
 
 				obj.on("syncDataSet", function(){
@@ -1403,7 +1403,7 @@ var abaaso = abaaso || (function(){
 				return this;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1423,7 +1423,7 @@ var abaaso = abaaso || (function(){
 					throw Error(label.error.invalidArguments);
 
 				var obj  = this.parentNode,
-				    guid = $.genId(),
+				    guid = utility.genId(),
 				    success, failure;
 
 				this.uri.on("afterGet", function(arg){
@@ -1437,7 +1437,7 @@ var abaaso = abaaso || (function(){
 						obj.fire("afterDataSync");
 					}
 					catch (e) {
-						$.error(e, arguments, this);
+						error(e, arguments, this);
 						obj.fire("failedDataSync");
 					}
 				}, guid, this);
@@ -1452,7 +1452,7 @@ var abaaso = abaaso || (function(){
 				return this;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return this;
 			}
 		}
@@ -1507,7 +1507,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1551,7 +1551,7 @@ var abaaso = abaaso || (function(){
 				       && typeof args !== "string"
 				       && typeof args.childNodes === "undefined"
 				       && typeof args.id !== "undefined"
-				       && typeof $("#"+args.id) === "undefined" ? args.id : $.genId();
+				       && typeof $("#"+args.id) === "undefined" ? args.id : utility.genId();
 
 				if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
@@ -1566,7 +1566,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1590,7 +1590,7 @@ var abaaso = abaaso || (function(){
 				return ss;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1627,7 +1627,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch(e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1660,7 +1660,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch(e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1694,7 +1694,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch(e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1734,7 +1734,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1756,7 +1756,7 @@ var abaaso = abaaso || (function(){
 				return obj.style.display === "none" || (typeof obj.hidden !== "undefined" && obj.hidden);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1791,7 +1791,7 @@ var abaaso = abaaso || (function(){
 				return [left, top];
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1830,7 +1830,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1875,7 +1875,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1940,7 +1940,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -1965,7 +1965,7 @@ var abaaso = abaaso || (function(){
 				return ((arg % 2) === 0);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -1982,7 +1982,7 @@ var abaaso = abaaso || (function(){
 				return !((arg % 2) === 0);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2007,7 +2007,7 @@ var abaaso = abaaso || (function(){
 				return JSON.parse(arg);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2024,7 +2024,7 @@ var abaaso = abaaso || (function(){
 				return JSON.stringify(arg);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2186,7 +2186,7 @@ var abaaso = abaaso || (function(){
 					return obj;
 				}
 
-				if (typeof id === "undefined" || !/\w/.test(id)) id = $.genId();
+				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.genId();
 
 				var instance = null,
 				    l = observer.listeners,
@@ -2234,7 +2234,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2291,7 +2291,7 @@ var abaaso = abaaso || (function(){
 
 				var o = this.id(obj), c, f, i, l;
 
-				if (typeof o === "undefined" || o.isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
+				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
 				if (abaaso.observer.log) utility.log("[" + o + "] " + event);
@@ -2307,7 +2307,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2334,7 +2334,7 @@ var abaaso = abaaso || (function(){
 				                                   : {};
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2390,7 +2390,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2418,7 +2418,7 @@ var abaaso = abaaso || (function(){
 				return abaaso;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2717,7 +2717,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2741,7 +2741,7 @@ var abaaso = abaaso || (function(){
 				return clone;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2784,7 +2784,7 @@ var abaaso = abaaso || (function(){
 		 * @return {Object} undefined
 		 */
 		defer : function(fn, ms) {
-			var id = $.genId(),
+			var id = utility.genId(),
 			    op = function() {
 					delete abaaso.timer[id];
 					fn();
@@ -2834,7 +2834,7 @@ var abaaso = abaaso || (function(){
 				return arg.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2862,7 +2862,7 @@ var abaaso = abaaso || (function(){
 				else { return id; }
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2919,7 +2919,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2936,7 +2936,7 @@ var abaaso = abaaso || (function(){
 				console.log(arg);
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 			}
 			return undefined;
 		},
@@ -2991,7 +2991,7 @@ var abaaso = abaaso || (function(){
 							   get       : function(uri, headers) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
-									    guid   = $.genId();
+									    guid   = utility.genId();
 									if (!cached) {
 										uri.on("afterGet", function(arg) {
 											uri.un("afterGet", guid);
@@ -3043,7 +3043,7 @@ var abaaso = abaaso || (function(){
 											}
 											catch (e) {
 													result = $.label.error.serverError;
-													$.error(e, arguments, this);
+													error(e, arguments, this);
 											}
 
 											self.text(result);
@@ -3141,7 +3141,7 @@ var abaaso = abaaso || (function(){
 				return obj;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -3263,7 +3263,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return {pass: false, invalid: {}};
 			}
 		}
@@ -3299,7 +3299,7 @@ var abaaso = abaaso || (function(){
 				return xml;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -3352,15 +3352,14 @@ var abaaso = abaaso || (function(){
 				return xml;
 			}
 			catch (e) {
-				$.error(e, arguments, this);
+				error(e, arguments, this);
 				return undefined;
 			}
 		}
 	};
 
-	/**
-	 * @constructor
-	 */
+	var error = utility.error;
+
 	return {
 		// Classes
 		array           : array,
@@ -3428,6 +3427,58 @@ var abaaso = abaaso || (function(){
 		$               : utility.$,
 		alias           : utility.alias,
 		allow           : client.allow,
+		bootstrap       : function() {
+			if (typeof document.getElementsByClassName === "undefined") {
+				document.getElementsByClassName = function(arg) {
+					var nodes   = document.getElementsByTagName("*"),
+						nth     = nodes.length,
+						i       = null,
+						obj     = [],
+						pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
+
+					for (i = 0; i < nth; i++) { if (pattern.test(nodes[i].className)) obj.push(nodes[i]); }
+					return obj;
+				};
+			}
+
+			if (typeof Array.prototype.filter === "undefined") {
+				Array.prototype.filter = function(fn) {
+					"use strict";
+					if (this === void 0 || this === null || typeof fn !== "function")
+						throw Error(label.error.invalidArguments);
+
+					var i      = null,
+						t      = Object(this),
+						nth    = t.length >>> 0,
+						result = [],
+						prop   = arguments[1]
+						val    = null;
+
+					for (i = 0; i < nth; i++) {
+						if (i in t) {
+							val = t[i];
+							if (fn.call(prop, val, i, t)) result.push(val);
+						}
+					}
+
+					return result;
+				}
+			}
+
+			if (typeof Function.prototype.bind === "undefined") {
+				Function.prototype.bind = function(arg) {
+					"use strict";
+
+					var fn    = this,
+					    slice = Array.prototype.slice,
+					    args  = slice.call(arguments, 1);
+					
+					return function() {
+						return fn.apply(arg, args.concat(slice.call(arguments)));
+					};
+				};
+			}
+		},
 		clean           : cache.clean,
 		clear           : el.clear,
 		clone           : utility.clone,
@@ -3455,6 +3506,7 @@ var abaaso = abaaso || (function(){
 		init            : function() {
 			// Stopping multiple executions
 			delete abaaso.init;
+			delete abaaso.bootstrap;
 
 			// Describing the Client
 			$.client.version = abaaso.client.version = client.version();
@@ -3471,8 +3523,8 @@ var abaaso = abaaso || (function(){
 			utility.proto(String, "string");
 			
 			// Setting events & garbage collection
-			window.onhashchange = function() { abaaso.fire("hash", location.hash); };
-			window.onresize     = function() { $.client.size = abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); };
+			observer.add(window, "hashchange", function() { abaaso.fire("hash", location.hash); });
+			observer.add(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); });
 			abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
 
 			// abaaso.state.current getter/setter
@@ -3488,7 +3540,7 @@ var abaaso = abaaso || (function(){
 					return observer.state(arg);
 				}
 				catch (e) {
-					$.error(e, arguments, this);
+					error(e, arguments, this);
 					return undefined;
 				}
 			};
@@ -3505,60 +3557,6 @@ var abaaso = abaaso || (function(){
 					// Pure hackery, only exists when needed
 					abaaso.state.current = null;
 					abaaso.state.change  = function(arg){ abaaso.state.current = arg; setter.call(abaaso.state, arg); };
-			}
-
-			// Adding an essential method if not present
-			if (typeof document.getElementsByClassName === "undefined") {
-				document.getElementsByClassName = function(arg) {
-					var nodes   = document.getElementsByTagName("*"),
-						nth     = nodes.length,
-						i       = null,
-						obj     = [],
-						pattern = new RegExp("(^|\\s)"+arg+"(\\s|$)");
-
-					for (i = 0; i < nth; i++) { if (pattern.test(nodes[i].className)) obj.push(nodes[i]); }
-					return obj;
-				};
-			}
-
-			// Adding an essential method if not present
-			if (typeof Array.prototype.filter === "undefined") {
-				Array.prototype.filter = function(fn) {
-					"use strict";
-					if (this === void 0 || this === null || typeof fn !== "function")
-						throw Error(label.error.invalidArguments);
-
-					var i      = null,
-						t      = Object(this),
-						nth    = t.length >>> 0,
-						result = [],
-						prop   = arguments[1]
-						val    = null;
-
-					for (i = 0; i < nth; i++) {
-						if (i in t) {
-							val = t[i];
-							if (fn.call(prop, val, i, t)) result.push(val);
-						}
-					}
-
-					return result;
-				}
-			}
-
-			// Adding an essential method if not present
-			if (typeof Function.prototype.bind === "undefined") {
-				Function.prototype.bind = function(arg) {
-					"use strict";
-
-					var fn    = this,
-					    slice = Array.prototype.slice,
-					    args  = slice.call(arguments, 1);
-					
-					return function() {
-						return fn.apply(arg, args.concat(slice.call(arguments)));
-					};
-				};
 			}
 
 			$.ready = abaaso.ready = true;
@@ -3614,14 +3612,16 @@ var abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.105"
+		version         : "1.6.106"
 	};
 })();
 
 if (typeof abaaso.init === "function") {
-	var $ = function(arg, nodelist) { return abaaso.$(arg, nodelist); };
+	// Setting up required prototypes
+	abaaso.bootstrap();
 
-	// Hooking abaaso into global helper, it's superficial
+	// Binding helper & namespace to $
+	$ = abaaso.$.bind($);
 	abaaso.alias($, abaaso);
 	delete $.$;
 	delete $.callback;
