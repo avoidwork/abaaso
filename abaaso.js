@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.101
+ * @version 1.6.102
  */
 var abaaso = abaaso || (function(){
 	"use strict";
@@ -454,7 +454,7 @@ var abaaso = abaaso || (function(){
 		opera   : (function(){ return /opera/i.test(navigator.userAgent); })(),
 		osx     : (function(){ return /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function(){ return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function(){ return /android|ipad|playbook|meego|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); })(),
+		tablet  : (function(){ return /android|ipad|playbook|meego|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); }),
 		webos   : (function(){ return /webos/i.test(navigator.userAgent); })(),
 		windows : (function(){ return /windows/i.test(navigator.userAgent); })(),
 		version : (function(){
@@ -3325,8 +3325,6 @@ var abaaso = abaaso || (function(){
 	};
 
 	/**
-	 * Returned to the client
-	 *
 	 * @constructor
 	 */
 	return {
@@ -3428,6 +3426,7 @@ var abaaso = abaaso || (function(){
 			$.client.version = abaaso.client.version = client.version();
 			$.client.css3    = abaaso.client.css3    = client.css3();
 			$.client.size    = abaaso.client.size    = client.size();
+			$.client.tablet  = abaaso.client.tablet  = client.tablet();
 			$.state.current  = abaaso.state._current;
 
 			// Hooking abaaso into native Objects
@@ -3566,7 +3565,7 @@ var abaaso = abaaso || (function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.101"
+		version         : "1.6.102"
 	};
 })();
 
@@ -3582,7 +3581,6 @@ if (typeof abaaso.init === "function") {
 	delete $.state.header;
 	delete $.timer;
 
-	// Registering events
 	switch (true) {
 		case typeof document.addEventListener === "function":
 			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
