@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.108
+ * @version 1.6.109
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -2216,7 +2216,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							instance = obj;
 							break;
 						default:
-							instance = o !== "abaaso" ? $("#"+o) : null;
+							instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
 					}
 					efn = function(e) {
 				    	if (!e) e = window.event;
@@ -2298,7 +2298,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				l = this.list(obj, event).active;
 				if (typeof l !== "undefined") {
 					for (i in l) {
-						c = typeof l[i].scope === "object" ? l[i].scope : $(l[i].scope);
+						c = typeof l[i].scope === "object" ? l[i].scope : (!/\//g.test(l[i].scope) ? $(l[i].scope) : l[i].scope);
 						f = l[i].fn;
 						typeof arg === "undefined" ? f.call(c) : f.call(c, arg);
 					}
@@ -2432,12 +2432,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 	 */
 	var utility = {
 		/**
-		 * Returns an instance or array of instances
-		 *
-		 * Selectors "contains(string)", "even", "first", "has(tag)", "is(tag)", "last", "not(tag)", "odd" are optional
-		 * The "has" and "not" selectors accept comma delimited strings, which can include wildcards, e.g. ":has(d*, l*)"
-		 *
-		 * Selectors can be delimited with :
+		* Returns an instance or array of instances; selectors are supported
 		 *
 		 * @method $
 		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag and :selector
@@ -2445,151 +2440,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Mixed} Element or Array of Elements
 		 */
 		$ : function(arg, nodelist) {
-			var args, obj, i, nth, nth2, c, alt, find, contains, has, not, is, x, s,
+			var args, obj, i, nth, nth2, c, x, s,
 			    document  = window.document,
 			    instances = [];
-
-			/**
-			 * Looks for alternating HTMLElement (arg) in HTMLElement (obj)
-			 *
-			 * @method alt
-			 * @param  {Object} obj   Element to search
-			 * @param  {Object} state Boolean representing rows, true is even, false is odd
-			 * @return {Array} Array of Elements
-			 */
-			alt = function(obj, state) {
-				var i, nth, instances = [];
-				switch (true) {
-					case obj instanceof Array:
-						nth = obj.length;
-						for (i = 0; i < nth; i++) { if (i.isEven() === state) instances.push(obj[i]); }
-						break;
-					case typeof obj.childNodes !== "undefined" && obj.childNodes.length > 0:
-						nth = obj.childNodes.length;
-						for (i = 0; i < nth; i++) { if (i.isEven() === state) instances.push(obj.childNodes[i]); }
-						break;
-				}
-				return instances;
-			};
-
-			/**
-			 * Tests obj against arg
-			 *
-			 * @method find
-			 * @param  {String} obj Property to test
-			 * @param  {String} arg String to test for, can be comma delimited or a wildcard
-			 * @return {Boolean} True if found
-			 */
-			find = function(obj, arg) {
-				arg = arg.split(/\s*,\s*/);
-				var i, nth = arg.length, instances = [];
-				for (i = 0; i < nth; i++) { if (new RegExp(arg[i].replace("*", ".*"), "ig").test(obj)) instances.push(arg[i]); }
-				return instances.length > 0;
-			};
-
-			/**
-			 * Looks for arg in obj.innerHTML
-			 *
-			 * @method contains
-			 * @param  {Object} obj Element to search
-			 * @param  {Mixed}  arg String or Integer to find in obj
-			 * @return {Mixed} Element or Array of Elements
-			 */
-			contains = function(obj, arg) {
-				var i, nth, instances = [];
-				if (obj instanceof Array && obj.length === 1) obj = obj.first();
-				if (obj instanceof Array) {
-					nth = obj.length;
-					for (i = 0; i < nth; i++) { if (new RegExp(arg).test(obj[i].innerHTML)) instances.push(obj[i]); }
-					return instances.length === 1 ? instances[0] : instances;
-				}
-				else {
-					return obj !== null && arg !== null && new RegExp(arg).test(obj[i].innerHTML) ? obj : undefined;
-				}
-			};
-
-			/**
-			 * Looks for Element in Element
-			 *
-			 * @method has
-			 * @param  {Object} obj Element to search
-			 * @param  {String} arg Element type to find, can be comma delimited
-			 * @return {Mixed} Element or Array of Elements
-			 */
-			has = function(obj, arg) {
-				var i, nth, instances = [];
-				if (obj instanceof Array && obj.length === 1) obj = obj.first();
-				if (obj instanceof Array) {
-					var x, nth2;
-					nth = obj.length;
-					for (i = 0; i < nth; i++) {
-						nth2 = obj[i].childNodes.length;
-						for (x = 0; x < nth2; x++) {
-							obj[i].genId();
-							if (find(obj[i].childNodes[x].nodeName, arg) && typeof instances[obj[i].id] === "undefined") instances[obj[i].id] = obj[i];
-						}
-					}
-					instances = instances.indexed();
-				}
-				else {
-					nth = obj.childNodes.length;
-					for (i = 0; i < nth; i++) { if (find(obj.childNodes[i].nodeName, arg)) instances.push(obj.childNodes[i]); }
-				}
-				return instances;
-			};
-
-			/**
-			 * Tests if Element matches Elements
-			 *
-			 * @method is
-			 * @param  {Object} obj Element to search
-			 * @param  {String} arg Element type to find, can be comma delimited
-			 * @return {Mixed} Element or Array of Elements
-			 */
-			is = function(obj, arg) {
-				var i, nth, instances = [];
-				if (obj instanceof Array && obj.length === 1) obj = obj.first();
-				if (obj instanceof Array) {
-					nth = obj.length;
-					for (i = 0; i < nth; i++) {
-						obj[i].genId();
-						if (find(obj[i].nodeName, arg) && typeof instances[obj[i].id] === "undefined") instances[obj[i].id] = obj[i];
-					}
-					instances = instances.indexed();
-				}
-				else { if (find(obj.nodeName, arg)) instances.push(obj); }
-				return instances;
-			};
-
-			/**
-			 * Excludes Elements in Element
-			 *
-			 * @param obj {Object} HTMLElement to search
-			 * @param arg {String} HTMLElement type to exclude, can be comma delimited
-			 * @returns {Mixed} Instance or Array of Instances containing arg
-			 */
-			not = function(obj, arg) {
-				var i, nth, instances = [];
-				if (obj instanceof Array && obj.length === 1) obj = obj.first();
-				if (obj instanceof Array) {
-					var x, nth2;
-					nth = obj.length;
-					for (i = 0; i < nth; i++) {
-						nth2 = obj[i].childNodes.length;
-						for (x = 0; x < nth2; x++) {
-							obj[i].genId();
-							!find(obj[i].childNodes[x].nodeName, arg) ? (function(){ if (typeof instances[obj[i].id] === "undefined") instances[obj[i].id] = obj[i]; })()
-							                                          : (function(){ if (typeof instances[obj[i].id] !== "undefined") delete instances[obj[i].id]; })();
-						}
-					}
-					instances = instances.indexed();
-				}
-				else {
-					nth = obj.childNodes.length;
-					for (i = 0; i < nth; i++) { if (!find(obj.childNodes[i].nodeName, arg)) instances.push(obj.childNodes[i]); }
-				}
-				return instances;
-			};
 
 			if (nodelist !== true) nodelist = false;
 
@@ -2601,85 +2454,16 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				return instances;
 			}
 
-			// Getting selectors
-			if (/:/.test(arg)) {
-				s   = /:.*/gi.exec(arg) !== null ? /:.*/gi.exec(arg)[0].slice(1) : "";
-				arg = /.*:/.exec(arg) !== null ? (!/.*:/.exec(arg)[0].slice(0, -1).isEmpty() ? /.*:/.exec(arg)[0].slice(0, -1)
-													                                         : ":")
-				                               : ":";
-			}
-			else { s = ""; }
-			args = !/\w/.test(s) ? [] : s.split(/:/);
-
 			// Getting instance(s)
 			switch (arg.charAt(0)) {
-				case ".":
-					obj = document.getElementsByClassName(arg.slice(1));
-					if (obj !== null && !nodelist)
-						obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
-					break;
 				case "#":
-					obj = document.getElementById(arg.substring(1));
-					break;
-				case ":":
-					obj = document.getElementsByTagName("*");
-					if (obj !== null && !nodelist)
-						obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
+					obj = document.querySelector(arg);
 					break;
 				default:
-					obj = document.getElementsByTagName(arg);
-					if (obj !== null && !nodelist)
-						obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
+					obj = document.querySelectorAll(arg);
+					if (obj !== null && !nodelist) obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
 			}
 
-			// Processing selector(s)
-			if (obj !== null && typeof args.length !== "undefined" && args.length > 0) {
-				nth = args.length;
-				for (i = 0; i < nth; i++) {
-					if (typeof obj === "undefined") {
-						obj = [];
-						break;
-					}
-
-					switch (args[i].replace(/\(.*\)/, "")) {
-						case "contains":
-							obj = contains(obj, args[i].replace(/.*\(|'|"|\)/g, ""));
-							break;
-						case "even":
-							obj = alt(obj, true);
-							break;
-						case "first":
-							obj = obj.first();
-							break;
-						case "has":
-							obj = has(obj, args[i].replace(/.*\(|'|"|\)/g, ""));
-							break;
-						case "is":
-							obj = is(obj, args[i].replace(/.*\(|'|"|\)/g, ""));
-							break;
-						case "last":
-							obj = obj.last();
-							break;
-						case "not":
-							obj = not(obj, args[i].replace(/.*\(|'|"|\)/g, ""));
-							break;
-						case "odd":
-							obj = alt(obj, false);
-							break
-						default:
-							nth2 = !isNaN(obj.length) ? obj.length : 0;
-							instances = [];
-							for (x = 0; x < nth2; x++) {
-								c = obj[x].className.split(" ");
-								if (c.index(args[i]) > -1) instances.push(obj[x]);
-							}
-							obj = instances;
-					}
-
-					if (obj instanceof Array)
-						if (obj.length === 0) obj = (i + 1) === nth ? [] : undefined;
-				}
-			}
 			if (obj === null) obj = undefined;
 			return obj;
 		},
@@ -3636,7 +3420,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.108"
+		version         : "1.6.109"
 	};
 })();
 
