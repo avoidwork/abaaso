@@ -41,9 +41,9 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.107
+ * @version 1.6.108
  */
-var $, abaaso = abaaso || (function(){
+var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
 
 	/**
@@ -3488,6 +3488,20 @@ var $, abaaso = abaaso || (function(){
 			delete $.observer.log;
 			delete $.state.header;
 			delete $.timer;
+
+			switch (true) {
+				case typeof document.addEventListener === "function":
+					document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
+					break;
+				default:
+					abaaso.timer.init = setInterval(function(){
+						if (/loaded|complete/.test(document.readyState)) {
+							clearInterval(abaaso.timer.init);
+							delete abaaso.timer.init;
+							if (typeof abaaso.init === "function") abaaso.init();
+						}
+					}, 10);
+			}
 		},
 		clean           : cache.clean,
 		clear           : el.clear,
@@ -3615,30 +3629,15 @@ var $, abaaso = abaaso || (function(){
 		un              : function() {
 			var all   = typeof arguments[0] === "string" ? false : true,
 			    obj   = all ? arguments[0] : this,
-				event = all ? arguments[1] : arguments[0],
-				id    = all ? arguments[2] : arguments[1];
-				if (obj === $) obj = abaaso;
+			    event = all ? arguments[1] : arguments[0],
+			    id    = all ? arguments[2] : arguments[1];
+			    if (obj === $) obj = abaaso;
 
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.107"
+		version         : "1.6.108"
 	};
 })();
 
-if (typeof abaaso.init === "function") {
-	abaaso.bootstrap();
-	switch (true) {
-		case typeof document.addEventListener === "function":
-			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
-			break;
-		default:
-			abaaso.timer.init = setInterval(function(){
-				if (/loaded|complete/.test(document.readyState)) {
-					clearInterval(abaaso.timer.init);
-					delete abaaso.timer.init;
-					abaaso.init();
-				}
-			}, 10);
-	}
-}
+if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
