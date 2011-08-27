@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.104
+ * @version 1.6.105
  */
 var abaaso = abaaso || (function(){
 	"use strict";
@@ -2699,13 +2699,14 @@ var abaaso = abaaso || (function(){
 					(function(){
 						var b = i;
 						switch (true) {
-							case typeof origin[b] === "function":
+							case typeof origin[b] === "function" && typeof origin[b].bind === "function":
 								obj[b] = function(){ return origin[b].apply(this, arguments); };
 								break;
 							case origin[b] instanceof Object:
 								if (typeof obj[b] === "undefined") obj[b] = {};
 								(function(){ abaaso.alias(obj[b], origin[b]); })();
 								break;
+							case typeof origin[b] === "function" && typeof origin[b].bind === "undefined":
 							case /boolean|number|string/.test(typeof origin[b]):
 							case origin[b] === null:
 								obj[b] = origin[b];
@@ -3545,6 +3546,21 @@ var abaaso = abaaso || (function(){
 				}
 			}
 
+			// Adding an essential method if not present
+			if (typeof Function.prototype.bind === "undefined") {
+				Function.prototype.bind = function(arg) {
+					"use strict";
+
+					var fn    = this,
+					    slice = Array.prototype.slice,
+					    args  = slice.call(arguments, 1);
+					
+					return function() {
+						return fn.apply(arg, args.concat(slice.call(arguments)));
+					};
+				};
+			}
+
 			$.ready = abaaso.ready = true;
 			$.fire("ready").un("ready");
 
@@ -3598,7 +3614,7 @@ var abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.104"
+		version         : "1.6.105"
 	};
 })();
 
