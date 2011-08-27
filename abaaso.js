@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.106
+ * @version 1.6.107
  */
 var $, abaaso = abaaso || (function(){
 	"use strict";
@@ -3478,6 +3478,16 @@ var $, abaaso = abaaso || (function(){
 					};
 				};
 			}
+
+			// Binding helper & namespace to $
+			$ = abaaso.$.bind($);
+			abaaso.alias($, abaaso);
+			delete $.$;
+			delete $.callback;
+			delete $.init;
+			delete $.observer.log;
+			delete $.state.header;
+			delete $.timer;
 		},
 		clean           : cache.clean,
 		clear           : el.clear,
@@ -3612,24 +3622,12 @@ var $, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.106"
+		version         : "1.6.107"
 	};
 })();
 
 if (typeof abaaso.init === "function") {
-	// Setting up required prototypes
 	abaaso.bootstrap();
-
-	// Binding helper & namespace to $
-	$ = abaaso.$.bind($);
-	abaaso.alias($, abaaso);
-	delete $.$;
-	delete $.callback;
-	delete $.init;
-	delete $.observer.log;
-	delete $.state.header;
-	delete $.timer;
-
 	switch (true) {
 		case typeof document.addEventListener === "function":
 			document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
