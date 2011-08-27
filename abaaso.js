@@ -28,22 +28,20 @@
 /**
  * abaaso
  *
- * Events:
- *
- *   ready         Fires when the DOM is available
- *   render        Fires when the window resources have loaded
- *   resize        Fires when the window resizes; parameter for listeners is abaaso.client.size
- *   afterCreate   Fires after an Element is created; parameter for listeners is the (new) Element
- *   afterDestroy  Fires after an Element is destroyed; parameter for listeners is the (removed) Element.id value
- *   beforeCreate  Fires when an Element is about to be created; parameter for listeners is the (new) Element.id value
- *   beforeDestroy Fires when an Element is about to be destroyed; parameter for listeners is the (to be removed) Element
- *   error         Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
- *   hash          Fires when window.location.hash changes; parameter for listeners is the hash value
+ * Events: ready          Fires when the DOM is available
+ *         render         Fires when the window resources have loaded
+ *         resize         Fires when the window resizes; parameter for listeners is abaaso.client.size
+ *         afterCreate    Fires after an Element is created; parameter for listeners is the (new) Element
+ *         afterDestroy   Fires after an Element is destroyed; parameter for listeners is the (removed) Element.id value
+ *         beforeCreate   Fires when an Element is about to be created; parameter for listeners is the (new) Element.id value
+ *         beforeDestroy  Fires when an Element is about to be destroyed; parameter for listeners is the (to be removed) Element
+ *         error          Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
+ *         hash           Fires when window.location.hash changes; parameter for listeners is the hash value
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
- * @namespace
- * @version 1.6.099
+ * @module abaaso
+ * @version 1.6.101
  */
 var abaaso = abaaso || (function(){
 	"use strict";
@@ -51,15 +49,17 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Array methods
 	 *
-	 * @class
+	 * @class array
+	 * @namespace abaaso
 	 */
 	var array = {
 		/**
 		 * Returns an Object (NodeList, etc.) as an Array
 		 *
-		 * @param obj {Object} Object to cast
-		 * @param key {Boolean} [Optional] Returns key or value, only applies to Objects without a length property
-		 * @returns {Array} Object as an Array
+		 * @method cast
+		 * @param  {Object}  obj Object to cast
+		 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
+		 * @return {Array}   Object as an Array
 		 */
 		cast : function(obj, key) {
 			try {
@@ -87,9 +87,10 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Finds the index of arg(s) in instance
 		 *
-		 * @param instance {Array} An instance of the array to search
-		 * @param arg {String} Comma delimited string of search values
-		 * @returns {Mixed} Integer or an array of integers representing the location of the arg(s)
+		 * @method contains
+		 * @param  {Array}  instance An instance of the array to search
+		 * @param  {String} arg      Comma delimited string of search values
+		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
 		contains : function(instance, arg) {
 			try {
@@ -102,10 +103,10 @@ var abaaso = abaaso || (function(){
 					    nth     = args.length,
 					    i       = null;
 
-					for (i = 0; i < nth; i++) { indexes[i] = instance.index(arg[i]); }
+					for (i = 0; i < nth; i++) { indexes[i] = obj.index(arg[i]); }
 					return indexes;
 				}
-				return instance.index(arg);
+				return obj.index(arg);
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -116,13 +117,14 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Finds the difference between array1 and array2
 		 *
-		 * @param array1 {Array} An array to compare against
-		 * @param array2 {Array} An array to compare against
-		 * @returns {Array} An array of the differences
+		 * @method diff
+		 * @param  {Array} array1 Source Array
+		 * @param  {Array} array2 Comparison Array
+		 * @return {Array} Array of the differences
 		 */
 		diff : function(array1, array2) {
 			try {
-				if (!array1 instanceof Array && !array2 instanceof Array)
+				if (!array1 instanceof Array || !array2 instanceof Array)
 					throw new Error(label.error.expectedArray);
 
 				return array1.filter(function(key){return (array2.indexOf(key) < 0);});
@@ -136,15 +138,16 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns the first Array node
 		 *
-		 * @param instance {Array} The array
-		 * @returns {Mixed} The first node of the array
+		 * @method first
+		 * @param  {Array} obj The array
+		 * @return {Mixed} The first node of the array
 		 */
-		first : function(instance) {
+		first : function(obj) {
 			try {
-				if (!instance instanceof Array)
+				if (!obj instanceof Array)
 					throw new Error(label.error.expectedArray);
 
-				return instance[0];
+				return obj[0];
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -155,18 +158,19 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Finds the index of arg in instance. Use contains() for multiple arguments
 		 *
-		 * @param instance {Mixed} The entity to search
-		 * @param arg {Mixed} The argument to find (string or integer)
-		 * @returns {Integer} The position of arg in instance
+		 * @method index
+		 * @param  {Array} obj Array to search
+		 * @param  {Mixed} arg Value to find index of
+		 * @return {Integer} The position of arg in instance
 		 */
-		index : function(instance, arg) {
+		index : function(obj, arg) {
 			try {
-				if (!instance instanceof Array)
+				if (!obj instanceof Array)
 					throw new Error(label.error.expectedArray);
 
-				var i = instance.length;
+				var i = obj.length;
 
-				while (i--) { if (instance[i] === arg) return i; }
+				while (i--) { if (obj[i] === arg) return i; }
 				return -1;
 			}
 			catch (e) {
@@ -178,19 +182,20 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns an Associative Array as an Indexed Array
 		 *
-		 * @param instance {Array} The array to index
-		 * @param returns {Array} The indexed array
+		 * @method indexed
+		 * @param  {Array} obj Array to index
+		 * @return {Array} Indexed Array
 		 */
-		indexed : function(instance) {
+		indexed : function(obj) {
 			try {
-				if (!instance instanceof Array)
+				if (!obj instanceof Array)
 					throw new Error(label.error.expectedArray);
 
 				var o, i = 0, indexed = [];
 
-				for (o in instance) {
-					if (typeof instance[o] !== "function") {
-						indexed[i] = instance[o] instanceof Array ? instance[o].indexed() : instance[o];
+				for (o in obj) {
+					if (typeof obj[o] !== "function") {
+						indexed[i] = obj[o] instanceof Array ? obj[o].indexed() : obj[o];
 						i++
 					}
 				}
@@ -206,18 +211,19 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns the keys in the array
 		 *
-		 * @param instance {Array} The array to extract keys from
-		 * @returns {Array} An array of the keys in instance
+		 * @method keys
+		 * @param  {Array} obj Array to extract keys from
+		 * @return {Array} Array of the keys
 		 */
-		keys : function(instance) {
+		keys : function(obj) {
 			try {
-				if (!instance instanceof Array)
+				if (!obj instanceof Array)
 					throw new Error(label.error.expectedArray);
 
 				var keys = [],
 				    i    = null;
 
-				for (i in instance) { if (typeof instance[i] !== "function") keys.push(i); }
+				for (i in obj) { if (typeof obj[i] !== "function") keys.push(i); }
 				return keys;
 			}
 			catch (e) {
@@ -229,15 +235,16 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns the last node of the array
 		 *
-		 * @param instance {Array} The array
-		 * @returns {Mixed} The last node of the array
+		 * @method last
+		 * @param  {Array} obj Array
+		 * @return {Mixed} Last node of Array
 		 */
-		last : function(instance) {
+		last : function(obj) {
 			try {
-				if (!instance instanceof Array)
+				if (!obj instanceof Array)
 					throw new Error(label.error.expectedArray);
 
-				return instance.length > 1 ? instance[(instance.length - 1)] : instance[0];
+				return obj.length > 1 ? obj[(obj.length - 1)] : obj.first();
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -248,10 +255,11 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Removes indexes from an Array without recreating it
 		 *
-		 * @param obj {Array} Array to remove from
-		 * @param start {Integer} Starting index
-		 * @param end {Integer} [Optional] Ending index
-		 * @returns {Array} The Array
+		 * @method remove
+		 * @param  {Array}   obj   Array to remove from
+		 * @param  {Integer} start Starting index
+		 * @param  {Integer} end   [Optional] Ending index
+		 * @return {Array} Modified Array
 		 */
 		remove : function(obj, start, end) {
 			try {
@@ -276,8 +284,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Gets the total keys in an Array
 		 *
-		 * @param obj {Array} Array to iterate
-		 * @returns {Integer} Number of keys in Array
+		 * @method
+		 * @param  {Array} obj Array to find the length of
+		 * @return {Integer} Number of keys in Array
 		 */
 		total : function(obj) {
 			try {
@@ -299,20 +308,19 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Cache for RESTful behavior
 	 *
-	 * @class
+	 * @class cache
+	 * @namespace abaaso
 	 * @private
 	 */
 	var cache = {
-		/**
-		 * Collection URIs
-		 */
+		// Collection URIs
 		items : {},
 
 		/**
 		 * Garbage collector for the cached items
 		 *
-		 * Expires cached items every two minutes
-		 * @returns undefined
+		 * @method clean
+		 * @return {Undefined} undefined
 		 */
 		clean : function() {
 			var uri;
@@ -324,8 +332,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Expires a URI from the local cache
 		 *
-		 * @param uri {String} The URI of the local representation
-		 * @returns undefined
+		 * @method expire
+		 * @param  {String} uri URI of the local representation
+		 * @return {Undefined} undefined
 		 */
 		expire : function(uri) {
 			if (typeof cache.items[uri] !== "undefined") delete cache.items[uri];
@@ -335,8 +344,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Determines if a URI has expired
 		 *
-		 * @param uri {Object} The cached URI object
-		 * @returns {Boolean} True if the URI has expired
+		 * @method expired
+		 * @param  {Object} uri Cached URI object
+		 * @return {Boolean} True if the URI has expired
 		 */
 		expired : function(uri) {
 			var o      = abaaso.client,
@@ -354,9 +364,10 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns the cached object {headers, response} of the URI or false
 		 *
-		 * @param uri {String} The URI/Identifier for the resource to retrieve from cache
-		 * @param expire {Boolean} [Optional] If 'false' the URI will not expire
-		 * @returns {Mixed} Returns the URI object {headers, response} or false
+		 * @method get
+		 * @param  {String}  uri    URI/Identifier for the resource to retrieve from cache
+		 * @param  {Boolean} expire [Optional] If 'false' the URI will not expire
+		 * @return {Mixed} URI Object {headers, response} or False
 		 */
 		get : function(uri, expire) {
 			try {
@@ -381,10 +392,11 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Sets, or updates an item in cache.items
 		 *
-		 * @param uri {String} The URI to set or update
-		 * @param property {String} The property of the cached URI to set
-		 * @param value {Mixed} The value to set
-		 * @returns {Mixed} Returns the URI object {headers, response} or undefined
+		 * @method set
+		 * @param  {String} uri      URI to set or update
+		 * @param  {String} property Property of the cached URI to set
+		 * @param  {Mixed} value     Value to set
+		 * @return {Mixed} URI Object {headers, response} or undefined
 		 */
 		set : function(uri, property, value) {
 			try {
@@ -407,12 +419,11 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Client properties and methods
 	 *
-	 * @class
+	 * @class client
+	 * @namespace abaaso
 	 */
 	var client = {
-		/**
-		 * Public properties
-		 */
+		// Public properties
 		android : (function(){ return /android/i.test(navigator.userAgent); })(),
 		blackberry : (function(){ return /blackberry/i.test(navigator.userAgent); })(),
 		chrome  : (function(){ return /chrome/i.test(navigator.userAgent); })(),
@@ -475,9 +486,10 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Quick way to see if a URI allows a specific command
 		 *
-		 * @param uri {String} URI
-		 * @param command {String} Command to query for
-		 * @returns {Boolean} True if the command is available
+		 * @method allow
+		 * @param  {String} uri     URI to query
+		 * @param  {String} command Command to query for
+		 * @return {Boolean} True if the command is allowed
 		 */
 		allow : function(uri, command) {
 			try {
@@ -512,8 +524,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns the permission of the cached URI
 		 *
-		 * @param uri {String} URI to retrieve permission from
-		 * @returns {Object} Contains an array of available commands, the permission bit and a map
+		 * @method permission
+		 * @param  {String} uri URI to query
+		 * @return {Object} Contains an Array of available commands, the permission bit and a map
 		 */
 		permission : function (uri) {
 			var cached = cache.get(uri, false),
@@ -529,17 +542,19 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 		 *
-		 * Events:     beforeXHR      Fires before the XmlHttpRequest is made
-		 *             before[type]   Fires before the XmlHttpRequest is made, type specific
-		 *             failed[type]   Fires on error
-		 *             received[type] Fires on XHR readystate 2, clears the timeout only!
-		 *             timeout[type]  Fires 30s after XmlHttpRequest is made
+		 * Events: beforeXHR       Fires before the XmlHttpRequest is made
+		 *         before[type]    Fires before the XmlHttpRequest is made, type specific
+		 *         failed[type]    Fires on error
+		 *         received[type]  Fires on XHR readystate 2, clears the timeout only!
+		 *         timeout[type]   Fires 30s after XmlHttpRequest is made
 		 *
-		 * @param uri {String} The resource to interact with
-		 * @param type {String} The type of request (DELETE/GET/POST/PUT/JSONP)
-		 * @param success {Function} A handler function to execute when an appropriate response been received
-		 * @param failure {Function} [Optional] A handler function to execute on error
-		 * @param args {Mixed} Data to send with the request, or a custom JSONP handler parameter name
+		 * @method request
+		 * @param  {String}   uri     URI to query
+		 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/JSONP)
+		 * @param  {Function} success A handler function to execute when an appropriate response been received
+		 * @param  {Function} failure [Optional] A handler function to execute on error
+		 * @param  {Mixed}    args    Data to send with the request, or a custom JSONP handler parameter name
+		 * @return {String} URI to query
 		 * @private
 		 */
 		request : function(uri, type, success, failure, args) {
@@ -637,26 +652,25 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Receives and caches the URI response
+		 * Caches the URI headers & response if received, and fires the relevant events
 		 *
-		 * Headers are cached, if an expiration is set it will be used to control the local cache
-		 * If abaaso.state.header is set, a state change is possible
+		 * If abaaso.state.header is set, an application state change is possible
 		 *
 		 * Permissions are handled if the ACCEPT header is received; a bit is set on the cached
 		 * resource
 		 *
-		 * Events:     afterXHR    Fires after the XmlHttpRequest response is received
-		 *             after[type] Fires after the XmlHttpRequest response is received, type specific
-		 *             reset       Fires if a 206 response is received
-		 *             moved       Fires if a 301 response is received
-		 *             success     Fires if a 400 response is received
-		 *             failure     Fires if an exception is thrown
+		 * Events: afterXHR     Fires after the XmlHttpRequest response is received
+		 *         after[type]  Fires after the XmlHttpRequest response is received, type specific
+		 *         reset        Fires if a 206 response is received
+		 *         moved        Fires if a 301 response is received
+		 *         success      Fires if a 400 response is received
+		 *         failure      Fires if an exception is thrown
 		 *
-		 * @param xhr {Object} XMLHttpRequest object
-		 * @param uri {String} The URI.value to cache
-		 * @param fn {Function} A handler function to execute once a response has been received
-		 * @param type {String} The type of request
-		 * @param ffn {Function} [Optional] A handler function to execute on error
+		 * @method response
+		 * @param  {Object} xhr  XMLHttpRequest Object
+		 * @param  {String} uri  URI to query
+		 * @param  {String} type Type of request
+		 * @return {String} uri  URI to query
 		 * @private
 		 */
 		response : function(xhr, uri, type) {
@@ -664,18 +678,19 @@ var abaaso = abaaso || (function(){
 				var typed = type.toLowerCase().capitalize(), bit;
 
 				/**
-				 * Returns a bit value based on the array contents
+				 * Gets bit value based on the Array
 				 *
-				 *   1 --d delete
-				 *   2 -w- write
-				 *   3 -wd write and delete
-				 *   4 r-- read
-				 *   5 r-x read and delete
-				 *   6 rw- read and write
-				 *   7 rwx read, write and delete
+				 * 1 --d delete
+				 * 2 -w- write
+				 * 3 -wd write and delete
+				 * 4 r-- read
+				 * 5 r-x read and delete
+				 * 6 rw- read and write
+				 * 7 rwx read, write and delete
 				 *
-				 * @param args {Array} The commands the URI accepts
-				 * @returns {Integer} To be set as a bit
+				 * @method bit
+				 * @param  {Array} args Array of commands the URI accepts
+				 * @return {Integer} To be set as a bit
 				 */
 				bit = function(args) {
 					try {
@@ -800,14 +815,16 @@ var abaaso = abaaso || (function(){
 				$.error(e, arguments, this);
 				uri.fire("failed" + typed);
 			}
+			return uri;
 		},
 
 
 		/**
 		 * Returns the visible area of the View
 		 *
+		 * @method size
+		 * @return {Object} Describes the View {x: ?, y: ?}
 		 * @private
-		 * @returns {Object} Object describing the size of the View {x:?, y:?}
 		 */
 		size : function() {
 			var x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
@@ -818,24 +835,30 @@ var abaaso = abaaso || (function(){
 	};
 
 	/**
-	 * Cookie management methods
+	 * Cookie methods
 	 *
-	 * @class
+	 * @class cookie
+	 * @namespace abaaso
 	 */
 	var cookie = {
 		/**
 		 * Expires a cookie if it exists
 		 *
-		 * @param name {String} The name of the cookie to create
+		 * @method expire
+		 * @param  {String} name Name of the cookie to expire
+		 * @return {String} Name of the expired cookie
 		 */
 		expire : function(name) {
 			if (typeof this.get(name) !== "undefined") this.set(name, "", "-1s");
+			return name;
 		},
 
 		/**
 		 * Gets a cookie
 		 *
-		 * @returns {Object} The requested cookie or undefined
+		 * @method get
+		 * @param  {String} name Name of the cookie to get
+		 * @return {Mixed} Cookie or undefined
 		 */
 		get : function(name) {
 			return this.list()[name];
@@ -844,7 +867,8 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Gets the cookies for the domain
 		 *
-		 * @returns {Object} Object containing the cookies
+		 * @method list
+		 * @return {Object} Collection of cookies
 		 */
 		list : function() {
 			var i      = null,
@@ -870,10 +894,11 @@ var abaaso = abaaso || (function(){
 		 *
 		 * The offset specifies a positive or negative span of time as day, hour, minute or second
 		 *
-		 * @param name {String} The name of the cookie to create
-		 * @param value {String} The value to set
-		 * @param offset {String} A positive or negative integer followed by "d", "h", "m" or "s"
-		 * @returns {Object} The new cookie
+		 * @method set
+		 * @param  {String} name   Name of the cookie to create
+		 * @param  {String} value  Value to set
+		 * @param  {String} offset A positive or negative integer followed by "d", "h", "m" or "s"
+		 * @return {Object} The new cookie
 		 */
 		set : function(name, value, offset) {
 			offset = offset.toString() || "";
@@ -925,7 +950,8 @@ var abaaso = abaaso || (function(){
 	 *
 	 * Do not use this directly!
 	 *
-	 * @class
+	 * @class data
+	 * @namespace abaaso
 	 */
 	var data = {
 		// Identifies the key in a POST response
@@ -945,13 +971,14 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Batch sets or deletes data in the store
 		 *
-		 * Events:     beforeDataBatch    Fires before the batch is queued
-		 *             afterDataBatch     Fires after the batch is queued
+		 * Events: beforeDataBatch  Fires before the batch is queued
+		 *         afterDataBatch   Fires after the batch is queued
 		 *
-		 * @param type {String} The type of action to perform
-		 * @param data {Mixed} Array of keys or indexes to delete, or Object containing multiple records to set
-		 * @param sync {Boolean} [Optional] True if called by data.sync
-		 * @returns {Object} The data store
+		 * @method batch
+		 * @param  {String}  type Type of action to perform
+		 * @param  {Mixed}   data Array of keys or indexes to delete, or Object containing multiple records to set
+		 * @param  {Boolean} sync [Optional] True if called by data.sync
+		 * @return {Object} Data store
 		 */
 		batch : function(type, data, sync) {
 			type = type.toString().toLowerCase() || undefined;
@@ -1005,10 +1032,11 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Clears the data object, unsets the uri property
 		 *
-		 * Events:     beforeDataClear    Fires before the data is cleared
-		 *             afterDataClear     Fires after the data is cleared
+		 * Events: beforeDataClear  Fires before the data is cleared
+		 *         afterDataClear   Fires after the data is cleared
 		 *
-		 * @returns {Object} The data store being cleared
+		 * @method clear
+		 * @return {Object} Data store
 		 */
 		clear : function() {
 			var obj = this.parentNode;
@@ -1024,14 +1052,15 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Deletes a record based on key or index
 		 *
-		 * Events:     beforeDataDelete    Fires before the record is deleted
-		 *             afterDataDelete     Fires after the record is deleted
-		 *             syncDataDelete      Fires when the local store is updated
-		 *             failedDataDelete    Fires if the store is RESTful and the action is denied
+		 * Events: beforeDataDelete  Fires before the record is deleted
+		 *         afterDataDelete   Fires after the record is deleted
+		 *         syncDataDelete    Fires when the local store is updated
+		 *         failedDataDelete  Fires if the store is RESTful and the action is denied
 		 *
-		 * @param record {Mixed} The record key or index
-		 * @param reindex {Boolean} Default is true, will re-index the data object after deletion
-		 * @returns {Object} The data store
+		 * @method del
+		 * @param  {Mixed}   record  Record key or index
+		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
+		 * @return {Object} Data store
 		 */
 		del : function(record, reindex) {
 			try {
@@ -1084,12 +1113,13 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Finds needle in the haystack
 		 *
-		 * Events:     beforeDataFind    Fires before the search begins
-		 *             afterDataFind     Fires after the search has finished
+		 * Events: beforeDataFind  Fires before the search begins
+		 *         afterDataFind   Fires after the search has finished
 		 *
-		 * @param needle {Mixed} String, Number or Pattern to test for
-		 * @param haystack {Mixed} [Optional] The field(s) to search
-		 * @returns {Array} Array of results
+		 * @method find
+		 * @param  {Mixed} needle   String, Number or Pattern to test for
+		 * @param  {Mixed} haystack [Optional] The field(s) to search
+		 * @return {Array} Array of results
 		 */
 		find : function(needle, haystack) {
 			try {
@@ -1151,11 +1181,12 @@ var abaaso = abaaso || (function(){
 		 *
 		 * If the key is an integer, cast to a string before sending as an argument!
 		 *
-		 * Events:     beforeDataGet    Fires before getting the record
-		 *             afterDataGet     Fires after getting the record
+		 * Events: beforeDataGet  Fires before getting the record
+		 *         afterDataGet   Fires after getting the record
 		 *
-		 * @param record {Mixed} The record key (String),  index (Integer) or Array for pagination [start, end]
-		 * @returns {Object} Data store record
+		 * @method get
+		 * @param  {Mixed} record Record key, index or Array of pagination start & end
+		 * @return {Object} Record
 		 */
 		get : function(record) {
 			try {
@@ -1184,14 +1215,15 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Factory to create an instance on an Object
+		 * Registers a data store on an Object
 		 *
-		 * Events:     beforeDataStore    Fires before registering the data store
-		 *             afterDataStore     Fires after registering the data store
+		 * Events: beforeDataStore  Fires before registering the data store
+		 *         afterDataStore   Fires after registering the data store
 		 *
-		 * @param obj {Object} The Object to register with
-		 * @param data {Mixed} [Optional] Data to set with this.batch
-		 * @returns {Object} The Object registered with
+		 * @method register
+		 * @param  {Object} obj  Object to register with
+		 * @param  {Mixed}  data [Optional] Data to set with this.batch
+		 * @return {Object} Object registered with
 		 */
 		register : function(obj, data) {
 			try {
@@ -1269,10 +1301,11 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Reindexes the data store
 		 *
-		 * Events:     beforeDataReindex    Fires before reindexing the data store
-		 *             afterDataReindex     Fires after reindexing the data store
+		 * Events: beforeDataReindex  Fires before reindexing the data store
+		 *         afterDataReindex   Fires after reindexing the data store
 		 *
-		 * @returns {Object} The data store
+		 * @method reindex
+		 * @return {Object} Data store
 		 */
 		reindex : function() {
 			var nth = this.total,
@@ -1298,11 +1331,12 @@ var abaaso = abaaso || (function(){
 		 * If a POST is issued, and the data.key property is not set the
 		 * first property of the response object will be used as the key
 		 *
-		 * Events:     beforeDataSet    Fires before the record is set
-		 *             afterDataSet     Fires after the record is set, the record is the argument for listeners
-		 *             syncDataSet      Fires when the local store is updated
-		 *             failedDataSet    Fires if the store is RESTful and the action is denied
+		 * Events: beforeDataSet  Fires before the record is set
+		 *         afterDataSet   Fires after the record is set, the record is the argument for listeners
+		 *         syncDataSet    Fires when the local store is updated
+		 *         failedDataSet  Fires if the store is RESTful and the action is denied
 		 *
+		 * @method set
 		 * @param key {Mixed} Integer or String to use as a Primary Key
 		 * @param data {Object} Key:Value pairs to set as field values
 		 * @param sync {Boolean} [Optional] True if called by data.sync
@@ -1333,12 +1367,10 @@ var abaaso = abaaso || (function(){
 					if (typeof record === "undefined") {
 						if (typeof key === "undefined") {
 							arg = arguments[0];
-
 							if (typeof arg === "undefined") {
 								obj.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
-
 							key = this.key === null ? array.cast(arg).first() : arg[this.key];
 							key = key.toString();
 						}
@@ -1378,10 +1410,11 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Syncs the data store with a URI representation
 		 *
-		 * Events:     beforeDataSync    Fires before syncing the data store
-		 *             afterDataSync     Fires after syncing the data store
+		 * Events: beforeDataSync  Fires before syncing the data store
+		 *         afterDataSync   Fires after syncing the data store
 		 *
-		 * @returns {Object} The data store
+		 * @method sync
+		 * @return {Object} Data store
 		 */
 		sync : function() {
 			try {
@@ -1427,17 +1460,19 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Element methods
 	 *
-	 * @class
+	 * @class el
+	 * @namespace abaaso
 	 */
 	var el = {
 		/**
 		 * Clears an object's innerHTML, or resets it's state
 		 *
-		 * Events:    beforeClear    Fires before the Object is cleared
-		 *            afterClear     Fires after the Object is cleared
+		 * Events: beforeClear  Fires before the Object is cleared
+		 *         afterClear   Fires after the Object is cleared
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {Mixed} Instance or Array of Instances
+		 * @method clear
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element or Array of Elements
 		 */
 		clear : function(obj) {
 			try {
@@ -1450,10 +1485,8 @@ var abaaso = abaaso || (function(){
 				}
 				else {
 					obj = utility.object(obj);
-
 					if (obj !== null) {
 						obj.fire("beforeClear");
-
 						switch (true) {
 							case typeof obj.reset === "function":
 								obj.reset();
@@ -1464,7 +1497,6 @@ var abaaso = abaaso || (function(){
 							default:
 								obj.update({innerHTML: ""});
 						}
-
 						obj.fire("afterClear");
 						return obj;
 					}
@@ -1480,32 +1512,32 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Creates an element in document.body or a target element
+		 * Creates an Element in document.body or a target Element
 		 *
-		 * Element.genId() is executed if args doesn't contain an id
+		 * An id is generated if not specified with args
 		 *
-		 * Events:    beforeCreate    Fires after the object has been created, but not set
-		 *            afterCreate     Fires after the object has been appended to it's parent
+		 * Events: beforeCreate  Fires after the Element has been created, but not set
+		 *         afterCreate   Fires after the Element has been appended to it's parent
 		 *
-		 * @param type {String} Type of element to create
-		 * @param args {Object} [Optional] Collection of properties to apply to the new element
-		 * @param id {Mixed} [Optional] Target object or element.id value to append to
-		 * @returns {Object} The elemented that was created
+		 * @method create
+		 * @param  {String} type   Type of Element to create
+		 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
+		 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
+		 * @return {Object} Element that was created or undefined
 		 */
-		create : function(type, args, id) {
+		create : function(type, args, target) {
 			try {
 				if (typeof type === "undefined")
 					throw new Error(label.error.invalidArguments);
 
-				var obj, uid, target;
+				var obj, uid;
 
 				switch (true) {
-					case typeof id !== "undefined":
-						target = typeof id === "object" ? id : $(id);
+					case typeof target !== "undefined":
+						target = utility.object(target);
 						break;
 					case typeof args !== "undefined" && (typeof args === "string" || typeof args.childNodes !== "undefined"):
-						target = args;
-						if (typeof target === "string") target = $(target);
+						target = utility.object(args);
 						break;
 					default:
 						target = document.body;
@@ -1539,10 +1571,11 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Loads a CSS stylesheet into the View
+		 * Creates a CSS stylesheet in the View
 		 *
-		 * @param content {String} The CSS to put in a style tag
-		 * @returns {Object} The style Element created
+		 * @method css
+		 * @param  {String} content CSS to put in a style tag
+		 * @return {Object} Element created or undefined
 		 */
 		css : function(content) {
 			try {
@@ -1562,13 +1595,14 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Destroys an element
+		 * Destroys an Element
 		 *
-		 * Events:    beforeDestroy    Fires before the destroy starts
-		 *            afterDestroy     Fires after the destroy ends
+		 * Events: beforeDestroy  Fires before the destroy starts
+		 *         afterDestroy   Fires after the destroy ends
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {Mixed} Undefined or Array of Instances
+		 * @method destroy
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
 		destroy : function(obj) {
 			try {
@@ -1598,12 +1632,14 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Disables an element
+		 * Disables an Element
 		 *
-		 * Events:    beforeDisable    Fires before the disable starts
-		 *            afterDisable     Fires after the disable ends
+		 * Events: beforeDisable  Fires before the disable starts
+		 *         afterDisable   Fires after the disable ends
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
+		 * @method disable
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
 		disable : function(obj) {
 			try {
@@ -1629,13 +1665,14 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Enables an element
+		 * Enables an Element
 		 *
-		 * Events:    beforeEnable    Fires before the enable starts
-		 *            afterEnable     Fires after the enable ends
+		 * Events: beforeEnable  Fires before the enable starts
+		 *         afterEnable   Fires after the enable ends
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {Mixed} Instance or Array of Instances
+		 * @method enable
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
 		enable : function(obj) {
 			try {
@@ -1664,11 +1701,12 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Hides an Element if it's visible
 		 *
-		 * Events:    beforeHide    Fires before the object is hidden
-		 *            afterHide     Fires after the object is hidden
+		 * Events: beforeHide  Fires before the object is hidden
+		 *         afterHide   Fires after the object is hidden
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances or $() friendly ID
-		 * @returns {Mixed} Instance or Array of Instances
+		 * @method hide
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
 		hide : function(obj) {
 			try {
@@ -1703,8 +1741,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns a Boolean indidcating if the Object is hidden
 		 *
-		 * @param obj {Mixed} Instance or $() friendly ID
-		 * @returns {Boolean} Indicates if Object is hidden
+		 * @method hidden
+		 * @param  {Mixed} obj Element or $ query
+		 * @return {Mixed} Boolean indicating if Object is hidden
 		 */
 		hidden : function(obj) {
 			try {
@@ -1724,8 +1763,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Finds the position of an element
 		 *
-		 * @param id {String} Target object.id value
-		 * @returns {Array} An array containing the render position of the element
+		 * @method position
+		 * @param  {Mixed} obj Element or $ query
+		 * @return {Array} Array containing the render position of the element
 		 */
 		position : function(obj) {
 			try {
@@ -1758,11 +1798,12 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Shows an Element if it's not visible
 		 *
-		 * Events:    beforeEnable    Fires before the object is visible
-		 *            afterEnable     Fires after the object is visible
+		 * Events: beforeEnable  Fires before the object is visible
+		 *         afterEnable   Fires after the object is visible
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {Mixed} Instance or Array of Instances
+		 * @method show
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
 		show : function(obj) {
 			try {
@@ -1796,40 +1837,58 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns the size of the Object
 		 *
+		 * @method size
 		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @returns {Object} Object of the dimensions {x:, y:}
+		 * @return {Object} Size {x:, y:}, Array of sizes or undefined
 		 */
 		size : function(obj) {
-				obj = utility.object(obj);
+			try {
+				if (obj instanceof Array) {
+					var nth    = !isNaN(obj.length) ? obj.length : obj.total(),
+					    i      = null,
+					    result = [];
 
-				if (typeof obj === "undefined")
-					throw new Error(label.error.invalidArguments);
+					for (i = 0; i < nth; i++) { result.push(this.size(obj[i])); }
+					return result;
+				}
+				else {
+					obj = utility.object(obj);
 
-				/**
-				 * Casts n to a number or returns zero
-				 *
-				 * @param n {Mixed} The value to cast
-				 * @returns {Integer} The casted value or zero
-				 */
-				var num = function(n) {
-					return !isNaN(parseInt(n)) ? parseInt(n) : 0;
-				};
+					if (typeof obj === "undefined")
+						throw new Error(label.error.invalidArguments);
 
-				var x = obj.offsetHeight + num(obj.style.paddingTop) + num(obj.style.paddingBottom) + num(obj.style.borderTop) + num(obj.style.borderBottom),
-					y = obj.offsetWidth + num(obj.style.paddingLeft) + num(obj.style.paddingRight) + num(obj.style.borderLeft) + num(obj.style.borderRight);
+					/**
+					 * Casts n to a number or returns zero
+					 *
+					 * @param n {Mixed} The value to cast
+					 * @returns {Integer} The casted value or zero
+					 */
+					var num = function(n) {
+						return !isNaN(parseInt(n)) ? parseInt(n) : 0;
+					};
 
-				return {x:x, y:y};
+					var x = obj.offsetHeight + num(obj.style.paddingTop) + num(obj.style.paddingBottom) + num(obj.style.borderTop) + num(obj.style.borderBottom),
+						y = obj.offsetWidth + num(obj.style.paddingLeft) + num(obj.style.paddingRight) + num(obj.style.borderLeft) + num(obj.style.borderRight);
+
+					return {x:x, y:y};
+				}
+			}
+			catch (e) {
+				$.error(e, arguments, this);
+				return undefined;
+			}
 		},
 
 		/**
-		 * Updates an object or element
+		 * Updates an Element
 		 *
-		 * Events:    beforeUpdate    Fires before the update starts
-		 *            afterUpdate     Fires after the update ends
+		 * Events: beforeUpdate  Fires before the update starts
+		 *         afterUpdate   Fires after the update ends
 		 *
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @param args {Object} A collection of properties
-		 * @returns {Mixed} Instance or Array of Instances
+		 * @method update
+		 * @param  {Mixed}  obj  Element or Array of Elements or $ queries
+		 * @param  {Object} args Collection of properties
+		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
 		update : function(obj, args) {
 			try {
@@ -1889,14 +1948,16 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Number methods
 	 *
-	 * @class
+	 * @class number
+	 * @namespace abaaso
 	 */
 	var number = {
 		/**
-		 * Returns true if the number is even
+		 * Tests if an number is even
 		 *
-		 * @param arg {Integer}
-		 * @returns {Boolean}
+		 * @method even
+		 * @param {Number} arg Number to test
+		 * @return {Boolean} True if even, or undefined
 		 */
 		even : function(arg) {
 			try {
@@ -1909,10 +1970,11 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Returns true if the number is odd
+		 * Tests if a number is odd
 		 *
-		 * @param arg {Integer}
-		 * @returns {Boolean}
+		 * @method odd
+		 * @param {Number} arg Number to test
+		 * @return {Boolean} True if odd, or undefined
 		 */
 		odd : function(arg) {
 			try {
@@ -1928,13 +1990,16 @@ var abaaso = abaaso || (function(){
 	/**
 	 * JSON methods
 	 *
-	 * @class
+	 * @class json
+	 * @namespace abaaso
 	 */
 	var json = {
 		/**
-		 * Decodes the argument into an object
+		 * Decodes the argument
 		 *
-		 * @param arg {String} The string to parse
+		 * @method decode
+		 * @param  {String} arg String to parse
+		 * @return {Mixed} Entity resulting from parsing JSON, or undefined
 		 */
 		decode : function(arg) {
 			try {
@@ -1947,9 +2012,11 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Encodes a string, array or object to a JSON string
+		 * Encodes the argument as JSON
 		 *
-		 * @param arg {Mixed} The entity to encode
+		 * @method encode
+		 * @param  {Mixed} arg Entity to encode
+		 * @return {String} JSON, or undefined
 		 */
 		encode : function(arg) {
 			try {
@@ -1967,12 +2034,11 @@ var abaaso = abaaso || (function(){
 	 *
 	 * Override this with another language pack
 	 *
-	 * @class
+	 * @class label
+	 * @namespace abaaso
 	 */
 	var label = {
-		/**
-		 * Common labels
-		 */
+		// Common labels
 		common : {
 			back    : "Back",
 			cancel  : "Cancel",
@@ -1993,9 +2059,7 @@ var abaaso = abaaso || (function(){
 			submit  : "Submit"
 		},
 
-		/**
-		 * Error messages
-		 */
+		// Error messages
 		error : {
 			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota",
 			databaseNotSupported  : "Client does not support local database storage",
@@ -2017,26 +2081,28 @@ var abaaso = abaaso || (function(){
 			serverUnauthorized    : "Authorization required to access URI"
 		},
 
+		// Months of the Year
 		months : {
-			"0"  : "January",
-			"1"  : "February",
-			"2"  : "March",
-			"3"  : "April",
-			"4"  : "May",
-			"5"  : "June",
-			"6"  : "July",
-			"7"  : "August",
-			"8"  : "September",
-			"9"  : "October",
-			"10" : "November",
-			"11" : "December"
+			0  : "January",
+			1  : "February",
+			2  : "March",
+			3  : "April",
+			4  : "May",
+			5  : "June",
+			6  : "July",
+			7  : "August",
+			8  : "September",
+			9  : "October",
+			10 : "November",
+			11 : "December"
 		}
 	};
 
 	/**
-	 * Mouse co-ordinates
+	 * Mouse tracking
 	 *
-	 * @class
+	 * @class mouse
+	 * @namespace abaaso
 	 */
 	var mouse = {
 		//Indicates whether mouse tracking is enabled
@@ -2051,8 +2117,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Enables or disables mouse co-ordinate tracking
 		 *
-		 * @param n {Mixed} Boolean to enable/disable tracking, or Mouse Event
-		 * @returns {Object} abaaso.mouse
+		 * @method track
+		 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
+		 * @return {Object} abaaso.mouse
 		 */
 		track : function(n) {
 			var m = abaaso.mouse;
@@ -2083,31 +2150,28 @@ var abaaso = abaaso || (function(){
 	};
 
 	/**
-	 * Observer for events
+	 * Global Observer wired to a State Machine
 	 *
-	 * @class
+	 * @class observer
 	 */
 	var observer = {
-		/**
-		 * Collection event listeners
-		 */
+		// Collection of listeners
 		listeners : {},
 
-		/**
-		 * If true, events fired are written to the console
-		 */
+		// Boolean indicating if events are logged to the console
 		log : false,
 
 		/**
 		 * Adds a handler to an event
 		 *
-		 * @param obj {Mixed} The object.id or instance of object firing the event
-		 * @param event {String} The event being fired
-		 * @param fn {Function} The event handler
-		 * @param id {String} [Optional / Recommended] The id for the listener
-		 * @param scope {String} [Optional / Recommended] The id of the object or element to be set as 'this'
-		 * @param state {String} [Optional] The state the listener is for
-		 * @returns {Object} The object
+		 * @method add
+		 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
+		 * @param  {String}   event Event being fired
+		 * @param  {Function} fn    Event handler
+		 * @param  {String}   id    [Optional / Recommended] The id for the listener
+		 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
+		 * @param  {String}   state [Optional] The state the listener is for
+		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
 		add : function(obj, event, fn, id, scope, state) {
 			try {
@@ -2171,10 +2235,11 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Fires an event
 		 *
-		 * @param obj {Mixed} The object.id or instance of object firing the event
-		 * @param event {String} The event being fired
-		 * @param arg {Mixed} [Optional] Argument supplied to the listener
-		 * @returns {Object} The object
+		 * @method fire
+		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
+		 * @param  {String} event Event being fired
+		 * @param  {Mixed}  arg   [Optional] Argument supplied to the listener
+		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
 		fire : function(obj, event, arg) {
 			try {
@@ -2215,11 +2280,12 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Lists the active and standby listeners for an object event
+		 * Gets the listeners for an event
 		 *
-		 * @param obj {Mixed} The object.id or instance of object firing the event
-		 * @param event {String} The event being fired
-		 * @returns {Array} The listeners for object
+		 * @method list
+		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
+		 * @param  {String} event Event being queried
+		 * @return {Array} Array of listeners for the event
 		 */
 		list : function(obj, event) {
 			try {
@@ -2241,12 +2307,13 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Removes an event listener, or listeners
+		 * Removes an event listener, or Array of event listeners
 		 *
-		 * @param obj {Mixed} The object.id or instance of object firing the event
-		 * @param event {String} The event being fired
-		 * @param id {String} [Optional] The identifier for the listener
-		 * @returns {Object} The object
+		 * @method remove
+		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
+		 * @param  {String} event Event being fired
+		 * @param  {String} id    [Optional] Listener id
+		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
 		remove : function(obj, event, id) {
 			try {
@@ -2296,12 +2363,13 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Replaces active listeners with the relevant standby listeners
+		 * Triggers an Observer state change
 		 *
-		 * @param state {String} The new application state
-		 * @returns {Object} The object
+		 * @method state
+		 * @param  {String} arg Application state
+		 * @return {Object} abaaso
 		 */
-		replace : function(state) {
+		state : function(arg) {
 			try {
 				var l = this.listeners,
 				    i, e;
@@ -2309,11 +2377,11 @@ var abaaso = abaaso || (function(){
 				for (i in l) {
 					for (e in l[i]) {
 						l[i][e].standby[$.state.previous] = l[i][e].active;
-						l[i][e].active = typeof l[i][e].standby[state] !== "undefined" ? l[i][e].standby[state] : {};
-						if (typeof l[i][e].standby[state] !== "undefined") delete l[i][e].standby[state];
+						l[i][e].active = typeof l[i][e].standby[arg] !== "undefined" ? l[i][e].standby[arg] : {};
+						if (typeof l[i][e].standby[arg] !== "undefined") delete l[i][e].standby[arg];
 					}
 				}
-				$.fire(state);
+				$.fire(arg);
 				return abaaso;
 			}
 			catch (e) {
@@ -2326,7 +2394,8 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Utility methods
 	 *
-	 * @class
+	 * @class utility
+	 * @namespace abaaso
 	 */
 	var utility = {
 		/**
@@ -2337,9 +2406,10 @@ var abaaso = abaaso || (function(){
 		 *
 		 * Selectors can be delimited with :
 		 *
-		 * @param arg {String} Comma delimited string of target #id, .class, tag and :selector
-		 * @param nodelist {Boolean} [Optional] True will return a NodeList (by reference) for tags & classes
-		 * @returns {Mixed} Instance or Array of Instances
+		 * @method $
+		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag and :selector
+		 * @param  {Boolean} nodelist [Optional] True will return a NodeList (by reference) for tags & classes
+		 * @return {Mixed} Element or Array of Elements
 		 */
 		$ : function(arg, nodelist) {
 			var args, obj, i, nth, nth2, c, alt, find, contains, has, not, is, x, s,
@@ -2349,9 +2419,10 @@ var abaaso = abaaso || (function(){
 			/**
 			 * Looks for alternating HTMLElement (arg) in HTMLElement (obj)
 			 *
-			 * @param obj {Object} HTMLElement to search
-			 * @param state {Object} Boolean representing rows, true is even, false is odd
-			 * @returns {Mixed} Instance or Array of Instances containing arg, alternating odd or even
+			 * @method alt
+			 * @param  {Object} obj   Element to search
+			 * @param  {Object} state Boolean representing rows, true is even, false is odd
+			 * @return {Array} Array of Elements
 			 */
 			alt = function(obj, state) {
 				var i, nth, instances = [];
@@ -2371,9 +2442,10 @@ var abaaso = abaaso || (function(){
 			/**
 			 * Tests obj against arg
 			 *
-			 * @param obj {String} Property to test
-			 * @param arg {String} String to test for, can be comma delimited or a wildcard
-			 * @returns {Boolean} True if found
+			 * @method find
+			 * @param  {String} obj Property to test
+			 * @param  {String} arg String to test for, can be comma delimited or a wildcard
+			 * @return {Boolean} True if found
 			 */
 			find = function(obj, arg) {
 				arg = arg.split(/\s*,\s*/);
@@ -2385,9 +2457,10 @@ var abaaso = abaaso || (function(){
 			/**
 			 * Looks for arg in obj.innerHTML
 			 *
-			 * @param obj {Object} HTMLElement to search
-			 * @param arg {Mixed} String or Integer to find in obj
-			 * @returns {Mixed} Instance or Array of Instances containing arg
+			 * @method contains
+			 * @param  {Object} obj Element to search
+			 * @param  {Mixed}  arg String or Integer to find in obj
+			 * @return {Mixed} Element or Array of Elements
 			 */
 			contains = function(obj, arg) {
 				var i, nth, instances = [];
@@ -2403,11 +2476,12 @@ var abaaso = abaaso || (function(){
 			};
 
 			/**
-			 * Looks for HTMLElement (arg) in HTMLElement (obj)
+			 * Looks for Element in Element
 			 *
-			 * @param obj {Object} HTMLElement to search
-			 * @param arg {String} HTMLElement type to find, can be comma delimited
-			 * @returns {Mixed} Instance or Array of Instances containing arg
+			 * @method has
+			 * @param  {Object} obj Element to search
+			 * @param  {String} arg Element type to find, can be comma delimited
+			 * @return {Mixed} Element or Array of Elements
 			 */
 			has = function(obj, arg) {
 				var i, nth, instances = [];
@@ -2432,11 +2506,12 @@ var abaaso = abaaso || (function(){
 			};
 
 			/**
-			 * Tests if HTMLElement (obj) matches HTMLElements (arg)
+			 * Tests if Element matches Elements
 			 *
-			 * @param obj {Object} HTMLElement to search
-			 * @param arg {String} HTMLElement type to find, can be comma delimited
-			 * @returns {Mixed} Instance or Array of Instances containing arg
+			 * @method is
+			 * @param  {Object} obj Element to search
+			 * @param  {String} arg Element type to find, can be comma delimited
+			 * @return {Mixed} Element or Array of Elements
 			 */
 			is = function(obj, arg) {
 				var i, nth, instances = [];
@@ -2454,7 +2529,7 @@ var abaaso = abaaso || (function(){
 			};
 
 			/**
-			 * Finds and excludes HTMLElements (arg) in HTMLElement (obj)
+			 * Excludes Elements in Element
 			 *
 			 * @param obj {Object} HTMLElement to search
 			 * @param arg {String} HTMLElement type to exclude, can be comma delimited
@@ -2577,11 +2652,12 @@ var abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Creates an alias of origin on obj
+		 * Aliases origin onto obj
 		 *
-		 * @param obj {Object} Object to alias origin
-		 * @param origin {Object} Object providing structure to obj
-		 * @returns {Object} Object to alias origin
+		 * @method alias
+		 * @param  {Object} obj    Object receiving aliasing
+		 * @param  {Object} origin Object providing structure to obj
+		 * @return {Object} Object receiving aliasing
 		 */
 		alias : function(obj, origin){
 			try {
@@ -2615,8 +2691,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Clones an Object
 		 *
-		 * @param obj {Object} Object to clone
-		 * @returns {Object} A clone of the Object
+		 * @method clone
+		 * @param  {Object} obj Object to clone
+		 * @return {Object} Clone of obj
 		 */
 		clone: function(obj) {
 			try {
@@ -2639,9 +2716,11 @@ var abaaso = abaaso || (function(){
 		 * Allows deep setting of properties without knowing
 		 * if the structure is valid
 		 *
-		 * @param args {String} Dot delimited string of the structure
-		 * @param value {Mixed} The value to set
-		 * @param obj {Object} The object to set the value on
+		 * @method define
+		 * @param  {String} args  Dot delimited string of the structure
+		 * @param  {Mixed}  value Value to set
+		 * @param  {Object} obj   Object receiving value
+		 * @return {Object} Object receiving value
 		 */
 		define : function(args, value, obj) {
 			args = args.split(".");
@@ -2665,9 +2744,10 @@ var abaaso = abaaso || (function(){
 		 * Defers the execution of Function by at least the supplied milliseconds
 		 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine
 		 *
-		 * @param fn {Function} The function to defer execution of
-		 * @param ms {Integer} Milliseconds to defer execution
-		 * @returns undefined
+		 * @method defer
+		 * @param  {Function} fn Function to defer execution of
+		 * @param  {Integer}  ms Milliseconds to defer execution
+		 * @return {Object} undefined
 		 */
 		defer : function(fn, ms) {
 			var id = $.genId(),
@@ -2676,14 +2756,17 @@ var abaaso = abaaso || (function(){
 					fn();
 				};
 			abaaso.timer[id] = setTimeout(op, ms);
+			return undefined;
 		},
 
 		/**
 		 * Error handling, with history in .log
 		 *
-		 * @param e {Mixed} Error object or message to display
-		 * @param args {Array} Array of arguments from the callstack
-		 * @param scope {Mixed} Object that triggered the Error
+		 * @method error
+		 * @param  {Mixed} e     Error object or message to display
+		 * @param  {Array} args  Array of arguments from the callstack
+		 * @param  {Mixed} scope Entity that was "this"
+		 * @return {Object} undefined
 		 */
 		error : function(e, args, scope) {
 			if (typeof e === "undefined")
@@ -2702,17 +2785,19 @@ var abaaso = abaaso || (function(){
 			if (typeof abaaso.error.log === "undefined") abaaso.error.log = [];
 			abaaso.error.log.push(o);
 			abaaso.fire("error", o);
+			return undefined;
 		},
 
 		/**
 		 * Encodes a string to a DOM friendly ID
 		 *
-		 * @param id {String} The object.id value to encode
-		 * @returns {String} Returns a lowercase stripped string
+		 * @method domId
+		 * @param  {String} arg String to make DOM friendly
+		 * @return {String} DOM friendly version of arg
 		 */
-		domId : function(id) {
+		domId : function(arg) {
 			try {
-				return id.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
+				return arg.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -2723,8 +2808,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Generates an ID value
 		 *
-		 * @param obj {Mixed} [Optional] Object to set ID on
-		 * @returns {Mixed} Object if supplied, or the ID
+		 * @method genId
+		 * @param  {Mixed} obj [Optional] Object to receive id
+		 * @return {Mixed} Object or id
 		 */
 		genId : function(obj) {
 			try {
@@ -2750,7 +2836,8 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Generates a random number
 		 *
-		 * @returns {Integer} Between 1 and 1-trillian
+		 * @method id
+		 * @return {Integer} Between 1 and 1-trillian
 		 */
 		id : function() {
 			return Math.floor(Math.random() * 1000000000);
@@ -2760,7 +2847,9 @@ var abaaso = abaaso || (function(){
 		 * Renders a loading icon in a target element,
 		 * with a class of "loading"
 		 *
-		 * @param id {String} Target object.id value
+		 * @method loading
+		 * @param  {Mixed} obj Entity or Array of Entities or $ queries
+		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
 		loading : function(obj) {
 			try {
@@ -2768,33 +2857,32 @@ var abaaso = abaaso || (function(){
 					var nth = !isNaN(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 					for (i = 0; i < nth; i++) { this.loading(obj[i]); }
-					return arg;
-				}
-				else {
-					var l = abaaso.loading;
-					if (l.url === null)
-						throw new Error(label.error.elementNotFound);
-
-					obj = utility.object(obj);
-
-					if (typeof obj === "undefined")
-						throw new Error(label.error.invalidArguments);
-
-					// Setting loading image
-					if (typeof l.image === "undefined") {
-						l.image     = new Image();
-						l.image.src = l.url;
-					}
-
-					// Clearing target element
-					obj.clear();
-
-					// Creating loading image in target element
-					obj.create("div", {"class": "loading"})
-					   .create("img", {alt: label.common.loading, src: l.image.src});
-
 					return obj;
 				}
+
+				var l = abaaso.loading;
+				if (l.url === null)
+					throw new Error(label.error.elementNotFound);
+
+				obj = utility.object(obj);
+
+				if (typeof obj === "undefined")
+					throw new Error(label.error.invalidArguments);
+
+				// Setting loading image
+				if (typeof l.image === "undefined") {
+					l.image     = new Image();
+					l.image.src = l.url;
+				}
+
+				// Clearing target element
+				obj.clear();
+
+				// Creating loading image in target element
+				obj.create("div", {"class": "loading"})
+				   .create("img", {alt: label.common.loading, src: l.image.src});
+
+				return obj;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
@@ -2805,8 +2893,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Writes argument to the console
 		 *
-		 * @param arg {String} The string to write to the console
-		 * @returns undefined;
+		 * @method log
+		 * @param  {String} arg String to write to the console
+		 * @return undefined;
 		 */
 		log : function(arg) {
 			try {
@@ -2815,13 +2904,15 @@ var abaaso = abaaso || (function(){
 			catch (e) {
 				$.error(e, arguments, this);
 			}
+			return undefined;
 		},
 
 		/**
 		 * Returns argument, or instance based on #object.id value
 		 *
-		 * @param obj {Mixed} Object or #Object.id
-		 * @returns {Object} Returns an instance of Object
+		 * @method object
+		 * @param  {Mixed} obj Entity or $ query
+		 * @returns {Mixed} Entity
 		 * @private
 		 */
 		object : function(obj) {
@@ -2831,8 +2922,10 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Sets methods on a prototype object
 		 *
-		 * @param obj {Object} Instance of Array, Element, String or Number
-		 * @param type {String} Identifier of obj, determines what arrays to apply
+		 * @method proto
+		 * @param  {Object} obj Object receiving prototype extension
+		 * @param  {String} type Identifier of obj, determines what Arrays to apply
+		 * @return {Object} obj or undefined
 		 */
 		proto : function(obj, type) {
 			try {
@@ -3011,9 +3104,11 @@ var abaaso = abaaso || (function(){
 				// Applying the methods
 				for (i in methods[type])  { obj.prototype[i] = methods[type][i];  }
 				for (i in methods.shared) { obj.prototype[i] = methods.shared[i]; }
+				return obj;
 			}
 			catch (e) {
 				$.error(e, arguments, this);
+				return undefined;
 			}
 		}
 	};
@@ -3021,12 +3116,11 @@ var abaaso = abaaso || (function(){
 	/**
 	 * Validation methods and patterns
 	 *
-	 * @class
+	 * @class validate
+	 * @namespace abaaso
 	 */
 	var validate = {
-		/**
-		 * Regular expression patterns to test against
-		 */
+		// Regular expression patterns to test against
 		pattern : {
 			alphanum : /^[a-zA-Z0-9]*$/,
 			"boolean": /^(0|1|true|false)?$/,
@@ -3043,8 +3137,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Validates args based on the type or pattern specified
 		 *
-		 * @param args {Object} An object to test {(pattern[name] || /pattern/) : (value || #object.id)}
-		 * @returns {Object} An object containing validation status and invalid instances
+		 * @method test
+		 * @param  {Object} args Object to test {(pattern[name] || /pattern/) : (value || #object.id)}
+		 * @return {Object} Results
 		 */
 		test : function(args) {
 			try {
@@ -3099,9 +3194,9 @@ var abaaso = abaaso || (function(){
 							continue;
 						}
 						value = args[i].charAt(0) === "#" ? (typeof $(args[i]) !== "undefined" ? (($(args[i]).value) ? $(args[i]).value
-						                                                                                           : $(args[i]).innerHTML)
-						                                                                     : "")
-						                             : args[i];
+						                                                                                             : $(args[i]).innerHTML)
+						                                                                       : "")
+						                                  : args[i];
 						switch (i) {
 							case "date":
 								if (isNaN(new Date(value).getYear())) {
@@ -3143,14 +3238,16 @@ var abaaso = abaaso || (function(){
 	/**
 	 * XML methods
 	 *
-	 * @class
+	 * @class xml
+	 * @namespace abaaso
 	 */
 	var xml = {
 		/**
 		 * Returns XML (Document) Object from a String
 		 *
-		 * @param arg {String} XML String
-		 * @returns {Object} XML Object
+		 * @method decode
+		 * @param  {String} arg XML String
+		 * @return {Object} XML Object or undefined
 		 */
 		decode : function(arg) {
 			try {
@@ -3176,8 +3273,9 @@ var abaaso = abaaso || (function(){
 		/**
 		 * Returns XML String from an Object or Array
 		 *
-		 * @param arg {Mixed} Object or Array to cast to XML String
-		 * @returns {String} XML String
+		 * @method encode
+		 * @param  {Mixed} arg Object or Array to cast to XML String
+		 * @return {String} XML String or undefined
 		 */
 		encode : function(arg, wrap) {
 			try {
@@ -3234,12 +3332,12 @@ var abaaso = abaaso || (function(){
 	return {
 		// Classes
 		array           : array,
-		callback        : [],
+		callback        : {},
 		client          : {
 			// Properties
 			android : client.android,
 			blackberry : client.blackberry,
-			css3    : null,
+			css3    : false,
 			chrome  : client.chrome,
 			expire  : client.expire,
 			firefox : client.firefox,
@@ -3254,7 +3352,7 @@ var abaaso = abaaso || (function(){
 			safari  : client.safari,
 			tablet  : client.tablet,
 			size    : {x: 0, y: 0},
-			version : null,
+			version : 0,
 			webos   : client.webos,
 			windows : client.windows,
 
@@ -3354,7 +3452,7 @@ var abaaso = abaaso || (function(){
 
 					$.state.previous = this.previous = this._current;
 					$.state.current  = this._current = arg;
-					return observer.replace(arg);
+					return observer.state(arg);
 				}
 				catch (e) {
 					$.error(e, arguments, this);
@@ -3415,8 +3513,7 @@ var abaaso = abaaso || (function(){
 				}
 			}
 
-			// All setup!
-			abaaso.ready = true;
+			$.ready = abaaso.ready = true;
 			$.fire("ready").un("ready");
 
 			// Setting render event
@@ -3469,7 +3566,7 @@ var abaaso = abaaso || (function(){
 			return observer.remove(obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.100"
+		version         : "1.6.101"
 	};
 })();
 
