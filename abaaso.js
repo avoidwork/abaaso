@@ -3428,8 +3428,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		alias           : utility.alias,
 		allow           : client.allow,
 		bootstrap       : function() {
-			delete abaaso.bootstrap();
-
 			if (typeof document.getElementsByClassName === "undefined") {
 				document.getElementsByClassName = function(arg) {
 					var nodes   = document.getElementsByTagName("*"),
@@ -3530,7 +3528,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		hidden          : el.hidden,
 		id              : "abaaso",
 		init            : function() {
+			// Stopping multiple executions
 			delete abaaso.init;
+			delete abaaso.bootstrap;
 
 			// Describing the Client
 			$.client.version = abaaso.client.version = client.version();
