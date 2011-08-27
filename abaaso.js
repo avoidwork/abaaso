@@ -3381,7 +3381,7 @@ var abaaso = abaaso || (function(){
 				fired   : 0,
 				list    : observer.list,
 				remove  : observer.remove
-			},
+		},
 		state           : {
 			_current    : null,
 			header      : null,
