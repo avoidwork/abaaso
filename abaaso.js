@@ -943,7 +943,7 @@ var abaaso = abaaso || (function(){
 	};
 
 	/**
-	 * Template data store, use abaaso.store(obj) or abaaso.data.register(obj)
+	 * Template data store, use $.store(obj), abaaso.store(obj) or abaaso.data.register(obj)
 	 * to register it with an Object
 	 *
 	 * RESTful behavior is supported, by setting the 'key' & 'uri' properties
