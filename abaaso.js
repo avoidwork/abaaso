@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.110
+ * @version 1.6.111
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -2375,12 +2375,18 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 				if (typeof id === "undefined") {
 					delete l[o][event];
-					instance = (o !== "abaaso") ? $("#"+o) : null;
+					switch (true) {
+						case /body|document|window/i.test(o):
+							instance = obj;
+							break;
+						default:
+							instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
+					}
 					efn = function(e) {
 				    	if (!e) e = window.event;
-				    	e.cancelBubble = true;
+				    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
 				    	if (typeof e.stopPropagation === "function") e.stopPropagation();
-				    	instance.fire(event);
+				    	typeof instance.fire === "function" ? instance.fire(event) : observer.fire(obj, event, e);
 				    };
 
 					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
@@ -3419,7 +3425,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.110"
+		version         : "1.6.111"
 	};
 })();
 
