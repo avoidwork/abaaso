@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.111
+ * @version 1.6.112
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -1071,7 +1071,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				reindex = (reindex !== false);
 
 				var obj  = this.parentNode,
-				    guid = utility.genId(),
+				    guid = utility.guid(),
 				    key;
 
 				if (typeof record === "string") {
@@ -1360,7 +1360,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
-				    guid   = utility.genId(),
+				    guid   = utility.guid(),
 				    arg, index, record;
 
 				obj.on("syncDataSet", function(){
@@ -1423,7 +1423,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					throw Error(label.error.invalidArguments);
 
 				var obj  = this.parentNode,
-				    guid = utility.genId(),
+				    guid = utility.guid(),
 				    success, failure;
 
 				this.uri.on("afterGet", function(arg){
@@ -2186,7 +2186,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					return obj;
 				}
 
-				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.genId();
+				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid();
 
 				var instance = null,
 				    l = observer.listeners,
@@ -2573,13 +2573,25 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Object} undefined
 		 */
 		defer : function(fn, ms) {
-			var id = utility.genId(),
+			var id = utility.guid(),
 			    op = function() {
 					delete abaaso.timer[id];
 					fn();
 				};
 			abaaso.timer[id] = setTimeout(op, ms);
 			return undefined;
+		},
+
+		/**
+		 * Encodes a GUID to a DOM friendly ID
+		 *
+		 * @method domId
+		 * @param  {String} GUID
+		 * @return {String} DOM friendly ID
+		 * @private
+		 */
+		domId : function(arg) {
+			return "a" + arg.replace(/-/g, "").slice(1);
 		},
 
 		/**
@@ -2612,23 +2624,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Encodes a string to a DOM friendly ID
-		 *
-		 * @method domId
-		 * @param  {String} arg String to make DOM friendly
-		 * @return {String} DOM friendly version of arg
-		 */
-		domId : function(arg) {
-			try {
-				return arg.toString().replace(/(\&|,|(\s)|\/)/gi,"").toLowerCase();
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
 		 * Generates an ID value
 		 *
 		 * @method genId
@@ -2636,34 +2631,36 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Mixed} Object or id
 		 */
 		genId : function(obj) {
-			try {
-				if (obj instanceof Array || obj instanceof String || (typeof obj !== "undefined" && typeof obj.id !== "undefined" && !obj.id.isEmpty()))
+			switch (true) {
+				case obj instanceof Array:
+				case typeof obj === "string":
+				case typeof obj !== "undefined" && typeof obj.id !== "undefined" && /\w/.test(obj.id):
 					return obj;
-
-				var id;
-				do id = "a" + utility.id();
-				while (typeof $("#" + id) !== "undefined");
-
-				if (typeof obj === "object") {
-					obj.id = id;
-					return obj;
-				}
-				else { return id; }
 			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
+
+			var id;
+			do id = utility.domId(utility.guid());
+			while (typeof $("#" + id) !== "undefined");
+
+			if (typeof obj === "object") {
+				obj.id = id;
+				return obj;
 			}
+			else { return id; }
 		},
 
 		/**
-		 * Generates a random number
+		 * Generates a GUID
 		 *
-		 * @method id
-		 * @return {Integer} Between 1 and 1-trillian
+		 * @method guid
+		 * @return {String} GUID
 		 */
-		id : function() {
-			return Math.floor(Math.random() * 1000000000);
+		guid : function() {
+			var s4 = function(){
+				return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+			};
+
+			return (s4() + s4() + "-" + s4() + "-4" + s4().substr(0,3) + "-" + s4() + "-" + s4() + s4() + s4()).toLowerCase();
 		},
 
 		/**
@@ -2780,7 +2777,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   get       : function(uri, headers) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
-									    guid   = utility.genId();
+									    guid   = utility.guid();
 									if (!cached) {
 										uri.on("afterGet", function(arg) {
 											uri.un("afterGet", guid);
@@ -2843,7 +2840,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   loading  : function() { return $.loading.create(this); },
 					           on       : function(event, listener, id, scope, standby) {
 									scope = scope || this;
-									if (typeof this.id === "undefined" || this.id.isEmpty()) this.genId();
+									this.genId();
 									return $.on(this, event, listener, id, scope, standby);
 							   },
 					           position : function() {
@@ -2869,7 +2866,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									this.genId();
 									return $.update(this, args);
 							   },
-							   validate  : function() { return this.nodeName === "FORM" ? $.validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+							   validate : function() { return this.nodeName === "FORM" ? $.validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 					number  : {isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
 					           on       : function(event, listener, id, scope, standby) {
@@ -2877,29 +2874,22 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					           		return $.on(this, event, listener, id, scope, standby);
 					           }},
 					shared  : {clear    : function() {
-									if (typeof this === "object" && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
+									this.genId();
 									this instanceof String ? this.constructor = new String("") : $.clear(this);
 									return this;
 							   },
 							   destroy  : function() { $.destroy(this); },
-							   domId    : function() {
-							   		if (!this instanceof String) {
-							   			this.genId();
-							   			return $.domId(this.id);
-							   		}
-							   		return $.domId(this);
-							   },
 							   fire     : function(event, args) {
-							   		if (!this instanceof String && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
+							   		this.genId();
 							   		return $.fire.call(this, event, args);
 							   },
 							   genId    : function() { return $.genId(this); },
 							   listeners: function(event) {
-							   		if (!this instanceof String && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
+							   		this.genId();
 							   		return $.listeners(this, event);
 							   },
 							   un       : function(event, id) {
-							   		if (!this instanceof String && (typeof this.id === "undefined" || this.id.isEmpty())) this.genId();
+							   		this.genId();
 							   		return $.un(this, event, id);
 							   }},
 					string  : {allow    : function(arg) { return $.allow(this, arg); },
@@ -3302,7 +3292,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		define          : utility.define,
 		del             : function(uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
 		destroy         : el.destroy,
-		domId           : utility.domId,
 		encode          : json.encode,
 		error           : utility.error,
 		fire            : function() {
@@ -3313,7 +3302,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.fire.call(observer, obj, event, arg);
 		},
 		genId           : utility.genId,
-		get             : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+ 		get             : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+		guid            : utility.guid,
 		hidden          : el.hidden,
 		id              : "abaaso",
 		init            : function() {
@@ -3425,7 +3415,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.111"
+		version         : "1.6.112"
 	};
 })();
 
