@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.109
+ * @version 1.6.110
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -2432,7 +2432,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 	 */
 	var utility = {
 		/**
-		* Returns an instance or array of instances; selectors are supported
+		 * Returns an Element or Array of Elements
 		 *
 		 * @method $
 		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag and :selector
@@ -2440,21 +2440,20 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Mixed} Element or Array of Elements
 		 */
 		$ : function(arg, nodelist) {
-			var args, obj, i, nth, nth2, c, x, s,
-			    document  = window.document,
-			    instances = [];
-
-			if (nodelist !== true) nodelist = false;
+			nodelist = (nodelist === true);
 
 			// Recursive processing, ends up below
 			if (/,/.test(arg)) arg = arg.split(/\s*,\s*/);
 			if (arg instanceof Array) {
-				nth = arg.length;
+				var instances = [],
+				    nth = arg.length,
+				    i;
 				for (i = 0; i < nth; i++) { instances.push($(arg[i], nodelist)); }
 				return instances;
 			}
 
-			// Getting instance(s)
+			// Getting Elements(s)
+			var obj;
 			switch (arg.charAt(0)) {
 				case "#":
 					obj = document.querySelector(arg);
@@ -3420,7 +3419,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.109"
+		version         : "1.6.110"
 	};
 })();
 
