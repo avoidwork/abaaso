@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.113
+ * @version 1.6.114
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -562,17 +562,16 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					throw Error(label.error.invalidArguments);
 
 				if (type.toLowerCase() === "jsonp") {
-					var curi = new String(uri), uid;
+					var curi = uri, guid;
 
 					curi.on("afterJSONP", function(arg){ success(arg); });
-
-					do uid = utility.guid();
-					while (typeof abaaso.callback[uid] !== "undefined");
+					do guid = utility.genId().slice(0, 10);
+					while (typeof abaaso.callback[guid] !== "undefined");
 
 					if (typeof args === "undefined") args = "callback";
-					uri = uri.replace(args + "=?", args + "=abaaso.callback." + uid);
-					abaaso.callback[uid] = function(arg){
-						delete abaaso.callback[uid];
+					uri = uri.replace(args + "=?", args + "=abaaso.callback." + guid);
+					abaaso.callback[guid] = function(arg){
+						delete abaaso.callback[guid];
 						curi.fire("afterJSONP", arg)
 						    .un("afterJSONP");
 					};
@@ -2856,7 +2855,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									return $.el.size(this);
 							   },
 							   text     : function(arg) {
-							   		var args = {};
+									var args = {};
 									this.genId();
 									if (typeof this.value !== "undefined") args.value = arg;
 									if (typeof this.innerHTML !== "undefined") args.innerHTML = arg;
@@ -3415,7 +3414,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.113"
+		version         : "1.6.114"
 	};
 })();
 
