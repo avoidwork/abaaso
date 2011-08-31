@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.114
+ * @version 1.6.115
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -506,7 +506,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					case command.toLowerCase() === "get":
 						result = !((uri.permission(command).bit & 4) === 0);
 						break;
-					case /post|put/i.test(command):
+					case (/post|put/i.test(command)):
 						result = !((uri.permission(command).bit & 2) === 0);
 						break;
 					default:
@@ -757,14 +757,29 @@ var $ = $ || null, abaaso = abaaso || (function(){
 								if (!/delete|options/i.test(type) && /200|301/.test(xhr.status)) {
 									t = typeof cache.get(uri, false).headers === "object" ? cache.get(uri, false).headers["Content-Type"] : "";
 									switch (true) {
-										case /xml/.test(t):
-											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseText);
-											break;
-										case /json/.test(t):
+										case (/json/.test(t)):
 											r = json.decode(xhr.responseText);
 											break;
+										case (/xml/.test(t)):
+											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseText);
+											break;
 										default:
-											r = xhr.responseText;
+											if (client.ie) {
+												switch (true) {
+													case (/^\[|\{/.test(xhr.responseText)):
+														r = json.decode(xhr.responseText);
+														break;
+													case typeof xhr.responseXML.xml !== "undefined":
+														r = xml.decode(xhr.responseXML.xml);
+														break;
+													case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
+														r = xml.decode(xhr.responseText);
+														break;
+													default:
+														r = xhr.responseText;
+												}
+											}
+											else r = xhr.responseText;
 									}
 
 									if (typeof r === "undefined")
@@ -995,7 +1010,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i = 0, nth = data.length; i < nth; i++) {
 						switch (type) {
 							case "del":
-								this.del(data[i], false);
+								this.del(data[i], false, sync);
 								break;
 							case "set":
 								key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
@@ -1008,7 +1023,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i in data) {
 						switch (type) {
 							case "del":
-								this.del(data[i], false);
+								this.del(data[i], false, sync);
 								break;
 							case "set":
 								key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
@@ -1060,14 +1075,16 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @method del
 		 * @param  {Mixed}   record  Record key or index
 		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
+		 * @param  {Boolean} sync    [Optional] True if called by data.sync
 		 * @return {Object} Data store
 		 */
-		del : function(record, reindex) {
+		del : function(record, reindex, sync) {
 			try {
 				if (typeof record === "undefined" || (typeof record !== "number" || typeof record !== "string"))
 					throw Error(label.error.invalidArguments);
 
 				reindex = (reindex !== false);
+				sync    = (sync === true);
 
 				var obj  = this.parentNode,
 				    guid = utility.guid(),
@@ -1100,8 +1117,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}, guid, this);
 
 				obj.fire("beforeDataDelete");
-				this.uri === null ? obj.fire("syncDataDelete")
-				                  : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
+				sync || this.uri === null ? obj.fire("syncDataDelete")
+				                          : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
 				return this;
 			}
 			catch (e) {
@@ -1337,10 +1354,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 *         failedDataSet  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method set
-		 * @param key {Mixed} Integer or String to use as a Primary Key
-		 * @param data {Object} Key:Value pairs to set as field values
-		 * @param sync {Boolean} [Optional] True if called by data.sync
-		 * @returns {Object} The data store
+		 * @param  {Mixed}   key  Integer or String to use as a Primary Key
+		 * @param  {Object}  data Key:Value pairs to set as field values
+		 * @param  {Boolean} sync [Optional] True if called by data.sync
+		 * @return {Object} The data store
 		 */
 		set : function(key, data, sync) {
 			try {
@@ -1396,7 +1413,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}, guid, this);
 
 				obj.fire("beforeDataSet");
-				this.uri === null || sync ? obj.fire("syncDataSet")
+				sync || this.uri === null ? obj.fire("syncDataSet")
 				                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
@@ -2211,7 +2228,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (typeof state === "undefined") {
 					l[o][event].active[id] = item;
 					switch (true) {
-						case /body|document|window/i.test(o):
+						case (/body|document|window/i.test(o)):
 							instance = obj;
 							break;
 						default:
@@ -2375,7 +2392,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (typeof id === "undefined") {
 					delete l[o][event];
 					switch (true) {
-						case /body|document|window/i.test(o):
+						case (/body|document|window/i.test(o)):
 							instance = obj;
 							break;
 						default:
@@ -2495,7 +2512,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 								(function(){ abaaso.alias(obj[b], origin[b]); })();
 								break;
 							case typeof origin[b] === "function" && typeof origin[b].bind === "undefined":
-							case /boolean|number|string/.test(typeof origin[b]):
+							case (/boolean|number|string/.test(typeof origin[b])):
 							case origin[b] === null:
 								obj[b] = origin[b];
 								break;
@@ -2632,6 +2649,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		genId : function(obj) {
 			switch (true) {
 				case obj instanceof Array:
+				case obj instanceof String:
 				case typeof obj === "string":
 				case typeof obj !== "undefined" && typeof obj.id !== "undefined" && /\w/.test(obj.id):
 					return obj;
@@ -2974,7 +2992,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						                                                  : ((!c[i].id.isEmpty() && validate.pattern[c[i].id.toLowerCase()]) ? validate.pattern[c[i].id.toLowerCase()]
 						                                                                                                                     : "notEmpty");
 						switch (true) {
-							case /radio|checkbox/gi.test(c[i].type):
+							case (/radio|checkbox/gi.test(c[i].type)):
 								if (c[i].name in tracked) { continue; }
 								o = document.getElementsByName(c[i].name);
 								nth2 = o.length;
@@ -2986,7 +3004,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									}
 								}
 								break;
-							case /select/gi.test(c[i].type):
+							case (/select/gi.test(c[i].type)):
 								v = c[i].options[c[i].selectedIndex].value;
 								break;
 							default:
@@ -3414,7 +3432,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.114"
+		version         : "1.6.115"
 	};
 })();
 
