@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.115
+ * @version 1.6.116
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -980,7 +980,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 		// URI the data store represents (RESTful behavior),
 		// has a getter & setter as 'uri'
-		_uri     : null,
+		_uri    : null,
 
 		/**
 		 * Batch sets or deletes data in the store
@@ -1083,9 +1083,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (typeof record === "undefined" || (typeof record !== "number" || typeof record !== "string"))
 					throw Error(label.error.invalidArguments);
 
-				reindex = (reindex !== false);
-				sync    = (sync === true);
-
+				reindex  = (reindex !== false);
+				sync     = (sync === true);
 				var obj  = this.parentNode,
 				    guid = utility.guid(),
 				    key;
@@ -2633,7 +2632,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			};
 
 			if (typeof console !== "undefined") console.error(o.message);
-			if (typeof abaaso.error.log === "undefined") abaaso.error.log = [];
 			abaaso.error.log.push(o);
 			abaaso.fire("error", o);
 			return undefined;
@@ -3328,6 +3326,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			delete abaaso.init;
 			delete abaaso.bootstrap;
 
+			// Creating error log
+			abaaso.error.log = [];
+
 			// Describing the Client
 			$.client.version = abaaso.client.version = client.version();
 			$.client.css3    = abaaso.client.css3    = client.css3();
@@ -3432,7 +3433,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.115"
+		version         : "1.6.116"
 	};
 })();
 
