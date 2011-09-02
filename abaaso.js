@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.116
+ * @version 1.6.117
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -1543,7 +1543,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 */
 		create : function(type, args, target) {
 			try {
-				if (typeof type === "undefined")
+				if (typeof type === "undefined" || String(type).isEmpty())
 					throw Error(label.error.invalidArguments);
 
 				var obj, uid;
@@ -1580,7 +1580,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				$.fire("afterCreate", obj);
 				return obj;
 			}
-			catch (e) {
+			catch(e) {
 				error(e, arguments, this);
 				return undefined;
 			}
@@ -1594,20 +1594,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Object} Element created or undefined
 		 */
 		css : function(content) {
-			try {
-				var ss, css;
-				ss = $.create("style", {type: "text/css"}, $("head")[0]);
-				if (ss.styleSheet) ss.styleSheet.cssText = content;
-				else {
-					css = document.createTextNode(content);
-					ss.appendChild(css);
-				}
-				return ss;
+			var ss, css;
+			ss = $.create("style", {type: "text/css"}, $("head")[0]);
+			if (ss.styleSheet) ss.styleSheet.cssText = content;
+			else {
+				css = document.createTextNode(content);
+				ss.appendChild(css);
 			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
+			return ss;
 		},
 
 		/**
@@ -1627,24 +1621,23 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					while (i--) { this.destroy(obj[i]); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					if (typeof obj !== "undefined") {
-						var id = obj.id
-						$.fire("beforeDestroy", obj);
-						obj.fire("beforeDestroy");
-						observer.remove(id);
-						obj.parentNode.removeChild(obj);
-						obj.fire("afterDestroy");
-						$.fire("afterDestroy", id);
-					}
-					return undefined;
-				}
+
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
+
+				$.fire("beforeDestroy", obj);
+				obj.fire("beforeDestroy");
+				observer.remove(obj.id);
+				obj.parentNode.removeChild(obj);
+				obj.fire("afterDestroy");
+				$.fire("afterDestroy", obj.id);
 			}
 			catch(e) {
 				error(e, arguments, this);
-				return undefined;
 			}
+			return undefined;
 		},
 
 		/**
@@ -1664,15 +1657,18 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					while (i--) { this.disable(obj[i]); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					if (typeof obj !== "undefined" && typeof obj.disabled !== "undefined") {
-						obj.fire("beforeDisable");
-						obj.disabled = true;
-						obj.fire("afterDisable");
-					}
-					return obj;
+
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
+
+				if (typeof obj.disabled === "boolean" && !obj.disabled) {
+					obj.fire("beforeDisable");
+					obj.disabled = true;
+					obj.fire("afterDisable");
 				}
+				return obj;
 			}
 			catch(e) {
 				error(e, arguments, this);
@@ -1697,16 +1693,18 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					while (i--) { this.enable(obj[i]); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					if (typeof obj !== "undefined" && typeof obj.disabled !== "undefined") {
-						obj.fire("beforeEnable");
-						obj.disabled = false;
-						obj.fire("afterEnable");
-						instances.push(obj);
-					}
-					return obj;
+
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
+
+				if (typeof obj.disabled === "boolean" && obj.disabled) {
+					obj.fire("beforeEnable");
+					obj.disabled = false;
+					obj.fire("afterEnable");
 				}
+				return obj;
 			}
 			catch(e) {
 				error(e, arguments, this);
@@ -1733,20 +1731,23 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i = 0; i < nth; i++) { this.hide(obj[i]); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					obj.fire("beforeHide");
-					switch (true) {
-						case typeof obj.hidden === "boolean":
-							obj.hidden = true;
-							break;
-						default:
-							obj["data-display"] = obj.style.display;
-							obj.style.display = "none";
-					}
-					obj.fire("afterHide");
-					return obj;
+
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
+
+				obj.fire("beforeHide");
+				switch (true) {
+					case typeof obj.hidden === "boolean":
+						obj.hidden = true;
+						break;
+					default:
+						obj["data-display"] = obj.style.display;
+						obj.style.display = "none";
 				}
+				obj.fire("afterHide");
+				return obj;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -1765,10 +1766,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			try {
 				obj = utility.object(obj);
 
-				if (typeof obj === "undefined")
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
-				return obj.style.display === "none" || (typeof obj.hidden !== "undefined" && obj.hidden);
+				return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -1787,11 +1788,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			try {
 				obj = utility.object(obj);
 
-				if (typeof obj === "undefined")
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
-				var left = null,
-				     top = null;
+				var left = top = null;
 
 				if (obj.offsetParent) {
 					left = obj.offsetLeft;
@@ -1830,19 +1830,22 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i = 0; i < nth; i++) { this.show(obj[i]); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					obj.fire("beforeShow");
-					switch (true) {
-						case typeof obj.hidden === "boolean":
-							obj.hidden = false;
-							break;
-						default:
-							obj.style.display = typeof obj["data-display"] !== "undefined" && !obj["data-display"].isEmpty() ? obj["data-display"] : "inherit";
-					}
-					obj.fire("afterShow");
-					return obj;
+
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
+
+				obj.fire("beforeShow");
+				switch (true) {
+					case typeof obj.hidden === "boolean":
+						obj.hidden = false;
+						break;
+					default:
+						obj.style.display = typeof obj["data-display"] !== "undefined" && !obj["data-display"].isEmpty() ? obj["data-display"] : "inherit";
 				}
+				obj.fire("afterShow");
+				return obj;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -1867,27 +1870,26 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i = 0; i < nth; i++) { result.push(this.size(obj[i])); }
 					return result;
 				}
-				else {
-					obj = utility.object(obj);
 
-					if (typeof obj === "undefined")
-						throw Error(label.error.invalidArguments);
+				obj = utility.object(obj);
 
-					/**
-					 * Casts n to a number or returns zero
-					 *
-					 * @param n {Mixed} The value to cast
-					 * @returns {Integer} The casted value or zero
-					 */
-					var num = function(n) {
-						return !isNaN(parseInt(n)) ? parseInt(n) : 0;
-					};
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
 
-					var x = obj.offsetHeight + num(obj.style.paddingTop) + num(obj.style.paddingBottom) + num(obj.style.borderTop) + num(obj.style.borderBottom),
-						y = obj.offsetWidth + num(obj.style.paddingLeft) + num(obj.style.paddingRight) + num(obj.style.borderLeft) + num(obj.style.borderRight);
+				/**
+				 * Casts n to a number or returns zero
+				 *
+				 * @param  {Mixed} n The value to cast
+				 * @return {Integer} The casted value or zero
+				 */
+				var num = function(n) {
+					return !isNaN(parseInt(n)) ? parseInt(n) : 0;
+				};
 
-					return {x:x, y:y};
-				}
+				var x = obj.offsetHeight + num(obj.style.paddingTop)  + num(obj.style.paddingBottom) + num(obj.style.borderTop)  + num(obj.style.borderBottom),
+					y = obj.offsetWidth  + num(obj.style.paddingLeft) + num(obj.style.paddingRight)  + num(obj.style.borderLeft) + num(obj.style.borderRight);
+
+				return {x:x, y:y};
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -1915,44 +1917,43 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i = 0; i < nth; i++) { this.update(obj[i], args); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					args = args || {};
 
-					if (typeof obj === "undefined")
-						throw Error(label.error.invalidArguments);
+				obj  = utility.object(obj);
+				args = args || {};
 
-					obj.fire("beforeUpdate");
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
 
-					var i;
-					for (i in args) {
-						switch(i) {
-							case "innerHTML":
-							case "type":
-							case "src":
-								obj[i] = args[i];
-								break;
-							case "opacity": // Requires the fx module
-								obj.opacity(args[i]);
-								break;
-							case "class":
-								client.ie && client.version < 9 ? obj.className = args[i] : obj.setAttribute("class", args[i]);
-								break;
-							case "id":
-								var o = observer.listeners;
-								if (typeof o[obj.id] !== "undefined") {
-									o[args[i]] = $.clone(o[obj.id]);
-									delete o[obj.id];
-								}
-							default:
-								obj.setAttribute(i, args[i]);
-								break;
-						}
+				obj.fire("beforeUpdate");
+
+				var i;
+				for (i in args) {
+					switch(i) {
+						case "innerHTML":
+						case "type":
+						case "src":
+							obj[i] = args[i];
+							break;
+						case "opacity": // Requires the fx module
+							obj.opacity(args[i]);
+							break;
+						case "class":
+							client.ie && client.version < 9 ? obj.className = args[i] : obj.setAttribute("class", args[i]);
+							break;
+						case "id":
+							var o = observer.listeners;
+							if (typeof o[obj.id] !== "undefined") {
+								o[args[i]] = $.clone(o[obj.id]);
+								delete o[obj.id];
+							}
+						default:
+							obj.setAttribute(i, args[i]);
+							break;
 					}
-
-					obj.fire("afterUpdate");
-					return obj;
 				}
+
+				obj.fire("afterUpdate");
+				return obj;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -1976,13 +1977,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Boolean} True if even, or undefined
 		 */
 		even : function(arg) {
-			try {
-				return ((arg % 2) === 0);
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
+			return ((arg % 2) === 0);
 		},
 
 		/**
@@ -1993,13 +1988,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Boolean} True if odd, or undefined
 		 */
 		odd : function(arg) {
-			try {
-				return !((arg % 2) === 0);
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
+			return !((arg % 2) === 0);
 		}
 	};
 
@@ -3433,7 +3422,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.116"
+		version         : "1.6.117"
 	};
 })();
 
