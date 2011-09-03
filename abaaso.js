@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.117
+ * @version 1.6.118
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -370,23 +370,17 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Mixed} URI Object {headers, response} or False
 		 */
 		get : function(uri, expire) {
-			try {
-				expire = expire === false ? false : true;
+			expire = !(expire === false);
 
-				if (typeof cache.items[uri] === "undefined") return false;
-				if (typeof cache.items[uri].headers !== "undefined") {
-					if ((typeof cache.items[uri].headers.Pragma !== "undefined" && cache.items[uri].headers.Pragma === "no-cache" && expire) || cache.expired(cache.items[uri])) {
-						cache.expire(uri);
-						return false;
-					}
-					else { return cache.items[uri]; }
+			if (typeof cache.items[uri] === "undefined") return false;
+			if (typeof cache.items[uri].headers !== "undefined") {
+				if ((typeof cache.items[uri].headers.Pragma !== "undefined" && cache.items[uri].headers.Pragma === "no-cache" && expire) || cache.expired(cache.items[uri])) {
+					cache.expire(uri);
+					return false;
 				}
 				else { return cache.items[uri]; }
 			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
+			else { return cache.items[uri]; }
 		},
 
 		/**
@@ -399,20 +393,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Mixed} URI Object {headers, response} or undefined
 		 */
 		set : function(uri, property, value) {
-			try {
-				if (typeof cache.items[uri] === "undefined") {
-					cache.items[uri] = {};
-					cache.items[uri].permission = 0;
-				}
-				property === "permission" ? cache.items[uri].permission |= value
-				                          : (property === "!permission" ? cache.items[uri].permission &= ~value
-				                                                        : cache.items[uri][property]   =  value);
-				return cache.items[uri];
+			if (typeof cache.items[uri] === "undefined") {
+				cache.items[uri] = {};
+				cache.items[uri].permission = 0;
 			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
+			property === "permission" ? cache.items[uri].permission |= value
+			                          : (property === "!permission" ? cache.items[uri].permission &= ~value
+			                                                        : cache.items[uri][property]   =  value);
+			return cache.items[uri];
 		}
 	};
 
@@ -740,7 +728,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 								items[header] = value;
-								if (header.toLowerCase() === "allow") allow = value;
+								if (/allow|access-control-allow-methods/i.test(header)) allow = value;
 							}
 						}
 						cache.set(uri, "headers", items);
@@ -995,10 +983,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Object} Data store
 		 */
 		batch : function(type, data, sync) {
-			type = type.toString().toLowerCase() || undefined;
-			sync = (sync === true);
-
 			try {
+				type = type.toString().toLowerCase() || undefined;
+				sync = (sync === true);
+
 				if (!/^(set|del)$/.test(type) || typeof data !== "object")
 						throw Error(label.error.invalidArguments);
 
@@ -1139,7 +1127,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 */
 		find : function(needle, haystack) {
 			try {
-				if (typeof needle === "undefined")
+				if (typeof needle === "undefined" || typeof haystack === "undefined")
 					throw Error(label.error.invalidArguments);
 
 				var h      = [],
@@ -1246,66 +1234,66 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (obj instanceof Array) {
 					var i = !isNaN(obj.length) ? obj.length : obj.total();
 					while (i--) { this.register(obj[i], data); }
+					return obj;
 				}
-				else {
-					var getter, setter;
-					getter = function(){ return this._uri; };
-					setter = function(arg){
-						try {
-							if (arg !== null && arg.isEmpty())
-								throw Error(label.error.invalidArguments);
 
-							this._uri = arg;
-							if (arg !== null) this.sync();
-						}
-						catch (e) {
-							error(e, arguments, this);
-							return undefined;
-						}
-					};
+				var getter, setter;
+				getter = function(){ return this._uri; };
+				setter = function(arg){
+					try {
+						if (arg !== null && arg.isEmpty())
+							throw Error(label.error.invalidArguments);
 
-					obj = utility.object(obj);
-					$.genId(obj);
-
-					// Hooking in the observer
-					switch (true) {
-						case typeof obj.fire === "undefined":
-							obj.fire = function(){ return $.fire.apply(this, arguments); };
-						case typeof obj.listeners === "undefined":
-							obj.listeners = function(){ return $.listeners.apply(this, arguments); };
-						case typeof obj.on === "undefined":
-							obj.on = function(event, listener, id, scope, standby) {
-								scope = scope || this;
-								return $.on(this, event, listener, id, scope, standby);
-							};
-						case typeof obj.un === "undefined":
-							obj.un = function(event, id) { return $.un(this, event, id); };
+						this._uri = arg;
+						if (arg !== null) this.sync();
 					}
-
-					obj.fire("beforeDataStore");
-					obj.data = utility.clone(this);
-					obj.data.keys    = {};
-					obj.data.records = [];
-					obj.data.total   = 0;
-					obj.data.parentNode = obj; // Recursion, useful
-					delete obj.data.register;
-
-					switch (true) {
-						case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-							Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
-							break;
-						case typeof obj.data.__defineGetter__ === "function":
-							obj.data.__defineGetter__("uri", getter);
-							obj.data.__defineSetter__("uri", setter);
-							break;
-						default: // Only exists when no getters/setters (IE8)
-							obj.data.uri    = null;
-							obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
+					catch (e) {
+						error(e, arguments, this);
+						return undefined;
 					}
+				};
 
-					if (typeof data === "object") obj.data.batch("set", data);
-					obj.fire("afterDataStore");
+				obj = utility.object(obj);
+				$.genId(obj);
+
+				// Hooking in the observer
+				switch (true) {
+					case typeof obj.fire === "undefined":
+						obj.fire = function(){ return $.fire.apply(this, arguments); };
+					case typeof obj.listeners === "undefined":
+						obj.listeners = function(){ return $.listeners.apply(this, arguments); };
+					case typeof obj.on === "undefined":
+						obj.on = function(event, listener, id, scope, standby) {
+							scope = scope || this;
+							return $.on(this, event, listener, id, scope, standby);
+						};
+					case typeof obj.un === "undefined":
+						obj.un = function(event, id) { return $.un(this, event, id); };
 				}
+
+				obj.fire("beforeDataStore");
+				obj.data = utility.clone(this);
+				obj.data.keys    = {};
+				obj.data.records = [];
+				obj.data.total   = 0;
+				obj.data.parentNode = obj; // Recursion, useful
+				delete obj.data.register;
+
+				switch (true) {
+					case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
+						Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
+						break;
+					case typeof obj.data.__defineGetter__ === "function":
+						obj.data.__defineGetter__("uri", getter);
+						obj.data.__defineSetter__("uri", setter);
+						break;
+					default: // Only exists when no getters/setters (IE8)
+						obj.data.uri    = null;
+						obj.data.setUri = function(arg){ obj.data.uri = arg; setter.call(obj.data, arg); };
+				}
+
+				if (typeof data === "object") obj.data.batch("set", data);
+				obj.fire("afterDataStore");
 				return obj;
 			}
 			catch (e) {
@@ -1499,27 +1487,25 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					for (i = 0; i < nth; i++) { this.clear(obj[i]); }
 					return obj;
 				}
-				else {
-					obj = utility.object(obj);
-					if (obj !== null) {
-						obj.fire("beforeClear");
-						switch (true) {
-							case typeof obj.reset === "function":
-								obj.reset();
-								break;
-							case typeof obj.value !== "undefined":
-								obj.update({innerHTML: "", value: ""});
-								break;
-							default:
-								obj.update({innerHTML: ""});
-						}
-						obj.fire("afterClear");
-						return obj;
-					}
-					else {
-						throw Error(label.error.elementNotFound);
-					}
+
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element)
+					throw Error(label.error.invalidArguments);
+
+				obj.fire("beforeClear");
+				switch (true) {
+					case typeof obj.reset === "function":
+						obj.reset();
+						break;
+					case typeof obj.value !== "undefined":
+						obj.update({innerHTML: "", value: ""});
+						break;
+					default:
+						obj.update({innerHTML: ""});
 				}
+				obj.fire("afterClear");
+				return obj;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -3422,7 +3408,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.117"
+		version         : "1.6.118"
 	};
 })();
 
