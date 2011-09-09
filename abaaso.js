@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.118
+ * @version 1.6.119
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -324,7 +324,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 */
 		clean : function() {
 			var uri;
-
 			for (uri in cache.items) { if (cache.expired(uri)) cache.expire(uri); }
 			return;
 		},
@@ -349,16 +348,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Boolean} True if the URI has expired
 		 */
 		expired : function(uri) {
-			var o      = abaaso.client,
-			    c      = cache.items[uri],
-			    epoch  = typeof c !== "undefined" ? new Date(c.epoch) : null,
-			    expire = typeof c !== "undefined" && typeof c.headers.Expires !== "undefined" ? new Date(c.headers.Expires) : null,
-			    now    = new Date(),
-			    date   = typeof c !== "undefined" && typeof c.headers.Date !== "undefined" ? new Date(c.headers.Date) : null;
-
-			return typeof c !== "undefined" && ((expire !== null && expire < now)
-			                                    || (date !== null && date.setMilliseconds(date.getMilliseconds() + o.expire) < now)
-			                                    || (o.expire > 0 && epoch.setMilliseconds(epoch.getMilliseconds() + o.expire) < now));
+			var item = cache.items[uri];
+			return typeof item !== "undefined" && item.expires < new Date();
 		},
 
 		/**
@@ -370,17 +361,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Mixed} URI Object {headers, response} or False
 		 */
 		get : function(uri, expire) {
-			expire = !(expire === false);
-
+			expire = (expire === true);
 			if (typeof cache.items[uri] === "undefined") return false;
-			if (typeof cache.items[uri].headers !== "undefined") {
-				if ((typeof cache.items[uri].headers.Pragma !== "undefined" && cache.items[uri].headers.Pragma === "no-cache" && expire) || cache.expired(cache.items[uri])) {
-					cache.expire(uri);
-					return false;
-				}
-				else { return cache.items[uri]; }
+			if (cache.expired(uri)) {
+				cache.expire(uri);
+				return false;
 			}
-			else { return cache.items[uri]; }
+			return cache.items[uri];
 		},
 
 		/**
@@ -719,6 +706,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						    nth     = headers.length,
 						    items   = {},
 						    allow   = null,
+						    expires = new Date(),
 						    o, header, value;
 
 						for (i = 0; i < nth; i++) {
@@ -731,6 +719,22 @@ var $ = $ || null, abaaso = abaaso || (function(){
 								if (/allow|access-control-allow-methods/i.test(header)) allow = value;
 							}
 						}
+
+						switch (true) {
+							case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
+							case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
+								break;
+							case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
+								expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d/.match(uri["Cache-Control"])[0]));
+								break;
+							case typeof items["Expires"] !== "undefined":
+								expires = new Date(items["Expires"]);
+								break;
+							default:
+								expires = expires.setSeconds(expires.getSeconds() + abaaso.client.expire);
+						}
+
+						cache.set(uri, "expires", expires);
 						cache.set(uri, "headers", items);
 						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
 						break;
@@ -773,7 +777,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									if (typeof r === "undefined")
 										throw Error(label.error.serverError);
 
-									cache.set(uri, "epoch", new Date());
 									cache.set(uri, "response", r);
 								}
 
@@ -3408,7 +3411,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.118"
+		version         : "1.6.119"
 	};
 })();
 
