@@ -363,7 +363,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		get : function(uri, expire) {
 			expire = (expire === true);
 			if (typeof cache.items[uri] === "undefined") return false;
-			if (cache.expired(uri)) {
+			if (expire && cache.expired(uri)) {
 				cache.expire(uri);
 				return false;
 			}
