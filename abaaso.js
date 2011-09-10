@@ -41,7 +41,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.119
+ * @version 1.6.120
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -2775,7 +2775,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 										uri.on("afterGet", function(arg) {
 											uri.un("afterGet", guid);
 											this.text(arg).fire("afterGet");
-											}, guid, this);
+										}, guid, this);
 										$.get(uri, undefined, undefined, headers);
 									}
 									else {
@@ -2810,7 +2810,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 											try {
 													if (typeof prop !== "undefined") {
 														prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-														nth = prop.length;
+														nth  = prop.length;
 														for (i = 0; i < nth; i++) {
 															node = !!isNaN(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
 															if (typeof node === "undefined")
@@ -3096,7 +3096,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						xml = (new XMLSerializer()).serializeToString(payload);
 						break;
 					default:
-						wrap = wrap === false ? false : true;
+						wrap = !(wrap === false);
 						var xml  = wrap ? "<xml>" : "",
 						    top  = arguments[2] === false ? false : true,
 						    node, i;
@@ -3411,7 +3411,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.119"
+		version         : "1.6.120"
 	};
 })();
 
