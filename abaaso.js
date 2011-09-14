@@ -28,7 +28,8 @@
 /**
  * abaaso
  *
- * Events: ready          Fires when the DOM is available
+ * Events: init           Fires when abaaso is ready; register modules on this event
+ *         ready          Fires when the DOM is available
  *         render         Fires when the window resources have loaded
  *         resize         Fires when the window resizes; parameter for listeners is abaaso.client.size
  *         afterCreate    Fires after an Element is created; parameter for listeners is the (new) Element
@@ -41,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.120
+ * @version 1.6.121
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -3359,6 +3360,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			}
 
 			$.ready = abaaso.ready = true;
+			$.fire("init").un("init");
 			$.fire("ready").un("ready");
 
 			// Setting render event
@@ -3411,7 +3413,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.120"
+		version         : "1.6.121"
 	};
 })();
 
