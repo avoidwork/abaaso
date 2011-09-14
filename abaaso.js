@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.121
+ * @version 1.6.122
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -2917,6 +2917,53 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				error(e, arguments, this);
 				return undefined;
 			}
+		},
+
+		/**
+		 * Transforms JSON to HTML and appends to Body or target Element
+		 *
+		 * @method create
+		 * @param  {Object} data   JSON Object describing HTML
+		 * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
+		 * @return {Object} Target Element
+		 */
+		tpl : function(arg, target) {
+			try {
+				switch (true) {
+					case typeof arg !== "object":
+					case !(/object|undefined/.test(typeof target)) && typeof (target = target.charAt(0) === "#" ? $(target) : $(target)[0]) === "undefined":
+						throw Error($.label.invalidArguments);
+				}
+
+				if (typeof target === "undefined") target = $("body")[0];
+				var frag = document.createDocumentFragment(),
+				    i, nth;
+
+				switch (true) {
+					case arg instanceof Array:
+						nth = arg.length;
+						for (i = 0; i < nth; i++) { $.create(array.cast(arg[i], true)[0], frag).text(array.cast(arg[i])[0]); }
+						break;
+					default:
+						for (i in arg) {
+							switch (true) {
+								case typeof arg[i] === "string":
+									$.create(i, frag).text(arg[i]);
+									break;
+								case arg[i] instanceof Object:
+									$.tpl(arg[i], $.create(i, frag));
+									break;
+							}
+						}
+				}
+
+				target.appendChild(frag);
+				return target;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
 		}
 	};
 
@@ -3403,6 +3450,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		ready           : false,
 		store           : function(arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
+		tpl             : utility.tpl,
 		un              : function() {
 			var all   = typeof arguments[0] === "string" ? false : true,
 			    obj   = all ? arguments[0] : this,
@@ -3413,7 +3461,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.121"
+		version         : "1.6.122"
 	};
 })();
 
