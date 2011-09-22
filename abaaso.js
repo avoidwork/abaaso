@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.123
+ * @version 1.6.124
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -540,18 +540,30 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (type.toLowerCase() === "jsonp") {
 					var curi = uri, guid;
 
-					curi.on("afterJSONP", function(arg){ success(arg); });
+					curi.on("afterJSONP", function(arg){
+						curi.un("afterJSONP")
+						    .un("failedJSONP");
+						if (typeof success === "function") success(arg);
+					});
+
+					curi.on("failedJSONP", function(){
+						curi.un("failedJSONP");
+						if (typeof failure === "function") failure();
+					});
+
 					do guid = utility.genId().slice(0, 10);
 					while (typeof abaaso.callback[guid] !== "undefined");
 
 					if (typeof args === "undefined") args = "callback";
 					uri = uri.replace(args + "=?", args + "=abaaso.callback." + guid);
 					abaaso.callback[guid] = function(arg){
+						clearTimeout(abaaso.timer["jsonp-" + uri]);
+						delete abaaso.timer["jsonp-" + uri];
 						delete abaaso.callback[guid];
-						curi.fire("afterJSONP", arg)
-						    .un("afterJSONP");
+						curi.fire("afterJSONP", arg);
 					};
 					el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
+					abaaso.timer["jsonp-" + uri] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
 				}
 				else {
 					type = type.toLowerCase();
@@ -568,7 +580,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						},
 						fail    = function(){
 							timer();
-							uri.fire("failed" + typed);
+							uri.fire("failed" + typed)
+							   .un("failed" + typed);
 						};
 
 					if (type === "delete") {
@@ -580,8 +593,15 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 					uri.on("received" + typed, timer)
 					   .on("timeout"  + typed, fail)
-					   .on("after"    + typed, function(arg){ if (typeof success === "function") success(arg); })
-					   .on("failed"   + typed, function(){ if (typeof failure === "function") failure(); })
+					   .on("after"    + typed, function(arg){
+					   		uri.un("after" + typed)
+					   		   .un("failed" + typed);
+					   		if (typeof success === "function") success(arg);
+						})
+					   .on("failed"   + typed, function(){
+					   		uri.un("failed" + typed);
+					   		if (typeof failure === "function") failure();
+						})
 					   .fire("before" + typed)
 					   .fire("beforeXHR");
 
@@ -1269,10 +1289,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					case typeof obj.on === "undefined":
 						obj.on = function(event, listener, id, scope, standby) {
 							scope = scope || this;
-							return $.on(this, event, listener, id, scope, standby);
+							return $.on.call(this, event, listener, id, scope, standby);
 						};
 					case typeof obj.un === "undefined":
-						obj.un = function(event, id) { return $.un(this, event, id); };
+						obj.un = function(event, id) { return $.un.call(this, event, id); };
 				}
 
 				obj.fire("beforeDataStore");
@@ -1434,7 +1454,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				    success, failure;
 
 				this.uri.on("afterGet", function(arg){
-					this.uri.un("afterGet", guid);
 					try {
 						var data = arg;
 						if (typeof data === "undefined")
@@ -1450,7 +1469,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}, guid, this);
 
 				this.uri.on("failedGet", function(){
-					this.uri.un("afterGet", guid);
 					obj.fire("failedDataSync");
 				}, guid, this);
 
@@ -2550,7 +2568,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 			for (i = 0; i < l; i++) {
 				typeof p[args[i]] === "undefined" ? p[args[i]] = (i + 1 < l ? {} : ((typeof value !== "undefined") ? value : null))
-							                     : (function(){ if (i + 1 >= l) p[args[i]] = typeof value !== "undefined" ? value : null; })();
+							                      : (function(){ if (i + 1 >= l) p[args[i]] = typeof value !== "undefined" ? value : null; })();
 				p = p[args[i]];
 			}
 
@@ -2756,9 +2774,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					           indexed  : function() { return $.array.indexed(this); },
 					           keys     : function() { return $.array.keys(this); },
 					           last     : function(arg) { return $.array.last(this); },
-					           on       : function(event, listener, id, scope, standby) {
+					           on       : function(event, listener, id, scope, state) {
 					           		scope = scope || true;
-					           		return $.on(this, event, listener, id, scope, standby);
+					           		return $.on.call(this, event, listener, id, scope, state);
 					           },
 					           remove   : function(arg) { return $.array.remove(this, arg); },
 					           total    : function() { return $.array.total(this); }},
@@ -2771,18 +2789,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   get       : function(uri, headers) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
-									    guid   = utility.guid();
-									if (!cached) {
-										uri.on("afterGet", function(arg) {
-											uri.un("afterGet", guid);
-											this.text(arg).fire("afterGet");
-										}, guid, this);
-										$.get(uri, undefined, undefined, headers);
-									}
-									else {
-										this.text(cached.response);
-										this.fire("afterGet");
-									}
+									    guid   = utility.guid(),
+									    self   = this;
+
+									!cached ? $.get(uri, function(a){ self.text(a).fire("afterGet"); }, undefined, headers)
+									        : this.text(cached.response).fire("afterGet");
+
 									return this;
 							   },
 							   hide     : function() {
@@ -2832,10 +2844,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									return this;
 							   },
 							   loading  : function() { return $.loading.create(this); },
-					           on       : function(event, listener, id, scope, standby) {
+					           on       : function(event, listener, id, scope, state) {
 									scope = scope || this;
 									this.genId();
-									return $.on(this, event, listener, id, scope, standby);
+									return $.on.call(this, event, listener, id, scope, state);
 							   },
 					           position : function() {
 									this.genId();
@@ -2863,9 +2875,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   validate : function() { return this.nodeName === "FORM" ? $.validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 					number  : {isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
-					           on       : function(event, listener, id, scope, standby) {
+					           on       : function(event, listener, id, scope, state) {
 									scope = scope || this;
-					           		return $.on(this, event, listener, id, scope, standby);
+					           		return $.on.call(this, event, listener, id, scope, state);
 					           }},
 					shared  : {clear    : function() {
 									this.genId();
@@ -2884,7 +2896,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   },
 							   un       : function(event, id) {
 							   		this.genId();
-							   		return $.un(this, event, id);
+							   		return $.un.call(this, event, id);
 							   }},
 					string  : {allow    : function(arg) { return $.allow(this, arg); },
 							   capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
@@ -2899,9 +2911,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   isNumber : function() { return $.validate.test({number: this}).pass; },
 							   isPhone  : function() { return $.validate.test({phone: this}).pass; },
 							   isString : function() { return $.validate.test({string: this}).pass; },
-							   on       : function(event, listener, id, scope, standby) {
+							   on       : function(event, listener, id, scope, state) {
 					           		scope = scope || this;
-					           		return $.on(this, event, listener, id, scope, standby);
+					           		return $.on.call(this, event, listener, id, scope, state);
 					           },
 					           options  : function(arg) { return $.options(this, arg); },
 					           permission: function() { return $.permission(this); },
@@ -3423,7 +3435,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
 		listeners       : function() {
-			var all   = (typeof arguments[1] !== "undefined"),
+			var all   = typeof arguments[1] === "undefined",
 			    obj   = all ? arguments[0] : this,
 				event = all ? arguments[1] : arguments[0];
 				if (obj === $) obj = abaaso;
@@ -3431,14 +3443,15 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.list.call(observer, obj, event);
 		},
 		on              : function() {
-			var all      = (typeof arguments[2] === "function"),
-			    obj      = all ? arguments[0] : abaaso,
+			var all      = typeof arguments[5] !== "undefined",
+			    obj      = all ? arguments[0] : this,
 				event    = all ? arguments[1] : arguments[0],
 				listener = all ? arguments[2] : arguments[1],
 				id       = all ? arguments[3] : arguments[2],
 				scope    = all ? arguments[4] : arguments[3],
 				state    = all ? arguments[5] : arguments[4];
-				if (typeof scope === "undefined") scope = abaaso;
+				if (obj === $) obj = abaaso;
+				if (typeof scope === "undefined") scope = obj;
 
 			return observer.add.call(observer, obj, event, listener, id, scope, state);
 		},
@@ -3452,7 +3465,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		timer           : {},
 		tpl             : utility.tpl,
 		un              : function() {
-			var all   = typeof arguments[0] === "string" ? false : true,
+			var all   = typeof arguments[2] !== "undefined",
 			    obj   = all ? arguments[0] : this,
 			    event = all ? arguments[1] : arguments[0],
 			    id    = all ? arguments[2] : arguments[1];
@@ -3461,7 +3474,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.123"
+		version         : "1.6.124"
 	};
 })();
 
