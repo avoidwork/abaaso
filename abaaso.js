@@ -3243,12 +3243,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		mouse           : mouse,
 		number          : number,
 		observer        : {
-				log     : observer.log,
-				add     : observer.add,
-				fire    : observer.fire,
-				fired   : 0,
-				list    : observer.list,
-				remove  : observer.remove
+			log     : observer.log,
+			add     : observer.add,
+			fire    : observer.fire,
+			fired   : 0,
+			list    : observer.list,
+			remove  : observer.remove
 		},
 		state           : {
 			_current    : null,
