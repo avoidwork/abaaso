@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.6.126
+ * @version 1.7.tech
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -1979,6 +1979,29 @@ var $ = $ || null, abaaso = abaaso || (function(){
 	 */
 	var number = {
 		/**
+		 * Returns the difference of arg
+		 *
+		 * @method odd
+		 * @param {Number} arg Number to test
+		 * @return {Boolean} True if even, or undefined
+		 */
+		diff : function(arg) {
+			try {
+				if (typeof arg !== "number" || typeof this !== "number")
+					throw Error(label.error.expectedNumber);
+				
+				var a = this > arg ? this : arg,
+				    b = a === this ? arg : this;
+
+				return a - b;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Tests if an number is even
 		 *
 		 * @method even
@@ -1986,7 +2009,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Boolean} True if even, or undefined
 		 */
 		even : function(arg) {
-			return ((arg % 2) === 0);
+			return arg % 2 === 0;
 		},
 
 		/**
@@ -1997,7 +2020,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @return {Boolean} True if odd, or undefined
 		 */
 		odd : function(arg) {
-			return !((arg % 2) === 0);
+			return !(arg % 2 === 0);
 		}
 	};
 
@@ -2876,7 +2899,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									return $.update(this, args);
 							   },
 							   validate : function() { return this.nodeName === "FORM" ? $.validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
-					number  : {isEven   : function() { return $.number.even(this); },
+					number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
+					           isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
 					           on       : function(event, listener, id, scope, state) {
 									scope = scope || this;
@@ -3477,7 +3501,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.6.126"
+		version         : "1.7.tech"
 	};
 })();
 
