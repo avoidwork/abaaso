@@ -2664,20 +2664,22 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * Extends obj with arg
 		 *
 		 * @method extend
-		 * @param  {Object} obj Object being decorated
-		 * @param  {Object} arg Object for decoration
+		 * @param  {Object} obj Object to extend
+		 * @param  {Object} arg [Optional] Object for decoration
 		 * @return {Object} Decorated obj
 		 */
 		extend : function(obj, arg) {
 			try {
-				if (typeof arg !== "object")
+				if (typeof obj === "undefined")
 					throw Error(label.error.invalidArguments);
+
+				if (typeof arg === "undefined") arg = {};
 
 				var i, o, f = function(){};
 				f.prototype = obj;
 				o = new f();
 				o.super = f.prototype;
-				for (i in arg) { if (typeof arg[i] !== "undefined") o[i] = arg[i]; }
+				for (i in arg) { if (arg.hasOwnProperty(i)) o[i] = arg[i]; }
 				return o;
 			}
 			catch (e) {
