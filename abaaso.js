@@ -1989,11 +1989,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			try {
 				if (typeof arg !== "number" || typeof this !== "number")
 					throw Error(label.error.expectedNumber);
-				
-				var a = this > arg ? this : arg,
-				    b = a === this ? arg : this;
 
-				return a - b;
+				return Math.abs(this - arg);
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -2259,7 +2256,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
 				    	if (typeof e.preventDefault === "function") e.preventDefault();
 				    	if (typeof e.stopPropagation === "function") e.stopPropagation();
-				    	typeof instance.fire === "function" ? instance.fire(event) : observer.fire(obj, event, e);
+				    	typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
 				    };
 					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
 						typeof instance.addEventListener === "function" ? instance.addEventListener(event, efn, false) : instance.attachEvent("on" + event, efn);
@@ -2822,22 +2819,29 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				var i,
 				    methods = {
 					array   : {contains : function(arg) { return $.array.contains(this, arg); },
+					           css      : function(key, value) {
+									var nth = this.length,
+									    i   = null;
+					           	
+									for (i = 0; i < nth; i++) { this[i].css(key, value); }
+									return this;
+						       },
 					           diff     : function(arg) { return $.array.diff(this, arg); },
 					           first    : function() { return $.array.first(this); },
 					           index    : function(arg) { return $.array.index(this, arg); },
 					           indexed  : function() { return $.array.indexed(this); },
 					           keys     : function() { return $.array.keys(this); },
 					           last     : function(arg) { return $.array.last(this); },
-					           on       : function(event, listener, id, scope, state) {
-					           		scope = scope || true;
-					           		return $.on.call(this, event, listener, id, scope, state);
-					           },
+					           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : true, state); },
 					           remove   : function(arg) { return $.array.remove(this, arg); },
-					           total    : function() { return $.array.total(this); }},
+					           text     : function(arg) { return $.el.update(this, {innerHTML: arg}); },
+					           total    : function() { return $.array.total(this); },
+						       update   : function(arg) { return $.el.update(this, arg); }},
 					element : {create   : function(type, args) {
 									this.genId();
 									return $.create(type, args, this);
 							   },
+							   css       : function(key, value) { return this.style[key] = value; },
 							   disable   : function() { return $.el.disable(this); },
 							   enable    : function() { return $.el.enable(this); },
 							   get       : function(uri, headers) {
@@ -2899,9 +2903,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   },
 							   loading  : function() { return $.loading.create(this); },
 					           on       : function(event, listener, id, scope, state) {
-									scope = scope || this;
 									this.genId();
-									return $.on.call(this, event, listener, id, scope, state);
+									return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state);
 							   },
 					           position : function() {
 									this.genId();
@@ -2930,10 +2933,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
 					           isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
-					           on       : function(event, listener, id, scope, state) {
-									scope = scope || this;
-					           		return $.on.call(this, event, listener, id, scope, state);
-					           }},
+					           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); }},
 					shared  : {clear    : function() {
 									this.genId();
 									this instanceof String ? this.constructor = new String("") : $.clear(this);
@@ -2966,10 +2966,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   isNumber : function() { return $.validate.test({number: this}).pass; },
 							   isPhone  : function() { return $.validate.test({phone: this}).pass; },
 							   isString : function() { return $.validate.test({string: this}).pass; },
-							   on       : function(event, listener, id, scope, state) {
-					           		scope = scope || this;
-					           		return $.on.call(this, event, listener, id, scope, state);
-					           },
+							   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
 					           options  : function(arg) { return $.options(this, arg); },
 					           permission: function() { return $.permission(this); },
 					           trim     : function(){ return this.replace(/^\s+|\s+$/, ""); }}
