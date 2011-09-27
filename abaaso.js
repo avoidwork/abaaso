@@ -2527,7 +2527,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						var b = i;
 						switch (true) {
 							case typeof origin[b] === "function" && typeof origin[b].bind === "function":
-								obj[b] = function(){ return origin[b].apply(this, arguments); };
+								obj[b] = (function() { return origin[b].apply(this, arguments); });
 								break;
 							case origin[b] instanceof Object:
 								if (typeof obj[b] === "undefined") obj[b] = {};
@@ -2658,6 +2658,32 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			abaaso.error.log.push(o);
 			abaaso.fire("error", o);
 			return undefined;
+		},
+
+		/**
+		 * Decorates obj with origin
+		 *
+		 * @method extend
+		 * @param  {Object} obj Object being decorated
+		 * @param  {Object} arg Object for decoration
+		 * @return {String} DOM friendly ID
+		 */
+		extend : function(obj, arg) {
+			try {
+				if (typeof arg !== "object")
+					throw Error(label.error.invalidArguments);
+
+				var i, o, f = function(){};
+				f.prototype = obj;
+				o = new f();
+				o.super = f.prototype;
+				for (i in arg) { if (typeof arg[i] !== "undefined") o[i] = arg[i]; }
+				return o;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
 		},
 
 		/**
@@ -3374,6 +3400,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		destroy         : el.destroy,
 		encode          : json.encode,
 		error           : utility.error,
+		extend          : utility.extend,
 		fire            : function() {
 			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
 				arg   = typeof arguments[1] === "undefined" ? undefined : arguments[1],
