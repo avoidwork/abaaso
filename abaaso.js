@@ -2661,12 +2661,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		},
 
 		/**
-		 * Decorates obj with origin
+		 * Extends obj with arg
 		 *
 		 * @method extend
 		 * @param  {Object} obj Object being decorated
 		 * @param  {Object} arg Object for decoration
-		 * @return {String} DOM friendly ID
+		 * @return {Object} Decorated obj
 		 */
 		extend : function(obj, arg) {
 			try {
