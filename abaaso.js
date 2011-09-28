@@ -2133,6 +2133,51 @@ var $ = $ || null, abaaso = abaaso || (function(){
 	};
 
 	/**
+	 * Messaging between iframes
+	 *
+	 * @class abaaso
+	 */
+	var message = {
+		/**
+		 * Clears the message listener
+		 *
+		 * @method clear
+		 * @returns {Object} abaaso
+		 */
+		clear : function() {
+			return $.un(window, "message");
+		},
+
+		/**
+		 * Posts a message to the target
+		 *
+		 * @param  {Object} target Object to receive message
+		 * @param  {Mixed}  arg    Entity to send as message
+		 * @returns {Object} target
+		 */
+		send : function(target, arg) {
+			try {
+				target.postMessage(arg, "*");
+				return target;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Sets a handler for recieving a message
+		 *
+		 * @param fn {Function} Callback function
+		 * @returns {Object} abaaso
+		 */
+		recv : function(fn) {
+			return $.on(window, "message", fn);
+		}
+	};
+
+	/**
 	 * Mouse tracking
 	 *
 	 * @class mouse
@@ -3292,6 +3337,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			create  : utility.loading,
 			url     : null
 		},
+		message         : message,
 		mouse           : mouse,
 		number          : number,
 		observer        : {
@@ -3438,8 +3484,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			utility.proto(String, "string");
 			
 			// Setting events & garbage collection
-			observer.add(window, "hashchange", function() { abaaso.fire("hash", location.hash); });
-			observer.add(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); abaaso.fire("resize", abaaso.client.size); });
+			$.on(window, "hashchange", function() { $.fire("hash", location.hash); }, $.guid(), abaaso);
+			$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); }, $.guid(), abaaso);
 			abaaso.timer.clean  = setInterval(function(){ abaaso.clean(); }, 120000);
 
 			// abaaso.state.current getter/setter
@@ -3499,7 +3545,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.list.call(observer, obj, event);
 		},
 		on              : function() {
-			var all      = typeof arguments[5] !== "undefined",
+			var all      = typeof arguments[2] === "function",
 			    obj      = all ? arguments[0] : this,
 				event    = all ? arguments[1] : arguments[0],
 				listener = all ? arguments[2] : arguments[1],
