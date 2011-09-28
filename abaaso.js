@@ -2145,8 +2145,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		// Indicates whether to try logging co-ordinates to the console
 		log : false,
 
-		// Mouse co-ordinations
-		pos : {x: null, y: null},
+		// Mouse coordinates
+		pos  : {x: null, y: null},
+		prev : {x: null, y: null},
 
 		/**
 		 * Enables or disables mouse co-ordinate tracking
@@ -2165,10 +2166,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					y = (n.pageY) ? n.pageY : ((client.ie && client.version === 8 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
 					switch (true) {
 						case m.pos.x !== x:
-							$.mouse.pos.x = m.pos.x = x;
+							$.mouse.prev.x = m.prev.x = m.pos.x;
+							$.mouse.pos.x  = m.pos.x  = x;
 							c = true;
 						case m.pos.y !== y:
-							$.mouse.pos.y = m.pos.y = y;
+							$.mouse.prev.y = m.prev.y = m.pos.y;
+							$.mouse.pos.y  = m.pos.y  = y;
 							c = true;
 					}
 					if (c && m.log) utility.log(m.pos.x + " : " + m.pos.y);
