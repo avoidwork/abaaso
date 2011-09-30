@@ -89,13 +89,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * Finds the index of arg(s) in instance
 		 *
 		 * @method contains
-		 * @param  {Array}  instance An instance of the array to search
-		 * @param  {String} arg      Comma delimited string of search values
+		 * @param  {Array}  obj  Array to search
+		 * @param  {String} arg  Comma delimited string of search values
 		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
-		contains : function(instance, arg) {
+		contains : function(obj, arg) {
 			try {
-				if (!instance instanceof Array)
+				if (!obj instanceof Array)
 					throw Error(label.error.expectedArray);
 
 				if (/,/.test(arg)) arg = arg.split(/\s*,\s*/);
@@ -264,10 +264,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 */
 		remove : function(obj, start, end) {
 			try {
-				if (!obj instanceof Array || isNaN(start))
+				if (!obj instanceof Array)
 						throw Error(label.error.invalidArguments);
 
-				start = start || 0;
+				if (typeof start === "string") {
+					start = obj.index(start);
+					if (start === -1) return obj;
+				}
+				else start = start || 0;
 
 				var length    = obj.length,
 				    remaining = obj.slice((end || start) + 1 || length);
@@ -1492,6 +1496,61 @@ var $ = $ || null, abaaso = abaaso || (function(){
 	 */
 	var el = {
 		/**
+		 * Adds or removes a CSS class
+		 *
+		 * Events: beforeClassChange  Fires before the Object's class is changed
+		 *         afterClassChange   Fires after the Object's class is changed
+		 *
+		 * @method clear
+		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
+		 * @param  {String}  arg Class to add or remove (can be a wildcard)
+		 * @param  {Boolean} add Boolean to add or remove, defaults to true
+		 * @return {Mixed} Element or Array of Elements
+		 */
+		class : function(obj, arg, add) {
+			try {
+				if (obj instanceof Array) {
+					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
+					    i    = null;
+
+					for (i = 0; i < nth; i++) { this.class(obj[i], arg, add); }
+					return obj;
+				}
+
+				obj = utility.object(obj);
+				add = (add !== false);
+
+				if (!obj instanceof Element || String(arg).isEmpty())
+					throw Error(label.error.invalidArguments);
+
+				var classes = obj.className.split(" "),
+				    nth     = classes.length,
+				    i;
+
+				obj.fire("beforeClassChange");
+
+				switch (true) {
+					case add:
+						classes.push(arg);
+						break;
+					case !add:
+						arg === "*" ? classes = [] : classes.remove(arg);
+						break;
+				}
+
+				classes = classes.join(" ");
+				client.ie && client.version < 9 ? obj.className = classes : obj.setAttribute("class", classes);
+
+				obj.fire("afterClassChange");
+				return obj;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Clears an object's innerHTML, or resets it's state
 		 *
 		 * Events: beforeClear  Fires before the Object is cleared
@@ -1947,7 +2006,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							obj.opacity(args[i]);
 							break;
 						case "class":
-							client.ie && client.version < 9 ? obj.className = args[i] : obj.setAttribute("class", args[i]);
+							!args[i].isEmpty() ? obj.addClass(args[i]) : obj.removeClass("*");
 							break;
 						case "id":
 							var o = observer.listeners;
@@ -2866,11 +2925,18 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				// Collection of methods to add to prototypes
 				var i,
 				    methods = {
-					array   : {contains : function(arg) { return $.array.contains(this, arg); },
+					array   : {addClass : function(arg) {
+									var nth = this.length,
+									    i   = null;
+
+									for (i = 0; i < nth; i++) { this[i].addClass(arg); }
+									return this;
+							   },
+						       contains : function(arg) { return $.array.contains(this, arg); },
 					           css      : function(key, value) {
 									var nth = this.length,
 									    i   = null;
-					           	
+
 									for (i = 0; i < nth; i++) { this[i].css(key, value); }
 									return this;
 						       },
@@ -2882,15 +2948,26 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					           last     : function(arg) { return $.array.last(this); },
 					           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : true, state); },
 					           remove   : function(arg) { return $.array.remove(this, arg); },
+							   removeClass : function(arg) {
+									var nth = this.length,
+									    i   = null;
+
+									for (i = 0; i < nth; i++) { this[i].removeClass(arg); }
+									return this;
+							   },
 					           text     : function(arg) { return $.el.update(this, {innerHTML: arg}); },
 					           total    : function() { return $.array.total(this); },
 						       update   : function(arg) { return $.el.update(this, arg); }},
-					element : {create   : function(type, args) {
+					element : {addClass : function(arg) {
+									this.genId();
+									return $.el.class(this, arg, true);
+							   },
+							   create   : function(type, args) {
 									this.genId();
 									return $.create(type, args, this);
 							   },
 							   css       : function(key, value) {
-							   		this.genId();
+									this.genId();
 									this.style[key] = value;
 									return this;
 								},
@@ -2961,6 +3038,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					           position : function() {
 									this.genId();
 									return $.el.position(this);
+							   },
+							   removeClass : function(arg) {
+									this.genId();
+									return $.el.class(this, arg, false);
 							   },
 							   show     : function() {
 									this.genId();
