@@ -2889,7 +2889,11 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									this.genId();
 									return $.create(type, args, this);
 							   },
-							   css       : function(key, value) { return this.style[key] = value; },
+							   css       : function(key, value) {
+							   		this.genId();
+									this.style[key] = value;
+									return this;
+								},
 							   disable   : function() { return $.el.disable(this); },
 							   enable    : function() { return $.el.enable(this); },
 							   get       : function(uri, headers) {
