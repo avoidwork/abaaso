@@ -1525,11 +1525,11 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (!obj instanceof Element || String(arg).isEmpty())
 					throw Error(label.error.invalidArguments);
 
+				obj.fire("beforeClassChange");
+
 				var classes = obj.className.split(" "),
 				    nth     = classes.length,
 				    i;
-
-				obj.fire("beforeClassChange");
 
 				switch (true) {
 					case add:
@@ -2969,7 +2969,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									return $.create(type, args, this);
 							   },
 							   css       : function(key, value) {
+							   		var i;
 									this.genId();
+									if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
+										key = key.replace("-", "");
+										key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
+									}
 									this.style[key] = value;
 									return this;
 								},
