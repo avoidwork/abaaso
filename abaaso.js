@@ -1459,6 +1459,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				    success, failure;
 
 				this.uri.on("afterGet", function(arg){
+					this.uri.un("afterGet", guid);
 					try {
 						var data = arg;
 						if (typeof data === "undefined")
@@ -1474,6 +1475,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}, guid, this);
 
 				this.uri.on("failedGet", function(){
+					this.uri.un("failedGet", guid);
 					obj.fire("failedDataSync");
 				}, guid, this);
 
