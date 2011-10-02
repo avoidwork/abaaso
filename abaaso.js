@@ -2470,11 +2470,23 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 				obj   = utility.object(obj);
 				var l = this.listeners,
-				    o = this.id(obj);
+				    o = this.id(obj),
+				    r;
 
-				return typeof l[o] !== "undefined" ? (typeof event !== "undefined" && typeof l[o][event] !== "undefined" ? l[o][event]
-				                                                                                                         : {active:{}, standby: {}})
-				                                   : {};
+				switch (true) {
+					case typeof l[o] === "undefined" && typeof event === "undefined":
+						r = {};
+						break;
+					case typeof event === "undefined" || String(event).isEmpty():
+						r = l[o];
+						break;
+					case typeof l[o][event] !== "undefined":
+						r = l[o][event];
+						break;
+					default:
+						r = {active: {}, standby: {}};
+				}
+				return r;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -3628,12 +3640,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return abaaso;
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
-		listeners       : function() {
-			var all   = typeof arguments[1] === "undefined",
-			    obj   = all ? arguments[0] : this,
-				event = all ? arguments[1] : arguments[0];
-				if (obj === $) obj = abaaso;
-
+		listeners       : function(obj, event) {
+			if (obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
 		},
 		on              : function() {
