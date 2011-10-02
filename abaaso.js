@@ -2474,7 +2474,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				    r;
 
 				switch (true) {
-					case typeof l[o] === "undefined" && typeof event === "undefined":
+					case typeof l[o] === "undefined":
 						r = {};
 						break;
 					case typeof event === "undefined" || String(event).isEmpty():
