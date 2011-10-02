@@ -1307,6 +1307,39 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					return this.parentNode;
 				}, utility.guid(), obj.data);
 
+				obj.on("syncDataSet", function(data) {
+					if (typeof data.record === "undefined") {
+						var index = this.total, record;
+						this.total++;
+						if (typeof data.key === "undefined") {
+							if (typeof data.result === "undefined") {
+								this.fire("failedDataSet");
+								throw Error(label.error.expectedObject);
+							}
+							data.key = this.key === null ? array.cast(data.result).first() : data.result[this.key];
+							data.key = data.key.toString();
+						}
+						if (typeof data.data[data.key] !== "undefined") data.key = data.data[data.key];
+						this.keys[data.key] = {};
+						this.keys[data.key].index = index;
+						this.records[index] = {};
+						this.records[index].data = data.data;
+						this.records[index].key  = data.key;
+						if (this.key !== null) delete this.records[index].data[this.key];
+						record = this.get(index);
+					}
+					else {
+						if (typeof data.data === "object") {
+							var i;
+							for (i in data) { data.record[i] = data.data[i]; }
+							this.records[data.record.index] = data.record;
+						}
+						else this.records[data.record.index] = data.data;
+						record = this.get(data.record.index);
+					}
+					this.parentNode.fire("afterDataSet", record);
+				}, utility.guid(), obj.data);
+
 				switch (true) {
 					case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
 						Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
@@ -1391,45 +1424,11 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
-				    guid   = utility.guid(),
-				    arg, index, record;
-
-				obj.on("syncDataSet", function(){
-					obj.un("syncDataSet", guid);
-					if (typeof record === "undefined") {
-						if (typeof key === "undefined") {
-							arg = arguments[0];
-							if (typeof arg === "undefined") {
-								obj.fire("failedDataSet");
-								throw Error(label.error.expectedObject);
-							}
-							key = this.key === null ? array.cast(arg).first() : arg[this.key];
-							key = key.toString();
-						}
-						if (typeof data[key] !== "undefined") key = data[key];
-						this.keys[key] = {};
-						index = this.records.length;
-						this.keys[key].index = index;
-						this.records[index] = {};
-						this.records[index].data = data;
-						this.records[index].key  = key;
-						record = this.records[index];
-						if (this.key !== null) delete this.records[index].data[this.key];
-						this.total++;
-					}
-					else {
-						if (typeof data === "object") {
-							for (arg in data) { record[arg] = data[arg]; }
-							this.records[record.index] = record;
-						}
-						else { this.records[record.index] = data; }
-					}
-					obj.fire("afterDataSet", record);
-				}, guid, this);
+				    args   = {data: data, key: key, record: record};
 
 				obj.fire("beforeDataSet");
-				sync || this.uri === null ? obj.fire("syncDataSet")
-				                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg){ obj.fire("syncDataSet", arg); }, function(){ obj.fire("failedDataSet"); }, data);
+				sync || this.uri === null ? obj.fire("syncDataSet", args)
+				                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg){ args["result"] = arg; obj.fire("syncDataSet", args); }, function(){ obj.fire("failedDataSet"); }, data);
 
 				return this;
 			}
