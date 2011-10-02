@@ -1096,44 +1096,30 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 */
 		del : function(record, reindex, sync) {
 			try {
-				if (typeof record === "undefined" || (typeof record !== "number" || typeof record !== "string"))
+				if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string"))
 					throw Error(label.error.invalidArguments);
 
 				reindex  = (reindex !== false);
 				sync     = (sync === true);
 				var obj  = this.parentNode,
-				    guid = utility.guid(),
-				    key;
+				    key, args;
 
 				if (typeof record === "string") {
 					key    = record;
 					record = this.keys[key];
-					if (typeof key === "undefined")
-						throw Error(label.error.invalidArguments);
-
+					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
 					record = record.index;
 				}
 				else {
 					key = this.records[record];
-					if (typeof key === "undefined")
-						throw Error(label.error.invalidArguments);
-
+					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
 					key = key.key;
 				}
 
-				obj.on("syncDataDelete", function(){
-					obj.un("syncDataDelete", guid);
-					this.records.remove(record);
-					delete this.keys[key];
-					this.total--;
-					if (reindex) this.reindex();
-					obj.fire("afterDataDelete");
-					return this;
-				}, guid, this);
-
-				obj.fire("beforeDataDelete");
-				sync || this.uri === null ? obj.fire("syncDataDelete")
-				                          : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete"); }, function(){ obj.fire("failedDataDelete"); });
+				args = {key: key, record: record, reindex: reindex};
+				obj.fire("beforeDataDelete", args);
+				sync || this.uri === null ? obj.fire("syncDataDelete", args)
+				                          : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete", args); }, function(){ obj.fire("failedDataDelete", args); });
 				return this;
 			}
 			catch (e) {
@@ -1199,7 +1185,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					}
 				}
 
-				obj.fire("afterDataFind");
+				obj.fire("afterDataFind", result);
 				return result;
 			}
 			catch (e) {
@@ -1236,8 +1222,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					end   = record[1] - 1;
 					for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
 				}
-				else { r = this.records[record]; }
-				obj.fire("afterDataGet");
+				else r = this.records[record];
+				obj.fire("afterDataGet", r);
 				return r;
 			}
 			catch (e) {
@@ -1287,9 +1273,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				// Hooking in the observer
 				switch (true) {
 					case typeof obj.fire === "undefined":
-						obj.fire = function(){ return $.fire.apply(this, arguments); };
+						obj.fire = function(event, arg){
+							return $.fire.call(this, event, arg);
+						};
 					case typeof obj.listeners === "undefined":
-						obj.listeners = function(){ return $.listeners.apply(this, arguments); };
+						obj.listeners = function(event){
+							return $.listeners(this, event);
+						};
 					case typeof obj.on === "undefined":
 						obj.on = function(event, listener, id, scope, standby) {
 							scope = scope || this;
@@ -1306,6 +1296,16 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				obj.data.total   = 0;
 				obj.data.parentNode = obj; // Recursion, useful
 				delete obj.data.register;
+
+				obj.on("syncDataDelete", function(data) {
+					var record = this.get(data.record);
+					this.records.remove(data.record);
+					delete this.keys[data.key];
+					this.total--;
+					if (data.reindex) this.reindex();
+					this.parentNode.fire("afterDataDelete", record);
+					return this.parentNode;
+				}, utility.guid(), obj.data);
 
 				switch (true) {
 					case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
@@ -2476,13 +2476,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				    r;
 
 				switch (true) {
-					case typeof l[o] === "undefined":
+					case typeof l[o] === "undefined" && typeof event === "undefined":
 						r = {};
 						break;
-					case typeof event === "undefined" || String(event).isEmpty():
+					case typeof l[o] !== "undefined" && (typeof event === "undefined" || String(event).isEmpty()):
 						r = l[o];
 						break;
-					case typeof l[o][event] !== "undefined":
+					case typeof l[o] !== "undefined" && typeof l[o][event] !== "undefined":
 						r = l[o][event];
 						break;
 					default:
