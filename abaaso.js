@@ -2472,8 +2472,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				var l = this.listeners,
 				    o = this.id(obj);
 
-				return typeof l[o] !== "undefined" ? (typeof event !== "undefined" && typeof l[o][event] !== "undefined" ? $.clone(l[o][event])
-				                                                                                                         : $.clone(l[o]))
+				return typeof l[o] !== "undefined" ? (typeof event !== "undefined" && typeof l[o][event] !== "undefined" ? l[o][event]
+				                                                                                                         : {active:{}, standby: {}})
 				                                   : {};
 			}
 			catch (e) {
