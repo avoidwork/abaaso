@@ -2252,6 +2252,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		log : false,
 
 		// Mouse coordinates
+		diff : {x: null, y: null},
 		pos  : {x: null, y: null},
 		prev : {x: null, y: null},
 
@@ -2274,10 +2275,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						case m.pos.x !== x:
 							$.mouse.prev.x = m.prev.x = m.pos.x;
 							$.mouse.pos.x  = m.pos.x  = x;
+							$.mouse.diff.x = m.diff.x = m.pos.x - m.prev.x;
 							c = true;
 						case m.pos.y !== y:
 							$.mouse.prev.y = m.prev.y = m.pos.y;
 							$.mouse.pos.y  = m.pos.y  = y;
+							$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
 							c = true;
 					}
 					if (c && m.log) utility.log(m.pos.x + " : " + m.pos.y);
