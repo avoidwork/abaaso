@@ -1,12 +1,13 @@
-abaaso
+# abaaso
 
-abaaso provides a set of classes and object prototyping to ease the creation and maintenance of RESTful
-JavaScript applications. HATEOAS can be implemented by setting abaaso.state.header which will trigger a
-transition (state change) if the header is part of an xhr response. This requires standby listeners to
-be created on "ready" so the observer can replace the active listeners; otherwise an exception is thrown.
+abaaso is a RESTful JavaScript framework. Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by setting abaaso.state.header to a custom HTTP header.
 
-Download from https://github.com/avoidwork/abaaso
+Listeners for all states must be set before the initial URI is retrieved.
 
-API documentation & samples online at http://abaaso.com
+## API Documention
+The API documentation is available at http://abaaso.com
+
+## License
+abaaso is licensed under BSD-3, so it is possible to include in your open source, or propriatary project.
 
 Copyright (c) 2011, Jason Mulligan <jason.mulligan@avoidwork.com>
