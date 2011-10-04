@@ -4,6 +4,9 @@ abaaso is a RESTful JavaScript framework. Hypermedia As The Engine Of Applicatio
 
 Listeners for all states must be set before the initial URI is retrieved.
 
+The abaaso namespace is aliased to the $, to allow for a nice short syntax:
+$.get("uri", successHandler)
+
 ## API Documention
 The API documentation is available at http://abaaso.com
 
