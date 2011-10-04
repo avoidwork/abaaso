@@ -10,7 +10,7 @@ The abaaso namespace is aliased to the $, to allow for a nice short syntax: $.ge
 
 
 ### API Documention
-API documentation is available at http://abaaso.com, 
+API documentation is available at http://abaaso.com 
 
 
 ### License
