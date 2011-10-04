@@ -1,9 +1,10 @@
 # abaaso
-### About
-abaaso is a RESTful JavaScript framework. Don't know REST? No problem! This framework makes all kinds of JavaScript magic possible, with an easy, semantic Object Oriented Programming approach.
+abaaso is a RESTful JavaScript framework. Don't know REST? No problem! This framework makes all kinds of JavaScript magic possible, with an easy, semantic Object Oriented Programming approach. If you want to do it; it's as easy as saying it.
+
+abaaso extends the prototypes of Array, Element, Number, and String with methods (functions). URIs are treated as Objects via String representations.
 
 
-### AJAX example
+### Example
 The abaaso namespace is aliased to the $, to allow for a nice short syntax:
 
 
