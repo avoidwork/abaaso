@@ -8,7 +8,7 @@ abaaso extends the prototypes of Array, Element, Number, and String with methods
 The abaaso namespace is aliased to the $, to allow for a nice short syntax:
 
 
-*$.get(uri, successHandler, failureHandler);*
+*$.get(uri, successHandler, failureHandler);* or *uri.get(successHandler, failureHandler)*
 
 
 The lifecycle of the request will be encased by the implied security of a RESTful architecture. This type of architecture is  built into HTTP 1.1, and when done properly, is simple to maintain and scales very well (it uses headers!).
