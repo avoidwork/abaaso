@@ -3142,6 +3142,27 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		},
 
 		/**
+		 * Returns an Object containing 1 or all key:value pairs from the querystring
+		 *
+		 * @method queryString
+		 * @param  {String} arg [Optional] Key to find in the querystring
+		 * @returns {Object} Object of 1 or all key:value pairs in the querystring
+		 */
+		queryString : function (arg) {
+			arg = arg || ".*";
+			var obj = {}, result, item;
+			result = new RegExp("[\\?&](" + arg + "=([^&#]*))").exec(window.location);
+			if (result !== null) {
+				result = result[1].split("&");
+				result.filter(function(prop) {
+					item = prop.split("=");
+					obj[item[0]] = item[1];
+				});
+			}
+			return obj;
+		},
+
+		/**
 		 * Transforms JSON to HTML and appends to Body or target Element
 		 *
 		 * @method create
@@ -3667,6 +3688,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		position        : el.position,
 		post            : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
 		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
+		queryString     : utility.queryString,
 		ready           : false,
 		store           : function(arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
