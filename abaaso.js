@@ -3150,13 +3150,33 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 */
 		queryString : function (arg) {
 			arg = arg || ".*";
-			var obj = {}, result, item;
-			result = new RegExp("[\\?&](" + arg + "=([^&#]*))").exec(window.location);
+			var obj    = {},
+			    result = new RegExp("[\\?&](" + arg + "=([^&#]*))").exec(window.location),
+			    item;
+
 			if (result !== null) {
 				result = result[1].split("&");
 				result.filter(function(prop) {
 					item = prop.split("=");
-					obj[item[0]] = item[1];
+
+					switch (true) {
+						case item[1].isNumber():
+							item[1] = Number(item[1]);
+							break;
+						case item[1].isBoolean():
+							item[1] = item[1] === "true" ? true : false;
+							break;
+					}
+
+					switch (true) {
+						case typeof obj[item[0]] === "undefined":
+							obj[item[0]] = item[1];
+							break;
+						case !(obj[item[0]] instanceof Array):
+							obj[item[0]] = [obj[item[0]]];
+						default:
+							obj[item[0]].push(item[1]);
+					}
 				});
 			}
 			return obj;
