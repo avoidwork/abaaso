@@ -3146,7 +3146,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 *
 		 * @method queryString
 		 * @param  {String} arg [Optional] Key to find in the querystring
-		 * @returns {Object} Object of 1 or all key:value pairs in the querystring
+		 * @return {Object} Object of 1 or all key:value pairs in the querystring
 		 */
 		queryString : function (arg) {
 			arg = arg || ".*";
