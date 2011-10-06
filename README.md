@@ -1,7 +1,5 @@
 # abaaso
-abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso extends the prototypes of Array, Element, Number, and String with methods (functions) to magic possible.
-
-Semantic classes & methods (Object Oriented Programming) strive to make anything as easy as saying it!
+abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso extends the prototypes of Array, Element, Number, and String with methods (functions) to magic possible. Semantic classes & methods (Object Oriented Programming) strive to make anything as easy as saying it!
 
 
 ### REST
