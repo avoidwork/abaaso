@@ -3,6 +3,15 @@ abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso ma
 
 abaaso extends the prototypes of Array, Element, Number, and String with methods (functions).
 
+### REST
+Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by setting abaaso.state.header to a custom HTTP header, which triggers stateful binding. Listeners for all states must be set before the initial URI is retrieved.
+
+URIs are treated as Objects via String representations. This means the HTTP verbs are available as methods, including jsonp()!
+
+
+### API Documention
+API documentation is available at http://abaaso.com 
+
 
 ### Example
 abaaso namespace is aliased to $, to allow for a nice short syntax:
@@ -12,16 +21,6 @@ abaaso namespace is aliased to $, to allow for a nice short syntax:
 
 
 The lifecycle of the request will be encased by the implied security of a RESTful architecture (using HTTP headers).
-
-
-### REST
-Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by setting abaaso.state.header to a custom HTTP header, which triggers stateful binding. Listeners for all states must be set before the initial URI is retrieved.
-
-URIs are treated as Objects via String representations. This means the HTTP verbs are available as methods, including jsonp()!
-
-
-### API Documention
-API documentation is available at http://abaaso.com 
 
 
 ### License
