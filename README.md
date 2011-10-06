@@ -1,7 +1,8 @@
 # abaaso
-abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso makes magic possible, with semantic classes & methods (Object Oriented Programming). If you want to do something, it's as easy as saying it!
+abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso extends the prototypes of Array, Element, Number, and String with methods (functions) to magic possible.
 
-abaaso extends the prototypes of Array, Element, Number, and String with methods (functions).
+Semantic classes & methods (Object Oriented Programming) strive to make anything as easy as saying it!
+
 
 ### REST
 Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by setting abaaso.state.header to a custom HTTP header, which triggers stateful binding. Listeners for all states must be set before the initial URI is retrieved.
