@@ -3164,7 +3164,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							item[1] = Number(item[1]);
 							break;
 						case item[1].isBoolean():
-							item[1] = item[1] === "true" ? true : false;
+							item[1] = (item[1] === "true");
 							break;
 					}
 
