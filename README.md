@@ -3,9 +3,7 @@ abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso ex
 
 
 ### REST
-Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by setting abaaso.state.header to a custom HTTP header, which triggers stateful binding. Listeners for all states must be set before the initial URI is retrieved.
-
-URIs are treated as Objects via String representations. This means the HTTP verbs are available as methods, including jsonp()!
+Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by setting abaaso.state.header to a custom HTTP header, which triggers stateful binding. Listeners for all states must be set before the initial URI is retrieved. URIs are treated as Objects via String representations. This means the HTTP verbs are available as methods, including jsonp()!
 
 
 ### API Documention
