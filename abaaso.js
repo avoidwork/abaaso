@@ -464,12 +464,12 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		/**
 		 * Quick way to see if a URI allows a specific command
 		 *
-		 * @method allow
+		 * @method allows
 		 * @param  {String} uri     URI to query
 		 * @param  {String} command Command to query for
 		 * @return {Boolean} True if the command is allowed
 		 */
-		allow : function(uri, command) {
+		allows : function(uri, command) {
 			try {
 				if (uri.isEmpty() || command.isEmpty())
 					throw Error(label.error.invalidArguments);
@@ -502,11 +502,11 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		/**
 		 * Returns the permission of the cached URI
 		 *
-		 * @method permission
+		 * @method permissions
 		 * @param  {String} uri URI to query
 		 * @return {Object} Contains an Array of available commands, the permission bit and a map
 		 */
-		permission : function (uri) {
+		permissions : function (uri) {
 			var cached = cache.get(uri, false),
 			    bit    = !cached ? 0 : cached.permission,
 				result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1}};
@@ -3106,7 +3106,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   		this.genId();
 							   		return $.un.call(this, event, id);
 							   }},
-					string  : {allow    : function(arg) { return $.allow(this, arg); },
+					string  : {allows   : function(arg) { return $.allows(this, arg); },
 							   capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
 							   del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
 							   get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
@@ -3126,7 +3126,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
 							   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
 					           options  : function(arg) { return $.options(this, arg); },
-					           permission: function() { return $.permission(this); },
+					           permissions: function() { return $.permissions(this); },
 					           trim     : function(){ return this.replace(/^\s+|\s+$/, ""); }}
 				};
 
@@ -3509,7 +3509,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		// Methods & Properties
 		$               : utility.$,
 		alias           : utility.alias,
-		allow           : client.allow,
+		allows          : client.allows,
 		bootstrap       : function() {
 			if (typeof document.getElementsByClassName === "undefined") {
 				document.getElementsByClassName = function(arg) {
@@ -3704,7 +3704,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.add.call(observer, obj, event, listener, id, scope, state);
 		},
 		options         : function(uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
-		permission      : client.permission,
+		permissions     : client.permissions,
 		position        : el.position,
 		post            : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
 		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
