@@ -480,13 +480,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 				switch (true) {
 					case command.toLowerCase() === "delete":
-						result = !((uri.permission(command).bit & 1) === 0);
+						result = !((uri.permissions(command).bit & 1) === 0);
 						break;
 					case command.toLowerCase() === "get":
-						result = !((uri.permission(command).bit & 4) === 0);
+						result = !((uri.permissions(command).bit & 4) === 0);
 						break;
 					case (/post|put/i.test(command)):
-						result = !((uri.permission(command).bit & 2) === 0);
+						result = !((uri.permissions(command).bit & 2) === 0);
 						break;
 					default:
 						result = false;
@@ -609,7 +609,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					   .fire("before" + typed)
 					   .fire("beforeXHR");
 
-					if (type !== "options" && uri.allow(type) === false) {
+					if (type !== "options" && uri.allows(type) === false) {
 						uri.fire("failed" + typed);
 						return uri;
 					}
