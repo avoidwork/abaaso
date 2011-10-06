@@ -5,7 +5,7 @@ abaaso extends the prototypes of Array, Element, Number, and String with methods
 
 
 ### Example
-The abaaso namespace is aliased to the $, to allow for a nice short syntax:
+abaaso namespace is aliased to $, to allow for a nice short syntax:
 
 
 *$.get(uri, successHandler, failureHandler);* or *uri.get(successHandler, failureHandler)*
