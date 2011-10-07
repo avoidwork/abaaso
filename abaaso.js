@@ -1074,7 +1074,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			 * @return {Object} Data store
 			 */
 			clear : function() {
-				silent = (silent !== true);
 				var obj = this.parentNode;
 				obj.fire("beforeDataClear");
 				this.uri     = null;
