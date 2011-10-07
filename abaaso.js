@@ -3129,7 +3129,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
 					           options  : function(arg) { return $.options(this, arg); },
 					           permissions: function() { return $.permissions(this); },
-					           trim     : function(){ return this.replace(/^\s+|\s+$/, ""); }}
+					           trim     : function(){ return this.replace(/^\s+|\s+$/g, ""); }}
 				};
 
 				// Applying the methods
