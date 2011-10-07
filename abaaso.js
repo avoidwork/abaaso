@@ -984,251 +984,382 @@ var $ = $ || null, abaaso = abaaso || (function(){
 	 * @namespace abaaso
 	 */
 	var data = {
-		// Identifies the key in a POST response
-		key     : null,
+		// Properties to decorate data stores with
+		decorate : {
+			// Identifies the key in a POST response
+			key     : null,
 
-		// Record storage
-		keys    : {},
-		records : [],
+			// Record storage
+			keys    : {},
+			records : [],
 
-		// Total records in the store
-		total   : 0,
+			// Total records in the store
+			total   : 0,
 
-		// URI the data store represents (RESTful behavior),
-		// has a getter & setter as 'uri'
-		_uri    : null,
+			// URI the data store represents (RESTful behavior),
+			// has a getter & setter as 'uri'
+			_uri    : null
+		},
 
-		/**
-		 * Batch sets or deletes data in the store
-		 *
-		 * Events: beforeDataBatch  Fires before the batch is queued
-		 *         afterDataBatch   Fires after the batch is queued
-		 *
-		 * @method batch
-		 * @param  {String}  type Type of action to perform
-		 * @param  {Mixed}   data Array of keys or indexes to delete, or Object containing multiple records to set
-		 * @param  {Boolean} sync [Optional] True if called by data.sync
-		 * @return {Object} Data store
-		 */
-		batch : function(type, data, sync) {
-			try {
-				type = type.toString().toLowerCase() || undefined;
-				sync = (sync === true);
+		// Methods inherited by data stores
+		methods : {
+			/**
+			 * Batch sets or deletes data in the store
+			 *
+			 * Events: beforeDataBatch  Fires before the batch is queued
+			 *         afterDataBatch   Fires after the batch is queued
+			 *
+			 * @method batch
+			 * @param  {String}  type Type of action to perform
+			 * @param  {Mixed}   data Array of keys or indexes to delete, or Object containing multiple records to set
+			 * @param  {Boolean} sync [Optional] True if called by data.sync
+			 * @return {Object} Data store
+			 */
+			batch : function(type, data, sync) {
+				try {
+					type = type.toString().toLowerCase() || undefined;
+					sync = (sync === true);
 
-				if (!/^(set|del)$/.test(type) || typeof data !== "object")
+					if (!/^(set|del)$/.test(type) || typeof data !== "object")
+							throw Error(label.error.invalidArguments);
+
+					var obj = this.parentNode,
+					    i, nth, key;
+
+					obj.fire("beforeDataBatch");
+					if (data instanceof Array) {
+						for (i = 0, nth = data.length; i < nth; i++) {
+							switch (type) {
+								case "del":
+									this.del(data[i], false, sync);
+									break;
+								case "set":
+									key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
+									this.set(key, data[i], sync);
+									break;
+							}
+						}
+					}
+					else {
+						for (i in data) {
+							switch (type) {
+								case "del":
+									this.del(data[i], false, sync);
+									break;
+								case "set":
+									key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
+									key !== i ? delete data[i][key] : key = key.toString();
+									this.set(key, data[i], sync);
+									break;
+							}
+						}
+					}
+					if (type === "del") this.reindex();
+					obj.fire("afterDataBatch");
+					return this;
+				}
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
+				}
+			},
+
+			/**
+			 * Clears the data object, unsets the uri property
+			 *
+			 * Events: beforeDataClear  Fires before the data is cleared
+			 *         afterDataClear   Fires after the data is cleared
+			 *
+			 * @method clear
+			 * @return {Object} Data store
+			 */
+			clear : function() {
+				silent = (silent !== true);
+				var obj = this.parentNode;
+				obj.fire("beforeDataClear");
+				this.uri     = null;
+				this.key     = null;
+				this.keys    = {};
+				this.records = [];
+				this.total   = 0;
+				obj.fire("afterDataClear");
+				return this;
+			},
+
+			/**
+			 * Deletes a record based on key or index
+			 *
+			 * Events: beforeDataDelete  Fires before the record is deleted
+			 *         afterDataDelete   Fires after the record is deleted
+			 *         syncDataDelete    Fires when the local store is updated
+			 *         failedDataDelete  Fires if the store is RESTful and the action is denied
+			 *
+			 * @method del
+			 * @param  {Mixed}   record  Record key or index
+			 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
+			 * @param  {Boolean} sync    [Optional] True if called by data.sync
+			 * @return {Object} Data store
+			 */
+			del : function(record, reindex, sync) {
+				try {
+					if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string"))
 						throw Error(label.error.invalidArguments);
 
-				var obj = this.parentNode,
-				    i, nth, key;
+					reindex  = (reindex !== false);
+					sync     = (sync === true);
+					var obj  = this.parentNode,
+					    key, args;
 
-				obj.fire("beforeDataBatch");
-				if (data instanceof Array) {
-					for (i = 0, nth = data.length; i < nth; i++) {
-						switch (type) {
-							case "del":
-								this.del(data[i], false, sync);
-								break;
-							case "set":
-								key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
-								this.set(key, data[i], sync);
-								break;
-						}
+					if (typeof record === "string") {
+						key    = record;
+						record = this.keys[key];
+						if (typeof key === "undefined") throw Error(label.error.invalidArguments);
+						record = record.index;
 					}
-				}
-				else {
-					for (i in data) {
-						switch (type) {
-							case "del":
-								this.del(data[i], false, sync);
-								break;
-							case "set":
-								key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
-								key !== i ? delete data[i][key] : key = key.toString();
-								this.set(key, data[i], sync);
-								break;
-						}
+					else {
+						key = this.records[record];
+						if (typeof key === "undefined") throw Error(label.error.invalidArguments);
+						key = key.key;
 					}
+
+					args = {key: key, record: record, reindex: reindex};
+					obj.fire("beforeDataDelete", args);
+					sync || this.uri === null ? obj.fire("syncDataDelete", args)
+					                          : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete", args); }, function(){ obj.fire("failedDataDelete", args); });
+					return this;
 				}
-				if (type === "del") this.reindex();
-				obj.fire("afterDataBatch");
-				return this;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Clears the data object, unsets the uri property
-		 *
-		 * Events: beforeDataClear  Fires before the data is cleared
-		 *         afterDataClear   Fires after the data is cleared
-		 *
-		 * @method clear
-		 * @return {Object} Data store
-		 */
-		clear : function() {
-			var obj = this.parentNode;
-			obj.fire("beforeDataClear");
-			this.uri     = null;
-			this.key     = null;
-			this.keys    = {};
-			this.records = [];
-			this.total   = 0;
-			obj.fire("afterDataClear");
-			return this;
-		},
-
-		/**
-		 * Deletes a record based on key or index
-		 *
-		 * Events: beforeDataDelete  Fires before the record is deleted
-		 *         afterDataDelete   Fires after the record is deleted
-		 *         syncDataDelete    Fires when the local store is updated
-		 *         failedDataDelete  Fires if the store is RESTful and the action is denied
-		 *
-		 * @method del
-		 * @param  {Mixed}   record  Record key or index
-		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
-		 * @param  {Boolean} sync    [Optional] True if called by data.sync
-		 * @return {Object} Data store
-		 */
-		del : function(record, reindex, sync) {
-			try {
-				if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string"))
-					throw Error(label.error.invalidArguments);
-
-				reindex  = (reindex !== false);
-				sync     = (sync === true);
-				var obj  = this.parentNode,
-				    key, args;
-
-				if (typeof record === "string") {
-					key    = record;
-					record = this.keys[key];
-					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
-					record = record.index;
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
 				}
-				else {
-					key = this.records[record];
-					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
-					key = key.key;
-				}
+			},
 
-				args = {key: key, record: record, reindex: reindex};
-				obj.fire("beforeDataDelete", args);
-				sync || this.uri === null ? obj.fire("syncDataDelete", args)
-				                          : $.del(this.uri+"/"+key, function(){ obj.fire("syncDataDelete", args); }, function(){ obj.fire("failedDataDelete", args); });
-				return this;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
+			/**
+			 * Finds needle in the haystack
+			 *
+			 * Events: beforeDataFind  Fires before the search begins
+			 *         afterDataFind   Fires after the search has finished
+			 *
+			 * @method find
+			 * @param  {Mixed} needle   String, Number or Pattern to test for
+			 * @param  {Mixed} haystack [Optional] The field(s) to search
+			 * @return {Array} Array of results
+			 */
+			find : function(needle, haystack) {
+				try {
+					if (typeof needle === "undefined" || typeof haystack === "undefined")
+						throw Error(label.error.invalidArguments);
 
-		/**
-		 * Finds needle in the haystack
-		 *
-		 * Events: beforeDataFind  Fires before the search begins
-		 *         afterDataFind   Fires after the search has finished
-		 *
-		 * @method find
-		 * @param  {Mixed} needle   String, Number or Pattern to test for
-		 * @param  {Mixed} haystack [Optional] The field(s) to search
-		 * @return {Array} Array of results
-		 */
-		find : function(needle, haystack) {
-			try {
-				if (typeof needle === "undefined" || typeof haystack === "undefined")
-					throw Error(label.error.invalidArguments);
+					var h      = [],
+					    n      = typeof needle === "string" ? needle.split(/\s*,\s*/) : needle,
+					    result = [],
+					    nth    = h.length,
+						nth2   = n.length,
+						obj    = this.parentNode,
+						x, y, f, r, s, p, i;
 
-				var h      = [],
-				    n      = typeof needle === "string" ? needle.split(/\s*,\s*/) : needle,
-				    result = [],
-				    nth    = h.length,
-					nth2   = n.length,
-					obj    = this.parentNode,
-					x, y, f, r, s, p, i;
+					obj.fire("beforeDataFind");
 
-				obj.fire("beforeDataFind");
-
-				if (typeof haystack === "undefined" || !haystack instanceof Array) {
-					if (typeof haystack === "string") {
-						h = haystack.split(/\s*,\s*/);
-						for (i in h) {
-							if (typeof this.records.first().data[h[i]] === "undefined")
+					if (typeof haystack === "undefined" || !haystack instanceof Array) {
+						if (typeof haystack === "string") {
+							h = haystack.split(/\s*,\s*/);
+							for (i in h) {
+								if (typeof this.records.first().data[h[i]] === "undefined")
+									throw Error(label.error.invalidArguments);
+							}
+						}
+						else { for (i in this.records.first().data) { h.push(i); } }
+					}
+					else {
+						for (i in haystack) {
+							if (typeof this.records.first().data[haystack[i]] === "undefined")
 								throw Error(label.error.invalidArguments);
 						}
+						h = haystack;
 					}
-					else { for (i in this.records.first().data) { h.push(i); } }
-				}
-				else {
-					for (i in haystack) {
-						if (typeof this.records.first().data[haystack[i]] === "undefined")
-							throw Error(label.error.invalidArguments);
-					}
-					h = haystack;
-				}
 
-				i = this.records.length
-				while (i--) {
-					for (x = 0; x < nth; x++) {
-						for (y = 0; y < nth2; y++) {
-							f = h[x];
-							p = n[y];
-							r = new RegExp(p, "gi");
-							s = this.records[i].data[f];
-							if (r.test(s)) result.push(this.records[i]);
+					i = this.records.length
+					while (i--) {
+						for (x = 0; x < nth; x++) {
+							for (y = 0; y < nth2; y++) {
+								f = h[x];
+								p = n[y];
+								r = new RegExp(p, "gi");
+								s = this.records[i].data[f];
+								if (r.test(s)) result.push(this.records[i]);
+							}
 						}
 					}
+
+					obj.fire("afterDataFind", result);
+					return result;
 				}
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
+				}
+			},
 
-				obj.fire("afterDataFind", result);
-				return result;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
+			/**
+			 * Retrieves a record based on key or index
+			 *
+			 * If the key is an integer, cast to a string before sending as an argument!
+			 *
+			 * Events: beforeDataGet  Fires before getting the record
+			 *         afterDataGet   Fires after getting the record
+			 *
+			 * @method get
+			 * @param  {Mixed} record Record key, index or Array of pagination start & end
+			 * @return {Object} Record
+			 */
+			get : function(record) {
+				try {
+					var r   = [],
+					    obj = this.parentNode,
+					    i, start, end;
 
-		/**
-		 * Retrieves a record based on key or index
-		 *
-		 * If the key is an integer, cast to a string before sending as an argument!
-		 *
-		 * Events: beforeDataGet  Fires before getting the record
-		 *         afterDataGet   Fires after getting the record
-		 *
-		 * @method get
-		 * @param  {Mixed} record Record key, index or Array of pagination start & end
-		 * @return {Object} Record
-		 */
-		get : function(record) {
-			try {
-				var r   = [],
+					obj.fire("beforeDataGet");
+					if (typeof record === "string") r = typeof this.keys[record] !== "undefined" ? this.records[this.keys[record].index] : undefined;
+					else if (record instanceof Array) {
+						if (!!isNaN(record[0]) || !!isNaN(record[1]))
+							throw Error(label.error.invalidArguments);
+
+						start = record[0] - 1;
+						end   = record[1] - 1;
+						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
+					}
+					else r = this.records[record];
+					obj.fire("afterDataGet", r);
+					return r;
+				}
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
+				}
+			},
+
+			/**
+			 * Reindexes the data store
+			 *
+			 * Events: beforeDataReindex  Fires before reindexing the data store
+			 *         afterDataReindex   Fires after reindexing the data store
+			 *
+			 * @method reindex
+			 * @return {Object} Data store
+			 */
+			reindex : function() {
+				var nth = this.total,
 				    obj = this.parentNode,
-				    i, start, end;
+				    i;
 
-				obj.fire("beforeDataGet");
-				if (typeof record === "string") r = typeof this.keys[record] !== "undefined" ? this.records[this.keys[record].index] : undefined;
-				else if (record instanceof Array) {
-					if (!!isNaN(record[0]) || !!isNaN(record[1]))
+				obj.fire("beforeDataReindex");
+				for(i = 0; i < nth; i++) {
+					if (this.records[i].key.isNumber()) {
+						delete this.keys[this.records[i].key];
+						this.keys[i.toString()] = {};
+						this.records[i].key = i.toString();
+					}
+					this.keys[this.records[i].key].index = i;
+				}
+				obj.fire("afterDataReindex");
+				return this;
+			},
+
+			/**
+			 * Creates or updates an existing record
+			 *
+			 * If a POST is issued, and the data.key property is not set the
+			 * first property of the response object will be used as the key
+			 *
+			 * Events: beforeDataSet  Fires before the record is set
+			 *         afterDataSet   Fires after the record is set, the record is the argument for listeners
+			 *         syncDataSet    Fires when the local store is updated
+			 *         failedDataSet  Fires if the store is RESTful and the action is denied
+			 *
+			 * @method set
+			 * @param  {Mixed}   key  Integer or String to use as a Primary Key
+			 * @param  {Object}  data Key:Value pairs to set as field values
+			 * @param  {Boolean} sync [Optional] True if called by data.sync
+			 * @return {Object} The data store
+			 */
+			set : function(key, data, sync) {
+				try {
+					key  = key === null  ? undefined : key.toString();
+					sync = (sync === true);
+
+					switch (true) {
+						case (typeof key === "undefined" || key.isEmpty()) && this.uri === null:
+						case typeof data === "undefined":
+						case data instanceof Array:
+						case data instanceof Number:
+						case data instanceof String:
+						case typeof data !== "object":
+							throw Error(label.error.invalidArguments);
+					}
+
+					var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
+					    obj    = this.parentNode,
+					    args   = {data: data, key: key, record: record};
+
+					obj.fire("beforeDataSet");
+					sync || this.uri === null ? obj.fire("syncDataSet", args)
+					                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg){ args["result"] = arg; obj.fire("syncDataSet", args); }, function(){ obj.fire("failedDataSet"); }, data);
+
+					return this;
+				}
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
+				}
+			},
+
+			/**
+			 * Syncs the data store with a URI representation
+			 *
+			 * Events: beforeDataSync  Fires before syncing the data store
+			 *         afterDataSync   Fires after syncing the data store
+			 *
+			 * @method sync
+			 * @return {Object} Data store
+			 */
+			sync : function() {
+				try {
+					if (this.uri === null || this.uri.isEmpty())
 						throw Error(label.error.invalidArguments);
 
-					start = record[0] - 1;
-					end   = record[1] - 1;
-					for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
+					var obj  = this.parentNode,
+					    guid = utility.guid(),
+					    success, failure;
+
+					this.uri.on("afterGet", function(arg){
+						this.uri.un("afterGet", guid);
+						try {
+							var data = arg;
+							if (typeof data === "undefined")
+								throw Error(label.error.expectedObject);
+
+							this.batch("set", data, true);
+							obj.fire("afterDataSync");
+						}
+						catch (e) {
+							error(e, arguments, this);
+							obj.fire("failedDataSync");
+						}
+					}, guid, this);
+
+					this.uri.on("failedGet", function(){
+						this.uri.un("failedGet", guid);
+						obj.fire("failedDataSync");
+					}, guid, this);
+
+					obj.fire("beforeDataSync");
+					$.get(this.uri);
+					return this;
 				}
-				else r = this.records[record];
-				obj.fire("afterDataGet", r);
-				return r;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
+				catch (e) {
+					error(e, arguments, this);
+					return this;
+				}
 			}
 		},
 
@@ -1290,12 +1421,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}
 
 				obj.fire("beforeDataStore");
-				obj.data = utility.clone(this);
-				obj.data.keys    = {};
-				obj.data.records = [];
-				obj.data.total   = 0;
+				obj.data = $.extend(this.methods, this.decorate);
 				obj.data.parentNode = obj; // Recursion, useful
-				delete obj.data.register;
 
 				obj.on("syncDataDelete", function(data) {
 					var record = this.get(data.record);
@@ -1360,130 +1487,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			catch (e) {
 				error(e, arguments, this);
 				return undefined;
-			}
-		},
-
-		/**
-		 * Reindexes the data store
-		 *
-		 * Events: beforeDataReindex  Fires before reindexing the data store
-		 *         afterDataReindex   Fires after reindexing the data store
-		 *
-		 * @method reindex
-		 * @return {Object} Data store
-		 */
-		reindex : function() {
-			var nth = this.total,
-			    obj = this.parentNode,
-			    i;
-
-			obj.fire("beforeDataReindex");
-			for(i = 0; i < nth; i++) {
-				if (this.records[i].key.isNumber()) {
-					delete this.keys[this.records[i].key];
-					this.keys[i.toString()] = {};
-					this.records[i].key = i.toString();
-				}
-				this.keys[this.records[i].key].index = i;
-			}
-			obj.fire("afterDataReindex");
-			return this;
-		},
-
-		/**
-		 * Creates or updates an existing record
-		 *
-		 * If a POST is issued, and the data.key property is not set the
-		 * first property of the response object will be used as the key
-		 *
-		 * Events: beforeDataSet  Fires before the record is set
-		 *         afterDataSet   Fires after the record is set, the record is the argument for listeners
-		 *         syncDataSet    Fires when the local store is updated
-		 *         failedDataSet  Fires if the store is RESTful and the action is denied
-		 *
-		 * @method set
-		 * @param  {Mixed}   key  Integer or String to use as a Primary Key
-		 * @param  {Object}  data Key:Value pairs to set as field values
-		 * @param  {Boolean} sync [Optional] True if called by data.sync
-		 * @return {Object} The data store
-		 */
-		set : function(key, data, sync) {
-			try {
-				key  = key === null  ? undefined : key.toString();
-				sync = (sync === true);
-
-				switch (true) {
-					case (typeof key === "undefined" || key.isEmpty()) && this.uri === null:
-					case typeof data === "undefined":
-					case data instanceof Array:
-					case data instanceof Number:
-					case data instanceof String:
-					case typeof data !== "object":
-						throw Error(label.error.invalidArguments);
-				}
-
-				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
-				    obj    = this.parentNode,
-				    args   = {data: data, key: key, record: record};
-
-				obj.fire("beforeDataSet");
-				sync || this.uri === null ? obj.fire("syncDataSet", args)
-				                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg){ args["result"] = arg; obj.fire("syncDataSet", args); }, function(){ obj.fire("failedDataSet"); }, data);
-
-				return this;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Syncs the data store with a URI representation
-		 *
-		 * Events: beforeDataSync  Fires before syncing the data store
-		 *         afterDataSync   Fires after syncing the data store
-		 *
-		 * @method sync
-		 * @return {Object} Data store
-		 */
-		sync : function() {
-			try {
-				if (this.uri === null || this.uri.isEmpty())
-					throw Error(label.error.invalidArguments);
-
-				var obj  = this.parentNode,
-				    guid = utility.guid(),
-				    success, failure;
-
-				this.uri.on("afterGet", function(arg){
-					this.uri.un("afterGet", guid);
-					try {
-						var data = arg;
-						if (typeof data === "undefined")
-							throw Error(label.error.expectedObject);
-
-						this.batch("set", data, true);
-						obj.fire("afterDataSync");
-					}
-					catch (e) {
-						error(e, arguments, this);
-						obj.fire("failedDataSync");
-					}
-				}, guid, this);
-
-				this.uri.on("failedGet", function(){
-					this.uri.un("failedGet", guid);
-					obj.fire("failedDataSync");
-				}, guid, this);
-
-				obj.fire("beforeDataSync");
-				$.get(this.uri);
-				return this;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return this;
 			}
 		}
 	};
