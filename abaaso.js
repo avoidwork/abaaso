@@ -3143,7 +3143,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
 							   explode  : function(arg) { return this.split(new RegExp("\\s*" + arg + "\\s*")); },
 							   get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
-							   implode  : function(arg) { return this.join(new RegExp("\\s*" + arg + "\\s*")); },
 							   isAlphaNum: function() { return $.validate.test({alphanum: this}).pass; },
 							   isBoolean: function() { return $.validate.test({"boolean": this}).pass; },
 							   isDate   : function() { return $.validate.test({date: this}).pass; },
