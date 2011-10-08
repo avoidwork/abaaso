@@ -98,7 +98,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (!obj instanceof Array)
 					throw Error(label.error.expectedArray);
 
-				if (/,/.test(arg)) arg = arg.split(/\s*,\s*/);
+				if (/,/.test(arg)) arg = arg.explode(",");
 				if (arg instanceof Array) {
 					var indexes = [],
 					    nth     = args.length,
@@ -761,7 +761,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 						cache.set(uri, "expires", expires);
 						cache.set(uri, "headers", items);
-						cache.set(uri, "permission", bit(allow !== null ? allow.split(/\s*,\s*/) : [type]));
+						cache.set(uri, "permission", bit(allow !== null ? allow.explode(",") : [type]));
 						break;
 					case xhr.readyState === 4:
 						switch (xhr.status) {
@@ -1154,7 +1154,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						throw Error(label.error.invalidArguments);
 
 					var h      = [],
-					    n      = typeof needle === "string" ? needle.split(/\s*,\s*/) : needle,
+					    n      = typeof needle === "string" ? needle.explode(",") : needle,
 					    result = [],
 					    nth,
 						nth2   = n.length,
@@ -1163,22 +1163,15 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 					obj.fire("beforeDataFind");
 
-					if (typeof haystack === "undefined" || !haystack instanceof Array) {
-						if (typeof haystack === "string") {
-							h = haystack.split(/\s*,\s*/);
-							for (i in h) {
-								if (typeof this.records.first().data[h[i]] === "undefined")
-									throw Error(label.error.invalidArguments);
-							}
-						}
-						else { for (i in this.records.first().data) { h.push(i); } }
-					}
-					else {
-						for (i in haystack) {
-							if (typeof this.records.first().data[haystack[i]] === "undefined")
-								throw Error(label.error.invalidArguments);
-						}
-						h = [haystack];
+					r = this.records.first();
+					switch (true) {
+						case typeof haystack === "string":
+							h = haystack.explode(",")
+							i = h.length;
+							while (i--) { if (!r.data.hasOwnProperty(h[i])) throw Error(label.error.invalidArguments); }
+							break;
+						default:
+							for (i in r.data) { h.push(i); }
 					}
 
 					nth = h.length;
@@ -1331,10 +1324,17 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			 */
 			sort : function(query) {
 				try {
-					var obj = this.parentNode;
+					var obj = this.parentNode,
+					haystack, result = [], i, nth;
 					obj.fire("beforeDataSort");
+					query = query.explode(",");
+					nth   = query.length;
+					for (i = 0; i < nth; i++) {
+						haystack = query[i].replace(/\s.*$/, "");
+						result   = result.concat(this.find(".*", haystack));
+					}
 					obj.fire("afterDataSort", "viewNameHere");
-					return [];
+					return result;
 				}
 				catch (e) {
 					error(e, arguments, this);
@@ -2638,7 +2638,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			nodelist = (nodelist === true);
 
 			// Recursive processing, ends up below
-			if (/,/.test(arg)) arg = arg.split(/\s*,\s*/);
+			if (/,/.test(arg)) arg = arg.explode(",");
 			if (arg instanceof Array) {
 				var instances = [],
 				    nth = arg.length,
@@ -3141,7 +3141,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					string  : {allows   : function(arg) { return $.allows(this, arg); },
 							   capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
 							   del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
+							   explode  : function(arg) { return this.split(new RegExp("\\s*" + arg + "\\s*")); },
 							   get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
+							   implode  : function(arg) { return this.join(new RegExp("\\s*" + arg + "\\s*")); },
 							   isAlphaNum: function() { return $.validate.test({alphanum: this}).pass; },
 							   isBoolean: function() { return $.validate.test({"boolean": this}).pass; },
 							   isDate   : function() { return $.validate.test({date: this}).pass; },
