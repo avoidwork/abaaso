@@ -1159,7 +1159,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					    nth,
 						nth2   = n.length,
 						obj    = this.parentNode,
-						x, y, f, r, s, p, i;
+						keys   = {},
+						x, y, f, r, s, p, i, a;
 
 					obj.fire("beforeDataFind");
 
@@ -1175,16 +1176,19 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					}
 
 					nth = h.length;
-					i   = this.total;
+					a   = this.total;
 
-					while (i--) {
+					for (i = 0; i < a; i++) {
 						for (x = 0; x < nth; x++) {
 							for (y = 0; y < nth2; y++) {
 								f = h[x];
 								p = n[y];
 								r = new RegExp(p, "gi");
 								s = this.records[i].data[f];
-								if (r.test(s)) result.push(this.records[i]);
+								if (!keys[this.records[i].key] && r.test(s)) {
+									keys[this.records[i].key] = true;
+									result.push(this.records[i]);
+								}
 							}
 						}
 					}
