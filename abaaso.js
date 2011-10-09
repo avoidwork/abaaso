@@ -1211,8 +1211,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			 *         afterDataGet   Fires after getting the record
 			 *
 			 * @method get
-			 * @param  {Mixed} record Record key, index or Array of pagination start & end
-			 * @return {Object} Record
+			 * @param  {Mixed} record Key, index or Array of pagination start & end
+			 * @return {Mixed} Individual record, or Array of records
 			 */
 			get : function(record) {
 				try {
@@ -1221,16 +1221,27 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					    i, start, end;
 
 					obj.fire("beforeDataGet");
-					if (typeof record === "string") r = typeof this.keys[record] !== "undefined" ? this.records[this.keys[record].index] : undefined;
-					else if (record instanceof Array) {
-						if (!!isNaN(record[0]) || !!isNaN(record[1]))
-							throw Error(label.error.invalidArguments);
 
-						start = record[0] - 1;
-						end   = record[1] - 1;
-						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
+					switch (true) {
+						case typeof record === "undefined" || String(record).isEmpty():
+							r = this.records;
+							break;
+						case typeof record === "string" && typeof this.keys[record] !== "undefined":
+							r = this.records[this.keys[record].index];
+							break;
+						case typeof record === "number":
+							r = this.records[record];
+							break;
+						case record instanceof Array:
+							if (!!isNaN(record[0]) || !!isNaN(record[1]))
+								throw Error(label.error.invalidArguments);
+
+							start = record[0] - 1;
+							end   = record[1] - 1;
+							for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
+							break;
 					}
-					else r = this.records[record];
+
 					obj.fire("afterDataGet", r);
 					return r;
 				}
@@ -1317,28 +1328,37 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			},
 
 			/**
-			 * Caches, and returns a view
+			 * Returns a view, or creates a view and returns it
 			 *
 			 * Events: beforeDataSort  Fires before the record is set
 			 *         afterDataSort   Fires after the record is set, the record is the argument for listeners
 			 *
 			 * @method sort
-			 * @param  {String} query UnQL query which is translated to finds
+			 * @param  {String} query   Single column sort
+			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
 			 */
-			sort : function(query) {
+			sort : function(query, create) {
 				try {
-					var obj = this.parentNode,
-					haystack, result = [], i, nth;
+					create   = (create === true);
+					var obj  = this.parentNode,
+					    view = query.toLowerCase().replace("/\\s/g", ""),
+					    records, haystack, desc;
+
+					if (!create && this.views[view] instanceof Array) return this.views[view];
+
 					obj.fire("beforeDataSort");
-					query = query.explode(",");
-					nth   = query.length;
-					for (i = 0; i < nth; i++) {
-						haystack = query[i].replace(/\s.*$/, "");
-						result   = result.concat(this.find(".*", haystack));
-					}
-					obj.fire("afterDataSort", "viewNameHere");
-					return result;
+
+					desc     = new RegExp("\\s+desc", "i");
+					haystack = query.replace(/\s.*$/, "");
+					records  = this.find(".*", haystack);
+
+					if (records.length > 0 && desc.test(query)) records.reverse();
+
+					this.views[view] = records;
+
+					obj.fire("afterDataSort", view);
+					return records;
 				}
 				catch (e) {
 					error(e, arguments, this);
