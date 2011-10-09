@@ -1186,14 +1186,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 								r = new RegExp(p, "gi");
 								s = this.records[i].data[f];
 								if (!keys[this.records[i].key] && r.test(s)) {
-									keys[this.records[i].key] = true;
+									keys[this.records[i].key] = i;
 									result.push(this.records[i]);
 								}
 							}
 						}
 					}
 
-					obj.fire("afterDataFind", result);
+					obj.fire("afterDataFind", keys);
 					return result;
 				}
 				catch (e) {
@@ -1337,26 +1337,46 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			 * @param  {String} query   Single column sort
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
+			 * @todo finish this
 			 */
 			sort : function(query, create) {
 				try {
-					create   = (create === true);
-					var obj  = this.parentNode,
-					    view = query.toLowerCase().replace("/\\s/g", ""),
-					    records, haystack, desc;
+					if (typeof query === "undefined" || String(query).isEmpty())
+						throw Error(label.error.invalidArguments);
+
+					create      = (create === true);
+					var obj     = this.parentNode,
+					    view    = query.toLowerCase().replace("/\\s/g", ""),
+					    order   = [],
+					    records = [],
+					    needle, desc, value, index;
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
+					if (this.total === 0) return this.records;
+
+					desc   = new RegExp("\\s+desc", "i");
+					needle = query.replace(/\s.*$/, "");
+
+					if (!this.records[0].data.hasOwnProperty(needle))
+						throw Error(label.error.invalidArguments);
 
 					obj.fire("beforeDataSort");
 
-					desc     = new RegExp("\\s+desc", "i");
-					haystack = query.replace(/\s.*$/, "");
-					records  = this.find(".*", haystack);
+					this.records.filter(function(rec) {
+						value = String(rec.data[needle]).trim() + ":::" + rec.key;
+						order.push(value);
+					});
 
-					if (records.length > 0 && desc.test(query)) records.reverse();
+					order.sort();
+					if (desc.test(query)) order.reverse();
+
+					needle = new RegExp(":::(.*)$");
+					order.filter(function(rec) {
+						index = obj.data.keys[needle.exec(rec)[1]].index;
+						records.push(obj.data.records[index]);
+					});
 
 					this.views[view] = records;
-
 					obj.fire("afterDataSort", view);
 					return records;
 				}
