@@ -1501,6 +1501,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					this.records.remove(data.record);
 					delete this.keys[data.key];
 					this.total--;
+					this.views = {};
 					if (data.reindex) this.reindex();
 					this.parentNode.fire("afterDataDelete", record);
 					return this.parentNode;
@@ -1536,6 +1537,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						else this.records[data.record.index] = data.data;
 						record = this.get(data.record.index);
 					}
+					this.views = {};
 					this.parentNode.fire("afterDataSet", record);
 				}, utility.guid(), obj.data);
 
