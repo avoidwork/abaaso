@@ -1337,7 +1337,6 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			 * @param  {String} query   Single column sort
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
-			 * @todo finish this
 			 */
 			sort : function(query, create) {
 				try {
