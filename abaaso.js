@@ -127,8 +127,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			try {
 				if (!array1 instanceof Array || !array2 instanceof Array)
 					throw Error(label.error.expectedArray);
+				
+				var a = array1.length > array2.length ? array1 : array2,
+				    b = a === array1 ? array2 : array1,
+				    r = [];
 
-				return array1.filter(function(key){return (array2.indexOf(key) < 0);});
+				a.filter(function(key) { if (b.indexOf(key) === -1) r.push(key); });
+				return r;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -202,6 +207,32 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}
 				indexed.length = i;
 				return indexed;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Finds the intersections between array1 and array2
+		 *
+		 * @method diff
+		 * @param  {Array} array1 Source Array
+		 * @param  {Array} array2 Comparison Array
+		 * @return {Array} Array of the intersections
+		 */
+		intersect : function(array1, array2) {
+			try {
+				if (!array1 instanceof Array || !array2 instanceof Array)
+					throw Error(label.error.expectedArray);
+
+				var a = array1.length > array2.length ? array1 : array2,
+				    b = a === array1 ? array2 : array1,
+				    r = [];
+
+				a.filter(function(key) { if (b.indexOf(key) > -1) r.push(key); });
+				return r;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -3024,7 +3055,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									for (i = 0; i < nth; i++) { this[i].addClass(arg); }
 									return this;
 							   },
-						       contains : function(arg) { return $.array.contains(this, arg); },
+						       contains : function(arg) { return array.contains(this, arg); },
 					           css      : function(key, value) {
 									var nth = this.length,
 									    i   = null;
@@ -3032,14 +3063,15 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									for (i = 0; i < nth; i++) { this[i].css(key, value); }
 									return this;
 						       },
-					           diff     : function(arg) { return $.array.diff(this, arg); },
-					           first    : function() { return $.array.first(this); },
-					           index    : function(arg) { return $.array.index(this, arg); },
-					           indexed  : function() { return $.array.indexed(this); },
-					           keys     : function() { return $.array.keys(this); },
-					           last     : function(arg) { return $.array.last(this); },
+					           diff     : function(arg) { return array.diff(this, arg); },
+					           first    : function() { return array.first(this); },
+					           index    : function(arg) { return array.index(this, arg); },
+					           indexed  : function() { return array.indexed(this); },
+					           intersect: function(arg) { return array.intersect(this, arg); },
+					           keys     : function() { return array.keys(this); },
+					           last     : function(arg) { return array.last(this); },
 					           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : true, state); },
-					           remove   : function(arg) { return $.array.remove(this, arg); },
+					           remove   : function(arg) { return array.remove(this, arg); },
 							   removeClass : function(arg) {
 									var nth = this.length,
 									    i   = null;
@@ -3047,9 +3079,9 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									for (i = 0; i < nth; i++) { this[i].removeClass(arg); }
 									return this;
 							   },
-					           text     : function(arg) { return $.el.update(this, {innerHTML: arg}); },
-					           total    : function() { return $.array.total(this); },
-						       update   : function(arg) { return $.el.update(this, arg); }},
+					           text     : function(arg) { return el.update(this, {innerHTML: arg}); },
+					           total    : function() { return array.total(this); },
+						       update   : function(arg) { return el.update(this, arg); }},
 					element : {addClass : function(arg) {
 									this.genId();
 									return $.el.class(this, arg, true);
