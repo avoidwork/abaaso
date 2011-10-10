@@ -3084,11 +3084,11 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						       update   : function(arg) { return el.update(this, arg); }},
 					element : {addClass : function(arg) {
 									this.genId();
-									return $.el.class(this, arg, true);
+									return el.class(this, arg, true);
 							   },
 							   create   : function(type, args) {
 									this.genId();
-									return $.create(type, args, this);
+									return el.create(type, args, this);
 							   },
 							   css       : function(key, value) {
 							   		var i;
@@ -3100,8 +3100,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 									this.style[key] = value;
 									return this;
 								},
-							   disable   : function() { return $.el.disable(this); },
-							   enable    : function() { return $.el.enable(this); },
+							   disable   : function() { return el.disable(this); },
+							   enable    : function() { return el.enable(this); },
 							   get       : function(uri, headers) {
 									this.fire("beforeGet");
 									var cached = cache.get(uri),
@@ -3115,10 +3115,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   },
 							   hide     : function() {
 									this.genId();
-									return $.el.hide(this);
+									return el.hide(this);
 							   },
-							   isAlphaNum: function() { return this.nodeName === "FORM" ? false : $.validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
-						       isBoolean: function() { return this.nodeName === "FORM" ? false : $.validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+							   isAlphaNum: function() { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+						       isBoolean: function() { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
 						       isDate   : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
 						       isDomain : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
 						       isEmail  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
@@ -3143,14 +3143,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 														for (i = 0; i < nth; i++) {
 															node = !!isNaN(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
 															if (typeof node === "undefined")
-																throw Error($.label.error.propertyNotFound);
+																throw Error(label.error.propertyNotFound);
 														}
 														result = node;
 													}
 													else { result = response; }
 											}
 											catch (e) {
-													result = $.label.error.serverError;
+													result = label.error.serverError;
 													error(e, arguments, this);
 											}
 
@@ -3166,19 +3166,19 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   },
 					           position : function() {
 									this.genId();
-									return $.el.position(this);
+									return el.position(this);
 							   },
 							   removeClass : function(arg) {
 									this.genId();
-									return $.el.class(this, arg, false);
+									return el.class(this, arg, false);
 							   },
 							   show     : function() {
 									this.genId();
-									return $.el.show(this);
+									return el.show(this);
 							   },
 							   size     : function() {
 									this.genId();
-									return $.el.size(this);
+									return el.size(this);
 							   },
 							   text     : function(arg) {
 									var args = {};
@@ -3189,24 +3189,24 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   },
 							   update   : function(args) {
 									this.genId();
-									return $.update(this, args);
+									return el.update(this, args);
 							   },
-							   validate : function() { return this.nodeName === "FORM" ? $.validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+							   validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 					number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
 					           isEven   : function() { return $.number.even(this); },
 					           isOdd    : function() { return $.number.odd(this); },
 					           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); }},
 					shared  : {clear    : function() {
 									this.genId();
-									this instanceof String ? this.constructor = new String("") : $.clear(this);
+									this instanceof String ? this.constructor = new String("") : el.clear(this);
 									return this;
 							   },
-							   destroy  : function() { $.destroy(this); },
+							   destroy  : function() { el.destroy(this); },
 							   fire     : function(event, args) {
 							   		this.genId();
 							   		return $.fire.call(this, event, args);
 							   },
-							   genId    : function() { return $.genId(this); },
+							   genId    : function() { return utility.genId(this); },
 							   listeners: function(event) {
 							   		this.genId();
 							   		return $.listeners(this, event);
@@ -3220,17 +3220,17 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
 							   explode  : function(arg) { return this.split(new RegExp("\\s*" + arg + "\\s*")); },
 							   get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
-							   isAlphaNum: function() { return $.validate.test({alphanum: this}).pass; },
-							   isBoolean: function() { return $.validate.test({"boolean": this}).pass; },
-							   isDate   : function() { return $.validate.test({date: this}).pass; },
-							   isDomain : function() { return $.validate.test({domain: this}).pass; },
-							   isEmail  : function() { return $.validate.test({email: this}).pass; },
-							   isEmpty  : function() { return !$.validate.test({notEmpty: this}).pass; },
-							   isIP     : function() { return $.validate.test({ip: this}).pass; },
-							   isInt    : function() { return $.validate.test({integer: this}).pass; },
-							   isNumber : function() { return $.validate.test({number: this}).pass; },
-							   isPhone  : function() { return $.validate.test({phone: this}).pass; },
-							   isString : function() { return $.validate.test({string: this}).pass; },
+							   isAlphaNum: function() { return validate.test({alphanum: this}).pass; },
+							   isBoolean: function() { return validate.test({"boolean": this}).pass; },
+							   isDate   : function() { return validate.test({date: this}).pass; },
+							   isDomain : function() { return validate.test({domain: this}).pass; },
+							   isEmail  : function() { return validate.test({email: this}).pass; },
+							   isEmpty  : function() { return !validate.test({notEmpty: this}).pass; },
+							   isIP     : function() { return validate.test({ip: this}).pass; },
+							   isInt    : function() { return validate.test({integer: this}).pass; },
+							   isNumber : function() { return validate.test({number: this}).pass; },
+							   isPhone  : function() { return validate.test({phone: this}).pass; },
+							   isString : function() { return validate.test({string: this}).pass; },
 							   jsonp    : function(success, failure, callback) { return client.request(this, "JSONP", success, failure, callback); },
 							   post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
 							   put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
