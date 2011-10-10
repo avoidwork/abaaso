@@ -1376,7 +1376,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 					create      = (create === true);
 					var obj     = this.parentNode,
-					    view    = query.toLowerCase().replace("/\\s/g", ""),
+					    view    = query.toCamelCase().replace(/Asc$/, ""),
 					    order   = [],
 					    records = [],
 					    needle, desc, value, index;
@@ -3237,6 +3237,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
 					           options  : function(arg) { return $.options(this, arg); },
 					           permissions: function() { return $.permissions(this); },
+							   toCamelCase: function() {
+							   		var s = this.toLowerCase().split(" "),
+							   		    r = "",
+							   		    i, nth;
+
+							   		for (i = 0, nth = s.length; i < nth; i++) { r += i === 0 ? s[i] : String(s[i]).capitalize(); }
+							   		return r;
+							   },
 					           trim     : function(){ return this.replace(/^\s+|\s+$/g, ""); }}
 				};
 
