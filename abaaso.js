@@ -560,7 +560,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @param  {String}   uri     URI to request
 		 * @param  {Function} success A handler function to execute when an appropriate response been received
 		 * @param  {Function} failure [Optional] A handler function to execute on error
-		 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"
+		 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request (CORS)
 		 * @return {String} URI to query
 		 */
 		jsonp : function(uri, success, failure, args){
@@ -568,34 +568,44 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			    guid = utility.guid(),
 			    cbid, s;
 
-			curi.on("afterJSONP", function(arg){
-				this.un("afterJSONP", guid)
-				    .un("failedJSONP", guid);
-				if (typeof success === "function") success(arg);
-			}, guid, curi);
+			curi.on("afterOptions", function(){
+				this.un("afterOptions", guid)
+				    .get(success, failure, args);
+			}, guid)
 
-			curi.on("failedJSONP", function(){
-				this.un("afterJSONP", guid)
-				    .un("failedJSONP", guid);
-				if (typeof failure === "function") failure();
-			}, guid, curi);
+			curi.on("failedOptions", function(){
+				this.un("failedOptions", guid)
+				    .on("afterJSONP", function(arg){
+				    	this.un("afterJSONP", guid)
+				    	    .un("failedJSONP", guid);
+				    	if (typeof success === "function") success(arg);
+				    }, guid);
 
-			do cbid = utility.genId().slice(0, 10);
-			while (typeof abaaso.callback[cbid] !== "undefined");
+				this.on("failedJSONP", function(){
+					this.un("afterJSONP", guid)
+					    .un("failedJSONP", guid);
+					if (typeof failure === "function") failure();
+				}, guid);
 
-			if (typeof args === "undefined" || String(args).isEmpty()) args = "callback";
-			uri = uri.replace(args + "=?", args + "=abaaso.callback." + cbid);
+				do cbid = utility.genId().slice(0, 10);
+				while (typeof abaaso.callback[cbid] !== "undefined");
 
-			abaaso.callback[cbid] = function(arg){
-				$.destroy(s);
-				clearTimeout(abaaso.timer[cbid]);
-				delete abaaso.timer[cbid];
-				delete abaaso.callback[cbid];
-				curi.fire("afterJSONP", arg);
-			};
+				if (typeof args === "undefined" || String(args).isEmpty()) args = "callback";
+				uri = uri.replace(args + "=?", args + "=abaaso.callback." + cbid);
 
-			s = el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
-			abaaso.timer[cbid] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
+				abaaso.callback[cbid] = function(arg){
+					$.destroy(s);
+					clearTimeout(abaaso.timer[cbid]);
+					delete abaaso.timer[cbid];
+					delete abaaso.callback[cbid];
+					curi.fire("afterJSONP", arg);
+				};
+
+				s = el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
+				abaaso.timer[cbid] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
+			}, guid);
+
+			curi.options();
 		},
 
 		/**
