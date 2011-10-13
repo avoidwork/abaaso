@@ -569,6 +569,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			    cbid, s;
 
 			curi.on("afterOptions", function(){
+				if (!args instanceof Object) args = {};
+				args["Accept"] = "application/json";
 				this.un("afterOptions", guid)
 				    .get(success, failure, args);
 			}, guid)
