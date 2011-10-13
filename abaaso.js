@@ -549,6 +549,56 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		},
 
 		/**
+		 * Creates a JSONP request if CORS is not supported, otherwise a GET request is made
+		 *
+		 * Events: beforeJSONP     Fires before the SCRIPT is made
+		 *         afterJSONP      Fires after the SCRIPT is received
+		 *         failedJSONP     Fires on error
+		 *         timeoutJSONP    Fires 30s after SCRIPT is made
+		 *
+		 * @method jsonp
+		 * @param  {String}   uri     URI to request
+		 * @param  {Function} success A handler function to execute when an appropriate response been received
+		 * @param  {Function} failure [Optional] A handler function to execute on error
+		 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"
+		 * @return {String} URI to query
+		 */
+		jsonp : function(uri, success, failure, args){
+			var curi = uri,
+			    guid = utility.guid(),
+			    cbid, s;
+
+			curi.on("afterJSONP", function(arg){
+				this.un("afterJSONP", guid)
+				    .un("failedJSONP", guid);
+				if (typeof success === "function") success(arg);
+			}, guid, curi);
+
+			curi.on("failedJSONP", function(){
+				this.un("afterJSONP", guid)
+				    .un("failedJSONP", guid);
+				if (typeof failure === "function") failure();
+			}, guid, curi);
+
+			do cbid = utility.genId().slice(0, 10);
+			while (typeof abaaso.callback[cbid] !== "undefined");
+
+			if (typeof args === "undefined" || String(args).isEmpty()) args = "callback";
+			uri = uri.replace(args + "=?", args + "=abaaso.callback." + cbid);
+
+			abaaso.callback[cbid] = function(arg){
+				$.destroy(s);
+				clearTimeout(abaaso.timer[cbid]);
+				delete abaaso.timer[cbid];
+				delete abaaso.callback[cbid];
+				curi.fire("afterJSONP", arg);
+			};
+
+			s = el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
+			abaaso.timer[cbid] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
+		},
+
+		/**
 		 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 		 *
 		 * Events: beforeXHR       Fires before the XmlHttpRequest is made
@@ -559,10 +609,10 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 *
 		 * @method request
 		 * @param  {String}   uri     URI to query
-		 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/JSONP)
+		 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/OPTIONS)
 		 * @param  {Function} success A handler function to execute when an appropriate response been received
 		 * @param  {Function} failure [Optional] A handler function to execute on error
-		 * @param  {Mixed}    args    Data to send with the request, or a custom JSONP handler parameter name
+		 * @param  {Mixed}    args    Data to send with the request, or custom headers for GETs
 		 * @return {String} URI to query
 		 * @private
 		 */
@@ -571,107 +621,77 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				if (/post|put/i.test(type) && typeof args === "undefined")
 					throw Error(label.error.invalidArguments);
 
-				if (type.toLowerCase() === "jsonp") {
-					var curi = uri, guid;
-
-					curi.on("afterJSONP", function(arg){
-						curi.un("afterJSONP")
-						    .un("failedJSONP");
-						if (typeof success === "function") success(arg);
-					});
-
-					curi.on("failedJSONP", function(){
-						curi.un("afterJSONP")
-						    .un("failedJSONP");
-						if (typeof failure === "function") failure();
-					});
-
-					do guid = utility.genId().slice(0, 10);
-					while (typeof abaaso.callback[guid] !== "undefined");
-
-					if (typeof args === "undefined") args = "callback";
-					uri = uri.replace(args + "=?", args + "=abaaso.callback." + guid);
-					abaaso.callback[guid] = function(arg){
-						clearTimeout(abaaso.timer["jsonp-" + uri]);
-						delete abaaso.timer["jsonp-" + uri];
-						delete abaaso.callback[guid];
-						curi.fire("afterJSONP", arg);
+				type = type.toLowerCase();
+				var xhr     = new XMLHttpRequest(),
+				    payload = /post|put/i.test(type) ? args : null,
+				    headers = type === "get" && args instanceof Object ? args : null,
+				    cached  = type === "options" ? false : cache.get(uri, false),
+					typed   = type.capitalize(),
+					timer   = function(){
+						clearTimeout(abaaso.timer[typed + "-" + uri]);
+						delete abaaso.timer[typed + "-" + uri];
+						uri.un("received" + typed)
+						   .un("timeout"  + typed);
+					},
+					fail    = function(){
+						timer();
+						uri.fire("failed" + typed)
+						   .un("failed" + typed);
 					};
-					el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
-					abaaso.timer["jsonp-" + uri] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
+
+				if (type === "delete") {
+					uri.on("afterDelete", function(){
+						cache.expire(uri);
+						uri.un("afterDelete", "expire");
+					}, "expire");
 				}
-				else {
-					type = type.toLowerCase();
-					var xhr     = new XMLHttpRequest(),
-					    payload = /post|put/i.test(type) ? args : null,
-					    headers = type === "get" && args instanceof Object ? args : null,
-					    cached  = type === "options" ? false : cache.get(uri, false),
-						typed   = type.capitalize(),
-						timer   = function(){
-							clearTimeout(abaaso.timer[typed + "-" + uri]);
-							delete abaaso.timer[typed + "-" + uri];
-							uri.un("received" + typed)
-							   .un("timeout"  + typed);
-						},
-						fail    = function(){
-							timer();
-							uri.fire("failed" + typed)
-							   .un("failed" + typed);
-						};
 
-					if (type === "delete") {
-						uri.on("afterDelete", function(){
-							cache.expire(uri);
-							uri.un("afterDelete", "expire");
-						}, "expire");
-					}
+				uri.on("received" + typed, timer)
+				   .on("timeout"  + typed, fail)
+				   .on("after"    + typed, function(arg){
+				   		uri.un("after" + typed)
+				   		   .un("failed" + typed);
+				   		if (typeof success === "function") success(arg);
+					})
+				   .on("failed"   + typed, function(){
+				   		uri.un("failed" + typed);
+				   		if (typeof failure === "function") failure();
+					})
+				   .fire("before" + typed)
+				   .fire("beforeXHR");
 
-					uri.on("received" + typed, timer)
-					   .on("timeout"  + typed, fail)
-					   .on("after"    + typed, function(arg){
-					   		uri.un("after" + typed)
-					   		   .un("failed" + typed);
-					   		if (typeof success === "function") success(arg);
-						})
-					   .on("failed"   + typed, function(){
-					   		uri.un("failed" + typed);
-					   		if (typeof failure === "function") failure();
-						})
-					   .fire("before" + typed)
-					   .fire("beforeXHR");
-
-					if (type !== "options" && uri.allows(type) === false) {
-						uri.fire("failed" + typed);
-						return uri;
-					}
-
-					abaaso.timer[typed + "-" + uri] = setTimeout(function(){ uri.fire("timeout" + typed); }, 30000);
-
-					xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
-					xhr.open(type.toUpperCase(), uri, true);
-
-					if (payload !== null) {
-						switch (true) {
-							case typeof payload.xml !== "undefined":
-								payload = payload.xml;
-							case payload instanceof Document:
-								payload = $.xml.decode(payload);
-							case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
-								xhr.setRequestHeader("Content-type", "application/xml");
-								break;
-							case payload instanceof Object:
-								xhr.setRequestHeader("Content-type", "application/json");
-								payload = json.encode(payload);
-								break;
-							default:
-								xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-						}
-					}
-
-					if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
-					if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
-					xhr.send(payload);
+				if (type !== "options" && uri.allows(type) === false) {
+					uri.fire("failed" + typed);
+					return uri;
 				}
+
+				abaaso.timer[typed + "-" + uri] = setTimeout(function(){ uri.fire("timeout" + typed); }, 30000);
+
+				xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
+				xhr.open(type.toUpperCase(), uri, true);
+
+				if (payload !== null) {
+					switch (true) {
+						case typeof payload.xml !== "undefined":
+							payload = payload.xml;
+						case payload instanceof Document:
+							payload = $.xml.decode(payload);
+						case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
+							xhr.setRequestHeader("Content-type", "application/xml");
+							break;
+						case payload instanceof Object:
+							xhr.setRequestHeader("Content-type", "application/json");
+							payload = json.encode(payload);
+							break;
+						default:
+							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+					}
+				}
+
+				if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
+				if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
+				xhr.send(payload);
+
 				return uri;
 			}
 			catch (e) {
@@ -3130,33 +3150,34 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						       isString : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isString() : this.innerText.isString(); },
 						       jsonp    : function(uri, property, callback) {
 									var target = this,
-									    arg    = property,
-									    fn = function(response) {
-											var self = target,
-												node = response,
-												prop = arg, i, nth, result;
+									    arg    = property, fn;
 
-											try {
-													if (typeof prop !== "undefined") {
-														prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-														nth  = prop.length;
-														for (i = 0; i < nth; i++) {
-															node = !!isNaN(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
-															if (typeof node === "undefined")
-																throw Error(label.error.propertyNotFound);
-														}
-														result = node;
-													}
-													else { result = response; }
-											}
-											catch (e) {
-													result = label.error.serverError;
-													error(e, arguments, this);
-											}
+									fn = function(response) {
+										var self = target,
+										    node = response,
+										    prop = arg,
+										    i, nth, result;
 
-											self.text(result);
-										};
-									$.jsonp(uri, fn, null, callback);
+										try {
+											if (typeof prop !== "undefined") {
+												prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
+												nth  = prop.length;
+												for (i = 0; i < nth; i++) {
+													node = !!isNaN(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
+													if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
+												}
+												result = node;
+											}
+											else result = response;
+										}
+										catch (e) {
+											result = label.error.serverError;
+											error(e, arguments, this);
+										}
+
+										self.text(result);
+									};
+									client.jsonp(uri, fn, function(){ target.text(label.error.serverError); }, callback);
 									return this;
 							   },
 							   loading  : function() { return $.loading.create(this); },
@@ -3231,7 +3252,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   isNumber : function() { return validate.test({number: this}).pass; },
 							   isPhone  : function() { return validate.test({phone: this}).pass; },
 							   isString : function() { return validate.test({string: this}).pass; },
-							   jsonp    : function(success, failure, callback) { return client.request(this, "JSONP", success, failure, callback); },
+							   jsonp    : function(success, failure, callback) { return client.jsonp(this, success, failure, callback); },
 							   post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
 							   put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
 							   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
@@ -3593,7 +3614,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			options : function(uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 			post    : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
 			put     : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
-			jsonp   : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
+			jsonp   : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 			permission : client.permission
 		},
 		cookie          : cookie,
@@ -3803,7 +3824,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 
 			return abaaso;
 		},
-		jsonp           : function(uri, success, failure, callback) { return client.request(uri, "JSONP", success, failure, callback); },
+		jsonp           : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 		listeners       : function(obj, event) {
 			if (obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
