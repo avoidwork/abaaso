@@ -605,7 +605,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				abaaso.timer[cbid] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			curi.options();
+			return curi.options();
 		},
 
 		/**
