@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.tech
+ * @version 1.7.rc1
  */
 var $ = $ || null, abaaso = abaaso || (function(){
 	"use strict";
@@ -907,7 +907,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				}
 			}
 			catch (e) {
-				error(e, arguments, this);
+				error(e, arguments, this, true);
 				uri.fire("failed" + typed);
 			}
 			return uri;
@@ -2885,15 +2885,17 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * Error handling, with history in .log
 		 *
 		 * @method error
-		 * @param  {Mixed} e     Error object or message to display
-		 * @param  {Array} args  Array of arguments from the callstack
-		 * @param  {Mixed} scope Entity that was "this"
+		 * @param  {Mixed}   e        Error object or message to display
+		 * @param  {Array}   args     Array of arguments from the callstack
+		 * @param  {Mixed}   scope    Entity that was "this"
+		 * @param  {Boolean} warning  [Optional] Will display as console warning if true
 		 * @return {Object} undefined
 		 */
-		error : function(e, args, scope) {
+		error : function(e, args, scope, warning) {
 			if (typeof e === "undefined")
 				return;
-
+			
+			warning = (warning === true);
 			var o = {
 				arguments : args,
 				message   : typeof e.message !== "undefined" ? e.message : e,
@@ -2903,7 +2905,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				type      : typeof e.type !== "undefined" ? e.type : "TypeError"
 			};
 
-			if (typeof console !== "undefined") console.error(o.message);
+			if (typeof console !== "undefined") console[!warning ? "error" : "warn"](o.message);
 			abaaso.error.log.push(o);
 			abaaso.fire("error", o);
 			return undefined;
@@ -3865,7 +3867,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.tech"
+		version         : "1.7.rc1"
 	};
 })();
 
