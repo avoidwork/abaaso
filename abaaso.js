@@ -569,14 +569,16 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			    cbid, s;
 
 			curi.on("afterOptions", function(){
-				if (!args instanceof Object) args = {};
+				if (typeof args !== "object" || args instanceof Array) args = {};
 				args["Accept"] = "application/json";
 				this.un("afterOptions", guid)
+				    .un("failedOptions", guid)
 				    .get(success, failure, args);
 			}, guid)
 
 			curi.on("failedOptions", function(){
-				this.un("failedOptions", guid)
+				this.un("afterOptions", guid)
+				    .un("failedOptions", guid)
 				    .on("afterJSONP", function(arg){
 				    	this.un("afterJSONP", guid)
 				    	    .un("failedJSONP", guid);
@@ -607,7 +609,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				abaaso.timer[cbid] = setTimeout(function(){ curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			return curi.options();
+			return !client.ie ? curi.options() : curi.fire("failedOptions");
 		},
 
 		/**
@@ -649,7 +651,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						timer();
 						uri.fire("failed" + typed)
 						   .un("failed" + typed);
-					};
+					}, i;
 
 				if (type === "delete") {
 					uri.on("afterDelete", function(){
@@ -2122,7 +2124,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				obj  = utility.object(obj);
 				args = args || {};
 
-				if (!obj instanceof Element)
+				// Written like this for IE
+				if (obj instanceof Element !== true)
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeUpdate");
@@ -2566,20 +2569,14 @@ var $ = $ || null, abaaso = abaaso || (function(){
 					return obj;
 				}
 
-				var o = this.id(obj), c, f, i, l;
+				var o = this.id(obj), c, i, l;
 
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
 				if (abaaso.observer.log) utility.log("[" + o + "] " + event);
 				l = this.list(obj, event).active;
-				if (typeof l !== "undefined") {
-					for (i in l) {
-						c = typeof l[i].scope === "object" ? l[i].scope : (!/\//g.test(l[i].scope) ? $(l[i].scope) : l[i].scope);
-						f = l[i].fn;
-						typeof arg === "undefined" ? f.call(c) : f.call(c, arg);
-					}
-				}
+				for (i in l) { l[i].fn.call(l[i].scope, arg); }
 				$.observer.fired = abaaso.observer.fired++;
 				return obj;
 			}
