@@ -1539,18 +1539,11 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				// Hooking in the observer
 				switch (true) {
 					case typeof obj.fire === "undefined":
-						obj.fire = function(event, arg){
-							return $.fire.call(this, event, arg);
-						};
+						obj.fire = function(event, arg) { return $.fire.call(this, event, arg); };
 					case typeof obj.listeners === "undefined":
-						obj.listeners = function(event){
-							return $.listeners(this, event);
-						};
+						obj.listeners = function(event) { return $.listeners.call(this, event); };
 					case typeof obj.on === "undefined":
-						obj.on = function(event, listener, id, scope, standby) {
-							scope = scope || this;
-							return $.on.call(this, event, listener, id, scope, standby);
-						};
+						obj.on = function(event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
 					case typeof obj.un === "undefined":
 						obj.un = function(event, id) { return $.un.call(this, event, id); };
 				}
@@ -1647,13 +1640,13 @@ var $ = $ || null, abaaso = abaaso || (function(){
 		 * @param  {Boolean} add Boolean to add or remove, defaults to true
 		 * @return {Mixed} Element or Array of Elements
 		 */
-		class : function(obj, arg, add) {
+		"class" : function(obj, arg, add) {
 			try {
 				if (obj instanceof Array) {
 					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
-					for (i = 0; i < nth; i++) { this.class(obj[i], arg, add); }
+					for (i = 0; i < nth; i++) { this["class"](obj[i], arg, add); }
 					return obj;
 				}
 
@@ -2937,7 +2930,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 				var i, o, f = function(){};
 				f.prototype = obj;
 				o = new f();
-				o.super = f.prototype;
+				o["super"] = f.prototype;
 				for (i in arg) { if (arg.hasOwnProperty(i)) o[i] = arg[i]; }
 				return o;
 			}
@@ -3116,7 +3109,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 						       update   : function(arg) { return el.update(this, arg); }},
 					element : {addClass : function(arg) {
 									this.genId();
-									return el.class(this, arg, true);
+									return el["class"](this, arg, true);
 							   },
 							   create   : function(type, args) {
 									this.genId();
@@ -3203,7 +3196,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   },
 							   removeClass : function(arg) {
 									this.genId();
-									return el.class(this, arg, false);
+									return el["class"](this, arg, false);
 							   },
 							   show     : function() {
 									this.genId();
@@ -3242,7 +3235,7 @@ var $ = $ || null, abaaso = abaaso || (function(){
 							   genId    : function() { return utility.genId(this); },
 							   listeners: function(event) {
 							   		this.genId();
-							   		return $.listeners(this, event);
+							   		return $.listeners.call(this, event);
 							   },
 							   un       : function(event, id) {
 							   		this.genId();
@@ -3837,7 +3830,8 @@ var $ = $ || null, abaaso = abaaso || (function(){
 			return abaaso;
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
-		listeners       : function(obj, event) {
+		listeners       : function(event) {
+			var obj = this;
 			if (obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
 		},
