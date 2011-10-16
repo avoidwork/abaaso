@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.rc1
+ * @version 1.7.000
  */
 var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -166,7 +166,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		/**
 		 * Finds the intersections between array1 and array2
 		 *
-		 * @method diff
+		 * @method intersect
 		 * @param  {Array} array1 Source Array
 		 * @param  {Array} array2 Comparison Array
 		 * @return {Array} Array of the intersections
@@ -658,7 +658,6 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				 * @method bit
 				 * @param  {Array} args Array of commands the URI accepts
 				 * @return {Integer} To be set as a bit
-				 * @private
 				 */
 				bit = function(args) {
 					var result = 0,
@@ -814,7 +813,6 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 *
 		 * @method size
 		 * @return {Object} Describes the View {x: ?, y: ?}
-		 * @private
 		 */
 		size : function() {
 			var x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
@@ -2043,8 +2041,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * Returns the difference of arg
 		 *
 		 * @method odd
-		 * @param {Number} arg Number to test
-		 * @return {Boolean} True if even, or undefined
+		 * @param {Number} arg Number to compare
+		 * @return {Number} The absolute difference
 		 */
 		diff : function(arg) {
 			try {
@@ -2203,7 +2201,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * Clears the message listener
 		 *
 		 * @method clear
-		 * @returns {Object} abaaso
+		 * @return {Object} abaaso
 		 */
 		clear : function() {
 			return $.un(window, "message");
@@ -2212,9 +2210,10 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		/**
 		 * Posts a message to the target
 		 *
+		 * @method send
 		 * @param  {Object} target Object to receive message
 		 * @param  {Mixed}  arg    Entity to send as message
-		 * @returns {Object} target
+		 * @return {Object} target
 		 */
 		send : function(target, arg) {
 			try {
@@ -2230,8 +2229,9 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		/**
 		 * Sets a handler for recieving a message
 		 *
-		 * @param fn {Function} Callback function
-		 * @returns {Object} abaaso
+		 * @method recv
+		 * @param  {Function} fn  Callback function
+		 * @return {Object} abaaso
 		 */
 		recv : function(fn) {
 			return $.on(window, "message", fn);
@@ -2570,10 +2570,10 @@ var $ = $ || null, abaaso = abaaso || (function() {
 	 */
 	var utility = {
 		/**
-		 * Returns an Element or Array of Elements
+		 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 		 *
 		 * @method $
-		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag and :selector
+		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag or selector
 		 * @param  {Boolean} nodelist [Optional] True will return a NodeList (by reference) for tags & classes
 		 * @return {Mixed} Element or Array of Elements
 		 */
@@ -2751,7 +2751,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		},
 
 		/**
-		 * Extends obj with arg
+		 * Creates a class extending obj, with optional decoration
 		 *
 		 * @method extend
 		 * @param  {Object} obj Object to extend
@@ -3673,7 +3673,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.rc1"
+		version         : "1.7.000"
 	};
 })();
 
