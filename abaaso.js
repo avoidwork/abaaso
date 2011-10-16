@@ -1191,6 +1191,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						end   = record[1] - 1;
 						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
 						break;
+					default:
+						r = undefined;
 				}
 
 				obj.fire("afterDataGet", r);
