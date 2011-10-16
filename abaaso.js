@@ -1341,33 +1341,29 @@ var $ = $ || null, abaaso = abaaso || (function() {
 					if (this.uri === null || this.uri.isEmpty())
 						throw Error(label.error.invalidArguments);
 
-					var obj  = this.parentNode,
+					var self = this,
+					    obj  = self.parentNode,
 					    guid = utility.guid(),
 					    success, failure;
 
-					this.uri.on("afterGet", function(arg) {
-						this.uri.un("afterGet", guid);
+					success = function(arg) {
 						try {
-							var data = arg;
-							if (typeof data === "undefined")
+							if (typeof arg !== "object")
 								throw Error(label.error.expectedObject);
 
-							this.batch("set", data, true);
+							self.batch("set", arg, true);
 							obj.fire("afterDataSync");
 						}
 						catch (e) {
 							error(e, arguments, this);
 							obj.fire("failedDataSync");
 						}
-					}, guid, this);
+					};
 
-					this.uri.on("failedGet", function() {
-						this.uri.un("failedGet", guid);
-						obj.fire("failedDataSync");
-					}, guid, this);
+					failure = function() { obj.fire("failedDataSync"); };
 
 					obj.fire("beforeDataSync");
-					$.get(this.uri);
+					self.uri.jsonp(success, failure);
 					return this;
 				}
 				catch (e) {
@@ -2970,7 +2966,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								    guid   = utility.guid(),
 								    self   = this;
 
-								!cached ? $.get(uri, function(a) { self.text(a).fire("afterGet"); }, undefined, headers)
+								!cached ? uri.get(function(a) { self.text(a).fire("afterGet"); }, null, headers)
 								        : this.text(cached.response).fire("afterGet");
 
 								return this;
@@ -3253,7 +3249,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 					switch (true) {
 						case (/radio|checkbox/gi.test(c[i].type)):
 							if (c[i].name in tracked) { continue; }
-							o = document.getElementsByName(c[i].name);
+							o = $(c[i].name);
 							nth2 = o.length;
 							for (x = 0; x < nth2; x++) {
 								if (o[x].checked) {
