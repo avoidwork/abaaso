@@ -472,17 +472,17 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			    guid = utility.guid(),
 			    cbid, s;
 
-			curi.on("afterOptions", function() {
+			curi.on("afterHead", function() {
 				if (typeof args !== "object" || args instanceof Array) args = {};
 				args["Accept"] = "application/json";
-				this.un("afterOptions", guid)
-				    .un("failedOptions", guid)
+				this.un("afterHead", guid)
+				    .un("failedHead", guid)
 				    .get(success, failure, args);
 			}, guid)
 
-			curi.on("failedOptions", function() {
-				this.un("afterOptions", guid)
-				    .un("failedOptions", guid)
+			curi.on("failedHead", function() {
+				this.un("afterHead", guid)
+				    .un("failedHead", guid)
 				    .on("afterJSONP", function(arg) {
 				    	this.un("afterJSONP", guid)
 				    	    .un("failedJSONP", guid);
@@ -513,7 +513,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				abaaso.timer[cbid] = setTimeout(function() { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			return !client.ie ? curi.options() : curi.fire("failedOptions");
+			return !client.ie ? curi.headers() : curi.fire("failedHead");
 		},
 
 		/**
@@ -527,7 +527,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 *
 		 * @method request
 		 * @param  {String}   uri     URI to query
-		 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/OPTIONS)
+		 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/HEAD)
 		 * @param  {Function} success A handler function to execute when an appropriate response been received
 		 * @param  {Function} failure [Optional] A handler function to execute on error
 		 * @param  {Mixed}    args    Data to send with the request, or custom headers for GETs
@@ -543,42 +543,41 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				var xhr     = new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
-				    cached  = type === "options" ? false : cache.get(uri, false),
+				    cached  = type === "head" ? false : cache.get(uri, false),
 					typed   = type.capitalize(),
 					timer   = function() {
 						clearTimeout(abaaso.timer[typed + "-" + uri]);
 						delete abaaso.timer[typed + "-" + uri];
-						uri.un("received" + typed)
-						   .un("timeout"  + typed);
+						uri.un("received" + typed).un("timeout"  + typed);
 					},
 					fail    = function() {
 						timer();
-						uri.fire("failed" + typed)
-						   .un("failed" + typed);
-					}, i;
+						uri.fire("failed" + typed).un("failed" + typed);
+					},
+					guid    = utility.guid(),
+					i;
 
 				if (type === "delete") {
 					uri.on("afterDelete", function() {
 						cache.expire(uri);
-						uri.un("afterDelete", "expire");
-					}, "expire");
+						uri.un("afterDelete", guid);
+					}, guid);
 				}
 
-				uri.on("received" + typed, timer)
-				   .on("timeout"  + typed, fail)
+				uri.on("received" + typed, timer, guid)
+				   .on("timeout"  + typed, fail, guid)
 				   .on("after"    + typed, function(arg) {
-				   		uri.un("after" + typed)
-				   		   .un("failed" + typed);
+				   		uri.un("after" + typed, guid).un("failed" + typed, guid);
 				   		if (typeof success === "function") success(arg);
-					})
+					}, guid)
 				   .on("failed"   + typed, function() {
-				   		uri.un("failed" + typed);
+				   		uri.un("failed" + typed, guid);
 				   		if (typeof failure === "function") failure();
-					})
+					}, guid)
 				   .fire("before" + typed)
 				   .fire("beforeXHR");
 
-				if (type !== "options" && uri.allows(type) === false) {
+				if (type !== "head" && uri.allows(type) === false) {
 					uri.fire("failed" + typed);
 					return uri;
 				}
@@ -593,7 +592,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						case typeof payload.xml !== "undefined":
 							payload = payload.xml;
 						case payload instanceof Document:
-							payload = $.xml.decode(payload);
+							payload = xml.decode(payload);
 						case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
 							xhr.setRequestHeader("Content-type", "application/xml");
 							break;
@@ -730,7 +729,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 							case 301:
 								var state = null, s = abaaso.state, r, t;
 
-								if (!/delete|options/i.test(type) && /200|301/.test(xhr.status)) {
+								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
 									t = typeof cache.get(uri, false).headers === "object" ? cache.get(uri, false).headers["Content-Type"] : "";
 									switch (true) {
 										case (/json/.test(t)):
@@ -765,16 +764,16 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								}
 
 								o = cache.get(uri, false);
-								if (type === "options") cache.expire(uri);
+								if (type === "head") cache.expire(uri);
 
 								// HATEOAS triggered
-								if (type !== "options" && s.header !== null && (state = o.headers[s.header]) && typeof state !== "undefined" && !new s.current !== state)
+								if (type !== "head" && s.header !== null && (state = o.headers[s.header]) && typeof state !== "undefined" && !new s.current !== state)
 									typeof s.change === "function" ? s.change(state) : s.current = state;
 
 								uri.fire("afterXHR");
 								switch (xhr.status) {
 									case 200:
-										uri.fire("after" + typed, type === "options" ? o.headers : o.response);
+										uri.fire("after" + typed, type === "head" ? o.headers : o.response);
 										break;
 									case 205:
 										uri.fire("reset");
@@ -3091,7 +3090,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						   post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
 						   put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
 						   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
-				           options  : function(arg) { return $.options(this, arg); },
+						   headers  : function(success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function() { return $.permissions(this); },
 						   toCamelCase: function() {
 						   		var s = this.toLowerCase().split(" "),
@@ -3431,7 +3430,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			// Methods
 			del     : function(uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
 			get     : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
-			options : function(uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
+			headers : function(uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
 			post    : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
 			put     : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 			jsonp   : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
@@ -3555,6 +3554,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		genId           : utility.genId,
  		get             : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
 		guid            : utility.guid,
+		headers         : function(uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
 		hidden          : el.hidden,
 		id              : "abaaso",
 		init            : function() {
@@ -3650,7 +3650,6 @@ var $ = $ || null, abaaso = abaaso || (function() {
 
 			return observer.add.call(observer, obj, event, listener, id, scope, state);
 		},
-		options         : function(uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 		permissions     : client.permissions,
 		position        : el.position,
 		post            : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
