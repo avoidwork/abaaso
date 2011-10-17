@@ -1418,9 +1418,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 
 			obj.fire("beforeDataStore");
 			obj.data = utility.clone(this);
-			obj.data.clear();
 			obj.data.parentNode = obj; // Recursion, useful
-			delete obj.data.register();
+			delete obj.data.register;
 
 			obj.on("syncDataDelete", function(data) {
 				var record = this.get(data.record);
