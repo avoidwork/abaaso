@@ -1174,7 +1174,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				obj.fire("beforeDataGet");
 
 				switch (true) {
-					case typeof record === "undefined" || String(record).isEmpty():
+					case typeof record === "undefined" || String(record).length === 0:
 						r = this.records;
 						break;
 					case typeof record === "string" && typeof this.keys[record] !== "undefined":
