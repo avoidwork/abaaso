@@ -733,7 +733,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 									o = cache.get(uri, false);
 									t = typeof o.headers === "object" ? o.headers["Content-Type"] : "";
 									switch (true) {
-										case (/json/.test(t) || /{.*}/.test(xhr.responseText)):
+										case (/json|plain/.test(t) && /{.*}/.test(xhr.responseText)):
 											r = json.decode(/{.*}/.exec(xhr.responseText));
 											break;
 										case (/xml/.test(t)):
