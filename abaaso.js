@@ -730,7 +730,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								var state = null, s = abaaso.state, r, t;
 
 								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
-									t = typeof cache.get(uri, false).headers === "object" ? cache.get(uri, false).headers["Content-Type"] : "";
+									o = cache.get(uri, false);
+									t = typeof o.headers === "object" ? o.headers["Content-Type"] : "";
 									switch (true) {
 										case (/json/.test(t) || /{.*}/.test(xhr.responseText)):
 											r = json.decode(/{.*}/.exec(xhr.responseText));
