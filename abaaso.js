@@ -732,8 +732,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
 									t = typeof cache.get(uri, false).headers === "object" ? cache.get(uri, false).headers["Content-Type"] : "";
 									switch (true) {
-										case (/json/.test(t)):
-											r = json.decode(xhr.responseText);
+										case (/json/.test(t) || /{.*}/.test(xhr.responseText)):
+											r = json.decode(/{.*}/.exec(xhr.responseText));
 											break;
 										case (/xml/.test(t)):
 											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseText);
@@ -741,8 +741,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 										default:
 											if (client.ie) {
 												switch (true) {
-													case (/^\[|\{/.test(xhr.responseText)):
-														r = json.decode(xhr.responseText);
+													case (/{.*}/.test(xhr.responseText)):
+														r = json.decode(/{.*}/.exec(xhr.responseText));
 														break;
 													case typeof xhr.responseXML.xml !== "undefined":
 														r = xml.decode(xhr.responseXML.xml);
