@@ -1528,7 +1528,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 
 				switch (true) {
 					case add:
-						classes.push(arg);
+						if (classes.contains(arg) < 0) classes.push(arg);
 						break;
 					case !add:
 						arg === "*" ? classes = [] : classes.remove(arg);
