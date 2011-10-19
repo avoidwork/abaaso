@@ -733,10 +733,10 @@ var $ = $ || null, abaaso = abaaso || (function() {
 									o = cache.get(uri, false);
 									t = typeof o.headers === "object" ? o.headers["Content-Type"] : "";
 									switch (true) {
-										case (/json|plain/.test(t) && /{.*}/.test(xhr.responseText)):
+										case ((/json|plain/.test(t) || typeof t === "undefined") && /{.*}/.test(xhr.responseText)):
 											r = json.decode(/{.*}/.exec(xhr.responseText));
 											break;
-										case (/xml/.test(t)):
+										case (/xml/.test(t) || xhr.responseXML !== null):
 											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseText);
 											break;
 										default:
@@ -948,6 +948,9 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		// Record storage
 		keys    : {},
 		records : [],
+
+		// Property of JSON response that holds the record array, leave null if array is top level
+		source  : null,
 
 		// Total records in the store
 		total   : 0,
@@ -1347,16 +1350,18 @@ var $ = $ || null, abaaso = abaaso || (function() {
 							throw Error(label.error.expectedObject);
 
 						var i, data = [];
-						
+
+						if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
+
 						for (i in arg) {
-							if (arg[i] instanceof Array) data = data.concat(arg[i]);
-							break;
+							if (arg[i] instanceof Array) {
+								data = data.concat(arg[i]);
+								break;
+							}
 						}
 
-						if (data.length === 0) obj.fire("failedDataSync");
-
 						self.batch("set", data, true);
-						obj.fire("afterDataSync");
+						obj.fire("afterDataSync", arg);
 					}
 					catch (e) {
 						error(e, arguments, this);
