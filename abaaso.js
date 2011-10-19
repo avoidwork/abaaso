@@ -1346,7 +1346,16 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						if (typeof arg !== "object")
 							throw Error(label.error.expectedObject);
 
-						self.batch("set", arg, true);
+						var i, data = [];
+						
+						for (i in arg) {
+							if (arg[i] instanceof Array) data = data.concat(arg[i]);
+							break;
+						}
+
+						if (data.length === 0) obj.fire("failedDataSync");
+
+						self.batch("set", data, true);
 						obj.fire("afterDataSync");
 					}
 					catch (e) {
@@ -1528,7 +1537,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 
 				switch (true) {
 					case add:
-						if (classes.contains(arg) < 0) classes.push(arg);
+						if (classes.index(arg) < 0) classes.push(arg);
 						break;
 					case !add:
 						arg === "*" ? classes = [] : classes.remove(arg);
