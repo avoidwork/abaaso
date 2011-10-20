@@ -2933,6 +2933,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								return this;
 					       },
 				           diff     : function(arg) { return array.diff(this, arg); },
+				           each     : function(arg) { return this.filter(arg); },
 				           first    : function() { return array.first(this); },
 				           index    : function(arg) { return array.index(this, arg); },
 				           indexed  : function() { return array.indexed(this); },
