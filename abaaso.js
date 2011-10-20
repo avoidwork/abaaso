@@ -151,15 +151,9 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * @return {Array} Indexed Array
 		 */
 		indexed : function(obj) {
-			var o, i = 0, indexed = [];
+			var o, indexed = [];
 
-			for (o in obj) {
-				if (typeof obj[o] !== "function") {
-					indexed[i] = obj[o] instanceof Array ? obj[o].indexed() : obj[o];
-					i++
-				}
-			}
-			indexed.length = i;
+			for (o in obj) { if (obj.hasOwnProperty(o)) indexed.push(!(obj[o] instanceof Array) ? obj[o] : obj[o].indexed()); }
 			return indexed;
 		},
 
