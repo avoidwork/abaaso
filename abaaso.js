@@ -113,7 +113,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			    b = a === array1 ? array2 : array1,
 			    r = [];
 
-			a.filter(function(key) { if (b.indexOf(key) === -1) r.push(key); });
+			a.each(function(key) { if (b.indexOf(key) === -1) r.push(key); });
 			return r;
 		},
 
@@ -176,7 +176,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			    b = a === array1 ? array2 : array1,
 			    r = [];
 
-			a.filter(function(key) { if (b.indexOf(key) > -1) r.push(key); });
+			a.each(function(key) { if (b.indexOf(key) > -1) r.push(key); });
 			return r;
 		},
 
@@ -1301,7 +1301,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 
 				obj.fire("beforeDataSort");
 
-				this.records.filter(function(rec) {
+				this.records.each(function(rec) {
 					value = String(rec.data[needle]).trim() + ":::" + rec.key;
 					order.push(value);
 				});
@@ -1310,7 +1310,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				if (desc.test(query)) order.reverse();
 
 				needle = new RegExp(":::(.*)$");
-				order.filter(function(rec) {
+				order.each(function(rec) {
 					index = obj.data.keys[needle.exec(rec)[1]].index;
 					records.push(obj.data.records[index]);
 				});
@@ -3140,7 +3140,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 
 			if (result !== null) {
 				result = result[1].split("&");
-				result.filter(function(prop) {
+				result.each(function(prop) {
 					item = prop.split("=");
 
 					switch (true) {
