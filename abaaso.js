@@ -175,17 +175,16 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		},
 
 		/**
-		 * Returns the keys in the array
+		 * Returns the keys in an Associative Array
 		 *
 		 * @method keys
 		 * @param  {Array} obj Array to extract keys from
 		 * @return {Array} Array of the keys
 		 */
 		keys : function(obj) {
-			var keys = [],
-			    i    = null;
+			var i, keys = [];
 
-			for (i in obj) { if (typeof obj[i] !== "function") keys.push(i); }
+			for (i in obj) { if (obj.hasOwnProperty(i) && isNaN(i)) keys.push(i); }
 			return keys;
 		},
 
@@ -232,10 +231,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * @return {Integer} Number of keys in Array
 		 */
 		total : function(obj) {
-			var i = 0, arg;
-
-			for (arg in obj) { if (typeof obj[arg] !== "function") i++; }
-			return i;
+			return obj.indexed().length;
 		}
 	};
 
