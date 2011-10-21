@@ -1508,13 +1508,13 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * @param  {Boolean} add Boolean to add or remove, defaults to true
 		 * @return {Mixed} Element or Array of Elements
 		 */
-		"class" : function(obj, arg, add) {
+		klass : function(obj, arg, add) {
 			try {
 				if (obj instanceof Array) {
 					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
 					    i    = null;
 
-					for (i = 0; i < nth; i++) { this["class"](obj[i], arg, add); }
+					for (i = 0; i < nth; i++) { this.klass(obj[i], arg, add); }
 					return obj;
 				}
 
@@ -2003,9 +2003,6 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						case "src":
 							obj[i] = args[i];
 							break;
-						case "opacity": // Requires the fx module
-							obj.opacity(args[i]);
-							break;
 						case "class":
 							!args[i].isEmpty() ? obj.addClass(args[i]) : obj.removeClass("*");
 							break;
@@ -2444,7 +2441,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				if (abaaso.observer.log) utility.log("[" + o + "] " + event);
 				l = this.list(obj, event).active;
 				for (i in l) { l[i].fn.call(l[i].scope, arg); }
-				$.observer.fired = abaaso.observer.fired++;
+				abaaso.observer.fired++;
+				$.observer.fired = abaaso.observer.fired;
 				return obj;
 			}
 			catch (e) {
@@ -2619,19 +2617,20 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			for (i in origin) {
 				(function() {
 					var b = i;
-					switch (true) {
-						case typeof origin[b] === "function" && typeof origin[b].bind === "function":
-							obj[b] = (function() { return origin[b].apply(this, arguments); });
-							break;
-						case origin[b] instanceof Object:
-							if (typeof obj[b] === "undefined") obj[b] = {};
-							(function() { abaaso.alias(obj[b], origin[b]); })();
-							break;
-						case typeof origin[b] === "function" && typeof origin[b].bind === "undefined":
-						case (/boolean|number|string/.test(typeof origin[b])):
-						case origin[b] === null:
-							obj[b] = origin[b];
-							break;
+					if (origin.hasOwnProperty(b)) {
+						switch (true) {
+							case typeof origin[b] === "function":
+								obj[b] = (function() { return origin[b].apply(this, arguments); });
+								break;
+							case !origin[b] instanceof Array && origin[b] instanceof Object:
+								if (typeof obj[b] === "undefined") obj[b] = {};
+								(function() { abaaso.alias(obj[b], origin[b]); })();
+								break;
+							case (/boolean|function|number|object|string/.test(typeof origin[b])):
+							case origin[b] === null:
+								obj[b] = origin[b];
+								break;
+						}
 					}
 				})();
 			}
@@ -2767,9 +2766,9 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				if (typeof arg === "undefined") arg = {};
 
 				var i, o, f = function() {};
+
 				f.prototype = obj;
 				o = new f();
-				o["super"] = f.prototype;
 				for (i in arg) { if (arg.hasOwnProperty(i)) o[i] = arg[i]; }
 				return o;
 			}
@@ -2944,7 +2943,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 					       update   : function(arg) { return el.update(this, arg); }},
 				element : {addClass : function(arg) {
 								this.genId();
-								return el["class"](this, arg, true);
+								return el.klass(this, arg, true);
 						   },
 						   create   : function(type, args) {
 								this.genId();
@@ -3031,7 +3030,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						   },
 						   removeClass : function(arg) {
 								this.genId();
-								return el["class"](this, arg, false);
+								return el.klass(this, arg, false);
 						   },
 						   show     : function() {
 								this.genId();
@@ -3584,7 +3583,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
-			
+
 			// Setting events & garbage collection
 			$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
 			$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
@@ -3622,9 +3621,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 					abaaso.state.change  = function(arg) { abaaso.state.current = arg; setter.call(abaaso.state, arg); };
 			}
 
-			$.ready = abaaso.ready = true;
 			$.fire("init").un("init");
-			$.fire("ready").un("ready");
 
 			// Setting render event
 			abaaso.timer.render = setInterval(function() {
@@ -3635,7 +3632,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				}
 			}, 10);
 
-			return abaaso;
+			$.ready = abaaso.ready = true;
+			return $.fire("ready").un("ready");
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 		listeners       : function(event) {
