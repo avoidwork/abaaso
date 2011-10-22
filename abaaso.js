@@ -717,20 +717,21 @@ var $ = $ || null, abaaso = abaaso || (function() {
 							case 204:
 							case 205:
 							case 301:
-								var state = null, s = abaaso.state, r, t;
+								var state = null, s = abaaso.state, r, t, x;
 
 								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
 									o = cache.get(uri, false);
 									t = typeof o.headers === "object" ? o.headers["Content-Type"] : "";
 									switch (true) {
-										case ((/json|plain/.test(t) || typeof t === "undefined") && /{.*}/.test(xhr.responseText)):
-											r = json.decode(/{.*}/.exec(xhr.responseText));
+										case (/json|plain/.test(t) || typeof t === "undefined") && Boolean(x = json.decode(/{.*}/.exec(xhr.responseText))):
+											r = x;
 											break;
 										case (/xml/.test(t) || xhr.responseXML !== null):
 											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseText);
 											break;
 										default:
-											if (client.ie) {
+											if (!client.ie) r = xhr.responseText;
+											else {
 												switch (true) {
 													case (/{.*}/.test(xhr.responseText)):
 														r = json.decode(/{.*}/.exec(xhr.responseText));
@@ -745,7 +746,6 @@ var $ = $ || null, abaaso = abaaso || (function() {
 														r = xhr.responseText;
 												}
 											}
-											else r = xhr.responseText;
 									}
 
 									if (typeof r === "undefined")
