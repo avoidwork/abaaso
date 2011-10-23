@@ -2534,7 +2534,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
 					typeof instance.removeEventListener === "function" ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
 			}
-			else if (typeof l[o][event].active[id] !== "undefined") { delete l[o][event].active[id]; }
+			else if (typeof l[o][event].active[id] !== "undefined") delete l[o][event].active[id];
 			return obj;
 		},
 
@@ -2795,6 +2795,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			}
 
 			var id;
+
 			do id = utility.domId(utility.guid());
 			while (typeof $("#" + id) !== "undefined");
 
@@ -2829,6 +2830,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				if (obj instanceof Array) {
 					var nth = !isNaN(obj.length) ? obj.length : obj.total(),
 					    i    = null;
+
 					for (i = 0; i < nth; i++) { this.loading(obj[i]); }
 					return obj;
 				}
@@ -3022,7 +3024,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						   loading  : function() { return $.loading.create(this); },
 				           on       : function(event, listener, id, scope, state) {
 								this.genId();
-								return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state);
+								return $.on.call(this, event, listener, id, scope, state);
 						   },
 				           position : function() {
 								this.genId();
@@ -3055,7 +3057,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
 				           isEven   : function() { return $.number.even(this); },
 				           isOdd    : function() { return $.number.odd(this); },
-				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); }},
+				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); }},
 				shared  : {clear    : function() {
 								this.genId();
 								this instanceof String ? this.constructor = new String("") : el.clear(this);
@@ -3094,7 +3096,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						   jsonp    : function(success, failure, callback) { return client.jsonp(this, success, failure, callback); },
 						   post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
 						   put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
-						   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : this, state); },
+						   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 						   headers  : function(success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function() { return $.permissions(this); },
 						   toCamelCase: function() {
