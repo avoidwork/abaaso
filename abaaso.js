@@ -578,7 +578,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 					return uri;
 				}
 
-				if (Boolean(cached)) uri.fire("after" + typed, cached.response);
+				if (type === "get" && Boolean(cached)) uri.fire("afterGet", cached.response);
 				else {
 					abaaso.timer[typed + "-" + uri] = setTimeout(function() { uri.fire("timeout" + typed); }, 30000);
 
@@ -682,20 +682,20 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				switch (true) {
 					case xhr.readyState === 2:
 						uri.fire("received" + typed);
-
-						var headers = xhr.getAllResponseHeaders().split("\n"),
-						    i       = null,
+						break;
+					case xhr.readyState === 4:
+						var headers = String(xhr.getAllResponseHeaders()).split("\n"),
 						    nth     = headers.length,
 						    items   = {},
 						    allow   = null,
 						    expires = new Date(),
-						    header, value;
+						    o       = {},
+						    i, header, value;
 
 						for (i = 0; i < nth; i++) {
 							if (!headers[i].isEmpty()) {
-								var header    = headers[i].toString(),
-								    value     = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
-
+								header        = headers[i].toString();
+								value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 								items[header] = value;
 								if (/allow|access-control-allow-methods/i.test(header)) allow = value;
@@ -716,25 +716,29 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								expires = expires.setSeconds(expires.getSeconds() + abaaso.client.expire);
 						}
 
-						cache.set(uri, "expires", expires);
-						cache.set(uri, "headers", items);
-						cache.set(uri, "permission", bit(allow !== null ? allow.explode(",") : [type]));
-						break;
-					case xhr.readyState === 4:
+						o.expires    = expires;
+						o.headers    = items;
+						o.permission = bit(allow !== null ? allow.explode(",") : [type]);
+
+						if (type !== "head") {
+							cache.set(uri, "expires", o.expires);
+							cache.set(uri, "headers", o.headers);
+							cache.set(uri, "permission", o.permission);	
+						}
+
 						switch (xhr.status) {
 							case 200:
 							case 204:
 							case 205:
 							case 301:
 								var state = null,
-								    s     = abaaso.state,
-								    o     = cache.get(uri, false),
+								    s = abaaso.state,
 								    r, t, x;
 
 								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
-									t = typeof o.headers === "object" ? o.headers["Content-Type"] : "";
+									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 									switch (true) {
-										case (/json|plain/.test(t) || typeof t === "undefined") && Boolean(x = json.decode(/{.*}/.exec(xhr.responseText))):
+										case (/json|plain/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/{.*}/.exec(xhr.responseText))):
 											r = x;
 											break;
 										case (/xml/.test(t) || xhr.responseXML !== null):
@@ -763,11 +767,17 @@ var $ = $ || null, abaaso = abaaso || (function() {
 										throw Error(label.error.serverError);
 
 									cache.set(uri, "response", r);
+									o.response = r;
 								}
 
-								if (type === "head") cache.expire(uri);
-								else if (s.header !== null && (state = o.headers[s.header]) && typeof state !== "undefined" && !new s.current !== state)
-									typeof s.change === "function" ? s.change(state) : s.current = state; // HATEOAS triggered
+								switch (true) {
+									case type === "head":
+										cache.expire(uri);
+										break;
+									case s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state:
+										typeof s.change === "function" ? s.change(state) : s.current = state; // HATEOAS triggered
+										break;
+								}
 
 								uri.fire("afterXHR");
 
