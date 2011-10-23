@@ -557,11 +557,17 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				uri.on("received" + typed, timer, guid)
 				   .on("timeout"  + typed, fail, guid)
 				   .on("after"    + typed, function(arg) {
-				   		uri.un("after" + typed, guid).un("failed" + typed, guid);
+				   		uri.un("received" + typed, guid)
+				   		   .un("timeout" + typed, guid)
+				   		   .un("after" + typed, guid)
+				   		   .un("failed" + typed, guid);
 				   		if (typeof success === "function") success(arg);
 					}, guid)
 				   .on("failed"   + typed, function() {
-				   		uri.un("failed" + typed, guid);
+				   		uri.un("received" + typed, guid)
+				   		   .un("timeout" + typed, guid)
+				   		   .un("after" + typed, guid)
+				   		   .un("failed" + typed, guid);
 				   		if (typeof failure === "function") failure();
 					}, guid)
 				   .fire("before" + typed)
@@ -572,32 +578,35 @@ var $ = $ || null, abaaso = abaaso || (function() {
 					return uri;
 				}
 
-				abaaso.timer[typed + "-" + uri] = setTimeout(function() { uri.fire("timeout" + typed); }, 30000);
+				if (Boolean(cached)) uri.fire("after" + typed, cached.response);
+				else {
+					abaaso.timer[typed + "-" + uri] = setTimeout(function() { uri.fire("timeout" + typed); }, 30000);
 
-				xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
-				xhr.open(type.toUpperCase(), uri, true);
+					xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
+					xhr.open(type.toUpperCase(), uri, true);
 
-				if (payload !== null) {
-					switch (true) {
-						case typeof payload.xml !== "undefined":
-							payload = payload.xml;
-						case payload instanceof Document:
-							payload = xml.decode(payload);
-						case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
-							xhr.setRequestHeader("Content-type", "application/xml");
-							break;
-						case payload instanceof Object:
-							xhr.setRequestHeader("Content-type", "application/json");
-							payload = json.encode(payload);
-							break;
-						default:
-							xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+					if (payload !== null) {
+						switch (true) {
+							case typeof payload.xml !== "undefined":
+								payload = payload.xml;
+							case payload instanceof Document:
+								payload = xml.decode(payload);
+							case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
+								xhr.setRequestHeader("Content-type", "application/xml");
+								break;
+							case payload instanceof Object:
+								xhr.setRequestHeader("Content-type", "application/json");
+								payload = json.encode(payload);
+								break;
+							default:
+								xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+						}
 					}
-				}
 
-				if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
-				if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
-				xhr.send(payload);
+					if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
+					if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
+					xhr.send(payload);
+				}
 
 				return uri;
 			}
@@ -680,7 +689,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						    items   = {},
 						    allow   = null,
 						    expires = new Date(),
-						    o, header, value;
+						    header, value;
 
 						for (i = 0; i < nth; i++) {
 							if (!headers[i].isEmpty()) {
@@ -717,10 +726,12 @@ var $ = $ || null, abaaso = abaaso || (function() {
 							case 204:
 							case 205:
 							case 301:
-								var state = null, s = abaaso.state, r, t, x;
+								var state = null,
+								    s     = abaaso.state,
+								    o     = cache.get(uri, false),
+								    r, t, x;
 
 								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
-									o = cache.get(uri, false);
 									t = typeof o.headers === "object" ? o.headers["Content-Type"] : "";
 									switch (true) {
 										case (/json|plain/.test(t) || typeof t === "undefined") && Boolean(x = json.decode(/{.*}/.exec(xhr.responseText))):
@@ -754,14 +765,12 @@ var $ = $ || null, abaaso = abaaso || (function() {
 									cache.set(uri, "response", r);
 								}
 
-								o = cache.get(uri, false);
 								if (type === "head") cache.expire(uri);
-
-								// HATEOAS triggered
-								if (type !== "head" && s.header !== null && (state = o.headers[s.header]) && typeof state !== "undefined" && !new s.current !== state)
-									typeof s.change === "function" ? s.change(state) : s.current = state;
+								else if (s.header !== null && (state = o.headers[s.header]) && typeof state !== "undefined" && !new s.current !== state)
+									typeof s.change === "function" ? s.change(state) : s.current = state; // HATEOAS triggered
 
 								uri.fire("afterXHR");
+
 								switch (xhr.status) {
 									case 200:
 										uri.fire("after" + typed, type === "head" ? o.headers : o.response);
