@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.000
+ * @version 1.7.001
  */
 var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -503,7 +503,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				abaaso.timer[cbid] = setTimeout(function() { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			return !client.ie ? curi.headers() : curi.fire("failedHead");
+			return curi.headers();
 		},
 
 		/**
@@ -744,23 +744,11 @@ var $ = $ || null, abaaso = abaaso || (function() {
 										case (/xml/.test(t) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
 											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseXML);
 											break;
+										case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
+											r = xml.decode(xhr.responseText);
+											break;
 										default:
-											if (!client.ie) r = xhr.responseText;
-											else {
-												switch (true) {
-													case (/{.*}/.test(xhr.responseText)):
-														r = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText));
-														break;
-													case typeof xhr.responseXML.xml !== "undefined":
-														r = xml.decode(xhr.responseXML.xml);
-														break;
-													case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
-														r = xml.decode(xhr.responseText);
-														break;
-													default:
-														r = xhr.responseText;
-												}
-											}
+											r = xhr.responseText;
 									}
 
 									if (typeof r === "undefined")
@@ -3688,7 +3676,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.000"
+		version         : "1.7.001"
 	};
 })();
 
