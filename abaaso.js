@@ -63,7 +63,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * @return {Array}   Object as an Array
 		 */
 		cast : function(obj, key) {
-			if ((client.safari && typeof obj !== "function") || typeof obj !== "object")
+			if ((!client.safari && typeof obj !== "object") || (client.safari && typeof obj !== "function"))
 				throw Error(label.error.expectedObject);
 
 			key   = (key === true);
