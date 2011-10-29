@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.002
+ * @version 1.7.003
  */
 var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -3125,13 +3125,13 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * @return {Object} Object of 1 or all key:value pairs in the querystring
 		 */
 		queryString : function (arg) {
-			arg = arg || ".*";
+			arg        = arg || ".*";
 			var obj    = {},
-			    result = new RegExp("[\\?&](" + arg + "=([^&#]*))").exec(window.location),
+			    result = window.location.search.isEmpty() ? null : window.location.search.replace("?", ""),
 			    item;
 
 			if (result !== null) {
-				result = result[1].split("&");
+				result = result.split("&");
 				result.each(function(prop) {
 					item = prop.split("=");
 
@@ -3676,7 +3676,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.002"
+		version         : "1.7.003"
 	};
 })();
 
