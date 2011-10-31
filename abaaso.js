@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.003
+ * @version 1.7.004
  */
 var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -1609,9 +1609,10 @@ var $ = $ || null, abaaso = abaaso || (function() {
 		 * @param  {String} type   Type of Element to create
 		 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 		 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
+		 * @param  {Object} pos    [Optional] Object describing how to add the new Element, e.g. {before: referenceElement}
 		 * @return {Object} Element that was created or undefined
 		 */
-		create : function(type, args, target) {
+		create : function(type, args, target, pos) {
 			try {
 				if (typeof type === "undefined" || String(type).isEmpty())
 					throw Error(label.error.invalidArguments);
@@ -1645,7 +1646,19 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				obj = document.createElement(type);
 				obj.id = uid;
 				if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
-				target.appendChild(obj);
+				switch (true) {
+					case typeof pos === "undefined":
+						target.appendChild(obj);
+						break;
+					case typeof pos.after !== "undefined":
+						target.insertBefore(obj, pos.after.nextSibling);
+						break;
+					case typeof pos.before !== "undefined":
+						target.insertBefore(obj, pos.before);
+						break;
+					default:
+						target.appendChild(obj);
+				}
 				obj.fire("afterCreate");
 				$.fire("afterCreate", obj);
 				return obj;
@@ -3676,7 +3689,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.003"
+		version         : "1.7.004"
 	};
 })();
 
