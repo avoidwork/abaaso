@@ -2015,12 +2015,13 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						case "innerHTML":
 							obj.innerHTML = "";
 							obj.appendChild(document.createTextNode(args[i]));
-						case "type":
-						case "src":
-							obj[i] = args[i];
 							break;
 						case "class":
 							!args[i].isEmpty() ? obj.addClass(args[i]) : obj.removeClass("*");
+							break;
+						case "type":
+						case "src":
+							obj[i] = args[i];
 							break;
 						case "id":
 							var o = observer.listeners;
