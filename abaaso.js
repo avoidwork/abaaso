@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.004
+ * @version 1.7.005
  */
 var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -2013,6 +2013,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 				for (i in args) {
 					switch(i) {
 						case "innerHTML":
+							obj.innerHTML = "";
+							obj.appendChild(document.createTextNode(args[i]));
 						case "type":
 						case "src":
 							obj[i] = args[i];
@@ -2954,7 +2956,13 @@ var $ = $ || null, abaaso = abaaso || (function() {
 								for (i = 0; i < nth; i++) { this[i].removeClass(arg); }
 								return this;
 						   },
-				           text     : function(arg) { return el.update(this, {innerHTML: arg}); },
+				           text     : function(arg) {
+				           		this.each(function(node) {
+				           			if (typeof node !== "object") node = utility.object(node);
+				           			if (typeof node.text === "function") node.text(arg);
+				           		});
+				           		return this;
+				           	},
 				           total    : function() { return array.total(this); },
 					       update   : function(arg) { return el.update(this, arg); }},
 				element : {addClass : function(arg) {
@@ -3059,8 +3067,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 						   text     : function(arg) {
 								var args = {};
 								this.genId();
-								if (typeof this.value !== "undefined") args.value = arg;
-								if (typeof this.innerHTML !== "undefined") args.innerHTML = arg;
+								typeof this.value !== "undefined" ? args.value = arg : args.innerHTML = arg;
 								return this.update(args);
 						   },
 						   update   : function(args) {
@@ -3532,11 +3539,8 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			$ = abaaso.$.bind($);
 			abaaso.alias($, abaaso);
 			delete $.$;
-			delete $.callback;
+			delete $.bootstrap;
 			delete $.init;
-			delete $.observer.log;
-			delete $.state.header;
-			delete $.timer;
 
 			switch (true) {
 				case typeof document.addEventListener === "function":
@@ -3689,7 +3693,7 @@ var $ = $ || null, abaaso = abaaso || (function() {
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.004"
+		version         : "1.7.005"
 	};
 })();
 
