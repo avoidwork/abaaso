@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.006
+ * @version 1.7.007
  */
  (function(w){
  w.$      = null;
@@ -112,11 +112,9 @@
 		 */
 		diff : function(array1, array2) {
 			var a = array1.length > array2.length ? array1 : array2,
-			    b = a === array1 ? array2 : array1,
-			    r = [];
+			    b = a === array1 ? array2 : array1;
 
-			a.each(function(key) { if (b.indexOf(key) === -1) r.push(key); });
-			return r;
+			return a.filter(function(key) { if (b.indexOf(key) === -1) return true; });
 		},
 
 		/**
@@ -169,11 +167,9 @@
 		 */
 		intersect : function(array1, array2) {
 			var a = array1.length > array2.length ? array1 : array2,
-			    b = a === array1 ? array2 : array1,
-			    r = [];
+			    b = a === array1 ? array2 : array1;
 
-			a.each(function(key) { if (b.indexOf(key) > -1) r.push(key); });
-			return r;
+			return a.filter(function(key) { if (b.indexOf(key) > -1) return true; });
 		},
 
 		/**
@@ -2927,23 +2923,11 @@
 			// Collection of methods to add to prototypes
 			var i,
 			    methods = {
-				array   : {addClass : function(arg) {
-								var nth = this.length,
-								    i   = null;
-
-								for (i = 0; i < nth; i++) { this[i].addClass(arg); }
-								return this;
-						   },
+				array   : {addClass : function(arg) { return this.each(function(n){ n.addClass(arg); }); },
 					       contains : function(arg) { return array.contains(this, arg); },
-				           css      : function(key, value) {
-								var nth = this.length,
-								    i   = null;
-
-								for (i = 0; i < nth; i++) { this[i].css(key, value); }
-								return this;
-					       },
+				           css      : function(key, value) { return this.each(function(n){ n.css(key, value); }); },
 				           diff     : function(arg) { return array.diff(this, arg); },
-				           each     : function(arg) { return this.filter(arg); },
+				           each     : function(arg) { this.forEach(arg); return this; },
 				           first    : function() { return array.first(this); },
 				           index    : function(arg) { return array.index(this, arg); },
 				           indexed  : function() { return array.indexed(this); },
@@ -2952,19 +2936,12 @@
 				           last     : function(arg) { return array.last(this); },
 				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : true, state); },
 				           remove   : function(arg) { return array.remove(this, arg); },
-						   removeClass : function(arg) {
-								var nth = this.length,
-								    i   = null;
-
-								for (i = 0; i < nth; i++) { this[i].removeClass(arg); }
-								return this;
-						   },
+						   removeClass : function(arg) { return this.each(function(n){ n.removeClass(arg); }); },
 				           text     : function(arg) {
-				           		this.each(function(node) {
+				           		return this.each(function(node) {
 				           			if (typeof node !== "object") node = utility.object(node);
 				           			if (typeof node.text === "function") node.text(arg);
 				           		});
-				           		return this;
 				           	},
 				           total    : function() { return array.total(this); },
 					       update   : function(arg) { return el.update(this, arg); }},
@@ -3524,6 +3501,30 @@
 				}
 			}
 
+			if (typeof Array.prototype.forEach === "undefined") {
+				Array.prototype.forEach = function(fn) {
+					"use strict";
+					if (this === void 0 || this === null || typeof fn !== "function")
+						throw Error(label.error.invalidArguments);
+
+					var i      = null,
+						t      = Object(this),
+						nth    = t.length >>> 0,
+						result = [],
+						prop   = arguments[1]
+						val    = null;
+
+					for (i = 0; i < nth; i++) {
+						if (i in t) {
+							val = t[i];
+							fn.call(prop, val, i, t);
+						}
+					}
+
+					return this;
+				}
+			}
+
 			if (typeof Function.prototype.bind === "undefined") {
 				Function.prototype.bind = function(arg) {
 					"use strict";
@@ -3696,7 +3697,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.006"
+		version         : "1.7.007"
 	};
 })();
 w.abaaso.bootstrap();
