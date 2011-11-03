@@ -2009,17 +2009,15 @@
 
 				var i;
 				for (i in args) {
+					if (!args.hasOwnProperty(i)) continue;
 					switch(i) {
 						case "innerHTML":
-							obj.innerHTML = "";
-							obj.appendChild(document.createTextNode(args[i]));
-							break;
-						case "class":
-							!args[i].isEmpty() ? obj.addClass(args[i]) : obj.removeClass("*");
-							break;
 						case "type":
 						case "src":
 							obj[i] = args[i];
+							break;
+						case "class":
+							!args[i].isEmpty() ? obj.addClass(args[i]) : obj.removeClass("*");
 							break;
 						case "id":
 							var o = observer.listeners;
