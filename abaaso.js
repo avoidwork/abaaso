@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.007
+ * @version 1.7.008
  */
  (function(w){
  w.$      = null;
@@ -90,7 +90,7 @@
 		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
 		contains : function(obj, arg) {
-			if (/,/.test(arg)) arg = arg.explode(",");
+			if (arg.indexOf(",") > -1 ) arg = arg.explode(",");
 			if (arg instanceof Array) {
 				var indexes = [],
 				    nth     = args.length,
@@ -2664,10 +2664,9 @@
 				if (typeof obj !== "object")
 					throw Error(label.error.expectedObject);
 
-				var clone = {}, p;
-				if (typeof obj.constructor === "object") clone.constructor = obj.constructor;
-				if (typeof obj.prototype === "object") clone.prototype  = obj.prototype;
-				for (p in obj) { clone[p] = obj[p]; }
+				var clone = json.decode(json.encode(obj));
+				if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
+				if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
 				return clone;
 			}
 			catch (e) {
@@ -3697,7 +3696,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.007"
+		version         : "1.7.008"
 	};
 })();
 w.abaaso.bootstrap();
