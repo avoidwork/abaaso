@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.009
+ * @version 1.7.010
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -2893,6 +2893,30 @@
 			return undefined;
 		},
 
+		
+		/**
+		 * Registers a module in the abaaso namespace
+		 * 
+		 * @method module
+		 * @param  {String} arg Module name
+		 * @param  {Object} obj Module structure
+		 * @return {Object}
+		 */
+		module : function(arg, obj) {
+			try {
+				if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object)
+					throw Error(label.error.invalidArguments);
+				
+				abaaso[arg] = obj;
+				$[arg] = {};
+				return $.alias($[arg], abaaso[arg]);
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
 		/**
 		 * Returns argument, or instance based on #object.id value
 		 *
@@ -3660,6 +3684,7 @@
 			if (obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
 		},
+		module          : utility.module,
 		on              : function() {
 			var all      = typeof arguments[2] === "function",
 			    obj      = all ? arguments[0] : this,
@@ -3692,7 +3717,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.009"
+		version         : "1.7.010"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
