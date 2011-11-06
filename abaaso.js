@@ -2967,7 +2967,7 @@
 										if (typeof prop !== "undefined") {
 											prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
 											prop.each(function(i) {
-												node = node[!isNaN(i) ? i : parseInt(i)];
+												node = node[!!isNaN(i) ? i : parseInt(i)];
 												if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
 											});
 											result = node;
