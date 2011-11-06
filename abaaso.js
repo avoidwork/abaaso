@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.011
+ * @version 1.7.012
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -851,20 +851,15 @@
 		 * @return {Object} Collection of cookies
 		 */
 		list : function() {
-			var i      = null,
-			    nth    = null,
-			    item   = null,
-			    items  = null,
-			    result = {};
+			var result = {},
+			    item, items;
 
 			if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
 				items = document.cookie.split(';');
-				nth   = items.length;
-
-				for (i = 0; i < nth; i++) {
-					item = items[i].split("=");
+				items.each(function(i) {
+					item = i.split("=");
 					result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
-				}
+				});
 			}
 			return result;
 		},
@@ -1506,13 +1501,7 @@
 		 */
 		klass : function(obj, arg, add) {
 			try {
-				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.klass(obj[i], arg, add); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { el.klass(i, arg, add); });
 
 				obj = utility.object(obj);
 				add = (add !== false);
@@ -1559,13 +1548,7 @@
 		 */
 		clear : function(obj) {
 			try {
-				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.clear(obj[i]); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { el.clear(i); });
 
 				obj = utility.object(obj);
 
@@ -1802,13 +1785,7 @@
 		 */
 		hide : function(obj) {
 			try {
-				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.hide(obj[i]); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { el.hide(i); });
 
 				obj = utility.object(obj);
 
@@ -1901,13 +1878,7 @@
 		 */
 		show : function(obj) {
 			try {
-				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.show(obj[i]); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { el.show(i); });
 
 				obj = utility.object(obj);
 
@@ -1941,11 +1912,8 @@
 		size : function(obj) {
 			try {
 				if (obj instanceof Array) {
-					var nth    = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i      = null,
-					    result = [];
-
-					for (i = 0; i < nth; i++) { result.push(this.size(obj[i])); }
+					var result = [];
+					obj.each(function(i) { result.push(el.size(i)); });
 					return result;
 				}
 
@@ -1988,16 +1956,10 @@
 		 */
 		update : function(obj, args) {
 			try {
-				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.update(obj[i], args); }
-					return obj;
-				}
-
 				obj  = utility.object(obj);
 				args = args || {};
+
+				if (obj instanceof Array) return obj.each(function(i) { el.update(i, args); });
 
 				if (obj instanceof Element !== true)
 					throw Error(label.error.invalidArguments);
@@ -2331,13 +2293,7 @@
 				obj   = utility.object(obj);
 				scope = scope || abaaso;
 
-				if (obj instanceof Array) {
-					var nth = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i   = null;
-
-					for (i = 0; i < nth; i++) { this.add(obj[i], event, fn, id, scope ? obj[i] : scope, state); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { observer.add(i, event, fn, id, scope, state); });
 
 				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid();
 
@@ -2435,13 +2391,7 @@
 			try {
 				obj = utility.object(obj);
 
-				if (obj instanceof Array) {
-					var nth  = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.fire(obj[i], event, arg); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { observer.fire(obj[i], event, arg); });
 
 				var o = this.id(obj), c, i, l;
 
@@ -2503,13 +2453,7 @@
 		remove : function(obj, event, id) {
 			obj = utility.object(obj);
 
-			if (obj instanceof Array) {
-				var nth = !isNaN(obj.length) ? obj.length : obj.total(),
-				    i   = null;
-
-				for (i = 0; i < nth; i++) { this.remove(obj[i], event, id); }
-				return obj;
-			}
+			if (obj instanceof Array) return obj.each(function(i) { observer.remove(i, event, id); });
 
 			var instance = null,
 			    l = observer.listeners,
@@ -2590,13 +2534,11 @@
 			nodelist = (nodelist === true);
 
 			// Recursive processing, ends up below
-			if (/,/.test(arg)) arg = arg.explode(",");
+			if (arg.indexOf(",") > -1) arg = arg.explode(",");
 			if (arg instanceof Array) {
-				var instances = [],
-				    nth = arg.length,
-				    i;
-				for (i = 0; i < nth; i++) { instances.push($(arg[i], nodelist)); }
-				return instances;
+				var result = [];
+				arg.each(function(i) { result.push($(i, nodelist)); });
+				return result;
 			}
 
 			// Getting Elements(s)
@@ -2836,15 +2778,10 @@
 		 */
 		loading : function(obj) {
 			try {
-				if (obj instanceof Array) {
-					var nth = !isNaN(obj.length) ? obj.length : obj.total(),
-					    i    = null;
-
-					for (i = 0; i < nth; i++) { this.loading(obj[i]); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function(i) { utility.loading(i); });
 
 				var l = abaaso.loading;
+
 				if (l.url === null)
 					throw Error(label.error.elementNotFound);
 
@@ -2941,12 +2878,13 @@
 			// Collection of methods to add to prototypes
 			var i,
 			    methods = {
-				array   : {addClass : function(arg) { return this.each(function(n){ n.addClass(arg); }); },
+				array   : {addClass : function(arg) { return this.each(function(i) { i.addClass(arg); }); },
 					       contains : function(arg) { return array.contains(this, arg); },
-				           css      : function(key, value) { return this.each(function(n){ n.css(key, value); }); },
+				           css      : function(key, value) { return this.each(function(i) { i.css(key, value); }); },
 				           diff     : function(arg) { return array.diff(this, arg); },
 				           each     : function(arg) { this.forEach(arg); return this; },
 				           first    : function() { return array.first(this); },
+				           hide     : function() { return this.each(function(i){ i.hide(); }); },
 				           index    : function(arg) { return array.index(this, arg); },
 				           indexed  : function() { return array.indexed(this); },
 				           intersect: function(arg) { return array.intersect(this, arg); },
@@ -2954,15 +2892,21 @@
 				           last     : function(arg) { return array.last(this); },
 				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : true, state); },
 				           remove   : function(arg) { return array.remove(this, arg); },
-						   removeClass : function(arg) { return this.each(function(n){ n.removeClass(arg); }); },
+						   removeClass : function(arg) { return this.each(function(i) { i.removeClass(arg); }); },
+						   show     : function() { return this.each(function(i){ i.show(); }); },
 				           text     : function(arg) {
 				           		return this.each(function(node) {
 				           			if (typeof node !== "object") node = utility.object(node);
 				           			if (typeof node.text === "function") node.text(arg);
 				           		});
-				           	},
+				           },
 				           total    : function() { return array.total(this); },
-					       update   : function(arg) { return el.update(this, arg); }},
+				           update   : function(arg) { return this.each(function(i) { el.update(i, arg); }); },
+				           validate : function() {
+				           		var result = [];
+				           		this.each(function(i) { if (typeof i.validate === "function") result.push(i.validate()); });
+				           		return result;
+					       }},
 				element : {addClass : function(arg) {
 								this.genId();
 								return el.klass(this, arg, true);
@@ -3022,11 +2966,10 @@
 									try {
 										if (typeof prop !== "undefined") {
 											prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-											nth  = prop.length;
-											for (i = 0; i < nth; i++) {
-												node = !!isNaN(prop[i]) ? node[prop[i]] : node[parseInt(prop[i])];
+											prop.each(function(i) {
+												node = node[!isNaN(i) ? i : parseInt(i)];
 												if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
-											}
+											});
 											result = node;
 										}
 										else result = response;
@@ -3193,13 +3136,13 @@
 				}
 
 				if (typeof target === "undefined") target = $("body")[0];
+
 				var frag = document.createDocumentFragment(),
-				    i, nth;
+				    i;
 
 				switch (true) {
 					case arg instanceof Array:
-						nth = arg.length;
-						for (i = 0; i < nth; i++) { $.create(array.cast(arg[i], true)[0], frag).text(array.cast(arg[i])[0]); }
+						arg.each(function(i) { $.create(array.cast(i, true)[0], frag).text(array.cast(i)[0]); });
 						break;
 					default:
 						for (i in arg) {
@@ -3258,43 +3201,43 @@
 			    value     = null;
 
 			if (typeof args.nodeName !== "undefined" && args.nodeName === "FORM") {
-				var i, p, v, c, o, x, t = {}, nth, nth2, result, invalid = [], tracked = {};
+				var i, p, v, c, o, x, t = {}, nth, result, invalid = [], tracked = {};
 
 				if (args.id.isEmpty()) args.genId();
 				c = $("#"+args.id+":has(input,select)");
-				nth = c.length;
-				for (i = 0; i < nth; i++) {
+				c.each(function(i) {
 					v = null;
-					p = validate.pattern[c[i].nodeName.toLowerCase()] ? validate.pattern[c[i].nodeName.toLowerCase()]
-					                                                  : ((!c[i].id.isEmpty() && validate.pattern[c[i].id.toLowerCase()]) ? validate.pattern[c[i].id.toLowerCase()]
-					                                                                                                                     : "notEmpty");
+					p = validate.pattern[i.nodeName.toLowerCase()] ? validate.pattern[i.nodeName.toLowerCase()]
+					                                               : ((!i.id.isEmpty() && validate.pattern[i.id.toLowerCase()]) ? validate.pattern[i.id.toLowerCase()]
+					                                                                                                            : "notEmpty");
 					switch (true) {
-						case (/radio|checkbox/gi.test(c[i].type)):
-							if (c[i].name in tracked) { continue; }
-							o = $(c[i].name);
-							nth2 = o.length;
-							for (x = 0; x < nth2; x++) {
+						case (/radio|checkbox/gi.test(i.type)):
+							if (i.name in tracked) return;
+							o   = $(i.name);
+							nth = o.length;
+							for (x = 0; x < nth; x++) {
 								if (o[x].checked) {
 									v = o[x].value;
-									tracked[c[i].name] = true;
+									tracked[i.name] = true;
 									continue;
 								}
 							}
 							break;
-						case (/select/gi.test(c[i].type)):
-							v = c[i].options[c[i].selectedIndex].value;
+						case (/select/gi.test(i.type)):
+							v = i.options[i.selectedIndex].value;
 							break;
 						default:
-							v = typeof c[i].value !== "undefined" ? c[i].value : c[i].innerText;
+							v = typeof i.value !== "undefined" ? i.value : i.innerText;
 					}
 					if (v === null) v = "";
 					t[p] = v;
-				}
+				});
 				result = this.test(t);
 				return result;
 			}
 			else {
-				for (var i in args) {
+				var i;
+				for (i in args) {
 					if (typeof i === "undefined" || typeof args[i] === "undefined") {
 						invalid.push({test: i, value: args[i]});
 						exception = true;
@@ -3716,7 +3659,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.011"
+		version         : "1.7.012"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
