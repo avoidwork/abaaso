@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.012
+ * @version 1.7.013
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -1051,8 +1051,18 @@
 
 				args = {key: key, record: record, reindex: reindex};
 				obj.fire("beforeDataDelete", args);
-				sync || this.uri === null ? obj.fire("syncDataDelete", args)
-				                          : $.del(this.uri+"/"+key, function() { obj.fire("syncDataDelete", args); }, function() { obj.fire("failedDataDelete", args); });
+				switch (true) {
+					case sync:
+					case this.uri === null:
+						obj.fire("syncDataDelete", args);
+						break;
+					case this.uri.allows("delete"):
+						String(this.uri + "/" + key).del(function() { obj.fire("syncDataDelete", args); }, function() { obj.fire("failedDataDelete", args); });
+						break;
+					default:
+						obj.fire("failedDataDelete", args);
+
+				}
 				return this;
 			},
 
@@ -1227,12 +1237,21 @@
 
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
+				    method = typeof key === "undefined" ? "post" : "put",
 				    args   = {data: data, key: key, record: record};
 
 				obj.fire("beforeDataSet");
-				sync || this.uri === null ? obj.fire("syncDataSet", args)
-				                          : $[typeof key === "undefined" ? "post" : "put"](typeof key === "undefined" ? this.uri : this.uri+"/"+key, function(arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function() { obj.fire("failedDataSet"); }, data);
-
+				switch (true) {
+					case sync:
+					case this.uri === null:
+						obj.fire("syncDataSet", args);
+						break;
+					case this.uri.allows(method):
+						String(this.uri + "/" + key)[method](function(arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function() { obj.fire("failedDataSet"); }, data);
+						break;
+					default:
+						obj.fire("failedDataSet", data);
+				}
 				return this;
 			},
 
@@ -3659,7 +3678,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.012"
+		version         : "1.7.013"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
