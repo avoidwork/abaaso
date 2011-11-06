@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.010
+ * @version 1.7.011
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -421,6 +421,42 @@
 		},
 
 		/**
+		 * Gets bit value based on args
+		 *
+		 * 1 --d delete
+		 * 2 -w- write
+		 * 3 -wd write and delete
+		 * 4 r-- read
+		 * 5 r-x read and delete
+		 * 6 rw- read and write
+		 * 7 rwx read, write and delete
+		 *
+		 * @method bit
+		 * @param  {Array} args Array of commands the URI accepts
+		 * @return {Integer} To be set as a bit
+		 * @private
+		 */
+		bit : function(args) {
+			var result = 0;
+
+			args.each(function(a) {
+				switch (a.toLowerCase()) {
+					case "get":
+						result |= 4;
+						break;
+					case "post":
+					case "put":
+						result |= 2;
+						break;
+					case "delete":
+						result |= 1;
+						break;
+				}
+			});
+			return result;
+		},
+
+		/**
 		 * Returns the permission of the cached URI
 		 *
 		 * @method permissions
@@ -531,17 +567,18 @@
 				    headers = type === "get" && args instanceof Object ? args : null,
 				    cached  = type === "head" ? false : cache.get(uri, false),
 					typed   = type.capitalize(),
-					timer   = function() {
-						clearTimeout(abaaso.timer[typed + "-" + uri]);
-						delete abaaso.timer[typed + "-" + uri];
-						uri.un("received" + typed).un("timeout"  + typed);
-					},
-					fail    = function() {
-						timer();
-						uri.fire("failed" + typed).un("failed" + typed);
-					},
 					guid    = utility.guid(),
-					i;
+					i, timer, fail;
+
+				timer = function() {
+					clearTimeout(abaaso.timer[typed + "-" + uri]);
+					delete abaaso.timer[typed + "-" + uri];
+					uri.un("received" + typed, guid).un("timeout"  + typed, guid);
+				};
+
+				fail = function() {
+					uri.fire("failed" + typed, guid).un("failed" + typed, guid);
+				};
 
 				if (type === "delete") {
 					uri.on("afterDelete", function() {
@@ -551,7 +588,7 @@
 				}
 
 				uri.on("received" + typed, timer, guid)
-				   .on("timeout"  + typed, fail, guid)
+				   .on("timeout"  + typed, function(){ timer(); fail(); }, guid)
 				   .on("after"    + typed, function(arg) {
 				   		uri.un("received" + typed, guid)
 				   		   .un("timeout" + typed, guid)
@@ -560,9 +597,8 @@
 				   		if (typeof success === "function") success(arg);
 					}, guid)
 				   .on("failed"   + typed, function() {
-				   		uri.un("received" + typed, guid)
-				   		   .un("timeout" + typed, guid)
-				   		   .un("after" + typed, guid)
+				   		timer();
+				   		uri.un("after" + typed, guid)
 				   		   .un("failed" + typed, guid);
 				   		if (typeof failure === "function") failure();
 					}, guid)
@@ -570,6 +606,7 @@
 				   .fire("beforeXHR");
 
 				if (type !== "head" && uri.allows(type) === false) {
+					timer();
 					uri.fire("failed" + typed);
 					return uri;
 				}
@@ -636,44 +673,7 @@
 		 */
 		response : function(xhr, uri, type) {
 			try {
-				var typed = type.toLowerCase().capitalize(), bit;
-
-				/**
-				 * Gets bit value based on the Array
-				 *
-				 * 1 --d delete
-				 * 2 -w- write
-				 * 3 -wd write and delete
-				 * 4 r-- read
-				 * 5 r-x read and delete
-				 * 6 rw- read and write
-				 * 7 rwx read, write and delete
-				 *
-				 * @method bit
-				 * @param  {Array} args Array of commands the URI accepts
-				 * @return {Integer} To be set as a bit
-				 */
-				bit = function(args) {
-					var result = 0,
-						nth    = args.length,
-						i;
-
-					for (i = 0; i < nth; i++) {
-						switch (args[i].toLowerCase()) {
-							case "get":
-								result |= 4;
-								break;
-							case "post":
-							case "put":
-								result |= 2;
-								break;
-							case "delete":
-								result |= 1;
-								break;
-						}
-					}
-					return result;
-				};
+				var typed = type.toLowerCase().capitalize();
 
 				switch (true) {
 					case xhr.readyState === 2:
@@ -681,22 +681,21 @@
 						break;
 					case xhr.readyState === 4:
 						var headers = String(xhr.getAllResponseHeaders()).split("\n"),
-						    nth     = headers.length,
 						    items   = {},
 						    allow   = null,
 						    expires = new Date(),
 						    o       = {},
-						    i, header, value;
+						    header, value;
 
-						for (i = 0; i < nth; i++) {
-							if (!headers[i].isEmpty()) {
-								header        = headers[i].toString();
+						headers.each(function(h) {
+							if (!h.isEmpty()) {
+								header        = h.toString();
 								value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 								items[header] = value;
 								if (/allow|access-control-allow-methods/i.test(header)) allow = value;
 							}
-						}
+						});
 
 						switch (true) {
 							case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
@@ -714,7 +713,7 @@
 
 						o.expires    = expires;
 						o.headers    = items;
-						o.permission = bit(allow !== null ? allow.explode(",") : [type]);
+						o.permission = client.bit(allow !== null ? allow.explode(",") : [type]);
 
 						if (type !== "head") {
 							cache.set(uri, "expires", o.expires);
@@ -784,7 +783,7 @@
 								throw Error(label.error.serverForbidden);
 								break;
 							case 405:
-								cache.set(uri, "!permission", bit(type));
+								cache.set(uri, "!permission", client.bit(type));
 								throw Error(label.error.serverInvalidMethod);
 								break;
 							default:
@@ -3717,7 +3716,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.010"
+		version         : "1.7.011"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
