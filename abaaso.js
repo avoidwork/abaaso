@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.015
+ * @version 1.7.5
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -249,21 +249,26 @@
 		 * @return {Undefined} undefined
 		 */
 		clean : function() {
-			var uri;
-			for (uri in cache.items) { if (cache.expired(uri)) cache.expire(uri); }
-			return;
+			var i;
+			for (i in cache.items) { if (cache.expired(i)) cache.expire(i); }
 		},
 
 		/**
 		 * Expires a URI from the local cache
+		 * 
+		 * Events: expire    Fires when the URI expires
 		 *
 		 * @method expire
-		 * @param  {String} uri URI of the local representation
+		 * @param  {String}  uri    URI of the local representation
+		 * @param  {Boolean} silent [Optional] If true, the event will not fire
 		 * @return {Undefined} undefined
 		 */
-		expire : function(uri) {
-			if (typeof cache.items[uri] !== "undefined") delete cache.items[uri];
-			return;
+		expire : function(uri, silent) {
+			silent = (silent === true);
+			if (typeof cache.items[uri] !== "undefined") {
+				if (!silent) uri.fire("expire");
+				delete cache.items[uri];
+			}
 		},
 
 		/**
@@ -287,7 +292,7 @@
 		 * @return {Mixed} URI Object {headers, response} or False
 		 */
 		get : function(uri, expire) {
-			expire = (expire === true);
+			expire = (expire !== false);
 			if (typeof cache.items[uri] === "undefined") return false;
 			if (expire && cache.expired(uri)) {
 				cache.expire(uri);
@@ -565,10 +570,10 @@
 				var xhr     = new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
-				    cached  = type === "head" ? false : cache.get(uri, false),
-					typed   = type.capitalize(),
-					guid    = utility.guid(),
-					i, timer, fail;
+				    cached  = type === "head" ? false : cache.get(uri),
+				    typed   = type.capitalize(),
+				    guid    = utility.guid(),
+				    i, timer, fail;
 
 				timer = function() {
 					clearTimeout(abaaso.timer[typed + "-" + uri]);
@@ -753,14 +758,8 @@
 									o.response = r;
 								}
 
-								switch (true) {
-									case type === "head":
-										cache.expire(uri);
-										break;
-									case s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state:
-										typeof s.change === "function" ? s.change(state) : s.current = state; // HATEOAS triggered
-										break;
-								}
+								// Application state change triggered by hypermedia (HATEOAS)
+								if (type !== "head" && s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
 
 								uri.fire("afterXHR");
 
@@ -785,6 +784,8 @@
 							case 405:
 								cache.set(uri, "!permission", client.bit(type));
 								throw Error(label.error.serverInvalidMethod);
+								break
+							case 0:
 								break;
 							default:
 								throw Error(label.error.serverError);
@@ -957,29 +958,28 @@
 					obj.fire("beforeDataBatch");
 					if (data instanceof Array) {
 						for (i = 0, nth = data.length; i < nth; i++) {
-							switch (type) {
-								case "del":
-									this.del(data[i], false, sync);
-									break;
-								case "set":
-									key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
-									this.set(key, data[i], sync);
-									break;
+							if (type === "set") {
+								if (this.key !== null && typeof data[i][this.key] !== "undefined") {
+									key = data[i][this.key];
+									delete data[i][this.key];
+								}
+								else key = i.toString();
+								this.set(key, data[i], sync);
 							}
+							else this.del(data[i], false, sync);
 						}
 					}
 					else {
 						for (i in data) {
-							switch (type) {
-								case "del":
-									this.del(data[i], false, sync);
-									break;
-								case "set":
-									key = this.key !== null && typeof data[i][this.key] !== "undefined" ? this.key : i;
-									key !== i ? delete data[i][key] : key = key.toString();
-									this.set(key, data[i], sync);
-									break;
+							if (type === "set") {
+								if (this.key !== null && typeof data[i][this.key] !== "undefined") {
+									key = data[i][this.key];
+									delete data[i][this.key];
+								}
+								else key = i.toString();
+								this.set(key, data[i], sync);
 							}
+							else this.del(data[i], false, sync);
 						}
 					}
 					if (type === "del") this.reindex();
@@ -1400,21 +1400,37 @@
 		 * @return {Object} Object registered with
 		 */
 		register : function(obj, data) {
-			if (obj instanceof Array) {
-				var i = !isNaN(obj.length) ? obj.length : obj.total();
-				while (i--) { this.register(obj[i], data); }
-				return obj;
-			}
+			if (obj instanceof Array) return obj.each(function(i) { data.register(i, data); });
 
 			var getter, setter;
+
 			getter = function() { return this._uri; };
 			setter = function(arg) {
 				try {
 					if (arg !== null && arg.isEmpty())
 						throw Error(label.error.invalidArguments);
 
+					if (this._uri === arg) return;
+
+					if (this.uri !== null) {
+						this.uri.un("expire", "dataSync");
+						cache.expire(this.uri, true);
+					}
+
 					this._uri = arg;
-					if (arg !== null) this.sync();
+
+					if (arg !== null) {
+						this.uri.on("expire", function() {
+							var guid = utility.guid();
+							this.sync();
+							this.parentNode.on("afterDataSync", function() {
+								this.parentNode.un("afterDataSync", guid);
+								this.reindex();
+							}, guid, this);
+						}, "dataSync", this);
+						cache.expire(arg, true);
+						this.sync();
+					}
 				}
 				catch (e) {
 					error(e, arguments, this);
@@ -1455,8 +1471,9 @@
 			}, utility.guid(), obj.data);
 
 			obj.on("syncDataSet", function(data) {
+				var record;
 				if (typeof data.record === "undefined") {
-					var index = this.total, record;
+					var index = this.total;
 					this.total++;
 					if (typeof data.key === "undefined") {
 						if (typeof data.result === "undefined") {
@@ -1470,19 +1487,14 @@
 					this.keys[data.key] = {};
 					this.keys[data.key].index = index;
 					this.records[index] = {};
-					this.records[index].data = data.data;
-					this.records[index].key  = data.key;
-					if (this.key !== null) delete this.records[index].data[this.key];
-					record = this.get(index);
+					record = this.records[index];
+					record.data = $.clone(data.data);
+					record.key  = data.key;
+					if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
 				}
 				else {
-					if (typeof data.data === "object") {
-						var i;
-						for (i in data) { data.record[i] = data.data[i]; }
-						this.records[data.record.index] = data.record;
-					}
-					else this.records[data.record.index] = data.data;
-					record = this.get(data.record.index);
+					data.record.data = $.clone(data.data);
+					record = data.record;
 				}
 				this.views = {};
 				this.parentNode.fire("afterDataSet", record);
@@ -2425,7 +2437,7 @@
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
-				if (abaaso.observer.log) utility.log("[" + o + "] " + event);
+				if (abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + "] " + o + "." + event);
 				l = this.list(obj, event).active;
 				for (i in l) { l[i].fn.call(l[i].scope, arg); }
 				abaaso.observer.fired++;
@@ -3548,7 +3560,6 @@
 					}, 10);
 			}
 		},
-		clean           : cache.clean,
 		clear           : el.clear,
 		clone           : utility.clone,
 		create          : el.create,
@@ -3560,6 +3571,8 @@
 		destroy         : el.destroy,
 		encode          : json.encode,
 		error           : utility.error,
+		expire          : cache.clean,
+		expires         : 30000,
 		extend          : utility.extend,
 		fire            : function() {
 			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
@@ -3575,18 +3588,26 @@
 		hidden          : el.hidden,
 		id              : "abaaso",
 		init            : function() {
+			var expiration = function() {
+				var expiration = this;
+				$.timer.expire = setTimeout(function() {
+					cache.clean();
+					expiration.call(expiration);
+				}, $.expires);
+			}
+
 			// Stopping multiple executions
 			delete abaaso.init;
 			delete abaaso.bootstrap;
 
 			// Creating error log
-			abaaso.error.log = [];
+			$.error.log = [];
 
 			// Describing the Client
-			$.client.version = abaaso.client.version = client.version();
-			$.client.css3    = abaaso.client.css3    = client.css3();
-			$.client.size    = abaaso.client.size    = client.size();
-			$.client.tablet  = abaaso.client.tablet  = client.tablet();
+			$.client.version = client.version();
+			$.client.css3    = client.css3();
+			$.client.size    = client.size();
+			$.client.tablet  = client.tablet();
 			$.state.current  = abaaso.state._current;
 
 			// Hooking abaaso into native Objects
@@ -3599,7 +3620,7 @@
 			// Setting events & garbage collection
 			$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
 			$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
-			abaaso.timer.clean  = setInterval(function() { abaaso.clean(); }, 120000);
+			expiration.call(expiration);
 
 			// abaaso.state.current getter/setter
 			var getter, setter;
@@ -3636,10 +3657,10 @@
 			$.fire("init").un("init");
 
 			// Setting render event
-			abaaso.timer.render = setInterval(function() {
+			$.timer.render = setInterval(function() {
 				if (/loaded|complete/.test(document.readyState)) {
-					clearInterval(abaaso.timer.render);
-					delete abaaso.timer.render;
+					clearInterval($.timer.render);
+					delete $.timer.render;
 					$.fire("render").un("render");
 				}
 			}, 10);
@@ -3686,7 +3707,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.015"
+		version         : "1.7.5"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
