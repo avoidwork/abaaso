@@ -3563,7 +3563,7 @@
 		encode          : json.encode,
 		error           : utility.error,
 		expire          : cache.clean,
-		expires         : 30000,
+		expires         : 60000,
 		extend          : utility.extend,
 		fire            : function() {
 			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
