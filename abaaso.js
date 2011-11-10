@@ -1038,6 +1038,8 @@
 				reindex  = (reindex !== false);
 				sync     = (sync === true);
 				var obj  = this.parentNode,
+				    p    = {},
+				    r    = new RegExp("true|undefined"),
 				    key, args, uri;
 
 				if (typeof record === "string") {
@@ -1054,6 +1056,8 @@
 
 				args   = {key: key, record: record, reindex: reindex};
 				uri    = this.uri + "/" + key;
+				p.uri  = uri.allows("delete");
+				p.data = this.uri.allows("delete");
 
 				obj.fire("beforeDataDelete", args);
 				switch (true) {
@@ -1061,7 +1065,7 @@
 					case this.uri === null:
 						obj.fire("syncDataDelete", args);
 						break;
-					case (/true|undefined/.test(uri.allows("delete"))):
+					case r.test(p.data) && r.test(p.uri):
 						uri.del(function() { obj.fire("syncDataDelete", args); }, function() { obj.fire("failedDataDelete", args); });
 						break;
 					default:
@@ -1244,7 +1248,12 @@
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
 				    args   = {data: data, key: key, record: record},
-				    uri    = this.uri + "/" + key;
+				    uri    = this.uri + "/" + key,
+				    p      = {},
+				    r      = new RegExp("true|undefined");
+
+				p.uri  = uri.allows(method);
+				p.data = this.uri.allows(method);
 
 				obj.fire("beforeDataSet");
 				switch (true) {
@@ -1252,7 +1261,7 @@
 					case this.uri === null:
 						obj.fire("syncDataSet", args);
 						break;
-					case (/true|undefined/.test(uri.allows(method))):
+					case r.test(p.data) && r.test(p.uri):
 						uri[method](function(arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function() { obj.fire("failedDataSet"); }, data);
 						break;
 					default:
