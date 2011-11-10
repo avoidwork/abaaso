@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.014
+ * @version 1.7.015
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -495,7 +495,7 @@
 			    cbid, s;
 
 			curi.on("afterHead", function() {
-				if (typeof args !== "object" || args instanceof Array) args = {};
+				if (args === null || typeof args !== "object" || args instanceof Array) args = {};
 				args["Accept"] = "application/json";
 				this.un("afterHead", guid)
 				    .un("failedHead", guid)
@@ -520,7 +520,7 @@
 				do cbid = utility.genId().slice(0, 10);
 				while (typeof abaaso.callback[cbid] !== "undefined");
 
-				if (typeof args === "undefined" || String(args).isEmpty()) args = "callback";
+				if (typeof args === "undefined" || args === null || String(args).isEmpty()) args = "callback";
 				uri = uri.replace(args + "=?", args + "=abaaso.callback." + cbid);
 
 				abaaso.callback[cbid] = function(arg) {
@@ -1004,12 +1004,15 @@
 			clear : function() {
 				var obj = this.parentNode;
 				obj.fire("beforeDataClear");
-				this.uri     = null;
+				this.callback= null;
 				this.key     = null;
 				this.keys    = {};
 				this.records = [];
+				this.source  = null;
 				this.total   = 0;
 				this.views   = {};
+				this.uri     = null;
+				this._uri    = null;
 				obj.fire("afterDataClear");
 				return this;
 			},
@@ -1035,7 +1038,9 @@
 				reindex  = (reindex !== false);
 				sync     = (sync === true);
 				var obj  = this.parentNode,
-				    key, args;
+				    p    = {},
+				    r    = new RegExp("true|undefined"),
+				    key, args, uri;
 
 				if (typeof record === "string") {
 					key    = record;
@@ -1049,15 +1054,19 @@
 					key = key.key;
 				}
 
-				args = {key: key, record: record, reindex: reindex};
+				args   = {key: key, record: record, reindex: reindex};
+				uri    = this.uri + "/" + key;
+				p.uri  = uri.allows("delete");
+				p.data = this.uri.allows("delete");
+
 				obj.fire("beforeDataDelete", args);
 				switch (true) {
 					case sync:
 					case this.uri === null:
 						obj.fire("syncDataDelete", args);
 						break;
-					case this.uri.allows("delete"):
-						String(this.uri + "/" + key).del(function() { obj.fire("syncDataDelete", args); }, function() { obj.fire("failedDataDelete", args); });
+					case r.test(p.data) && r.test(p.uri):
+						uri.del(function() { obj.fire("syncDataDelete", args); }, function() { obj.fire("failedDataDelete", args); });
 						break;
 					default:
 						obj.fire("failedDataDelete", args);
@@ -1238,7 +1247,13 @@
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
-				    args   = {data: data, key: key, record: record};
+				    args   = {data: data, key: key, record: record},
+				    uri    = this.uri + "/" + key,
+				    p      = {},
+				    r      = new RegExp("true|undefined");
+
+				p.uri  = uri.allows(method);
+				p.data = this.uri.allows(method);
 
 				obj.fire("beforeDataSet");
 				switch (true) {
@@ -1246,8 +1261,8 @@
 					case this.uri === null:
 						obj.fire("syncDataSet", args);
 						break;
-					case this.uri.allows(method):
-						String(this.uri + "/" + key)[method](function(arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function() { obj.fire("failedDataSet"); }, data);
+					case r.test(p.data) && r.test(p.uri):
+						uri[method](function(arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function() { obj.fire("failedDataSet"); }, data);
 						break;
 					default:
 						obj.fire("failedDataSet", args);
@@ -1425,15 +1440,8 @@
 			obj.fire("beforeDataStore");
 
 			obj.data = $.extend(this.methods);
-			obj.data.callback   = undefined;
-			obj.data.key        = null;
-			obj.data.keys       = {};
 			obj.data.parentNode = obj; // Recursion, useful
-			obj.data.records    = [];
-			obj.data.source     = null;
-			obj.data.total      = 0;
-			obj.data.views      = {};
-			obj.data._uri       = null;
+			obj.data.clear();          // Setting properties
 
 			obj.on("syncDataDelete", function(data) {
 				var record = this.get(data.record);
@@ -3678,7 +3686,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.014"
+		version         : "1.7.015"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
