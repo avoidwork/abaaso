@@ -266,8 +266,8 @@
 		expire : function(uri, silent) {
 			silent = (silent === true);
 			if (typeof cache.items[uri] !== "undefined") {
-				if (!silent) uri.fire("expire");
 				delete cache.items[uri];
+				if (!silent) uri.fire("expire");
 			}
 		},
 
@@ -292,12 +292,11 @@
 		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 		 * @return {Mixed} URI Object {headers, response} or False
 		 */
-		get : function(uri, expire, silent) {
+		get : function(uri, expire) {
 			expire = (expire !== false);
-			silent = (silent === true);
 			if (typeof cache.items[uri] === "undefined") return false;
 			if (expire && cache.expired(uri)) {
-				cache.expire(uri, silent);
+				cache.expire(uri);
 				return false;
 			}
 			return cache.items[uri];
@@ -562,7 +561,7 @@
 				var xhr     = new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
-				    cached  = type === "head" ? false : cache.get(uri, true, true),
+				    cached  = type === "head" ? false : cache.get(uri),
 				    typed   = type.capitalize(),
 				    guid    = utility.guid(),
 				    i, timer, fail;
