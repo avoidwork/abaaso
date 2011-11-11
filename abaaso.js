@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.5
+ * @version 1.7.51
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -260,7 +260,7 @@
 		 *
 		 * @method expire
 		 * @param  {String}  uri    URI of the local representation
-		 * @param  {Boolean} silent [Optional] If true, the event will not fire
+		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 		 * @return {Undefined} undefined
 		 */
 		expire : function(uri, silent) {
@@ -289,13 +289,15 @@
 		 * @method get
 		 * @param  {String}  uri    URI/Identifier for the resource to retrieve from cache
 		 * @param  {Boolean} expire [Optional] If 'false' the URI will not expire
+		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 		 * @return {Mixed} URI Object {headers, response} or False
 		 */
-		get : function(uri, expire) {
+		get : function(uri, expire, silent) {
 			expire = (expire !== false);
+			silent = (silent === true);
 			if (typeof cache.items[uri] === "undefined") return false;
 			if (expire && cache.expired(uri)) {
-				cache.expire(uri);
+				cache.expire(uri, silent);
 				return false;
 			}
 			return cache.items[uri];
@@ -495,32 +497,22 @@
 		 * @return {String} URI to query
 		 */
 		jsonp : function(uri, success, failure, args) {
-			var curi = uri,
+			var curi = new String(uri).toString(),
 			    guid = utility.guid(),
 			    cbid, s;
 
-			curi.on("afterHead", function() {
-				if (args === null || typeof args !== "object" || args instanceof Array) args = {};
-				args["Accept"] = "application/json";
-				this.un("afterHead", guid)
-				    .un("failedHead", guid)
-				    .get(success, failure, args);
-			}, guid)
-
-			curi.on("failedHead", function() {
-				this.un("afterHead", guid)
-				    .un("failedHead", guid)
+			curi.on("failedGet", function() {
+				this.un("failedGet", guid)
 				    .on("afterJSONP", function(arg) {
 				    	this.un("afterJSONP", guid)
 				    	    .un("failedJSONP", guid);
 				    	if (typeof success === "function") success(arg);
+				    }, guid)
+				    .on("failedJSONP", function() {
+				    	this.un("afterJSONP", guid)
+				    	    .un("failedJSONP", guid);
+				    	if (typeof failure === "function") failure();
 				    }, guid);
-
-				this.on("failedJSONP", function() {
-					this.un("afterJSONP", guid)
-					    .un("failedJSONP", guid);
-					if (typeof failure === "function") failure();
-				}, guid);
 
 				do cbid = utility.genId().slice(0, 10);
 				while (typeof abaaso.callback[cbid] !== "undefined");
@@ -540,7 +532,7 @@
 				abaaso.timer[cbid] = setTimeout(function() { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			return curi.headers();
+			return curi.get(success, failure, args instanceof Object ? args : {Accept: "application/json"});
 		},
 
 		/**
@@ -570,7 +562,7 @@
 				var xhr     = new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
-				    cached  = type === "head" ? false : cache.get(uri),
+				    cached  = type === "head" ? false : cache.get(uri, true, true),
 				    typed   = type.capitalize(),
 				    guid    = utility.guid(),
 				    i, timer, fail;
@@ -3572,7 +3564,7 @@
 		encode          : json.encode,
 		error           : utility.error,
 		expire          : cache.clean,
-		expires         : 60000,
+		expires         : 120000,
 		extend          : utility.extend,
 		fire            : function() {
 			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
@@ -3588,20 +3580,12 @@
 		hidden          : el.hidden,
 		id              : "abaaso",
 		init            : function() {
-			var expiration = function() {
-				var expiration = this;
-				$.timer.expire = setTimeout(function() {
-					cache.clean();
-					expiration.call(expiration);
-				}, $.expires);
-			}
-
 			// Stopping multiple executions
 			delete abaaso.init;
 			delete abaaso.bootstrap;
 
 			// Creating error log
-			$.error.log = [];
+			$.error.log = abaaso.error.log = [];
 
 			// Describing the Client
 			$.client.version = client.version();
@@ -3620,6 +3604,15 @@
 			// Setting events & garbage collection
 			$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
 			$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
+
+			// Setting up cache expiration
+			var expiration = function() {
+				var expiration = this;
+				$.timer.expire = setTimeout(function() {
+					cache.clean();
+					expiration.call(expiration);
+				}, $.expires);
+			}
 			expiration.call(expiration);
 
 			// abaaso.state.current getter/setter
@@ -3707,7 +3700,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.5"
+		version         : "1.7.51"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
