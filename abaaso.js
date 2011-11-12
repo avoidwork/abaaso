@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.51
+ * @version 1.7.52
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -698,7 +698,7 @@
 							case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
 								break;
 							case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
-								expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d/.match(uri["Cache-Control"])[0]));
+								expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
 								break;
 							case typeof items["Expires"] !== "undefined":
 								expires = new Date(items["Expires"]);
@@ -3699,7 +3699,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.51"
+		version         : "1.7.52"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
