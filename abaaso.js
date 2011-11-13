@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.52
+ * @version 1.7.53
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -777,6 +777,7 @@
 								throw Error(label.error.serverInvalidMethod);
 								break
 							case 0:
+								uri.fire("failed" + typed);
 								break;
 							default:
 								throw Error(label.error.serverError);
@@ -3699,7 +3700,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.52"
+		version         : "1.7.53"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
