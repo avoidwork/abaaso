@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.54
+ * @version 1.7.55
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -3491,31 +3491,31 @@
 					}
 
 					return result;
-				}
+				};
 			}
 
 			if (typeof Array.prototype.forEach === "undefined") {
-				Array.prototype.forEach = function(fn) {
-					"use strict";
-					if (this === void 0 || this === null || typeof fn !== "function")
-						throw Error(label.error.invalidArguments);
+				Array.prototype.forEach = function(callback, thisArg) {
+					"use string";
 
-					var i      = null,
-						t      = Object(this),
-						nth    = t.length >>> 0,
-						result = [],
-						prop   = arguments[1]
-						val    = null;
+					if (this === null || typeof callback !== "function") throw Error(label.error.invalidArguments);
 
-					for (i = 0; i < nth; i++) {
-						if (i in t) {
-							val = t[i];
-							fn.call(prop, val, i, t);
+					var T,
+					    k   = 0,
+					    O   = Object(this),
+					    len = O.length >>> 0;
+
+					if (thisArg) T = thisArg;
+
+					while (k < len) {
+						var kValue;
+						if (k in O) {
+							kValue = O[k];
+							callback.call(T, kValue, k, O);
 						}
+						k++;
 					}
-
-					return this;
-				}
+				};
 			}
 
 			if (typeof Function.prototype.bind === "undefined") {
@@ -3701,7 +3701,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.54"
+		version         : "1.7.55"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
