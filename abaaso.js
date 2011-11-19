@@ -2575,7 +2575,7 @@
 			// Getting Elements(s)
 			var obj;
 			switch (true) {
-				case arg.indexOf(" ") === -1:
+				case arg.charAt(0) === "#" && arg.indexOf(" ") === -1:
 					obj = document.querySelector(arg);
 					break;
 				default:
