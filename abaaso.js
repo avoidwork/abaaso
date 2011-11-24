@@ -2060,6 +2060,44 @@
 		},
 
 		/**
+		 * Formats a Number to a delimited String
+		 * 
+		 * @param  {Number} arg       Number to format
+		 * @param  {String} delimiter [Optional] String to delimit the Number with
+		 * @param  {String} every     [Optional] Position to insert the delimiter, default is 3
+		 * @return {String} Number represented as a comma delimited String
+		 */
+		format : function(arg, delimiter, every) {
+			try {
+				if (typeof arg !== "number")
+					throw Error(label.error.expectedNumber);
+
+				arg       = arg.toString();
+				delimiter = delimiter || ",";
+				every     = every || 3;
+
+				var d = arg.indexOf(".") > -1 ? "." + arg.replace(/.*\./, "") : "",
+				    a = arg.replace(/\..*/, "").split("").reverse(),
+				    p = Math.floor(a.length / every),
+				    i = 1, n, b;
+
+				for (b = 0; b < p; b++) {
+					n = i === 1 ? every : (every * i) + (i === 2 ? 1 : (i - 1));
+					a.splice(n, 0, delimiter);
+					i++;
+				}
+
+				a = a.reverse().join("");
+				if (a.charAt(0) === delimiter) a = a.substring(1);
+				return a + d;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Tests if an number is even
 		 *
 		 * @method even
@@ -3060,6 +3098,7 @@
 						   },
 						   validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 				number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
+				           format   : function(delimiter) { return $.number.format(this, delimiter); },
 				           isEven   : function() { return $.number.even(this); },
 				           isOdd    : function() { return $.number.odd(this); },
 				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); }},
