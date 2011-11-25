@@ -558,7 +558,8 @@
 					throw Error(label.error.invalidArguments);
 
 				type = type.toLowerCase();
-				var xhr     = new XMLHttpRequest(),
+				var l       = document.location,
+				    xhr     = (client.ie && uri.indexOf(l.protocol + "//" + l.host) !== 0 && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
 				    cached  = type === "head" ? false : cache.get(uri),
@@ -3098,7 +3099,7 @@
 						   },
 						   validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 				number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
-				           format   : function(delimiter) { return $.number.format(this, delimiter); },
+				           format   : function(delimiter, every) { return $.number.format(this, delimiter, every); },
 				           isEven   : function() { return $.number.even(this); },
 				           isOdd    : function() { return $.number.odd(this); },
 				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); }},
