@@ -2630,9 +2630,9 @@
 					break;
 				default:
 					obj = document.querySelectorAll(arg);
-					if (obj !== null && !nodelist) obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
 			}
 
+			if (obj !== null && !nodelist) obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
 			if (obj === null) obj = undefined;
 			return obj;
 		},
