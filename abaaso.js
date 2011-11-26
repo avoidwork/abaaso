@@ -609,7 +609,7 @@
 
 			switch (true) {
 				case args instanceof Object && typeof args.Accept === "undefined":
-					args.Accept = "application/jason"
+					args.Accept = "application/json"
 				case args instanceof Object && typeof args.Accept !== "undefined":
 					break;
 				default:
