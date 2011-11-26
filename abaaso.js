@@ -516,7 +516,20 @@
 				do cbid = utility.genId().slice(0, 10);
 				while (typeof abaaso.callback[cbid] !== "undefined");
 
-				if (typeof args === "undefined" || args === null || String(args).isEmpty()) args = "callback";
+				switch (true) {
+					case typeof args === "undefined":
+					case args === null:
+					case args instanceof Object && (args.callback === null || typeof args.callback === "undefined"):
+					case typeof args === "string" && args.isEmpty():
+						args = "callback";
+						break;
+					case args instanceof Object && typeof args.callback !== "undefined":
+						args = args.callback;
+						break;
+					default:
+						args = "callback";
+				}
+
 				uri = uri.replace(args + "=?", args + "=abaaso.callback." + cbid);
 
 				abaaso.callback[cbid] = function(arg) {
@@ -531,7 +544,16 @@
 				abaaso.timer[cbid] = setTimeout(function() { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			return curi.get(success, failure, args instanceof Object ? args : {Accept: "application/json"});
+			switch (true) {
+				case args instanceof Object && typeof args.Accept === "undefined":
+					args.Accept = "application/jason"
+				case args instanceof Object && typeof args.Accept !== "undefined":
+					break;
+				default:
+					args = {Accept: "application/json"}
+			}
+
+			return curi.get(success, failure, args);
 		},
 
 		/**
@@ -559,7 +581,8 @@
 
 				type = type.toLowerCase();
 				var l       = document.location,
-				    xhr     = (client.ie && uri.indexOf(l.protocol + "//" + l.host) !== 0 && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
+				    cors    = (uri.indexOf(l.protocol + "//" + l.host) !== 0),
+				    xhr     = (client.ie && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
 				    cached  = type === "head" ? false : cache.get(uri),
@@ -611,9 +634,13 @@
 				if (type === "get" && Boolean(cached)) uri.fire("afterGet", cached.response);
 				else {
 					abaaso.timer[typed + "-" + uri] = setTimeout(function() { uri.fire("timeout" + typed); }, 30000);
+					xhr[cors && client.ie ? "onload" : "onreadystatechange"] = function() { client.response(xhr, uri, type); };
 
-					xhr.onreadystatechange = function() { client.response(xhr, uri, type); };
-					xhr.open(type.toUpperCase(), uri, true);
+					if (client.ie && cors && client.version <= 9) {
+						if (l.protocol === "http:") xhr.open(type.toUpperCase(), uri);
+						else return uri.fire("failed" + typed);
+					}
+					else xhr.open(type.toUpperCase(), uri, true);
 
 					if (payload !== null) {
 						switch (true) {
@@ -622,20 +649,26 @@
 							case payload instanceof Document:
 								payload = xml.decode(payload);
 							case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
-								xhr.setRequestHeader("Content-type", "application/xml");
+								if (typeof xhr.setRequestHeader !== "undefined") xhr.setRequestHeader("Content-type", "application/xml");
 								break;
 							case payload instanceof Object:
-								xhr.setRequestHeader("Content-type", "application/json");
+								if (typeof xhr.setRequestHeader !== "undefined") xhr.setRequestHeader("Content-type", "application/json");
 								payload = json.encode(payload);
 								break;
 							default:
-								xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+								if (typeof xhr.setRequestHeader !== "undefined") xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
 						}
 					}
 
-					if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
-					if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
-					if (typeof xhr.withCredentials === "boolean") xhr.withCredentials = true;
+					if (typeof xhr.setRequestHeader !== "undefined") {
+						if (headers instanceof Object) {
+							if (typeof headers.callback !== "undefined") delete headers.callback;
+							if (typeof headers.withCredentials !== "undefined") delete headers.withCredentials;
+						}
+						if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
+						if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
+					}
+					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
 					xhr.send(payload);
 				}
 
@@ -998,7 +1031,8 @@
 			clear : function() {
 				var obj = this.parentNode;
 				obj.fire("beforeDataClear");
-				this.callback= null;
+				this.callback    = null;
+				this.credentials = null;
 				this.key     = null;
 				this.keys    = {};
 				this.records = [];
@@ -1372,7 +1406,7 @@
 					failure = function() { obj.fire("failedDataSync"); };
 
 					obj.fire("beforeDataSync");
-					this.uri.jsonp(success, failure, this.callback);
+					this.uri.jsonp(success, failure, {callback: this.callback, withCredentials: this.credentials});
 					return this;
 				}
 				catch (e) {
@@ -2632,7 +2666,7 @@
 					obj = document.querySelectorAll(arg);
 			}
 
-			if (obj !== null && !nodelist) obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
+			if (obj instanceof NodeList && !nodelist) obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
 			if (obj === null) obj = undefined;
 			return obj;
 		},
