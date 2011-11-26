@@ -280,7 +280,7 @@
 		 */
 		expired : function(uri) {
 			var item = cache.items[uri];
-			return typeof item !== "undefined" && item.expires < new Date();
+			return typeof item !== "undefined" && typeof item.expires !== "undefined" && item.expires < new Date();
 		},
 
 		/**
@@ -460,6 +460,67 @@
 				}
 			});
 			return result;
+		},
+
+		/**
+		 * Caches the headers from the XHR response
+		 * 
+		 * @method headers
+		 * @param  {Object} xhr  XMLHttpRequest Object
+		 * @param  {String} uri  URI to request
+		 * @param  {String} type Type of request
+		 * @return {Object} Cached URI representation
+		 * @private
+		 */
+		headers : function(xhr, uri, type) {
+			try {
+				var headers = String(xhr.getAllResponseHeaders()).split("\n"),
+				    items   = {},
+				    o       = {},
+				    allow   = null,
+				    expires = new Date(),
+				    header, value;
+
+				headers.each(function(h) {
+					if (!h.isEmpty()) {
+						header        = h.toString();
+						value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+						header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+						items[header] = value;
+						if (/allow|access-control-allow-methods/i.test(header)) allow = value;
+					}
+				});
+
+				switch (true) {
+					case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
+					case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
+						break;
+					case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
+						expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
+						break;
+					case typeof items["Expires"] !== "undefined":
+						expires = new Date(items["Expires"]);
+						break;
+					default:
+						expires = expires.setSeconds(expires.getSeconds() + $.expires);
+				}
+
+				o.expires    = expires;
+				o.headers    = items;
+				o.permission = client.bit(allow !== null ? allow.explode(",") : [type]);
+
+				if (type !== "head") {
+					cache.set(uri, "expires", o.expires);
+					cache.set(uri, "headers", o.headers);
+					cache.set(uri, "permission", o.permission);	
+				}
+
+				return o;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
 		},
 
 		/**
@@ -704,64 +765,38 @@
 		 */
 		response : function(xhr, uri, type) {
 			try {
-				var typed = type.toLowerCase().capitalize();
+				var typed = type.toLowerCase().capitalize(),
+				    l = document.location;
 
 				switch (true) {
 					case xhr.readyState === 2:
 						uri.fire("received" + typed);
+						if (!client.android) {
+							var o = client.headers(xhr, uri, type);
+							uri.fire("afterXHR");
+							if (type === "head") cache.expire(uri.fire("afterHead", o.headers), true);
+						}
 						break;
 					case xhr.readyState === 4:
-						var headers = String(xhr.getAllResponseHeaders()).split("\n"),
-						    items   = {},
-						    allow   = null,
-						    expires = new Date(),
-						    o       = {},
-						    header, value;
-
-						headers.each(function(h) {
-							if (!h.isEmpty()) {
-								header        = h.toString();
-								value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
-								header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-								items[header] = value;
-								if (/allow|access-control-allow-methods/i.test(header)) allow = value;
-							}
-						});
-
-						switch (true) {
-							case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
-							case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
-								break;
-							case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
-								expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
-								break;
-							case typeof items["Expires"] !== "undefined":
-								expires = new Date(items["Expires"]);
-								break;
-							default:
-								expires = expires.setSeconds(expires.getSeconds() + abaaso.client.expire);
+						if (client.android) {
+							var a = client.headers(xhr, uri, type);
+							uri.fire("afterXHR");
+							if (type === "head") cache.expire(uri.fire("afterHead", a.headers), true);
+							return uri;
 						}
-
-						o.expires    = expires;
-						o.headers    = items;
-						o.permission = client.bit(allow !== null ? allow.explode(",") : [type]);
-
-						if (type !== "head") {
-							cache.set(uri, "expires", o.expires);
-							cache.set(uri, "headers", o.headers);
-							cache.set(uri, "permission", o.permission);	
-						}
-
 						switch (xhr.status) {
 							case 200:
 							case 204:
 							case 205:
 							case 301:
+								if (type === "head") return;
+
 								var state = null,
 								    s = abaaso.state,
+								    o = cache.get(uri, false),
 								    r, t, x;
 
-								if (!/delete|head/i.test(type) && /200|301/.test(xhr.status)) {
+								if (type !== "delete" && /200|301/.test(xhr.status)) {
 									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 									switch (true) {
 										case (/json|plain/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
@@ -780,18 +815,17 @@
 									if (typeof r === "undefined")
 										throw Error(label.error.serverError);
 
-									cache.set(uri, "response", r);
 									o.response = r;
 								}
 
 								// Application state change triggered by hypermedia (HATEOAS)
-								if (type !== "head" && s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
+								if (s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
 
 								uri.fire("afterXHR");
 
 								switch (xhr.status) {
 									case 200:
-										uri.fire("after" + typed, type === "head" ? o.headers : o.response);
+										if (type !== "head") uri.fire("after" + typed, o.response);
 										break;
 									case 205:
 										uri.fire("reset");
@@ -817,6 +851,24 @@
 							default:
 								throw Error(label.error.serverError);
 						}
+						break;
+					case client.ie && uri.indexOf(l.protocol + "//" + l.host) !== 0 && typed === "Get": // IE XDomainRequest
+						var r, x;
+
+						switch (true) {
+							case Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
+								r = x;
+								break;
+							case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
+								r = xml.decode(xhr.responseText);
+								break;
+							default:
+								r = xhr.responseText;
+						}
+
+						cache.set(uri, "permission", client.bit(["get"]));
+						cache.set(uri, "response", r);
+						uri.fire("afterGet", r);
 						break;
 				}
 			}
