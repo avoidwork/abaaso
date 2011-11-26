@@ -559,7 +559,23 @@
 		jsonp : function(uri, success, failure, args) {
 			var curi = new String(uri).toString(),
 			    guid = utility.guid(),
-			    cbid, s;
+			    callback, cbid, s;
+
+			switch (true) {
+				case typeof args === "undefined":
+				case args === null:
+				case args instanceof Object && (args.callback === null || typeof args.callback === "undefined"):
+				case typeof args === "string" && args.isEmpty():
+					callback = "callback";
+					break;
+				case args instanceof Object && typeof args.callback !== "undefined":
+					callback = args.callback;
+					break;
+				default:
+					callback = "callback";
+			}
+
+			curi = curi.replace(callback+"=?", "");
 
 			curi.on("failedGet", function() {
 				this.un("failedGet", guid)
@@ -577,21 +593,7 @@
 				do cbid = utility.genId().slice(0, 10);
 				while (typeof abaaso.callback[cbid] !== "undefined");
 
-				switch (true) {
-					case typeof args === "undefined":
-					case args === null:
-					case args instanceof Object && (args.callback === null || typeof args.callback === "undefined"):
-					case typeof args === "string" && args.isEmpty():
-						args = "callback";
-						break;
-					case args instanceof Object && typeof args.callback !== "undefined":
-						args = args.callback;
-						break;
-					default:
-						args = "callback";
-				}
-
-				uri = uri.replace(args + "=?", args + "=abaaso.callback." + cbid);
+				uri = uri.replace(callback + "=?", callback + "=abaaso.callback." + cbid);
 
 				abaaso.callback[cbid] = function(arg) {
 					$.destroy(s);
