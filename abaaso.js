@@ -827,7 +827,7 @@
 
 								switch (xhr.status) {
 									case 200:
-										if (type !== "head") uri.fire("after" + typed, o.response);
+										uri.fire("after" + typed, o.response);
 										break;
 									case 205:
 										uri.fire("reset");
