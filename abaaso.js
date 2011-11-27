@@ -3286,6 +3286,7 @@
 		 * @method repeat
 		 * @param  {Function} fn      Function to execute repeatedly
 		 * @param  {Number}   timeout Milliseconds to stagger the execution
+		 * @param  {String}   id      [Optional] Timeout ID
 		 * @return {String} Timeout ID
 		 */
 		repeat : function(fn, timeout, id) {
