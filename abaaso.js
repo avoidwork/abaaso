@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.62
+ * @version 1.7.63
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -3281,6 +3281,29 @@
 		},
 
 		/**
+		 * Creates a repating function
+		 * 
+		 * @method repeat
+		 * @param  {Function} fn      Function to execute repeatedly
+		 * @param  {Number}   timeout Milliseconds to stagger the execution
+		 * @return {String} Repeat function ID
+		 */
+		repeat : function(fn, timeout, id) {
+			id = id || utility.guid();
+			var r = function(fn, timeout, id) {
+				var r = this;
+				$.repeating[id] = setTimeout(function() {
+					fn();
+					r.call(r, fn, timeout, id);
+				}, timeout);
+			};
+
+			fn();
+			r.call(r, fn, timeout, id);
+			return id;
+		},
+
+		/**
 		 * Transforms JSON to HTML and appends to Body or target Element
 		 *
 		 * @method create
@@ -3817,6 +3840,8 @@
 		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 		queryString     : utility.queryString,
 		ready           : false,
+		repeat          : utility.repeat,
+		repeating       : {},
 		store           : function(arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
 		tpl             : utility.tpl,
@@ -3830,7 +3855,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.62"
+		version         : "1.7.63"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
