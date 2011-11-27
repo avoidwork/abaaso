@@ -3281,7 +3281,7 @@
 		},
 
 		/**
-		 * Creates a repating function
+		 * Creates a repetitive function
 		 * 
 		 * @method repeat
 		 * @param  {Function} fn      Function to execute repeatedly
