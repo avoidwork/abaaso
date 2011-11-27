@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.6
+ * @version 1.7.61
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -2392,31 +2392,29 @@
 		 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
 		 * @return {Object} abaaso.mouse
 		 */
-		track : function(n) {
+		track : function(e) {
 			var m = abaaso.mouse;
 			switch (true) {
-				case typeof n === "object":
-					var x, y, c = false;
+				case typeof e === "object":
+					var x = e.pageX ? e.pageX : ((client.ie && client.version < 9 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX),
+					    y = e.pageY ? e.pageY : ((client.ie && client.version < 9 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY),
+					    c = false;
 
-					x = (n.pageX) ? n.pageX : ((client.ie && client.version === 8 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX);
-					y = (n.pageY) ? n.pageY : ((client.ie && client.version === 8 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY);
-					switch (true) {
-						case m.pos.x !== x:
-							$.mouse.prev.x = m.prev.x = m.pos.x;
-							$.mouse.pos.x  = m.pos.x  = x;
-							$.mouse.diff.x = m.diff.x = m.pos.x - m.prev.x;
-							c = true;
-						case m.pos.y !== y:
-							$.mouse.prev.y = m.prev.y = m.pos.y;
-							$.mouse.pos.y  = m.pos.y  = y;
-							$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
-							c = true;
-					}
-					if (c && m.log) utility.log(m.pos.x + " : " + m.pos.y);
+					if (m.pos.x !== x) c = true;
+					$.mouse.prev.x = m.prev.x = Number(m.pos.x);
+					$.mouse.pos.x  = m.pos.x  = x;
+					$.mouse.diff.x = m.diff.x = m.pos.x - m.prev.x;
+
+					if (m.pos.y !== y) c = true;
+					$.mouse.prev.y = m.prev.y = Number(m.pos.y);
+					$.mouse.pos.y  = m.pos.y  = y;
+					$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
+
+					if (c && m.log) utility.log(m.pos.x + " [" + m.diff.x + "], " + m.pos.y + " [" + m.diff.y + "]");
 					break;
-				case typeof n === "boolean":
-					n ? observer.add(document, "mousemove", abaaso.mouse.track) : observer.remove(document, "mousemove");
-					$.mouse.enabled = m.enabled = n;
+				case typeof e === "boolean":
+					e ? observer.add(document, "mousemove", abaaso.mouse.track) : observer.remove(document, "mousemove");
+					$.mouse.enabled = m.enabled = e;
 					break;
 			}
 			return m;
@@ -3840,7 +3838,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.6"
+		version         : "1.7.61"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
