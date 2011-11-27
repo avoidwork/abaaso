@@ -3296,12 +3296,10 @@
 			if (fn() !== false) {
 				var r = function(fn, timeout, id) {
 					var r = this;
-					$.repeating[id] = setTimeout(function() {
-						if (fn() !== false) r.call(r, fn, timeout, id);
-						else delete $.repeating[id];
-					}, timeout);
+					if (fn() !== false) $.repeating[id] = setTimeout(function() { r.call(r, fn, timeout, id); }, timeout);
+					else delete $.repeating[id];
 				};
-				r.call(r, fn, timeout, id)
+				r.call(r, fn, timeout, id);
 			}
 			return id;
 		},
