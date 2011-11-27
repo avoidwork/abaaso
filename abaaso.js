@@ -3286,7 +3286,7 @@
 		 * @method repeat
 		 * @param  {Function} fn      Function to execute repeatedly
 		 * @param  {Number}   timeout Milliseconds to stagger the execution
-		 * @return {String} Repeat function ID
+		 * @return {String} Timeout ID
 		 */
 		repeat : function(fn, timeout, id) {
 			id = id || utility.guid();
