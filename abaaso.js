@@ -3293,14 +3293,12 @@
 		 */
 		repeat : function(fn, timeout, id) {
 			id = id || utility.guid();
-			if (fn() !== false) {
-				var r = function(fn, timeout, id) {
-					var r = this;
-					if (fn() !== false) $.repeating[id] = setTimeout(function() { r.call(r, fn, timeout, id); }, timeout);
-					else delete $.repeating[id];
-				};
-				r.call(r, fn, timeout, id);
-			}
+			var r = function(fn, timeout, id) {
+				var r = this;
+				if (fn() !== false) $.repeating[id] = setTimeout(function() { r.call(r, fn, timeout, id); }, timeout);
+				else delete $.repeating[id];
+			};
+			r.call(r, fn, timeout, id);
 			return id;
 		},
 
