@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.61
+ * @version 1.7.62
  */
  var $ = $ || null, abaaso = (function() {
 	"use strict";
@@ -512,7 +512,7 @@
 				if (type !== "head") {
 					cache.set(uri, "expires", o.expires);
 					cache.set(uri, "headers", o.headers);
-					cache.set(uri, "permission", o.permission);	
+					cache.set(uri, "permission", o.permission);
 				}
 
 				return o;
@@ -773,30 +773,24 @@
 				switch (true) {
 					case xhr.readyState === 2:
 						uri.fire("received" + typed);
-						if (!client.android) {
-							var o = client.headers(xhr, uri, type);
-							uri.fire("afterXHR");
-							if (type === "head") cache.expire(uri.fire("afterHead", o.headers), true);
-						}
 						break;
 					case xhr.readyState === 4:
-						if (client.android) {
-							var a = client.headers(xhr, uri, type);
-							uri.fire("afterXHR");
-							if (type === "head") cache.expire(uri.fire("afterHead", a.headers), true);
-							return uri;
-						}
 						switch (xhr.status) {
 							case 200:
 							case 204:
 							case 205:
 							case 301:
-								if (type === "head") return;
-
 								var state = null,
 								    s = abaaso.state,
-								    o = cache.get(uri, false),
+								    o = client.headers(xhr, uri, type),
 								    r, t, x;
+
+								uri.fire("afterXHR");
+
+								if (type === "head") {
+									cache.expire(uri.fire("afterHead", o.headers), true);
+									return uri;
+								}
 
 								if (type !== "delete" && /200|301/.test(xhr.status)) {
 									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
@@ -817,13 +811,11 @@
 									if (typeof r === "undefined")
 										throw Error(label.error.serverError);
 
-									o.response = r;
+									cache.set(uri, "response", (o.response = r));
 								}
 
 								// Application state change triggered by hypermedia (HATEOAS)
 								if (s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
-
-								uri.fire("afterXHR");
 
 								switch (xhr.status) {
 									case 200:
@@ -3838,7 +3830,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.61"
+		version         : "1.7.62"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
