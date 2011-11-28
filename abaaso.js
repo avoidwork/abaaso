@@ -2696,8 +2696,7 @@
 
 			switch (true) {
 				case (/\s|>/.test(arg)):
-					sel = arg.split(" ").filter(function(i) { if (i.trim() !== "" && i !== ">") return true; });
-					sel = sel[sel.length - 1];
+					sel = arg.split(" ").filter(function(i) { if (i.trim() !== "" && i !== ">") return true; }).last();
 					obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
 					break;
 				case arg.indexOf("#") === 0 && arg.indexOf(":") === -1:
