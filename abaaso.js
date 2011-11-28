@@ -3281,7 +3281,7 @@
 		},
 
 		/**
-		 * Creates a recusive function
+		 * Creates a recursive function
 		 * 
 		 * Return false from the function to halt recursion
 		 * 
