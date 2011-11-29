@@ -2673,6 +2673,8 @@
 	var utility = {
 		/**
 		 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
+		 * 
+		 * Accepts comma delimited queries
 		 *
 		 * @method $
 		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag or selector
@@ -2691,7 +2693,7 @@
 				return result;
 			}
 
-			// Getting Elements(s)
+			// Getting Element(s)
 			var obj, sel;
 
 			switch (true) {
