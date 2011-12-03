@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.7
+ * @version 1.7.71
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -625,6 +625,7 @@
 		 * Events: beforeXHR       Fires before the XmlHttpRequest is made
 		 *         before[type]    Fires before the XmlHttpRequest is made, type specific
 		 *         failed[type]    Fires on error
+		 *         progress[type]  Fires on progress (CORS)
 		 *         received[type]  Fires on XHR readystate 2, clears the timeout only!
 		 *         timeout[type]   Fires 30s after XmlHttpRequest is made
 		 *
@@ -731,7 +732,11 @@
 						if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
 						if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
 					}
+
+					// Cross Origin Resource Sharing (CORS)
 					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
+					if (typeof xhr.onprogress === "object") xhr.onprogress = function(e) { uri.fire("progress" + typed, e); };
+
 					xhr.send(payload);
 				}
 
@@ -3857,7 +3862,7 @@
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.7"
+		version         : "1.7.71"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
