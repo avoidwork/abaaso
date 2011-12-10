@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, Jason Mulligan <jason.mulligan@avoidwork.com>
+ * Copyright (c) 2011, Jason Mulligan <jason@attack.io>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
  *         error          Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
  *         hash           Fires when window.location.hash changes; parameter for listeners is the hash value
  *
- * @author Jason Mulligan <jason.mulligan@avoidwork.com>
+ * @author Jason Mulligan <jason@attack.io>
  * @link http://abaaso.com/
  * @module abaaso
  * @version 1.7.72
