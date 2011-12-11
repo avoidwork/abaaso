@@ -3868,7 +3868,7 @@
 			    state = all ? arguments[3] : arguments[2];
 			    if (obj === $) obj = abaaso;
 
-			return observer.remove.call(observer, obj, event, id);
+			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
 		version         : "1.7.73"
