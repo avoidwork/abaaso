@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason@attack.io>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.72
+ * @version 1.7.73
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -2448,6 +2448,7 @@
 			try {
 				obj   = utility.object(obj);
 				scope = scope || abaaso;
+				state = state || "active";
 
 				if (obj instanceof Array) return obj.each(function(i) { observer.add(i, event, fn, id, scope, state); });
 
@@ -2468,14 +2469,14 @@
 						l[o][event] = {};
 					case typeof l[o][event].active === "undefined":
 						l[o][event].active = {};
-					case typeof l[o][event].standby === "undefined":
-						l[o][event].standby = {};
+					case typeof l[o][event][state] === "undefined":
+						l[o][event][state] = {};
 				}
 
 				item = {fn: fn, scope: scope};
+				l[o][event][state][id] = item;
 
-				if (typeof state === "undefined") {
-					l[o][event].active[id] = item;
+				if (state === "active")	{
 					switch (true) {
 						case (/body|document|window/i.test(o)):
 							instance = obj;
@@ -2493,10 +2494,7 @@
 					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
 						typeof instance.addEventListener === "function" ? instance.addEventListener(event, efn, false) : instance.attachEvent("on" + event, efn);
 				}
-				else {
-					if (typeof l[o][event].standby[state] === "undefined") l[o][event].standby[state] = {};
-					l[o][event].standby[state][id] = item;
-				}
+
 				return obj;
 			}
 			catch (e) {
@@ -2592,7 +2590,7 @@
 					r = l[o][event];
 					break;
 				default:
-					r = {active: {}, standby: {}};
+					r = {active: {}};
 			}
 			return r;
 		},
@@ -2604,17 +2602,19 @@
 		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
 		 * @param  {String} event Event being fired
 		 * @param  {String} id    [Optional] Listener id
-		 * @return {Mixed} Entity, Array of Entities or undefined
+		 * @param  {String} state [Optional] The state the listener is for
+		 * @return {Mixed}  Entity, Array of Entities or undefined
 		 */
-		remove : function(obj, event, id) {
-			obj = utility.object(obj);
+		remove : function(obj, event, id, state) {
+			obj   = utility.object(obj);
+			state = state || "active";
 
-			if (obj instanceof Array) return obj.each(function(i) { observer.remove(i, event, id); });
+			if (obj instanceof Array) return obj.each(function(i) { observer.remove(i, event, id, state); });
 
 			var instance = null,
 			    l = observer.listeners,
 			    o = this.id(obj),
-			    efn;
+			    fn, efn;
 
 			switch (true) {
 				case typeof o === "undefined":
@@ -2624,8 +2624,9 @@
 					return obj;
 			}
 
-			if (typeof id === "undefined") {
-				delete l[o][event];
+			typeof id === "undefined" ? l[o][event][state] = {} : delete l[o][event][state][id];
+
+			if (state === "active") {
 				switch (true) {
 					case (/body|document|window/i.test(o)):
 						instance = obj;
@@ -2633,6 +2634,7 @@
 					default:
 						instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
 				}
+
 				efn = function(e) {
 			    	if (!e) e = window.event;
 			    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
@@ -2644,7 +2646,7 @@
 				if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
 					typeof instance.removeEventListener === "function" ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
 			}
-			else if (typeof l[o][event].active[id] !== "undefined") delete l[o][event].active[id];
+
 			return obj;
 		},
 
@@ -2661,9 +2663,9 @@
 
 			for (i in l) {
 				for (e in l[i]) {
-					l[i][e].standby[$.state.previous] = l[i][e].active;
-					l[i][e].active = typeof l[i][e].standby[arg] !== "undefined" ? l[i][e].standby[arg] : {};
-					if (typeof l[i][e].standby[arg] !== "undefined") delete l[i][e].standby[arg];
+					l[i][e][$.state.previous] = l[i][e].active;
+					l[i][e].active = l[i][e][arg] || {};
+					if (typeof l[i][e][arg] !== "undefined") delete l[i][e][arg];
 				}
 			}
 			$.fire(arg);
@@ -3048,7 +3050,7 @@
 			var i,
 			    methods = {
 				array   : {addClass : function(arg) { return this.each(function(i) { i.addClass(arg); }); },
-					       contains : function(arg) { return array.contains(this, arg); },
+				           contains : function(arg) { return array.contains(this, arg); },
 				           css      : function(key, value) { return this.each(function(i) { i.css(key, value); }); },
 				           diff     : function(arg) { return array.diff(this, arg); },
 				           each     : function(arg) { this.forEach(arg); return this; },
@@ -3059,10 +3061,10 @@
 				           intersect: function(arg) { return array.intersect(this, arg); },
 				           keys     : function() { return array.keys(this); },
 				           last     : function(arg) { return array.last(this); },
-				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, typeof scope !== "undefined" ? scope : true, state); },
+				           on       : function(event, listener, id, scope, state) { return this.each(function(i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           remove   : function(arg) { return array.remove(this, arg); },
-						   removeClass : function(arg) { return this.each(function(i) { i.removeClass(arg); }); },
-						   show     : function() { return this.each(function(i){ i.show(); }); },
+				           removeClass : function(arg) { return this.each(function(i) { i.removeClass(arg); }); },
+				           show     : function() { return this.each(function(i){ i.show(); }); },
 				           text     : function(arg) {
 				           		return this.each(function(node) {
 				           			if (typeof node !== "object") node = utility.object(node);
@@ -3070,177 +3072,181 @@
 				           		});
 				           },
 				           total    : function() { return array.total(this); },
+				           un       : function(event, id, state) { return this.each(function(i) { i.un(event, id, state); }); },
 				           update   : function(arg) { return this.each(function(i) { el.update(i, arg); }); },
 				           validate : function() {
-				           		var result = [];
+				           	var result = [];
 				           		this.each(function(i) { if (typeof i.validate === "function") result.push(i.validate()); });
 				           		return result;
 					       }},
 				element : {addClass : function(arg) {
-								this.genId();
-								return el.klass(this, arg, true);
-						   },
-						   create   : function(type, args) {
-								this.genId();
-								return el.create(type, args, this);
-						   },
-						   css       : function(key, value) {
-						   		var i;
-								this.genId();
-								if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
-									key = key.replace("-", "");
-									key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
-								}
-								this.style[key] = value;
-								return this;
-							},
-						   disable   : function() { return el.disable(this); },
-						   enable    : function() { return el.enable(this); },
-						   get       : function(uri, headers) {
-								this.fire("beforeGet");
-								var cached = cache.get(uri),
-								    guid   = utility.guid(),
-								    self   = this;
+				           		this.genId();
+				           		return el.klass(this, arg, true);
+				           },
+				           create   : function(type, args) {
+				           		this.genId();
+				           		return el.create(type, args, this);
+				           },
+				           css       : function(key, value) {
+				           		var i;
+				           		this.genId();
+				           		if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
+				           			key = key.replace("-", "");
+				           			key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
+				           		}
+				           		this.style[key] = value;
+				           		return this;
+				           },
+				           disable   : function() { return el.disable(this); },
+				           enable    : function() { return el.enable(this); },
+				           get       : function(uri, headers) {
+				           		this.fire("beforeGet");
+				           		var cached = cache.get(uri),
+				           		    guid   = utility.guid(),
+				           		    self   = this;
 
-								!cached ? uri.get(function(a) { self.text(a).fire("afterGet"); }, null, headers)
-								        : this.text(cached.response).fire("afterGet");
+				           		!cached ? uri.get(function(a) { self.text(a).fire("afterGet"); }, null, headers)
+				           		        : this.text(cached.response).fire("afterGet");
 
-								return this;
-						   },
-						   hide     : function() {
-								this.genId();
-								return el.hide(this);
-						   },
-						   isAlphaNum: function() { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
-					       isBoolean: function() { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
-					       isDate   : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
-					       isDomain : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
-					       isEmail  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
-					       isEmpty  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
-					       isIP     : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
-					       isInt    : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
-					       isNumber : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
-					       isPhone  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : this.innerText.isPhone(); },
-					       isString : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isString() : this.innerText.isString(); },
-					       jsonp    : function(uri, property, callback) {
-								var target = this,
-								    arg    = property, fn;
+				           		return this;
+				           },
+				           hide     : function() {
+				           		this.genId();
+				           		return el.hide(this);
+				           },
+				           isAlphaNum: function() { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+				           isBoolean: function() { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+				           isDate   : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
+				           isDomain : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
+				           isEmail  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
+				           isEmpty  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
+				           isIP     : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
+				           isInt    : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
+				           isNumber : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
+				           isPhone  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : this.innerText.isPhone(); },
+				           isString : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isString() : this.innerText.isString(); },
+				           jsonp    : function(uri, property, callback) {
+				           		var target = this,
+				           		    arg    = property, fn;
 
-								fn = function(response) {
-									var self = target,
-									    node = response,
-									    prop = arg,
-									    i, nth, result;
+				           		fn = function(response) {
+				           			var self = target,
+				           			    node = response,
+				           			    prop = arg,
+				           			    i, nth, result;
 
-									try {
-										if (typeof prop !== "undefined") {
-											prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-											prop.each(function(i) {
-												node = node[!!isNaN(i) ? i : parseInt(i)];
-												if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
-											});
-											result = node;
-										}
-										else result = response;
-									}
-									catch (e) {
-										result = label.error.serverError;
-										error(e, arguments, this);
-									}
+				           			try {
+				           				if (typeof prop !== "undefined") {
+				           					prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
+				           					prop.each(function(i) {
+				           						node = node[!!isNaN(i) ? i : parseInt(i)];
+				           						if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
+				           					});
+				           					result = node;
+				           				}
+				           				else result = response;
+				           			}
+				           			catch (e) {
+				           				result = label.error.serverError;
+				           				error(e, arguments, this);
+				           			}
 
-									self.text(result);
-								};
-								client.jsonp(uri, fn, function() { target.text(label.error.serverError); }, callback);
-								return this;
-						   },
-						   loading  : function() { return $.loading.create(this); },
+				           			self.text(result);
+				           		};
+				           		client.jsonp(uri, fn, function() { target.text(label.error.serverError); }, callback);
+				           		return this;
+				           },
+				           loading  : function() { return $.loading.create(this); },
 				           on       : function(event, listener, id, scope, state) {
-								this.genId();
-								return $.on.call(this, event, listener, id, scope, state);
-						   },
+				           		this.genId();
+				           		return $.on.call(this, event, listener, id, scope, state);
+				           },
 				           position : function() {
-								this.genId();
-								return el.position(this);
-						   },
-						   removeClass : function(arg) {
-								this.genId();
-								return el.klass(this, arg, false);
-						   },
-						   show     : function() {
-								this.genId();
-								return el.show(this);
-						   },
-						   size     : function() {
-								this.genId();
-								return el.size(this);
-						   },
-						   text     : function(arg) {
-								var args = {};
-								this.genId();
-								if (typeof this.value !== "undefined") args.value = arg;
-								args.innerHTML = arg;
-								return this.update(args);
-						   },
-						   update   : function(args) {
-								this.genId();
-								return el.update(this, args);
-						   },
-						   validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+				           		this.genId();
+				           		return el.position(this);
+				           },
+				           removeClass : function(arg) {
+				           		this.genId();
+				           		return el.klass(this, arg, false);
+				           },
+				           show     : function() {
+				           		this.genId();
+				           		return el.show(this);
+				           },
+				           size     : function() {
+				           		this.genId();
+				           		return el.size(this);
+				           },
+				           text     : function(arg) {
+				           		var args = {};
+
+				           		this.genId();
+				           		if (typeof this.value !== "undefined") args.value = arg;
+				           		args.innerHTML = arg;
+				           		return this.update(args);
+				           },
+				           un       : function(event, id, state) {
+				           		this.genId();
+				           		return $.un.call(this, event, id, state);
+				           },
+				           update   : function(args) {
+				           		this.genId();
+				           		return el.update(this, args);
+				           },
+				           validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 				number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
 				           format   : function(delimiter, every) { return $.number.format(this, delimiter, every); },
 				           isEven   : function() { return $.number.even(this); },
 				           isOdd    : function() { return $.number.odd(this); },
-				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); }},
+				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           un       : function(event, id, state) { return $.un.call(this, event, id, state); }},
 				shared  : {clear    : function() {
-								this.genId();
-								this instanceof String ? this.constructor = new String("") : el.clear(this);
-								return this;
-						   },
-						   destroy  : function() { el.destroy(this); },
-						   fire     : function(event, args) {
-						   		this.genId();
-						   		return $.fire.call(this, event, args);
-						   },
-						   genId    : function() { return utility.genId(this); },
-						   listeners: function(event) {
-						   		this.genId();
-						   		return $.listeners.call(this, event);
-						   },
-						   un       : function(event, id) {
-						   		this.genId();
-						   		return $.un.call(this, event, id);
-						   }},
+				           		this.genId();
+				           		this instanceof String ? this.constructor = new String("") : el.clear(this);
+				           		return this;
+				           },
+				           destroy  : function() { el.destroy(this); },
+				           fire     : function(event, args) {
+				           		this.genId();
+				           		return $.fire.call(this, event, args);
+				           },
+				           genId    : function() { return utility.genId(this); },
+				           listeners: function(event) {
+				           		this.genId();
+				           		return $.listeners.call(this, event);
+				           }},
 				string  : {allows   : function(arg) { return $.allows(this, arg); },
-						   capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
-						   del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
-						   explode  : function(arg) { return this.split(new RegExp("\\s*" + arg + "\\s*")); },
-						   get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
-						   isAlphaNum: function() { return validate.test({alphanum: this}).pass; },
-						   isBoolean: function() { return validate.test({"boolean": this}).pass; },
-						   isDate   : function() { return validate.test({date: this}).pass; },
-						   isDomain : function() { return validate.test({domain: this}).pass; },
-						   isEmail  : function() { return validate.test({email: this}).pass; },
-						   isEmpty  : function() { return !validate.test({notEmpty: this}).pass; },
-						   isIP     : function() { return validate.test({ip: this}).pass; },
-						   isInt    : function() { return validate.test({integer: this}).pass; },
-						   isNumber : function() { return validate.test({number: this}).pass; },
-						   isPhone  : function() { return validate.test({phone: this}).pass; },
-						   isString : function() { return validate.test({string: this}).pass; },
-						   jsonp    : function(success, failure, callback) { return client.jsonp(this, success, failure, callback); },
-						   post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
-						   put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
-						   on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
-						   headers  : function(success, failure) { return client.request(this, "HEAD", success, failure); },
+				           capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
+				           del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
+				           explode  : function(arg) { return this.split(new RegExp("\\s*" + arg + "\\s*")); },
+				           get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
+				           isAlphaNum: function() { return validate.test({alphanum: this}).pass; },
+				           isBoolean: function() { return validate.test({"boolean": this}).pass; },
+				           isDate   : function() { return validate.test({date: this}).pass; },
+				           isDomain : function() { return validate.test({domain: this}).pass; },
+				           isEmail  : function() { return validate.test({email: this}).pass; },
+				           isEmpty  : function() { return !validate.test({notEmpty: this}).pass; },
+				           isIP     : function() { return validate.test({ip: this}).pass; },
+				           isInt    : function() { return validate.test({integer: this}).pass; },
+				           isNumber : function() { return validate.test({number: this}).pass; },
+				           isPhone  : function() { return validate.test({phone: this}).pass; },
+				           isString : function() { return validate.test({string: this}).pass; },
+				           jsonp    : function(success, failure, callback) { return client.jsonp(this, success, failure, callback); },
+				           post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
+				           put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
+				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           headers  : function(success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function() { return $.permissions(this); },
-						   toCamelCase: function() {
-						   		var s = this.toLowerCase().split(" "),
-						   		    r = "",
-						   		    i, nth;
+				           toCamelCase: function() {
+				           		var s = this.toLowerCase().split(" "),
+				           		    r = "",
+				           		    i, nth;
 
-						   		for (i = 0, nth = s.length; i < nth; i++) { r += i === 0 ? s[i] : String(s[i]).capitalize(); }
-						   		return r.replace(/\W/g, "");
-						   },
-				           trim     : function() { return this.replace(/^\s+|\s+$/g, ""); }}
+				           		for (i = 0, nth = s.length; i < nth; i++) { r += i === 0 ? s[i] : String(s[i]).capitalize(); }
+				           		return r.replace(/\W/g, "");
+				           },
+				           trim     : function() { return this.replace(/^\s+|\s+$/g, ""); },
+				           un       : function(event, id, state) { return $.un.call(this, event, id, state); }}
 			};
 
 			// Applying the methods
@@ -3858,13 +3864,14 @@
 			var all   = typeof arguments[2] !== "undefined",
 			    obj   = all ? arguments[0] : this,
 			    event = all ? arguments[1] : arguments[0],
-			    id    = all ? arguments[2] : arguments[1];
+			    id    = all ? arguments[2] : arguments[1],
+			    state = all ? arguments[3] : arguments[2];
 			    if (obj === $) obj = abaaso;
 
 			return observer.remove.call(observer, obj, event, id);
 		},
 		update          : el.update,
-		version         : "1.7.72"
+		version         : "1.7.73"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
