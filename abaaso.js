@@ -2486,13 +2486,13 @@
 					}
 					efn = function(e) {
 						if (event.indexOf("key") !== 0) {
-					    	if (!e) e = window.event;
-					    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
-					    	if (typeof e.preventDefault === "function") e.preventDefault();
-					    	if (typeof e.stopPropagation === "function") e.stopPropagation();
-					    }
-				    	typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
-				    };
+							if (!e) e = window.event;
+							if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
+							if (typeof e.preventDefault === "function") e.preventDefault();
+							if (typeof e.stopPropagation === "function") e.stopPropagation();
+						}
+						typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
+					};
 					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
 						typeof instance.addEventListener === "function" ? instance.addEventListener(event, efn, false) : instance.attachEvent("on" + event, efn);
 				}
@@ -2639,13 +2639,13 @@
 
 				efn = function(e) {
 					if (event.indexOf("key") !== 0) {
-				    	if (!e) e = window.event;
-				    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
-				    	if (typeof e.preventDefault === "function") e.preventDefault();
-				    	if (typeof e.stopPropagation === "function") e.stopPropagation();
-				    }
-			    	typeof instance.fire === "function" ? instance.fire(event) : observer.fire(obj, event, e);
-			    };
+						if (!e) e = window.event;
+						if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
+						if (typeof e.preventDefault === "function") e.preventDefault();
+						if (typeof e.stopPropagation === "function") e.stopPropagation();
+					}
+					typeof instance.fire === "function" ? instance.fire(event) : observer.fire(obj, event, e);
+				};
 
 				if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
 					typeof instance.removeEventListener === "function" ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
