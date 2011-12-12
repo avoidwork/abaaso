@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.73
+ * @version 1.7.74
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -2485,10 +2485,12 @@
 							instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
 					}
 					efn = function(e) {
-				    	if (!e) e = window.event;
-				    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
-				    	if (typeof e.preventDefault === "function") e.preventDefault();
-				    	if (typeof e.stopPropagation === "function") e.stopPropagation();
+						if (event.indexOf("key") !== 0) {
+					    	if (!e) e = window.event;
+					    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
+					    	if (typeof e.preventDefault === "function") e.preventDefault();
+					    	if (typeof e.stopPropagation === "function") e.stopPropagation();
+					    }
 				    	typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
 				    };
 					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
@@ -2636,10 +2638,12 @@
 				}
 
 				efn = function(e) {
-			    	if (!e) e = window.event;
-			    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
-			    	if (typeof e.preventDefault === "function") e.preventDefault();
-			    	if (typeof e.stopPropagation === "function") e.stopPropagation();
+					if (event.indexOf("key") !== 0) {
+				    	if (!e) e = window.event;
+				    	if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
+				    	if (typeof e.preventDefault === "function") e.preventDefault();
+				    	if (typeof e.stopPropagation === "function") e.stopPropagation();
+				    }
 			    	typeof instance.fire === "function" ? instance.fire(event) : observer.fire(obj, event, e);
 			    };
 
@@ -3871,7 +3875,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.73"
+		version         : "1.7.74"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
