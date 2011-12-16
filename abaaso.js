@@ -1499,7 +1499,7 @@
 									$.timer[this.parentNode.id + "DataExpires"] = setInterval(function() { self.uri.fire("expire"); }, this.expires);
 									break;
 								case arg === null:
-									clearInterval(this.parentNode.id + "DataExpires");
+									clearInterval($.timer[this.parentNode.id + "DataExpires"]);
 									break;
 							}
 						}
