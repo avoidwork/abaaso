@@ -1490,7 +1490,7 @@
 					getter : function() { return this._expires; },
 					setter : function(arg) {
 						try {
-							if (arg !== null && (isNaN(arg) || typeof arg === "boolean"))
+							if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean")))
 								throw Error(label.error.invalidArguments);
 
 							switch (true) {
