@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.74
+ * @version 1.7.75
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -1086,14 +1086,16 @@
 				obj.fire("beforeDataClear");
 				this.callback    = null;
 				this.credentials = null;
-				this.key     = null;
-				this.keys    = {};
-				this.records = [];
-				this.source  = null;
-				this.total   = 0;
-				this.views   = {};
-				this.uri     = null;
-				this._uri    = null;
+				this.expires     = null;
+				this._expires    = null;
+				this.key         = null;
+				this.keys        = {};
+				this.records     = [];
+				this.source      = null;
+				this.total       = 0;
+				this.views       = {};
+				this.uri         = null;
+				this._uri        = null;
 				obj.fire("afterDataClear");
 				return this;
 			},
@@ -1483,39 +1485,64 @@
 		register : function(obj, data) {
 			if (obj instanceof Array) return obj.each(function(i) { data.register(i, data); });
 
-			var getter, setter;
+			var methods = {
+				expires : {
+					getter : function() { return this._expires; },
+					setter : function(arg) {
+						try {
+							if (arg !== null && (isNaN(arg) || typeof arg === "boolean"))
+								throw Error(label.error.invalidArguments);
 
-			getter = function() { return this._uri; };
-			setter = function(arg) {
-				try {
-					if (arg !== null && arg.isEmpty())
-						throw Error(label.error.invalidArguments);
-
-					if (this._uri === arg) return;
-
-					if (this.uri !== null) {
-						this.uri.un("expire", "dataSync");
-						cache.expire(this.uri, true);
+							switch (true) {
+								case typeof arg === "number":
+									var self = this;
+									$.timer[this.parentNode.id + "DataExpires"] = setInterval(function() { self.uri.fire("expire"); }, this.expires);
+									break;
+								case arg === null:
+									clearInterval(this.parentNode.id + "DataExpires");
+									break;
+							}
+						}
+						catch (e) {
+							error(e, arguments, this);
+							return undefined;
+						}
 					}
+				},
+				uri : {
+					getter : function() { return this._uri; },
+					setter : function(arg) {
+						try {
+							if (arg !== null && arg.isEmpty())
+								throw Error(label.error.invalidArguments);
 
-					this._uri = arg;
+							if (this._uri === arg) return;
 
-					if (arg !== null) {
-						this.uri.on("expire", function() {
-							var guid = utility.guid();
-							this.sync();
-							this.parentNode.on("afterDataSync", function() {
-								this.parentNode.un("afterDataSync", guid);
-								this.reindex();
-							}, guid, this);
-						}, "dataSync", this);
-						cache.expire(arg, true);
-						this.sync();
+							if (this.uri !== null) {
+								this.uri.un("expire", "dataSync");
+								cache.expire(this.uri, true);
+							}
+
+							this._uri = arg;
+
+							if (arg !== null) {
+								this.uri.on("expire", function() {
+									var guid = utility.guid();
+									this.sync();
+									this.parentNode.on("afterDataSync", function() {
+										this.parentNode.un("afterDataSync", guid);
+										this.reindex();
+									}, guid, this);
+								}, "dataSync", this);
+								cache.expire(arg, true);
+								this.sync();
+							}
+						}
+						catch (e) {
+							error(e, arguments, this);
+							return undefined;
+						}
 					}
-				}
-				catch (e) {
-					error(e, arguments, this);
-					return undefined;
 				}
 			};
 
@@ -1581,17 +1608,27 @@
 				this.parentNode.fire("afterDataSet", record);
 			}, utility.guid(), obj.data);
 
+			// Getters & setters
 			switch (true) {
 				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-					Object.defineProperty(obj.data, "uri", {get: getter, set: setter});
+					Object.defineProperty(obj.data, "uri", {get: methods.uri.getter, set: methods.uri.setter});
+					Object.defineProperty(obj.data, "expires", {get: methods.expires.getter, set: methods.expires.setter});
 					break;
 				case typeof obj.data.__defineGetter__ === "function":
-					obj.data.__defineGetter__("uri", getter);
-					obj.data.__defineSetter__("uri", setter);
+					obj.data.__defineGetter__("expires", methods.expires.getter);
+					obj.data.__defineSetter__("expires", methods.expires.setter);
+					obj.data.__defineGetter__("uri", methods.uri.getter);
+					obj.data.__defineSetter__("uri", methods.uri.setter);
 					break;
 				default: // Only exists when no getters/setters (IE8)
-					obj.data.uri    = null;
-					obj.data.setUri = function(arg) { obj.data.uri = arg; setter.call(obj.data, arg); };
+					obj.data.setExpires = function(arg) {
+						obj.data.expires = arg;
+						methods.expires.setter.call(obj.data, arg);
+					};
+					obj.data.setUri = function(arg) {
+						obj.data.uri = arg;
+						methods.uri.setter.call(obj.data, arg);
+					};
 			}
 
 			if (typeof data === "object") obj.data.batch("set", data);
@@ -3875,7 +3912,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.74"
+		version         : "1.7.75"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
