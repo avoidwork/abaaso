@@ -2811,9 +2811,6 @@
 		 */
 		clone : function(obj) {
 			try {
-				if (typeof obj !== "object")
-					throw Error(label.error.expectedObject);
-
 				var clone;
 
 				switch (typeof obj) {
