@@ -2813,14 +2813,14 @@
 			try {
 				var clone;
 
-				switch (typeof obj) {
-					case "number":
+				switch (true) {
+					case typeof obj === "number":
 						clone = Number(obj);
 						break;
-					case "string":
+					case typeof obj === "string":
 						clone = String(obj);
 						break;
-					case "boolean":
+					case typeof obj === "boolean":
 						clone = Boolean(obj);
 						break;
 					case obj instanceof Document:
