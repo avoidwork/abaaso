@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.76
+ * @version 1.7.77
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -699,7 +699,7 @@
 					return uri;
 				}
 
-				if (type === "get" && Boolean(cached)) uri.fire("afterGet", cached.response);
+				if (type === "get" && Boolean(cached)) uri.fire("afterGet", utility.clone(cached.response));
 				else {
 					abaaso.timer[typed + "-" + uri] = setTimeout(function() { uri.fire("timeout" + typed); }, 30000);
 					xhr[cors && client.ie ? "onload" : "onreadystatechange"] = function() { client.response(xhr, uri, type); };
@@ -828,7 +828,7 @@
 
 								switch (xhr.status) {
 									case 200:
-										uri.fire("after" + typed, o.response);
+										uri.fire("after" + typed, utility.clone(o.response));
 										break;
 									case 205:
 										uri.fire("reset");
@@ -1032,7 +1032,7 @@
 					sync = (sync === true);
 
 					if (!/^(set|del)$/.test(type) || typeof data !== "object")
-							throw Error(label.error.invalidArguments);
+						throw Error(label.error.invalidArguments);
 
 					var obj = this.parentNode,
 					    i, nth, key;
@@ -1420,13 +1420,15 @@
 			 *         afterDataSync   Fires after syncing the data store
 			 *
 			 * @method sync
+			 * @param {Boolean} reindex [Optional] True will reindex the data store
 			 * @return {Object} Data store
 			 */
-			sync : function() {
+			sync : function(reindex) {
 				try {
 					if (this.uri === null || this.uri.isEmpty())
 						throw Error(label.error.invalidArguments);
 
+					reindex  = (reindex === true);
 					var self = this,
 					    obj  = self.parentNode,
 					    guid = utility.guid(),
@@ -1452,6 +1454,7 @@
 							}
 
 							self.batch("set", data, true);
+							if (reindex) self.reindex();
 							obj.fire("afterDataSync", arg);
 						}
 						catch (e) {
@@ -1495,25 +1498,18 @@
 							if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean")))
 								throw Error(label.error.invalidArguments);
 
-							var id   = this.parentNode.id + "DataExpire",
-							    self = this,
-							    uri  = this.uri,
-							    expired;
+							if (this._expires === arg) return;
+							this._expires = arg;
 
-							switch (true) {
-								case arg === null:
-									clearTimeout($.repeating[id]);
-									break;
-								default:
-									$.repeat(function() {
-										expired = cache.expire(uri);
-										if (!expired) {
-											uri.un("expire", "dataSync");
-											self.uri = null;
-											typeof self.setUri !== "function" ? self.uri = uri : self.setUri(uri);
-										}
-									}, this.expires, id);
+							var id      = this.parentNode.id + "DataExpire",
+							    expires = this.expires,
+							    uri     = this.uri;
+
+							if (arg === null) {
+								clearTimeout($.repeating[id]);
+								delete $.repeating[id];
 							}
+							else $.defer(function() { $.repeat(function() { if (!cache.expire(uri)) uri.fire("expire"); }, expires, id) }, expires);
 						}
 						catch (e) {
 							error(e, arguments, this);
@@ -1538,14 +1534,7 @@
 							this._uri = arg;
 
 							if (arg !== null) {
-								this.uri.on("expire", function() {
-									var guid = utility.guid();
-									this.parentNode.on("afterDataSync", function() {
-										this.parentNode.un("afterDataSync", guid);
-										this.reindex();
-									}, guid, this);
-									this.sync();
-								}, "dataSync", this);
+								this.uri.on("expire", function() { this.sync(true); }, "dataSync", this);
 								cache.expire(arg, true);
 								this.sync();
 							}
@@ -2603,7 +2592,7 @@
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
-				if (abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + "] " + o + "." + event);
+				if (abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + event + "] " + o);
 				l = this.list(obj, event).active;
 				for (i in l) { l[i].fn.call(l[i].scope, arg); }
 				abaaso.observer.fired++;
@@ -2820,12 +2809,30 @@
 		 * @param  {Object} obj Object to clone
 		 * @return {Object} Clone of obj
 		 */
-		clone: function(obj) {
+		clone : function(obj) {
 			try {
 				if (typeof obj !== "object")
 					throw Error(label.error.expectedObject);
 
-				var clone = json.decode(json.encode(obj));
+				var clone;
+
+				switch (typeof obj) {
+					case "number":
+						clone = Number(obj);
+						break;
+					case "string":
+						clone = String(obj);
+						break;
+					case "boolean":
+						clone = Boolean(obj);
+						break;
+					case obj instanceof Document:
+						clone = xml.decode(xml.encode(obj));
+						break;
+					default:
+						clone = json.decode(json.encode(obj));
+				}
+
 				if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
 				if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
 				return clone;
@@ -3583,7 +3590,7 @@
 						xml = arg.xml;
 						break;
 					case arg instanceof Document:
-						xml = (new XMLSerializer()).serializeToString(payload);
+						xml = (new XMLSerializer()).serializeToString(arg);
 						break;
 					default:
 						wrap = !(wrap === false);
@@ -3924,7 +3931,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.76"
+		version         : "1.7.77"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
