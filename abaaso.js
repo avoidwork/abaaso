@@ -269,7 +269,9 @@
 			if (typeof cache.items[uri] !== "undefined") {
 				delete cache.items[uri];
 				if (!silent) uri.fire("expire");
+				return true;
 			}
+			else return false;
 		},
 
 		/**
@@ -1493,14 +1495,24 @@
 							if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean")))
 								throw Error(label.error.invalidArguments);
 
+							var id   = this.parentNode.id + "DataExpire",
+							    self = this,
+							    uri  = this.uri,
+							    expired;
+
 							switch (true) {
-								case typeof arg === "number":
-									var uri = this.uri;
-									$.timer[this.parentNode.id + "DataExpires"] = setInterval(function() { cache.expire(uri); }, this.expires);
-									break;
 								case arg === null:
-									clearInterval($.timer[this.parentNode.id + "DataExpires"]);
+									clearTimeout($.repeating[id]);
 									break;
+								default:
+									$.repeat(function() {
+										expired = cache.expire(uri);
+										if (!expired) {
+											uri.un("expire", "dataSync");
+											self.uri = null;
+											typeof self.setUri !== "function" ? self.uri = uri : self.setUri(uri);
+										}
+									}, this.expires, id);
 							}
 						}
 						catch (e) {
@@ -1528,11 +1540,11 @@
 							if (arg !== null) {
 								this.uri.on("expire", function() {
 									var guid = utility.guid();
-									this.sync();
 									this.parentNode.on("afterDataSync", function() {
 										this.parentNode.un("afterDataSync", guid);
 										this.reindex();
 									}, guid, this);
+									this.sync();
 								}, "dataSync", this);
 								cache.expire(arg, true);
 								this.sync();
