@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.75
+ * @version 1.7.76
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -1495,8 +1495,8 @@
 
 							switch (true) {
 								case typeof arg === "number":
-									var self = this;
-									$.timer[this.parentNode.id + "DataExpires"] = setInterval(function() { self.uri.fire("expire"); }, this.expires);
+									var uri = this.uri;
+									$.timer[this.parentNode.id + "DataExpires"] = setInterval(function() { cache.expire(uri); }, this.expires);
 									break;
 								case arg === null:
 									clearInterval($.timer[this.parentNode.id + "DataExpires"]);
@@ -3912,7 +3912,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.75"
+		version         : "1.7.76"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
