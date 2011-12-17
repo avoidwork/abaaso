@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.77
+ * @version 1.7.78
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -1023,7 +1023,7 @@
 			 * @method batch
 			 * @param  {String}  type Type of action to perform
 			 * @param  {Mixed}   data Array of keys or indexes to delete, or Object containing multiple records to set
-			 * @param  {Boolean} sync [Optional] True if called by data.sync
+			 * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
 			 * @return {Object} Data store
 			 */
 			batch : function(type, data, sync) {
@@ -1038,6 +1038,7 @@
 					    i, nth, key;
 
 					obj.fire("beforeDataBatch");
+					if (sync) this.clear(true);
 					if (data instanceof Array) {
 						for (i = 0, nth = data.length; i < nth; i++) {
 							if (type === "set") {
@@ -1081,24 +1082,35 @@
 			 *         afterDataClear   Fires after the data is cleared
 			 *
 			 * @method clear
+			 * @param {Boolean} sync [Optional] Boolean to limit clearing of properties
 			 * @return {Object} Data store
 			 */
-			clear : function() {
+			clear : function(sync) {
+				sync    = (sync === true);
 				var obj = this.parentNode;
-				obj.fire("beforeDataClear");
-				this.callback    = null;
-				this.credentials = null;
-				this.expires     = null;
-				this._expires    = null;
-				this.key         = null;
-				this.keys        = {};
-				this.records     = [];
-				this.source      = null;
-				this.total       = 0;
-				this.views       = {};
-				this.uri         = null;
-				this._uri        = null;
-				obj.fire("afterDataClear");
+
+				if (!sync) {
+					obj.fire("beforeDataClear");
+					this.callback    = null;
+					this.credentials = null;
+					this.expires     = null;
+					this._expires    = null;
+					this.key         = null;
+					this.keys        = {};
+					this.records     = [];
+					this.source      = null;
+					this.total       = 0;
+					this.views       = {};
+					this.uri         = null;
+					this._uri        = null;
+					obj.fire("afterDataClear");
+				}
+				else {
+					this.keys        = {};
+					this.records     = [];
+					this.total       = 0;
+					this.views       = {};
+				}
 				return this;
 			},
 
@@ -3928,7 +3940,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.77"
+		version         : "1.7.78"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
