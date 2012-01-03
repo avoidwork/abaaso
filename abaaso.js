@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.79
+ * @version 1.7.8
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -333,9 +333,9 @@
 	 * @namespace abaaso
 	 */
 	var client = {
-		android : (function() { return /android/i.test(navigator.userAgent); })(),
-		blackberry : (function() { return /blackberry/i.test(navigator.userAgent); })(),
-		chrome  : (function() { return /chrome/i.test(navigator.userAgent); })(),
+		android : (function() { return (typeof navigator !== "undefined") && /android/i.test(navigator.userAgent); })(),
+		blackberry : (function() { return (typeof navigator !== "undefined") && /blackberry/i.test(navigator.userAgent); })(),
+		chrome  : (function() { return (typeof navigator !== "undefined") && /chrome/i.test(navigator.userAgent); })(),
 		css3    : (function() {
 			switch (true) {
 				case this.mobile:
@@ -353,18 +353,19 @@
 			}
 			}),
 		expire  : 0,
-		firefox : (function() { return /firefox/i.test(navigator.userAgent); })(),
-		ie      : (function() { return /msie/i.test(navigator.userAgent); })(),
-		ios     : (function() { return /ipad|iphone/i.test(navigator.userAgent); })(),
-		linux   : (function() { return /linux|bsd|unix/i.test(navigator.userAgent); })(),
-		mobile  : (function() { return /android|blackberry|ipad|iphone|meego|webos/i.test(navigator.userAgent); })(),
-		playbook: (function() { return /playbook/i.test(navigator.userAgent); })(),
-		opera   : (function() { return /opera/i.test(navigator.userAgent); })(),
-		osx     : (function() { return /macintosh/i.test(navigator.userAgent); })(),
-		safari  : (function() { return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function() { return /android|ipad|playbook|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); }),
-		webos   : (function() { return /webos/i.test(navigator.userAgent); })(),
-		windows : (function() { return /windows/i.test(navigator.userAgent); })(),
+		firefox : (function() { return (typeof navigator !== "undefined") && /firefox/i.test(navigator.userAgent); })(),
+		ie      : (function() { return (typeof navigator !== "undefined") && /msie/i.test(navigator.userAgent); })(),
+		ios     : (function() { return (typeof navigator !== "undefined") && /ipad|iphone/i.test(navigator.userAgent); })(),
+		linux   : (function() { return (typeof navigator !== "undefined") && /linux|bsd|unix/i.test(navigator.userAgent); })(),
+		mobile  : (function() { return (typeof navigator !== "undefined") && /android|blackberry|ipad|iphone|meego|webos/i.test(navigator.userAgent); })(),
+		playbook: (function() { return (typeof navigator !== "undefined") && /playbook/i.test(navigator.userAgent); })(),
+		opera   : (function() { return (typeof navigator !== "undefined") && /opera/i.test(navigator.userAgent); })(),
+		osx     : (function() { return (typeof navigator !== "undefined") && /macintosh/i.test(navigator.userAgent); })(),
+		safari  : (function() { return (typeof navigator !== "undefined") && /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
+		server  : (function() { return (typeof navigator === "undefined"); })(),
+		tablet  : (function() { return (typeof navigator !== "undefined") && /android|ipad|playbook|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); }),
+		webos   : (function() { return (typeof navigator !== "undefined") && /webos/i.test(navigator.userAgent); })(),
+		windows : (function() { return (typeof navigator !== "undefined") && /windows/i.test(navigator.userAgent); })(),
 		version : (function() {
 			var version = 0;
 			switch (true) {
@@ -384,7 +385,7 @@
 					version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "");
 					break;
 				default:
-					version = navigator.appVersion;
+					version = (typeof navigator !== "undefined") ? navigator.appVersion : 0;
 			}
 			version      = !isNaN(parseInt(version)) ? parseInt(version) : 0;
 			this.version = version;
@@ -890,8 +891,13 @@
 		 * @return {Object} Describes the View {x: ?, y: ?}
 		 */
 		size : function() {
-			var x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth,
+			var x = 0,
+			    y = 0;
+
+			if (typeof document !== "undefined") {
+				x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth;
 			    y = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
+			}
 
 			return {x: x, y: y};
 		}
@@ -3776,6 +3782,9 @@
 			delete $.init;
 
 			switch (true) {
+				case client.server:
+					abaaso.init();
+					break;
 				case typeof document.addEventListener === "function":
 					document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
 					break;
@@ -3833,14 +3842,16 @@
 
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
-			utility.proto(Element, "element");
+			if (typeof Element !== "undefined") utility.proto(Element, "element");
 			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
 
 			// Setting events & garbage collection
-			$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
-			$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
+			if (typeof window !== "undefined") {
+				$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
+				$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
+			}
 
 			// Setting up cache expiration
 			var expiration = function() {
@@ -3886,17 +3897,22 @@
 
 			$.fire("init").un("init");
 
-			// Setting render event
-			$.timer.render = setInterval(function() {
-				if (/loaded|complete/.test(document.readyState)) {
-					clearInterval($.timer.render);
-					delete $.timer.render;
-					$.fire("render").un("render");
-				}
-			}, 10);
-
 			$.ready = abaaso.ready = true;
-			return $.fire("ready").un("ready");
+			$.fire("ready").un("ready");
+
+			// Setting render event
+			if (typeof document !== "undefined") {
+				$.timer.render = setInterval(function() {
+					if (/loaded|complete/.test(document.readyState)) {
+						clearInterval($.timer.render);
+						delete $.timer.render;
+						$.fire("render").un("render");
+					}
+				}, 10);
+			}
+			else $.fire("render").un("render");
+
+			return abaaso;
 		},
 		jsonp           : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 		listeners       : function(event) {
@@ -3940,7 +3956,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.79"
+		version         : "1.7.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
