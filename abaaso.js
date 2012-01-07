@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.8
+ * @version 1.7.81
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -894,7 +894,7 @@
 			var x = 0,
 			    y = 0;
 
-			if (typeof document !== "undefined") {
+			if (!client.server) {
 				x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth;
 			    y = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
 			}
@@ -943,7 +943,7 @@
 			var result = {},
 			    item, items;
 
-			if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
+			if (!client.server && typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
 				items = document.cookie.split(';');
 				items.each(function(i) {
 					item = i.split("=");
@@ -2844,6 +2844,9 @@
 					case obj instanceof Document:
 						clone = xml.decode(xml.encode(obj));
 						break;
+					case obj instanceof Array:
+						clone = [].concat(obj);
+						break;
 					default:
 						clone = json.decode(json.encode(obj));
 				}
@@ -3126,6 +3129,7 @@
 			    methods = {
 				array   : {addClass : function(arg) { return this.each(function(i) { i.addClass(arg); }); },
 				           contains : function(arg) { return array.contains(this, arg); },
+				           clone    : function() { return utility.clone(this); },
 				           css      : function(key, value) { return this.each(function(i) { i.css(key, value); }); },
 				           diff     : function(arg) { return array.diff(this, arg); },
 				           each     : function(arg) { this.forEach(arg); return this; },
@@ -3848,7 +3852,7 @@
 			utility.proto(String, "string");
 
 			// Setting events & garbage collection
-			if (typeof window !== "undefined") {
+			if (!client.server) {
 				$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
 				$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
 			}
@@ -3901,7 +3905,7 @@
 			$.fire("ready").un("ready");
 
 			// Setting render event
-			if (typeof document !== "undefined") {
+			if (!client.server) {
 				$.timer.render = setInterval(function() {
 					if (/loaded|complete/.test(document.readyState)) {
 						clearInterval($.timer.render);
@@ -3956,7 +3960,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.8"
+		version         : "1.7.81"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
