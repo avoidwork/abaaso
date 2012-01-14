@@ -1728,7 +1728,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeClear");
@@ -1763,7 +1763,7 @@
 		 * @param  {String} type   Type of Element to create
 		 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 		 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
-		 * @param  {Object} pos    [Optional] Object describing how to add the new Element, e.g. {before: referenceElement}
+		 * @param  {Mixed} pos     [Optional] "first" or Object describing how to add the new Element, e.g. {before: referenceElement}
 		 * @return {Object} Element that was created or undefined
 		 */
 		create : function (type, args, target, pos) {
@@ -1802,7 +1802,11 @@
 				if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
 				switch (true) {
 					case typeof pos === "undefined":
+					case pos === "last":
 						target.appendChild(obj);
+						break;
+					case pos === "first":
+						target.prependChild(obj);
 						break;
 					case typeof pos.after !== "undefined":
 						target.insertBefore(obj, pos.after.nextSibling);
@@ -1861,7 +1865,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				$.fire("beforeDestroy", obj);
@@ -1897,7 +1901,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				if (typeof obj.disabled === "boolean" && !obj.disabled) {
@@ -1933,7 +1937,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				if (typeof obj.disabled === "boolean" && obj.disabled) {
@@ -1965,7 +1969,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeHide");
@@ -1997,7 +2001,7 @@
 			try {
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
@@ -2013,16 +2017,18 @@
 		 *
 		 * @method position
 		 * @param  {Mixed} obj Element or $ query
-		 * @return {Array} Array containing the render position of the element
+		 * @return {Object} Object {left: n, top: n}
 		 */
 		position : function (obj) {
 			try {
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
-				var left = top = null;
+				var left, top;
+
+				left = top = 0;
 
 				if (obj.offsetParent) {
 					left = obj.offsetLeft;
@@ -2034,7 +2040,29 @@
 					}
 				}
 
-				return [left, top];
+				return {left: left, top: top};
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Prepends an Element to an Element
+		 * 
+		 * @param  {Object} obj   Target Element
+		 * @param  {Object} child Child Element
+		 * @return {Object} Target Element
+		 */
+		prependChild : function (obj, child) {
+			try {
+				obj = utility.object(obj);
+
+				if (!obj instanceof Element || !child instanceof Element)
+					throw Error(label.error.invalidArguments);
+				
+				return obj.childNodes.length === 0 ? obj.appendChild(child) : obj.insertBefore(child, obj.childNodes[0]);
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -2058,7 +2086,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeShow");
@@ -2095,7 +2123,7 @@
 
 				obj = utility.object(obj);
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				/**
@@ -2137,7 +2165,7 @@
 
 				if (obj instanceof Array) return obj.each(function (i) { el.update(i, args); });
 
-				if (obj instanceof Element !== true)
+				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeUpdate");
@@ -3129,21 +3157,37 @@
 			    methods = {
 				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
 				           contains : function (arg) { return array.contains(this, arg); },
+				           create   : function (type, args, position) { return this.each(function (i) { i.create(type, args, position); }); },
 				           clone    : function () { return utility.clone(this); },
 				           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
 				           diff     : function (arg) { return array.diff(this, arg); },
+				           disable  : function () { return this.each(function (i) { i.disable(); }); },
 				           each     : function (arg) { this.forEach(arg); return this; },
+				           enable   : function () { return this.each(function (i) { i.enable(); }); },
 				           first    : function () { return array.first(this); },
 				           hide     : function () { return this.each(function (i){ i.hide(); }); },
 				           index    : function (arg) { return array.index(this, arg); },
 				           indexed  : function () { return array.indexed(this); },
 				           intersect: function (arg) { return array.intersect(this, arg); },
+				           isAlphaNum: function (fn) { var a = [], r = null; this.each(function (i) { r = i.isAlphaNum(); if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isBoolean: function (fn) { var a = [], r = null; this.each(function (i) { r = i.isBoolean();   if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isDate   : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isDate();      if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isDomain : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isDomain();    if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isEmail  : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isEmail();     if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isIP     : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isIP();        if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isInt    : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isInt();       if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isNumber : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isNumber();    if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isPhone  : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isPhone();     if (typeof fn === "function") fn(r); a.push(r); }); return a; },
+				           isString : function (fn) { var a = [], r = null; this.each(function (i) { r = i.isAlphaNum();  if (typeof fn === "function") fn(r); a.push(r); }); return a; },
 				           keys     : function () { return array.keys(this); },
 				           last     : function (arg) { return array.last(this); },
+				           loading  : function () { return this.each(function (i) { i.loading(); }); },
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
+				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 				           remove   : function (arg) { return array.remove(this, arg); },
-				           removeClass : function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
+				           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 				           show     : function () { return this.each(function (i){ i.show(); }); },
+				           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
 				           text     : function (arg) {
 				           		return this.each(function (node) {
 				           			if (typeof node !== "object") node = utility.object(node);
@@ -3162,9 +3206,9 @@
 				           		this.genId();
 				           		return el.klass(this, arg, true);
 				           },
-				           create   : function (type, args) {
+				           create   : function (type, args, position) {
 				           		this.genId();
-				           		return el.create(type, args, this);
+				           		return el.create(type, args, this, position);
 				           },
 				           css       : function (key, value) {
 				           		var i;
@@ -3239,6 +3283,10 @@
 				           on       : function (event, listener, id, scope, state) {
 				           		this.genId();
 				           		return $.on.call(this, event, listener, id, scope, state);
+				           },
+				           prependChild: function (child) {
+				           		this.genId();
+				           		return el.prependChild(this, child);
 				           },
 				           position : function () {
 				           		this.genId();
