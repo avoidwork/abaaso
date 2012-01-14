@@ -2803,7 +2803,7 @@
 					if (origin.hasOwnProperty(b)) {
 						switch (true) {
 							case typeof origin[b] === "function":
-								obj[b] = (function () { return origin[b].apply(this, arguments); });
+								obj[b] = origin[b].bind(obj[b]);
 								break;
 							case !origin[b] instanceof Array && origin[b] instanceof Object:
 								if (typeof obj[b] === "undefined") obj[b] = {};
@@ -2874,7 +2874,7 @@
 		define : function (args, value, obj) {
 			args = args.split(".");
 			obj  = obj || this;
-			if (obj === $) obj = abaaso;
+			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 
 			var i = null,
 			    l = args.length,
@@ -3383,7 +3383,14 @@
 		 * @return {Array} Array of parameters
 		 */
 		reflect : function (arg) {
-			return arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1].explode();
+			switch (true) {
+				case typeof arg === "undefined":
+					arg = this;
+				case typeof arg === "undefined":
+					arg = $;
+			}
+			arg = arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1];
+			return arg !== "" ? arg.explode() : [];
 		},
 
 		/**
@@ -3789,12 +3796,7 @@
 				};
 			}
 
-			// Binding helper & namespace to $
-			$ = abaaso.$.bind($);
-			abaaso.alias($, abaaso);
-			delete $.$;
-			delete $.bootstrap;
-			delete $.init;
+			abaaso.state._current = abaaso.state.current = "initial";
 
 			switch (true) {
 				case client.server:
@@ -3827,10 +3829,11 @@
 		expire          : cache.clean,
 		expires         : 120000,
 		extend          : utility.extend,
-		fire            : function () {
-			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
-				arg   = typeof arguments[1] === "undefined" ? undefined : arguments[1],
-				obj   = this === $ ? abaaso : this;
+		fire            : function (obj, event, arg) {
+			var all      = typeof arguments[2] !== "undefined",
+			    obj      = all ? arguments[0] : (typeof this === "undefined" || this === $ ? abaaso : this),
+			    event    = all ? arguments[1] : arguments[0],
+			    arg      = all ? arguments[2] : arguments[1];
 
 			return observer.fire.call(observer, obj, event, arg);
 		},
@@ -3845,6 +3848,19 @@
 			delete abaaso.init;
 			delete abaaso.bootstrap;
 
+			// Binding helper & namespace to $
+			$ = abaaso.$.bind($);
+			utility.alias($, abaaso);
+			delete $.$;
+
+			// Hooking abaaso into native Objects
+			utility.proto(Array, "array");
+			if (typeof Element !== "undefined") utility.proto(Element, "element");
+			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
+			utility.proto(Function, "function");
+			utility.proto(Number, "number");
+			utility.proto(String, "string");
+
 			// Creating a singleton
 			abaaso.constructor = abaaso;
 
@@ -3857,14 +3873,6 @@
 			$.client.size    = client.size();
 			$.client.tablet  = client.tablet();
 			$.state.current  = abaaso.state._current;
-
-			// Hooking abaaso into native Objects
-			utility.proto(Array, "array");
-			if (typeof Element !== "undefined") utility.proto(Element, "element");
-			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
-			utility.proto(Function, "function");
-			utility.proto(Number, "number");
-			utility.proto(String, "string");
 
 			// Setting events & garbage collection
 			if (!client.server) {
@@ -3915,7 +3923,6 @@
 			}
 
 			$.fire("init").un("init");
-
 			$.ready = abaaso.ready = true;
 			$.fire("ready").un("ready");
 
@@ -3936,21 +3943,22 @@
 		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 		listeners       : function (event) {
 			var obj = this;
-			if (obj === $) obj = abaaso;
+
+			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
 		},
 		module          : utility.module,
-		on              : function () {
+		on              : function (obj, event, listener, id, scope, state) {
 			var all      = typeof arguments[2] === "function",
 			    obj      = all ? arguments[0] : this,
-				event    = all ? arguments[1] : arguments[0],
-				listener = all ? arguments[2] : arguments[1],
-				id       = all ? arguments[3] : arguments[2],
-				scope    = all ? arguments[4] : arguments[3],
-				state    = all ? arguments[5] : arguments[4];
-				if (obj === $) obj = abaaso;
-				if (typeof scope === "undefined") scope = obj;
+			    event    = all ? arguments[1] : arguments[0],
+			    listener = all ? arguments[2] : arguments[1],
+			    id       = all ? arguments[3] : arguments[2],
+			    scope    = all ? arguments[4] : arguments[3],
+			    state    = all ? arguments[5] : arguments[4];
 
+			if (typeof obj === "undefined" || obj === $) obj = abaaso;
+			if (typeof scope === "undefined") scope = obj;
 			return observer.add.call(observer, obj, event, listener, id, scope, state);
 		},
 		permissions     : client.permissions,
@@ -3965,14 +3973,14 @@
 		store           : function (arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
 		tpl             : utility.tpl,
-		un              : function () {
+		un              : function (obj, event, id, state) {
 			var all   = typeof arguments[2] !== "undefined",
 			    obj   = all ? arguments[0] : this,
 			    event = all ? arguments[1] : arguments[0],
 			    id    = all ? arguments[2] : arguments[1],
 			    state = all ? arguments[3] : arguments[2];
-			    if (obj === $) obj = abaaso;
-
+			
+			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
