@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.7.81
+ * @version 1.8
  */
  var $ = $ || null, abaaso = abaaso || (function() {
 	"use strict";
@@ -3273,10 +3273,11 @@
 				           		return el.update(this, args);
 				           },
 				           validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
-				number  : {diff     : function(arg) { return $.number.diff.call(this, arg); },
-				           format   : function(delimiter, every) { return $.number.format(this, delimiter, every); },
-				           isEven   : function() { return $.number.even(this); },
-				           isOdd    : function() { return $.number.odd(this); },
+				"function": {reflect: function() { return utility.reflect(this); }},
+				number  : {diff     : function(arg) { return number.diff.call(this, arg); },
+				           format   : function(delimiter, every) { return number.format(this, delimiter, every); },
+				           isEven   : function() { return number.even(this); },
+				           isOdd    : function() { return number.odd(this); },
 				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           un       : function(event, id, state) { return $.un.call(this, event, id, state); }},
 				shared  : {clear    : function() {
@@ -3330,7 +3331,7 @@
 
 			// Applying the methods
 			for (i in methods[type])  { obj.prototype[i] = methods[type][i];  }
-			for (i in methods.shared) { obj.prototype[i] = methods.shared[i]; }
+			if (type !== "function") for (i in methods.shared) { obj.prototype[i] = methods.shared[i]; }
 			return obj;
 		},
 
@@ -3373,6 +3374,16 @@
 				});
 			}
 			return obj;
+		},
+
+		/**
+		 * Returns an Array of parameters of a function
+		 * 
+		 * @param  {Function} arg Function to reflect
+		 * @return {Array} Array of parameters
+		 */
+		reflect : function (arg) {
+			return arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1].explode(",");
 		},
 
 		/**
@@ -3848,6 +3859,7 @@
 			utility.proto(Array, "array");
 			if (typeof Element !== "undefined") utility.proto(Element, "element");
 			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
+			utility.proto(Function, "function");
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
 
@@ -3944,6 +3956,7 @@
 		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 		queryString     : utility.queryString,
 		ready           : false,
+		reflect         : utility.reflect,
 		repeat          : utility.repeat,
 		repeating       : {},
 		store           : function(arg, args) { return data.register.call(data, arg, args); },
@@ -3960,7 +3973,7 @@
 			return observer.remove.call(observer, obj, event, id, state);
 		},
 		update          : el.update,
-		version         : "1.7.81"
+		version         : "1.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
