@@ -44,7 +44,7 @@
  * @module abaaso
  * @version 1.8
  */
- var $ = $ || null, abaaso = abaaso || (function() {
+ var $ = $ || null, abaaso = abaaso || (function () {
 	"use strict";
 
 	/**
@@ -88,7 +88,7 @@
 		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
 		contains : function(obj, arg) {
-			if (arg.indexOf(",") > -1 ) arg = arg.explode(",");
+			if (arg.indexOf(",") > -1 ) arg = arg.explode();
 			if (arg instanceof Array) {
 				var indexes = [],
 				    nth     = args.length,
@@ -512,7 +512,7 @@
 
 				o.expires    = expires;
 				o.headers    = items;
-				o.permission = client.bit(allow !== null ? allow.explode(",") : [type]);
+				o.permission = client.bit(allow !== null ? allow.explode() : [type]);
 
 				if (type !== "head") {
 					cache.set(uri, "expires", o.expires);
@@ -1195,7 +1195,7 @@
 						throw Error(label.error.invalidArguments);
 
 					var h      = [],
-					    n      = typeof needle === "string" ? needle.explode(",") : needle,
+					    n      = typeof needle === "string" ? needle.explode() : needle,
 					    result = [],
 					    nth,
 						nth2   = n.length,
@@ -1208,7 +1208,7 @@
 					r = this.records.first();
 					switch (true) {
 						case typeof haystack === "string":
-							h = haystack.explode(",")
+							h = haystack.explode()
 							i = h.length;
 							while (i--) { if (!r.data.hasOwnProperty(h[i])) throw Error(label.error.invalidArguments); }
 							break;
@@ -2755,7 +2755,7 @@
 			nodelist = (nodelist === true);
 
 			// Recursive processing, ends up below
-			if (arg.indexOf(",") > -1) arg = arg.explode(",");
+			if (arg.indexOf(",") > -1) arg = arg.explode();
 			if (arg instanceof Array) {
 				var result = [];
 				arg.each(function(i) { result.push($(i, nodelist)); });
@@ -3298,7 +3298,7 @@
 				string  : {allows   : function(arg) { return $.allows(this, arg); },
 				           capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
 				           del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
-				           explode  : function(arg) { return this.split(new RegExp("\\s*" + arg + "\\s*")); },
+				           explode  : function(arg) { if (typeof arg === "undefined" || arg.toString() === "") arg = ","; return this.split(new RegExp("\\s*" + arg + "\\s*")); },
 				           get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
 				           isAlphaNum: function() { return validate.test({alphanum: this}).pass; },
 				           isBoolean: function() { return validate.test({"boolean": this}).pass; },
@@ -3383,7 +3383,7 @@
 		 * @return {Array} Array of parameters
 		 */
 		reflect : function (arg) {
-			return arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1].explode(",");
+			return arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1].explode();
 		},
 
 		/**
@@ -3844,6 +3844,9 @@
 			// Stopping multiple executions
 			delete abaaso.init;
 			delete abaaso.bootstrap;
+
+			// Creating a singleton
+			abaaso.constructor = abaaso;
 
 			// Creating error log
 			$.error.log = abaaso.error.log = [];
