@@ -1763,7 +1763,7 @@
 		 * @param  {String} type   Type of Element to create
 		 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 		 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
-		 * @param  {Mixed} pos     [Optional] "first" or Object describing how to add the new Element, e.g. {before: referenceElement}
+		 * @param  {Mixed} pos     [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
 		 * @return {Object} Element that was created or undefined
 		 */
 		create : function (type, args, target, pos) {
