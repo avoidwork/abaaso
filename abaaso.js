@@ -3853,6 +3853,12 @@
 			utility.alias($, abaaso);
 			delete $.$;
 
+			// Unbinding observer methods to maintain scope
+			$.fire           = abaaso.fire;
+			$.on             = abaaso.on;
+			$.un             = abaaso.un;
+			$.listeners      = abaaso.listeners;
+
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
 			if (typeof Element !== "undefined") utility.proto(Element, "element");
