@@ -1568,7 +1568,7 @@
 			obj = utility.object(obj);
 			$.genId(obj);
 
-			// Hooking in the observer
+			// Hooking observer if not present in prototype chain
 			switch (true) {
 				case typeof obj.fire === "undefined":
 					obj.fire = function (event, arg) { return $.fire.call(this, event, arg); };
