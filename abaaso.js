@@ -62,7 +62,7 @@
 		 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
 		 * @return {Array}   Object as an Array
 		 */
-		cast : function(obj, key) {
+		cast : function (obj, key) {
 			if ((!client.safari && typeof obj !== "object") || (client.safari && typeof obj !== "function"))
 				throw Error(label.error.expectedObject);
 
@@ -87,7 +87,7 @@
 		 * @param  {String} arg  Comma delimited string of search values
 		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
-		contains : function(obj, arg) {
+		contains : function (obj, arg) {
 			if (arg.indexOf(",") > -1 ) arg = arg.explode();
 			if (arg instanceof Array) {
 				var indexes = [],
@@ -108,11 +108,11 @@
 		 * @param  {Array} array2 Comparison Array
 		 * @return {Array} Array of the differences
 		 */
-		diff : function(array1, array2) {
+		diff : function (array1, array2) {
 			var a = array1.length > array2.length ? array1 : array2,
 			    b = a === array1 ? array2 : array1;
 
-			return a.filter(function(key) { if (b.indexOf(key) === -1) return true; });
+			return a.filter(function (key) { if (b.indexOf(key) === -1) return true; });
 		},
 
 		/**
@@ -122,7 +122,7 @@
 		 * @param  {Array} obj The array
 		 * @return {Mixed} The first node of the array
 		 */
-		first : function(obj) {
+		first : function (obj) {
 			return obj[0];
 		},
 
@@ -134,7 +134,7 @@
 		 * @param  {Mixed} arg Value to find index of
 		 * @return {Integer} The position of arg in instance
 		 */
-		index : function(obj, arg) {
+		index : function (obj, arg) {
 			var i = obj.length;
 
 			while (i--) { if (obj[i] === arg) return i; }
@@ -148,7 +148,7 @@
 		 * @param  {Array} obj Array to index
 		 * @return {Array} Indexed Array
 		 */
-		indexed : function(obj) {
+		indexed : function (obj) {
 			var o, indexed = [];
 
 			for (o in obj) { if (obj.hasOwnProperty(o)) indexed.push(!(obj[o] instanceof Array) ? obj[o] : obj[o].indexed()); }
@@ -163,11 +163,11 @@
 		 * @param  {Array} array2 Comparison Array
 		 * @return {Array} Array of the intersections
 		 */
-		intersect : function(array1, array2) {
+		intersect : function (array1, array2) {
 			var a = array1.length > array2.length ? array1 : array2,
 			    b = a === array1 ? array2 : array1;
 
-			return a.filter(function(key) { if (b.indexOf(key) > -1) return true; });
+			return a.filter(function (key) { if (b.indexOf(key) > -1) return true; });
 		},
 
 		/**
@@ -177,7 +177,7 @@
 		 * @param  {Array} obj Array to extract keys from
 		 * @return {Array} Array of the keys
 		 */
-		keys : function(obj) {
+		keys : function (obj) {
 			var i, keys = [];
 
 			for (i in obj) { if (obj.hasOwnProperty(i) && isNaN(i)) keys.push(i); }
@@ -191,7 +191,7 @@
 		 * @param  {Array} obj Array
 		 * @return {Mixed} Last node of Array
 		 */
-		last : function(obj) {
+		last : function (obj) {
 			var nth = obj.length;
 			return nth > 1 ? obj[(nth - 1)] : obj.first();
 		},
@@ -205,7 +205,7 @@
 		 * @param  {Integer} end   [Optional] Ending index
 		 * @return {Array} Modified Array
 		 */
-		remove : function(obj, start, end) {
+		remove : function (obj, start, end) {
 			if (typeof start === "string") {
 				start = obj.index(start);
 				if (start === -1) return obj;
@@ -227,7 +227,7 @@
 		 * @param  {Array} obj Array to find the length of
 		 * @return {Integer} Number of keys in Array
 		 */
-		total : function(obj) {
+		total : function (obj) {
 			return obj.indexed().length;
 		}
 	};
@@ -249,7 +249,7 @@
 		 * @method clean
 		 * @return {Undefined} undefined
 		 */
-		clean : function() {
+		clean : function () {
 			var i;
 			for (i in cache.items) { if (cache.expired(i)) cache.expire(i); }
 		},
@@ -264,7 +264,7 @@
 		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 		 * @return {Undefined} undefined
 		 */
-		expire : function(uri, silent) {
+		expire : function (uri, silent) {
 			silent = (silent === true);
 			if (typeof cache.items[uri] !== "undefined") {
 				delete cache.items[uri];
@@ -281,7 +281,7 @@
 		 * @param  {Object} uri Cached URI object
 		 * @return {Boolean} True if the URI has expired
 		 */
-		expired : function(uri) {
+		expired : function (uri) {
 			var item = cache.items[uri];
 			return typeof item !== "undefined" && typeof item.expires !== "undefined" && item.expires < new Date();
 		},
@@ -295,7 +295,7 @@
 		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 		 * @return {Mixed} URI Object {headers, response} or False
 		 */
-		get : function(uri, expire) {
+		get : function (uri, expire) {
 			expire = (expire !== false);
 			if (typeof cache.items[uri] === "undefined") return false;
 			if (expire && cache.expired(uri)) {
@@ -314,7 +314,7 @@
 		 * @param  {Mixed} value     Value to set
 		 * @return {Mixed} URI Object {headers, response} or undefined
 		 */
-		set : function(uri, property, value) {
+		set : function (uri, property, value) {
 			if (typeof cache.items[uri] === "undefined") {
 				cache.items[uri] = {};
 				cache.items[uri].permission = 0;
@@ -333,10 +333,10 @@
 	 * @namespace abaaso
 	 */
 	var client = {
-		android : (function() { return (typeof navigator !== "undefined") && /android/i.test(navigator.userAgent); })(),
-		blackberry : (function() { return (typeof navigator !== "undefined") && /blackberry/i.test(navigator.userAgent); })(),
-		chrome  : (function() { return (typeof navigator !== "undefined") && /chrome/i.test(navigator.userAgent); })(),
-		css3    : (function() {
+		android : (function () { return (typeof navigator !== "undefined") && /android/i.test(navigator.userAgent); })(),
+		blackberry : (function () { return (typeof navigator !== "undefined") && /blackberry/i.test(navigator.userAgent); })(),
+		chrome  : (function () { return (typeof navigator !== "undefined") && /chrome/i.test(navigator.userAgent); })(),
+		css3    : (function () {
 			switch (true) {
 				case this.mobile:
 				case this.tablet:
@@ -353,20 +353,20 @@
 			}
 			}),
 		expire  : 0,
-		firefox : (function() { return (typeof navigator !== "undefined") && /firefox/i.test(navigator.userAgent); })(),
-		ie      : (function() { return (typeof navigator !== "undefined") && /msie/i.test(navigator.userAgent); })(),
-		ios     : (function() { return (typeof navigator !== "undefined") && /ipad|iphone/i.test(navigator.userAgent); })(),
-		linux   : (function() { return (typeof navigator !== "undefined") && /linux|bsd|unix/i.test(navigator.userAgent); })(),
-		mobile  : (function() { return (typeof navigator !== "undefined") && /android|blackberry|ipad|iphone|meego|webos/i.test(navigator.userAgent); })(),
-		playbook: (function() { return (typeof navigator !== "undefined") && /playbook/i.test(navigator.userAgent); })(),
-		opera   : (function() { return (typeof navigator !== "undefined") && /opera/i.test(navigator.userAgent); })(),
-		osx     : (function() { return (typeof navigator !== "undefined") && /macintosh/i.test(navigator.userAgent); })(),
-		safari  : (function() { return (typeof navigator !== "undefined") && /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		server  : (function() { return (typeof navigator === "undefined"); })(),
-		tablet  : (function() { return (typeof navigator !== "undefined") && /android|ipad|playbook|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); }),
-		webos   : (function() { return (typeof navigator !== "undefined") && /webos/i.test(navigator.userAgent); })(),
-		windows : (function() { return (typeof navigator !== "undefined") && /windows/i.test(navigator.userAgent); })(),
-		version : (function() {
+		firefox : (function () { return (typeof navigator !== "undefined") && /firefox/i.test(navigator.userAgent); })(),
+		ie      : (function () { return (typeof navigator !== "undefined") && /msie/i.test(navigator.userAgent); })(),
+		ios     : (function () { return (typeof navigator !== "undefined") && /ipad|iphone/i.test(navigator.userAgent); })(),
+		linux   : (function () { return (typeof navigator !== "undefined") && /linux|bsd|unix/i.test(navigator.userAgent); })(),
+		mobile  : (function () { return (typeof navigator !== "undefined") && /android|blackberry|ipad|iphone|meego|webos/i.test(navigator.userAgent); })(),
+		playbook: (function () { return (typeof navigator !== "undefined") && /playbook/i.test(navigator.userAgent); })(),
+		opera   : (function () { return (typeof navigator !== "undefined") && /opera/i.test(navigator.userAgent); })(),
+		osx     : (function () { return (typeof navigator !== "undefined") && /macintosh/i.test(navigator.userAgent); })(),
+		safari  : (function () { return (typeof navigator !== "undefined") && /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
+		server  : (function () { return (typeof navigator === "undefined"); })(),
+		tablet  : (function () { return (typeof navigator !== "undefined") && /android|ipad|playbook|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); }),
+		webos   : (function () { return (typeof navigator !== "undefined") && /webos/i.test(navigator.userAgent); })(),
+		windows : (function () { return (typeof navigator !== "undefined") && /windows/i.test(navigator.userAgent); })(),
+		version : (function () {
 			var version = 0;
 			switch (true) {
 				case this.chrome:
@@ -400,7 +400,7 @@
 		 * @param  {String} command Command to query for
 		 * @return {Boolean} True if the command is allowed
 		 */
-		allows : function(uri, command) {
+		allows : function (uri, command) {
 			try {
 				if (uri.isEmpty() || command.isEmpty())
 					throw Error(label.error.invalidArguments);
@@ -447,10 +447,10 @@
 		 * @return {Integer} To be set as a bit
 		 * @private
 		 */
-		bit : function(args) {
+		bit : function (args) {
 			var result = 0;
 
-			args.each(function(a) {
+			args.each(function (a) {
 				switch (a.toLowerCase()) {
 					case "get":
 						result |= 4;
@@ -477,7 +477,7 @@
 		 * @return {Object} Cached URI representation
 		 * @private
 		 */
-		headers : function(xhr, uri, type) {
+		headers : function (xhr, uri, type) {
 			try {
 				var headers = String(xhr.getAllResponseHeaders()).split("\n"),
 				    items   = {},
@@ -486,7 +486,7 @@
 				    expires = new Date(),
 				    header, value;
 
-				headers.each(function(h) {
+				headers.each(function (h) {
 					if (!h.isEmpty()) {
 						header        = h.toString();
 						value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
@@ -541,7 +541,7 @@
 				result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1}};
 
 			if (bit & 1) result.allows.push("DELETE");
-			if (bit & 2) (function() { result.allows.push("PUT"); result.allows.push("PUT"); })();
+			if (bit & 2) (function () { result.allows.push("PUT"); result.allows.push("PUT"); })();
 			if (bit & 4) result.allows.push("GET");
 			return result;
 		},
@@ -561,7 +561,7 @@
 		 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request (CORS)
 		 * @return {String} URI to query
 		 */
-		jsonp : function(uri, success, failure, args) {
+		jsonp : function (uri, success, failure, args) {
 			var curi = new String(uri).toString(),
 			    guid = utility.guid(),
 			    callback, cbid, s;
@@ -582,14 +582,14 @@
 
 			curi = curi.replace(callback+"=?", "");
 
-			curi.on("failedGet", function() {
+			curi.on("failedGet", function () {
 				this.un("failedGet", guid)
-				    .on("afterJSONP", function(arg) {
+				    .on("afterJSONP", function (arg) {
 				    	this.un("afterJSONP", guid)
 				    	    .un("failedJSONP", guid);
 				    	if (typeof success === "function") success(arg);
 				    }, guid)
-				    .on("failedJSONP", function() {
+				    .on("failedJSONP", function () {
 				    	this.un("afterJSONP", guid)
 				    	    .un("failedJSONP", guid);
 				    	if (typeof failure === "function") failure();
@@ -600,7 +600,7 @@
 
 				uri = uri.replace(callback + "=?", callback + "=abaaso.callback." + cbid);
 
-				abaaso.callback[cbid] = function(arg) {
+				abaaso.callback[cbid] = function (arg) {
 					$.destroy(s);
 					clearTimeout(abaaso.timer[cbid]);
 					delete abaaso.timer[cbid];
@@ -609,7 +609,7 @@
 				};
 
 				s = el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
-				abaaso.timer[cbid] = setTimeout(function() { curi.fire("failedJSONP"); }, 30000);
+				abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
 			switch (true) {
@@ -643,7 +643,7 @@
 		 * @return {String} URI to query
 		 * @private
 		 */
-		request : function(uri, type, success, failure, args) {
+		request : function (uri, type, success, failure, args) {
 			try {
 				if (/post|put/i.test(type) && typeof args === "undefined")
 					throw Error(label.error.invalidArguments);
@@ -659,33 +659,33 @@
 				    guid    = utility.guid(),
 				    i, timer, fail;
 
-				timer = function() {
+				timer = function () {
 					clearTimeout(abaaso.timer[typed + "-" + uri]);
 					delete abaaso.timer[typed + "-" + uri];
 					uri.un("received" + typed, guid).un("timeout"  + typed, guid);
 				};
 
-				fail = function() {
+				fail = function () {
 					uri.fire("failed" + typed, guid).un("failed" + typed, guid);
 				};
 
 				if (type === "delete") {
-					uri.on("afterDelete", function() {
+					uri.on("afterDelete", function () {
 						cache.expire(uri);
 						uri.un("afterDelete", guid);
 					}, guid);
 				}
 
 				uri.on("received" + typed, timer, guid)
-				   .on("timeout"  + typed, function(){ timer(); fail(); }, guid)
-				   .on("after"    + typed, function(arg) {
+				   .on("timeout"  + typed, function (){ timer(); fail(); }, guid)
+				   .on("after"    + typed, function (arg) {
 				   		uri.un("received" + typed, guid)
 				   		   .un("timeout" + typed, guid)
 				   		   .un("after" + typed, guid)
 				   		   .un("failed" + typed, guid);
 				   		if (typeof success === "function") success(arg);
 					}, guid)
-				   .on("failed"   + typed, function() {
+				   .on("failed"   + typed, function () {
 				   		timer();
 				   		uri.un("after" + typed, guid)
 				   		   .un("failed" + typed, guid);
@@ -702,8 +702,8 @@
 
 				if (type === "get" && Boolean(cached)) uri.fire("afterGet", utility.clone(cached.response));
 				else {
-					abaaso.timer[typed + "-" + uri] = setTimeout(function() { uri.fire("timeout" + typed); }, 30000);
-					xhr[cors && client.ie ? "onload" : "onreadystatechange"] = function() { client.response(xhr, uri, type); };
+					abaaso.timer[typed + "-" + uri] = setTimeout(function () { uri.fire("timeout" + typed); }, 30000);
+					xhr[cors && client.ie ? "onload" : "onreadystatechange"] = function () { client.response(xhr, uri, type); };
 
 					if (client.ie && cors && client.version <= 9) {
 						if (l.protocol === "http:") xhr.open(type.toUpperCase(), uri);
@@ -740,7 +740,7 @@
 
 					// Cross Origin Resource Sharing (CORS)
 					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
-					if (typeof xhr.onprogress === "object") xhr.onprogress = function(e) { uri.fire("progress" + typed, e); };
+					if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 
 					xhr.send(payload);
 				}
@@ -775,7 +775,7 @@
 		 * @return {String} uri  URI to query
 		 * @private
 		 */
-		response : function(xhr, uri, type) {
+		response : function (xhr, uri, type) {
 			try {
 				var typed = type.toLowerCase().capitalize(),
 				    l = document.location;
@@ -890,7 +890,7 @@
 		 * @method size
 		 * @return {Object} Describes the View {x: ?, y: ?}
 		 */
-		size : function() {
+		size : function () {
 			var x = 0,
 			    y = 0;
 
@@ -917,7 +917,7 @@
 		 * @param  {String} name Name of the cookie to expire
 		 * @return {String} Name of the expired cookie
 		 */
-		expire : function(name) {
+		expire : function (name) {
 			if (typeof this.get(name) !== "undefined") this.set(name, "", "-1s");
 			return name;
 		},
@@ -929,7 +929,7 @@
 		 * @param  {String} name Name of the cookie to get
 		 * @return {Mixed} Cookie or undefined
 		 */
-		get : function(name) {
+		get : function (name) {
 			return this.list()[name];
 		},
 
@@ -939,13 +939,13 @@
 		 * @method list
 		 * @return {Object} Collection of cookies
 		 */
-		list : function() {
+		list : function () {
 			var result = {},
 			    item, items;
 
 			if (!client.server && typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
 				items = document.cookie.split(';');
-				items.each(function(i) {
+				items.each(function (i) {
 					item = i.split("=");
 					result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
 				});
@@ -964,7 +964,7 @@
 		 * @param  {String} offset A positive or negative integer followed by "d", "h", "m" or "s"
 		 * @return {Object} The new cookie
 		 */
-		set : function(name, value, offset) {
+		set : function (name, value, offset) {
 			offset = offset.toString() || "";
 			var expire = "",
 			    span   = null,
@@ -1032,7 +1032,7 @@
 			 * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
 			 * @return {Object} Data store
 			 */
-			batch : function(type, data, sync) {
+			batch : function (type, data, sync) {
 				try {
 					type = type.toString().toLowerCase() || undefined;
 					sync = (sync === true);
@@ -1091,7 +1091,7 @@
 			 * @param {Boolean} sync [Optional] Boolean to limit clearing of properties
 			 * @return {Object} Data store
 			 */
-			clear : function(sync) {
+			clear : function (sync) {
 				sync    = (sync === true);
 				var obj = this.parentNode;
 
@@ -1134,7 +1134,7 @@
 			 * @param  {Boolean} sync    [Optional] True if called by data.sync
 			 * @return {Object} Data store
 			 */
-			del : function(record, reindex, sync) {
+			del : function (record, reindex, sync) {
 				if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string"))
 					throw Error(label.error.invalidArguments);
 
@@ -1169,7 +1169,7 @@
 						obj.fire("syncDataDelete", args);
 						break;
 					case r.test(p.data) && r.test(p.uri):
-						uri.del(function() { obj.fire("syncDataDelete", args); }, function() { obj.fire("failedDataDelete", args); });
+						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); });
 						break;
 					default:
 						obj.fire("failedDataDelete", args);
@@ -1189,7 +1189,7 @@
 			 * @param  {Mixed} haystack [Optional] The field(s) to search
 			 * @return {Array} Array of results
 			 */
-			find : function(needle, haystack) {
+			find : function (needle, haystack) {
 				try {
 					if (typeof needle === "undefined")
 						throw Error(label.error.invalidArguments);
@@ -1255,7 +1255,7 @@
 			 * @param  {Mixed} record Key, index or Array of pagination start & end
 			 * @return {Mixed} Individual record, or Array of records
 			 */
-			get : function(record) {
+			get : function (record) {
 				var r   = [],
 				    obj = this.parentNode,
 				    i, start, end;
@@ -1297,7 +1297,7 @@
 			 * @method reindex
 			 * @return {Object} Data store
 			 */
-			reindex : function() {
+			reindex : function () {
 				var nth = this.total,
 				    obj = this.parentNode,
 				    i;
@@ -1333,7 +1333,7 @@
 			 * @param  {Boolean} sync [Optional] True if called by data.sync
 			 * @return {Object} The data store
 			 */
-			set : function(key, data, sync) {
+			set : function (key, data, sync) {
 				key  = key === null ? undefined : key.toString();
 				sync = (sync === true);
 
@@ -1365,7 +1365,7 @@
 						obj.fire("syncDataSet", args);
 						break;
 					case r.test(p.data) && r.test(p.uri):
-						uri[method](function(arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function() { obj.fire("failedDataSet"); }, data);
+						uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function () { obj.fire("failedDataSet"); }, data);
 						break;
 					default:
 						obj.fire("failedDataSet", args);
@@ -1384,7 +1384,7 @@
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
 			 */
-			sort : function(query, create) {
+			sort : function (query, create) {
 				try {
 					if (typeof query === "undefined" || String(query).isEmpty())
 						throw Error(label.error.invalidArguments);
@@ -1407,7 +1407,7 @@
 
 					obj.fire("beforeDataSort");
 
-					this.records.each(function(rec) {
+					this.records.each(function (rec) {
 						value = String(rec.data[needle]).trim() + ":::" + rec.key;
 						order.push(value);
 					});
@@ -1416,7 +1416,7 @@
 					if (desc.test(query)) order.reverse();
 
 					needle = new RegExp(":::(.*)$");
-					order.each(function(rec) {
+					order.each(function (rec) {
 						index = obj.data.keys[needle.exec(rec)[1]].index;
 						records.push(obj.data.records[index]);
 					});
@@ -1441,7 +1441,7 @@
 			 * @param {Boolean} reindex [Optional] True will reindex the data store
 			 * @return {Object} Data store
 			 */
-			sync : function(reindex) {
+			sync : function (reindex) {
 				try {
 					if (this.uri === null || this.uri.isEmpty())
 						throw Error(label.error.invalidArguments);
@@ -1452,7 +1452,7 @@
 					    guid = utility.guid(),
 					    success, failure;
 
-					success = function(arg) {
+					success = function (arg) {
 						try {
 							if (typeof arg !== "object")
 								throw Error(label.error.expectedObject);
@@ -1481,7 +1481,7 @@
 						}
 					};
 
-					failure = function() { obj.fire("failedDataSync"); };
+					failure = function () { obj.fire("failedDataSync"); };
 
 					obj.fire("beforeDataSync");
 					this.uri.jsonp(success, failure, {callback: this.callback, withCredentials: this.credentials});
@@ -1505,13 +1505,13 @@
 		 * @param  {Mixed}  data [Optional] Data to set with this.batch
 		 * @return {Object} Object registered with
 		 */
-		register : function(obj, data) {
-			if (obj instanceof Array) return obj.each(function(i) { data.register(i, data); });
+		register : function (obj, data) {
+			if (obj instanceof Array) return obj.each(function (i) { data.register(i, data); });
 
 			var methods = {
 				expires : {
-					getter : function() { return this._expires; },
-					setter : function(arg) {
+					getter : function () { return this._expires; },
+					setter : function (arg) {
 						try {
 							if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean")))
 								throw Error(label.error.invalidArguments);
@@ -1527,7 +1527,7 @@
 								clearTimeout($.repeating[id]);
 								delete $.repeating[id];
 							}
-							else $.defer(function() { $.repeat(function() { if (!cache.expire(uri)) uri.fire("expire"); }, expires, id) }, expires);
+							else $.defer(function () { $.repeat(function () { if (!cache.expire(uri)) uri.fire("expire"); }, expires, id) }, expires);
 						}
 						catch (e) {
 							error(e, arguments, this);
@@ -1536,8 +1536,8 @@
 					}
 				},
 				uri : {
-					getter : function() { return this._uri; },
-					setter : function(arg) {
+					getter : function () { return this._uri; },
+					setter : function (arg) {
 						try {
 							if (arg !== null && arg.isEmpty())
 								throw Error(label.error.invalidArguments);
@@ -1552,7 +1552,7 @@
 							this._uri = arg;
 
 							if (arg !== null) {
-								this.uri.on("expire", function() { this.sync(true); }, "dataSync", this);
+								this.uri.on("expire", function () { this.sync(true); }, "dataSync", this);
 								cache.expire(arg, true);
 								this.sync();
 							}
@@ -1571,13 +1571,13 @@
 			// Hooking in the observer
 			switch (true) {
 				case typeof obj.fire === "undefined":
-					obj.fire = function(event, arg) { return $.fire.call(this, event, arg); };
+					obj.fire = function (event, arg) { return $.fire.call(this, event, arg); };
 				case typeof obj.listeners === "undefined":
-					obj.listeners = function(event) { return $.listeners.call(this, event); };
+					obj.listeners = function (event) { return $.listeners.call(this, event); };
 				case typeof obj.on === "undefined":
-					obj.on = function(event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
+					obj.on = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
 				case typeof obj.un === "undefined":
-					obj.un = function(event, id) { return $.un.call(this, event, id); };
+					obj.un = function (event, id) { return $.un.call(this, event, id); };
 			}
 
 			obj.fire("beforeDataStore");
@@ -1586,7 +1586,7 @@
 			obj.data.parentNode = obj; // Recursion, useful
 			obj.data.clear();          // Setting properties
 
-			obj.on("syncDataDelete", function(data) {
+			obj.on("syncDataDelete", function (data) {
 				var record = this.get(data.record);
 				this.records.remove(data.record);
 				delete this.keys[data.key];
@@ -1597,7 +1597,7 @@
 				return this.parentNode;
 			}, utility.guid(), obj.data);
 
-			obj.on("syncDataSet", function(data) {
+			obj.on("syncDataSet", function (data) {
 				var record;
 				if (typeof data.record === "undefined") {
 					var index = this.total;
@@ -1640,11 +1640,11 @@
 					obj.data.__defineSetter__("uri", methods.uri.setter);
 					break;
 				default: // Only exists when no getters/setters (IE8)
-					obj.data.setExpires = function(arg) {
+					obj.data.setExpires = function (arg) {
 						obj.data.expires = arg;
 						methods.expires.setter.call(obj.data, arg);
 					};
-					obj.data.setUri = function(arg) {
+					obj.data.setUri = function (arg) {
 						obj.data.uri = arg;
 						methods.uri.setter.call(obj.data, arg);
 					};
@@ -1675,9 +1675,9 @@
 		 * @param  {Boolean} add Boolean to add or remove, defaults to true
 		 * @return {Mixed} Element or Array of Elements
 		 */
-		klass : function(obj, arg, add) {
+		klass : function (obj, arg, add) {
 			try {
-				if (obj instanceof Array) return obj.each(function(i) { el.klass(i, arg, add); });
+				if (obj instanceof Array) return obj.each(function (i) { el.klass(i, arg, add); });
 
 				obj = utility.object(obj);
 				add = (add !== false);
@@ -1722,9 +1722,9 @@
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
 		 * @return {Mixed} Element or Array of Elements
 		 */
-		clear : function(obj) {
+		clear : function (obj) {
 			try {
-				if (obj instanceof Array) return obj.each(function(i) { el.clear(i); });
+				if (obj instanceof Array) return obj.each(function (i) { el.clear(i); });
 
 				obj = utility.object(obj);
 
@@ -1766,7 +1766,7 @@
 		 * @param  {Object} pos    [Optional] Object describing how to add the new Element, e.g. {before: referenceElement}
 		 * @return {Object} Element that was created or undefined
 		 */
-		create : function(type, args, target, pos) {
+		create : function (type, args, target, pos) {
 			try {
 				if (typeof type === "undefined" || String(type).isEmpty())
 					throw Error(label.error.invalidArguments);
@@ -1830,7 +1830,7 @@
 		 * @param  {String} content CSS to put in a style tag
 		 * @return {Object} Element created or undefined
 		 */
-		css : function(content) {
+		css : function (content) {
 			var ss, css;
 			ss = $.create("style", {type: "text/css"}, $("head")[0]);
 			if (ss.styleSheet) ss.styleSheet.cssText = content;
@@ -1851,7 +1851,7 @@
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
 		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
-		destroy : function(obj) {
+		destroy : function (obj) {
 			try {
 				if (obj instanceof Array) {
 					var i = !isNaN(obj.length) ? obj.length : obj.total();
@@ -1887,7 +1887,7 @@
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
 		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
-		disable : function(obj) {
+		disable : function (obj) {
 			try {
 				if (obj instanceof Array) {
 					var i = !isNaN(obj.length) ? obj.length : obj.total();
@@ -1923,7 +1923,7 @@
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
 		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
-		enable : function(obj) {
+		enable : function (obj) {
 			try {
 				if (obj instanceof Array) {
 					var i = !isNaN(obj.length) ? obj.length : obj.total();
@@ -1959,9 +1959,9 @@
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
 		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
-		hide : function(obj) {
+		hide : function (obj) {
 			try {
-				if (obj instanceof Array) return obj.each(function(i) { el.hide(i); });
+				if (obj instanceof Array) return obj.each(function (i) { el.hide(i); });
 
 				obj = utility.object(obj);
 
@@ -1993,7 +1993,7 @@
 		 * @param  {Mixed} obj Element or $ query
 		 * @return {Mixed} Boolean indicating if Object is hidden
 		 */
-		hidden : function(obj) {
+		hidden : function (obj) {
 			try {
 				obj = utility.object(obj);
 
@@ -2015,7 +2015,7 @@
 		 * @param  {Mixed} obj Element or $ query
 		 * @return {Array} Array containing the render position of the element
 		 */
-		position : function(obj) {
+		position : function (obj) {
 			try {
 				obj = utility.object(obj);
 
@@ -2052,9 +2052,9 @@
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
 		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
-		show : function(obj) {
+		show : function (obj) {
 			try {
-				if (obj instanceof Array) return obj.each(function(i) { el.show(i); });
+				if (obj instanceof Array) return obj.each(function (i) { el.show(i); });
 
 				obj = utility.object(obj);
 
@@ -2085,11 +2085,11 @@
 		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
 		 * @return {Object} Size {x:, y:}, Array of sizes or undefined
 		 */
-		size : function(obj) {
+		size : function (obj) {
 			try {
 				if (obj instanceof Array) {
 					var result = [];
-					obj.each(function(i) { result.push(el.size(i)); });
+					obj.each(function (i) { result.push(el.size(i)); });
 					return result;
 				}
 
@@ -2104,7 +2104,7 @@
 				 * @param  {Mixed} n The value to cast
 				 * @return {Integer} The casted value or zero
 				 */
-				var num = function(n) {
+				var num = function (n) {
 					return !isNaN(parseInt(n)) ? parseInt(n) : 0;
 				};
 
@@ -2130,12 +2130,12 @@
 		 * @param  {Object} args Collection of properties
 		 * @return {Mixed} Element, Array of Elements or undefined
 		 */
-		update : function(obj, args) {
+		update : function (obj, args) {
 			try {
 				obj  = utility.object(obj);
 				args = args || {};
 
-				if (obj instanceof Array) return obj.each(function(i) { el.update(i, args); });
+				if (obj instanceof Array) return obj.each(function (i) { el.update(i, args); });
 
 				if (obj instanceof Element !== true)
 					throw Error(label.error.invalidArguments);
@@ -2190,7 +2190,7 @@
 		 * @param {Number} arg Number to compare
 		 * @return {Number} The absolute difference
 		 */
-		diff : function(arg) {
+		diff : function (arg) {
 			try {
 				if (typeof arg !== "number" || typeof this !== "number")
 					throw Error(label.error.expectedNumber);
@@ -2211,7 +2211,7 @@
 		 * @param  {String} every     [Optional] Position to insert the delimiter, default is 3
 		 * @return {String} Number represented as a comma delimited String
 		 */
-		format : function(arg, delimiter, every) {
+		format : function (arg, delimiter, every) {
 			try {
 				if (typeof arg !== "number")
 					throw Error(label.error.expectedNumber);
@@ -2248,7 +2248,7 @@
 		 * @param {Number} arg Number to test
 		 * @return {Boolean} True if even, or undefined
 		 */
-		even : function(arg) {
+		even : function (arg) {
 			return arg % 2 === 0;
 		},
 
@@ -2259,7 +2259,7 @@
 		 * @param {Number} arg Number to test
 		 * @return {Boolean} True if odd, or undefined
 		 */
-		odd : function(arg) {
+		odd : function (arg) {
 			return !(arg % 2 === 0);
 		}
 	};
@@ -2278,7 +2278,7 @@
 		 * @param  {String} arg String to parse
 		 * @return {Mixed} Entity resulting from parsing JSON, or undefined
 		 */
-		decode : function(arg) {
+		decode : function (arg) {
 			try {
 				return JSON.parse(arg);
 			}
@@ -2295,7 +2295,7 @@
 		 * @param  {Mixed} arg Entity to encode
 		 * @return {String} JSON, or undefined
 		 */
-		encode : function(arg) {
+		encode : function (arg) {
 			try {
 				return JSON.stringify(arg);
 			}
@@ -2387,7 +2387,7 @@
 		 * @method clear
 		 * @return {Object} abaaso
 		 */
-		clear : function() {
+		clear : function () {
 			return $.un(window, "message");
 		},
 
@@ -2399,7 +2399,7 @@
 		 * @param  {Mixed}  arg    Entity to send as message
 		 * @return {Object} target
 		 */
-		send : function(target, arg) {
+		send : function (target, arg) {
 			try {
 				target.postMessage(arg, "*");
 				return target;
@@ -2417,7 +2417,7 @@
 		 * @param  {Function} fn  Callback function
 		 * @return {Object} abaaso
 		 */
-		recv : function(fn) {
+		recv : function (fn) {
 			return $.on(window, "message", fn);
 		}
 	};
@@ -2447,7 +2447,7 @@
 		 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
 		 * @return {Object} abaaso.mouse
 		 */
-		track : function(e) {
+		track : function (e) {
 			var m = abaaso.mouse;
 			switch (true) {
 				case typeof e === "object":
@@ -2500,13 +2500,13 @@
 		 * @param  {String}   state [Optional] The state the listener is for
 		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
-		add : function(obj, event, fn, id, scope, state) {
+		add : function (obj, event, fn, id, scope, state) {
 			try {
 				obj   = utility.object(obj);
 				scope = scope || abaaso;
 				state = state || "active";
 
-				if (obj instanceof Array) return obj.each(function(i) { observer.add(i, event, fn, id, scope, state); });
+				if (obj instanceof Array) return obj.each(function (i) { observer.add(i, event, fn, id, scope, state); });
 
 				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid();
 
@@ -2540,7 +2540,7 @@
 						default:
 							instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
 					}
-					efn = function(e) {
+					efn = function (e) {
 						if (event.indexOf("key") !== 0) {
 							if (!e) e = window.event;
 							if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
@@ -2569,7 +2569,7 @@
 		 * @return {String} Observer id
 		 * @private
 		 */
-		id : function(arg) {
+		id : function (arg) {
 			var x;
 			switch (true) {
 				case arg === abaaso:
@@ -2599,11 +2599,11 @@
 		 * @param  {Mixed}  arg   [Optional] Argument supplied to the listener
 		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
-		fire : function(obj, event, arg) {
+		fire : function (obj, event, arg) {
 			try {
 				obj = utility.object(obj);
 
-				if (obj instanceof Array) return obj.each(function(i) { observer.fire(obj[i], event, arg); });
+				if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, arg); });
 
 				var o = this.id(obj), c, i, l;
 
@@ -2631,7 +2631,7 @@
 		 * @param  {String} event Event being queried
 		 * @return {Array} Array of listeners for the event
 		 */
-		list : function(obj, event) {
+		list : function (obj, event) {
 			obj   = utility.object(obj);
 			var l = this.listeners,
 			    o = this.id(obj),
@@ -2663,11 +2663,11 @@
 		 * @param  {String} state [Optional] The state the listener is for
 		 * @return {Mixed}  Entity, Array of Entities or undefined
 		 */
-		remove : function(obj, event, id, state) {
+		remove : function (obj, event, id, state) {
 			obj   = utility.object(obj);
 			state = state || "active";
 
-			if (obj instanceof Array) return obj.each(function(i) { observer.remove(i, event, id, state); });
+			if (obj instanceof Array) return obj.each(function (i) { observer.remove(i, event, id, state); });
 
 			var instance = null,
 			    l = observer.listeners,
@@ -2693,7 +2693,7 @@
 						instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
 				}
 
-				efn = function(e) {
+				efn = function (e) {
 					if (event.indexOf("key") !== 0) {
 						if (!e) e = window.event;
 						if (typeof e.cancelBubble !== "undefined") e.cancelBubble = true;
@@ -2717,7 +2717,7 @@
 		 * @param  {String} arg Application state
 		 * @return {Object} abaaso
 		 */
-		state : function(arg) {
+		state : function (arg) {
 			var l = this.listeners,
 			    i, e;
 
@@ -2750,7 +2750,7 @@
 		 * @param  {Boolean} nodelist [Optional] True will return a NodeList (by reference) for tags & classes
 		 * @return {Mixed} Element or Array of Elements
 		 */
-		$ : function(arg, nodelist) {
+		$ : function (arg, nodelist) {
 			arg      = arg.trim();
 			nodelist = (nodelist === true);
 
@@ -2758,7 +2758,7 @@
 			if (arg.indexOf(",") > -1) arg = arg.explode();
 			if (arg instanceof Array) {
 				var result = [];
-				arg.each(function(i) { result.push($(i, nodelist)); });
+				arg.each(function (i) { result.push($(i, nodelist)); });
 				return result;
 			}
 
@@ -2767,7 +2767,7 @@
 
 			switch (true) {
 				case (/\s|>/.test(arg)):
-					sel = arg.split(" ").filter(function(i) { if (i.trim() !== "" && i !== ">") return true; }).last();
+					sel = arg.split(" ").filter(function (i) { if (i.trim() !== "" && i !== ">") return true; }).last();
 					obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
 					break;
 				case arg.indexOf("#") === 0 && arg.indexOf(":") === -1:
@@ -2795,19 +2795,19 @@
 		 * @param  {Object} origin Object providing structure to obj
 		 * @return {Object} Object receiving aliasing
 		 */
-		alias : function(obj, origin) {
+		alias : function (obj, origin) {
 			var i;
 			for (i in origin) {
-				(function() {
+				(function () {
 					var b = i;
 					if (origin.hasOwnProperty(b)) {
 						switch (true) {
 							case typeof origin[b] === "function":
-								obj[b] = (function() { return origin[b].apply(this, arguments); });
+								obj[b] = (function () { return origin[b].apply(this, arguments); });
 								break;
 							case !origin[b] instanceof Array && origin[b] instanceof Object:
 								if (typeof obj[b] === "undefined") obj[b] = {};
-								(function() { abaaso.alias(obj[b], origin[b]); })();
+								(function () { abaaso.alias(obj[b], origin[b]); })();
 								break;
 							case (/boolean|number|object|string/.test(typeof origin[b])):
 							case origin[b] === null:
@@ -2827,7 +2827,7 @@
 		 * @param  {Object} obj Object to clone
 		 * @return {Object} Clone of obj
 		 */
-		clone : function(obj) {
+		clone : function (obj) {
 			try {
 				var clone;
 
@@ -2871,7 +2871,7 @@
 		 * @param  {Object} obj   Object receiving value
 		 * @return {Object} Object receiving value
 		 */
-		define : function(args, value, obj) {
+		define : function (args, value, obj) {
 			args = args.split(".");
 			obj  = obj || this;
 			if (obj === $) obj = abaaso;
@@ -2882,7 +2882,7 @@
 
 			for (i = 0; i < l; i++) {
 				typeof p[args[i]] === "undefined" ? p[args[i]] = (i + 1 < l ? {} : ((typeof value !== "undefined") ? value : null))
-							                      : (function() { if (i + 1 >= l) p[args[i]] = typeof value !== "undefined" ? value : null; })();
+							                      : (function () { if (i + 1 >= l) p[args[i]] = typeof value !== "undefined" ? value : null; })();
 				p = p[args[i]];
 			}
 
@@ -2898,9 +2898,9 @@
 		 * @param  {Integer}  ms Milliseconds to defer execution
 		 * @return {Object} undefined
 		 */
-		defer : function(fn, ms) {
+		defer : function (fn, ms) {
 			var id = utility.guid(),
-			    op = function() {
+			    op = function () {
 					delete abaaso.timer[id];
 					fn();
 				};
@@ -2916,7 +2916,7 @@
 		 * @return {String} DOM friendly ID
 		 * @private
 		 */
-		domId : function(arg) {
+		domId : function (arg) {
 			return "a" + arg.replace(/-/g, "").slice(1);
 		},
 
@@ -2930,7 +2930,7 @@
 		 * @param  {Boolean} warning  [Optional] Will display as console warning if true
 		 * @return {Object} undefined
 		 */
-		error : function(e, args, scope, warning) {
+		error : function (e, args, scope, warning) {
 			if (typeof e === "undefined")
 				return;
 			
@@ -2958,14 +2958,14 @@
 		 * @param  {Object} arg [Optional] Object for decoration
 		 * @return {Object} Decorated obj
 		 */
-		extend : function(obj, arg) {
+		extend : function (obj, arg) {
 			try {
 				if (typeof obj === "undefined")
 					throw Error(label.error.invalidArguments);
 
 				if (typeof arg === "undefined") arg = {};
 
-				var i, o, f = function() {};
+				var i, o, f = function () {};
 
 				f.prototype = obj;
 				o = new f();
@@ -2985,7 +2985,7 @@
 		 * @param  {Mixed} obj [Optional] Object to receive id
 		 * @return {Mixed} Object or id
 		 */
-		genId : function(obj) {
+		genId : function (obj) {
 			switch (true) {
 				case obj instanceof Array:
 				case obj instanceof String:
@@ -3012,7 +3012,7 @@
 		 * @method guid
 		 * @return {String} GUID
 		 */
-		guid : function() {
+		guid : function () {
 			function s4() { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); };
 			return (s4() + s4() + "-" + s4() + "-4" + s4().substr(0,3) + "-" + s4() + "-" + s4() + s4() + s4()).toLowerCase();
 		},
@@ -3025,9 +3025,9 @@
 		 * @param  {Mixed} obj Entity or Array of Entities or $ queries
 		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
-		loading : function(obj) {
+		loading : function (obj) {
 			try {
-				if (obj instanceof Array) return obj.each(function(i) { utility.loading(i); });
+				if (obj instanceof Array) return obj.each(function (i) { utility.loading(i); });
 
 				var l = abaaso.loading;
 
@@ -3068,7 +3068,7 @@
 		 * @return undefined;
 		 * @private
 		 */
-		log : function(arg) {
+		log : function (arg) {
 			try {
 				console.log(arg);
 			}
@@ -3087,7 +3087,7 @@
 		 * @param  {Object} obj Module structure
 		 * @return {Object}
 		 */
-		module : function(arg, obj) {
+		module : function (arg, obj) {
 			try {
 				if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object)
 					throw Error(label.error.invalidArguments);
@@ -3110,7 +3110,7 @@
 		 * @returns {Mixed} Entity
 		 * @private
 		 */
-		object : function(obj) {
+		object : function (obj) {
 			return typeof obj === "object" ? obj : (obj.toString().charAt(0) === "#" ? $(obj) : obj);
 		},
 
@@ -3123,50 +3123,50 @@
 		 * @return {Object} obj or undefined
 		 * @private
 		 */
-		proto : function(obj, type) {
+		proto : function (obj, type) {
 			// Collection of methods to add to prototypes
 			var i,
 			    methods = {
-				array   : {addClass : function(arg) { return this.each(function(i) { i.addClass(arg); }); },
-				           contains : function(arg) { return array.contains(this, arg); },
-				           clone    : function() { return utility.clone(this); },
-				           css      : function(key, value) { return this.each(function(i) { i.css(key, value); }); },
-				           diff     : function(arg) { return array.diff(this, arg); },
-				           each     : function(arg) { this.forEach(arg); return this; },
-				           first    : function() { return array.first(this); },
-				           hide     : function() { return this.each(function(i){ i.hide(); }); },
-				           index    : function(arg) { return array.index(this, arg); },
-				           indexed  : function() { return array.indexed(this); },
-				           intersect: function(arg) { return array.intersect(this, arg); },
-				           keys     : function() { return array.keys(this); },
-				           last     : function(arg) { return array.last(this); },
-				           on       : function(event, listener, id, scope, state) { return this.each(function(i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
-				           remove   : function(arg) { return array.remove(this, arg); },
-				           removeClass : function(arg) { return this.each(function(i) { i.removeClass(arg); }); },
-				           show     : function() { return this.each(function(i){ i.show(); }); },
-				           text     : function(arg) {
-				           		return this.each(function(node) {
+				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
+				           contains : function (arg) { return array.contains(this, arg); },
+				           clone    : function () { return utility.clone(this); },
+				           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
+				           diff     : function (arg) { return array.diff(this, arg); },
+				           each     : function (arg) { this.forEach(arg); return this; },
+				           first    : function () { return array.first(this); },
+				           hide     : function () { return this.each(function (i){ i.hide(); }); },
+				           index    : function (arg) { return array.index(this, arg); },
+				           indexed  : function () { return array.indexed(this); },
+				           intersect: function (arg) { return array.intersect(this, arg); },
+				           keys     : function () { return array.keys(this); },
+				           last     : function (arg) { return array.last(this); },
+				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
+				           remove   : function (arg) { return array.remove(this, arg); },
+				           removeClass : function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
+				           show     : function () { return this.each(function (i){ i.show(); }); },
+				           text     : function (arg) {
+				           		return this.each(function (node) {
 				           			if (typeof node !== "object") node = utility.object(node);
 				           			if (typeof node.text === "function") node.text(arg);
 				           		});
 				           },
-				           total    : function() { return array.total(this); },
-				           un       : function(event, id, state) { return this.each(function(i) { i.un(event, id, state); }); },
-				           update   : function(arg) { return this.each(function(i) { el.update(i, arg); }); },
-				           validate : function() {
+				           total    : function () { return array.total(this); },
+				           un       : function (event, id, state) { return this.each(function (i) { i.un(event, id, state); }); },
+				           update   : function (arg) { return this.each(function (i) { el.update(i, arg); }); },
+				           validate : function () {
 				           	var result = [];
-				           		this.each(function(i) { if (typeof i.validate === "function") result.push(i.validate()); });
+				           		this.each(function (i) { if (typeof i.validate === "function") result.push(i.validate()); });
 				           		return result;
 					       }},
-				element : {addClass : function(arg) {
+				element : {addClass : function (arg) {
 				           		this.genId();
 				           		return el.klass(this, arg, true);
 				           },
-				           create   : function(type, args) {
+				           create   : function (type, args) {
 				           		this.genId();
 				           		return el.create(type, args, this);
 				           },
-				           css       : function(key, value) {
+				           css       : function (key, value) {
 				           		var i;
 				           		this.genId();
 				           		if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
@@ -3176,39 +3176,39 @@
 				           		this.style[key] = value;
 				           		return this;
 				           },
-				           disable   : function() { return el.disable(this); },
-				           enable    : function() { return el.enable(this); },
-				           get       : function(uri, headers) {
+				           disable   : function () { return el.disable(this); },
+				           enable    : function () { return el.enable(this); },
+				           get       : function (uri, headers) {
 				           		this.fire("beforeGet");
 				           		var cached = cache.get(uri),
 				           		    guid   = utility.guid(),
 				           		    self   = this;
 
-				           		!cached ? uri.get(function(a) { self.text(a).fire("afterGet"); }, null, headers)
+				           		!cached ? uri.get(function (a) { self.text(a).fire("afterGet"); }, null, headers)
 				           		        : this.text(cached.response).fire("afterGet");
 
 				           		return this;
 				           },
-				           hide     : function() {
+				           hide     : function () {
 				           		this.genId();
 				           		return el.hide(this);
 				           },
-				           isAlphaNum: function() { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
-				           isBoolean: function() { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
-				           isDate   : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
-				           isDomain : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
-				           isEmail  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
-				           isEmpty  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
-				           isIP     : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
-				           isInt    : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
-				           isNumber : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
-				           isPhone  : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : this.innerText.isPhone(); },
-				           isString : function() { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isString() : this.innerText.isString(); },
-				           jsonp    : function(uri, property, callback) {
+				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+				           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+				           isDate   : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
+				           isDomain : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
+				           isEmail  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
+				           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
+				           isIP     : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
+				           isInt    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
+				           isNumber : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
+				           isPhone  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : this.innerText.isPhone(); },
+				           isString : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isString() : this.innerText.isString(); },
+				           jsonp    : function (uri, property, callback) {
 				           		var target = this,
 				           		    arg    = property, fn;
 
-				           		fn = function(response) {
+				           		fn = function (response) {
 				           			var self = target,
 				           			    node = response,
 				           			    prop = arg,
@@ -3217,7 +3217,7 @@
 				           			try {
 				           				if (typeof prop !== "undefined") {
 				           					prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
-				           					prop.each(function(i) {
+				           					prop.each(function (i) {
 				           						node = node[!!isNaN(i) ? i : parseInt(i)];
 				           						if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
 				           					});
@@ -3232,31 +3232,31 @@
 
 				           			self.text(result);
 				           		};
-				           		client.jsonp(uri, fn, function() { target.text(label.error.serverError); }, callback);
+				           		client.jsonp(uri, fn, function () { target.text(label.error.serverError); }, callback);
 				           		return this;
 				           },
-				           loading  : function() { return $.loading.create(this); },
-				           on       : function(event, listener, id, scope, state) {
+				           loading  : function () { return $.loading.create(this); },
+				           on       : function (event, listener, id, scope, state) {
 				           		this.genId();
 				           		return $.on.call(this, event, listener, id, scope, state);
 				           },
-				           position : function() {
+				           position : function () {
 				           		this.genId();
 				           		return el.position(this);
 				           },
-				           removeClass : function(arg) {
+				           removeClass : function (arg) {
 				           		this.genId();
 				           		return el.klass(this, arg, false);
 				           },
-				           show     : function() {
+				           show     : function () {
 				           		this.genId();
 				           		return el.show(this);
 				           },
-				           size     : function() {
+				           size     : function () {
 				           		this.genId();
 				           		return el.size(this);
 				           },
-				           text     : function(arg) {
+				           text     : function (arg) {
 				           		var args = {};
 
 				           		this.genId();
@@ -3264,60 +3264,60 @@
 				           		args.innerHTML = arg;
 				           		return this.update(args);
 				           },
-				           un       : function(event, id, state) {
+				           un       : function (event, id, state) {
 				           		this.genId();
 				           		return $.un.call(this, event, id, state);
 				           },
-				           update   : function(args) {
+				           update   : function (args) {
 				           		this.genId();
 				           		return el.update(this, args);
 				           },
-				           validate : function() { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
-				"function": {reflect: function() { return utility.reflect(this); }},
-				number  : {diff     : function(arg) { return number.diff.call(this, arg); },
-				           format   : function(delimiter, every) { return number.format(this, delimiter, every); },
-				           isEven   : function() { return number.even(this); },
-				           isOdd    : function() { return number.odd(this); },
-				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
-				           un       : function(event, id, state) { return $.un.call(this, event, id, state); }},
-				shared  : {clear    : function() {
+				           validate : function () { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
+				"function": {reflect: function () { return utility.reflect(this); }},
+				number  : {diff     : function (arg) { return number.diff.call(this, arg); },
+				           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
+				           isEven   : function () { return number.even(this); },
+				           isOdd    : function () { return number.odd(this); },
+				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }},
+				shared  : {clear    : function () {
 				           		this.genId();
 				           		this instanceof String ? this.constructor = new String("") : el.clear(this);
 				           		return this;
 				           },
-				           destroy  : function() { el.destroy(this); },
-				           fire     : function(event, args) {
+				           destroy  : function () { el.destroy(this); },
+				           fire     : function (event, args) {
 				           		this.genId();
 				           		return $.fire.call(this, event, args);
 				           },
-				           genId    : function() { return utility.genId(this); },
-				           listeners: function(event) {
+				           genId    : function () { return utility.genId(this); },
+				           listeners: function (event) {
 				           		this.genId();
 				           		return $.listeners.call(this, event);
 				           }},
-				string  : {allows   : function(arg) { return $.allows(this, arg); },
-				           capitalize: function() { return this.charAt(0).toUpperCase() + this.slice(1); },
-				           del      : function(success, failure) { return client.request(this, "DELETE", success, failure); },
-				           explode  : function(arg) { if (typeof arg === "undefined" || arg.toString() === "") arg = ","; return this.split(new RegExp("\\s*" + arg + "\\s*")); },
-				           get      : function(success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
-				           isAlphaNum: function() { return validate.test({alphanum: this}).pass; },
-				           isBoolean: function() { return validate.test({"boolean": this}).pass; },
-				           isDate   : function() { return validate.test({date: this}).pass; },
-				           isDomain : function() { return validate.test({domain: this}).pass; },
-				           isEmail  : function() { return validate.test({email: this}).pass; },
-				           isEmpty  : function() { return !validate.test({notEmpty: this}).pass; },
-				           isIP     : function() { return validate.test({ip: this}).pass; },
-				           isInt    : function() { return validate.test({integer: this}).pass; },
-				           isNumber : function() { return validate.test({number: this}).pass; },
-				           isPhone  : function() { return validate.test({phone: this}).pass; },
-				           isString : function() { return validate.test({string: this}).pass; },
-				           jsonp    : function(success, failure, callback) { return client.jsonp(this, success, failure, callback); },
-				           post     : function(success, failure, args) { return client.request(this, "POST", success, failure, args); },
-				           put      : function(success, failure, args) { return client.request(this, "PUT", success, failure, args); },
-				           on       : function(event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
-				           headers  : function(success, failure) { return client.request(this, "HEAD", success, failure); },
-				           permissions: function() { return $.permissions(this); },
-				           toCamelCase: function() {
+				string  : {allows   : function (arg) { return $.allows(this, arg); },
+				           capitalize: function () { return this.charAt(0).toUpperCase() + this.slice(1); },
+				           del      : function (success, failure) { return client.request(this, "DELETE", success, failure); },
+				           explode  : function (arg) { if (typeof arg === "undefined" || arg.toString() === "") arg = ","; return this.split(new RegExp("\\s*" + arg + "\\s*")); },
+				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
+				           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
+				           isBoolean: function () { return validate.test({"boolean": this}).pass; },
+				           isDate   : function () { return validate.test({date: this}).pass; },
+				           isDomain : function () { return validate.test({domain: this}).pass; },
+				           isEmail  : function () { return validate.test({email: this}).pass; },
+				           isEmpty  : function () { return !validate.test({notEmpty: this}).pass; },
+				           isIP     : function () { return validate.test({ip: this}).pass; },
+				           isInt    : function () { return validate.test({integer: this}).pass; },
+				           isNumber : function () { return validate.test({number: this}).pass; },
+				           isPhone  : function () { return validate.test({phone: this}).pass; },
+				           isString : function () { return validate.test({string: this}).pass; },
+				           jsonp    : function (success, failure, callback) { return client.jsonp(this, success, failure, callback); },
+				           post     : function (success, failure, args) { return client.request(this, "POST", success, failure, args); },
+				           put      : function (success, failure, args) { return client.request(this, "PUT", success, failure, args); },
+				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
+				           permissions: function () { return $.permissions(this); },
+				           toCamelCase: function () {
 				           		var s = this.toLowerCase().split(" "),
 				           		    r = "",
 				           		    i, nth;
@@ -3325,8 +3325,8 @@
 				           		for (i = 0, nth = s.length; i < nth; i++) { r += i === 0 ? s[i] : String(s[i]).capitalize(); }
 				           		return r.replace(/\W/g, "");
 				           },
-				           trim     : function() { return this.replace(/^\s+|\s+$/g, ""); },
-				           un       : function(event, id, state) { return $.un.call(this, event, id, state); }}
+				           trim     : function () { return this.replace(/^\s+|\s+$/g, ""); },
+				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
 			};
 
 			// Applying the methods
@@ -3350,7 +3350,7 @@
 
 			if (result !== null) {
 				result = result.split("&");
-				result.each(function(prop) {
+				result.each(function (prop) {
 					item = prop.split("=");
 
 					switch (true) {
@@ -3397,11 +3397,11 @@
 		 * @param  {String}   id      [Optional] Timeout ID
 		 * @return {String} Timeout ID
 		 */
-		repeat : function(fn, timeout, id) {
+		repeat : function (fn, timeout, id) {
 			id = id || utility.guid();
-			var r = function(fn, timeout, id) {
+			var r = function (fn, timeout, id) {
 				var r = this;
-				if (fn() !== false) $.repeating[id] = setTimeout(function() { r.call(r, fn, timeout, id); }, timeout);
+				if (fn() !== false) $.repeating[id] = setTimeout(function () { r.call(r, fn, timeout, id); }, timeout);
 				else delete $.repeating[id];
 			};
 			r.call(r, fn, timeout, id);
@@ -3416,7 +3416,7 @@
 		 * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
 		 * @return {Object} Target Element
 		 */
-		tpl : function(arg, target) {
+		tpl : function (arg, target) {
 			try {
 				switch (true) {
 					case typeof arg !== "object":
@@ -3431,7 +3431,7 @@
 
 				switch (true) {
 					case arg instanceof Array:
-						arg.each(function(i) { $.create(array.cast(i, true)[0], frag).text(array.cast(i)[0]); });
+						arg.each(function (i) { $.create(array.cast(i, true)[0], frag).text(array.cast(i)[0]); });
 						break;
 					default:
 						for (i in arg) {
@@ -3484,7 +3484,7 @@
 		 * @param  {Object} args Object to test {(pattern[name] || /pattern/) : (value || #object.id)}
 		 * @return {Object} Results
 		 */
-		test : function(args) {
+		test : function (args) {
 			var exception = false,
 			    invalid   = [],
 			    value     = null;
@@ -3494,7 +3494,7 @@
 
 				if (args.id.isEmpty()) args.genId();
 				c = $("#" + args.id + " > input").concat($("#" + args.id + " > select"));
-				c.each(function(i) {
+				c.each(function (i) {
 					v = null;
 					p = validate.pattern[i.nodeName.toLowerCase()] ? validate.pattern[i.nodeName.toLowerCase()]
 					                                               : ((!i.id.isEmpty() && validate.pattern[i.id.toLowerCase()]) ? validate.pattern[i.id.toLowerCase()]
@@ -3582,7 +3582,7 @@
 		 * @param  {String} arg XML String
 		 * @return {Object} XML Object or undefined
 		 */
-		decode : function(arg) {
+		decode : function (arg) {
 			try {
 				if (typeof arg !== "string" || arg.isEmpty())
 					throw Error(label.error.invalidArguments);
@@ -3610,7 +3610,7 @@
 		 * @param  {Mixed} arg Object or Array to cast to XML String
 		 * @return {String} XML String or undefined
 		 */
-		encode : function(arg, wrap) {
+		encode : function (arg, wrap) {
 			try {
 				if (typeof arg === "undefined")
 					throw Error(label.error.invalidArguments);
@@ -3628,7 +3628,7 @@
 						    top  = arguments[2] === false ? false : true,
 						    node, i;
 
-						node = function(name, value) {
+						node = function (name, value) {
 							var output = "<n>v</n>";
 							if (/\&|\<|\>|\"|\'|\t|\r|\n|\@|\$/g.test(value)) output = output.replace(/v/, "<![CDATA[v]]>");
 							return output.replace(/n/g, name).replace(/v/, value);
@@ -3686,12 +3686,12 @@
 			windows : client.windows,
 
 			// Methods
-			del     : function(uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
-			get     : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
-			headers : function(uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
-			post    : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
-			put     : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
-			jsonp   : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
+			del     : function (uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
+			get     : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+			headers : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
+			post    : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
+			put     : function (uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
+			jsonp   : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 			permission : client.permission
 		},
 		cookie          : cookie,
@@ -3726,9 +3726,9 @@
 		$               : utility.$,
 		alias           : utility.alias,
 		allows          : client.allows,
-		bootstrap       : function() {
+		bootstrap       : function () {
 			if (typeof Array.prototype.filter === "undefined") {
-				Array.prototype.filter = function(fn) {
+				Array.prototype.filter = function (fn) {
 					"use strict";
 					if (this === void 0 || this === null || typeof fn !== "function")
 						throw Error(label.error.invalidArguments);
@@ -3752,7 +3752,7 @@
 			}
 
 			if (typeof Array.prototype.forEach === "undefined") {
-				Array.prototype.forEach = function(callback, thisArg) {
+				Array.prototype.forEach = function (callback, thisArg) {
 					"use strict";
 
 					if (this === null || typeof callback !== "function") throw Error(label.error.invalidArguments);
@@ -3776,14 +3776,14 @@
 			}
 
 			if (typeof Function.prototype.bind === "undefined") {
-				Function.prototype.bind = function(arg) {
+				Function.prototype.bind = function (arg) {
 					"use strict";
 
 					var fn    = this,
 					    slice = Array.prototype.slice,
 					    args  = slice.call(arguments, 1);
 					
-					return function() {
+					return function () {
 						return fn.apply(arg, args.concat(slice.call(arguments)));
 					};
 				};
@@ -3801,10 +3801,10 @@
 					abaaso.init();
 					break;
 				case typeof document.addEventListener === "function":
-					document.addEventListener("DOMContentLoaded", function() { abaaso.init(); }, false);
+					document.addEventListener("DOMContentLoaded", function () { abaaso.init(); }, false);
 					break;
 				default:
-					abaaso.timer.init = setInterval(function() {
+					abaaso.timer.init = setInterval(function () {
 						if (/loaded|complete/.test(document.readyState)) {
 							clearInterval(abaaso.timer.init);
 							delete abaaso.timer.init;
@@ -3820,14 +3820,14 @@
 		decode          : json.decode,
 		defer           : utility.defer,
 		define          : utility.define,
-		del             : function(uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
+		del             : function (uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
 		destroy         : el.destroy,
 		encode          : json.encode,
 		error           : utility.error,
 		expire          : cache.clean,
 		expires         : 120000,
 		extend          : utility.extend,
-		fire            : function() {
+		fire            : function () {
 			var event = typeof arguments[0] === "undefined" ? undefined : arguments[0],
 				arg   = typeof arguments[1] === "undefined" ? undefined : arguments[1],
 				obj   = this === $ ? abaaso : this;
@@ -3835,12 +3835,12 @@
 			return observer.fire.call(observer, obj, event, arg);
 		},
 		genId           : utility.genId,
- 		get             : function(uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+ 		get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
 		guid            : utility.guid,
-		headers         : function(uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
+		headers         : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
 		hidden          : el.hidden,
 		id              : "abaaso",
-		init            : function() {
+		init            : function () {
 			// Stopping multiple executions
 			delete abaaso.init;
 			delete abaaso.bootstrap;
@@ -3868,14 +3868,14 @@
 
 			// Setting events & garbage collection
 			if (!client.server) {
-				$.on(window, "hashchange", function() { $.fire("hash", location.hash); });
-				$.on(window, "resize", function() { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
+				$.on(window, "hashchange", function () { $.fire("hash", location.hash); });
+				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
 			}
 
 			// Setting up cache expiration
-			var expiration = function() {
+			var expiration = function () {
 				var expiration = this;
-				$.timer.expire = setTimeout(function() {
+				$.timer.expire = setTimeout(function () {
 					cache.clean();
 					expiration.call(expiration);
 				}, $.expires);
@@ -3884,8 +3884,8 @@
 
 			// abaaso.state.current getter/setter
 			var getter, setter;
-			getter = function() { return this._current; };
-			setter = function(arg) {
+			getter = function () { return this._current; };
+			setter = function (arg) {
 				try {
 					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
 							throw Error(label.error.invalidArguments);
@@ -3911,7 +3911,7 @@
 				default:
 					// Pure hackery, only exists when needed
 					abaaso.state.current = null;
-					abaaso.state.change  = function(arg) { abaaso.state.current = arg; setter.call(abaaso.state, arg); };
+					abaaso.state.change  = function (arg) { abaaso.state.current = arg; setter.call(abaaso.state, arg); };
 			}
 
 			$.fire("init").un("init");
@@ -3921,7 +3921,7 @@
 
 			// Setting render event
 			if (!client.server) {
-				$.timer.render = setInterval(function() {
+				$.timer.render = setInterval(function () {
 					if (/loaded|complete/.test(document.readyState)) {
 						clearInterval($.timer.render);
 						delete $.timer.render;
@@ -3933,14 +3933,14 @@
 
 			return abaaso;
 		},
-		jsonp           : function(uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
-		listeners       : function(event) {
+		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
+		listeners       : function (event) {
 			var obj = this;
 			if (obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
 		},
 		module          : utility.module,
-		on              : function() {
+		on              : function () {
 			var all      = typeof arguments[2] === "function",
 			    obj      = all ? arguments[0] : this,
 				event    = all ? arguments[1] : arguments[0],
@@ -3955,17 +3955,17 @@
 		},
 		permissions     : client.permissions,
 		position        : el.position,
-		post            : function(uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
-		put             : function(uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
+		post            : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
+		put             : function (uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 		queryString     : utility.queryString,
 		ready           : false,
 		reflect         : utility.reflect,
 		repeat          : utility.repeat,
 		repeating       : {},
-		store           : function(arg, args) { return data.register.call(data, arg, args); },
+		store           : function (arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
 		tpl             : utility.tpl,
-		un              : function() {
+		un              : function () {
 			var all   = typeof arguments[2] !== "undefined",
 			    obj   = all ? arguments[0] : this,
 			    event = all ? arguments[1] : arguments[0],
