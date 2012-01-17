@@ -3206,6 +3206,10 @@
 				           		this.genId();
 				           		return el.klass(this, arg, true);
 				           },
+				           append   : function (type, args) {
+				           		this.genId();
+				           		return el.create(type, args, this, "first");
+				           },
 				           create   : function (type, args, position) {
 				           		this.genId();
 				           		return el.create(type, args, this, position);
@@ -3283,6 +3287,10 @@
 				           on       : function (event, listener, id, scope, state) {
 				           		this.genId();
 				           		return $.on.call(this, event, listener, id, scope, state);
+				           },
+				           prepend  : function (type, args) {
+				           		this.genId();
+				           		return el.create(type, args, this, "first");
 				           },
 				           prependChild: function (child) {
 				           		this.genId();
@@ -3781,6 +3789,10 @@
 		$               : utility.$,
 		alias           : utility.alias,
 		allows          : client.allows,
+		append          : function (type, args, obj) {
+			if (obj instanceof Element) obj.genId();
+			return el.create(type, args, obj, "last");
+		},
 		bootstrap       : function () {
 			if (typeof Array.prototype.filter === "undefined") {
 				Array.prototype.filter = function (fn) {
@@ -4018,6 +4030,10 @@
 		permissions     : client.permissions,
 		position        : el.position,
 		post            : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
+		prepend         : function (type, args, obj) {
+			if (obj instanceof Element) obj.genId();
+			return el.create(type, args, obj, "first");
+		},
 		put             : function (uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 		queryString     : utility.queryString,
 		ready           : false,
