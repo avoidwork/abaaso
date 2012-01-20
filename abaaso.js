@@ -3241,6 +3241,10 @@
 				           		this.genId();
 				           		return el.hide(this);
 				           },
+				           html     : function (arg) {
+				           		this.genId();
+				           		return this.update({innerHTML: arg});
+				           },
 				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
 				           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
 				           isDate   : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
