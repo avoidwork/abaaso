@@ -80,6 +80,15 @@
 		},
 
 		/**
+		 * Clones an Array
+		 * @param  {Array} obj Array to clone
+		 * @return {Array} Clone of Array
+		 */
+		clone : function (obj) {
+			return utility.clone(obj);
+		},
+
+		/**
 		 * Finds the index of arg(s) in instance
 		 *
 		 * @method contains
@@ -563,7 +572,7 @@
 		 */
 		jsonp : function (uri, success, failure, args) {
 			var curi = new String(uri).toString(),
-			    guid = utility.guid(),
+			    guid = utility.guid(true),
 			    callback, cbid, s;
 
 			switch (true) {
@@ -656,7 +665,7 @@
 				    headers = type === "get" && args instanceof Object ? args : null,
 				    cached  = type === "head" ? false : cache.get(uri),
 				    typed   = type.capitalize(),
-				    guid    = utility.guid(),
+				    guid    = utility.guid(true),
 				    i, timer, fail;
 
 				timer = function () {
@@ -1449,7 +1458,7 @@
 					reindex  = (reindex === true);
 					var self = this,
 					    obj  = self.parentNode,
-					    guid = utility.guid(),
+					    guid = utility.guid(true),
 					    success, failure;
 
 					success = function (arg) {
@@ -1595,7 +1604,7 @@
 				if (data.reindex) this.reindex();
 				this.parentNode.fire("afterDataDelete", record);
 				return this.parentNode;
-			}, utility.guid(), obj.data);
+			}, utility.guid(true), obj.data);
 
 			obj.on("syncDataSet", function (data) {
 				var record;
@@ -1615,17 +1624,17 @@
 					this.keys[data.key].index = index;
 					this.records[index] = {};
 					record = this.records[index];
-					record.data = $.clone(data.data);
+					record.data = utility.clone(data.data);
 					record.key  = data.key;
 					if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
 				}
 				else {
-					data.record.data = $.clone(data.data);
+					data.record.data = utility.clone(data.data);
 					record = data.record;
 				}
 				this.views = {};
 				this.parentNode.fire("afterDataSet", record);
-			}, utility.guid(), obj.data);
+			}, utility.guid(true), obj.data);
 
 			// Getters & setters
 			switch (true) {
@@ -2185,7 +2194,7 @@
 						case "id":
 							var o = observer.listeners;
 							if (typeof o[obj.id] !== "undefined") {
-								o[args[i]] = $.clone(o[obj.id]);
+								o[args[i]] = utility.clone(o[obj.id]);
 								delete o[obj.id];
 							}
 						default:
@@ -2536,7 +2545,7 @@
 
 				if (obj instanceof Array) return obj.each(function (i) { observer.add(i, event, fn, id, scope, state); });
 
-				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid();
+				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
 
 				var instance = null,
 				    l = observer.listeners,
@@ -2747,11 +2756,14 @@
 		 */
 		state : function (arg) {
 			var l = this.listeners,
+			    p = $.state.previous,
 			    i, e;
 
 			for (i in l) {
+				if (!l.hasOwnProperty(i)) continue;
 				for (e in l[i]) {
-					l[i][e][$.state.previous] = l[i][e].active;
+					if (!l[i].hasOwnProperty(e)) continue;
+					l[i][e][p]     = utility.clone(l[i][e].active);
 					l[i][e].active = l[i][e][arg] || {};
 					if (typeof l[i][e][arg] !== "undefined") delete l[i][e][arg];
 				}
@@ -2852,41 +2864,42 @@
 		 * Clones an Object
 		 *
 		 * @method clone
-		 * @param  {Object} obj Object to clone
+		 * @param {Object}  obj     Object to clone
 		 * @return {Object} Clone of obj
 		 */
 		clone : function (obj) {
-			try {
-				var clone;
+			var clone;
 
-				switch (true) {
-					case typeof obj === "number":
-						clone = Number(obj);
-						break;
-					case typeof obj === "string":
-						clone = String(obj);
-						break;
-					case typeof obj === "boolean":
-						clone = Boolean(obj);
-						break;
-					case obj instanceof Document:
-						clone = xml.decode(xml.encode(obj));
-						break;
-					case obj instanceof Array:
-						clone = [].concat(obj);
-						break;
-					default:
-						clone = json.decode(json.encode(obj));
-				}
+			switch (true) {
+				case typeof obj === "boolean":
+					clone = Boolean(obj);
+					break;
+				case typeof obj === "function":
+					clone = obj;
+					break;
+				case typeof obj === "number":
+					clone = Number(obj);
+					break;
+				case typeof obj === "string":
+					clone = String(obj);
+					break;
+				case obj instanceof Document:
+					clone = xml.decode(xml.encode(obj));
+					break;
+				case obj instanceof Array:
+					clone = obj.clone();
+					break;
+				case obj instanceof Object:
+					clone = json.decode(json.encode(obj));
+					if (typeof clone === "undefined") clone = obj;
+					break;
+				default:
+					clone = obj;
+			}
 
-				if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
-				if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
-				return clone;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
+			if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
+			if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
+			return clone;
 		},
 
 		/**
@@ -2927,7 +2940,7 @@
 		 * @return {Object} undefined
 		 */
 		defer : function (fn, ms) {
-			var id = utility.guid(),
+			var id = utility.guid(true),
 			    op = function () {
 					delete abaaso.timer[id];
 					fn();
@@ -3024,7 +3037,7 @@
 
 			var id;
 
-			do id = utility.domId(utility.guid());
+			do id = utility.domId(utility.guid(true));
 			while (typeof $("#" + id) !== "undefined");
 
 			if (typeof obj === "object") {
@@ -3038,11 +3051,17 @@
 		 * Generates a GUID
 		 *
 		 * @method guid
+		 * @param {Boolean} safe [Optional] Strips - from GUID
 		 * @return {String} GUID
 		 */
-		guid : function () {
-			function s4() { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); };
-			return (s4() + s4() + "-" + s4() + "-4" + s4().substr(0,3) + "-" + s4() + "-" + s4() + s4() + s4()).toLowerCase();
+		guid : function (safe) {
+			safe  = (safe === true);
+			var s = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); },
+			    o;
+
+			o = (s() + s() + "-" + s() + "-4" + s().substr(0,3) + "-" + s() + "-" + s() + s() + s()).toLowerCase();
+			if (safe) o = o.replace(/-/gi, "");
+			return o;
 		},
 
 		/**
@@ -3230,7 +3249,7 @@
 				           get       : function (uri, headers) {
 				           		this.fire("beforeGet");
 				           		var cached = cache.get(uri),
-				           		    guid   = utility.guid(),
+				           		    guid   = utility.guid(true),
 				           		    self   = this;
 
 				           		!cached ? uri.get(function (a) { self.text(a).fire("afterGet"); }, null, headers)
@@ -3466,7 +3485,7 @@
 		 * @return {String} Timeout ID
 		 */
 		repeat : function (fn, timeout, id) {
-			id = id || utility.guid();
+			id = id || utility.guid(true);
 			var r = function (fn, timeout, id) {
 				var r = this;
 				if (fn() !== false) $.repeating[id] = setTimeout(function () { r.call(r, fn, timeout, id); }, timeout);
@@ -3861,9 +3880,6 @@
 				};
 			}
 
-			// Setting initial application state
-			abaaso.state._current = abaaso.state.current = "initial";
-
 			// Binding helper & namespace to $
 			$ = abaaso.$.bind($);
 			utility.alias($, abaaso);
@@ -3877,6 +3893,10 @@
 			$.on             = abaaso.on;
 			$.un             = abaaso.un;
 			$.listeners      = abaaso.listeners;
+
+			// Setting initial application state
+			abaaso.state._current = abaaso.state.current = "initial";
+			$.state._current      = $.state.current      = abaaso.state.current;
 
 			switch (true) {
 				case client.server:
@@ -3950,7 +3970,6 @@
 			$.client.css3    = client.css3();
 			$.client.size    = client.size();
 			$.client.tablet  = client.tablet();
-			$.state.current  = abaaso.state._current;
 
 			// Setting events & garbage collection
 			if (!client.server) {
@@ -3976,8 +3995,8 @@
 					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
 							throw Error(label.error.invalidArguments);
 
-					this.previous = this._current;
-					this._current = arg;
+					$.state.previous = abaaso.state.previous = abaaso.state._current;
+					$.state._current = abaaso.state._current = arg;
 					return observer.state(arg);
 				}
 				catch (e) {
@@ -3989,15 +4008,18 @@
 			switch (true) {
 				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
 					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
+					Object.defineProperty($.state, "current", {get: getter, set: setter});
 					break;
 				case typeof abaaso.state.__defineGetter__ === "function":
 					abaaso.state.__defineGetter__("current", getter);
 					abaaso.state.__defineSetter__("current", setter);
+					$.state.__defineGetter__("current", getter);
+					$.state.__defineSetter__("current", setter);
 					break;
 				default:
 					// Pure hackery, only exists when needed
-					abaaso.state.current = null;
-					abaaso.state.change  = function (arg) { abaaso.state.current = arg; setter.call(abaaso.state, arg); };
+					abaaso.state.change = function (arg) { $.state.current = abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+					$.state.change      = function (arg) { $.state.current = abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
 			}
 
 			$.fire("init").un("init");
@@ -4066,8 +4088,8 @@
 			i = all ? id    : event;
 			s = all ? state : id;
 
-			if (typeof obj === "undefined" || obj === $) obj = abaaso;
-			return observer.remove.call(observer, obj, event, id, state);
+			if (typeof o === "undefined" || o === $) o = abaaso;
+			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
 		version         : "1.8"
