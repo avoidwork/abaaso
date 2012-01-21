@@ -2387,7 +2387,7 @@
 		},
 
 		// Months of the Year
-		months : {
+		month : {
 			0  : "January",
 			1  : "February",
 			2  : "March",
@@ -2833,7 +2833,7 @@
 							case typeof origin[b] === "function":
 								obj[b] = origin[b].bind(obj[b]);
 								break;
-							case !origin[b] instanceof Array && origin[b] instanceof Object:
+							case !(origin[b] instanceof Array) && origin[b] instanceof Object:
 								if (typeof obj[b] === "undefined") obj[b] = {};
 								(function () { abaaso.alias(obj[b], origin[b]); })();
 								break;
@@ -3861,7 +3861,21 @@
 				};
 			}
 
+			// Setting initial application state
 			abaaso.state._current = abaaso.state.current = "initial";
+
+			// Binding helper & namespace to $
+			$ = abaaso.$.bind($);
+			utility.alias($, abaaso);
+			delete $.$;
+			delete $.bootstrap;
+			delete $.init;
+
+			// Unbinding observer methods to maintain scope
+			$.fire           = abaaso.fire;
+			$.on             = abaaso.on;
+			$.un             = abaaso.un;
+			$.listeners      = abaaso.listeners;
 
 			switch (true) {
 				case client.server:
@@ -3912,17 +3926,6 @@
 			// Stopping multiple executions
 			delete abaaso.init;
 			delete abaaso.bootstrap;
-
-			// Binding helper & namespace to $
-			$ = abaaso.$.bind($);
-			utility.alias($, abaaso);
-			delete $.$;
-
-			// Unbinding observer methods to maintain scope
-			$.fire           = abaaso.fire;
-			$.on             = abaaso.on;
-			$.un             = abaaso.un;
-			$.listeners      = abaaso.listeners;
 
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
