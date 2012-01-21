@@ -1871,7 +1871,7 @@
 				$.fire("beforeDestroy", obj);
 				obj.fire("beforeDestroy");
 				observer.remove(obj.id);
-				obj.parentNode.removeChild(obj);
+				if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
 				obj.fire("afterDestroy");
 				$.fire("afterDestroy", obj.id);
 			}
@@ -3910,12 +3910,15 @@
 		expires         : 120000,
 		extend          : utility.extend,
 		fire            : function (obj, event, arg) {
-			var all      = typeof arguments[2] !== "undefined",
-			    obj      = all ? arguments[0] : (typeof this === "undefined" || this === $ ? abaaso : this),
-			    event    = all ? arguments[1] : arguments[0],
-			    arg      = all ? arguments[2] : arguments[1];
+			var all = typeof arg !== "undefined",
+			    o, e, a;
 
-			return observer.fire.call(observer, obj, event, arg);
+			o = all ? obj   : this;
+			e = all ? event : obj;
+			a = all ? arg   : event;
+
+			if (typeof o === "undefined" || o === $) o = abaaso;
+			return observer.fire.call(observer, o, e, a);
 		},
 		genId           : utility.genId,
  		get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
@@ -4024,17 +4027,19 @@
 		},
 		module          : utility.module,
 		on              : function (obj, event, listener, id, scope, state) {
-			var all      = typeof arguments[2] === "function",
-			    obj      = all ? arguments[0] : this,
-			    event    = all ? arguments[1] : arguments[0],
-			    listener = all ? arguments[2] : arguments[1],
-			    id       = all ? arguments[3] : arguments[2],
-			    scope    = all ? arguments[4] : arguments[3],
-			    state    = all ? arguments[5] : arguments[4];
+			var all = typeof listener === "function",
+			    o, e, l, i, s, st;
 
-			if (typeof obj === "undefined" || obj === $) obj = abaaso;
-			if (typeof scope === "undefined") scope = obj;
-			return observer.add.call(observer, obj, event, listener, id, scope, state);
+			o  = all ? obj      : this;
+			e  = all ? event    : obj;
+			l  = all ? listener : event;
+			i  = all ? id       : listener;
+			s  = all ? scope    : id;
+			st = all ? state    : scope;
+
+			if (typeof o === "undefined" || o === $) o = abaaso;
+			if (typeof s === "undefined") s = o;
+			return observer.add.call(observer, o, e, l, i, s, st);
 		},
 		permissions     : client.permissions,
 		position        : el.position,
@@ -4053,12 +4058,14 @@
 		timer           : {},
 		tpl             : utility.tpl,
 		un              : function (obj, event, id, state) {
-			var all   = typeof arguments[2] !== "undefined",
-			    obj   = all ? arguments[0] : this,
-			    event = all ? arguments[1] : arguments[0],
-			    id    = all ? arguments[2] : arguments[1],
-			    state = all ? arguments[3] : arguments[2];
-			
+			var all = typeof id !== "undefined",
+			    o, e, i, s;
+
+			o = all ? obj   : this;
+			e = all ? event : obj;
+			i = all ? id    : event;
+			s = all ? state : id;
+
 			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 			return observer.remove.call(observer, obj, event, id, state);
 		},
