@@ -3870,6 +3870,7 @@
 			delete $.$;
 			delete $.bootstrap;
 			delete $.init;
+			delete $.data;
 
 			// Unbinding observer methods to maintain scope
 			$.fire           = abaaso.fire;
