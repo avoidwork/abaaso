@@ -3054,8 +3054,7 @@
 				var idx = args.index(i),
 				    nth = n,
 				    num = idx + 1 < nth && !isNaN(parseInt(args[idx + 1])),
-				    val = value,
-				    origin = obj;
+				    val = value;
 
 				if (!isNaN(parseInt(i))) i = parseInt(i);
 				
