@@ -1254,6 +1254,53 @@
 			},
 
 			/**
+			 * Transforms a record to a Form for editing
+			 * 
+			 * If record is null, an empty form based on the first record is generated.
+			 * The submit action is data.set() which triggers a POST or PUT
+			 * from the data store.
+			 * 
+			 * @param  {Mixed}  record null, record, key or index
+			 * @param  {Object} target Target HTML Element
+			 * @return {Object} Generated HTML form
+			 */
+			form : function (record, target) {
+				try {
+					var empty  = (record === null),
+					    entity, obj, handler;
+
+					if (empty) record = this.get(0);
+
+					if (typeof record === "undefined")
+						throw Error(label.error.invalidArguments);
+
+					target = utility.object(target);
+					entity = this.data.uri.replace(/.*\//, "").replace(/\?.*/, "")
+					if (entity.isDoman()) entity = entity.replace(/\..*/g, "");
+
+					/**
+					 * Button handler
+					 * 
+					 * @param  {Object} event Window event
+					 * @return {Undefined} undefined
+					 */
+					handler = function (event) {
+						// Validate form and cast back to JSON for data.set()
+					};
+
+					obj = el.create("form", {style: "display:none;"}, target);
+					// populate obj here using micro-format
+					obj.create("button", {value: label.common.submit}).on("click", function(e) { handler(e); });
+					obj.css("display", "visible");
+					return obj;
+				}
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
+				}
+			},
+
+			/**
 			 * Retrieves a record based on key or index
 			 *
 			 * If the key is an integer, cast to a string before sending as an argument!
