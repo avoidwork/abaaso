@@ -239,6 +239,20 @@
 		 */
 		total : function (obj) {
 			return obj.indexed().length;
+		},
+
+		/**
+		 * Casts an Array to Object
+		 * 
+		 * @param  {Array} ar Array to transform
+		 * @return {Object} New object
+		 */
+		toObject : function (ar) {
+			var obj = {},
+			    i   = ar.length;
+
+			while (i--) obj[i.toString()] = ar[i];
+			return obj;
 		}
 	};
 
@@ -3028,19 +3042,47 @@
 		 * @return {Object} Object receiving value
 		 */
 		define : function (args, value, obj) {
-			args = args.split(".");
-			obj  = obj || this;
+			args  = args.split(".");
+			obj   = obj || this;
+			value = value || null;
 			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 
-			var i = null,
-			    l = args.length,
-			    p = obj;
+			var p = obj,
+			    n = args.length;
 
-			for (i = 0; i < l; i++) {
-				typeof p[args[i]] === "undefined" ? p[args[i]] = (i + 1 < l ? {} : ((typeof value !== "undefined") ? value : null))
-							                      : (function () { if (i + 1 >= l) p[args[i]] = typeof value !== "undefined" ? value : null; })();
-				p = p[args[i]];
-			}
+			args.each(function (i) {
+				var idx = args.index(i),
+				    nth = n,
+				    num = idx + 1 < nth && !isNaN(parseInt(args[idx + 1])),
+				    val = value,
+				    origin = obj;
+
+				if (!isNaN(parseInt(i))) i = parseInt(i);
+				
+				// Creating or casting
+				switch (true) {
+					case typeof p[i] === "undefined":
+						p[i] = num ? [] : {};
+						break;
+					case p[i] instanceof Object && num:
+						p[i] = array.cast(p[i]);
+						break;
+					case p[i] instanceof Array && !num:
+						p[i] = p[i].toObject();
+						break;
+					default:
+						p[i] = {};
+				}
+
+				// Setting reference or value
+				switch (true) {
+					case idx + 1 === nth:
+						p[i] = val;
+						break;
+					default:
+						p = p[i];
+				}
+			});
 
 			return obj;
 		},
@@ -3330,6 +3372,7 @@
 				           		});
 				           },
 				           total    : function () { return array.total(this); },
+				           toObject : function () { return array.toObject(this); },
 				           un       : function (event, id, state) { return this.each(function (i) { i.un(event, id, state); }); },
 				           update   : function (arg) { return this.each(function (i) { el.update(i, arg); }); },
 				           validate : function () {
