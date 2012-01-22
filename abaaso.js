@@ -1344,7 +1344,7 @@
 					 * @return {Undefined} undefined
 					 */
 					structure = function (record, obj, name) {
-						var i, x;
+						var i, x, id;
 						for (i in record) {
 							switch (true) {
 								case record[i] instanceof Array:
@@ -1355,7 +1355,9 @@
 									structure(record[i], obj, name + "[" + i + "]");
 									break;
 								default:
-									obj.create("input", {name: name + "[" + i + "]", type: "text", value: empty ? "" : record[i]});
+									id = (name + "[" + i + "]").replace(/\[|\]/g, "");
+									obj.create("label", {"for": id}).html(i);
+									obj.create("input", {id: id, name: name + "[" + i + "]", type: "text", value: empty ? "" : record[i]});
 							}
 						}
 					};
@@ -1364,6 +1366,7 @@
 					obj = el.create("form", {style: "display:none;"}, target);
 					structure(data, obj, entity);
 					obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
+					obj.create("input", {type: "reset", value: label.common.reset});
 					obj.css("display", "");
 					this.parentNode.fire("afterDataForm", obj);
 					return obj;
@@ -2497,6 +2500,7 @@
 			next    : "Next",
 			login   : "Login",
 			ran     : "Random",
+			reset   : "Reset",
 			save    : "Save",
 			search  : "Search",
 			submit  : "Submit"
