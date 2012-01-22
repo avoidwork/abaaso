@@ -1313,7 +1313,7 @@
 					 */
 					handler = function (event) {
 						var form    = event.srcElement.parentNode,
-						    nodes   = array.cast(form.childNodes),
+						    nodes   = $("#" + form.id + " input"),
 						    entity  = nodes[0].name.match(/(.*)\[/)[1],
 						    result  = true,
 						    newData = {};
@@ -1356,7 +1356,7 @@
 									break;
 								default:
 									id = (name + "[" + i + "]").replace(/\[|\]/g, "");
-									obj.create("label", {"for": id}).html(i);
+									obj.create("label", {"for": id}).html(i.capitalize());
 									obj.create("input", {id: id, name: name + "[" + i + "]", type: "text", value: empty ? "" : record[i]});
 							}
 						}
@@ -1367,7 +1367,7 @@
 					structure(data, obj, entity);
 					obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
 					obj.create("input", {type: "reset", value: label.common.reset});
-					obj.css("display", "");
+					obj.css("display", "inherit");
 					this.parentNode.fire("afterDataForm", obj);
 					return obj;
 				}
