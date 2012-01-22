@@ -1208,10 +1208,10 @@
 					    n      = typeof needle === "string" ? needle.explode() : needle,
 					    result = [],
 					    nth,
-						nth2   = n.length,
-						obj    = this.parentNode,
-						keys   = {},
-						x, y, f, r, s, p, i, a;
+					    nth2   = n.length,
+					    obj    = this.parentNode,
+					    keys   = {},
+					    x, y, f, r, s, p, i, a;
 
 					obj.fire("beforeDataFind");
 
