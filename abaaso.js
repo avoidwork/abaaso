@@ -2036,13 +2036,15 @@
 				if (!obj instanceof Element)
 					throw Error(label.error.invalidArguments);
 
-				var left, top;
+				var left, top, height, width;
 
-				left = top = 0;
+				left   = top = 0;
+				width  = obj.offsetWidth;
+				height = obj.offsetHeight;
 
 				if (obj.offsetParent) {
-					left = obj.offsetLeft;
-					top  = obj.offsetTop;
+					top    = obj.offsetTop;
+					left   = obj.offsetLeft;
 
 					while (obj = obj.offsetParent) {
 						left += obj.offsetLeft;
@@ -2050,7 +2052,12 @@
 					}
 				}
 
-				return {left: left, top: top};
+				return {
+					top    : top,
+					right  : document.width  - (left + width),
+					bottom : document.height + window.scrollY - (top + height),
+					left   : left
+				};
 			}
 			catch (e) {
 				error(e, arguments, this);
