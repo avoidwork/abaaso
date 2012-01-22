@@ -1154,16 +1154,17 @@
 				    r    = new RegExp("true|undefined"),
 				    key, args, uri;
 
-				if (typeof record === "string") {
-					key    = record;
-					record = this.keys[key];
-					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
-					record = record.index;
-				}
-				else {
-					key = this.records[record];
-					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
-					key = key.key;
+				switch (typeof record) {
+					case "string":
+						key    = record;
+						record = this.keys[key];
+						if (typeof key === "undefined") throw Error(label.error.invalidArguments);
+						record = record.index;
+						break;
+					default:
+						key = this.records[record];
+						if (typeof key === "undefined") throw Error(label.error.invalidArguments);
+						key = key.key;
 				}
 
 				args   = {key: key, record: record, reindex: reindex};
@@ -2647,7 +2648,7 @@
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
-				if (abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + event + "] " + o);
+				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
 				for (i in l) { l[i].fn.call(l[i].scope, arg); }
 				abaaso.observer.fired++;
@@ -2887,7 +2888,7 @@
 					clone = xml.decode(xml.encode(obj));
 					break;
 				case obj instanceof Array:
-					clone = obj.clone();
+					clone = [].concat(obj);
 					break;
 				case obj instanceof Object:
 					clone = json.decode(json.encode(obj));
