@@ -1295,8 +1295,12 @@
 							break;
 					}
 
-					if (typeof record === "undefined")
-						throw Error(label.error.invalidArguments);
+					switch (true) {
+						case typeof record === "undefined":
+							throw Error(label.error.invalidArguments);
+						case !this.uri.allows("POST"): // POST & PUT are interchangable for this bit
+							throw Error(label.error.serverInvalidMethod);
+					}
 
 					key  = record.key;
 					data = record.data;
