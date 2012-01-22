@@ -1269,7 +1269,14 @@
 					var empty  = (record === null),
 					    entity, obj, handler;
 
-					if (empty) record = this.get(0);
+					switch (true) {
+						case empty:
+							record = this.get(0);
+							break;
+						case !(record instanceof Object):
+							record = this.get(record);
+							break;
+					}
 
 					if (typeof record === "undefined")
 						throw Error(label.error.invalidArguments);
