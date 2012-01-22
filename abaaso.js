@@ -71,7 +71,8 @@
 
 			switch (true) {
 				case !isNaN(obj.length):
-					for (i = 0, nth = obj.length; i < nth; i++) { o.push(obj[i]); }
+					if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
+					else for (i = 0, nth = obj.length; i < nth; i++) { o.push(obj[i]); }
 					break;
 				default:
 					for (i in obj) { o.push(key ? i : obj[i]); }
@@ -1260,14 +1261,16 @@
 			 * The submit action is data.set() which triggers a POST or PUT
 			 * from the data store.
 			 * 
-			 * @param  {Mixed}  record null, record, key or index
-			 * @param  {Object} target Target HTML Element
+			 * @param  {Mixed}   record null, record, key or index
+			 * @param  {Object}  target Target HTML Element
+			 * @param  {Boolean} test   [Optional] Test form before setting values
 			 * @return {Object} Generated HTML form
 			 */
-			form : function (record, target) {
+			form : function (record, target, test) {
 				try {
-					var empty  = (record === null),
-					    entity, obj, handler;
+					var empty = (record === null),
+					    self  = this,
+					    entity, obj, handler, structure, key, data;
 
 					switch (true) {
 						case empty:
@@ -1281,9 +1284,12 @@
 					if (typeof record === "undefined")
 						throw Error(label.error.invalidArguments);
 
-					target = utility.object(target);
-					entity = this.data.uri.replace(/.*\//, "").replace(/\?.*/, "")
-					if (entity.isDoman()) entity = entity.replace(/\..*/g, "");
+					key  = record.key;
+					data = record.data;
+
+					if (typeof target !== "undefined") target = utility.object(target);
+					entity = this.uri.replace(/.*\//, "").replace(/\?.*/, "")
+					if (entity.isDomain()) entity = entity.replace(/\..*/g, "");
 
 					/**
 					 * Button handler
@@ -1292,13 +1298,60 @@
 					 * @return {Undefined} undefined
 					 */
 					handler = function (event) {
-						// Validate form and cast back to JSON for data.set()
+						var form    = event.srcElement.parentNode,
+						    nodes   = array.cast(form.childNodes),
+						    entity  = nodes[0].name.match(/(.*)\[/)[1],
+						    result  = true,
+						    newData = {};
+
+						self.parentNode.fire("beforeDataFormSubmit");
+
+						if (test) result = form.validate();
+
+						switch (result) {
+							case false:
+								self.parentNode.fire("failedDataFormSubmit");
+								break;
+							case true:
+								nodes.each(function (i) { utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData); });
+								self.set(key, newData[entity]);
+								break;
+						}
+
+						self.parentNode.fire("afterDataFormSubmit", key);
 					};
 
+					/**
+					 * Data structure in micro-format
+					 * 
+					 * @param  {Object} record Data store record
+					 * @param  {Object} obj    [description]
+					 * @param  {String} name   [description]
+					 * @return {Undefined} undefined
+					 */
+					structure = function (record, obj, name) {
+						var i, x;
+						for (i in record) {
+							switch (true) {
+								case record[i] instanceof Array:
+									x = 0;
+									record[i].each(function (o) { structure(o, obj, name + "[" + i + "][" + (x++) + "]"); });
+									break;
+								case record[i] instanceof Object:
+									structure(record[i], obj, name + "[" + i + "]");
+									break;
+								default:
+									obj.create("input", {name: name + "[" + i + "]", type: "text", value: empty ? "" : record[i]});
+							}
+						}
+					};
+
+					this.parentNode.fire("beforeDataForm");
 					obj = el.create("form", {style: "display:none;"}, target);
-					// populate obj here using micro-format
-					obj.create("button", {value: label.common.submit}).on("click", function(e) { handler(e); });
-					obj.css("display", "visible");
+					structure(data, obj, entity);
+					obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
+					obj.css("display", "");
+					this.parentNode.fire("afterDataForm", obj);
 					return obj;
 				}
 				catch (e) {
@@ -2883,7 +2936,7 @@
 			}
 
 			// Transforming obj if required
-			if (obj !== null && !(obj instanceof Element) && !nodelist) obj = !client.ie || client.version > 8 ? Array.prototype.slice.call(obj) : array.cast(obj);
+			if (obj !== null && !(obj instanceof Element) && !nodelist) obj = array.cast(obj);
 			if (obj === null) obj = undefined;
 
 			return obj;
