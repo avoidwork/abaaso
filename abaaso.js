@@ -2054,8 +2054,8 @@
 
 				return {
 					top    : top,
-					right  : document.width  - (left + width),
-					bottom : document.height + window.scrollY - (top + height),
+					right  : document.documentElement.clientWidth  - (left + width),
+					bottom : document.documentElement.clientHeight + window.scrollY - (top + height),
 					left   : left
 				};
 			}
