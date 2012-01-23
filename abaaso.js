@@ -1298,7 +1298,7 @@
 					switch (true) {
 						case typeof record === "undefined":
 							throw Error(label.error.invalidArguments);
-						case !this.uri.allows("POST"): // POST & PUT are interchangable for this bit
+						case this.uri !== null && !this.uri.allows("post"): // POST & PUT are interchangable for this bit
 							throw Error(label.error.serverInvalidMethod);
 					}
 
@@ -1680,19 +1680,24 @@
 							if (arg !== null && arg.isEmpty())
 								throw Error(label.error.invalidArguments);
 
-							if (this._uri === arg) return;
-
-							if (this.uri !== null) {
-								this.uri.un("expire", "dataSync");
-								cache.expire(this.uri, true);
+							switch (true) {
+								case this._uri === arg:
+									return;
+								case this.uri !== null:
+									this.uri.un("expire", "dataSync");
+									cache.expire(this.uri, true);
+								default:
+									this._uri = arg;
 							}
 
-							this._uri = arg;
-
-							if (arg !== null) {
-								this.uri.on("expire", function () { this.sync(true); }, "dataSync", this);
-								cache.expire(arg, true);
-								this.sync();
+							switch (true) {
+								case arg !== null:
+									this.uri.on("expire", function () { this.sync(true); }, "dataSync", this);
+									cache.expire(arg, true);
+									this.sync();
+									break;
+								default:
+									this.clear(true);
 							}
 						}
 						catch (e) {
