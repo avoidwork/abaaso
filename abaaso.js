@@ -2984,17 +2984,15 @@
 					var b = i;
 					if (origin.hasOwnProperty(b)) {
 						switch (true) {
-							case typeof origin[b] === "function":
+							case typeof origin[b] === "function" && (!(client.ios) || !(origin[b] instanceof RegExp)):
 								obj[b] = origin[b].bind(obj[b]);
 								break;
-							case !(origin[b] instanceof Array) && origin[b] instanceof Object:
+							case !(origin[b] instanceof Array) && origin[b] instanceof Object && !(origin[b] instanceof RegExp):
 								if (typeof obj[b] === "undefined") obj[b] = {};
 								(function () { abaaso.alias(obj[b], origin[b]); })();
 								break;
-							case (/boolean|number|object|string/.test(typeof origin[b])):
-							case origin[b] === null:
+							default:
 								obj[b] = origin[b];
-								break;
 						}
 					}
 				})();
