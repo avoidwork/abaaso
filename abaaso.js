@@ -2989,7 +2989,7 @@
 								break;
 							case !(origin[b] instanceof Array) && origin[b] instanceof Object && !(origin[b] instanceof RegExp):
 								if (typeof obj[b] === "undefined") obj[b] = {};
-								(function () { abaaso.alias(obj[b], origin[b]); })();
+								utility.alias(obj[b], origin[b]);
 								break;
 							default:
 								obj[b] = origin[b];
