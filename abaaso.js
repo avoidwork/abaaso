@@ -44,8 +44,11 @@
  * @module abaaso
  * @version 1.8
  */
- var $ = $ || null, abaaso = abaaso || (function () {
+ if (typeof $ === "undefined") var $ = null;
+ if (typeof abaaso === "undefined") var abaaso = (function () {
 	"use strict";
+
+	var $;
 
 	/**
 	 * Array methods
@@ -2789,11 +2792,10 @@
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
-				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
+				if ($.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
 				for (i in l) { l[i].fn.call(l[i].scope, arg); }
-				abaaso.observer.fired++;
-				$.observer.fired = abaaso.observer.fired;
+				$.observer.fired++;
 				return obj;
 			}
 			catch (e) {
@@ -3166,8 +3168,8 @@
 			};
 
 			if (typeof console !== "undefined") console[!warning ? "error" : "warn"](o.message);
-			abaaso.error.log.push(o);
-			abaaso.fire("error", o);
+			$.error.log.push(o);
+			$.fire("error", o);
 			return undefined;
 		},
 
@@ -3256,7 +3258,7 @@
 			try {
 				if (obj instanceof Array) return obj.each(function (i) { utility.loading(i); });
 
-				var l = abaaso.loading;
+				var l = $.loading;
 
 				if (l.url === null)
 					throw Error(label.error.elementNotFound);
@@ -4080,6 +4082,15 @@
 			$.state._current      = $.state.current      = abaaso.state.current;
 
 			switch (true) {
+				case window["$"] === null:
+					window["$"] = $;
+					break;
+				default:
+					window["a$"] = $;
+					abaaso.aliased = "a$";
+			}
+
+			switch (true) {
 				case client.server:
 					abaaso.init();
 					break;
@@ -4147,10 +4158,10 @@
 			$.error.log = abaaso.error.log = [];
 
 			// Describing the Client
-			$.client.version = client.version();
-			$.client.css3    = client.css3();
-			$.client.size    = client.size();
-			$.client.tablet  = client.tablet();
+			client.version();
+			client.css3();
+			client.size();
+			client.tablet();
 
 			// Setting events & garbage collection
 			if (!client.server) {
@@ -4229,6 +4240,7 @@
 			return observer.list.call(observer, obj, event);
 		},
 		module          : utility.module,
+		aliased         : "$",
 		on              : function (obj, event, listener, id, scope, state) {
 			var all = typeof listener === "function",
 			    o, e, l, i, s, st;
