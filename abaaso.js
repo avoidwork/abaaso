@@ -2981,7 +2981,7 @@
 			var i;
 			for (i in origin) {
 				(function () {
-					var b = i;
+					var b = i, getter, setter;
 					if (origin.hasOwnProperty(b)) {
 						switch (true) {
 							case typeof origin[b] === "function" && (!(client.ios) || !(origin[b] instanceof RegExp)):
@@ -2992,7 +2992,20 @@
 								utility.alias(obj[b], origin[b]);
 								break;
 							default:
-								obj[b] = origin[b];
+								getter = function () { return origin[b]; },
+								setter = function (arg) { origin[b] = arg; };
+
+								switch (true) {
+									case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
+										Object.defineProperty(obj, b, {get: getter, set: setter});
+										break;
+									case typeof obj.__defineGetter__ === "function":
+										obj.__defineGetter__(b, getter);
+										obj.__defineSetter__(b, setter);
+										break;
+									default:
+										obj[b] = origin[b];
+								}
 						}
 					}
 				})();
