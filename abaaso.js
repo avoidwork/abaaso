@@ -2792,7 +2792,7 @@
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
-				if ($.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
+				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
 				for (i in l) { l[i].fn.call(l[i].scope, arg); }
 				$.observer.fired++;
