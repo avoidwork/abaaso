@@ -390,7 +390,7 @@
 		osx     : (function () { return (typeof navigator !== "undefined") && /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function () { return (typeof navigator !== "undefined") && /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
 		server  : (function () { return (typeof navigator === "undefined"); })(),
-		tablet  : (function () { return (typeof navigator !== "undefined") && /android|ipad|playbook|webos/i.test(navigator.userAgent) && (client.size.x >= 1000 || client.size.y >= 1000); }),
+		tablet  : (function () { abaaso.client.tablet = this.tablet = (typeof navigator !== "undefined") && /android|ipad|playbook|webos/i.test(navigator.userAgent) && (abaaso.client.size.x >= 1000 || abaaso.client.size.y >= 1000); }),
 		webos   : (function () { return (typeof navigator !== "undefined") && /webos/i.test(navigator.userAgent); })(),
 		windows : (function () { return (typeof navigator !== "undefined") && /windows/i.test(navigator.userAgent); })(),
 		version : (function () {
@@ -2457,14 +2457,15 @@
 		 *
 		 * @method decode
 		 * @param  {String} arg String to parse
+		 * @param  {Boolean} silent [Optional] Silently fail
 		 * @return {Mixed} Entity resulting from parsing JSON, or undefined
 		 */
-		decode : function (arg) {
+		decode : function (arg, silent) {
 			try {
 				return JSON.parse(arg);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				if (silent !== true) error(e, arguments, this);
 				return undefined;
 			}
 		},
@@ -2473,15 +2474,16 @@
 		 * Encodes the argument as JSON
 		 *
 		 * @method encode
-		 * @param  {Mixed} arg Entity to encode
+		 * @param  {Mixed}   arg    Entity to encode
+		 * @param  {Boolean} silent [Optional] Silently fail
 		 * @return {String} JSON, or undefined
 		 */
-		encode : function (arg) {
+		encode : function (arg, silent) {
 			try {
 				return JSON.stringify(arg);
 			}
 			catch (e) {
-				error(e, arguments, this);
+				if (silent !== true) error(e, arguments, this);
 				return undefined;
 			}
 		}
@@ -2907,7 +2909,7 @@
 				if (!l.hasOwnProperty(i)) continue;
 				for (e in l[i]) {
 					if (!l[i].hasOwnProperty(e)) continue;
-					l[i][e][p]     = utility.clone(l[i][e].active);
+					l[i][e][p]     = l[i][e].active;
 					l[i][e].active = l[i][e][arg] || {};
 					if (typeof l[i][e][arg] !== "undefined") delete l[i][e][arg];
 				}
@@ -4063,6 +4065,12 @@
 				};
 			}
 
+			// Describing the Client
+			abaaso.client.size = client.size();
+			client.version();
+			client.css3();
+			client.tablet();
+
 			// Binding helper & namespace to $
 			$ = abaaso.$.bind($);
 			utility.alias($, abaaso);
@@ -4157,16 +4165,10 @@
 			// Creating error log
 			$.error.log = abaaso.error.log = [];
 
-			// Describing the Client
-			client.version();
-			client.css3();
-			client.size();
-			client.tablet();
-
 			// Setting events & garbage collection
 			if (!client.server) {
 				$.on(window, "hashchange", function () { $.fire("hash", location.hash); });
-				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", $.client.size); });
+				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
 			}
 
 			// Setting up cache expiration
@@ -4187,8 +4189,8 @@
 					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
 							throw Error(label.error.invalidArguments);
 
-					$.state.previous = abaaso.state.previous = abaaso.state._current;
-					$.state._current = abaaso.state._current = arg;
+					abaaso.state.previous = abaaso.state._current;
+					abaaso.state._current = arg;
 					return observer.state(arg);
 				}
 				catch (e) {
@@ -4210,12 +4212,12 @@
 					break;
 				default:
 					// Pure hackery, only exists when needed
-					abaaso.state.change = function (arg) { $.state.current = abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
-					$.state.change      = function (arg) { $.state.current = abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+					$.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
 			}
 
 			$.fire("init").un("init");
-			$.ready = abaaso.ready = true;
+			$.ready = true;
 			$.fire("ready").un("ready");
 
 			// Setting render event
