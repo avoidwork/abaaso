@@ -50,8 +50,8 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Google Android
 
 
-### License
+#### License
 abaaso is licensed under BSD-3 http://www.opensource.org/licenses/BSD-3-Clause
 
-### Copyright
-Copyright (c) 2011, Jason Mulligan <jason.mulligan@avoidwork.com>
+#### Copyright
+Copyright (c) 2010 - 2012, Jason Mulligan <jason.mulligan@avoidwork.com>
