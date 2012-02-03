@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8
+ * @version 1.8.1
  */
  if (typeof $ === "undefined") var $ = null;
  if (typeof abaaso === "undefined") var abaaso = (function () {
@@ -505,54 +505,48 @@
 		 * @private
 		 */
 		headers : function (xhr, uri, type) {
-			try {
-				var headers = String(xhr.getAllResponseHeaders()).split("\n"),
-				    items   = {},
-				    o       = {},
-				    allow   = null,
-				    expires = new Date(),
-				    header, value;
+			var headers = String(xhr.getAllResponseHeaders()).split("\n"),
+			    items   = {},
+			    o       = {},
+			    allow   = null,
+			    expires = new Date(),
+			    header, value;
 
-				headers.each(function (h) {
-					if (!h.isEmpty()) {
-						header        = h.toString();
-						value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
-						header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-						items[header] = value;
-						if (/allow|access-control-allow-methods/i.test(header)) allow = value;
-					}
-				});
-
-				switch (true) {
-					case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
-					case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
-						break;
-					case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
-						expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
-						break;
-					case typeof items["Expires"] !== "undefined":
-						expires = new Date(items["Expires"]);
-						break;
-					default:
-						expires = expires.setSeconds(expires.getSeconds() + $.expires);
+			headers.each(function (h) {
+				if (!h.isEmpty()) {
+					header        = h.toString();
+					value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
+					header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+					items[header] = value;
+					if (/allow|access-control-allow-methods/i.test(header)) allow = value;
 				}
+			});
 
-				o.expires    = expires;
-				o.headers    = items;
-				o.permission = client.bit(allow !== null ? allow.explode() : [type]);
-
-				if (type !== "head") {
-					cache.set(uri, "expires", o.expires);
-					cache.set(uri, "headers", o.headers);
-					cache.set(uri, "permission", o.permission);
-				}
-
-				return o;
+			switch (true) {
+				case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
+				case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
+					break;
+				case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
+					expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
+					break;
+				case typeof items["Expires"] !== "undefined":
+					expires = new Date(items["Expires"]);
+					break;
+				default:
+					expires = expires.setSeconds(expires.getSeconds() + $.expires);
 			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
+
+			o.expires    = expires;
+			o.headers    = items;
+			o.permission = client.bit(allow !== null ? allow.explode() : [type]);
+
+			if (type !== "head") {
+				cache.set(uri, "expires",    o.expires);
+				cache.set(uri, "headers",    o.headers);
+				cache.set(uri, "permission", o.permission);
 			}
+
+			return o;
 		},
 
 		/**
@@ -824,10 +818,7 @@
 
 								uri.fire("afterXHR");
 
-								if (type === "head") {
-									cache.expire(uri.fire("afterHead", o.headers), true);
-									return uri;
-								}
+								if (type === "head") return uri.fire("afterHead", o.headers);
 
 								if (type !== "delete" && /200|301/.test(xhr.status)) {
 									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
@@ -870,6 +861,7 @@
 								throw Error(label.error.serverUnauthorized);
 								break;
 							case 403:
+								cache.set(uri, "!permission", client.bit(type));
 								throw Error(label.error.serverForbidden);
 								break;
 							case 405:
@@ -4287,7 +4279,7 @@
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8"
+		version         : "1.8.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
