@@ -4231,10 +4231,11 @@
 			var all = typeof event !== "undefined" ? true : false,
 			    o, e;
 
-			o = all ? obj   : abaaso,
+			o = all ? obj   : this,
 			e = all ? event : obj;
 
-			return observer.list.call(observer, obj, event);
+			if (typeof o === "undefined" || o === $) o = abaaso;
+			return observer.list.call(observer, o, e);
 		},
 		module          : utility.module,
 		aliased         : "$",
