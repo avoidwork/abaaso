@@ -1709,13 +1709,13 @@
 			// Hooking observer if not present in prototype chain
 			switch (true) {
 				case typeof obj.fire === "undefined":
-					obj.fire = function (event, arg) { return $.fire.call(this, event, arg); };
+					obj.fire = function (event, arg) { return $.fire(this, event, arg); };
 				case typeof obj.listeners === "undefined":
-					obj.listeners = function (event) { return $.listeners.call(this, event); };
+					obj.listeners = function (event) { return $.listeners(this, event); };
 				case typeof obj.on === "undefined":
-					obj.on = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
+					obj.on = function (event, listener, id, scope, standby) { return $.on(this, event, listener, id, scope, standby); };
 				case typeof obj.un === "undefined":
-					obj.un = function (event, id) { return $.un.call(this, event, id); };
+					obj.un = function (event, id) { return $.un(this, event, id); };
 			}
 
 			obj.fire("beforeDataStore");
