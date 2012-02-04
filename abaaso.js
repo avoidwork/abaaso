@@ -1709,13 +1709,13 @@
 			// Hooking observer if not present in prototype chain
 			switch (true) {
 				case typeof obj.fire === "undefined":
-					obj.fire = function (event, arg) { return $.fire(this, event, arg); };
+					obj.fire = function (event, arg) { return $.fire.call(this, event, arg); };
 				case typeof obj.listeners === "undefined":
-					obj.listeners = function (event) { return $.listeners(this, event); };
+					obj.listeners = function (event) { return $.listeners.call(this, event); };
 				case typeof obj.on === "undefined":
-					obj.on = function (event, listener, id, scope, standby) { return $.on(this, event, listener, id, scope, standby); };
+					obj.on = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
 				case typeof obj.un === "undefined":
-					obj.un = function (event, id) { return $.un(this, event, id); };
+					obj.un = function (event, id) { return $.un.call(this, event, id); };
 			}
 
 			obj.fire("beforeDataStore");
@@ -3487,7 +3487,7 @@
 				           loading  : function () { return $.loading.create(this); },
 				           on       : function (event, listener, id, scope, state) {
 				           		this.genId();
-				           		return $.on(this, event, listener, id, scope, state);
+				           		return $.on.call(this, event, listener, id, scope, state);
 				           },
 				           prepend  : function (type, args) {
 				           		this.genId();
@@ -3523,7 +3523,7 @@
 				           },
 				           un       : function (event, id, state) {
 				           		this.genId();
-				           		return $.un(this, event, id, state);
+				           		return $.un.call(this, event, id, state);
 				           },
 				           update   : function (args) {
 				           		this.genId();
@@ -3535,8 +3535,8 @@
 				           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
 				           isEven   : function () { return number.even(this); },
 				           isOdd    : function () { return number.odd(this); },
-				           on       : function (event, listener, id, scope, state) { return $.on(this, event, listener, id, scope, state); },
-				           un       : function (event, id, state) { return $.un(this, event, id, state); }},
+				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }},
 				shared  : {clear    : function () {
 				           		this.genId();
 				           		this instanceof String ? this.constructor = new String("") : el.clear(this);
@@ -3545,12 +3545,12 @@
 				           destroy  : function () { el.destroy(this); },
 				           fire     : function (event, args) {
 				           		this.genId();
-				           		return $.fire(this, event, args);
+				           		return $.fire.call(this, event, args);
 				           },
 				           genId    : function () { return utility.genId(this); },
 				           listeners: function (event) {
 				           		this.genId();
-				           		return $.listeners(this, event);
+				           		return $.listeners.call(this, event);
 				           }},
 				string  : {allows   : function (arg) { return $.allows(this, arg); },
 				           capitalize: function () { return this.charAt(0).toUpperCase() + this.slice(1); },
@@ -3571,7 +3571,7 @@
 				           jsonp    : function (success, failure, callback) { return client.jsonp(this, success, failure, callback); },
 				           post     : function (success, failure, args) { return client.request(this, "POST", success, failure, args); },
 				           put      : function (success, failure, args) { return client.request(this, "PUT", success, failure, args); },
-				           on       : function (event, listener, id, scope, state) { return $.on(this, event, listener, id, scope, state); },
+				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function () { return $.permissions(this); },
 				           toCamelCase: function () {
@@ -3583,7 +3583,7 @@
 				           		return r.replace(/\W/g, "");
 				           },
 				           trim     : function () { return this.replace(/^\s+|\s+$/g, ""); },
-				           un       : function (event, id, state) { return $.un(this, event, id, state); }}
+				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
 			};
 
 			// Applying the methods
@@ -4227,13 +4227,10 @@
 			return abaaso;
 		},
 		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
-		listeners       : function (obj, event) {
-			var all = typeof event !== "undefined" ? true : false,
-			    o, e;
+		listeners       : function (event) {
+			var obj = this;
 
-			o = all ? obj   : abaaso,
-			e = all ? event : obj;
-
+			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 			return observer.list.call(observer, obj, event);
 		},
 		module          : utility.module,
