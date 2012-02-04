@@ -2788,7 +2788,7 @@
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
-				for (i in l) { if (l.hasOwnProperty(i)) l[i].fn.call(l[i].scope, arg); }
+				for (i in l) if (l.hasOwnProperty(i)) l[i].fn.call(l[i].scope, arg);
 				$.observer.fired++;
 				return obj;
 			}
@@ -2865,7 +2865,7 @@
 						instance = obj;
 						break;
 					default:
-						instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
+						instance = o.indexOf("/") === -1 && o !== "abaaso" ? $("#" + o) : null;
 				}
 
 				efn = function (e) {
