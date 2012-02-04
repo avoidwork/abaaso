@@ -2788,7 +2788,7 @@
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
-				for (i in l) { l[i].fn.call(l[i].scope, arg); }
+				for (i in l) { if (l.hasOwnProperty(i)) l[i].fn.call(l[i].scope, arg); }
 				$.observer.fired++;
 				return obj;
 			}
@@ -3429,8 +3429,8 @@
 				           		    guid   = utility.guid(true),
 				           		    self   = this;
 
-				           		!cached ? uri.get(function (a) { self.text(a).fire("afterGet"); }, null, headers)
-				           		        : this.text(cached.response).fire("afterGet");
+				           		!cached ? uri.get(function (a) { self.html(a).fire("afterGet"); }, null, headers)
+				           		        : this.html(cached.response).fire("afterGet");
 
 				           		return this;
 				           },
