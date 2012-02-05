@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.1
+ * @version 1.8.2
  */
  if (typeof $ === "undefined") var $ = null;
  if (typeof abaaso === "undefined") var abaaso = (function () {
@@ -1484,12 +1484,14 @@
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
 				    args   = {data: data, key: key, record: record},
-				    uri    = this.uri + "/" + key,
+				    uri    = this.uri === null ? null : this.uri + "/" + key,
 				    p      = {},
 				    r      = new RegExp("true|undefined");
 
-				p.uri  = uri.allows(method);
-				p.data = this.uri.allows(method);
+				if (uri !== null) {
+					p.uri  = uri.allows(method);
+					p.data = this.uri.allows(method);
+				}
 
 				obj.fire("beforeDataSet");
 				switch (true) {
@@ -4279,7 +4281,7 @@
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.1"
+		version         : "1.8.2"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
