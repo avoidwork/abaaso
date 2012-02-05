@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.3
+ * @version 1.8.4
  */
  if (typeof $ === "undefined") var $ = null;
  if (typeof abaaso === "undefined") var abaaso = (function () {
@@ -1178,9 +1178,12 @@
 				}
 
 				args   = {key: key, record: record, reindex: reindex};
-				uri    = this.uri + "/" + key;
-				p.uri  = uri.allows("delete");
-				p.data = this.uri.allows("delete");
+
+				if (this.uri !== null) {
+					uri    = this.uri + "/" + key;
+					p.uri  = uri.allows("delete");
+					p.data = this.uri.allows("delete");
+				}
 
 				obj.fire("beforeDataDelete", args);
 				switch (true) {
@@ -1484,10 +1487,12 @@
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
-				    args   = {data: data, key: key, record: record},
+				    args   = {data: data, key: key, record: undefined},
 				    uri    = this.uri === null ? null : this.uri + "/" + key,
 				    p      = {},
 				    r      = new RegExp("true|undefined");
+
+				if (typeof record !== "undefined") args.record = this.records[this.keys[record.key].index];
 
 				if (uri !== null) {
 					p.uri  = uri.allows(method);
@@ -1740,29 +1745,30 @@
 
 			obj.on("syncDataSet", function (data) {
 				var record;
-				if (typeof data.record === "undefined") {
-					var index = this.total;
-					this.total++;
-					if (typeof data.key === "undefined") {
-						if (typeof data.result === "undefined") {
-							this.fire("failedDataSet");
-							throw Error(label.error.expectedObject);
+				switch (true) {
+					case typeof data.record === "undefined":
+						var index = this.total;
+						this.total++;
+						if (typeof data.key === "undefined") {
+							if (typeof data.result === "undefined") {
+								this.fire("failedDataSet");
+								throw Error(label.error.expectedObject);
+							}
+							data.key = this.key === null ? array.cast(data.result).first() : data.result[this.key];
+							data.key = data.key.toString();
 						}
-						data.key = this.key === null ? array.cast(data.result).first() : data.result[this.key];
-						data.key = data.key.toString();
-					}
-					if (typeof data.data[data.key] !== "undefined") data.key = data.data[data.key];
-					this.keys[data.key] = {};
-					this.keys[data.key].index = index;
-					this.records[index] = {};
-					record = this.records[index];
-					record.data = utility.clone(data.data);
-					record.key  = data.key;
-					if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
-				}
-				else {
-					data.record.data = utility.clone(data.data);
-					record = data.record;
+						if (typeof data.data[data.key] !== "undefined") data.key = data.data[data.key];
+						this.keys[data.key] = {};
+						this.keys[data.key].index = index;
+						this.records[index] = {};
+						record = this.records[index];
+						record.data = utility.clone(data.data);
+						record.key  = data.key;
+						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
+						break;
+					default:
+						data.record.data = utility.clone(data.data);
+						record = data.record;
 				}
 				this.views = {};
 				this.parentNode.fire("afterDataSet", record);
@@ -4282,7 +4288,7 @@
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.3"
+		version         : "1.8.4"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
