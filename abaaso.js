@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.2
+ * @version 1.8.3
  */
  if (typeof $ === "undefined") var $ = null;
  if (typeof abaaso === "undefined") var abaaso = (function () {
@@ -1397,13 +1397,14 @@
 
 				switch (true) {
 					case typeof record === "undefined" || String(record).length === 0:
-						r = this.records;
+						r = [];
+						this.records.each(function (i) { r.push(utility.clone(i)); });
 						break;
 					case typeof record === "string" && typeof this.keys[record] !== "undefined":
-						r = this.records[this.keys[record].index];
+						r = utility.clone(this.records[this.keys[record].index]);
 						break;
 					case typeof record === "number":
-						r = this.records[record];
+						r = utility.clone(this.records[record]);
 						break;
 					case record instanceof Array:
 						if (!!isNaN(record[0]) || !!isNaN(record[1]))
@@ -1411,7 +1412,7 @@
 
 						start = record[0] - 1;
 						end   = record[1] - 1;
-						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(this.records[i]); }
+						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(utility.clone(this.records[i])); }
 						break;
 					default:
 						r = undefined;
@@ -4281,7 +4282,7 @@
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.2"
+		version         : "1.8.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
