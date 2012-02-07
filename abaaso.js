@@ -4141,6 +4141,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			// Preparing init()
 			switch (true) {
 				case client.server:
+				case (/complete|loaded/.test(document.readyState)):
 					abaaso.init();
 					break;
 				case typeof document.addEventListener === "function":
