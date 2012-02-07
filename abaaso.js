@@ -42,10 +42,16 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.7
+ * @version 1.8.8
  */
- if (typeof $ === "undefined") var $ = null;
- if (typeof abaaso === "undefined") var abaaso = (function () {
+(function (window) {
+
+var document  = window.document,
+    location  = window.location,
+    navigator = window.navigator;
+
+if (typeof window.$ === "undefined")      window.$ = null;
+if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	"use strict";
 
 	var $;
@@ -4017,6 +4023,22 @@
 			return el.create(type, args, obj, "last");
 		},
 		bootstrap       : function () {
+			/**
+			 * Loaded handler
+			 * 
+			 * @param  {Object} Window event
+			 * @return {Undefined} undefined
+			 */
+			var fn = function (e) {
+				if (document.readyState === "complete") {
+					if (typeof abaaso.timer.init !== "undefined") {
+						clearInterval(abaaso.timer.init);
+						delete abaaso.timer.init;
+					}
+					if (typeof abaaso.init === "function") abaaso.init();
+				}
+			};
+
 			if (typeof Array.prototype.filter === "undefined") {
 				Array.prototype.filter = function (fn) {
 					"use strict";
@@ -4106,6 +4128,7 @@
 			abaaso.state._current = abaaso.state.current = "initial";
 			$.state._current      = $.state.current      = abaaso.state.current;
 
+			// Setting sugar
 			switch (true) {
 				case window["$"] === null:
 					window["$"] = $;
@@ -4115,6 +4138,7 @@
 					abaaso.aliased = "a$";
 			}
 
+			// Preparing init()
 			switch (true) {
 				case client.server:
 					abaaso.init();
@@ -4122,14 +4146,11 @@
 				case typeof document.addEventListener === "function":
 					document.addEventListener("DOMContentLoaded", function () { abaaso.init(); }, false);
 					break;
+				case typeof document.attachEvent === "function":
+					document.attachEvent("onreadystatechange", fn);
+					break;
 				default:
-					abaaso.timer.init = setInterval(function () {
-						if (/loaded|complete/.test(document.readyState)) {
-							clearInterval(abaaso.timer.init);
-							delete abaaso.timer.init;
-							if (typeof abaaso.init === "function") abaaso.init();
-						}
-					}, 10);
+					abaaso.timer.init = setInterval(fn, 10);
 			}
 		},
 		clear           : el.clear,
@@ -4304,7 +4325,8 @@
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.7"
+		version         : "1.8.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
+})(window);
