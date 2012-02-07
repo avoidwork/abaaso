@@ -924,8 +924,8 @@
 			    y = 0;
 
 			if (!client.server) {
-				x = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientWidth  : document.body.clientWidth;
-			    y = document.compatMode === "CSS1Compat" && !client.opera ? document.documentElement.clientHeight : document.body.clientHeight;
+				x = typeof document.documentElement !== "undefined" ? document.documentElement.clientWidth  : document.body.clientWidth;
+			    y = typeof document.documentElement !== "undefined" ? document.documentElement.clientHeight : document.body.clientHeight;
 			}
 
 			return {x: x, y: y};
