@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.5
+ * @version 1.8.6
  */
  if (typeof $ === "undefined") var $ = null;
  if (typeof abaaso === "undefined") var abaaso = (function () {
@@ -495,6 +495,16 @@
 		},
 
 		/**
+		 * Determines if a URI is a CORS end point
+		 * 
+		 * @param  {String} uri  URI to parse
+		 * @return {Boolean} True if CORS
+		 */
+		cors : function (uri) {
+			return (uri.indexOf("//") > -1 && uri.indexOf("//" + location.host) === -1);
+		},
+
+		/**
 		 * Caches the headers from the XHR response
 		 * 
 		 * @method headers
@@ -671,7 +681,7 @@
 
 				type = type.toLowerCase();
 				var l       = document.location,
-				    cors    = (uri.indexOf(l.protocol + "//" + l.host) !== 0),
+				    cors    = client.cors(uri),
 				    xhr     = (client.ie && client.version < 10 && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
 				    headers = type === "get" && args instanceof Object ? args : null,
@@ -875,7 +885,7 @@
 								throw Error(label.error.serverError);
 						}
 						break;
-					case client.ie && uri.indexOf(l.protocol + "//" + l.host) !== 0 && typed === "Get": // IE XDomainRequest
+					case client.ie && client.cors(uri) && typed === "Get": // IE XDomainRequest
 						var r, x;
 
 						switch (true) {
@@ -2319,7 +2329,7 @@
 
 				if (obj instanceof Array) return obj.each(function (i) { el.update(i, args); });
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeUpdate");
@@ -4291,7 +4301,7 @@
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.5"
+		version         : "1.8.6"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
