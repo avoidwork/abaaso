@@ -3051,7 +3051,7 @@
 				case typeof obj === "string":
 					clone = String(obj);
 					break;
-				case obj instanceof Document:
+				case !client.ie && obj instanceof Document:
 					clone = xml.decode(xml.encode(obj));
 					break;
 				case obj instanceof Array:
