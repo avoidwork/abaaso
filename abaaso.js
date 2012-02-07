@@ -925,7 +925,7 @@
 
 			if (!client.server) {
 				x = typeof document.documentElement !== "undefined" ? document.documentElement.clientWidth  : document.body.clientWidth;
-			    y = typeof document.documentElement !== "undefined" ? document.documentElement.clientHeight : document.body.clientHeight;
+				y = typeof document.documentElement !== "undefined" ? document.documentElement.clientHeight : document.body.clientHeight;
 			}
 
 			return {x: x, y: y};
@@ -1839,7 +1839,7 @@
 				obj = utility.object(obj);
 				add = (add !== false);
 
-				if (obj instanceof Element !== true || String(arg).isEmpty())
+				if (!(obj instanceof Element) || String(arg).isEmpty())
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeClassChange");
@@ -1885,7 +1885,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeClear");
@@ -2022,7 +2022,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				$.fire("beforeDestroy", obj);
@@ -2058,7 +2058,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				if (typeof obj.disabled === "boolean" && !obj.disabled) {
@@ -2094,7 +2094,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				if (typeof obj.disabled === "boolean" && obj.disabled) {
@@ -2126,7 +2126,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeHide");
@@ -2158,7 +2158,7 @@
 			try {
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
@@ -2180,7 +2180,7 @@
 			try {
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				var left, top, height, width;
@@ -2223,7 +2223,7 @@
 			try {
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element || !child instanceof Element)
+				if (!(obj instanceof Element) || !(child instanceof Element))
 					throw Error(label.error.invalidArguments);
 				
 				return obj.childNodes.length === 0 ? obj.appendChild(child) : obj.insertBefore(child, obj.childNodes[0]);
@@ -2250,7 +2250,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeShow");
@@ -2287,7 +2287,7 @@
 
 				obj = utility.object(obj);
 
-				if (!obj instanceof Element)
+				if (!(obj instanceof Element))
 					throw Error(label.error.invalidArguments);
 
 				/**
@@ -2301,7 +2301,7 @@
 				};
 
 				var x = obj.offsetHeight + num(obj.style.paddingTop)  + num(obj.style.paddingBottom) + num(obj.style.borderTop)  + num(obj.style.borderBottom),
-					y = obj.offsetWidth  + num(obj.style.paddingLeft) + num(obj.style.paddingRight)  + num(obj.style.borderLeft) + num(obj.style.borderRight);
+				    y = obj.offsetWidth  + num(obj.style.paddingLeft) + num(obj.style.paddingRight)  + num(obj.style.borderLeft) + num(obj.style.borderRight);
 
 				return {x:x, y:y};
 			}
