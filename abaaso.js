@@ -4085,6 +4085,9 @@
 			client.css3();
 			client.tablet();
 
+			// IE7 and older is not supported
+			if (client.ie && client.version < 8) return;
+
 			// Binding helper & namespace to $
 			$ = abaaso.$.bind($);
 			utility.alias($, abaaso);
