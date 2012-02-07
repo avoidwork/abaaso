@@ -3880,7 +3880,7 @@
 					xml.async = "false";
 					xml.loadXML(arg);
 				}
-				else { xml = new DOMParser().parseFromString(arg, "text/xml"); }
+				else xml = new DOMParser().parseFromString(arg, "text/xml");
 				return xml;
 			}
 			catch (e) {
