@@ -4140,6 +4140,9 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 			// Preparing init()
 			switch (true) {
+				case typeof define === "function":
+					define("abaaso", [], abaaso.init);
+					break;
 				case client.server:
 				case (/complete|loaded/.test(document.readyState)):
 					abaaso.init();
@@ -4330,5 +4333,4 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
-if (typeof define === "function") define("abaaso", [], abaaso);
 })(window);
