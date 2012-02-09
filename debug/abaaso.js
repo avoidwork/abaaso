@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.9
+ * @version 1.8.91
  */
 (function (window) {
 
@@ -4023,14 +4023,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return el.create(type, args, obj, "last");
 		},
 		bootstrap       : function () {
-			/**
-			 * Loaded handler
-			 * 
-			 * @param  {Object} Window event
-			 * @return {Undefined} undefined
-			 */
 			var fn = function (e) {
-				if (document.readyState === "complete") {
+				if (/complete|loaded/.test(document.readyState)) {
 					if (typeof abaaso.timer.init !== "undefined") {
 						clearInterval(abaaso.timer.init);
 						delete abaaso.timer.init;
@@ -4138,6 +4132,65 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					abaaso.aliased = "a$";
 			}
 
+			// Hooking abaaso into native Objects
+			utility.proto(Array, "array");
+			if (typeof Element !== "undefined") utility.proto(Element, "element");
+			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
+			utility.proto(Function, "function");
+			utility.proto(Number, "number");
+			utility.proto(String, "string");
+
+			// Creating a singleton
+			abaaso.constructor = abaaso;
+
+			// Creating error log
+			$.error.log = abaaso.error.log = [];
+
+			// Setting events & garbage collection
+			if (!client.server) {
+				$.on(window, "hashchange", function () { $.fire("hash", location.hash); });
+				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+			}
+
+			// abaaso.state.current getter/setter
+			var getter, setter;
+			getter = function () { return this._current; };
+			setter = function (arg) {
+				try {
+					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
+							throw Error(label.error.invalidArguments);
+
+					abaaso.state.previous = abaaso.state._current;
+					abaaso.state._current = arg;
+					return observer.state(arg);
+				}
+				catch (e) {
+					error(e, arguments, this);
+					return undefined;
+				}
+			};
+
+			switch (true) {
+				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
+					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
+					Object.defineProperty($.state, "current", {get: getter, set: setter});
+					break;
+				case typeof abaaso.state.__defineGetter__ === "function":
+					abaaso.state.__defineGetter__("current", getter);
+					abaaso.state.__defineSetter__("current", setter);
+					$.state.__defineGetter__("current", getter);
+					$.state.__defineSetter__("current", setter);
+					break;
+				default:
+					// Pure hackery, only exists when needed
+					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+					$.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+			}
+
+			$.fire("init").un("init");
+			$.ready = true;
+			$.fire("ready").un("ready");
+
 			// Preparing init()
 			switch (true) {
 				case typeof define === "function":
@@ -4193,26 +4246,6 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			delete abaaso.init;
 			delete abaaso.bootstrap;
 
-			// Hooking abaaso into native Objects
-			utility.proto(Array, "array");
-			if (typeof Element !== "undefined") utility.proto(Element, "element");
-			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
-			utility.proto(Function, "function");
-			utility.proto(Number, "number");
-			utility.proto(String, "string");
-
-			// Creating a singleton
-			abaaso.constructor = abaaso;
-
-			// Creating error log
-			$.error.log = abaaso.error.log = [];
-
-			// Setting events & garbage collection
-			if (!client.server) {
-				$.on(window, "hashchange", function () { $.fire("hash", location.hash); });
-				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
-			}
-
 			// Setting up cache expiration
 			var expiration = function () {
 				var expiration = this;
@@ -4223,58 +4256,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			}
 			expiration.call(expiration);
 
-			// abaaso.state.current getter/setter
-			var getter, setter;
-			getter = function () { return this._current; };
-			setter = function (arg) {
-				try {
-					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
-							throw Error(label.error.invalidArguments);
-
-					abaaso.state.previous = abaaso.state._current;
-					abaaso.state._current = arg;
-					return observer.state(arg);
-				}
-				catch (e) {
-					error(e, arguments, this);
-					return undefined;
-				}
-			};
-
-			switch (true) {
-				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
-					Object.defineProperty($.state, "current", {get: getter, set: setter});
-					break;
-				case typeof abaaso.state.__defineGetter__ === "function":
-					abaaso.state.__defineGetter__("current", getter);
-					abaaso.state.__defineSetter__("current", setter);
-					$.state.__defineGetter__("current", getter);
-					$.state.__defineSetter__("current", setter);
-					break;
-				default:
-					// Pure hackery, only exists when needed
-					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
-					$.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
-			}
-
-			$.fire("init").un("init");
-			$.ready = true;
-			$.fire("ready").un("ready");
-
-			// Setting render event
-			if (!client.server) {
-				$.timer.render = setInterval(function () {
-					if (/loaded|complete/.test(document.readyState)) {
-						clearInterval($.timer.render);
-						delete $.timer.render;
-						$.fire("render").un("render");
-					}
-				}, 10);
-			}
-			else $.fire("render").un("render");
-
-			return abaaso;
+			// Firing render
+			return  $.fire("render").un("render");
 		},
 		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 		listeners       : function (event) {
@@ -4329,7 +4312,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.9"
+		version         : "1.8.91"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
