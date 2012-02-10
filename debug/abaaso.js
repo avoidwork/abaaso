@@ -91,6 +91,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 		/**
 		 * Clones an Array
+		 * 
+		 * @method clone
 		 * @param  {Array} obj Array to clone
 		 * @return {Array} Clone of Array
 		 */
@@ -242,7 +244,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		/**
 		 * Gets the total keys in an Array
 		 *
-		 * @method
+		 * @method total
 		 * @param  {Array} obj Array to find the length of
 		 * @return {Integer} Number of keys in Array
 		 */
@@ -503,6 +505,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		/**
 		 * Determines if a URI is a CORS end point
 		 * 
+		 * @method cors
 		 * @param  {String} uri  URI to parse
 		 * @return {Boolean} True if CORS
 		 */
@@ -1283,12 +1286,13 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			},
 
 			/**
-			 * Transforms a record to a Form for editing
+			 * Generates a micro-format form from a record
 			 * 
 			 * If record is null, an empty form based on the first record is generated.
 			 * The submit action is data.set() which triggers a POST or PUT
 			 * from the data store.
 			 * 
+			 * @method form
 			 * @param  {Mixed}   record null, record, key or index
 			 * @param  {Object}  target Target HTML Element
 			 * @param  {Boolean} test   [Optional] Test form before setting values
@@ -1326,6 +1330,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					/**
 					 * Button handler
 					 * 
+					 * @method handler
 					 * @param  {Object} event Window event
 					 * @return {Undefined} undefined
 					 */
@@ -1356,6 +1361,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					/**
 					 * Data structure in micro-format
 					 * 
+					 * @method structure
 					 * @param  {Object} record Data store record
 					 * @param  {Object} obj    [description]
 					 * @param  {String} name   [description]
@@ -2221,6 +2227,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		/**
 		 * Prepends an Element to an Element
 		 * 
+		 * @method prependChild
 		 * @param  {Object} obj   Target Element
 		 * @param  {Object} child Child Element
 		 * @return {Object} Target Element
@@ -2404,6 +2411,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		/**
 		 * Formats a Number to a delimited String
 		 * 
+		 * @method format
 		 * @param  {Number} arg       Number to format
 		 * @param  {String} delimiter [Optional] String to delimit the Number with
 		 * @param  {String} every     [Optional] Position to insert the delimiter, default is 3
@@ -2580,6 +2588,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * Messaging between iframes
 	 *
 	 * @class abaaso
+	 * @namespace abaaso
 	 */
 	var message = {
 		/**
@@ -2681,6 +2690,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * Global Observer wired to a State Machine
 	 *
 	 * @class observer
+	 * @namespace abaaso
 	 */
 	var observer = {
 		// Collection of listeners
@@ -3662,8 +3672,9 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		},
 
 		/**
-		 * Returns an Array of parameters of a function
+		 * Returns an Array of parameters of a Function
 		 * 
+		 * @method reflect
 		 * @param  {Function} arg Function to reflect
 		 * @return {Array} Array of parameters
 		 */
@@ -3951,6 +3962,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 	var error = utility.error;
 
+	// @constructor
 	return {
 		// Classes
 		array           : array,
@@ -4017,6 +4029,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		// Methods & Properties
 		$               : utility.$,
 		alias           : utility.alias,
+		aliased         : "$",
 		allows          : client.allows,
 		append          : function (type, args, obj) {
 			if (obj instanceof Element) obj.genId();
@@ -4267,7 +4280,6 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.list.call(observer, obj, event);
 		},
 		module          : utility.module,
-		aliased         : "$",
 		on              : function (obj, event, listener, id, scope, state) {
 			var all = typeof listener === "function",
 			    o, e, l, i, s, st;
