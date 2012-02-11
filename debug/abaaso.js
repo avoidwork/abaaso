@@ -3744,6 +3744,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								case typeof arg[i] === "string":
 									$.create(i, frag).html(arg[i]);
 									break;
+								case arg[i] instanceof Array:
 								case arg[i] instanceof Object:
 									$.tpl(arg[i], $.create(i, frag));
 									break;
