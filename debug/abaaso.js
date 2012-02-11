@@ -3736,13 +3736,13 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				switch (true) {
 					case arg instanceof Array:
-						arg.each(function (i) { $.create(array.cast(i, true)[0], frag).text(array.cast(i)[0]); });
+						arg.each(function (i) { $.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
 						break;
 					default:
 						for (i in arg) {
 							switch (true) {
 								case typeof arg[i] === "string":
-									$.create(i, frag).text(arg[i]);
+									$.create(i, frag).html(arg[i]);
 									break;
 								case arg[i] instanceof Object:
 									$.tpl(arg[i], $.create(i, frag));
