@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.93
+ * @version 1.8.94
  */
 (function (window) {
 
@@ -2545,6 +2545,17 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			submit  : "Submit"
 		},
 
+		// Days of the week
+		day : {
+			0 : "Sunday",
+			1 : "Monday",
+			2 : "Tuesday",
+			3 : "Wednesday",
+			4 : "Thursday",
+			5 : "Friday",
+			6 : "Saturday"
+		},
+
 		// Error messages
 		error : {
 			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota",
@@ -4328,7 +4339,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.93"
+		version         : "1.8.94"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
