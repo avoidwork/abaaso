@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.94
+ * @version 1.8.95
  */
 (function (window) {
 
@@ -3026,10 +3026,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					var b = i, getter, setter;
 					if (origin.hasOwnProperty(b)) {
 						switch (true) {
-							case typeof origin[b] === "function" && (!(client.ios) || !(origin[b] instanceof RegExp)):
+							case !(origin[b] instanceof RegExp) && typeof origin[b] === "function":
 								obj[b] = origin[b].bind(obj[b]);
 								break;
-							case !(origin[b] instanceof Array) && origin[b] instanceof Object && !(origin[b] instanceof RegExp):
+							case !(origin[b] instanceof RegExp) && !(origin[b] instanceof Array) && origin[b] instanceof Object:
 								if (typeof obj[b] === "undefined") obj[b] = {};
 								utility.alias(obj[b], origin[b]);
 								break;
@@ -4339,7 +4339,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.94"
+		version         : "1.8.95"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
