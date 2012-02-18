@@ -50,11 +50,12 @@ var document  = window.document,
     location  = window.location,
     navigator = window.navigator;
 
-if (typeof window.$ === "undefined")      window.$ = null;
+if (typeof window.$ === "undefined")      window.$      = null;
 if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	"use strict";
 
-	var $;
+	var $, array, cache, client, cookie, data, el, json, label,
+	    message, mouse, number, observer, utility, validate, xml, error;
 
 	/**
 	 * Array methods
@@ -62,7 +63,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class array
 	 * @namespace abaaso
 	 */
-	var array = {
+	array = {
 		/**
 		 * Returns an Object (NodeList, etc.) as an Array
 		 *
@@ -274,7 +275,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @namespace abaaso
 	 * @private
 	 */
-	var cache = {
+	cache = {
 		// Collection URIs
 		items : {},
 
@@ -367,7 +368,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class client
 	 * @namespace abaaso
 	 */
-	var client = {
+	client = {
 		android : (function () { return (typeof navigator !== "undefined") && /android/i.test(navigator.userAgent); })(),
 		blackberry : (function () { return (typeof navigator !== "undefined") && /blackberry/i.test(navigator.userAgent); })(),
 		chrome  : (function () { return (typeof navigator !== "undefined") && /chrome/i.test(navigator.userAgent); })(),
@@ -947,7 +948,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class cookie
 	 * @namespace abaaso
 	 */
-	var cookie = {
+	cookie = {
 		/**
 		 * Expires a cookie if it exists
 		 *
@@ -1055,7 +1056,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class data
 	 * @namespace abaaso
 	 */
-	var data = {
+	data = {
 		// Inherited by data stores
 		methods : {
 			/**
@@ -1831,7 +1832,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class el
 	 * @namespace abaaso
 	 */
-	var el = {
+	el = {
 		/**
 		 * Adds or removes a CSS class
 		 *
@@ -2382,12 +2383,240 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	};
 
 	/**
+	 * JSON methods
+	 *
+	 * @class json
+	 * @namespace abaaso
+	 */
+	json = {
+		/**
+		 * Decodes the argument
+		 *
+		 * @method decode
+		 * @param  {String} arg String to parse
+		 * @param  {Boolean} silent [Optional] Silently fail
+		 * @return {Mixed} Entity resulting from parsing JSON, or undefined
+		 */
+		decode : function (arg, silent) {
+			try {
+				return JSON.parse(arg);
+			}
+			catch (e) {
+				if (silent !== true) error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Encodes the argument as JSON
+		 *
+		 * @method encode
+		 * @param  {Mixed}   arg    Entity to encode
+		 * @param  {Boolean} silent [Optional] Silently fail
+		 * @return {String} JSON, or undefined
+		 */
+		encode : function (arg, silent) {
+			try {
+				return JSON.stringify(arg);
+			}
+			catch (e) {
+				if (silent !== true) error(e, arguments, this);
+				return undefined;
+			}
+		}
+	};
+
+	/**
+	 * Labels for localization
+	 *
+	 * Override this with another language pack
+	 *
+	 * @class label
+	 * @namespace abaaso
+	 */
+	label = {
+		// Common labels
+		common : {
+			back    : "Back",
+			cancel  : "Cancel",
+			clear   : "Clear",
+			close   : "Close",
+			cont    : "Continue",
+			del     : "Delete",
+			edit    : "Edit",
+			find    : "Find",
+			gen     : "Generate",
+			go      : "Go",
+			loading : "Loading",
+			next    : "Next",
+			login   : "Login",
+			ran     : "Random",
+			reset   : "Reset",
+			save    : "Save",
+			search  : "Search",
+			submit  : "Submit"
+		},
+
+		// Days of the week
+		day : {
+			0 : "Sunday",
+			1 : "Monday",
+			2 : "Tuesday",
+			3 : "Wednesday",
+			4 : "Thursday",
+			5 : "Friday",
+			6 : "Saturday"
+		},
+
+		// Error messages
+		error : {
+			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota",
+			databaseNotSupported  : "Client does not support local database storage",
+			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder",
+			elementNotCreated     : "Could not create the Element",
+			elementNotFound       : "Could not find the Element",
+			expectedArray         : "Expected an Array",
+			expectedArrayObject   : "Expected an Array or Object",
+			expectedBoolean       : "Expected a Boolean value",
+			expectedNumber        : "Expected a Number",
+			expectedObject        : "Expected an Object",
+			invalidArguments      : "One or more arguments is invalid",
+			invalidDate           : "Invalid Date",
+			invalidFields         : "The following required fields are invalid: ",
+			propertyNotFound      : "Could not find the requested property",
+			serverError           : "Server error has occurred",
+			serverForbidden       : "Forbidden to access URI",
+			serverInvalidMethod   : "Method not allowed",
+			serverUnauthorized    : "Authorization required to access URI"
+		},
+
+		// Months of the Year
+		month : {
+			0  : "January",
+			1  : "February",
+			2  : "March",
+			3  : "April",
+			4  : "May",
+			5  : "June",
+			6  : "July",
+			7  : "August",
+			8  : "September",
+			9  : "October",
+			10 : "November",
+			11 : "December"
+		}
+	};
+
+	/**
+	 * Messaging between iframes
+	 *
+	 * @class abaaso
+	 * @namespace abaaso
+	 */
+	message = {
+		/**
+		 * Clears the message listener
+		 *
+		 * @method clear
+		 * @return {Object} abaaso
+		 */
+		clear : function () {
+			return $.un(window, "message");
+		},
+
+		/**
+		 * Posts a message to the target
+		 *
+		 * @method send
+		 * @param  {Object} target Object to receive message
+		 * @param  {Mixed}  arg    Entity to send as message
+		 * @return {Object} target
+		 */
+		send : function (target, arg) {
+			try {
+				target.postMessage(arg, "*");
+				return target;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Sets a handler for recieving a message
+		 *
+		 * @method recv
+		 * @param  {Function} fn  Callback function
+		 * @return {Object} abaaso
+		 */
+		recv : function (fn) {
+			return $.on(window, "message", fn);
+		}
+	};
+
+	/**
+	 * Mouse tracking
+	 *
+	 * @class mouse
+	 * @namespace abaaso
+	 */
+	mouse = {
+		//Indicates whether mouse tracking is enabled
+		enabled : false,
+
+		// Indicates whether to try logging co-ordinates to the console
+		log     : false,
+
+		// Mouse coordinates
+		diff    : {x: null, y: null},
+		pos     : {x: null, y: null},
+		prev    : {x: null, y: null},
+
+		/**
+		 * Enables or disables mouse co-ordinate tracking
+		 *
+		 * @method track
+		 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
+		 * @return {Object} abaaso.mouse
+		 */
+		track : function (e) {
+			var m = abaaso.mouse;
+			switch (true) {
+				case typeof e === "object":
+					var x = e.pageX ? e.pageX : ((client.ie && client.version < 9 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX),
+					    y = e.pageY ? e.pageY : ((client.ie && client.version < 9 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY),
+					    c = false;
+
+					if (m.pos.x !== x) c = true;
+					$.mouse.prev.x = m.prev.x = Number(m.pos.x);
+					$.mouse.pos.x  = m.pos.x  = x;
+					$.mouse.diff.x = m.diff.x = m.pos.x - m.prev.x;
+
+					if (m.pos.y !== y) c = true;
+					$.mouse.prev.y = m.prev.y = Number(m.pos.y);
+					$.mouse.pos.y  = m.pos.y  = y;
+					$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
+
+					if (c && m.log) utility.log(m.pos.x + " [" + m.diff.x + "], " + m.pos.y + " [" + m.diff.y + "]");
+					break;
+				case typeof e === "boolean":
+					e ? observer.add(document, "mousemove", abaaso.mouse.track) : observer.remove(document, "mousemove");
+					$.mouse.enabled = m.enabled = e;
+					break;
+			}
+			return m;
+		}
+	};
+
+
+	/**
 	 * Number methods
 	 *
 	 * @class number
 	 * @namespace abaaso
 	 */
-	var number = {
+	number = {
 		/**
 		 * Returns the difference of arg
 		 *
@@ -2471,239 +2700,12 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	};
 
 	/**
-	 * JSON methods
-	 *
-	 * @class json
-	 * @namespace abaaso
-	 */
-	var json = {
-		/**
-		 * Decodes the argument
-		 *
-		 * @method decode
-		 * @param  {String} arg String to parse
-		 * @param  {Boolean} silent [Optional] Silently fail
-		 * @return {Mixed} Entity resulting from parsing JSON, or undefined
-		 */
-		decode : function (arg, silent) {
-			try {
-				return JSON.parse(arg);
-			}
-			catch (e) {
-				if (silent !== true) error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Encodes the argument as JSON
-		 *
-		 * @method encode
-		 * @param  {Mixed}   arg    Entity to encode
-		 * @param  {Boolean} silent [Optional] Silently fail
-		 * @return {String} JSON, or undefined
-		 */
-		encode : function (arg, silent) {
-			try {
-				return JSON.stringify(arg);
-			}
-			catch (e) {
-				if (silent !== true) error(e, arguments, this);
-				return undefined;
-			}
-		}
-	};
-
-	/**
-	 * Labels for localization
-	 *
-	 * Override this with another language pack
-	 *
-	 * @class label
-	 * @namespace abaaso
-	 */
-	var label = {
-		// Common labels
-		common : {
-			back    : "Back",
-			cancel  : "Cancel",
-			clear   : "Clear",
-			close   : "Close",
-			cont    : "Continue",
-			del     : "Delete",
-			edit    : "Edit",
-			find    : "Find",
-			gen     : "Generate",
-			go      : "Go",
-			loading : "Loading",
-			next    : "Next",
-			login   : "Login",
-			ran     : "Random",
-			reset   : "Reset",
-			save    : "Save",
-			search  : "Search",
-			submit  : "Submit"
-		},
-
-		// Days of the week
-		day : {
-			0 : "Sunday",
-			1 : "Monday",
-			2 : "Tuesday",
-			3 : "Wednesday",
-			4 : "Thursday",
-			5 : "Friday",
-			6 : "Saturday"
-		},
-
-		// Error messages
-		error : {
-			databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota",
-			databaseNotSupported  : "Client does not support local database storage",
-			databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder",
-			elementNotCreated     : "Could not create the Element",
-			elementNotFound       : "Could not find the Element",
-			expectedArray         : "Expected an Array",
-			expectedArrayObject   : "Expected an Array or Object",
-			expectedBoolean       : "Expected a Boolean value",
-			expectedNumber        : "Expected a Number",
-			expectedObject        : "Expected an Object",
-			invalidArguments      : "One or more arguments is invalid",
-			invalidDate           : "Invalid Date",
-			invalidFields         : "The following required fields are invalid: ",
-			propertyNotFound      : "Could not find the requested property",
-			serverError           : "Server error has occurred",
-			serverForbidden       : "Forbidden to access URI",
-			serverInvalidMethod   : "Method not allowed",
-			serverUnauthorized    : "Authorization required to access URI"
-		},
-
-		// Months of the Year
-		month : {
-			0  : "January",
-			1  : "February",
-			2  : "March",
-			3  : "April",
-			4  : "May",
-			5  : "June",
-			6  : "July",
-			7  : "August",
-			8  : "September",
-			9  : "October",
-			10 : "November",
-			11 : "December"
-		}
-	};
-
-	/**
-	 * Messaging between iframes
-	 *
-	 * @class abaaso
-	 * @namespace abaaso
-	 */
-	var message = {
-		/**
-		 * Clears the message listener
-		 *
-		 * @method clear
-		 * @return {Object} abaaso
-		 */
-		clear : function () {
-			return $.un(window, "message");
-		},
-
-		/**
-		 * Posts a message to the target
-		 *
-		 * @method send
-		 * @param  {Object} target Object to receive message
-		 * @param  {Mixed}  arg    Entity to send as message
-		 * @return {Object} target
-		 */
-		send : function (target, arg) {
-			try {
-				target.postMessage(arg, "*");
-				return target;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
-		 * Sets a handler for recieving a message
-		 *
-		 * @method recv
-		 * @param  {Function} fn  Callback function
-		 * @return {Object} abaaso
-		 */
-		recv : function (fn) {
-			return $.on(window, "message", fn);
-		}
-	};
-
-	/**
-	 * Mouse tracking
-	 *
-	 * @class mouse
-	 * @namespace abaaso
-	 */
-	var mouse = {
-		//Indicates whether mouse tracking is enabled
-		enabled : false,
-
-		// Indicates whether to try logging co-ordinates to the console
-		log : false,
-
-		// Mouse coordinates
-		diff : {x: null, y: null},
-		pos  : {x: null, y: null},
-		prev : {x: null, y: null},
-
-		/**
-		 * Enables or disables mouse co-ordinate tracking
-		 *
-		 * @method track
-		 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
-		 * @return {Object} abaaso.mouse
-		 */
-		track : function (e) {
-			var m = abaaso.mouse;
-			switch (true) {
-				case typeof e === "object":
-					var x = e.pageX ? e.pageX : ((client.ie && client.version < 9 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX),
-					    y = e.pageY ? e.pageY : ((client.ie && client.version < 9 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY),
-					    c = false;
-
-					if (m.pos.x !== x) c = true;
-					$.mouse.prev.x = m.prev.x = Number(m.pos.x);
-					$.mouse.pos.x  = m.pos.x  = x;
-					$.mouse.diff.x = m.diff.x = m.pos.x - m.prev.x;
-
-					if (m.pos.y !== y) c = true;
-					$.mouse.prev.y = m.prev.y = Number(m.pos.y);
-					$.mouse.pos.y  = m.pos.y  = y;
-					$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
-
-					if (c && m.log) utility.log(m.pos.x + " [" + m.diff.x + "], " + m.pos.y + " [" + m.diff.y + "]");
-					break;
-				case typeof e === "boolean":
-					e ? observer.add(document, "mousemove", abaaso.mouse.track) : observer.remove(document, "mousemove");
-					$.mouse.enabled = m.enabled = e;
-					break;
-			}
-			return m;
-		}
-	};
-
-	/**
 	 * Global Observer wired to a State Machine
 	 *
 	 * @class observer
 	 * @namespace abaaso
 	 */
-	var observer = {
+	observer = {
 		// Collection of listeners
 		listeners : {},
 
@@ -2963,7 +2965,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class utility
 	 * @namespace abaaso
 	 */
-	var utility = {
+	utility = {
 		/**
 		 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 		 * 
@@ -3779,7 +3781,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class validate
 	 * @namespace abaaso
 	 */
-	var validate = {
+	validate = {
 		// Regular expression patterns to test against
 		pattern : {
 			alphanum : /^[a-zA-Z0-9]*$/,
@@ -3891,7 +3893,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 * @class xml
 	 * @namespace abaaso
 	 */
-	var xml = {
+	xml = {
 		/**
 		 * Returns XML (Document) Object from a String
 		 *
@@ -3974,7 +3976,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		}
 	};
 
-	var error = utility.error;
+	error = utility.error;
 
 	// @constructor
 	return {
