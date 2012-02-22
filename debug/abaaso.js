@@ -110,7 +110,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
 		contains : function (obj, arg) {
-			if (arg.indexOf(",") > -1 ) arg = arg.explode();
+			if (typeof arg.indexOf === "function" && arg.indexOf(",") > -1 ) arg = arg.explode();
 			if (arg instanceof Array) {
 				var indexes = [],
 				    nth     = args.length,
