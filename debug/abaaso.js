@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.95
+ * @version 1.8.96
  */
 (function (window) {
 
@@ -149,7 +149,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		},
 
 		/**
-		 * Finds the index of arg in instance. Use contains() for multiple arguments
+		 * Facade to indexOf for shorter syntax
 		 *
 		 * @method index
 		 * @param  {Array} obj Array to search
@@ -157,10 +157,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Integer} The position of arg in instance
 		 */
 		index : function (obj, arg) {
-			var i = obj.length;
-
-			while (i--) { if (obj[i] === arg) return i; }
-			return -1;
+			return obj.indexOf(arg);
 		},
 
 		/**
@@ -1834,55 +1831,6 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	 */
 	el = {
 		/**
-		 * Adds or removes a CSS class
-		 *
-		 * Events: beforeClassChange  Fires before the Object's class is changed
-		 *         afterClassChange   Fires after the Object's class is changed
-		 *
-		 * @method clear
-		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
-		 * @param  {String}  arg Class to add or remove (can be a wildcard)
-		 * @param  {Boolean} add Boolean to add or remove, defaults to true
-		 * @return {Mixed} Element or Array of Elements
-		 */
-		klass : function (obj, arg, add) {
-			try {
-				if (obj instanceof Array) return obj.each(function (i) { el.klass(i, arg, add); });
-
-				obj = utility.object(obj);
-				add = (add !== false);
-
-				if (!(obj instanceof Element) || String(arg).isEmpty())
-					throw Error(label.error.invalidArguments);
-
-				obj.fire("beforeClassChange");
-
-				var classes = obj.className.split(" "),
-				    nth     = classes.length,
-				    i;
-
-				switch (true) {
-					case add:
-						if (classes.index(arg) < 0) classes.push(arg);
-						break;
-					case !add:
-						arg === "*" ? classes = [] : classes.remove(arg);
-						break;
-				}
-
-				classes = classes.join(" ");
-				client.ie && client.version < 9 ? obj.className = classes : obj.setAttribute("class", classes);
-
-				obj.fire("afterClassChange");
-				return obj;
-			}
-			catch (e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
 		 * Clears an object's innerHTML, or resets it's state
 		 *
 		 * Events: beforeClear  Fires before the Object is cleared
@@ -2124,6 +2072,30 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		},
 
 		/**
+		 * Determines of "obj" has "klass" in it's cssName
+		 * 
+		 * @method hasClass
+		 * @param  {Mixed} obj Element or Array of Elements or $ queries
+		 * @return {Mixed} Element, Array of Elements or undefined
+		 */
+		hasClass : function (obj, klass) {
+			try {
+				if (obj instanceof Array) return obj.each(function (i) { el.hide(i); });
+
+				obj = utility.object(obj);
+
+				if (!(obj instanceof Element))
+					throw Error(label.error.invalidArguments);
+
+				return obj.className.explode(" ").index(klass) > -1;
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
 		 * Hides an Element if it's visible
 		 *
 		 * Events: beforeHide  Fires before the object is hidden
@@ -2175,6 +2147,55 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					throw Error(label.error.invalidArguments);
 
 				return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
+			}
+			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Adds or removes a CSS class
+		 *
+		 * Events: beforeClassChange  Fires before the Object's class is changed
+		 *         afterClassChange   Fires after the Object's class is changed
+		 *
+		 * @method clear
+		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
+		 * @param  {String}  arg Class to add or remove (can be a wildcard)
+		 * @param  {Boolean} add Boolean to add or remove, defaults to true
+		 * @return {Mixed} Element or Array of Elements
+		 */
+		klass : function (obj, arg, add) {
+			try {
+				if (obj instanceof Array) return obj.each(function (i) { el.klass(i, arg, add); });
+
+				obj = utility.object(obj);
+				add = (add !== false);
+
+				if (!(obj instanceof Element) || String(arg).isEmpty())
+					throw Error(label.error.invalidArguments);
+
+				obj.fire("beforeClassChange");
+
+				var classes = obj.className.split(" "),
+				    nth     = classes.length,
+				    i;
+
+				switch (true) {
+					case add:
+						if (classes.index(arg) < 0) classes.push(arg);
+						break;
+					case !add:
+						arg === "*" ? classes = [] : classes.remove(arg);
+						break;
+				}
+
+				classes = classes.join(" ");
+				client.ie && client.version < 9 ? obj.className = classes : obj.setAttribute("class", classes);
+
+				obj.fire("afterClassChange");
+				return obj;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -3411,6 +3432,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           each     : function (arg) { this.forEach(arg); return this; },
 				           enable   : function () { return this.each(function (i) { i.enable(); }); },
 				           first    : function () { return array.first(this); },
+				           hasClass : function (arg) { var a = []; this.each(function (i) { a.push(i.hasClass(arg)); }); return a; },
 				           hide     : function () { return this.each(function (i){ i.hide(); }); },
 				           html     : function (arg) { return this.each(function (i){ i.html(arg); }); },
 				           index    : function (arg) { return array.index(this, arg); },
@@ -3485,6 +3507,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           		        : this.html(cached.response).fire("afterGet");
 
 				           		return this;
+				           },
+				           hasClass : function (arg) {
+				           		this.genId();
+				           		return el.hasClass(this, arg);
 				           },
 				           hide     : function () {
 				           		this.genId();
@@ -4341,7 +4367,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.95"
+		version         : "1.8.96"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
