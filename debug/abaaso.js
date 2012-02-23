@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.96
+ * @version 1.8.97
  */
 (function (window) {
 
@@ -110,16 +110,15 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
 		 */
 		contains : function (obj, arg) {
-			if (typeof arg.indexOf === "function" && arg.indexOf(",") > -1 ) arg = arg.explode();
-			if (arg instanceof Array) {
-				var indexes = [],
-				    nth     = args.length,
-				    i       = null;
+			var indices = [],
+			    nth, i;
 
-				for (i = 0; i < nth; i++) { indexes[i] = obj.index(arg[i]); }
-				return indexes;
-			}
-			return obj.index(arg);
+			arg = typeof arg.indexOf === "function" ? arg.explode() : [arg];
+			nth = obj.length;
+			arg.each(function (idx) {
+				for (i = 0; i < nth; i++) if (idx === obj[i]) indices.push(i);
+			});
+			return indices;
 		},
 
 		/**
@@ -4367,7 +4366,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.96"
+		version         : "1.8.97"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
