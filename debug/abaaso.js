@@ -118,7 +118,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			arg.each(function (idx) {
 				for (i = 0; i < nth; i++) if (idx === obj[i]) indices.push(i);
 			});
-			return indices.sort();
+			return indices.sort(function(a, b) { return a - b; });
 		},
 
 		/**
