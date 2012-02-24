@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.97
+ * @version 1.8.98
  */
 (function (window) {
 
@@ -3650,6 +3650,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           post     : function (success, failure, args) { return client.request(this, "POST", success, failure, args); },
 				           put      : function (success, failure, args) { return client.request(this, "PUT", success, failure, args); },
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function () { return $.permissions(this); },
 				           toCamelCase: function () {
@@ -4037,6 +4038,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			post    : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
 			put     : function (uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
 			jsonp   : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
+			options : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 			permission : client.permission
 		},
 		cookie          : cookie,
@@ -4337,6 +4339,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			if (typeof s === "undefined") s = o;
 			return observer.add.call(observer, o, e, l, i, s, st);
 		},
+		options         : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 		permissions     : client.permissions,
 		position        : el.position,
 		post            : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
@@ -4366,7 +4369,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.97"
+		version         : "1.8.98"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
