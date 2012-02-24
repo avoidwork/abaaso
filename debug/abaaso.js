@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.98
+ * @version 1.8.99
  */
 (function (window) {
 
@@ -694,16 +694,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				    cached  = type === "head" ? false : cache.get(uri),
 				    typed   = type.capitalize(),
 				    guid    = utility.guid(true),
-				    i, timer, fail;
+				    i, fail;
 
-				timer = function () {
-					clearTimeout(abaaso.timer[typed + "-" + uri]);
-					delete abaaso.timer[typed + "-" + uri];
-					uri.un("received" + typed, guid).un("timeout"  + typed, guid);
-				};
-
-				fail = function () {
-					uri.fire("failed" + typed, guid).un("failed" + typed, guid);
+				fail = function (arg) {
+					uri.fire("failed" + typed, arg).un("failed" + typed, guid);
 				};
 
 				if (type === "delete") {
@@ -713,36 +707,24 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					}, guid);
 				}
 
-				uri.on("received" + typed, timer, guid)
-				   .on("timeout"  + typed, function (){ timer(); fail(); }, guid)
-				   .on("after"    + typed, function (arg) {
-				   		uri.un("received" + typed, guid)
-				   		   .un("timeout" + typed, guid)
-				   		   .un("after" + typed, guid)
-				   		   .un("failed" + typed, guid);
+				uri.on("after"    + typed, function (arg) {
+				   		uri.un("received" + typed, guid).un("failed" + typed, guid);
 				   		if (typeof success === "function") success(arg);
 					}, guid)
-				   .on("failed"   + typed, function () {
-				   		timer();
-				   		uri.un("after" + typed, guid)
-				   		   .un("failed" + typed, guid);
-				   		if (typeof failure === "function") failure();
+				   .on("failed"   + typed, function (arg) {
+				   		uri.un("after" + typed, guid).un("failed" + typed, guid);
+				   		if (typeof failure === "function") failure(arg);
 					}, guid)
 				   .fire("before" + typed)
 				   .fire("beforeXHR");
 
-				if (type !== "head" && uri.allows(type) === false) {
-					timer();
-					uri.fire("failed" + typed);
-					return uri;
-				}
+				if (type !== "head" && uri.allows(type) === false) return uri.fire("failed" + typed);
 
 				if (type === "get" && Boolean(cached)) uri.fire("afterGet", utility.clone(cached.response));
 				else {
-					abaaso.timer[typed + "-" + uri] = setTimeout(function () { uri.fire("timeout" + typed); }, 30000);
 					xhr[cors && client.ie ? "onload" : "onreadystatechange"] = function () { client.response(xhr, uri, type); };
 
-					if (client.ie && cors && client.version <= 9) {
+					if (client.ie && cors && client.version < 10) {
 						if (l.protocol === "http:") xhr.open(type.toUpperCase(), uri);
 						else return uri.fire("failed" + typed);
 					}
@@ -771,13 +753,22 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							if (typeof headers.callback !== "undefined") delete headers.callback;
 							if (typeof headers.withCredentials !== "undefined") delete headers.withCredentials;
 						}
-						if (headers !== null) for (i in headers) { xhr.setRequestHeader(i, headers[i]); }
+						if (headers !== null) for (i in headers) if (headers.hasOwnProperty(i)) xhr.setRequestHeader(i, headers[i]);
 						if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
 					}
 
 					// Cross Origin Resource Sharing (CORS)
 					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
-					if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
+
+					// Setting events
+					switch (true) {
+						case typeof xhr.onerror === "object":
+							xhr.onerror = fail;
+						case typeof xhr.ontimeout === "object":
+							xhr.ontimeout = fail;
+						case typeof xhr.onprogress === "object":
+							xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
+					}
 
 					xhr.send(payload);
 				}
@@ -4369,7 +4360,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.98"
+		version         : "1.8.99"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
