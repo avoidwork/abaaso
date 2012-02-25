@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.8.99
+ * @version 1.9
  */
 (function (window) {
 
@@ -82,10 +82,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			switch (true) {
 				case !isNaN(obj.length):
 					if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
-					else for (i = 0, nth = obj.length; i < nth; i++) { o.push(obj[i]); }
+					else obj.each(function (i) { o.push(i); });
 					break;
 				default:
-					for (i in obj) { o.push(key ? i : obj[i]); }
+					obj.each(function (v, k) { o.push(key ? k : v); });
 			}
 			return o;
 		},
@@ -167,9 +167,9 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Array} Indexed Array
 		 */
 		indexed : function (obj) {
-			var o, indexed = [];
+			var indexed = [];
 
-			for (o in obj) { if (obj.hasOwnProperty(o)) indexed.push(!(obj[o] instanceof Array) ? obj[o] : obj[o].indexed()); }
+			obj.each(function (v, k) { indexed.push(!(v instanceof Array) ? v : this[k].indexed()); });
 			return indexed;
 		},
 
@@ -196,9 +196,9 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Array} Array of the keys
 		 */
 		keys : function (obj) {
-			var i, keys = [];
+			var keys = [];
 
-			for (i in obj) { if (obj.hasOwnProperty(i) && isNaN(i)) keys.push(i); }
+			obj.each(function (v, k) { if (isNaN(k)) keys.push(k); });
 			return keys;
 		},
 
@@ -282,8 +282,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Undefined} undefined
 		 */
 		clean : function () {
-			var i;
-			for (i in cache.items) { if (cache.expired(i)) cache.expire(i); }
+			return cache.items.each(function (v, k) { if (cache.expired(k)) cache.expire(k); });
 		},
 
 		/**
@@ -752,8 +751,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						if (headers instanceof Object) {
 							if (typeof headers.callback !== "undefined") delete headers.callback;
 							if (typeof headers.withCredentials !== "undefined") delete headers.withCredentials;
+							headers.each(function (v, k) { xhr.setRequestHeader(k, v); });
 						}
-						if (headers !== null) for (i in headers) if (headers.hasOwnProperty(i)) xhr.setRequestHeader(i, headers[i]);
 						if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
 					}
 
@@ -1084,19 +1083,17 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							else this.del(data[i], false, sync);
 						}
 					}
-					else {
-						for (i in data) {
-							if (type === "set") {
-								if (this.key !== null && typeof data[i][this.key] !== "undefined") {
-									key = data[i][this.key];
-									delete data[i][this.key];
-								}
-								else key = i.toString();
-								this.set(key, data[i], sync);
+					else data.each(function (v, k) {
+						if (type === "set") {
+							if (this.key !== null && typeof v[this.key] !== "undefined") {
+								key = v[this.key];
+								delete v[this.key];
 							}
-							else this.del(data[i], false, sync);
+							else key = k.toString();
+							this.set(key, v, sync);
 						}
-					}
+						else this.del(v, false, sync);
+					});
 					if (type === "del") this.reindex();
 					obj.fire("afterDataBatch");
 					return this;
@@ -1243,7 +1240,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							while (i--) { if (!r.data.hasOwnProperty(h[i])) throw Error(label.error.invalidArguments); }
 							break;
 						default:
-							for (i in r.data) { h.push(i); }
+							r.data.each(function (v, k) { h.push(k); });
 					}
 
 					nth = h.length;
@@ -1356,22 +1353,22 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					 * @return {Undefined} undefined
 					 */
 					structure = function (record, obj, name) {
-						var i, x, id;
-						for (i in record) {
+						var x, id;
+						record.each(function (v, k) {
 							switch (true) {
-								case record[i] instanceof Array:
+								case v instanceof Array:
 									x = 0;
-									record[i].each(function (o) { structure(o, obj, name + "[" + i + "][" + (x++) + "]"); });
+									v.each(function (o) { structure(o, obj, name + "[" + k + "][" + (x++) + "]"); });
 									break;
-								case record[i] instanceof Object:
-									structure(record[i], obj, name + "[" + i + "]");
+								case v instanceof Object:
+									structure(v, obj, name + "[" + k + "]");
 									break;
 								default:
-									id = (name + "[" + i + "]").replace(/\[|\]/g, "");
-									obj.create("label", {"for": id}).html(i.capitalize());
-									obj.create("input", {id: id, name: name + "[" + i + "]", type: "text", value: empty ? "" : record[i]});
+									id = (name + "[" + k + "]").replace(/\[|\]/g, "");
+									obj.create("label", {"for": id}).html(k.capitalize());
+									obj.create("input", {id: id, name: name + "[" + k + "]", type: "text", value: empty ? "" : v});
 							}
-						}
+						});
 					};
 
 					this.parentNode.fire("beforeDataForm");
@@ -1608,19 +1605,17 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							if (typeof arg !== "object")
 								throw Error(label.error.expectedObject);
 
-							var i, data = [];
+							var data, found = false;
 
 							if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
-							if (arg instanceof Array) data = arg;
-							else {
-								for (i in arg) {
-									if (arg[i] instanceof Array) {
-										data = data.concat(arg[i]);
-										break;
-									}
+							if (arg instanceof Array) data = arg.clond();
+							else arg.each(function (i) {
+								if (!found && i instanceof Array) {
+									found = true;
+									data  = i.clone();
 								}
-							}
+							});
 
 							self.batch("set", data, true);
 							if (reindex) self.reindex();
@@ -2359,29 +2354,26 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				obj.fire("beforeUpdate");
 
-				var i;
-				for (i in args) {
-					if (!args.hasOwnProperty(i)) continue;
-					switch(i) {
+				args.each(function (v, k) {
+					switch (k) {
 						case "innerHTML":
 						case "type":
 						case "src":
-							obj[i] = args[i];
+							obj[k] = v;
 							break;
 						case "class":
-							!args[i].isEmpty() ? obj.addClass(args[i]) : obj.removeClass("*");
+							!v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
 							break;
 						case "id":
 							var o = observer.listeners;
 							if (typeof o[obj.id] !== "undefined") {
-								o[args[i]] = utility.clone(o[obj.id]);
+								o[k] = utility.clone(o[obj.id]);
 								delete o[obj.id];
 							}
 						default:
-							obj.setAttribute(i, args[i]);
-							break;
+							obj.setAttribute(k, v);
 					}
-				}
+				});
 
 				obj.fire("afterUpdate");
 				return obj;
@@ -2840,14 +2832,16 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, arg); });
 
-				var o = this.id(obj), c, i, l;
+				var o = this.id(obj),
+				    a = arg,
+				    c, l;
 
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
 						throw Error(label.error.invalidArguments);
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
-				for (i in l) if (l.hasOwnProperty(i)) l[i].fn.call(l[i].scope, arg);
+				l.each(function (i, k) { i.fn.call(i.scope, a); });
 				$.observer.fired++;
 				return obj;
 			}
@@ -2954,17 +2948,15 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		state : function (arg) {
 			var l = this.listeners,
 			    p = $.state.previous,
-			    i, e;
+			    e;
 
-			for (i in l) {
-				if (!l.hasOwnProperty(i)) continue;
-				for (e in l[i]) {
-					if (!l[i].hasOwnProperty(e)) continue;
-					l[i][e][p]     = l[i][e].active;
-					l[i][e].active = l[i][e][arg] || {};
-					if (typeof l[i][e][arg] !== "undefined") delete l[i][e][arg];
-				}
-			}
+			l.each(function (v, k) {
+				v.each(function (s, d) {
+					v[p]     = v.active;
+					v.active = v[arg] || {};
+					if (typeof v[arg] !== "undefined") delete v[arg];
+				});
+			});
 			$.fire(arg);
 			return abaaso;
 		}
@@ -2988,20 +2980,20 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Mixed} Element or Array of Elements
 		 */
 		$ : function (arg, nodelist) {
+			var result = [],
+			    obj, sel;;
+
 			arg      = arg.trim();
 			nodelist = (nodelist === true);
 
 			// Recursive processing, ends up below
 			if (arg.indexOf(",") > -1) arg = arg.explode();
 			if (arg instanceof Array) {
-				var result = [];
 				arg.each(function (i) { result.push($(i, nodelist)); });
 				return result;
 			}
 
 			// Getting Element(s)
-			var obj, sel;
-
 			switch (true) {
 				case (/\s|>/.test(arg)):
 					sel = arg.split(" ").filter(function (i) { if (i.trim() !== "" && i !== ">") return true; }).last();
@@ -3033,38 +3025,37 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Object} Object receiving aliasing
 		 */
 		alias : function (obj, origin) {
-			var i;
-			for (i in origin) {
-				(function () {
-					var b = i, getter, setter;
-					if (origin.hasOwnProperty(b)) {
+			var o = obj,
+			    s = origin;
+
+			utility.iterate(s, function (v, k) {
+				var getter, setter;
+
+				switch (true) {
+					case !(v instanceof RegExp) && typeof v === "function":
+						o[k] = v.bind(o[k]);
+						break;
+					case !(v instanceof RegExp) && !(v instanceof Array) && v instanceof Object:
+						if (typeof o[k] === "undefined") o[k] = {};
+						utility.alias(o[k], s[k]);
+						break;
+					default:
+						getter = function () { return s[k]; },
+						setter = function (arg) { s[k] = arg; };
+
 						switch (true) {
-							case !(origin[b] instanceof RegExp) && typeof origin[b] === "function":
-								obj[b] = origin[b].bind(obj[b]);
+							case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
+								Object.defineProperty(o, k, {get: getter, set: setter});
 								break;
-							case !(origin[b] instanceof RegExp) && !(origin[b] instanceof Array) && origin[b] instanceof Object:
-								if (typeof obj[b] === "undefined") obj[b] = {};
-								utility.alias(obj[b], origin[b]);
+							case typeof o.__defineGetter__ === "function":
+								o.__defineGetter__(k, getter);
+								o.__defineSetter__(k, setter);
 								break;
 							default:
-								getter = function () { return origin[b]; },
-								setter = function (arg) { origin[b] = arg; };
-
-								switch (true) {
-									case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-										Object.defineProperty(obj, b, {get: getter, set: setter});
-										break;
-									case typeof obj.__defineGetter__ === "function":
-										obj.__defineGetter__(b, getter);
-										obj.__defineSetter__(b, setter);
-										break;
-									default:
-										obj[b] = origin[b];
-								}
+								o[k] = s[k];
 						}
-					}
-				})();
-			}
+				}
+			});
 			return obj;
 		},
 
@@ -3244,11 +3235,11 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				if (typeof arg === "undefined") arg = {};
 
-				var i, o, f = function () {};
+				var o, f = function () {};
 
 				f.prototype = obj;
 				o = new f();
-				for (i in arg) { if (arg.hasOwnProperty(i)) o[i] = arg[i]; }
+				$.merge(o, arg);
 				return o;
 			}
 			catch (e) {
@@ -3300,6 +3291,20 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			o = (s() + s() + "-" + s() + "-4" + s().substr(0,3) + "-" + s() + "-" + s() + s() + s()).toLowerCase();
 			if (safe) o = o.replace(/-/gi, "");
 			return o;
+		},
+
+		/**
+		 * Iterates an Object and executes a function against the properties
+		 * 
+		 * @param  {Object}   obj Object to iterate
+		 * @param  {Function} fn  Function to execute against properties
+		 * @return {Object} Object
+		 */
+		iterate : function (obj, fn) {
+			var i;
+
+			for (i in obj) if (obj.hasOwnProperty(i)) fn.call(obj, obj[i], i);
+			return obj;
 		},
 
 		/**
@@ -3363,6 +3368,19 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return undefined;
 		},
 
+		/**
+		 * Merges obj with arg
+		 * 
+		 * @param  {Object} obj Object to decorate
+		 * @param  {Object} arg Object to decorate with
+		 * @return {Object} Object to decorate
+		 */
+		merge : function (obj, arg) {
+			arg.each(function (v, k) {
+				obj[k] = utility.clone(v);
+			});
+			return obj;
+		},
 		
 		/**
 		 * Registers a module in the abaaso namespace
@@ -3657,8 +3675,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			};
 
 			// Applying the methods
-			for (i in methods[type])  { obj.prototype[i] = methods[type][i];  }
-			if (type !== "function") for (i in methods.shared) { obj.prototype[i] = methods.shared[i]; }
+			for (i in methods[type]) if (methods[type].hasOwnProperty(i)) obj.prototype[i] = methods[type][i];
+			if (type !== "function") for (i in methods.shared) if (methods.shared.hasOwnProperty(i)) obj.prototype[i] = methods.shared[i];
 			return obj;
 		},
 
@@ -3761,25 +3779,24 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				if (typeof target === "undefined") target = $("body")[0];
 
-				var frag = document.createDocumentFragment(),
-				    i;
+				var frag = document.createDocumentFragment();
 
 				switch (true) {
 					case arg instanceof Array:
 						arg.each(function (i) { $.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
 						break;
 					default:
-						for (i in arg) {
+						arg.each(function (i, k) {
 							switch (true) {
-								case typeof arg[i] === "string":
-									$.create(i, frag).html(arg[i]);
+								case typeof i === "string":
+									$.create(k, frag).html(i);
 									break;
-								case arg[i] instanceof Array:
-								case arg[i] instanceof Object:
-									$.tpl(arg[i], $.create(i, frag));
+								case i instanceof Array:
+								case i instanceof Object:
+									$.tpl(i, $.create(k, frag));
 									break;
 							}
-						}
+						});
 				}
 
 				target.appendChild(frag);
@@ -3861,44 +3878,43 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				return result;
 			}
 			else {
-				var i;
-				for (i in args) {
-					if (typeof i === "undefined" || typeof args[i] === "undefined") {
-						invalid.push({test: i, value: args[i]});
+				args.each(function (i, k) {
+					if (typeof k === "undefined" || typeof i === "undefined") {
+						invalid.push({test: k, value: i});
 						exception = true;
-						continue;
+						return
 					}
-					value = args[i].charAt(0) === "#" ? (typeof $(args[i]) !== "undefined" ? (($(args[i]).value) ? $(args[i]).value
-					                                                                                             : $(args[i]).innerHTML)
-					                                                                       : "")
-					                                  : args[i];
-					switch (i) {
+					value = i.charAt(0) === "#" ? (typeof $(i) !== "undefined" ? (($(i).value) ? $(i).value
+					                                                                           : $(i).innerHTML)
+					                                                           : "")
+					                            : i;
+					switch (k) {
 						case "date":
 							if (isNaN(new Date(value).getYear())) {
-								invalid.push({test: i, value: value});
+								invalid.push({test: k, value: value});
 								exception = true;
 							}
 							break;
 						case "domain":
 							if (!validate.pattern.domain.test(value.replace(/.*\/\//, ""))) {
-								invalid.push({test: i, value: value});
+								invalid.push({test: k, value: value});
 								exception = true;
 							}
 							break;
 						case "domainip":
 							if (!validate.pattern.domain.test(value.replace(/.*\/\//, "")) || !validate.pattern.ip.test(value)) {
-								invalid.push({test: i, value: value});
+								invalid.push({test: k, value: value});
 								exception = true;
 							}
 							break;
 						default:
-							var p = typeof validate.pattern[i] !== "undefined" ? validate.pattern[i] : i;
+							var p = typeof validate.pattern[k] !== "undefined" ? validate.pattern[k] : k;
 							if (!p.test(value)) {
-								invalid.push({test: i, value: value});
+								invalid.push({test: k, value: value});
 								exception = true;
 							}
 					}
-				}
+				});
 				return {pass: !exception, invalid: invalid};
 			}
 		}
@@ -3977,7 +3993,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								xml += node("item", arg);
 								break
 							case typeof arg === "object":
-								for (i in arg) { xml += $.xml.encode(arg[i], (typeof arg[i] === "object"), false).replace(/item|xml/g, !isNaN(i) ? "item" : i); }
+								arg.each(function (i, k) { xml += $.xml.encode(i, (typeof i === "object"), false).replace(/item|xml/g, !isNaN(k) ? "item" : k); });
 								break;
 						}
 
@@ -4090,7 +4106,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						t      = Object(this),
 						nth    = t.length >>> 0,
 						result = [],
-						prop   = arguments[1]
+						prop   = arguments[1],
 						val    = null;
 
 					for (i = 0; i < nth; i++) {
@@ -4180,6 +4196,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			}
 
 			// Hooking abaaso into native Objects
+			Object.prototype.each  = function (arg) { return utility.iterate(this, arg); };
+			Object.prototype.merge = function (arg) { return utility.merge(this, arg); };
 			utility.proto(Array, "array");
 			if (typeof Element !== "undefined") utility.proto(Element, "element");
 			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
@@ -4306,6 +4324,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			// Firing render
 			return  $.fire("render").un("render");
 		},
+		iterate         : utility.iterate,
 		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 		listeners       : function (event) {
 			var obj = this;
@@ -4314,6 +4333,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.list.call(observer, obj, event);
 		},
 		log             : utility.log,
+		merge           : utility.merge,
 		module          : utility.module,
 		on              : function (obj, event, listener, id, scope, state) {
 			var all = typeof listener === "function",
@@ -4360,7 +4380,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.8.99"
+		version         : "1.9"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
