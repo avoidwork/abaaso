@@ -1609,7 +1609,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 							if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
-							if (arg instanceof Array) data = arg.clond();
+							if (arg instanceof Array) data = arg.clone();
 							else arg.each(function (i) {
 								if (!found && i instanceof Array) {
 									found = true;
