@@ -137,6 +137,21 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		},
 
 		/**
+		 * Iterates obj and executes fn
+		 * Parameters for fn are 'value', 'key'
+		 * 
+		 * @param  {Array}    obj Array to iterate
+		 * @param  {Function} fn  Function to execute on index values
+		 * @return {Array} Array
+		 */
+		each : function (obj, fn) {
+			var n = 0;
+
+			obj.forEach(function (i) { fn(i, n++); });
+			return obj;
+		},
+
+		/**
 		 * Returns the first Array node
 		 *
 		 * @method first
@@ -3437,7 +3452,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
 				           diff     : function (arg) { return array.diff(this, arg); },
 				           disable  : function () { return this.each(function (i) { i.disable(); }); },
-				           each     : function (arg) { this.forEach(arg); return this; },
+				           each     : function (arg) { return array.each(this, arg); },
 				           enable   : function () { return this.each(function (i) { i.enable(); }); },
 				           first    : function () { return array.first(this); },
 				           hasClass : function (arg) { var a = []; this.each(function (i) { a.push(i.hasClass(arg)); }); return a; },
