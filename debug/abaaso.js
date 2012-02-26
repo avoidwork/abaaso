@@ -844,7 +844,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								if (type !== "delete" && /200|301/.test(xhr.status)) {
 									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 									switch (true) {
-										case (/json|plain/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
+										case (/json|plain|javascript/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
 											r = x;
 											break;
 										case (/xml/.test(t) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
