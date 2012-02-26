@@ -4230,6 +4230,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			if (!client.server) {
 				$.on(window, "hashchange", function () { $.fire("hash", location.hash); });
 				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+				$.on(window, "load", function () { $.fire("render").un("render"); });
 			}
 
 			// abaaso.state.current getter/setter
@@ -4335,7 +4336,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			expiration.call(expiration);
 
 			// Firing events to setup
-			return $.fire("init").un("init").fire("ready").un("ready").fire("render").un("render");
+			return $.fire("init").un("init").fire("ready").un("ready");
 		},
 		iterate         : utility.iterate,
 		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
