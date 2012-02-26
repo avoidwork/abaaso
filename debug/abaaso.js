@@ -42,7 +42,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9
+ * @version 1.9.1
  */
 (function (window) {
 
@@ -4267,9 +4267,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					$.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
 			}
 
-			$.fire("init").un("init");
 			$.ready = true;
-			$.fire("ready").un("ready");
 
 			// Preparing init()
 			switch (true) {
@@ -4336,8 +4334,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			}
 			expiration.call(expiration);
 
-			// Firing render
-			return  $.fire("render").un("render");
+			// Firing events to setup
+			return $.fire("init").un("init").fire("ready").un("ready").fire("render").un("render");
 		},
 		iterate         : utility.iterate,
 		jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
@@ -4395,7 +4393,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9"
+		version         : "1.9.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
