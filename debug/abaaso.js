@@ -38,11 +38,12 @@
  *         beforeDestroy  Fires when an Element is about to be destroyed; parameter for listeners is the (to be removed) Element
  *         error          Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
  *         hash           Fires when window.location.hash changes; parameter for listeners is the hash value
+ *         afterHash      Fires after the hash event; parameter for listeners is the hash value
  *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.2
+ * @version 1.9.3
  */
 (function (window) {
 
@@ -4228,7 +4229,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 			// Setting events & garbage collection
 			if (!client.server) {
-				$.on(window, "hashchange", function () { $.fire("hash", location.hash); });
+				$.on(window, "hashchange", function () { $.fire("hash", location.hash).fire("afterHash", location.hash); });
 				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
 				$.on(window, "load", function () { $.fire("render").un("render"); });
 			}
@@ -4394,7 +4395,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.2"
+		version         : "1.9.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
