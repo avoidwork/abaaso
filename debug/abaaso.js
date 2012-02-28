@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.3
+ * @version 1.9.4
  */
 (function (window) {
 
@@ -87,7 +87,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					else obj.each(function (i) { o.push(i); });
 					break;
 				default:
-					obj.each(function (v, k) { o.push(key ? k : v); });
+					utility.iterate(obj, function (v, k) { o.push(key ? k : v); });
 			}
 			return o;
 		},
@@ -117,9 +117,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 			arg = typeof arg.indexOf === "function" ? arg.explode() : [arg];
 			nth = obj.length;
-			arg.each(function (idx) {
-				for (i = 0; i < nth; i++) if (idx === obj[i]) indices.push(i);
-			});
+			arg.each(function (idx) { for (i = 0; i < nth; i++) if (idx === obj[i]) indices.push(i); });
 			return indices.sort(function(a, b) { return a - b; });
 		},
 
@@ -215,7 +213,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		keys : function (obj) {
 			var keys = [];
 
-			obj.each(function (v, k) { if (isNaN(k)) keys.push(k); });
+			utility.iterate(obj, function (v, k) { if (isNaN(k)) keys.push(k); });
 			return keys;
 		},
 
@@ -299,7 +297,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Undefined} undefined
 		 */
 		clean : function () {
-			return cache.items.each(function (v, k) { if (cache.expired(k)) cache.expire(k); });
+			return utility.iterate(cache.items, function (v, k) { if (cache.expired(k)) cache.expire(k); });
 		},
 
 		/**
@@ -768,7 +766,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						if (headers instanceof Object) {
 							if (typeof headers.callback !== "undefined") delete headers.callback;
 							if (typeof headers.withCredentials !== "undefined") delete headers.withCredentials;
-							headers.each(function (v, k) { xhr.setRequestHeader(k, v); });
+							utility.iterate(headers, function (v, k) { xhr.setRequestHeader(k, v); });
 						}
 						if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
 					}
@@ -1100,7 +1098,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							else this.del(data[i], false, sync);
 						}
 					}
-					else data.each(function (v, k) {
+					else utility.iterate(data, function (v, k) {
 						if (type === "set") {
 							if (this.key !== null && typeof v[this.key] !== "undefined") {
 								key = v[this.key];
@@ -1257,7 +1255,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							while (i--) { if (!r.data.hasOwnProperty(h[i])) throw Error(label.error.invalidArguments); }
 							break;
 						default:
-							r.data.each(function (v, k) { h.push(k); });
+							utility.iterate(r.data, function (v, k) { h.push(k); });
 					}
 
 					nth = h.length;
@@ -1371,7 +1369,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					 */
 					structure = function (record, obj, name) {
 						var x, id;
-						record.each(function (v, k) {
+						utility.iterate(record, function (v, k) {
 							switch (true) {
 								case v instanceof Array:
 									x = 0;
@@ -1627,7 +1625,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
 							if (arg instanceof Array) data = arg.clone();
-							else arg.each(function (i) {
+							else utility.iterate(arg, function (i) {
 								if (!found && i instanceof Array) {
 									found = true;
 									data  = i.clone();
@@ -2371,7 +2369,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				obj.fire("beforeUpdate");
 
-				args.each(function (v, k) {
+				utility.iterate(args, function (v, k) {
 					switch (k) {
 						case "innerHTML":
 						case "type":
@@ -2858,7 +2856,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
-				l.each(function (i, k) { i.fn.call(i.scope, a); });
+				utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
 				$.observer.fired++;
 				return obj;
 			}
@@ -2967,8 +2965,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			    p = $.state.previous,
 			    e;
 
-			l.each(function (v, k) {
-				v.each(function (s, d) {
+			utility.iterate(l, function (v, k) {
+				utility.iterate(v, function (s, d) {
 					v[p]     = v.active;
 					v.active = v[arg] || {};
 					if (typeof v[arg] !== "undefined") delete v[arg];
@@ -3256,7 +3254,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				f.prototype = obj;
 				o = new f();
-				$.merge(o, arg);
+				utility.merge(o, arg);
 				return o;
 			}
 			catch (e) {
@@ -3290,7 +3288,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				obj.id = id;
 				return obj;
 			}
-			else { return id; }
+			else return id;
 		},
 
 		/**
@@ -3393,7 +3391,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Object} Object to decorate
 		 */
 		merge : function (obj, arg) {
-			arg.each(function (v, k) {
+			utility.iterate(arg, function (v, k) {
 				obj[k] = utility.clone(v);
 			});
 			return obj;
@@ -3803,7 +3801,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						arg.each(function (i) { $.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
 						break;
 					default:
-						arg.each(function (i, k) {
+						utility.iterate(arg, function (i, k) {
 							switch (true) {
 								case typeof i === "string":
 									$.create(k, frag).html(i);
@@ -3895,7 +3893,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				return result;
 			}
 			else {
-				args.each(function (i, k) {
+				utility.iterate(args, function (i, k) {
 					if (typeof k === "undefined" || typeof i === "undefined") {
 						invalid.push({test: k, value: i});
 						exception = true;
@@ -4010,7 +4008,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								xml += node("item", arg);
 								break
 							case typeof arg === "object":
-								arg.each(function (i, k) { xml += $.xml.encode(i, (typeof i === "object"), false).replace(/item|xml/g, !isNaN(k) ? "item" : k); });
+								for (i in arg) if (arg.hasOwnProperty(i)) xml += $.xml.encode(arg[i], (typeof arg[i] === "object"), false).replace(/item|xml/g, !isNaN(i) ? "item" : i);
 								break;
 						}
 
@@ -4213,8 +4211,6 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			}
 
 			// Hooking abaaso into native Objects
-			Object.prototype.each  = function (arg) { return utility.iterate(this, arg); };
-			Object.prototype.merge = function (arg) { return utility.merge(this, arg); };
 			utility.proto(Array, "array");
 			if (typeof Element !== "undefined") utility.proto(Element, "element");
 			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
@@ -4396,7 +4392,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.3"
+		version         : "1.9.4"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
