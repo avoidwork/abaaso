@@ -3250,10 +3250,18 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				if (typeof arg === "undefined") arg = {};
 
-				var o, f = function () {};
+				var o, f;
 
-				f.prototype = obj;
-				o = new f();
+				switch (true) {
+					case typeof Object.create === "function":
+						o = Object.create(obj);
+						break;
+					default:
+						f = function () {};
+						f.prototype = obj;
+						o = new f();
+				}
+
 				utility.merge(o, arg);
 				return o;
 			}
