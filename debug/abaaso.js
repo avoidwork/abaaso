@@ -3320,7 +3320,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		iterate : function (obj, fn) {
 			var i;
 
-			for (i in obj) if (obj.hasOwnProperty(i)) fn.call(obj, obj[i], i);
+			for (i in obj) if (obj.hasOwnProperty(i) && typeof fn === "function") fn.call(obj, obj[i], i);
 			return obj;
 		},
 
