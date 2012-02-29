@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.4
+ * @version 1.9.5
  */
 (function (window) {
 
@@ -704,7 +704,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				    cors    = client.cors(uri),
 				    xhr     = (client.ie && client.version < 10 && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload = /post|put/i.test(type) ? args : null,
-				    headers = type === "get" && args instanceof Object ? args : null,
+				    headers = type === "get" && args instanceof Object ? utility.clone(args) : null,
 				    cached  = type === "head" ? false : cache.get(uri),
 				    typed   = type.capitalize(),
 				    guid    = utility.guid(true),
@@ -4400,7 +4400,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.4"
+		version         : "1.9.5"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
