@@ -727,8 +727,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				   		uri.un("after" + typed, guid).un("failed" + typed, guid);
 				   		if (typeof failure === "function") failure(arg);
 					}, guid)
-				   .fire("before" + typed)
-				   .fire("beforeXHR");
+				   .fire("before" + typed);
 
 				if (type !== "head" && uri.allows(type) === false) return uri.fire("failed" + typed);
 
@@ -782,6 +781,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 					}
 
+					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
 					xhr.send(payload);
 				}
 
@@ -825,6 +825,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						uri.fire("received" + typed);
 						break;
 					case xhr.readyState === 4:
+						uri.fire("afterXHR", {xhr: xhr, uri: uri});
 						switch (xhr.status) {
 							case 200:
 							case 204:
@@ -834,8 +835,6 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								    s = abaaso.state,
 								    o = client.headers(xhr, uri, type),
 								    r, t, x;
-
-								uri.fire("afterXHR");
 
 								if (type === "head") return uri.fire("afterHead", o.headers);
 
