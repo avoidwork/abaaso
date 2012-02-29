@@ -710,9 +710,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				    guid    = utility.guid(true),
 				    i, fail;
 
-				fail = function (arg) {
-					uri.fire("failed" + typed, arg).un("failed" + typed, guid);
-				};
+				fail = function (arg) { uri.fire("failed" + typed, arg); };
 
 				if (type === "delete") {
 					uri.on("afterDelete", function () {
