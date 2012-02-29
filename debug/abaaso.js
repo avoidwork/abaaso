@@ -704,7 +704,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				var l            = location,
 				    cors         = client.cors(uri),
 				    xhr          = (client.ie && client.version < 10 && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
-				    payload      = /post|put/i.test(type) ? utility.clone(args) : null,
+				    payload      = /post|put/i.test(type) && typeof args !== "undefined" ? utility.clone(args) : null,
 				    headers      = type === "get" && args instanceof Object ? utility.clone(args) : null,
 				    cached       = type === "head" ? false : cache.get(uri),
 				    typed        = type.capitalize(),
