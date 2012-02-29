@@ -743,7 +743,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					}
 					else xhr.open(type.toUpperCase(), uri, true);
 
-					if (args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
+					if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
 
 					if (payload !== null) {
 						if (payload.hasOwnProperty("Content-Type"))    delete payload["Content-Type"];
