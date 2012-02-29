@@ -700,14 +700,16 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					throw Error(label.error.invalidArguments);
 
 				type = type.toLowerCase();
-				var l       = document.location,
-				    cors    = client.cors(uri),
-				    xhr     = (client.ie && client.version < 10 && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
-				    payload = /post|put/i.test(type) ? args : null,
-				    headers = type === "get" && args instanceof Object ? utility.clone(args) : null,
-				    cached  = type === "head" ? false : cache.get(uri),
-				    typed   = type.capitalize(),
-				    guid    = utility.guid(true),
+
+				var l            = location,
+				    cors         = client.cors(uri),
+				    xhr          = (client.ie && client.version < 10 && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
+				    payload      = /post|put/i.test(type) ? utility.clone(args) : null,
+				    headers      = type === "get" && args instanceof Object ? utility.clone(args) : null,
+				    cached       = type === "head" ? false : cache.get(uri),
+				    typed        = type.capitalize(),
+				    guid         = utility.guid(true),
+				    contentType  = null,
 				    i, fail;
 
 				fail = function (arg) { uri.fire("failed" + typed, arg); };
@@ -741,31 +743,37 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					}
 					else xhr.open(type.toUpperCase(), uri, true);
 
+					if (args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
+
 					if (payload !== null) {
+						if (payload.hasOwnProperty("Content-Type"))    delete payload["Content-Type"];
+						if (payload.hasOwnProperty("withCredentials")) delete payload.withCredentials;
+						if (payload.hasOwnProperty("xml"))             payload = payload.xml;
+
 						switch (true) {
-							case typeof payload.xml !== "undefined":
-								payload = payload.xml;
 							case payload instanceof Document:
 								payload = xml.decode(payload);
 							case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
-								if (typeof xhr.setRequestHeader !== "undefined") xhr.setRequestHeader("Content-type", "application/xml");
+								if (contentType === null) contentType = "application/xml";
 								break;
 							case payload instanceof Object:
-								if (typeof xhr.setRequestHeader !== "undefined") xhr.setRequestHeader("Content-type", "application/json");
+								if (contentType === null) contentType = "application/json";
 								payload = json.encode(payload);
 								break;
 							default:
-								if (typeof xhr.setRequestHeader !== "undefined") xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
+								if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 						}
 					}
 
-					if (typeof xhr.setRequestHeader !== "undefined") {
+					if (typeof xhr.setRequestHeader === "function") {
 						if (headers instanceof Object) {
-							if (typeof headers.callback !== "undefined") delete headers.callback;
-							if (typeof headers.withCredentials !== "undefined") delete headers.withCredentials;
+							if (headers.hasOwnProperty("callback"))        delete headers.callback;
+							if (headers.hasOwnProperty("withCredentials")) delete headers.withCredentials;
+							if (headers.hasOwnProperty("Content-Type"))    delete headers["Content-Type"];
 							utility.iterate(headers, function (v, k) { xhr.setRequestHeader(k, v); });
 						}
-						if (typeof cached === "object" && typeof cached.headers.ETag !== "undefined") xhr.setRequestHeader("ETag", cached.headers.ETag);
+						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
+						if (contentType !== null) xhr.setRequestHeader("Content-Type", contentType);
 					}
 
 					// Cross Origin Resource Sharing (CORS)
@@ -832,32 +840,35 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							case 205:
 							case 301:
 								var state = null,
-								    s = abaaso.state,
-								    o = client.headers(xhr, uri, type),
+								    s     = abaaso.state,
+								    o     = client.headers(xhr, uri, type),
+								    cors  = client.cors(uri),
 								    r, t, x;
 
-								if (type === "head") return uri.fire("afterHead", o.headers);
+								switch (true) {
+									case type === "head":
+										return uri.fire("afterHead", o.headers);
+									case type !== "delete" && /200|301/.test(xhr.status):
+										t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
+										switch (true) {
+											case (/json|plain|javascript/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
+												r = x;
+												break;
+											case (/xml/.test(t) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
+												r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseXML);
+												break;
+											case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
+												r = xml.decode(xhr.responseText);
+												break;
+											default:
+												r = xhr.responseText;
+										}
 
-								if (type !== "delete" && /200|301/.test(xhr.status)) {
-									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
-									switch (true) {
-										case (/json|plain|javascript/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
-											r = x;
-											break;
-										case (/xml/.test(t) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
-											r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseXML);
-											break;
-										case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
-											r = xml.decode(xhr.responseText);
-											break;
-										default:
-											r = xhr.responseText;
-									}
+										if (typeof r === "undefined")
+											throw Error(label.error.serverError);
 
-									if (typeof r === "undefined")
-										throw Error(label.error.serverError);
-
-									cache.set(uri, "response", (o.response = r));
+										cache.set(uri, "response", (o.response = r));
+										break;
 								}
 
 								// Application state change triggered by hypermedia (HATEOAS)
