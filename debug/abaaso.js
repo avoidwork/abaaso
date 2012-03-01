@@ -713,9 +713,9 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				    i, fail;
 
 				fail = function (arg) {
-					var listeners = uri.listeners()["failed" + typed];
+					var listeners = uri.listeners("failed" + typed).active;
 
-					if (typeof listeners !== "undefined" && listeners.hasOwnProperty(guid)) uri.fire("failed" + typed, arg);
+					if (listeners.hasOwnProperty(guid)) uri.fire("failed" + typed, arg);
 				};
 
 				if (type === "delete") {
