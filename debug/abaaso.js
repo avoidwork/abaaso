@@ -712,7 +712,11 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				    contentType  = null,
 				    i, fail;
 
-				fail = function (arg) { uri.fire("failed" + typed, arg); };
+				fail = function (arg) {
+					var listeners = uri.listeners()["failed" + typed];
+
+					if (typeof listeners !== "undefined" && listeners.hasOwnProperty(guid)) uri.fire("failed" + typed, arg);
+				};
 
 				if (type === "delete") {
 					uri.on("afterDelete", function () {
