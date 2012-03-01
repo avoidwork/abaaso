@@ -906,7 +906,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								throw Error(label.error.serverError);
 						}
 						break;
-					case xhr instanceof XDomainRequest:
+					case client.ie && client.cors(uri): // XDomainRequest
 						var r, x;
 
 						switch (true) {
