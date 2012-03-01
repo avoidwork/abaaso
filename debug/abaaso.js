@@ -747,8 +747,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					}
 					else xhr.open(type.toUpperCase(), uri, true);
 
-					if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
-					if (cors && contentType === null) contentType = "text/plain";
+					if (!client.safari || !cors) {
+						if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
+						if (cors && contentType === null) contentType = "text/plain";
+					}
 
 					if (payload !== null) {
 						if (payload.hasOwnProperty("Content-Type"))    delete payload["Content-Type"];
@@ -778,7 +780,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							utility.iterate(headers, function (v, k) { xhr.setRequestHeader(k, v); });
 						}
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
-						if (contentType !== null) xhr.setRequestHeader("Content-Type", contentType);
+						if (contentType !== null && (!client.safari || !cors)) xhr.setRequestHeader("Content-Type", contentType);
 					}
 
 					// Cross Origin Resource Sharing (CORS)
