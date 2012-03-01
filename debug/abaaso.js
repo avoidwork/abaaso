@@ -703,7 +703,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				var l            = location,
 				    cors         = client.cors(uri),
-				    xhr          = (client.ie && client.version < 10 && cors && type === "get") ? new XDomainRequest() : new XMLHttpRequest(),
+				    xhr          = (client.ie && client.version < 10 && cors) ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload      = /post|put/i.test(type) && typeof args !== "undefined" ? utility.clone(args) : null,
 				    headers      = type === "get" && args instanceof Object ? utility.clone(args) : null,
 				    cached       = type === "head" ? false : cache.get(uri),
@@ -739,13 +739,19 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 				if (type === "get" && Boolean(cached)) uri.fire("afterGet", utility.clone(cached.response));
 				else {
-					xhr[cors && client.ie ? "onload" : "onreadystatechange"] = function () { client.response(xhr, uri, type); };
+					xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
 
-					if (client.ie && cors && client.version < 10) {
-						if (l.protocol === "http:") xhr.open(type.toUpperCase(), uri);
-						else return uri.fire("failed" + typed);
+					// Setting events
+					switch (true) {
+						case typeof xhr.onerror === "object":
+							xhr.onerror = fail;
+						case typeof xhr.ontimeout === "object":
+							xhr.ontimeout = fail;
+						case typeof xhr.onprogress === "object":
+							xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 					}
-					else xhr.open(type.toUpperCase(), uri, true);
+
+					xhr.open(type.toUpperCase(), uri, true);
 
 					if (!client.safari || !cors) {
 						if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
@@ -786,26 +792,15 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					// Cross Origin Resource Sharing (CORS)
 					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
 
-					// Setting events
-					switch (true) {
-						case typeof xhr.onerror === "object":
-							xhr.onerror = fail;
-						case typeof xhr.ontimeout === "object":
-							xhr.ontimeout = fail;
-						case typeof xhr.onprogress === "object":
-							xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
-					}
-
 					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
 					xhr.send(payload);
 				}
-
-				return uri;
 			}
 			catch (e) {
 				error(e, arguments, this);
-				return undefined;
+				uri.fire("failed" + typed);
 			}
+			return uri;
 		},
 
 		/**
@@ -911,7 +906,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								throw Error(label.error.serverError);
 						}
 						break;
-					case client.ie && client.cors(uri) && typed === "Get": // IE XDomainRequest
+					case xhr instanceof XDomainRequest:
 						var r, x;
 
 						switch (true) {
