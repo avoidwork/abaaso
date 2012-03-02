@@ -828,7 +828,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		response : function (xhr, uri, type) {
 			try {
 				var typed = type.toLowerCase().capitalize(),
-				    l = document.location;
+				    l     = location;
 
 				switch (true) {
 					case xhr.readyState === 2:
@@ -892,11 +892,11 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								throw Error(label.error.serverUnauthorized);
 								break;
 							case 403:
-								cache.set(uri, "!permission", client.bit(type));
+								cache.set(uri, "!permission", client.bit([type]));
 								throw Error(label.error.serverForbidden);
 								break;
 							case 405:
-								cache.set(uri, "!permission", client.bit(type));
+								cache.set(uri, "!permission", client.bit([type]));
 								throw Error(label.error.serverInvalidMethod);
 								break
 							case 0:
@@ -3734,6 +3734,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					item = prop.split("=");
 
 					switch (true) {
+						case typeof item[1] === "undefined":
+						case item[1].isEmpty():
+							item[1] = "";
+							break;
 						case item[1].isNumber():
 							item[1] = Number(item[1]);
 							break;
