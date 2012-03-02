@@ -3733,6 +3733,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				result.each(function (prop) {
 					item = prop.split("=");
 
+					if (item[0].isEmpty()) return;
+
 					switch (true) {
 						case typeof item[1] === "undefined":
 						case item[1].isEmpty():
