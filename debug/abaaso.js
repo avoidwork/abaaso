@@ -3464,6 +3464,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			var i,
 			    methods = {
 				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
+				           append   : function (type, args) { return this.each(function (i) { i.append(type, args); }); },
 				           contains : function (arg) { return array.contains(this, arg); },
 				           create   : function (type, args, position) { return this.each(function (i) { i.create(type, args, position); }); },
 				           clone    : function () { return utility.clone(this); },
@@ -3494,6 +3495,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           loading  : function () { return this.each(function (i) { i.loading(); }); },
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
+				           prepend  : function (type, args) { return this.each(function (i) { i.prepend(type, args); }); },
 				           remove   : function (arg) { return array.remove(this, arg); },
 				           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 				           show     : function () { return this.each(function (i){ i.show(); }); },
@@ -3520,7 +3522,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           },
 				           append   : function (type, args) {
 				           		this.genId();
-				           		return el.create(type, args, this, "first");
+				           		return el.create(type, args, this, "last");
 				           },
 				           create   : function (type, args, position) {
 				           		this.genId();
