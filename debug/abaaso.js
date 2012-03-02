@@ -1445,8 +1445,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						if (!!isNaN(record[0]) || !!isNaN(record[1]))
 							throw Error(label.error.invalidArguments);
 
-						start = record[0] - 1;
-						end   = record[1] - 1;
+						start = record[0];
+						end   = record[1];
 						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(utility.clone(this.records[i])); }
 						break;
 					default:
