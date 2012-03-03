@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.7
+ * @version 1.9.8
  */
 (function (window) {
 
@@ -1891,7 +1891,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @param  {String} type   Type of Element to create
 		 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 		 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
-		 * @param  {Mixed} pos     [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
+		 * @param  {Mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
 		 * @return {Object} Element that was created or undefined
 		 */
 		create : function (type, args, target, pos) {
@@ -1936,9 +1936,17 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					case pos === "first":
 						target.prependChild(obj);
 						break;
+					case pos === "after":
+						pos = {};
+						pos.after = target;
+						target    = target.parentNode;
 					case typeof pos.after !== "undefined":
 						target.insertBefore(obj, pos.after.nextSibling);
 						break;
+					case pos === "before":
+						pos = {};
+						pos.before = target;
+						target     = target.parentNode;
 					case typeof pos.before !== "undefined":
 						target.insertBefore(obj, pos.before);
 						break;
@@ -1986,9 +1994,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		destroy : function (obj) {
 			try {
 				if (obj instanceof Array) {
-					var i = !isNaN(obj.length) ? obj.length : obj.total();
-					while (i--) { this.destroy(obj[i]); }
-					return obj;
+					obj.each(function (i) { el.destroy(i); });
+					return [];
 				}
 
 				obj = utility.object(obj);
@@ -2021,11 +2028,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 */
 		disable : function (obj) {
 			try {
-				if (obj instanceof Array) {
-					var i = !isNaN(obj.length) ? obj.length : obj.total();
-					while (i--) { this.disable(obj[i]); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function (i) { el.disable(i); });
 
 				obj = utility.object(obj);
 
@@ -2057,11 +2060,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 */
 		enable : function (obj) {
 			try {
-				if (obj instanceof Array) {
-					var i = !isNaN(obj.length) ? obj.length : obj.total();
-					while (i--) { this.enable(obj[i]); }
-					return obj;
-				}
+				if (obj instanceof Array) return obj.each(function (i) { el.enable(i); });
 
 				obj = utility.object(obj);
 
@@ -3462,13 +3461,16 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			var i,
 			    methods = {
 				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
+				           after    : function (type, args) { var a = []; this.each(function (i) { a.push(i.after(type, args)); }); return a; },
 				           append   : function (type, args) { return this.each(function (i) { i.append(type, args); }); },
+				           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
 				           contains : function (arg) { return array.contains(this, arg); },
 				           create   : function (type, args, position) { return this.each(function (i) { i.create(type, args, position); }); },
 				           clone    : function () { return utility.clone(this); },
 				           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
 				           diff     : function (arg) { return array.diff(this, arg); },
 				           disable  : function () { return this.each(function (i) { i.disable(); }); },
+				           destroy  : function () { this.each(function (i) { i.destroy(); }); return []; },
 				           each     : function (arg) { return array.each(this, arg); },
 				           enable   : function () { return this.each(function (i) { i.enable(); }); },
 				           first    : function () { return array.first(this); },
@@ -3518,9 +3520,17 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           		this.genId();
 				           		return el.klass(this, arg, true);
 				           },
+				           after    : function (type, args) {
+				           		this.genId();
+				           		return el.create(type, args, this, "after");
+				           },
 				           append   : function (type, args) {
 				           		this.genId();
 				           		return el.create(type, args, this, "last");
+				           },
+				           before   : function (type, args) {
+				           		this.genId();
+				           		return el.create(type, args, this, "before");
 				           },
 				           create   : function (type, args, position) {
 				           		this.genId();
@@ -3536,6 +3546,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           		this.style[key] = value;
 				           		return this;
 				           },
+				           destroy   : function () { return el.destroy(this); },
 				           disable   : function () { return el.disable(this); },
 				           enable    : function () { return el.enable(this); },
 				           get       : function (uri, headers) {
@@ -4416,7 +4427,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.7"
+		version         : "1.9.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
