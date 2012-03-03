@@ -3464,9 +3464,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           after    : function (type, args) { var a = []; this.each(function (i) { a.push(i.after(type, args)); }); return a; },
 				           append   : function (type, args) { return this.each(function (i) { i.append(type, args); }); },
 				           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
+				           clear    : function (arg) { return this.each(function (i) { i.clear(); }); },
+				           clone    : function () { return utility.clone(this); },
 				           contains : function (arg) { return array.contains(this, arg); },
 				           create   : function (type, args, position) { return this.each(function (i) { i.create(type, args, position); }); },
-				           clone    : function () { return utility.clone(this); },
 				           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
 				           diff     : function (arg) { return array.diff(this, arg); },
 				           disable  : function () { return this.each(function (i) { i.disable(); }); },
@@ -3531,6 +3532,10 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           before   : function (type, args) {
 				           		this.genId();
 				           		return el.create(type, args, this, "before");
+				           },
+				           clear    : function () {
+				           		this.genId();
+				           		return el.clear(this);
 				           },
 				           create   : function (type, args, position) {
 				           		this.genId();
@@ -3668,13 +3673,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           isOdd    : function () { return number.odd(this); },
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }},
-				shared  : {clear    : function () {
-				           		this.genId();
-				           		this instanceof String ? this.constructor = new String("") : el.clear(this);
-				           		return this;
-				           },
-				           destroy  : function () { el.destroy(this); },
-				           fire     : function (event, args) {
+				shared  : {fire     : function (event, args) {
 				           		this.genId();
 				           		return $.fire.call(this, event, args);
 				           },
