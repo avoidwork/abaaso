@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.6
+ * @version 1.9.7
  */
 (function (window) {
 
@@ -725,14 +725,14 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					}, guid);
 				}
 
-				uri.on("after"    + typed, function (arg) {
-				   		uri.un("received" + typed, guid).un("failed" + typed, guid);
+				uri.on("after" + typed, function (arg) {
+				   		uri.un("after" + typed, guid).un("failed" + typed, guid);
 				   		if (typeof success === "function") success(arg);
 					}, guid)
-				   .on("failed"   + typed, function (arg) {
+				   .on("failed" + typed, function (arg) {
 				   		uri.un("after" + typed, guid).un("failed" + typed, guid);
 				   		if (typeof failure === "function") failure(arg);
-					}, guid)
+				   	}, guid)
 				   .fire("before" + typed);
 
 				if (type !== "head" && uri.allows(type) === false) return uri.fire("failed" + typed);
@@ -1644,7 +1644,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 							self.batch("set", data, true);
 							if (reindex) self.reindex();
-							obj.fire("afterDataSync", arg);
+							obj.fire("afterDataSync", data);
 						}
 						catch (e) {
 							error(e, arguments, this);
@@ -1691,7 +1691,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							this._expires = arg;
 
 							var id      = this.parentNode.id + "DataExpire",
-							    expires = this.expires,
+							    expires = arg,
 							    uri     = this.uri;
 
 							if (arg === null) {
@@ -1771,7 +1771,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				if (data.reindex) this.reindex();
 				this.parentNode.fire("afterDataDelete", record);
 				return this.parentNode;
-			}, utility.guid(true), obj.data);
+			}, "recordDelete", obj.data);
 
 			obj.on("syncDataSet", function (data) {
 				var record;
@@ -1791,7 +1791,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						this.keys[data.key] = {};
 						this.keys[data.key].index = index;
 						this.records[index] = {};
-						record = this.records[index];
+						record      = this.records[index];
 						record.data = utility.clone(data.data);
 						record.key  = data.key;
 						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
@@ -1802,7 +1802,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				}
 				this.views = {};
 				this.parentNode.fire("afterDataSet", record);
-			}, utility.guid(true), obj.data);
+			}, "recordSet", obj.data);
 
 			// Getters & setters
 			switch (true) {
@@ -3195,10 +3195,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 */
 		defer : function (fn, ms) {
 			var id = utility.guid(true),
-			    op = function () {
-					delete abaaso.timer[id];
-					fn();
-				};
+			    op = function () { delete abaaso.timer[id]; fn(); };
+
 			abaaso.timer[id] = setTimeout(op, ms);
 			return undefined;
 		},
@@ -4418,7 +4416,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.6"
+		version         : "1.9.7"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
