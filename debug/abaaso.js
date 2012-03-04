@@ -711,7 +711,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				    guid         = utility.guid(true),
 				    contentType  = null,
 				    fail         = function (arg) { uri.fire("failed" + typed, arg); },
-				    timeeout     = function (arg) { uri.fire("timeeout" + typed, arg); };
+				    timeout      = function (arg) { uri.fire("timeout" + typed, arg); };
 
 				if (type === "delete") {
 					uri.on("afterDelete", function () {
@@ -741,7 +741,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						case typeof xhr.onerror === "object":
 							xhr.onerror = fail;
 						case typeof xhr.ontimeout === "object":
-							xhr.ontimeout = timeeout;
+							xhr.ontimeout = timeout;
 						case typeof xhr.onprogress === "object":
 							xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 					}
