@@ -1640,7 +1640,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 							self.batch("set", data, true);
 							if (reindex) self.reindex();
-							obj.fire("afterDataSync", data);
+							obj.fire("afterDataSync", arg);
 						}
 						catch (e) {
 							error(e, arguments, this);
