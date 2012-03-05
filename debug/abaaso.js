@@ -3546,7 +3546,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			    methods = {
 				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
 				           after    : function (type, args) { var a = []; this.each(function (i) { a.push(i.after(type, args)); }); return a; },
-				           append   : function (type, args) { return this.each(function (i) { i.append(type, args); }); },
+				           append   : function (type, args) { var a = []; this.each(function (i) { a.push(i.append(type, args)); }); return a; },
 				           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
 				           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
 				           clear    : function (arg) { return this.each(function (i) { i.clear(); }); },
@@ -3581,7 +3581,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				           loading  : function () { return this.each(function (i) { i.loading(); }); },
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
-				           prepend  : function (type, args) { return this.each(function (i) { i.prepend(type, args); }); },
+				           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
 				           remove   : function (arg) { return array.remove(this, arg); },
 				           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 				           show     : function () { return this.each(function (i){ i.show(); }); },
