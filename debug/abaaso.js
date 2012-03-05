@@ -314,7 +314,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			silent = (silent === true);
 			if (typeof cache.items[uri] !== "undefined") {
 				delete cache.items[uri];
-				if (!silent) uri.fire("expire");
+				if (!silent) uri.fire("beforeExpire").fire("expire").fire("afterExpire");
 				return true;
 			}
 			else return false;
@@ -1688,13 +1688,12 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 							var id      = this.parentNode.id + "DataExpire",
 							    expires = arg,
-							    uri     = this.uri;
+							    self    = this;
 
-							if (arg === null) {
-								clearTimeout($.repeating[id]);
-								delete $.repeating[id];
-							}
-							else $.defer(function () { $.repeat(function () { if (!cache.expire(uri)) uri.fire("expire"); }, expires, id) }, expires);
+							clearTimeout($.repeating[id]);
+							delete $.repeating[id];
+
+							if (arg !== null) $.defer(function () { $.repeat(function () { if (!cache.expire(self.uri)) self.uri.fire("beforeExpire").fire("expire").fire("afterExpire"); }, expires, id); }, expires);
 						}
 						catch (e) {
 							error(e, arguments, this);
@@ -1712,16 +1711,16 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 							switch (true) {
 								case this._uri === arg:
 									return;
-								case this.uri !== null:
-									this.uri.un("expire", "dataSync");
-									cache.expire(this.uri, true);
+								case this._uri !== null:
+									this._uri.un("expire", "dataSync");
+									cache.expire(this._uri, true);
 								default:
 									this._uri = arg;
 							}
 
 							switch (true) {
 								case arg !== null:
-									this.uri.on("expire", function () { this.sync(true); }, "dataSync", this);
+									arg.on("expire", function () { this.sync(true); }, "dataSync", this);
 									cache.expire(arg, true);
 									this.sync();
 									break;
