@@ -1553,7 +1553,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
 			 */
-			sort : function (query, create, asc) {
+			sort : function (query, create) {
 				try {
 					if (typeof query === "undefined" || String(query).isEmpty())
 						throw Error(label.error.invalidArguments);
