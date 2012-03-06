@@ -1045,7 +1045,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 						break;
 				}
 			}
-			if (!expire.isEmpty()) expire = "; expires=" + expire.toUTCString();
+			if (expire instanceof Date) expire = "; expires=" + expire.toUTCString();
 			document.cookie = name.toString().trim() + "=" + value + expire + "; path=/";
 			return cookie.get(name);
 		}
@@ -1553,7 +1553,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
 			 */
-			sort : function (query, create) {
+			sort : function (query, create, asc) {
 				try {
 					if (typeof query === "undefined" || String(query).isEmpty())
 						throw Error(label.error.invalidArguments);
