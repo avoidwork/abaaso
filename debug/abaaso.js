@@ -963,7 +963,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {String} Name of the expired cookie
 		 */
 		expire : function (name) {
-			if (typeof this.get(name) !== "undefined") this.set(name, "", "-1s");
+			if (typeof cookie.get(name) !== "undefined") cookie.set(name, "", "-1s");
 			return name;
 		},
 
@@ -975,7 +975,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Mixed} Cookie or undefined
 		 */
 		get : function (name) {
-			return this.list()[name];
+			return cookie.list()[name];
 		},
 
 		/**
@@ -1010,7 +1010,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		 * @return {Object} The new cookie
 		 */
 		set : function (name, value, offset) {
-			offset = offset.toString() || "";
+			if (typeof offset === "undefined") offset = "";
 			var expire = "",
 			    span   = null,
 			    type   = null,
@@ -1047,7 +1047,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			}
 			if (!expire.isEmpty()) expire = "; expires=" + expire.toUTCString();
 			document.cookie = name.toString().trim() + "=" + value + expire + "; path=/";
-			return this.get(name);
+			return cookie.get(name);
 		}
 	};
 
