@@ -1549,7 +1549,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			 *         afterDataSort   Fires after the record is set, the record is the argument for listeners
 			 *
 			 * @method sort
-			 * @param  {String} query   Single column sort
+			 * @param  {String} query   SQL (style) order by
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
 			 */
@@ -1560,39 +1560,86 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 					create      = (create === true);
 					var obj     = this.parentNode,
-					    view    = query.toCamelCase().replace(/Asc$/, ""),
-					    order   = [],
-					    records = [],
-					    needle, desc, value, index;
+					    view    = query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase(),
+					    queries = query.explode(),
+					    first   = true,
+					    needle  = /:::(.*)$/,
+					    asc     = /\s*asc$/i,
+					    desc    = /\s*desc$/i,
+					    self    = this,
+					    result  = [],
+					    results = [],
+					    nil     = /^null/,
+					    order, records, value, index, registry, l, prev, x;
+
+					// Malformed query
+					if (queries.last().isEmpty())
+						throw Error(label.error.invalidArguments);
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
 
-					desc   = new RegExp("\\s+desc", "i");
-					needle = query.replace(/\s.*$/, "");
-
-					if (!this.records[0].data.hasOwnProperty(needle))
-						throw Error(label.error.invalidArguments);
-
 					obj.fire("beforeDataSort");
 
-					this.records.each(function (rec) {
-						value = String(rec.data[needle]).trim() + ":::" + rec.key;
-						order.push(value);
+					queries.each(function (query) {
+						query = query.replace(asc, "");
+						order = [];
+ 
+						switch (first) {
+							case true:
+								records = self.records.clone();
+								first   = false;
+
+								if (!records[0].data.hasOwnProperty(query))
+									throw Error(label.error.invalidArguments);
+
+								records.each(function (rec) {
+									value = String(rec.data[query]) + ":::" + rec.key;
+									order.push(value.replace(nil, "aaa"));
+								});
+
+								order.sort();
+								if (desc.test(query)) order.reverse();
+
+								order.each(function (rec) {
+									index = self.keys[needle.exec(rec)[1]].index;
+									result.push(self.records[index]);
+								});
+								break;
+							default:
+								records  = result.clone();
+								result   = [];
+								order    = [];
+								registry = {};
+								x        = null;
+
+								if (!records[0].data.hasOwnProperty(query))
+										throw Error(label.error.invalidArguments);
+
+								records.each(function (rec, idx) {
+									if (x !== rec.data[prev]) x = rec.data[prev];
+									l = x === null ? "null" : x.charAt(0).toLowerCase();
+									if (!(registry[l] instanceof Array)) {
+										registry[l] = [];
+										order.push(l);
+									}
+									value = String(rec.data[query]).trim() + ":::" + idx;
+									registry[l].push(value.replace(nil, "aaa"));
+								});
+
+								order.each(function (i) {
+									registry[i].sort();
+									if (desc.test(query)) registry[i].reverse();
+									registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
+								});
+						}
+
+						prev = query;
 					});
 
-					order.sort();
-					if (desc.test(query)) order.reverse();
-
-					needle = new RegExp(":::(.*)$");
-					order.each(function (rec) {
-						index = obj.data.keys[needle.exec(rec)[1]].index;
-						records.push(obj.data.records[index]);
-					});
-
-					this.views[view] = records;
-					obj.fire("afterDataSort", view);
-					return records;
+					this.views[view] = result;
+					obj.fire("afterDataSort", result);
+					return result;
 				}
 				catch (e) {
 					error(e, arguments, this);
