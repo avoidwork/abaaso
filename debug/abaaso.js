@@ -2301,7 +2301,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				return {
 					top    : top,
 					right  : document.documentElement.clientWidth  - (left + width),
-					bottom : document.documentElement.clientHeight + window.scrollY - (top + height),
+					bottom : document.documentElement.clientHeight + global.scrollY - (top + height),
 					left   : left
 				};
 			}
@@ -2670,7 +2670,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Object} abaaso
 		 */
 		clear : function () {
-			return $.un(window, "message");
+			return $.un(global, "message");
 		},
 
 		/**
@@ -2700,7 +2700,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Object} abaaso
 		 */
 		recv : function (fn) {
-			return $.on(window, "message", fn);
+			return $.on(global, "message", fn);
 		}
 	};
 
@@ -2909,7 +2909,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 					efn = function (e) {
 						if (event.indexOf("key") !== 0) {
-							if (!e) e = window.event;
+							if (!e) e = global.event;
 							if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 							if (typeof e.preventDefault === "function")  e.preventDefault();
 							if (typeof e.stopPropagation === "function") e.stopPropagation();
@@ -2942,14 +2942,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				case arg === abaaso:
 					x = "abaaso";
 					break;
+				case arg === global:
+					x = "window";
+					break;
 				case arg === document:
 					x = "document";
 					break;
 				case arg === document.body:
 					x = "body";
-					break;
-				case arg === window:
-					x = "window";
 					break;
 				default:
 					x = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
@@ -3063,7 +3063,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				efn = function (e) {
 					if (event.indexOf("key") !== 0) {
-						if (!e) e = window.event;
+						if (!e) e = global.event;
 						if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 						if (typeof e.preventDefault === "function")  e.preventDefault();
 						if (typeof e.stopPropagation === "function") e.stopPropagation();
@@ -4368,9 +4368,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			// Setting events & garbage collection
 			if (!client.server) {
-				$.on(window, "hashchange", function () { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
-				$.on(window, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
-				$.on(window, "load", function () { $.fire("render").un("render"); });
+				$.on(global, "hashchange", function () { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
+				$.on(global, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+				$.on(global, "load", function () { $.fire("render").un("render"); });
 			}
 
 			// abaaso.state.current getter/setter
