@@ -1570,7 +1570,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 					    result  = [],
 					    results = [],
 					    nil     = /^null/,
-					    order, records, value, index, registry, l, prev, x;
+					    order, records, value, index, registry, l, prev, x, prop;
 
 					// Malformed query
 					if (queries.last().isEmpty())
@@ -1583,6 +1583,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 					queries.each(function (query) {
 						query = query.replace(asc, "");
+						prop  = query.replace(desc, "");
 						order = [];
  
 						switch (first) {
@@ -1590,12 +1591,12 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								records = self.records.clone();
 								first   = false;
 
-								if (!records[0].data.hasOwnProperty(query))
+								if (!records[0].data.hasOwnProperty(prop))
 									throw Error(label.error.invalidArguments);
 
 								records.each(function (rec) {
-									value = String(rec.data[query]) + ":::" + rec.key;
-									order.push(value.replace(nil, "aaa"));
+									value = String(rec.data[prop]) + ":::" + rec.key;
+									order.push(value.replace(nil, "\"\'"));
 								});
 
 								order.sort();
@@ -1613,7 +1614,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 								registry = {};
 								x        = null;
 
-								if (!records[0].data.hasOwnProperty(query))
+								if (!records[0].data.hasOwnProperty(prop))
 										throw Error(label.error.invalidArguments);
 
 								records.each(function (rec, idx) {
@@ -1623,8 +1624,8 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 										registry[l] = [];
 										order.push(l);
 									}
-									value = String(rec.data[query]).trim() + ":::" + idx;
-									registry[l].push(value.replace(nil, "aaa"));
+									value = String(rec.data[prop]).trim() + ":::" + idx;
+									registry[l].push(value.replace(nil, "\"\'"));
 								});
 
 								order.each(function (i) {
