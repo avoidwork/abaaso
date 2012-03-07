@@ -46,14 +46,14 @@
  * @module abaaso
  * @version 1.9.9
  */
-(function (window) {
+(function (global) {
 
-var document  = window.document,
-    location  = window.location,
-    navigator = window.navigator;
+var document  = global.document,
+    location  = global.location,
+    navigator = global.navigator;
 
-if (typeof window.$ === "undefined")      window.$      = null;
-if (typeof window.abaaso === "undefined") window.abaaso = (function () {
+if (typeof global.$ === "undefined")      global.$      = null;
+if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	"use strict";
 
 	var $, array, cache, client, cookie, data, el, json, label,
@@ -3886,7 +3886,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 		queryString : function (arg) {
 			arg        = arg || ".*";
 			var obj    = {},
-			    result = window.location.search.isEmpty() ? null : window.location.search.replace("?", ""),
+			    result = location.search.isEmpty() ? null : location.search.replace("?", ""),
 			    item;
 
 			if (result !== null) {
@@ -4365,11 +4365,11 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 			// Setting sugar
 			switch (true) {
-				case window["$"] === null:
-					window["$"] = $;
+				case global.$ === null:
+					global.$ = $;
 					break;
 				default:
-					window["a$"] = $;
+					global.a$ = $;
 					abaaso.aliased = "a$";
 			}
 
@@ -4426,7 +4426,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 				default:
 					// Pure hackery, only exists when needed
 					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
-					$.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+					$.state.change      = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
 			}
 
 			$.ready = true;
@@ -4434,14 +4434,14 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 			// Preparing init()
 			switch (true) {
 				case typeof define === "function":
-					define("abaaso", [], abaaso.init);
+					define("abaaso", abaaso.init());
 					break;
 				case client.server:
 				case (/complete|loaded/.test(document.readyState)):
 					abaaso.init();
 					break;
 				case typeof document.addEventListener === "function":
-					document.addEventListener("DOMContentLoaded", function () { abaaso.init(); }, false);
+					document.addEventListener("DOMContentLoaded", abaaso.init, false);
 					break;
 				case typeof document.attachEvent === "function":
 					document.attachEvent("onreadystatechange", fn);
@@ -4559,4 +4559,4 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
-})(window);
+})(this);
