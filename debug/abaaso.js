@@ -1596,7 +1596,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 
 								records.each(function (rec) {
 									value = String(rec.data[prop]) + ":::" + rec.key;
-									order.push(value.replace(nil, "\"\'"));
+									order.push(value.replace(nil, "\"\""));
 								});
 
 								order.sort();
@@ -1625,7 +1625,7 @@ if (typeof window.abaaso === "undefined") window.abaaso = (function () {
 										order.push(l);
 									}
 									value = String(rec.data[prop]).trim() + ":::" + idx;
-									registry[l].push(value.replace(nil, "\"\'"));
+									registry[l].push(value.replace(nil, "\"\""));
 								});
 
 								order.each(function (i) {
