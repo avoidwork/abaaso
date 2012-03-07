@@ -737,14 +737,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
 
 					// Setting events
-					switch (true) {
-						case typeof xhr.onerror === "object":
-							xhr.onerror = fail;
-						case typeof xhr.ontimeout === "object":
-							xhr.ontimeout = timeout;
-						case typeof xhr.onprogress === "object":
-							xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
-					}
+					if (typeof xhr.onerror === "object")    xhr.onerror    = fail;
+					if (typeof xhr.ontimeout === "object")  xhr.ontimeout  = timeout;
+					if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 
 					xhr.open(type.toUpperCase(), uri, true);
 
@@ -1788,16 +1783,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			$.genId(obj);
 
 			// Hooking observer if not present in prototype chain
-			switch (true) {
-				case typeof obj.fire === "undefined":
-					obj.fire = function (event, arg) { return $.fire.call(this, event, arg); };
-				case typeof obj.listeners === "undefined":
-					obj.listeners = function (event) { return $.listeners.call(this, event); };
-				case typeof obj.on === "undefined":
-					obj.on = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
-				case typeof obj.un === "undefined":
-					obj.un = function (event, id) { return $.un.call(this, event, id); };
-			}
+			if (typeof obj.fire === "undefined")      obj.fire      = function (event, arg) { return $.fire.call(this, event, arg); };
+			if (typeof obj.listeners === "undefined") obj.listeners = function (event) { return $.listeners.call(this, event); };
+			if (typeof obj.on === "undefined")        obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
+			if (typeof obj.un === "undefined")        obj.un        = function (event, id) { return $.un.call(this, event, id); };
 
 			obj.fire("beforeDataStore");
 
@@ -2902,16 +2891,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function")
 					throw Error(label.error.invalidArguments);
 
-				switch (true) {
-					case typeof l[o] === "undefined":
-						l[o] = {};
-					case typeof l[o][event] === "undefined":
-						l[o][event] = {};
-					case typeof l[o][event].active === "undefined":
-						l[o][event].active = {};
-					case typeof l[o][event][state] === "undefined":
-						l[o][event][state] = {};
-				}
+				if (typeof l[o] === "undefined")               l[o]               = {};
+				if (typeof l[o][event] === "undefined")        l[o][event]        = {};
+				if (typeof l[o][event].active === "undefined") l[o][event].active = {};
+				if (typeof l[o][event][state] === "undefined") l[o][event][state] = {};
 
 				item = {fn: fn, scope: scope};
 				l[o][event][state][id] = item;
@@ -3931,12 +3914,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Array} Array of parameters
 		 */
 		reflect : function (arg) {
-			switch (true) {
-				case typeof arg === "undefined":
-					arg = this;
-				case typeof arg === "undefined":
-					arg = $;
-			}
+			if (typeof arg === "undefined") arg = this;
+			if (typeof arg === "undefined") arg = $;
 			arg = arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1];
 			return arg !== "" ? arg.explode() : [];
 		},
