@@ -4369,8 +4369,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Setting events & garbage collection
 			if (!client.server) {
 				$.on(global, "hashchange", function () { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
-				$.on(global, "resize", function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
-				$.on(global, "load", function () { $.fire("render").un("render"); });
+				$.on(global, "resize",     function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+				$.on(global, "load",       function () { $.fire("render").un("render"); });
 			}
 
 			// abaaso.state.current getter/setter
@@ -4413,7 +4413,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Preparing init()
 			switch (true) {
 				case typeof define === "function":
-					define("abaaso", abaaso.init());
+					define("abaaso", function () { return abaaso.init(); });
 					break;
 				case client.server:
 				case (/complete|loaded/.test(document.readyState)):
