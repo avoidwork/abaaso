@@ -663,7 +663,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			if (!client.cors(uri) || !client.safari) {
+			if (!client.safari || !client.cors(uri)) {
 				switch (true) {
 					case args instanceof Object && typeof args.Accept === "undefined":
 						args.Accept = "application/json"
@@ -745,45 +745,43 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					xhr.open(type.toUpperCase(), uri, true);
 
+					// Setting Content-Type value
 					if (!cors || !client.safari) {
 						if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
 						if (cors && contentType === null) contentType = "text/plain";
 					}
 
+					// Transforming payload
 					if (payload !== null) {
 						if (payload.hasOwnProperty("Content-Type"))    delete payload["Content-Type"];
 						if (payload.hasOwnProperty("withCredentials")) delete payload.withCredentials;
 						if (payload.hasOwnProperty("xml"))             payload = payload.xml;
 
-						switch (true) {
-							case payload instanceof Document:
-								payload = xml.decode(payload);
-							case typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload):
-								if (contentType === null) contentType = "application/xml";
-								break;
-							case payload instanceof Object:
-								if (contentType === null) contentType = "application/json";
-								payload = json.encode(payload);
-								break;
-							default:
-								if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+						if (payload instanceof Document) payload = xml.decode(payload);
+						if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
+						if (payload instanceof Object) {
+							contentType = "application/json";
+							payload = json.encode(payload);
 						}
+						if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					}
 
-					if (typeof xhr.setRequestHeader === "function") {
+					// Setting headers
+					if ((!cors || !client.safari) && typeof xhr.setRequestHeader === "function") {
 						if (headers instanceof Object) {
 							if (headers.hasOwnProperty("callback"))        delete headers.callback;
 							if (headers.hasOwnProperty("withCredentials")) delete headers.withCredentials;
 							if (headers.hasOwnProperty("Content-Type"))    delete headers["Content-Type"];
-							if (!cors || !client.safari) utility.iterate(headers, function (v, k) { if (v !== null) xhr.setRequestHeader(k, v); });
+							utility.iterate(headers, function (v, k) { if (v !== null) xhr.setRequestHeader(k, v); });
 						}
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
-						if (contentType !== null && (!cors || !client.safari)) xhr.setRequestHeader("Content-Type", contentType);
+						if (contentType !== null) xhr.setRequestHeader("Content-Type", contentType);
 					}
 
 					// Cross Origin Resource Sharing (CORS)
 					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
 
+					// Firing event & sending request
 					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
 					payload !== null ? xhr.send(payload) : xhr.send();
 				}
