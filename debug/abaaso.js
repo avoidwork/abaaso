@@ -663,13 +663,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			switch (true) {
-				case args instanceof Object && typeof args.Accept === "undefined":
-					args.Accept = "application/json"
-				case args instanceof Object && typeof args.Accept !== "undefined":
-					break;
-				default:
-					args = {Accept: "application/json"}
+			if (!client.cors(uri) || !client.safari) {
+				switch (true) {
+					case args instanceof Object && typeof args.Accept === "undefined":
+						args.Accept = "application/json"
+					case args instanceof Object && typeof args.Accept !== "undefined":
+						break;
+					default:
+						args = {Accept: "application/json"}
+				}
 			}
 
 			return curi.get(success, failure, args);
@@ -743,7 +745,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					xhr.open(type.toUpperCase(), uri, true);
 
-					if (!client.safari || !cors) {
+					if (!cors || !client.safari) {
 						if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
 						if (cors && contentType === null) contentType = "text/plain";
 					}
@@ -773,17 +775,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							if (headers.hasOwnProperty("callback"))        delete headers.callback;
 							if (headers.hasOwnProperty("withCredentials")) delete headers.withCredentials;
 							if (headers.hasOwnProperty("Content-Type"))    delete headers["Content-Type"];
-							utility.iterate(headers, function (v, k) { xhr.setRequestHeader(k, v); });
+							if (!cors || !client.safari) utility.iterate(headers, function (v, k) { if (v !== null) xhr.setRequestHeader(k, v); });
 						}
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
-						if (contentType !== null && (!client.safari || !cors)) xhr.setRequestHeader("Content-Type", contentType);
+						if (contentType !== null && (!cors || !client.safari)) xhr.setRequestHeader("Content-Type", contentType);
 					}
 
 					// Cross Origin Resource Sharing (CORS)
 					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
 
 					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
-					xhr.send(payload);
+					payload !== null ? xhr.send(payload) : xhr.send();
 				}
 			}
 			catch (e) {
