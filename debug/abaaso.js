@@ -663,15 +663,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
 			}, guid);
 
-			if (!client.safari || !client.cors(uri)) {
-				switch (true) {
-					case args instanceof Object && typeof args.Accept === "undefined":
-						args.Accept = "application/json"
-					case args instanceof Object && typeof args.Accept !== "undefined":
-						break;
-					default:
-						args = {Accept: "application/json"}
-				}
+			switch (true) {
+				case args instanceof Object && typeof args.Accept === "undefined":
+					args.Accept = "application/json"
+				case args instanceof Object && typeof args.Accept !== "undefined":
+					break;
+				default:
+					args = {Accept: "application/json"}
 			}
 
 			return curi.get(success, failure, args);
@@ -746,10 +744,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					xhr.open(type.toUpperCase(), uri, true);
 
 					// Setting Content-Type value
-					if (!cors || !client.safari) {
-						if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
-						if (cors && contentType === null) contentType = "text/plain";
-					}
+					if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
+					if (cors && contentType === null) contentType = "text/plain";
 
 					// Transforming payload
 					if (payload !== null) {
@@ -767,7 +763,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 
 					// Setting headers
-					if ((!cors || !client.safari) && typeof xhr.setRequestHeader === "function") {
+					if (typeof xhr.setRequestHeader === "function") {
 						if (headers instanceof Object) {
 							if (headers.hasOwnProperty("callback"))        delete headers.callback;
 							if (headers.hasOwnProperty("withCredentials")) delete headers.withCredentials;
