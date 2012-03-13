@@ -1411,22 +1411,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @return {Mixed} Individual record, or Array of records
 			 */
 			get : function (record) {
-				var r   = [],
-				    obj = this.parentNode,
-				    i, start, end;
+				var records = this.records.clone(),
+				    obj     = this.parentNode,
+				    r, i, start, end;
 
 				obj.fire("beforeDataGet");
 
 				switch (true) {
 					case typeof record === "undefined" || String(record).length === 0:
-						r = [];
-						this.records.each(function (i) { r.push(utility.clone(i)); });
+						r = records;
 						break;
 					case typeof record === "string" && typeof this.keys[record] !== "undefined":
-						r = utility.clone(this.records[this.keys[record].index]);
+						r = records[this.keys[record].index];
 						break;
 					case typeof record === "number":
-						r = utility.clone(this.records[record]);
+						r = records[record];
 						break;
 					case record instanceof Array:
 						if (!!isNaN(record[0]) || !!isNaN(record[1]))
@@ -1434,7 +1433,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						start = record[0];
 						end   = record[1];
-						for (i = start; i < end; i++) { if (typeof this.records[i] !== "undefined") r.push(utility.clone(this.records[i])); }
+						for (i = start; i < end; i++) r.push(records[i]);
 						break;
 					default:
 						r = undefined;
