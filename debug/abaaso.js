@@ -1610,7 +1610,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 								records.each(function (rec, idx) {
 									if (x !== rec.data[prev]) x = rec.data[prev];
-									l = x === null ? "null" : x.charAt(0).toLowerCase();
+									l = x === null ? "null" : String(x).charAt(0).toLowerCase();
 									if (!(registry[l] instanceof Array)) {
 										registry[l] = [];
 										order.push(l);
