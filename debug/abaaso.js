@@ -3225,15 +3225,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					break;
 				case obj instanceof Object:
 					clone = json.decode(json.encode(obj));
-					if (typeof clone === "undefined") clone = obj;
+					if (typeof clone !== "undefined") {
+						if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
+						if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
+					}
 					break;
 				default:
 					clone = obj;
-			}
-
-			if (typeof obj !== "undefined") {
-				if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
-				if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
 			}
 
 			return clone;
