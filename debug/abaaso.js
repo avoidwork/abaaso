@@ -3839,8 +3839,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			};
 
 			// Applying the methods
-			utility.iterate(methods[type], function (v, k) { obj.prototype[k] = v; });
-			if (type !== "function") utility.iterate(methods.shared, function (v, k) { obj.prototype[k] = v; });
+			for (i in methods[type]) obj.prototype[i] = methods[type][i];
+			if (type !== "function") for (i in methods.shared) obj.prototype[i] = methods.shared[i];
 			return obj;
 		},
 
