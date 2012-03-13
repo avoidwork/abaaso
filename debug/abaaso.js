@@ -3205,36 +3205,28 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var clone;
 
 			switch (true) {
-				case typeof obj === "boolean":
-					clone = Boolean(obj);
-					break;
-				case typeof obj === "function":
-					clone = obj;
-					break;
-				case typeof obj === "number":
-					clone = Number(obj);
-					break;
-				case typeof obj === "string":
-					clone = String(obj);
-					break;
-				case !client.ie && obj instanceof Document:
-					clone = xml.decode(xml.encode(obj));
-					break;
 				case obj instanceof Array:
-					clone = [].concat(obj);
-					break;
+					return [].concat(obj);
+				case typeof obj === "boolean":
+					return Boolean(obj);
+				case typeof obj === "function":
+					return obj;
+				case typeof obj === "number":
+					return Number(obj);
+				case typeof obj === "string":
+					return String(obj);
+				case !client.ie && obj instanceof Document:
+					return xml.decode(xml.encode(obj));
 				case obj instanceof Object:
 					clone = json.decode(json.encode(obj));
 					if (typeof clone !== "undefined") {
 						if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
 						if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
 					}
-					break;
+					return clone;
 				default:
-					clone = obj;
+					return obj;
 			}
-
-			return clone;
 		},
 
 		/**
