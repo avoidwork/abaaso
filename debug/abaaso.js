@@ -3595,7 +3595,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 				           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
-				           range    : function (start, end) { var a = [], i; for (i = start; i < end; i++) a.push(this[i]); return a; },
+				           range    : function (start, end) { var a = [], i; for (i = start; i <= end; i++) a.push(this[i]); return a; },
 				           remove   : function (arg) { return array.remove(this, arg); },
 				           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 				           show     : function () { return this.each(function (i){ i.show(); }); },
