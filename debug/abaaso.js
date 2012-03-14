@@ -1414,7 +1414,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			get : function (record, end) {
 				var records = this.records.clone(),
 				    obj     = this.parentNode,
-				    r, i;
+				    r;
 
 				obj.fire("beforeDataGet");
 
@@ -1430,8 +1430,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						r = records[record];
 						break;
 					case typeof record === "number" && typeof end === "number":
-						r = [];
-						for (i = record; i < end; i++) r.push(records[i]);
+						r = records.range(record, end);
 						break;
 					default:
 						r = undefined;
@@ -3596,6 +3595,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 				           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
+				           range    : function (start, end) { var a = [], i; for (i = start; i < end; i++) a.push(this[i]); return a; },
 				           remove   : function (arg) { return array.remove(this, arg); },
 				           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 				           show     : function () { return this.each(function (i){ i.show(); }); },
