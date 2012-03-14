@@ -1403,9 +1403,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * If the key is an integer, cast to a string before sending as an argument!
 			 *
-			 * Events: beforeDataGet  Fires before getting the record
-			 *         afterDataGet   Fires after getting the record
-			 *
 			 * @method get
 			 * @param  {Mixed}  record Key, index or Array of pagination start & end
 			 * @param  {Number} end    [Optional] Ceiling for pagination
@@ -1416,8 +1413,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    obj     = this.parentNode,
 				    r;
 
-				obj.fire("beforeDataGet");
-
 				switch (true) {
 					case typeof record === "undefined":
 					case String(record).length === 0:
@@ -1427,16 +1422,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						r = records[this.keys[record].index];
 						break;
 					case typeof record === "number" && typeof end === "undefined":
-						r = records[record];
+						r = records[parseInt(record)];
 						break;
 					case typeof record === "number" && typeof end === "number":
-						r = records.range(record, end);
+						r = records.range(parseInt(record), parseInt(end));
 						break;
 					default:
 						r = undefined;
 				}
 
-				obj.fire("afterDataGet", r);
 				return r;
 			},
 
