@@ -1857,10 +1857,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty())
 					throw Error(label.error.invalidArguments);
 
-				switch (typeof value === "undefined") {
-					case true:
+				switch (true) {
+					case /checked|disabled/.test(key) && typeof value === "undefined":
+						return obj[key];
+					case /checked|disabled/.test(key) && typeof value !== "undefined":
+						obj[key] = value;
+						return obj;
+					case typeof value === "undefined":
 						return obj.getAttribute(key);
-					case false:
+					default:
 						obj.setAttribute(key, value);
 						return obj;
 				}
@@ -3558,7 +3563,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           intersect: function (arg) { return array.intersect(this, arg); },
 				           isAlphaNum: function () { var a = []; this.each(function (i) { a.push(i.isAlphaNum()); }); return a; },
 				           isBoolean: function () { var a = []; this.each(function (i) { a.push(i.isBoolean()); }); return a; },
+				           isChecked: function () { var a = []; this.each(function (i) { a.push(i.isChecked()); }); return a; },
 				           isDate   : function () { var a = []; this.each(function (i) { a.push(i.isDate()); }); return a; },
+				           isDisabled: function () { var a = []; this.each(function (i) { a.push(i.isDisabled()); }); return a; },
 				           isDomain : function () { var a = []; this.each(function (i) { a.push(i.isDomain()); }); return a; },
 				           isEmail  : function () { var a = []; this.each(function (i) { a.push(i.isEmail()); }); return a; },
 				           isIP     : function () { var a = []; this.each(function (i) { a.push(i.isIP()); }); return a; },
@@ -3671,7 +3678,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
 				           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
+				           isChecked: function () { return this.nodeName !== "INPUT" ? false : this.attr("checked"); },
 				           isDate   : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : this.innerText.isDate(); },
+				           isDisabled: function () { return this.nodeName !== "INPUT" ? false : this.attr("disabled"); },
 				           isDomain : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
 				           isEmail  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
 				           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
