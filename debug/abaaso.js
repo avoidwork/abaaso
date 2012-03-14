@@ -1407,13 +1407,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *         afterDataGet   Fires after getting the record
 			 *
 			 * @method get
-			 * @param  {Mixed} record Key, index or Array of pagination start & end
+			 * @param  {Mixed}  record Key, index or Array of pagination start & end
+			 * @param  {Number} end    [Optional] Ceiling for pagination
 			 * @return {Mixed} Individual record, or Array of records
 			 */
-			get : function (record) {
+			get : function (record, end) {
 				var records = this.records.clone(),
 				    obj     = this.parentNode,
-				    r, i, start, end;
+				    r, i;
 
 				obj.fire("beforeDataGet");
 
@@ -1425,16 +1426,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case typeof record === "string" && typeof this.keys[record] !== "undefined":
 						r = records[this.keys[record].index];
 						break;
-					case typeof record === "number":
+					case typeof record === "number" && typeof end === "undefined":
 						r = records[record];
 						break;
-					case record instanceof Array:
-						if (!!isNaN(record[0]) || !!isNaN(record[1]))
-							throw Error(label.error.invalidArguments);
-
-						start = record[0];
-						end   = record[1];
-						for (i = start; i < end; i++) r.push(records[i]);
+					case typeof record === "number" && typeof end === "number":
+						r = [];
+						for (i = record; i < end; i++) r.push(records[i]);
 						break;
 					default:
 						r = undefined;
