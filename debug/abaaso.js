@@ -3510,7 +3510,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Returns argument, or instance based on #object.id value
+		 * Returns Object, or reference to Element
 		 *
 		 * @method object
 		 * @param  {Mixed} obj Entity or $ query
@@ -4449,6 +4449,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		log             : utility.log,
 		merge           : utility.merge,
 		module          : utility.module,
+		object          : utility.object,
 		on              : function (obj, event, listener, id, scope, state) {
 			var all = typeof listener === "function",
 			    o, e, l, i, s, st;
