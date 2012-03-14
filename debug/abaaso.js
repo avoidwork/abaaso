@@ -1220,9 +1220,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			/**
 			 * Finds needle in the haystack
 			 *
-			 * Events: beforeDataFind  Fires before the search begins
-			 *         afterDataFind   Fires after the search has finished
-			 *
 			 * @method find
 			 * @param  {Mixed} needle   String, Number or Pattern to test for
 			 * @param  {Mixed} haystack [Optional] The field(s) to search
@@ -1241,8 +1238,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    obj    = this.parentNode,
 					    keys   = {},
 					    x, y, f, r, s, p, i, a;
-
-					obj.fire("beforeDataFind");
 
 					r = this.records.first();
 					switch (true) {
@@ -1273,7 +1268,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						}
 					}
 
-					obj.fire("afterDataFind", keys);
 					return result;
 				}
 				catch (e) {
@@ -1437,9 +1431,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			/**
 			 * Reindexes the data store
 			 *
-			 * Events: beforeDataReindex  Fires before reindexing the data store
-			 *         afterDataReindex   Fires after reindexing the data store
-			 *
 			 * @method reindex
 			 * @return {Object} Data store
 			 */
@@ -1448,7 +1439,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    obj = this.parentNode,
 				    i;
 
-				obj.fire("beforeDataReindex");
 				this.views = {};
 				for(i = 0; i < nth; i++) {
 					if (this.records[i].key.isNumber()) {
@@ -1458,7 +1448,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 					this.keys[this.records[i].key].index = i;
 				}
-				obj.fire("afterDataReindex");
 				return this;
 			},
 
@@ -1526,9 +1515,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			/**
 			 * Returns a view, or creates a view and returns it
 			 *
-			 * Events: beforeDataSort  Fires before the record is set
-			 *         afterDataSort   Fires after the record is set, the record is the argument for listeners
-			 *
 			 * @method sort
 			 * @param  {String} query   SQL (style) order by
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
@@ -1559,8 +1545,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
-
-					obj.fire("beforeDataSort");
 
 					queries.each(function (query) {
 						query = query.replace(asc, "");
@@ -1620,7 +1604,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					});
 
 					this.views[view] = result;
-					obj.fire("afterDataSort", result);
 					return result;
 				}
 				catch (e) {
