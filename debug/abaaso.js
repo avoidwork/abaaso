@@ -1418,7 +1418,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj.fire("beforeDataGet");
 
 				switch (true) {
-					case typeof record === "undefined" || String(record).length === 0:
+					case typeof record === "undefined":
+					case String(record).length === 0:
 						r = records;
 						break;
 					case typeof record === "string" && typeof this.keys[record] !== "undefined":
