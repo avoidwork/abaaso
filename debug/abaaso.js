@@ -75,9 +75,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Array}   Object as an Array
 		 */
 		cast : function (obj, key) {
-			if ((!client.safari && typeof obj !== "object") || (client.safari && typeof obj !== "function"))
-				throw Error(label.error.expectedObject);
-
 			key   = (key === true);
 			var o = [], i, nth;
 
@@ -3933,17 +3930,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				switch (true) {
 					case arg instanceof Array:
-						arg.each(function (i) { $.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
+						arg.each(function (i, idx) { el.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
 						break;
 					default:
 						utility.iterate(arg, function (i, k) {
 							switch (true) {
 								case typeof i === "string":
-									$.create(k, frag).html(i);
+									el.create(k, frag).html(i);
 									break;
 								case i instanceof Array:
 								case i instanceof Object:
-									$.tpl(i, $.create(k, frag));
+									utility.tpl(i, el.create(k, frag));
 									break;
 							}
 						});
