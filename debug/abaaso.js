@@ -84,7 +84,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					else obj.each(function (i) { o.push(i); });
 					break;
 				default:
-					utility.iterate(obj, function (v, k) { o.push(key ? k : v); });
+					key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
 			}
 			return o;
 		},
@@ -210,7 +210,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		keys : function (obj) {
 			var keys = [];
 
-			utility.iterate(obj, function (v, k) { if (isNaN(k)) keys.push(k); });
+			switch (true) {
+				case typeof Object.keys === "function":
+					keys = Object.keys(obj);
+					break;
+				default:
+					utility.iterate(obj, function (v, k) { keys.push(k); });
+			}
 			return keys;
 		},
 
