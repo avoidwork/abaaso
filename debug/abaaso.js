@@ -675,7 +675,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					args = {Accept: "application/json"}
 			}
 
-			return curi.get(success, failure, args);
+			return curi.get(success, failure, null, args);
 		},
 
 		/**
@@ -693,22 +693,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/HEAD)
 		 * @param  {Function} success A handler function to execute when an appropriate response been received
 		 * @param  {Function} failure [Optional] A handler function to execute on error
-		 * @param  {Mixed}    args    Data to send with the request, or custom headers for GETs
+		 * @param  {Mixed}    args    Data to send with the request
+		 * @param  {Object}   headers Custom request headers (can be used to set withCredentials)
 		 * @return {String} URI to query
 		 * @private
 		 */
-		request : function (uri, type, success, failure, args) {
+		request : function (uri, type, success, failure, args, headers) {
 			try {
 				if (/post|put/i.test(type) && typeof args === "undefined")
 					throw Error(label.error.invalidArguments);
 
-				type = type.toLowerCase();
+				type    = type.toLowerCase();
+				headers = headers instanceof Object ? headers : null;
 
 				var l            = location,
 				    cors         = client.cors(uri),
 				    xhr          = (client.ie && client.version < 10 && cors) ? new XDomainRequest() : new XMLHttpRequest(),
-				    payload      = /post|put/i.test(type) && typeof args !== "undefined" ? utility.clone(args) : null,
-				    headers      = type === "get" && args instanceof Object ? utility.clone(args) : null,
+				    payload      = /post|put/i.test(type) && typeof args !== "undefined" ? args : null,
 				    cached       = type === "head" ? false : cache.get(uri),
 				    typed        = type.capitalize(),
 				    guid         = utility.guid(true),
@@ -747,44 +748,34 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					xhr.open(type.toUpperCase(), uri, true);
 
 					// Setting Content-Type value
-					if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
+					if (headers !== null && headers.hasOwnProperty("Content-Type")) contentType = headers["Content-Type"];
 					if (cors && contentType === null) contentType = "text/plain";
-
-					// Binary payload
-					if (args instanceof ArrayBuffer) {
-						contentType = "application/octet-stream";
-						payload     = args;
-					}
 
 					// Transforming payload
 					if (payload !== null) {
-						if (payload.hasOwnProperty("Content-Type"))    delete payload["Content-Type"];
-						if (payload.hasOwnProperty("withCredentials")) delete payload.withCredentials;
-						if (payload.hasOwnProperty("xml"))             payload = payload.xml;
-
-						if (payload instanceof Document) payload = xml.decode(payload);
+						if (payload.hasOwnProperty("xml")) payload = payload.xml;
+						if (payload instanceof Document)   payload = xml.decode(payload);
 						if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
 						if (!(payload instanceof ArrayBuffer) && payload instanceof Object) {
 							contentType = "application/json";
 							payload = json.encode(payload);
 						}
+						if (payload instanceof ArrayBuffer) contentType = "application/octet-stream";
 						if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					}
 
 					// Setting headers
 					if (typeof xhr.setRequestHeader === "function") {
-						if (headers instanceof Object) {
-							if (headers.hasOwnProperty("callback"))        delete headers.callback;
-							if (headers.hasOwnProperty("withCredentials")) delete headers.withCredentials;
-							if (headers.hasOwnProperty("Content-Type"))    delete headers["Content-Type"];
-							utility.iterate(headers, function (v, k) { if (v !== null) xhr.setRequestHeader(k, v); });
-						}
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
 						if (contentType !== null) xhr.setRequestHeader("Content-Type", contentType);
+						if (headers instanceof Object) {
+							if (headers.hasOwnProperty("callback")) delete headers.callback;
+							utility.iterate(headers, function (v, k) { if (v !== null && v !== "withCredentials") xhr.setRequestHeader(k, v); });
+						}
 					}
 
 					// Cross Origin Resource Sharing (CORS)
-					if (typeof xhr.withCredentials === "boolean" && args instanceof Object && typeof args.withCredentials === "boolean") xhr.withCredentials = args.withCredentials;
+					if (typeof xhr.withCredentials === "boolean" && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
 
 					// Firing event & sending request
 					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
@@ -3798,9 +3789,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           }},
 				string  : {allows   : function (arg) { return $.allows(this, arg); },
 				           capitalize: function () { return this.charAt(0).toUpperCase() + this.slice(1); },
-				           del      : function (success, failure) { return client.request(this, "DELETE", success, failure); },
+				           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
 				           explode  : function (arg) { if (typeof arg === "undefined" || arg.toString() === "") arg = ","; return this.split(new RegExp("\\s*" + arg + "\\s*")); },
-				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, headers); },
+				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 				           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
 				           isBoolean: function () { return validate.test({"boolean": this}).pass; },
 				           isDate   : function () { return validate.test({date: this}).pass; },
@@ -3813,8 +3804,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isPhone  : function () { return validate.test({phone: this}).pass; },
 				           isString : function () { return validate.test({string: this}).pass; },
 				           jsonp    : function (success, failure, callback) { return client.jsonp(this, success, failure, callback); },
-				           post     : function (success, failure, args) { return client.request(this, "POST", success, failure, args); },
-				           put      : function (success, failure, args) { return client.request(this, "PUT", success, failure, args); },
+				           post     : function (success, failure, args, headers) { return client.request(this, "POST", success, failure, args, headers); },
+				           put      : function (success, failure, args, headers) { return client.request(this, "PUT", success, failure, args, headers); },
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
@@ -4174,11 +4165,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			windows : client.windows,
 
 			// Methods
-			del     : function (uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
-			get     : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+			del     : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
+			get     : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
 			headers : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
-			post    : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
-			put     : function (uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
+			post    : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
+			put     : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 			jsonp   : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 			options : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 			permission : client.permission
@@ -4414,7 +4405,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		decode          : json.decode,
 		defer           : utility.defer,
 		define          : utility.define,
-		del             : function (uri, success, failure) { return client.request(uri, "DELETE", success, failure); },
+		del             : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
 		destroy         : el.destroy,
 		encode          : json.encode,
 		error           : utility.error,
@@ -4433,7 +4424,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.fire.call(observer, o, e, a);
 		},
 		genId           : utility.genId,
- 		get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, headers); },
+ 		get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
 		guid            : utility.guid,
 		headers         : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
 		hidden          : el.hidden,
@@ -4486,12 +4477,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		options         : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 		permissions     : client.permissions,
 		position        : el.position,
-		post            : function (uri, success, failure, args) { return client.request(uri, "POST", success, failure, args); },
+		post            : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
 		prepend         : function (type, args, obj) {
 			if (obj instanceof Element) obj.genId();
 			return el.create(type, args, obj, "first");
 		},
-		put             : function (uri, success, failure, args) { return client.request(uri, "PUT", success, failure, args); },
+		put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 		queryString     : utility.queryString,
 		ready           : false,
 		reflect         : utility.reflect,
