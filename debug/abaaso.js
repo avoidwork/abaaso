@@ -750,6 +750,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (typeof args !== "undefined" && args !== null && args.hasOwnProperty("Content-Type")) contentType = args["Content-Type"];
 					if (cors && contentType === null) contentType = "text/plain";
 
+					// Binary payload
+					if (args instanceof ArrayBuffer) {
+						contentType = "application/octet-stream";
+						payload     = args;
+					}
+
 					// Transforming payload
 					if (payload !== null) {
 						if (payload.hasOwnProperty("Content-Type"))    delete payload["Content-Type"];
@@ -758,7 +764,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (payload instanceof Document) payload = xml.decode(payload);
 						if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
-						if (payload instanceof Object) {
+						if (!(payload instanceof ArrayBuffer) && payload instanceof Object) {
 							contentType = "application/json";
 							payload = json.encode(payload);
 						}
