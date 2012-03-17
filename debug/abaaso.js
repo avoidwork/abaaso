@@ -675,7 +675,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					args = {Accept: "application/json"}
 			}
 
-			return curi.get(success, failure, null, args);
+			return curi.get(success, failure, args);
 		},
 
 		/**
