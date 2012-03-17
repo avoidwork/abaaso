@@ -760,14 +760,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							contentType = "application/json";
 							payload = json.encode(payload);
 						}
-						if (payload instanceof ArrayBuffer) contentType = "application/octet-stream";
+						if (contentType === null && payload instanceof ArrayBuffer) contentType = "application/octet-stream";
 						if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					}
 
 					// Setting headers
 					if (typeof xhr.setRequestHeader === "function") {
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
-						if (contentType !== null) xhr.setRequestHeader("Content-Type", contentType);
+						if (contentType !== null) headers["Content-Type"] = contentType;
 						if (headers instanceof Object) {
 							if (headers.hasOwnProperty("callback")) delete headers.callback;
 							utility.iterate(headers, function (v, k) { if (v !== null && v !== "withCredentials") xhr.setRequestHeader(k, v); });
