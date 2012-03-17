@@ -775,7 +775,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 
 					// Cross Origin Resource Sharing (CORS)
-					if (typeof xhr.withCredentials === "boolean" && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
+					if (typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
 
 					// Firing event & sending request
 					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
