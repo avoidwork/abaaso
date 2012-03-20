@@ -710,7 +710,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    cors         = client.cors(uri),
 				    xhr          = (client.ie && client.version < 10 && cors) ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload      = /post|put/i.test(type) && typeof args !== "undefined" ? args : null,
-				    cached       = type === "head" ? false : cache.get(uri),
+				    cached       = type === "get" ? cache.get(uri) : false,
 				    typed        = type.capitalize(),
 				    guid         = utility.guid(true),
 				    contentType  = null,
@@ -2879,7 +2879,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							instance = obj;
 							break;
 						default:
-							instance = !/\//g.test(o) && o !== "abaaso" ? $("#"+o) : null;
+							instance = !/\//g.test(o) && o !== "abaaso" ? $("#" + o) : null;
 					}
 					efn = function (e) {
 						if (event.indexOf("key") !== 0) {
@@ -3094,6 +3094,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Mixed} Element or Array of Elements
 		 */
 		$ : function (arg, nodelist) {
+			// Blocking DOM query of unique URIs via $.on()
+			if (String(arg).indexOf("?") > -1) return undefined;
+
 			var result = [],
 			    obj, sel;
 
