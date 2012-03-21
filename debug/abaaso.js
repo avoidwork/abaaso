@@ -3677,7 +3677,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           html     : function (arg) {
 				           		this.genId();
-				           		return this.update({innerHTML: arg});
+				           		return typeof arg === "undefined" ? this.innerHTML : this.update({innerHTML: arg});
 				           },
 				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
 				           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
