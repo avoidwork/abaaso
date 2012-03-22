@@ -767,11 +767,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					// Setting headers
 					if (typeof xhr.setRequestHeader === "function") {
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
+						if (headers === null) headers = {};
 						if (contentType !== null) headers["Content-Type"] = contentType;
-						if (headers instanceof Object) {
-							if (headers.hasOwnProperty("callback")) delete headers.callback;
-							utility.iterate(headers, function (v, k) { if (v !== null && v !== "withCredentials") xhr.setRequestHeader(k, v); });
-						}
+						if (headers.hasOwnProperty("callback")) delete headers.callback;
+						utility.iterate(headers, function (v, k) { if (v !== null && v !== "withCredentials") xhr.setRequestHeader(k, v); });
 					}
 
 					// Cross Origin Resource Sharing (CORS)
