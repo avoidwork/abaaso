@@ -1188,6 +1188,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj.fire("beforeDataDelete", args);
 				switch (true) {
 					case sync:
+					case this.callback !== null:
 					case this.uri === null:
 						obj.fire("syncDataDelete", args);
 						break;
@@ -1484,6 +1485,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj.fire("beforeDataSet");
 				switch (true) {
 					case sync:
+					case this.callback !== null:
 					case this.uri === null:
 						obj.fire("syncDataSet", args);
 						break;
