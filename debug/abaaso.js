@@ -1647,7 +1647,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					failure = function () { obj.fire("failedDataSync"); };
 
 					obj.fire("beforeDataSync");
-					this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {widthCredentials: this.credentials});
+					this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {Accept: "application/json", widthCredentials: this.credentials});
 					return this;
 				}
 				catch (e) {
