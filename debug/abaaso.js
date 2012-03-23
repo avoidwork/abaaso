@@ -601,7 +601,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Creates a JSONP request if CORS is not supported, otherwise a GET request is made
+		 * Creates a JSONP request
 		 *
 		 * Events: beforeJSONP     Fires before the SCRIPT is made
 		 *         afterJSONP      Fires after the SCRIPT is received
@@ -636,46 +636,31 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			curi = curi.replace(callback+"=?", "");
 
-			curi.on("failedGet", function () {
-				this.un("failedGet", guid)
-				    .on("afterJSONP", function (arg) {
-				    	this.un("afterJSONP", guid)
-				    	    .un("failedJSONP", guid);
-				    	if (typeof success === "function") success(arg);
-				    }, guid)
-				    .on("failedJSONP", function () {
-				    	this.un("afterJSONP", guid)
-				    	    .un("failedJSONP", guid);
-				    	if (typeof failure === "function") failure();
-				    }, guid);
-
-				do cbid = utility.genId().slice(0, 10);
-				while (typeof abaaso.callback[cbid] !== "undefined");
-
-				uri = uri.replace(callback + "=?", callback + "=abaaso.callback." + cbid);
-
-				abaaso.callback[cbid] = function (arg) {
-					$.destroy(s);
-					clearTimeout(abaaso.timer[cbid]);
-					delete abaaso.timer[cbid];
-					delete abaaso.callback[cbid];
-					curi.fire("afterJSONP", arg);
-				};
-
-				s = el.create("script", {src: uri, type: "text/javascript"}, $("head")[0]);
-				abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
+			curi.on("afterJSONP", function (arg) {
+				this.un("afterJSONP", guid).un("failedJSONP", guid);
+				if (typeof success === "function") success(arg);
+			}, guid).on("failedJSONP", function () {
+				this.un("afterJSONP", guid).un("failedJSONP", guid);
+				if (typeof failure === "function") failure();
 			}, guid);
 
-			switch (true) {
-				case args instanceof Object && typeof args.Accept === "undefined":
-					args.Accept = "application/json"
-				case args instanceof Object && typeof args.Accept !== "undefined":
-					break;
-				default:
-					args = {Accept: "application/json"}
-			}
+			do cbid = utility.genId().slice(0, 10);
+			while (typeof abaaso.callback[cbid] !== "undefined");
 
-			return curi.get(success, failure, args);
+			uri = uri.replace(callback + "=?", callback + "=abaaso.callback." + cbid);
+
+			abaaso.callback[cbid] = function (arg) {
+				s.destroy();
+				clearTimeout(abaaso.timer[cbid]);
+				delete abaaso.timer[cbid];
+				delete abaaso.callback[cbid];
+				curi.fire("afterJSONP", arg);
+			};
+
+			s = $("head").create("script", {src: uri, type: "text/javascript"});
+			abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
+
+			return uri;
 		},
 
 		/**
@@ -1132,7 +1117,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!sync) {
 					obj.fire("beforeDataClear");
 					this.callback    = null;
-					this.credentials = null;
+					this.credentials = false;
 					this.expires     = null;
 					this._expires    = null;
 					this.key         = null;
@@ -1662,7 +1647,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					failure = function () { obj.fire("failedDataSync"); };
 
 					obj.fire("beforeDataSync");
-					this.uri.jsonp(success, failure, {callback: this.callback, withCredentials: this.credentials});
+					this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {widthCredentials: this.credentials});
 					return this;
 				}
 				catch (e) {
