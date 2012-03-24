@@ -550,6 +550,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					header        = h.toString();
 					value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
 					header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+					header        = (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
 					items[header] = value;
 					if (/allow|access-control-allow-methods/i.test(header)) allow = value;
 				}
@@ -1117,7 +1118,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!sync) {
 					obj.fire("beforeDataClear");
 					this.callback    = null;
-					this.credentials = false;
+					this.credentials = null;
 					this.expires     = null;
 					this._expires    = null;
 					this.key         = null;
