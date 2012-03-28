@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.9
+ * @version 1.9.92
  */
 (function (global) {
 
@@ -1838,6 +1838,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		attr : function (obj, key, value) {
 			try {
+				var target;
+
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.attr(key, value);
 
@@ -1849,6 +1851,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						return obj[key];
 					case /checked|disabled/.test(key) && typeof value !== "undefined":
 						obj[key] = value;
+						return obj;
+					case obj.nodeName === "SELECT" && key === "selected" && typeof value === "undefined":
+						return $("#" + obj.id + " option[selected=\"selected\"]").first() || $("#" + obj.id + " option").first();
+					case obj.nodeName === "SELECT" && key === "selected" && typeof value !== "undefined":
+						target = $("#" + obj.id + " option[selected=\"selected\"]").first();
+						if (typeof target !== "undefined") {
+							target.selected = false;
+							target.removeAttribute("selected");
+						}
+						target = $("#" + obj.id + " option[value=\"" + value + "\"]").first();
+						target.selected = true;
+						target.setAttribute("selected", "selected");
 						return obj;
 					case typeof value === "undefined":
 						return obj.getAttribute(key);
@@ -4494,7 +4508,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.9"
+		version         : "1.9.92"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
