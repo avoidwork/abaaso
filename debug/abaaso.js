@@ -1838,6 +1838,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		attr : function (obj, key, value) {
 			try {
+				if (typeof value === "string") value = value.trim();
+
 				var target;
 
 				obj = utility.object(obj);
