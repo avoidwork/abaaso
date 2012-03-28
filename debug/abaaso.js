@@ -1866,6 +1866,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						return obj;
 					case typeof value === "undefined":
 						return obj.getAttribute(key);
+					case value === null:
+						obj.removeAttribute(key);
+						return obj;
 					default:
 						obj.setAttribute(key, value);
 						return obj;
