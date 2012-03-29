@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.92
+ * @version 1.9.93
  */
 (function (global) {
 
@@ -2888,8 +2888,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							instance = !/\//g.test(o) && o !== "abaaso" ? $("#" + o) : null;
 					}
 					efn = function (e) {
-						if (event.indexOf("key") !== 0) {
-							if (!e) e = global.event;
+						if (!e) e = global.event;
+						if (!(e instanceof MouseEvent) && !(e instanceof KeyboardEvent)) {
 							if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 							if (typeof e.preventDefault === "function")  e.preventDefault();
 							if (typeof e.stopPropagation === "function") e.stopPropagation();
@@ -3042,8 +3042,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 
 				efn = function (e) {
-					if (event.indexOf("key") !== 0) {
-						if (!e) e = global.event;
+					if (!e) e = global.event;
+					if (!(e instanceof MouseEvent) && !(e instanceof KeyboardEvent)) {
 						if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 						if (typeof e.preventDefault === "function")  e.preventDefault();
 						if (typeof e.stopPropagation === "function") e.stopPropagation();
@@ -4513,7 +4513,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.92"
+		version         : "1.9.93"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
