@@ -3048,7 +3048,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						if (typeof e.preventDefault === "function")  e.preventDefault();
 						if (typeof e.stopPropagation === "function") e.stopPropagation();
 					}
-					typeof instance.fire === "function" ? instance.fire(event) : observer.fire(obj, event, e);
+					typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
 				};
 
 				if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
