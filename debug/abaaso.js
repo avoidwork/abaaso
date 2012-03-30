@@ -2889,7 +2889,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 					efn = function (e) {
 						if (!e) e = global.event;
-						if (!(e instanceof MouseEvent) && !(e instanceof KeyboardEvent)) {
+						if ((!(e instanceof MouseEvent) || !/click|mousedown|mouseup/.test(e.type)) && !(e instanceof KeyboardEvent)) {
 							if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 							if (typeof e.preventDefault === "function")  e.preventDefault();
 							if (typeof e.stopPropagation === "function") e.stopPropagation();
@@ -3043,7 +3043,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				efn = function (e) {
 					if (!e) e = global.event;
-					if (!(e instanceof MouseEvent) && !(e instanceof KeyboardEvent)) {
+					if ((!(e instanceof MouseEvent) || !/click|mousedown|mouseup/.test(e.type)) && !(e instanceof KeyboardEvent)) {
 						if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 						if (typeof e.preventDefault === "function")  e.preventDefault();
 						if (typeof e.stopPropagation === "function") e.stopPropagation();
