@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.93
+ * @version 1.9.94
  */
 (function (global) {
 
@@ -2866,20 +2866,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				var instance = null,
 				    l = observer.listeners,
 				    o = this.id(obj),
-				    efn, item;
+				    n = false,
+				    item, add, reg;
 
 				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function")
 					throw Error(label.error.invalidArguments);
 
 				if (typeof l[o] === "undefined")               l[o]               = {};
 				if (typeof l[o][event] === "undefined")        l[o][event]        = {};
-				if (typeof l[o][event].active === "undefined") l[o][event].active = {};
+				if (typeof l[o][event].active === "undefined") {
+					n = true;
+					l[o][event].active = {};
+				}
 				if (typeof l[o][event][state] === "undefined") l[o][event][state] = {};
 
-				item = {fn: fn, scope: scope};
-				l[o][event][state][id] = item;
-
-				if (state === "active")	{
+				if (state === "active" && n) {
 					switch (true) {
 						case (/body|document|window/i.test(o)):
 							instance = obj;
@@ -2887,18 +2888,24 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						default:
 							instance = !/\//g.test(o) && o !== "abaaso" ? $("#" + o) : null;
 					}
-					efn = function (e) {
-						if (!e) e = global.event;
-						if ((!(e instanceof MouseEvent) || !/click|mousedown|mouseup/.test(e.type)) && !(e instanceof KeyboardEvent)) {
-							if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
-							if (typeof e.preventDefault === "function")  e.preventDefault();
-							if (typeof e.stopPropagation === "function") e.stopPropagation();
-						}
-						typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
-					};
-					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
-						typeof instance.addEventListener === "function" ? instance.addEventListener(event, efn, false) : instance.attachEvent("on" + event, efn);
+
+					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined" && (/body|document|window/i.test(o) || (typeof instance.listeners === "function" && array.cast(instance.listeners(event).active).length === 0))) {
+						reg = (typeof instance.addEventListener === "function" || typeof instance.attachEvent === "function");
+						add = (typeof instance.addEventListener === "function");
+						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
+							if (!e) e = global.event;
+							if ((!(e instanceof MouseEvent) || !/click|mousedown|mouseup/.test(e.type)) && !(e instanceof KeyboardEvent)) {
+								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
+								if (typeof e.preventDefault === "function")  e.preventDefault();
+								if (typeof e.stopPropagation === "function") e.stopPropagation();
+							}
+							typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
+						}, false);
+					}
 				}
+
+				item = {fn: fn, scope: scope};
+				l[o][event][state][id] = item;
 
 				return obj;
 			}
@@ -3019,8 +3026,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			var instance = null,
 			    l = observer.listeners,
-			    o = this.id(obj),
-			    fn, efn;
+			    o = this.id(obj);
 
 			switch (true) {
 				case typeof o === "undefined":
@@ -3031,29 +3037,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 
 			typeof id === "undefined" ? l[o][event][state] = {} : delete l[o][event][state][id];
-
-			if (state === "active") {
-				switch (true) {
-					case (/body|document|window/i.test(o)):
-						instance = obj;
-						break;
-					default:
-						instance = o.indexOf("/") === -1 && o !== "abaaso" ? $("#" + o) : null;
-				}
-
-				efn = function (e) {
-					if (!e) e = global.event;
-					if ((!(e instanceof MouseEvent) || !/click|mousedown|mouseup/.test(e.type)) && !(e instanceof KeyboardEvent)) {
-						if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
-						if (typeof e.preventDefault === "function")  e.preventDefault();
-						if (typeof e.stopPropagation === "function") e.stopPropagation();
-					}
-					typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
-				};
-
-				if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined")
-					typeof instance.removeEventListener === "function" ? instance.removeEventListener(event, efn, false) : instance.detachEvent("on" + event, efn);
-			}
 
 			return obj;
 		},
@@ -4513,7 +4496,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : el.update,
-		version         : "1.9.93"
+		version         : "1.9.94"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
