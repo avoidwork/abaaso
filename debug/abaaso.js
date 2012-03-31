@@ -2872,13 +2872,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function")
 					throw Error(label.error.invalidArguments);
 
-				if (typeof l[o] === "undefined")               l[o]               = {};
-				if (typeof l[o][event] === "undefined")        l[o][event]        = {};
-				if (typeof l[o][event].active === "undefined") {
-					n = true;
-					l[o][event].active = {};
-				}
-				if (typeof l[o][event][state] === "undefined") l[o][event][state] = {};
+				if (typeof l[o] === "undefined")                      l[o]               = {};
+				if (typeof l[o][event] === "undefined" && (n = true)) l[o][event]        = {};
+				if (typeof l[o][event].active === "undefined")        l[o][event].active = {};
+				if (typeof l[o][event][state] === "undefined")        l[o][event][state] = {};
 
 				if (state === "active" && n) {
 					switch (true) {
