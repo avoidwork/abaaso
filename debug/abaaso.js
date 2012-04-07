@@ -809,8 +809,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						uri.fire("afterXHR", {xhr: xhr, uri: uri});
 						switch (xhr.status) {
 							case 200:
+							case 201:
+							case 202:
+							case 203:
 							case 204:
 							case 205:
+							case 206:
 							case 301:
 								var state = null,
 								    s     = abaaso.state,
@@ -849,7 +853,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 								switch (xhr.status) {
 									case 200:
+									case 201:
+									case 202:
+									case 203:
+									case 206:
 										uri.fire("after" + typed, utility.clone(o.response));
+										break;
+									case 204:
+										uri.fire("after" + typed);
 										break;
 									case 205:
 										uri.fire("reset");
@@ -1076,7 +1087,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (sync) this.clear(true);
 					if (data instanceof Array) {
 						data.each(function (i, idx) {
-							if (type === "set") typeof i === "object" ? fn(i, idx.toString()) : void(0);
+							idx = idx.toString();
+							if (type === "set") typeof i === "object" ? fn(i, idx) : i.get(function (arg) { fn(arg, idx); }, null, {Accept: "application/json"});
 							else self.del(i, false, sync);
 						});
 					}
