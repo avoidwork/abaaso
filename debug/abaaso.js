@@ -1137,7 +1137,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 					}
 					else {
-						nth = array.cast(obj, true).length;
+						nth = array.cast(data, true).length;
 						utility.iterate(data, function (v, k) {
 							if (type === "set") {
 								if (self.key !== null && typeof v[self.key] !== "undefined") {
