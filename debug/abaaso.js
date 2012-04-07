@@ -1057,6 +1057,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * Events: beforeDataBatch  Fires before the batch is queued
 			 *         afterDataBatch   Fires after the batch is queued
+			 *         failedDataBatch  Fires when an exception occurs
 			 *
 			 * @method batch
 			 * @param  {String}  type Type of action to perform
@@ -1088,7 +1089,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (data instanceof Array) {
 						data.each(function (i, idx) {
 							idx = idx.toString();
-							if (type === "set") typeof i === "object" ? fn(i, idx) : i.get(function (arg) { fn(arg, idx); }, null, {Accept: "application/json"});
+							if (type === "set") typeof i === "object" ? fn(i, idx) : i.get(function (arg) { fn(arg, idx); }, null, {Accept: "application/json", widthCredentials: this.credentials});
 							else self.del(i, false, sync);
 						});
 					}
@@ -1109,6 +1110,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 				catch (e) {
 					error(e, arguments, this);
+					obj.fire("failedDataBatch");
 					return undefined;
 				}
 			},
@@ -1616,6 +1618,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * Events: beforeDataSync  Fires before syncing the data store
 			 *         afterDataSync   Fires after syncing the data store
+			 *         failedDataSync  Fires when an exception occurs
 			 *
 			 * @method sync
 			 * @param {Boolean} reindex [Optional] True will reindex the data store
@@ -1637,7 +1640,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							if (typeof arg !== "object")
 								throw Error(label.error.expectedObject);
 
-							var data, found = false;
+							var data, found = false, guid = $.genId(true);
 
 							if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
@@ -1649,9 +1652,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								}
 							});
 
+							obj.on("afterDataBatch", function () {
+								obj.un("afterDataBatch", guid).un("failedDataBatch", guid);
+								if (reindex) self.reindex();
+								obj.fire("afterDataSync", arg);
+							}, guid);
+
+							obj.on("failedDataBatch", function () {
+								obj.un("afterDataBatch", guid).un("failedDataBatch", guid).fire("failedDataSync");
+							}, guid);
+
 							self.batch("set", data, true);
-							if (reindex) self.reindex();
-							obj.fire("afterDataSync", arg);
 						}
 						catch (e) {
 							error(e, arguments, this);
