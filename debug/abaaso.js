@@ -1067,7 +1067,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			batch : function (type, data, sync) {
 				try {
-					type = type.toString().toLowerCase() || undefined;
+					type = type.toString().toLowerCase();
 					sync = (sync === true);
 
 					if (!/^(set|del)$/.test(type) || typeof data !== "object")
@@ -1075,37 +1075,82 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					var obj  = this.parentNode,
 					    self = this,
-					    fn   = function (rec, key) {
+					    r    = 1,
+					    nth  = 0,
+					    f    = false,
+					    set  = function (rec, key) {
+					    	var guid = utility.genId();
+
 					    	if (self.key !== null && typeof rec[self.key] !== "undefined") {
 								key = rec[self.key];
 								delete rec[self.key];
 							}
+
+							obj.on("afterDataSet", function () {
+								this.un("afterDataSet", guid).un("failedDataSet", guid);
+								if (r++ && r === nth) completed();
+							}, guid).on("failedDataSet", function () {
+								this.un("afterDataSet", guid).un("failedDataSet", guid);
+							}, guid);
+
 							self.set(key, rec, sync);
 						},
+						completed = function () {
+							if (type === "del") this.reindex();
+							obj.fire("afterDataBatch");
+						},
+						guid = utility.genId(true),
 					    key;
 
 					obj.fire("beforeDataBatch");
-					if (sync) this.clear(true);
+
+					switch (type) {
+						case "set":
+							if (sync) this.clear(true);
+							obj.on("failedDataSet", function () {
+								obj.un("failedDataSet", guid);
+								if (!f) {
+									f = true;
+									obj.fire("failedDataBatch");
+								}
+							}, guid);
+							break;
+						case "del":
+							obj.on("afterDataDelete", function () {
+								if (r++ && r === nth) completed();
+							}, guid).on("failedDataDelete", function () {
+								obj.un("failedDataDelete", guid).un("afterDataDelete", guid);
+								if (!f) {
+									f = true;
+									obj.fire("failedDataBatch");
+								}
+							}, guid);
+							break;
+					}
+
 					if (data instanceof Array) {
+						nth = data.length;
 						data.each(function (i, idx) {
 							idx = idx.toString();
-							if (type === "set") typeof i === "object" ? fn(i, idx) : i.get(function (arg) { fn(arg, idx); }, null, {Accept: "application/json", widthCredentials: this.credentials});
+							if (type === "set") typeof i === "object" ? set(i, idx) : i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: this.credentials});
 							else self.del(i, false, sync);
 						});
 					}
-					else utility.iterate(data, function (v, k) {
-						if (type === "set") {
-							if (self.key !== null && typeof v[self.key] !== "undefined") {
-								key = v[self.key];
-								delete v[self.key];
+					else {
+						nth = array.cast(obj, true).length;
+						utility.iterate(data, function (v, k) {
+							if (type === "set") {
+								if (self.key !== null && typeof v[self.key] !== "undefined") {
+									key = v[self.key];
+									delete v[self.key];
+								}
+								else key = k.toString();
+								self.set(key, v, sync);
 							}
-							else key = k.toString();
-							self.set(key, v, sync);
-						}
-						else self.del(v, false, sync);
-					});
-					if (type === "del") this.reindex();
-					obj.fire("afterDataBatch");
+							else self.del(v, false, sync);
+						});
+					}
+
 					return this;
 				}
 				catch (e) {
@@ -1208,11 +1253,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						obj.fire("syncDataDelete", args);
 						break;
 					case r.test(p.data) && r.test(p.uri):
-						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); });
+						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, {Accept: "application/json", widthCredentials: this.credentials});
 						break;
 					default:
 						obj.fire("failedDataDelete", args);
-
 				}
 				return this;
 			},
@@ -1640,7 +1684,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							if (typeof arg !== "object")
 								throw Error(label.error.expectedObject);
 
-							var data, found = false, guid = $.genId(true);
+							var data, found = false, guid = utility.genId(true);
 
 							if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
