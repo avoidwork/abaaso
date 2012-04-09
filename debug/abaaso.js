@@ -1132,7 +1132,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						nth = data.length;
 						data.each(function (i, idx) {
 							idx = idx.toString();
-							if (type === "set") typeof i === "object" ? set(i, idx) : i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: this.credentials});
+							if (type === "set") switch (true) {
+								case typeof i === "object":
+									set(i, idx);
+									break;
+								case !i.isDomain():
+									i = self.uri + i;
+								case i.isDomain():
+									i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: this.credentials});
+									break;
+							}
 							else self.del(i, false, sync);
 						});
 					}
@@ -3628,7 +3637,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isInt    : function () { var a = []; this.each(function (i) { a.push(i.isInt()); }); return a; },
 				           isNumber : function () { var a = []; this.each(function (i) { a.push(i.isNumber()); }); return a; },
 				           isPhone  : function () { var a = []; this.each(function (i) { a.push(i.isPhone()); }); return a; },
-				           isString : function () { var a = []; this.each(function (i) { a.push(i.isAlphaNum()); }); return a; },
+				           isString : function () { var a = []; this.each(function (i) { a.push(i.isString()); }); return a; },
 				           keys     : function () { return array.keys(this); },
 				           last     : function (arg) { return array.last(this); },
 				           loading  : function () { return this.each(function (i) { i.loading(); }); },
@@ -4033,7 +4042,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			notEmpty : /\w{1,}/,
 			number   : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/,
 			phone    : /^\([1-9]\d{2}\)\s?\d{3}\-\d{4}$/,
-			string   : /\w/
+			string   : /\w/,
+			url      : /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 		},
 
 		/**
