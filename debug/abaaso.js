@@ -4042,8 +4042,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			notEmpty : /\w{1,}/,
 			number   : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/,
 			phone    : /^\([1-9]\d{2}\)\s?\d{3}\-\d{4}$/,
-			string   : /\w/,
-			url      : /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+			string   : /\w/
 		},
 
 		/**
