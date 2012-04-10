@@ -80,8 +80,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			switch (true) {
 				case !isNaN(obj.length):
-					if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
-					else obj.each(function (i) { o.push(i); });
+					(!client.ie || client.version > 8) ? o = Array.prototype.slice.call(obj) : utility.iterate(obj, function (i) { o.push(i); });
 					break;
 				default:
 					key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
@@ -210,13 +209,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		keys : function (obj) {
 			var keys = [];
 
-			switch (true) {
-				case typeof Object.keys === "function":
-					keys = Object.keys(obj);
-					break;
-				default:
-					utility.iterate(obj, function (v, k) { keys.push(k); });
-			}
+			typeof Object.keys === "function" ? keys = Object.keys(obj) : utility.iterate(obj, function (v, k) { keys.push(k); });
 			return keys;
 		},
 
