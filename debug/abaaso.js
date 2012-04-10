@@ -3182,7 +3182,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 
 			// Transforming obj if required
-			if (obj !== null && !(obj instanceof Element) && !nodelist) obj = array.cast(obj);
+			if (typeof obj !== "undefined" && obj !== null && !(obj instanceof Element) && !nodelist) obj = array.cast(obj);
 			if (obj === null) obj = undefined;
 
 			return obj;
@@ -3472,7 +3472,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		iterate : function (obj, fn) {
 			var i;
 
-			for (i in obj) if (obj.hasOwnProperty(i) && typeof fn === "function") fn.call(obj, obj[i], i);
+			for (i in obj) if (Object.prototype.hasOwnProperty.call(obj, i) && typeof fn === "function") fn.call(obj, obj[i], i);
 			return obj;
 		},
 
@@ -3486,7 +3486,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		loading : function (obj) {
 			try {
-				var l = $.loading;
+				var l = abaaso.loading;
 
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { utility.loading(i); });
@@ -3597,61 +3597,61 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Collection of methods to add to prototypes
 			var i,
 			    methods = {
-				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
-				           after    : function (type, args) { var a = []; this.each(function (i) { a.push(i.after(type, args)); }); return a; },
-				           append   : function (type, args) { var a = []; this.each(function (i) { a.push(i.append(type, args)); }); return a; },
-				           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
-				           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
-				           clear    : function (arg) { return this.each(function (i) { i.clear(); }); },
+				array   : {addClass : function (arg) { return this.each(function (i) { if (typeof i.addClass === "function") i.addClass(arg); }); },
+				           after    : function (type, args) { var a = []; this.each(function (i) { if (typeof i.after === "function") a.push(i.after(type, args)); }); return a; },
+				           append   : function (type, args) { var a = []; this.each(function (i) { if (typeof i.append === "function") a.push(i.append(type, args)); }); return a; },
+				           attr     : function (key, value) { var a = []; this.each(function (i) { if (typeof i.attr === "function") a.push(i.attr(key, value)); }); return a; },
+				           before   : function (type, args) { var a = []; this.each(function (i) { if (typeof i.before === "function") a.push(i.before(type, args)); }); return a; },
+				           clear    : function (arg) { return this.each(function (i) { if (typeof i.clear === "function") i.clear(); }); },
 				           clone    : function () { return utility.clone(this); },
 				           contains : function (arg) { return array.contains(this, arg); },
-				           create   : function (type, args, position) { var a = []; this.each(function (i) { a.push(i.create(type, args, position)); }); return a; },
-				           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
+				           create   : function (type, args, position) { var a = []; this.each(function (i) { if (typeof i.create === "function") a.push(i.create(type, args, position)); }); return a; },
+				           css      : function (key, value) { return this.each(function (i) { if (typeof i.css === "function") i.css(key, value); }); },
 				           diff     : function (arg) { return array.diff(this, arg); },
-				           disable  : function () { return this.each(function (i) { i.disable(); }); },
-				           destroy  : function () { this.each(function (i) { i.destroy(); }); return []; },
+				           disable  : function () { return this.each(function (i) { if (typeof i.disable === "function") i.disable(); }); },
+				           destroy  : function () { this.each(function (i) { if (typeof i.destroy === "function") i.destroy(); }); return []; },
 				           each     : function (arg) { return array.each(this, arg); },
-				           enable   : function () { return this.each(function (i) { i.enable(); }); },
+				           enable   : function () { return this.each(function (i) { if (typeof i.enable === "function") i.enable(); }); },
 				           first    : function () { return array.first(this); },
-				           hasClass : function (arg) { var a = []; this.each(function (i) { a.push(i.hasClass(arg)); }); return a; },
-				           hide     : function () { return this.each(function (i){ i.hide(); }); },
-				           html     : function (arg) { return this.each(function (i){ i.html(arg); }); },
+				           hasClass : function (arg) { var a = []; this.each(function (i) { if (typeof i.hasClass === "function") a.push(i.hasClass(arg)); }); return a; },
+				           hide     : function () { return this.each(function (i){ if (typeof i.hide === "function") i.hide(); }); },
+				           html     : function (arg) { return this.each(function (i){ if (typeof i.html === "function") i.html(arg); }); },
 				           index    : function (arg) { return array.index(this, arg); },
 				           indexed  : function () { return array.indexed(this); },
 				           intersect: function (arg) { return array.intersect(this, arg); },
-				           isAlphaNum: function () { var a = []; this.each(function (i) { a.push(i.isAlphaNum()); }); return a; },
-				           isBoolean: function () { var a = []; this.each(function (i) { a.push(i.isBoolean()); }); return a; },
-				           isChecked: function () { var a = []; this.each(function (i) { a.push(i.isChecked()); }); return a; },
-				           isDate   : function () { var a = []; this.each(function (i) { a.push(i.isDate()); }); return a; },
-				           isDisabled: function () { var a = []; this.each(function (i) { a.push(i.isDisabled()); }); return a; },
-				           isDomain : function () { var a = []; this.each(function (i) { a.push(i.isDomain()); }); return a; },
-				           isEmail  : function () { var a = []; this.each(function (i) { a.push(i.isEmail()); }); return a; },
-				           isIP     : function () { var a = []; this.each(function (i) { a.push(i.isIP()); }); return a; },
-				           isInt    : function () { var a = []; this.each(function (i) { a.push(i.isInt()); }); return a; },
-				           isNumber : function () { var a = []; this.each(function (i) { a.push(i.isNumber()); }); return a; },
-				           isPhone  : function () { var a = []; this.each(function (i) { a.push(i.isPhone()); }); return a; },
-				           isString : function () { var a = []; this.each(function (i) { a.push(i.isString()); }); return a; },
+				           isAlphaNum: function () { var a = []; this.each(function (i) { if (typeof i.isAlphaNum === "function") a.push(i.isAlphaNum()); }); return a; },
+				           isBoolean: function () { var a = []; this.each(function (i) { if (typeof i.isBoolean === "function") a.push(i.isBoolean()); }); return a; },
+				           isChecked: function () { var a = []; this.each(function (i) { if (typeof i.isChecked === "function") a.push(i.isChecked()); }); return a; },
+				           isDate   : function () { var a = []; this.each(function (i) { if (typeof i.isDate === "function") a.push(i.isDate()); }); return a; },
+				           isDisabled: function () { var a = []; this.each(function (i) { if (typeof i.isDisabled === "function") a.push(i.isDisabled()); }); return a; },
+				           isDomain : function () { var a = []; this.each(function (i) { if (typeof i.isDomain === "function") a.push(i.isDomain()); }); return a; },
+				           isEmail  : function () { var a = []; this.each(function (i) { if (typeof i.isEmail === "function") a.push(i.isEmail()); }); return a; },
+				           isIP     : function () { var a = []; this.each(function (i) { if (typeof i.isIP === "function") a.push(i.isIP()); }); return a; },
+				           isInt    : function () { var a = []; this.each(function (i) { if (typeof i.isInt === "function") a.push(i.isInt()); }); return a; },
+				           isNumber : function () { var a = []; this.each(function (i) { if (typeof i.isNumber === "function") a.push(i.isNumber()); }); return a; },
+				           isPhone  : function () { var a = []; this.each(function (i) { if (typeof i.isPhone === "function") a.push(i.isPhone()); }); return a; },
+				           isString : function () { var a = []; this.each(function (i) { if (typeof i.isString === "function") a.push(i.isString()); }); return a; },
 				           keys     : function () { return array.keys(this); },
 				           last     : function (arg) { return array.last(this); },
 				           loading  : function () { return this.each(function (i) { i.loading(); }); },
-				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
-				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
-				           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
+				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { if (typeof i.on === "function") i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
+				           position : function () { var a = []; this.each(function (i) { if (typeof i.position === "function") a.push(i.position()); }); return a; },
+				           prepend  : function (type, args) { var a = []; this.each(function (i) { if (typeof i.prepend === "function") a.push(i.prepend(type, args)); }); return a; },
 				           range    : function (start, end) { var a = [], i; for (i = start; i <= end; i++) a.push(this[i]); return a; },
 				           remove   : function (start, end) { return array.remove(this, start, end); },
-				           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
-				           show     : function () { return this.each(function (i){ i.show(); }); },
-				           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
+				           removeClass: function (arg) { return this.each(function (i) { if (typeof i.removeClass === "function") i.removeClass(arg); }); },
+				           show     : function () { return this.each(function (i){ if (typeof i.show === "function") i.show(); }); },
+				           size     : function () { var a = []; this.each(function (i) { if (typeof i.size === "function") a.push(i.size()); }); return a; },
 				           text     : function (arg) {
 				           		return this.each(function (node) {
 				           			if (typeof node !== "object") node = utility.object(node);
 				           			if (typeof node.text === "function") node.text(arg);
 				           		});
 				           },
-				           tpl      : function (arg) { return this.each(function (i) { i.tpl(arg); }); },
+				           tpl      : function (arg) { return this.each(function (i) { if (typeof i.tpl === "function") i.tpl(arg); }); },
 				           total    : function () { return array.total(this); },
 				           toObject : function () { return array.toObject(this); },
-				           un       : function (event, id, state) { return this.each(function (i) { i.un(event, id, state); }); },
+				           un       : function (event, id, state) { return this.each(function (i) { if (typeof i.un === "function") i.un(event, id, state); }); },
 				           update   : function (arg) { return this.each(function (i) { el.update(i, arg); }); },
 				           val      : function (arg) {
 				           		var a    = [],
@@ -3661,15 +3661,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		this.each(function (i) {
 				           			if (type !== null) same = (type === i.type);
 				           			type = i.type;
-				           			a.push(i.val(arg));
+				           			if (typeof i.val === "function") a.push(i.val(arg));
 				           		});
 				           		return same ? a[0] : a;
 				           	},
-				           validate : function () {
-				           		var result = [];
-				           		this.each(function (i) { if (typeof i.validate === "function") result.push(i.validate()); });
-				           		return result;
-					       }},
+				           validate : function () { var a = []; this.each(function (i) { if (typeof i.validate === "function") a.push(i.validate()); }); return a; }},
 				element : {addClass : function (arg) {
 				           		this.genId();
 				           		return el.klass(this, arg, true);
