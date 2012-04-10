@@ -429,8 +429,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				default:
 					version = (typeof navigator !== "undefined") ? navigator.appVersion : 0;
 			}
-			version      = !isNaN(parseInt(version)) ? parseInt(version) : 0;
-			this.version = version;
+			version = !isNaN(parseInt(version)) ? parseInt(version) : 0;
+			abaaso.client.version = this.version = version;
 			return version;
 		}),
 
