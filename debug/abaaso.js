@@ -4324,6 +4324,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				};
 			}
 
+			if (typeof Array.prototype.indexOf === "undefined") {
+				Array.prototype.indexOf = function(obj, start) {
+					"use strict";
+
+					for (var i = (start || 0), j = this.length; i < j; i++) {
+						if (this[i] === obj) return i;
+					}
+
+					return -1;
+				}
+			}
+
 			if (typeof Function.prototype.bind === "undefined") {
 				Function.prototype.bind = function (arg) {
 					"use strict";
