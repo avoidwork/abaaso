@@ -2949,18 +2949,19 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (state === "active" && n) {
 					switch (true) {
 						case (/body|document|window/i.test(o)):
+						case !/\//g.test(o) && o !== "abaaso":
 							instance = obj;
 							break;
 						default:
-							instance = !/\//g.test(o) && o !== "abaaso" ? $("#" + o) : null;
+							instance = null;
 					}
 
 					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined" && (/body|document|window/i.test(o) || (typeof instance.listeners === "function" && array.cast(instance.listeners(event).active).length === 0))) {
-						reg = (typeof instance.addEventListener === "function" || typeof instance.attachEvent === "function");
 						add = (typeof instance.addEventListener === "function");
+						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
 							if (!e) e = global.event;
-							if ((!(e instanceof MouseEvent) || !/click|mousedown|mouseup/.test(e.type)) && e.type.indexOf("key")) {
+							if (!/click|mousedown|mouseup/.test(e.type) && e.type.indexOf("key")) {
 								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 								if (typeof e.preventDefault === "function")  e.preventDefault();
 								if (typeof e.stopPropagation === "function") e.stopPropagation();
