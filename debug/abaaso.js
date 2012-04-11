@@ -1129,10 +1129,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								case typeof i === "object":
 									set(i, idx);
 									break;
-								case !i.isDomain():
+								case i.indexOf("//") === -1:
 									i = self.uri + i;
-								case i.isDomain():
-									i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: this.credentials});
+								default:
+									i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: self.credentials});
 									break;
 							}
 							else self.del(i, false, sync);
