@@ -3876,7 +3876,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           trim     : function () { return this.replace(/^\s+|\s+$/g, ""); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
 			},
-			define = (typeof Object.defineProperty === "function"),
+			define = ((!client.ie || client.version > 8) && typeof Object.defineProperty === "function"),
 			setter = function (obj, method, fn) {
 				if (define) Object.defineProperty(obj, method, {value: fn, enumerable: false});
 				else obj[method] = fn;
