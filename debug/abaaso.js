@@ -3875,11 +3875,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           trim     : function () { return this.replace(/^\s+|\s+$/g, ""); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
+			},
+			setter = function (obj, method, fn) {
+				if (typeof Object.defineProperty === "function") Object.defineProperty(obj, method, {value: fn, enumerable: false});
+				else obj[method] = fn;
 			};
 
 			// Applying the methods
-			for (i in methods[type]) obj.prototype[i] = methods[type][i];
-			if (type !== "function") for (i in methods.shared) obj.prototype[i] = methods.shared[i];
+			for (i in methods[type]) setter(obj.prototype, i, methods[type][i]);
+			if (type !== "function") for (i in methods.shared) setter(obj.prototype, i, methods.shared[i]);
 			return obj;
 		},
 
