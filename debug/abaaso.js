@@ -685,8 +685,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				type    = type.toLowerCase();
 				headers = headers instanceof Object ? headers : null;
 
-				var l            = location,
-				    cors         = client.cors(uri),
+				var cors         = client.cors(uri),
 				    xhr          = (client.ie && client.version < 10 && cors) ? new XDomainRequest() : new XMLHttpRequest(),
 				    payload      = /post|put/i.test(type) && typeof args !== "undefined" ? args : null,
 				    cached       = type === "get" ? cache.get(uri) : false,
@@ -2782,8 +2781,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var m = abaaso.mouse;
 			switch (true) {
 				case typeof e === "object":
-					var x = e.pageX ? e.pageX : ((client.ie && client.version < 9 ? document.documentElement.scrollLeft : document.body.scrollLeft) + n.clientX),
-					    y = e.pageY ? e.pageY : ((client.ie && client.version < 9 ? document.documentElement.scrollTop  : document.body.scrollTop)  + n.clientY),
+					var x = e.pageX ? e.pageX : ((client.ie && client.version < 9 ? document.documentElement.scrollLeft : document.body.scrollLeft) + e.clientX),
+					    y = e.pageY ? e.pageY : ((client.ie && client.version < 9 ? document.documentElement.scrollTop  : document.body.scrollTop)  + e.clientY),
 					    c = false;
 
 					if (m.pos.x !== x) c = true;
@@ -3360,25 +3359,27 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Array}   args     Array of arguments from the callstack
 		 * @param  {Mixed}   scope    Entity that was "this"
 		 * @param  {Boolean} warning  [Optional] Will display as console warning if true
-		 * @return {Object} undefined
+		 * @return {Undefined} undefined
 		 */
 		error : function (e, args, scope, warning) {
-			if (typeof e === "undefined")
-				return;
-			
-			warning = (warning === true);
-			var o = {
-				arguments : args,
-				message   : typeof e.message !== "undefined" ? e.message : e,
-				number    : typeof e.number !== "undefined" ? (e.number & 0xFFFF) : undefined,
-				scope     : scope,
-				timestamp : new Date().toUTCString(),
-				type      : typeof e.type !== "undefined" ? e.type : "TypeError"
-			};
+			var o;
 
-			if (typeof console !== "undefined") console[!warning ? "error" : "warn"](o.message);
-			$.error.log.push(o);
-			$.fire("error", o);
+			if (typeof e !== "undefined") {
+				warning = (warning === true);
+				o = {
+					arguments : args,
+					message   : typeof e.message !== "undefined" ? e.message : e,
+					number    : typeof e.number !== "undefined" ? (e.number & 0xFFFF) : undefined,
+					scope     : scope,
+					timestamp : new Date().toUTCString(),
+					type      : typeof e.type !== "undefined" ? e.type : "TypeError"
+				};
+
+				if (typeof console !== "undefined") console[!warning ? "error" : "warn"](o.message);
+				$.error.log.push(o);
+				$.fire("error", o);
+			}
+
 			return undefined;
 		},
 
@@ -4453,8 +4454,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			// Preparing init()
 			switch (true) {
-				case typeof define === "function":
-					define("abaaso", function () { return abaaso.init(); });
+				case typeof global.define === "function":
+					global.define("abaaso", function () { return abaaso.init(); });
 					break;
 				case client.server:
 				case (/complete|loaded/.test(document.readyState)):
