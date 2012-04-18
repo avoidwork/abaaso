@@ -4233,7 +4233,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			put     : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 			jsonp   : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 			options : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
-			permission : client.permission
+			permissions : client.permissions
 		},
 		cookie          : cookie,
 		data            : data,
