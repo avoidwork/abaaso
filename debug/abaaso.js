@@ -693,7 +693,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    guid         = utility.guid(true),
 				    contentType  = null,
 				    fail         = function (arg) { uri.fire("failed" + typed, arg); },
-				    timeout      = function (arg) { uri.fire("timeout" + typed, arg); };
+				    timeout      = function (arg) { uri.fire("timeout" + typed, arg); },
+				    doc          = (typeof Document !== "undefined"),
+				    ab           = (typeof ArrayBuffer !== "undefined");
 
 				if (type === "delete") {
 					uri.on("afterDelete", function () {
@@ -732,13 +734,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					// Transforming payload
 					if (payload !== null) {
 						if (payload.hasOwnProperty("xml")) payload = payload.xml;
-						if (payload instanceof Document)   payload = xml.decode(payload);
+						if (doc && payload instanceof Document) payload = xml.decode(payload);
 						if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
-						if (!(payload instanceof ArrayBuffer) && payload instanceof Object) {
+						if (!(ab && payload instanceof ArrayBuffer) && payload instanceof Object) {
 							contentType = "application/json";
 							payload = json.encode(payload);
 						}
-						if (contentType === null && payload instanceof ArrayBuffer) contentType = "application/octet-stream";
+						if (contentType === null && ab && payload instanceof ArrayBuffer) contentType = "application/octet-stream";
 						if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					}
 
