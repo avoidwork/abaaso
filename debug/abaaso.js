@@ -1069,7 +1069,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					var obj  = this.parentNode,
 					    self = this,
-					    r    = 1,
+					    r    = 0,
 					    nth  = 0,
 					    f    = false,
 					    set  = function (rec, key) {
@@ -1082,7 +1082,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 							obj.on("afterDataSet", function () {
 								this.un("afterDataSet", guid).un("failedDataSet", guid);
-								if (r++ && r === nth) completed();
+								if (++r && r === nth) completed();
 							}, guid).on("failedDataSet", function () {
 								this.un("afterDataSet", guid).un("failedDataSet", guid);
 							}, guid);
