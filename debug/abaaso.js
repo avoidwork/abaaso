@@ -180,7 +180,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		indexed : function (obj) {
 			var indexed = [];
 
-			obj.each(function (v, k) { indexed.push(!(v instanceof Array) ? v : this[k].indexed()); });
+			utility.iterate(obj, function (v, k) { indexed.push(!(k instanceof Array) ? k : k.indexed()); });
 			return indexed;
 		},
 
@@ -226,7 +226,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Removes indexes from an Array without recreating it
+		 * Removes indices from an Array without recreating it
 		 *
 		 * @method remove
 		 * @param  {Array}   obj   Array to remove from
@@ -1055,7 +1055,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * @method batch
 			 * @param  {String}  type Type of action to perform
-			 * @param  {Mixed}   data Array of keys or indexes to delete, or Object containing multiple records to set
+			 * @param  {Mixed}   data Array of keys or indices to delete, or Object containing multiple records to set
 			 * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
 			 * @return {Object} Data store
 			 */
@@ -1476,7 +1476,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			},
 
 			/**
-			 * Reindexes the data store
+			 * Reindices the data store
 			 *
 			 * @method reindex
 			 * @return {Object} Data store
