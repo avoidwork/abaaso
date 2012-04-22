@@ -3638,6 +3638,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isDisabled: function () { var a = []; this.each(function (i) { if (typeof i.isDisabled === "function") a.push(i.isDisabled()); }); return a; },
 				           isDomain : function () { var a = []; this.each(function (i) { if (typeof i.isDomain === "function") a.push(i.isDomain()); }); return a; },
 				           isEmail  : function () { var a = []; this.each(function (i) { if (typeof i.isEmail === "function") a.push(i.isEmail()); }); return a; },
+				           isHidden : function () { var a = []; this.each(function (i) { if (typeof i.isHidden === "function") a.push(i.isHidden()); }); return a; },
 				           isIP     : function () { var a = []; this.each(function (i) { if (typeof i.isIP === "function") a.push(i.isIP()); }); return a; },
 				           isInt    : function () { var a = []; this.each(function (i) { if (typeof i.isInt === "function") a.push(i.isInt()); }); return a; },
 				           isNumber : function () { var a = []; this.each(function (i) { if (typeof i.isNumber === "function") a.push(i.isNumber()); }); return a; },
@@ -3750,6 +3751,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isDomain : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : this.innerText.isDomain(); },
 				           isEmail  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
 				           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
+				           isHidden : function (arg) {
+				           		this.genId();
+				           		return el.hidden(this);
+				           },
 				           isIP     : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
 				           isInt    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
 				           isNumber : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : this.innerText.isNumber(); },
