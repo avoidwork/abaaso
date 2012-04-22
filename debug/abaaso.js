@@ -4133,8 +4133,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		decode : function (arg) {
 			try {
-				if (typeof arg !== "string" || arg.isEmpty())
-					throw Error(label.error.invalidArguments);
+				if (typeof arg !== "string" || arg.isEmpty()) throw Error(label.error.invalidArguments);
 
 				var x;
 
@@ -4161,42 +4160,36 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		encode : function (arg, wrap) {
 			try {
-				if (typeof arg === "undefined")
-					throw Error(label.error.invalidArguments);
+				if (typeof arg === "undefined") throw Error(label.error.invalidArguments);
+
+				wrap = !(wrap === false);
+				var x    = wrap ? "<xml>" : "",
+				    top  = !(arguments[2] === false),
+				    node, i;
+
+				if (arg !== null && typeof arg.xml !== "undefined") arg = arg.xml;
+				if (arg instanceof Document) arg = (new XMLSerializer()).serializeToString(arg);
+
+				node = function (name, value) {
+					var output = "<n>v</n>";
+					if (/\&|\<|\>|\"|\'|\t|\r|\n|\@|\$/g.test(value)) output = output.replace(/v/, "<![CDATA[v]]>");
+					return output.replace(/n/g, name).replace(/v/, value);
+				}
 
 				switch (true) {
-					case arg !== null && typeof arg.xml !== "undefined":
-						arg = arg.xml;
+					case typeof arg === "boolean":
+					case typeof arg === "number":
+					case typeof arg === "string":
+						x += node("item", arg);
 						break;
-					case arg instanceof Document:
-						arg = (new XMLSerializer()).serializeToString(arg);
+					case typeof arg === "object":
+						utility.iterate(arg, function (v, k) { x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item"); });
 						break;
-					default:
-						wrap = !(wrap === false);
-						var x    = wrap ? "<xml>" : "",
-						    top  = arguments[2] === false ? false : true,
-						    node, i;
-
-						node = function (name, value) {
-							var output = "<n>v</n>";
-							if (/\&|\<|\>|\"|\'|\t|\r|\n|\@|\$/g.test(value)) output = output.replace(/v/, "<![CDATA[v]]>");
-							return output.replace(/n/g, name).replace(/v/, value);
-						}
-
-						switch (true) {
-							case typeof arg === "boolean":
-							case typeof arg === "number":
-							case typeof arg === "string":
-								x += node("item", arg);
-								break
-							case typeof arg === "object":
-								utility.iterate(arg, function (v, k) { x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item"); });
-								break;
-						}
-
-						x += wrap ? "</xml>" : "";
-						if (top) x = "<?xml version=\"1.0\" encoding=\"UTF8\"?>" + x;
 				}
+
+				x += wrap ? "</xml>" : "";
+				if (top) x = "<?xml version=\"1.0\" encoding=\"UTF8\"?>" + x;
+
 				return x;
 			}
 			catch (e) {
