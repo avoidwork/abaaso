@@ -4136,15 +4136,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof arg !== "string" || arg.isEmpty())
 					throw Error(label.error.invalidArguments);
 
-				var xml;
+				var x;
 
 				if (client.ie) {
-					xml = new ActiveXObject("Microsoft.XMLDOM");
-					xml.async = "false";
-					xml.loadXML(arg);
+					x = new ActiveXObject("Microsoft.XMLDOM");
+					x.async = "false";
+					x.loadXML(arg);
 				}
-				else xml = new DOMParser().parseFromString(arg, "text/xml");
-				return xml;
+				else x = new DOMParser().parseFromString(arg, "text/xml");
+				return x;
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -4166,14 +4166,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				switch (true) {
 					case arg !== null && typeof arg.xml !== "undefined":
-						xml = arg.xml;
+						arg = arg.xml;
 						break;
 					case arg instanceof Document:
-						xml = (new XMLSerializer()).serializeToString(arg);
+						arg = (new XMLSerializer()).serializeToString(arg);
 						break;
 					default:
 						wrap = !(wrap === false);
-						var xml  = wrap ? "<xml>" : "",
+						var x    = wrap ? "<xml>" : "",
 						    top  = arguments[2] === false ? false : true,
 						    node, i;
 
@@ -4187,17 +4187,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							case typeof arg === "boolean":
 							case typeof arg === "number":
 							case typeof arg === "string":
-								xml += node("item", arg);
+								x += node("item", arg);
 								break
 							case typeof arg === "object":
-								utility.iterate(arg, function (v, k) { xml += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item"); });
+								utility.iterate(arg, function (v, k) { x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item"); });
 								break;
 						}
 
-						xml += wrap ? "</xml>" : "";
-						if (top) xml = "<?xml version=\"1.0\" encoding=\"UTF8\"?>" + xml;
+						x += wrap ? "</xml>" : "";
+						if (top) x = "<?xml version=\"1.0\" encoding=\"UTF8\"?>" + x;
 				}
-				return xml;
+				return x;
 			}
 			catch (e) {
 				error(e, arguments, this);
