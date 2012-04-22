@@ -180,7 +180,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		indexed : function (obj) {
 			var indexed = [];
 
-			utility.iterate(obj, function (v, k) { indexed.push(!(k instanceof Array) ? k : k.indexed()); });
+			utility.iterate(obj, function (v, k) {
+				switch (true) {
+					case obj instanceof Array && typeof obj[parseInt(k)] === "undefined":
+					case !(obj instanceof Array):
+						indexed.push(k);
+						break;
+				}
+				if (typeof v === "object") indexed = indexed.concat(array.indexed(v));
+			});
 			return indexed;
 		},
 
