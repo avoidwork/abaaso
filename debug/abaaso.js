@@ -180,15 +180,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		indexed : function (obj) {
 			var indexed = [];
 
-			utility.iterate(obj, function (v, k) {
-				switch (true) {
-					case obj instanceof Array && typeof obj[parseInt(k)] === "undefined":
-					case !(obj instanceof Array):
-						indexed.push(k);
-						break;
-				}
-				if (typeof v === "object") indexed = indexed.concat(array.indexed(v));
-			});
+			utility.iterate(obj, function (v, k) { typeof v === "object" ? indexed = indexed.concat(array.indexed(v)) : indexed.push(v); });
 			return indexed;
 		},
 
@@ -265,7 +257,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Number} Number of keys in Array
 		 */
 		total : function (obj) {
-			return obj.indexed().length;
+			return array.indexed(obj).length;
 		},
 
 		/**
