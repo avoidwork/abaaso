@@ -4371,8 +4371,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			utility.alias($, abaaso);
 			delete $.$;
 			delete $.bootstrap;
-			delete $.init;
+			delete $.callback;
 			delete $.data;
+			delete $.init;
 
 			// Unbinding observer methods to maintain scope
 			$.fire           = abaaso.fire;
