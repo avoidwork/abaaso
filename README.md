@@ -11,10 +11,6 @@ Hypermedia As The Engine Of Application State (HATEOAS) can be enabled by settin
 REST related methods: allows(), permissions() and headers()
 
 
-### API Documention
-API documentation is available at http://abaaso.com 
-
-
 ### Example
 abaaso namespace is aliased to $, to allow for a nice short syntax:
 
