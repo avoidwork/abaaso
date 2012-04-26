@@ -1124,20 +1124,26 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					if (data instanceof Array) {
 						nth = data.length;
-						data.each(function (i, idx) {
-							idx = idx.toString();
-							if (type === "set") switch (true) {
-								case typeof i === "object":
-									set(i, idx);
-									break;
-								case i.indexOf("//") === -1:
-									i = self.uri + i;
-								default:
-									i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: self.credentials});
-									break;
-							}
-							else self.del(i, false, sync);
-						});
+						switch (nth) {
+							case 0:
+								completed();
+								break;
+							default:
+								data.each(function (i, idx) {
+									idx = idx.toString();
+									if (type === "set") switch (true) {
+										case typeof i === "object":
+											set(i, idx);
+											break;
+										case i.indexOf("//") === -1:
+											i = self.uri + i;
+										default:
+											i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: self.credentials});
+											break;
+									}
+									else self.del(i, false, sync);
+								});
+						}
 					}
 					else {
 						nth = array.cast(data, true).length;
