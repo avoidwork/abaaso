@@ -1,7 +1,3 @@
-# abaaso
-
-abaaso is a RESTful JavaScript framework. Don't know REST? No problem! abaaso extends the prototypes of Array, Element, Number, and String with methods (functions) to make magic possible. Semantic classes & methods (Object Oriented Programming) strive to make anything as easy as saying it!
-
 ## What is Supported?
 
 All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
