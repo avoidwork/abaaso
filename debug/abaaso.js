@@ -444,8 +444,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		allows : function (uri, command) {
 			try {
-				if (uri.isEmpty() || command.isEmpty())
-					throw Error(label.error.invalidArguments);
+				if (uri.isEmpty() || command.isEmpty()) throw Error(label.error.invalidArguments);
 
 				if (!cache.get(uri, false)) return undefined;
 
@@ -679,8 +678,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		request : function (uri, type, success, failure, args, headers) {
 			try {
-				if (/post|put/i.test(type) && typeof args === "undefined")
-					throw Error(label.error.invalidArguments);
+				if (/post|put/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
 
 				type    = type.toLowerCase();
 				headers = headers instanceof Object ? headers : null;
@@ -763,7 +761,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 			catch (e) {
 				error(e, arguments, this);
-				uri.fire("failed" + typed);
+				uri.fire("failed" + typed, xhr);
 			}
 			return uri;
 		},
@@ -835,8 +833,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 												r = xhr.responseText;
 										}
 
-										if (typeof r === "undefined")
-											throw Error(label.error.serverError);
+										if (typeof r === "undefined") throw Error(label.error.serverError);
 
 										cache.set(uri, "response", (o.response = r));
 										break;
@@ -876,8 +873,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								throw Error(label.error.serverInvalidMethod);
 								break
 							case 0:
-								uri.fire("failed" + typed);
-								break;
 							default:
 								throw Error(label.error.serverError);
 						}
@@ -904,7 +899,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 			catch (e) {
 				error(e, arguments, this, true);
-				uri.fire("failed" + typed);
+				uri.fire("failed" + typed, xhr);
 			}
 			return uri;
 		},
@@ -1007,8 +1002,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 				}
 
-				if (isNaN(span))
-					throw Error(label.error.invalidArguments);
+				if (isNaN(span)) throw Error(label.error.invalidArguments);
 
 				expire = new Date();
 				switch (type) {
@@ -1064,8 +1058,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					type = type.toString().toLowerCase();
 					sync = (sync === true);
 
-					if (!/^(set|del)$/.test(type) || typeof data !== "object")
-						throw Error(label.error.invalidArguments);
+					if (!/^(set|del)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
 					var obj  = this.parentNode,
 					    self = this,
@@ -1223,8 +1216,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @return {Object} Data store
 			 */
 			del : function (record, reindex, sync) {
-				if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string"))
-					throw Error(label.error.invalidArguments);
+				if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string")) throw Error(label.error.invalidArguments);
 
 				reindex  = (reindex !== false);
 				sync     = (sync === true);
@@ -1280,8 +1272,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			find : function (needle, haystack) {
 				try {
-					if (typeof needle === "undefined")
-						throw Error(label.error.invalidArguments);
+					if (typeof needle === "undefined") throw Error(label.error.invalidArguments);
 
 					var h      = [],
 					    n      = typeof needle === "string" ? needle.explode() : needle,
@@ -1576,8 +1567,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			sort : function (query, create) {
 				try {
-					if (typeof query === "undefined" || String(query).isEmpty())
-						throw Error(label.error.invalidArguments);
+					if (typeof query === "undefined" || String(query).isEmpty()) throw Error(label.error.invalidArguments);
 
 					create      = (create === true);
 					var obj     = this.parentNode,
@@ -1594,8 +1584,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    order, records, value, index, registry, l, prev, x, prop;
 
 					// Malformed query
-					if (queries.last().isEmpty())
-						throw Error(label.error.invalidArguments);
+					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
@@ -1610,8 +1599,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								records = self.records.clone();
 								first   = false;
 
-								if (!records[0].data.hasOwnProperty(prop))
-									throw Error(label.error.invalidArguments);
+								if (!records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
 
 								records.each(function (rec) {
 									value = String(rec.data[prop]) + ":::" + rec.key;
@@ -1633,8 +1621,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								registry = {};
 								x        = null;
 
-								if (!records[0].data.hasOwnProperty(prop))
-										throw Error(label.error.invalidArguments);
+								if (!records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
 
 								records.each(function (rec, idx) {
 									if (x !== rec.data[prev]) x = rec.data[prev];
@@ -1679,8 +1666,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			sync : function (reindex) {
 				try {
-					if (this.uri === null || this.uri.isEmpty())
-						throw Error(label.error.invalidArguments);
+					if (this.uri === null || this.uri.isEmpty()) throw Error(label.error.invalidArguments);
 
 					reindex  = (reindex === true);
 					var self = this,
@@ -1690,8 +1676,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					success = function (arg) {
 						try {
-							if (typeof arg !== "object")
-								throw Error(label.error.expectedObject);
+							if (typeof arg !== "object") throw Error(label.error.expectedObject);
 
 							var data, found = false, guid = utility.genId(true);
 
@@ -1755,8 +1740,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					getter : function () { return this._expires; },
 					setter : function (arg) {
 						try {
-							if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean")))
-								throw Error(label.error.invalidArguments);
+							if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean"))) throw Error(label.error.invalidArguments);
 
 							if (this._expires === arg) return;
 							this._expires = arg;
@@ -1780,8 +1764,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					getter : function () { return this._uri; },
 					setter : function (arg) {
 						try {
-							if (arg !== null && arg.isEmpty())
-								throw Error(label.error.invalidArguments);
+							if (arg !== null && arg.isEmpty()) throw Error(label.error.invalidArguments);
 
 							switch (true) {
 								case this._uri === arg:
@@ -1921,8 +1904,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.attr(key, value);
 
-				if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty())
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
 				switch (true) {
 					case /checked|disabled/.test(key) && typeof value === "undefined":
@@ -1973,8 +1955,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.clear(i); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeClear");
 				switch (true) {
@@ -2013,8 +1994,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		create : function (type, args, target, pos) {
 			try {
-				if (typeof type === "undefined" || String(type).isEmpty())
-					throw Error(label.error.invalidArguments);
+				if (typeof type === "undefined" || String(type).isEmpty()) throw Error(label.error.invalidArguments);
 
 				var obj, uid;
 
@@ -2029,8 +2009,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						target = document.body;
 				}
 
-				if (typeof target === "undefined")
-					throw Error(label.error.invalidArguments);
+				if (typeof target === "undefined") throw Error(label.error.invalidArguments);
 
 				uid = typeof args !== "undefined"
 				       && typeof args !== "string"
@@ -2116,8 +2095,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					return [];
 				}
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				$.fire("beforeDestroy", obj);
 				obj.fire("beforeDestroy");
@@ -2147,8 +2125,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.disable(i); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				if (typeof obj.disabled === "boolean" && !obj.disabled) {
 					obj.fire("beforeDisable");
@@ -2178,8 +2155,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.enable(i); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				if (typeof obj.disabled === "boolean" && obj.disabled) {
 					obj.fire("beforeEnable");
@@ -2206,8 +2182,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.hide(i); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				return obj.className.explode(" ").index(klass) > -1;
 			}
@@ -2232,8 +2207,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.hide(i); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeHide");
 				switch (true) {
@@ -2264,8 +2238,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			try {
 				obj = utility.object(obj);
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
 			}
@@ -2292,8 +2265,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.klass(i, arg, add); });
 
-				if (!(obj instanceof Element) || String(arg).isEmpty())
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
 				add = (add !== false);
 				obj.fire("beforeClassChange");
@@ -2335,8 +2307,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.position();
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				var left, top, height, width;
 
@@ -2379,8 +2350,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			try {
 				obj = utility.object(obj);
 
-				if (!(obj instanceof Element) || !(child instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element) || !(child instanceof Element)) throw Error(label.error.invalidArguments);
 				
 				return obj.childNodes.length === 0 ? obj.appendChild(child) : obj.insertBefore(child, obj.childNodes[0]);
 			}
@@ -2405,8 +2375,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.show(i); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeShow");
 				switch (true) {
@@ -2441,8 +2410,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					return result;
 				}
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				/**
 				 * Casts n to a number or returns zero
@@ -2483,8 +2451,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (obj instanceof Array) return obj.each(function (i) { el.update(i, args); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeUpdate");
 
@@ -2532,8 +2499,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { el.val(i, value); });
 
-				if (!(obj instanceof Element))
-					throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				switch (true) {
 					case typeof value === "undefined":
@@ -2831,8 +2797,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		diff : function (arg) {
 			try {
-				if (typeof arg !== "number" || typeof this !== "number")
-					throw Error(label.error.expectedNumber);
+				if (typeof arg !== "number" || typeof this !== "number") throw Error(label.error.expectedNumber);
 
 				return Math.abs(this - arg);
 			}
@@ -2853,8 +2818,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		format : function (arg, delimiter, every) {
 			try {
-				if (typeof arg !== "number")
-					throw Error(label.error.expectedNumber);
+				if (typeof arg !== "number") throw Error(label.error.expectedNumber);
 
 				arg       = arg.toString();
 				delimiter = delimiter || ",";
@@ -2945,8 +2909,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    n = false,
 				    item, add, reg;
 
-				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function")
-					throw Error(label.error.invalidArguments);
+				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 				if (typeof l[o] === "undefined")                      l[o]               = {};
 				if (typeof l[o][event] === "undefined" && (n = true)) l[o][event]        = {};
@@ -3037,8 +3000,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    a = arg,
 				    c, l;
 
-				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined")
-						throw Error(label.error.invalidArguments);
+				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
@@ -3401,8 +3363,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		extend : function (obj, arg) {
 			try {
-				if (typeof obj === "undefined")
-					throw Error(label.error.invalidArguments);
+				if (typeof obj === "undefined") throw Error(label.error.invalidArguments);
 
 				if (typeof arg === "undefined") arg = {};
 
@@ -3501,11 +3462,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) return obj.each(function (i) { utility.loading(i); });
 
-				if (l.url === null)
-					throw Error(label.error.elementNotFound);
+				if (l.url === null) throw Error(label.error.elementNotFound);
 
-				if (typeof obj === "undefined")
-					throw Error(label.error.invalidArguments);
+				if (typeof obj === "undefined") throw Error(label.error.invalidArguments);
 
 				// Setting loading image
 				if (typeof l.image === "undefined") {
@@ -3569,8 +3528,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		module : function (arg, obj) {
 			try {
-				if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object)
-					throw Error(label.error.invalidArguments);
+				if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object) throw Error(label.error.invalidArguments);
 				
 				abaaso[arg] = obj;
 				$[arg] = {};
@@ -4298,8 +4256,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof Array.prototype.filter === "undefined") {
 				Array.prototype.filter = function (fn) {
 					"use strict";
-					if (this === void 0 || this === null || typeof fn !== "function")
-						throw Error(label.error.invalidArguments);
+
+					if (this === void 0 || this === null || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 					var i      = null,
 						t      = Object(this),
@@ -4433,8 +4391,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			getter = function () { return this._current; };
 			setter = function (arg) {
 				try {
-					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty())
-							throw Error(label.error.invalidArguments);
+					if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty()) throw Error(label.error.invalidArguments);
 
 					abaaso.state.previous = abaaso.state._current;
 					abaaso.state._current = arg;
