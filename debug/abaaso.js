@@ -3626,7 +3626,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           get      : function (uri, headers) { this.each(function (i) { if (typeof i.get === "function") i.get(uri, headers); }); return []; },
 				           hasClass : function (arg) { var a = []; this.each(function (i) { if (typeof i.hasClass === "function") a.push(i.hasClass(arg)); }); return a; },
 				           hide     : function () { return this.each(function (i){ if (typeof i.hide === "function") i.hide(); }); },
-				           html     : function (arg) { return this.each(function (i){ if (typeof i.html === "function") i.html(arg); }); },
+				           html     : function (arg) {
+				           		if (typeof arg !== "undefined") return this.each(function (i){ if (typeof i.html === "function") i.html(arg); });
+				           		else {
+				           			var a = []; this.each(function (i) { if (typeof i.html === "function") a.push(i.html()); }); return a;
+				           		}
+				           },
 				           index    : function (arg) { return array.index(this, arg); },
 				           indexed  : function () { return array.indexed(this); },
 				           intersect: function (arg) { return array.intersect(this, arg); },
