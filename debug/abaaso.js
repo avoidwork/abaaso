@@ -47,6 +47,7 @@
  * @version 1.9.95
  */
 (function (global) {
+"use strict";
 
 var document  = global.document,
     location  = global.location,
@@ -54,8 +55,6 @@ var document  = global.document,
 
 if (typeof global.$ === "undefined")      global.$      = null;
 if (typeof global.abaaso === "undefined") global.abaaso = (function () {
-	"use strict";
-
 	var $, array, cache, client, cookie, data, el, json, label,
 	    message, mouse, number, observer, utility, validate, xml, error;
 
