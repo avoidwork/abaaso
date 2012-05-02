@@ -3623,6 +3623,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           each     : function (arg) { return array.each(this, arg); },
 				           enable   : function () { return this.each(function (i) { if (typeof i.enable === "function") i.enable(); }); },
 				           first    : function () { return array.first(this); },
+				           get      : function (uri, headers) { this.each(function (i) { if (typeof i.get === "function") i.get(uri, headers); }); return []; },
 				           hasClass : function (arg) { var a = []; this.each(function (i) { if (typeof i.hasClass === "function") a.push(i.hasClass(arg)); }); return a; },
 				           hide     : function () { return this.each(function (i){ if (typeof i.hide === "function") i.hide(); }); },
 				           html     : function (arg) { return this.each(function (i){ if (typeof i.html === "function") i.html(arg); }); },
