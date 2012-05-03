@@ -3340,6 +3340,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					message   : typeof e.message !== "undefined" ? e.message : e,
 					number    : typeof e.number !== "undefined" ? (e.number & 0xFFFF) : undefined,
 					scope     : scope,
+					stack     : typeof e.stack === "string" ? e.stack : undefined,
 					timestamp : new Date().toUTCString(),
 					type      : typeof e.type !== "undefined" ? e.type : "TypeError"
 				};
