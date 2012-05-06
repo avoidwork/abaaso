@@ -225,6 +225,22 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Returns a range of indices from the Array
+		 * 
+		 * @param  {Array}  obj   Array to iterate
+		 * @param  {Number} start Starting index
+		 * @param  {Number} end   Ending index
+		 * @return {Array}       Array of indices
+		 */
+		range : function (obj, start, end) {
+			var result = [],
+			    i;
+
+			for (i = start; i <= end; i++) result.push(obj[i]);
+			return result;
+		},
+
+		/**
 		 * Removes indices from an Array without recreating it
 		 *
 		 * @method remove
@@ -3612,7 +3628,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { if (typeof i.on === "function") i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           position : function () { var a = []; this.each(function (i) { if (typeof i.position === "function") a.push(i.position()); }); return a; },
 				           prepend  : function (type, args) { var a = []; this.each(function (i) { if (typeof i.prepend === "function") a.push(i.prepend(type, args)); }); return a; },
-				           range    : function (start, end) { var a = [], i; for (i = start; i <= end; i++) a.push(this[i]); return a; },
+				           range    : function (start, end) { return array.range(this, start, end); },
 				           remove   : function (start, end) { return array.remove(this, start, end); },
 				           removeClass: function (arg) { return this.each(function (i) { if (typeof i.removeClass === "function") i.removeClass(arg); }); },
 				           show     : function () { return this.each(function (i){ if (typeof i.show === "function") i.show(); }); },
