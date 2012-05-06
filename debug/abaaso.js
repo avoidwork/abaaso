@@ -55,8 +55,8 @@ var document  = global.document,
 
 if (typeof global.$ === "undefined")      global.$      = null;
 if (typeof global.abaaso === "undefined") global.abaaso = (function () {
-	var $, array, cache, client, cookie, data, el, json, label,
-	    message, mouse, number, observer, utility, validate, xml, error;
+	var $, array, cache, client, cookie, data, element, json, label,
+	    message, mouse, number, observer, string, utility, validate, xml, error;
 
 	/**
 	 * Array methods
@@ -1421,7 +1421,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					};
 
 					this.parentNode.fire("beforeDataForm");
-					obj = el.create("form", {style: "display:none;"}, target);
+					obj = element.create("form", {style: "display:none;"}, target);
 					structure(data, obj, entity);
 					obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
 					obj.create("input", {type: "reset", value: label.common.reset});
@@ -1885,7 +1885,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	 * @class el
 	 * @namespace abaaso
 	 */
-	el = {
+	element = {
 		/**
 		 * Gets or sets attributes of Element
 		 * 
@@ -1952,7 +1952,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		clear : function (obj) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.clear(i); });
+				if (obj instanceof Array) return obj.each(function (i) { element.clear(i); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2067,7 +2067,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		css : function (content) {
 			var ss, css;
-			ss = $.create("style", {type: "text/css"}, $("head")[0]);
+			ss = $("head").first().create("style", {type: "text/css"});
 			if (ss.styleSheet) ss.styleSheet.cssText = content;
 			else {
 				css = document.createTextNode(content);
@@ -2090,7 +2090,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			try {
 				obj = utility.object(obj);
 				if (obj instanceof Array) {
-					obj.each(function (i) { el.destroy(i); });
+					obj.each(function (i) { element.destroy(i); });
 					return [];
 				}
 
@@ -2122,7 +2122,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		disable : function (obj) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.disable(i); });
+				if (obj instanceof Array) return obj.each(function (i) { element.disable(i); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2152,7 +2152,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		enable : function (obj) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.enable(i); });
+				if (obj instanceof Array) return obj.each(function (i) { element.enable(i); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2179,7 +2179,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		hasClass : function (obj, klass) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.hide(i); });
+				if (obj instanceof Array) return obj.each(function (i) { element.hide(i); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2204,7 +2204,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		hide : function (obj) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.hide(i); });
+				if (obj instanceof Array) return obj.each(function (i) { element.hide(i); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2262,7 +2262,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		klass : function (obj, arg, add) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.klass(i, arg, add); });
+				if (obj instanceof Array) return obj.each(function (i) { element.klass(i, arg, add); });
 
 				if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
@@ -2372,7 +2372,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		show : function (obj) {
 			try {
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.show(i); });
+				if (obj instanceof Array) return obj.each(function (i) { element.show(i); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2405,7 +2405,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj = utility.object(obj);
 				if (obj instanceof Array) {
 					var result = [];
-					obj.each(function (i) { result.push(el.size(i)); });
+					obj.each(function (i) { result.push(element.size(i)); });
 					return result;
 				}
 
@@ -2448,7 +2448,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj  = utility.object(obj);
 				args = args || {};
 
-				if (obj instanceof Array) return obj.each(function (i) { el.update(i, args); });
+				if (obj instanceof Array) return obj.each(function (i) { element.update(i, args); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -2496,7 +2496,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				var output = null, items;
 
 				obj = utility.object(obj);
-				if (obj instanceof Array) return obj.each(function (i) { el.val(i, value); });
+				if (obj instanceof Array) return obj.each(function (i) { element.val(i, value); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
@@ -3627,7 +3627,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           total    : function () { return array.total(this); },
 				           toObject : function () { return array.toObject(this); },
 				           un       : function (event, id, state) { return this.each(function (i) { if (typeof i.un === "function") i.un(event, id, state); }); },
-				           update   : function (arg) { return this.each(function (i) { el.update(i, arg); }); },
+				           update   : function (arg) { return this.each(function (i) { element.update(i, arg); }); },
 				           val      : function (arg) {
 				           		var a    = [],
 				           		    type = null,
@@ -3643,31 +3643,31 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           validate : function () { var a = []; this.each(function (i) { if (typeof i.validate === "function") a.push(i.validate()); }); return a; }},
 				element : {addClass : function (arg) {
 				           		this.genId();
-				           		return el.klass(this, arg, true);
+				           		return element.klass(this, arg, true);
 				           },
 				           after    : function (type, args) {
 				           		this.genId();
-				           		return el.create(type, args, this, "after");
+				           		return element.create(type, args, this, "after");
 				           },
 				           append   : function (type, args) {
 				           		this.genId();
-				           		return el.create(type, args, this, "last");
+				           		return element.create(type, args, this, "last");
 				           },
 				           attr     : function (key, value) {
 				           		this.genId();
-				           		return el.attr(this, key, value);
+				           		return element.attr(this, key, value);
 				           },
 				           before   : function (type, args) {
 				           		this.genId();
-				           		return el.create(type, args, this, "before");
+				           		return element.create(type, args, this, "before");
 				           },
 				           clear    : function () {
 				           		this.genId();
-				           		return el.clear(this);
+				           		return element.clear(this);
 				           },
 				           create   : function (type, args, position) {
 				           		this.genId();
-				           		return el.create(type, args, this, position);
+				           		return element.create(type, args, this, position);
 				           },
 				           css       : function (key, value) {
 				           		var i;
@@ -3679,9 +3679,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		this.style[key] = value;
 				           		return this;
 				           },
-				           destroy   : function () { return el.destroy(this); },
-				           disable   : function () { return el.disable(this); },
-				           enable    : function () { return el.enable(this); },
+				           destroy   : function () { return element.destroy(this); },
+				           disable   : function () { return element.disable(this); },
+				           enable    : function () { return element.enable(this); },
 				           get       : function (uri, headers) {
 				           		this.fire("beforeGet");
 				           		var cached = cache.get(uri),
@@ -3695,11 +3695,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           hasClass : function (arg) {
 				           		this.genId();
-				           		return el.hasClass(this, arg);
+				           		return element.hasClass(this, arg);
 				           },
 				           hide     : function () {
 				           		this.genId();
-				           		return el.hide(this);
+				           		return element.hide(this);
 				           },
 				           html     : function (arg) {
 				           		this.genId();
@@ -3715,7 +3715,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
 				           isHidden : function (arg) {
 				           		this.genId();
-				           		return el.hidden(this);
+				           		return element.hidden(this);
 				           },
 				           isIP     : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
 				           isInt    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : this.innerText.isInt(); },
@@ -3760,27 +3760,27 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           prepend  : function (type, args) {
 				           		this.genId();
-				           		return el.create(type, args, this, "first");
+				           		return element.create(type, args, this, "first");
 				           },
 				           prependChild: function (child) {
 				           		this.genId();
-				           		return el.prependChild(this, child);
+				           		return element.prependChild(this, child);
 				           },
 				           position : function () {
 				           		this.genId();
-				           		return el.position(this);
+				           		return element.position(this);
 				           },
 				           removeClass : function (arg) {
 				           		this.genId();
-				           		return el.klass(this, arg, false);
+				           		return element.klass(this, arg, false);
 				           },
 				           show     : function () {
 				           		this.genId();
-				           		return el.show(this);
+				           		return element.show(this);
 				           },
 				           size     : function () {
 				           		this.genId();
-				           		return el.size(this);
+				           		return element.size(this);
 				           },
 				           text     : function (arg) {
 				           		var args = {};
@@ -3797,11 +3797,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           update   : function (args) {
 				           		this.genId();
-				           		return el.update(this, args);
+				           		return element.update(this, args);
 				           },
 				           val      : function (arg) {
 				           		this.genId();
-				           		return el.val(this, arg);
+				           		return element.val(this, arg);
 				           },
 				           validate : function () { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
 				"function": {reflect: function () { return utility.reflect(this); }},
@@ -3971,17 +3971,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				switch (true) {
 					case arg instanceof Array:
-						arg.each(function (i, idx) { el.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
+						arg.each(function (i, idx) { element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
 						break;
 					default:
 						utility.iterate(arg, function (i, k) {
 							switch (true) {
 								case typeof i === "string":
-									el.create(k, frag).html(i);
+									element.create(k, frag).html(i);
 									break;
 								case i instanceof Array:
 								case i instanceof Object:
-									utility.tpl(i, el.create(k, frag));
+									utility.tpl(i, element.create(k, frag));
 									break;
 							}
 						});
@@ -4207,7 +4207,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 		cookie          : cookie,
 		data            : data,
-		el              : el,
+		element         : element,
 		json            : json,
 		label           : label,
 		loading         : {
@@ -4240,7 +4240,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		allows          : client.allows,
 		append          : function (type, args, obj) {
 			if (obj instanceof Element) obj.genId();
-			return el.create(type, args, obj, "last");
+			return element.create(type, args, obj, "last");
 		},
 		bootstrap       : function () {
 			var fn = function (e) {
@@ -4381,9 +4381,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			// Setting events & garbage collection
 			if (!client.server) {
-				$.on(global, "hashchange", function () { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
-				$.on(global, "resize",     function () { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
-				$.on(global, "load",       function () { $.fire("render").un("render"); });
+				$.on(global, "error",      function (e) { $.fire("error", e); });
+				$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
+				$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+				$.on(global, "load",       function ()  { $.fire("render").un("render"); });
 			}
 
 			// abaaso.state.current getter/setter
@@ -4441,15 +4442,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					abaaso.timer.init = setInterval(fn, 10);
 			}
 		},
-		clear           : el.clear,
+		clear           : element.clear,
 		clone           : utility.clone,
-		create          : el.create,
-		css             : el.css,
+		create          : element.create,
+		css             : element.css,
 		decode          : json.decode,
 		defer           : utility.defer,
 		define          : utility.define,
 		del             : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
-		destroy         : el.destroy,
+		destroy         : element.destroy,
 		encode          : json.encode,
 		error           : utility.error,
 		expire          : cache.clean,
@@ -4470,7 +4471,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
  		get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
 		guid            : utility.guid,
 		headers         : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
-		hidden          : el.hidden,
+		hidden          : element.hidden,
 		id              : "abaaso",
 		init            : function () {
 			// Stopping multiple executions
@@ -4519,11 +4520,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 		options         : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 		permissions     : client.permissions,
-		position        : el.position,
+		position        : element.position,
 		post            : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
 		prepend         : function (type, args, obj) {
 			if (obj instanceof Element) obj.genId();
-			return el.create(type, args, obj, "first");
+			return element.create(type, args, obj, "first");
 		},
 		put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 		queryString     : utility.queryString,
@@ -4546,7 +4547,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof o === "undefined" || o === $) o = abaaso;
 			return observer.remove.call(observer, o, e, i, s);
 		},
-		update          : el.update,
+		update          : element.update,
 		version         : "1.9.95"
 	};
 })();
