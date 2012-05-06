@@ -3820,7 +3820,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		this.genId();
 				           		return $.listeners.call(this, event);
 				           }},
-				string  : {allows   : function (arg) { return $.allows(this, arg); },
+				string  : {allows   : function (arg) { return client.allows(this, arg); },
 				           capitalize: function () { return this.charAt(0).toUpperCase() + this.slice(1); },
 				           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
 				           explode  : function (arg) { if (typeof arg === "undefined" || arg.toString() === "") arg = ","; return this.split(new RegExp("\\s*" + arg + "\\s*")); },
@@ -3842,7 +3842,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
-				           permissions: function () { return $.permissions(this); },
+				           permissions: function () { return client.permissions(this); },
 				           toCamelCase: function () {
 				           		var s = this.toLowerCase().split(" "),
 				           		    r = "",
