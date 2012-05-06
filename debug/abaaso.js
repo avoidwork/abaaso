@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 1.9.95
+ * @version 2.0.0
  */
 (function (global) {
 "use strict";
@@ -3117,6 +3117,66 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	};
 
 	/**
+	 * String methods
+	 * 
+	 * @class string
+	 * @namespace abaaso
+	 */
+	string = {
+		/**
+		 * Capitalizes the String
+		 * 
+		 * @param  {String} obj String to capitalize
+		 * @return {String} Capitalized String
+		 */
+		capitalize : function (obj) {
+			return obj.charAt(0).toUpperCase() + obj.slice(1);
+		},
+
+		/**
+		 * Splits a string on comma, or a parameter, and trims each value in the resulting Array
+		 * 
+		 * @param  {String} obj String to capitalize
+		 * @param  {String} arg String to split on
+		 * @return {Array} Array of the exploded String
+		 */
+		explode : function (obj, arg) {
+			if (typeof arg === "undefined" || arg.toString() === "") arg = ",";
+			return obj.split(new RegExp("\\s*" + arg + "\\s*"));
+		},
+
+		/**
+		 * Transforms the case of a String into CamelCase
+		 * 
+		 * @param  {String} obj String to capitalize
+		 * @return {String} Camel case String
+		 */
+		toCamelCase : function (obj) {
+			var s = obj.toLowerCase().split(" "),
+			    r = [],
+			    x = 0,
+			    i, nth;
+
+			s.each(function (i, idx) {
+				i = i.trim();
+				if (i.isEmpty()) return;
+				r.push(x++ === 0 ? i : i.capitalize());
+			});
+			return r.join("");
+		},
+
+		/**
+		 * Trims the whitespace around a String
+		 * 
+		 * @param  {String} obj String to capitalize
+		 * @return {String} Trimmed String
+		 */
+		trim : function (obj) {
+			return obj.replace(/^\s+|\s+$/g, "");
+		}
+	};
+
+	/**
 	 * Utility methods
 	 *
 	 * @class utility
@@ -3837,9 +3897,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		return $.listeners.call(this, event);
 				           }},
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
-				           capitalize: function () { return this.charAt(0).toUpperCase() + this.slice(1); },
+				           capitalize: function () { return string.capitalize(this); },
 				           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
-				           explode  : function (arg) { if (typeof arg === "undefined" || arg.toString() === "") arg = ","; return this.split(new RegExp("\\s*" + arg + "\\s*")); },
+				           explode  : function (arg) { return string.explode(this, arg); },
 				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 				           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
 				           isBoolean: function () { return validate.test({"boolean": this}).pass; },
@@ -3859,15 +3919,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function () { return client.permissions(this); },
-				           toCamelCase: function () {
-				           		var s = this.toLowerCase().split(" "),
-				           		    r = "",
-				           		    i, nth;
-
-				           		for (i = 0, nth = s.length; i < nth; i++) { r += i === 0 ? s[i] : String(s[i]).capitalize(); }
-				           		return r.replace(/\W/g, "");
-				           },
-				           trim     : function () { return this.replace(/^\s+|\s+$/g, ""); },
+				           toCamelCase: function () { return string.toCamelCase(this); },
+				           trim     : function () { return string.trim(this); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
 			},
 			define = ((!client.ie || client.version > 8) && typeof Object.defineProperty === "function"),
@@ -4026,7 +4079,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			"boolean": /^(0|1|true|false)?$/,
 			domain   : /^[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/,
 			email    : /[a-zA-Z0-9.!#$%&'*+-/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*/,
-			ip       : /^((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.) {3}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})$/,
+			ip       : /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
 			integer  : /(^-?\d\d*$)/,
 			notEmpty : /\w{1,}/,
 			number   : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)/,
@@ -4246,6 +4299,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			header      : null,
 			previous    : null
 		},
+		string          : string,
 		validate        : validate,
 		xml             : xml,
 
@@ -4564,7 +4618,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "1.9.95"
+		version         : "2.0.0"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
