@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.0
+ * @version 2.0.1
  */
 (function (global) {
 "use strict";
@@ -3060,11 +3060,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Removes an event listener, or Array of event listeners
+		 * Removes listeners
 		 *
 		 * @method remove
 		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
-		 * @param  {String} event Event being fired
+		 * @param  {String} event [Optional] Event being fired
 		 * @param  {String} id    [Optional] Listener id
 		 * @param  {String} state [Optional] The state the listener is for
 		 * @return {Mixed}  Entity, Array of Entities or undefined
@@ -3081,13 +3081,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			switch (true) {
 				case typeof o === "undefined":
-				case typeof event === "undefined":
 				case typeof l[o] === "undefined":
-				case typeof l[o][event] === "undefined":
+				case typeof event !== "undefined" && typeof l[o][event] === "undefined":
 					return obj;
 			}
 
-			typeof id === "undefined" ? l[o][event][state] = {} : delete l[o][event][state][id];
+			if (typeof event === "undefined") delete l[o];
+			else typeof id === "undefined" ? l[o][event][state] = {} : delete l[o][event][state][id];
 
 			return obj;
 		},
@@ -4455,6 +4455,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
 				$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
 				$.on(global, "load",       function ()  { $.fire("render").un("render"); });
+				$.on(global, "DOMNodeRemoved", function (e) {
+					var id = e.target.id;
+					if (typeof id !== "undefined" && !id.isEmpty()) observer.remove(e.target);
+				});
 			}
 
 			// abaaso.state.current getter/setter
@@ -4618,7 +4622,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.0"
+		version         : "2.0.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
