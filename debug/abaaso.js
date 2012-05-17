@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.1
+ * @version 2.0.2
  */
 (function (global) {
 "use strict";
@@ -1236,9 +1236,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				reindex  = (reindex !== false);
 				sync     = (sync === true);
 				var obj  = this.parentNode,
-				    p    = {},
 				    r    = /true|undefined/,
-				    key, args, uri;
+				    key, args, uri, p;
 
 				switch (typeof record) {
 					case "string":
@@ -1256,9 +1255,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				args   = {key: key, record: record, reindex: reindex};
 
 				if (this.uri !== null) {
-					uri    = this.uri + "/" + key;
-					p.uri  = uri.allows("delete");
-					p.data = this.uri.allows("delete");
+					uri = this.uri + "/" + key;
+					p   = uri.allows("delete");
 				}
 
 				obj.fire("beforeDataDelete", args);
@@ -1268,7 +1266,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case this.uri === null:
 						obj.fire("syncDataDelete", args);
 						break;
-					case r.test(p.data) && r.test(p.uri):
+					case r.test(p):
 						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, {Accept: "application/json", widthCredentials: this.credentials});
 						break;
 					default:
@@ -1546,15 +1544,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    method = typeof key === "undefined" ? "post" : "put",
 				    args   = {data: data, key: key, record: undefined},
 				    uri    = this.uri === null ? null : this.uri + "/" + key,
-				    p      = {},
-				    r      = /true|undefined/;
+				    r      = /true|undefined/,
+				    p;
 
 				if (typeof record !== "undefined") args.record = this.records[this.keys[record.key].index];
 
-				if (uri !== null) {
-					p.uri  = uri.allows(method);
-					p.data = this.uri.allows(method);
-				}
+				if (uri !== null) p = uri.allows(method);
 
 				obj.fire("beforeDataSet");
 				switch (true) {
@@ -1563,7 +1558,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case this.uri === null:
 						obj.fire("syncDataSet", args);
 						break;
-					case r.test(p.data) && r.test(p.uri):
+					case r.test(p):
 						uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function () { obj.fire("failedDataSet"); }, data);
 						break;
 					default:
@@ -4622,7 +4617,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.1"
+		version         : "2.0.2"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
