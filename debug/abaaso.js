@@ -3161,6 +3161,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Replaces all spaces in a string with dashes
+		 * 
+		 * @param  {String} obj String to hyphenate
+		 * @return {String} String with dashes instead of spaces
+		 */
+		hyphenate : function (obj) {
+			return obj.replace(/\s+/g, '-');
+		},
+
+		/**
 		 * Trims the whitespace around a String
 		 * 
 		 * @param  {String} obj String to capitalize
@@ -3915,6 +3925,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function () { return client.permissions(this); },
 				           toCamelCase: function () { return string.toCamelCase(this); },
+				           hyphenate: function () { return string.hyphenate(this); },
 				           trim     : function () { return string.trim(this); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
 			},
