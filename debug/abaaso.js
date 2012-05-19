@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.2
+ * @version 2.0.3
  */
 (function (global) {
 "use strict";
@@ -3125,6 +3125,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {String} Capitalized String
 		 */
 		capitalize : function (obj) {
+			obj = string.trim(obj);
 			return obj.charAt(0).toUpperCase() + obj.slice(1);
 		},
 
@@ -3137,27 +3138,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		explode : function (obj, arg) {
 			if (typeof arg === "undefined" || arg.toString() === "") arg = ",";
-			return obj.split(new RegExp("\\s*" + arg + "\\s*"));
-		},
-
-		/**
-		 * Transforms the case of a String into CamelCase
-		 * 
-		 * @param  {String} obj String to capitalize
-		 * @return {String} Camel case String
-		 */
-		toCamelCase : function (obj) {
-			var s = obj.toLowerCase().split(" "),
-			    r = [],
-			    x = 0,
-			    i, nth;
-
-			s.each(function (i, idx) {
-				i = i.trim();
-				if (i.isEmpty()) return;
-				r.push(x++ === 0 ? i : i.capitalize());
-			});
-			return r.join("");
+			return string.trim(obj).split(new RegExp("\\s*" + arg + "\\s*"));
 		},
 
 		/**
@@ -3167,7 +3148,27 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {String} String with dashes instead of spaces
 		 */
 		hyphenate : function (obj) {
-			return obj.replace(/\s+/g, '-');
+			return string.trim(obj).replace(/\s+/g, "-");
+		},
+
+		/**
+		 * Transforms the case of a String into CamelCase
+		 * 
+		 * @param  {String} obj String to capitalize
+		 * @return {String} Camel case String
+		 */
+		toCamelCase : function (obj) {
+			var s = string.trim(obj).toLowerCase().split(" "),
+			    r = [],
+			    x = 0,
+			    i, nth;
+
+			s.each(function (i) {
+				i = string.trim(i);
+				if (i.isEmpty()) return;
+				r.push(x++ === 0 ? i : string.capitalize(i));
+			});
+			return r.join("");
 		},
 
 		/**
@@ -4628,7 +4629,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.2"
+		version         : "2.0.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
