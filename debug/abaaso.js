@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.3
+ * @version 2.0.4
  */
 (function (global) {
 "use strict";
@@ -1591,7 +1591,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    result  = [],
 					    results = [],
 					    nil     = /^null/,
-					    order, records, value, index, registry, l, prev, x, prop;
+					    key     = this.key,
+					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev;
 
 					// Malformed query
 					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
@@ -1600,19 +1601,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (this.total === 0) return this.records;
 
 					queries.each(function (query) {
-						query = query.replace(asc, "");
-						prop  = query.replace(desc, "");
-						order = [];
+						query   = query.replace(asc, "");
+						prop    = query.replace(desc, "");
+						order   = [];
+						records = first ? self.records.clone() : result.clone();
+
+						if (key !== prop && !records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
  
 						switch (first) {
 							case true:
-								records = self.records.clone();
-								first   = false;
-
-								if (!records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
+								first = false;
 
 								records.each(function (rec) {
-									value = String(rec.data[prop]) + ":::" + rec.key;
+									valCurrent = key === prop ? rec.key : rec.data[prop];
+									value      = String(valCurrent).trim() + ":::" + rec.key;
 									order.push(value.replace(nil, "\"\""));
 								});
 
@@ -1625,22 +1627,22 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								});
 								break;
 							default:
-								records  = result.clone();
 								result   = [];
 								order    = [];
 								registry = {};
 								x        = null;
 
-								if (!records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
-
 								records.each(function (rec, idx) {
-									if (x !== rec.data[prev]) x = rec.data[prev];
+									valCurrent = key === prop ? rec.key : rec.data[prop];
+									valPrev    = key === prev ? rec.key : rec.data[prev];
+
+									if (x !== valPrev) x = valPrev;
 									l = x === null ? "null" : String(x).charAt(0).toLowerCase();
 									if (!(registry[l] instanceof Array)) {
 										registry[l] = [];
 										order.push(l);
 									}
-									value = String(rec.data[prop]).trim() + ":::" + idx;
+									value = String(valCurrent).trim() + ":::" + idx;
 									registry[l].push(value.replace(nil, "\"\""));
 								});
 
@@ -4629,7 +4631,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.3"
+		version         : "2.0.4"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
