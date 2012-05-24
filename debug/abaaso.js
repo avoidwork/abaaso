@@ -3341,13 +3341,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			value = value || null;
 			if (typeof obj === "undefined" || obj === $) obj = abaaso;
 
-			var p = obj,
-			    n = args.length;
+			var p   = obj,
+			    nth = args.length;
 
-			args.each(function (i) {
-				var idx = args.index(i),
-				    nth = n,
-				    num = idx + 1 < nth && !isNaN(parseInt(args[idx + 1])),
+			args.each(function (i, idx) {
+				var num = idx + 1 < nth && !isNaN(parseInt(args[idx + 1])),
 				    val = value;
 
 				if (!isNaN(parseInt(i))) i = parseInt(i);
@@ -3360,6 +3358,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case p[i] instanceof Object && num:
 						p[i] = array.cast(p[i]);
 						break;
+					case p[i] instanceof Object:
+						break;
 					case p[i] instanceof Array && !num:
 						p[i] = p[i].toObject();
 						break;
@@ -3368,13 +3368,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 
 				// Setting reference or value
-				switch (true) {
-					case idx + 1 === nth:
-						p[i] = val;
-						break;
-					default:
-						p = p[i];
-				}
+				idx + 1 === nth ? p[i] = val : p = p[i];
 			});
 
 			return obj;
