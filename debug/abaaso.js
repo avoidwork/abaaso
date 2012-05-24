@@ -1372,8 +1372,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					data = record.data;
 
 					if (typeof target !== "undefined") target = utility.object(target);
-					entity = this.uri.replace(/.*\//, "").replace(/\?.*/, "")
-					if (entity.isDomain()) entity = entity.replace(/\..*/g, "");
+					if (this.uri !== null) {
+						entity = this.uri.replace(/.*\//, "").replace(/\?.*/, "")
+						if (entity.isDomain()) entity = entity.replace(/\..*/g, "");
+					}
+					else entity = "record";
 
 					/**
 					 * Button handler
@@ -1398,7 +1401,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								self.parentNode.fire("failedDataFormSubmit");
 								break;
 							case true:
-								nodes.each(function (i) { utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData); });
+								nodes.each(function (i) {
+									if (typeof i.type !== "undefined" && /button|submit|reset/.test(i.type)) return;
+									utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
+								});
 								self.set(key, newData[entity]);
 								break;
 						}
@@ -2530,6 +2536,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						}
 						break;
 					default:
+						value = String(value);
 						switch (true) {
 							case (/radio|checkbox/gi.test(obj.type)):
 								items = $("input[name='" + obj.name + "']");
