@@ -2942,7 +2942,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
 							if (!e) e = global.event;
-							$.log(e.type);
 							if (!/click|dragstart|drop|mousedown|mouseup/.test(e.type) && e.type.indexOf("key")) {
 								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 								if (typeof e.preventDefault === "function")  e.preventDefault();
