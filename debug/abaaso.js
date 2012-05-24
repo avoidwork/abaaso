@@ -2279,21 +2279,25 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
-				add = (add !== false);
 				obj.fire("beforeClassChange");
+
+				add = (add !== false);
+				arg = arg.explode();
 
 				var classes = obj.className.split(" "),
 				    nth     = classes.length,
 				    i;
 
-				switch (true) {
-					case add:
-						if (classes.index(arg) < 0) classes.push(arg);
-						break;
-					case !add:
-						arg === "*" ? classes = [] : classes.remove(arg);
-						break;
-				}
+				arg.each(function (i) {
+					switch (true) {
+						case add:
+							if (classes.index(i) < 0) classes.push(i);
+							break;
+						case !add:
+							arg === "*" ? classes = [] : classes.remove(i);
+							break;
+					}
+				});
 
 				classes = classes.join(" ");
 				client.ie && client.version < 9 ? obj.className = classes : obj.attr("class", classes);
@@ -2943,7 +2947,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
 							if (!e) e = global.event;
-							if (!/click|drag|mousedown|mouseup/.test(e.type) && e.type.indexOf("key")) {
+							if (!/click|dragstart|drop|mousedown|mouseup/.test(e.type) && e.type.indexOf("key")) {
 								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 								if (typeof e.preventDefault === "function")  e.preventDefault();
 								if (typeof e.stopPropagation === "function") e.stopPropagation();
