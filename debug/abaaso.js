@@ -1670,7 +1670,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (first) reorder = results = result;
 						else result.each(function (i, idx) {
-							var a, b, z;
+							var a, b, z, find;
+
+							find = function (a, p, c) {
+								return a.index(a.filter(function (g) { if (g.data[p] === c) return true; }).first());
+							}
 
 							if (reorder.index(i) >= 0) return;
 
@@ -1700,6 +1704,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 										reorder.splice((n - 1), 0, i);
 										break;
 									case z.length > 0 && z.first() !== i.data[prop]:
+										if (find(reorder, prev, b) > n) n = find(reorder, prev, b);
 										reorder.splice((n + 1), 0, i);
 										break;
 									default:
