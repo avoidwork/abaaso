@@ -1631,11 +1631,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							valCurrent = key === prop ? rec.key : rec.data[prop];
 							valPrev    = first ? valCurrent : (key === prev ? rec.key : rec.data[prev]);
 
-							if (x !== valPrev) x = valPrev;
-							l = x === null ? "null" : String(x).trim().charAt(0).toLowerCase();
-							if (!(registry[l] instanceof Array)) {
-								registry[l] = [];
-								order.push(l);
+							if (x !== valPrev) {
+								x = valPrev;
+								l = x === null ? "null" : String(x).trim().charAt(0).toLowerCase();
+								if (!(registry[l] instanceof Array)) {
+									registry[l] = [];
+									order.push(l);
+								}
 							}
 							value = String(valCurrent).trim() + ":::" + idx;
 							registry[l].push(value.replace(nil, "\"\""));
@@ -2886,7 +2888,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Number}     Integer or float
 		 */
 		parse : function (arg) {
-			return String(arg).indexOf(".") < 0 ? parseInt(value) : parseFloat(value);
+			return String(arg).indexOf(".") < 0 ? parseInt(arg) : parseFloat(arg);
 		}
 	};
 
