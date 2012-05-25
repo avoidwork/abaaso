@@ -1670,7 +1670,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (first) reorder = results = result;
 						else result.each(function (i, idx) {
-							var a, b;
+							var a, b, z;
 
 							if (reorder.index(i) >= 0) return;
 
@@ -1680,16 +1680,31 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							if (a === b) reorder.splice(b, 0, i);
 							else {
 								var x = [],
+								    n = results.index(i),
 								    ascending = asc.test(queries[qdx - 1]);
 
-								a = key === prev ? i.key : i.data[prev],
-								b = key === prev ? results[idx].key : results[idx].data[prev],
+								a = key === prev ? i.key : i.data[prev];
+								b = key === prev ? results[idx].key : results[idx].data[prev];
+								z = typeof reorder[n] !== "undefined" && reorder[n].data[prop] !== i.data[prop] ? [reorder[n].data[prop], i.data[prop]].sort(array.sort) : [];
+								if (z.length > 0 && desc.test(query)) z.reverse();
 
 								x.push(a);
 								x.push(b);
 								x.sort(array.sort);
-								if (!ascending) x.reverse();
-								a === x.first() && reorder.index(i) < 0 ? reorder.splice(idx, 0, i) : reorder.splice(results.index(i), 0, i);
+								if (!ascending) x.reverse(array.sort);
+								switch (true) {
+									case a === x.first():
+										reorder.splice(idx, 0, i);
+										break;
+									case z.length > 0 && z.first() === i.data[prop]:
+										reorder.splice((n - 1), 0, i);
+										break;
+									case z.length > 0 && z.first() !== i.data[prop]:
+										reorder.splice((n + 1), 0, i);
+										break;
+									default:
+										reorder.splice(n, 0, i);
+								}
 							}
 						});
 
