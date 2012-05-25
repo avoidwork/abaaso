@@ -1595,10 +1595,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    desc    = /\s*desc$/i,
 					    self    = this,
 					    result  = [],
-					    results = [],
 					    nil     = /^null/,
 					    key     = this.key,
-					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev;
+					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev, sort, parse;
 
 					// Malformed query
 					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
@@ -1606,58 +1605,49 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
 
+					parse = function (arg) {
+						return String(arg).indexOf(".") < 0 ? parseInt(value) : parseFloat(value);
+					};
+
+					sort = function (a, b) {
+						return !isNaN(a) && !isNaN(b) ? parse(a) > parse(b) : a > b;
+					};
+
 					queries.each(function (query) {
-						query   = query.replace(asc, "");
-						prop    = query.replace(desc, "");
-						order   = [];
-						records = first ? self.records.clone() : result.clone();
+						query    = query.replace(asc, "");
+						prop     = query.replace(desc, "");
+						order    = [];
+						registry = {};
+						x        = null;
+						records  = first ? self.records.clone() : result.clone();
+						if (!first) result = [];
 
 						if (key !== prop && !records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
- 
-						switch (first) {
-							case true:
-								first = false;
 
-								records.each(function (rec) {
-									valCurrent = key === prop ? rec.key : rec.data[prop];
-									value      = String(valCurrent).trim() + ":::" + rec.key;
-									order.push(value.replace(nil, "\"\""));
-								});
+						records.each(function (rec, idx) {
+							valCurrent = key === prop ? rec.key : rec.data[prop];
+							valPrev    = first ? valCurrent : (key === prev ? rec.key : rec.data[prev]);
 
-								order.sort();
-								if (desc.test(query)) order.reverse();
+							if (x !== valPrev) x = valPrev;
+							l = x === null ? "null" : String(x).trim().charAt(0).toLowerCase();
+							if (!(registry[l] instanceof Array)) {
+								registry[l] = [];
+								order.push(l);
+							}
+							value = String(valCurrent).trim() + ":::" + idx;
+							registry[l].push(value.replace(nil, "\"\""));
+						});
 
-								order.each(function (rec) {
-									index = self.keys[needle.exec(rec)[1]].index;
-									result.push(self.records[index]);
-								});
-								break;
-							default:
-								result   = [];
-								order    = [];
-								registry = {};
-								x        = null;
+						order.sort(sort);
+						if (first && desc.test(query)) order.reverse();
 
-								records.each(function (rec, idx) {
-									valCurrent = key === prop ? rec.key : rec.data[prop];
-									valPrev    = key === prev ? rec.key : rec.data[prev];
+						order.each(function (i) {
+							registry[i].sort(sort);
+							if (desc.test(query)) registry[i].reverse();
+							registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
+						});
 
-									if (x !== valPrev) x = valPrev;
-									l = x === null ? "null" : String(x).charAt(0).toLowerCase();
-									if (!(registry[l] instanceof Array)) {
-										registry[l] = [];
-										order.push(l);
-									}
-									value = String(valCurrent).trim() + ":::" + idx;
-									registry[l].push(value.replace(nil, "\"\""));
-								});
-
-								order.each(function (i) {
-									registry[i].sort();
-									if (desc.test(query)) registry[i].reverse();
-									registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
-								});
-						}
+						if (first) first = false;
 
 						prev = query;
 					});
