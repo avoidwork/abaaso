@@ -1631,6 +1631,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
 
+					queries.reverse();
+
 					queries.each(function (query, qdx) {
 						query    = query.replace(asc, "");
 						prop     = query.replace(desc, "");
@@ -1639,7 +1641,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						registry = {};
 						x        = null;
 						records  = first ? self.records.clone() : result.clone();
-						if (!first) result   = [];
+						if (!first) result = [];
 
 						if (key !== prop && !records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
 
@@ -1687,10 +1689,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								x.push(b);
 								x.sort(array.sort);
 								if (!ascending) x.reverse();
-								a === x.first() && reorder.index(i) < 0 ? reorder.splice(results.index(i), 0, i) : reorder.splice(idx, 0, i);
+								a === x.first() && reorder.index(i) < 0 ? reorder.splice(idx, 0, i) : reorder.splice(results.index(i), 0, i);
 							}
 						});
-						
+
 						prev = prop;
 						if (first) first = false;
 					});
