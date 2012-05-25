@@ -1559,7 +1559,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
-				    args   = {data: data, key: key, record: undefined},
+				    args   = {data: typeof record !== "undefined" ? $.merge(record.data, data) : data, key: key, record: undefined},
 				    uri    = this.uri === null ? null : this.uri + "/" + key,
 				    r      = /true|undefined/,
 				    p;
