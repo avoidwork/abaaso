@@ -272,7 +272,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Boolean} Boolean indicating sort order
 		 */
 		sort : function (a, b) {
-			return !isNaN(a) && !isNaN(b) ? number.parse(a) > number.parse(b) : a > b;
+			var result;
+
+			if (!isNaN(a) && !isNaN(b)) result = number.parse(a) > number.parse(b);
+			else switch (true) {
+				case a < b:
+					result = -1;
+					break;
+				case a > b:
+					result = 1;
+					break;
+				default:
+					result = 0;
+			}
+			return result;
 		},
 
 		/**
@@ -1591,6 +1604,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {String} query   SQL (style) order by
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
+			 * @todo  does not preserve order past 2 clauses deep, will fix this
 			 */
 			sort : function (query, create) {
 				try {
@@ -1617,15 +1631,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
 
-					queries.each(function (query) {
+					queries.each(function (query, qdx) {
 						query    = query.replace(asc, "");
 						prop     = query.replace(desc, "");
 						order    = [];
 						reorder  = [];
+						registry = {};
 						x        = null;
 						records  = first ? self.records.clone() : result.clone();
 						if (!first) result   = [];
-						if (first)  registry = {};
 
 						if (key !== prop && !records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
 
@@ -1652,23 +1666,37 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
 						});
 
-						if (first) results = result;
-						else {
-							results.each(function (i, idx) {
-								var a = idx,
-								    b = result.index(i);
+						if (first) reorder = results = result;
+						else result.each(function (i, idx) {
+							var a, b;
 
-								a <= b ? reorder.push(i) : reorder.push(result[idx]);
-							});
-							results = reorder;
-						}
+							if (reorder.index(i) >= 0) return;
 
+							a = idx;
+							b = results.index(i);
+
+							if (a === b) reorder.splice(b, 0, i);
+							else {
+								var x = [],
+								    ascending = asc.test(queries[qdx - 1]);
+
+								a = key === prev ? i.key : i.data[prev],
+								b = key === prev ? results[idx].key : results[idx].data[prev],
+
+								x.push(a);
+								x.push(b);
+								x.sort(array.sort);
+								if (!ascending) x.reverse();
+								a === x.first() && reorder.index(i) < 0 ? reorder.splice(results.index(i), 0, i) : reorder.splice(idx, 0, i);
+							}
+						});
+						
 						prev = prop;
 						if (first) first = false;
 					});
 
-					this.views[view] = results;
-					return results;
+					this.views[view] = reorder;
+					return reorder;
 				}
 				catch (e) {
 					error(e, arguments, this);
