@@ -1606,11 +1606,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    desc    = /\s*desc$/i,
 					    self    = this,
 					    result  = [],
+					    results = [],
 					    nil     = /^null/,
 					    key     = this.key,
-					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev, parse, sort;
+					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev;
 
-					// Malformed query
 					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
@@ -1620,19 +1620,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						query    = query.replace(asc, "");
 						prop     = query.replace(desc, "");
 						order    = [];
-						registry = {};
 						x        = null;
 						records  = first ? self.records.clone() : result.clone();
-						if (!first) result = [];
+						if (!first) result   = [];
+						if (first)  registry = {};
 
 						if (key !== prop && !records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
 
 						records.each(function (rec, idx) {
 							valCurrent = key === prop ? rec.key : rec.data[prop];
-							valPrev    = first ? valCurrent : (key === prev ? rec.key : rec.data[prev]);
-
-							if (x !== valPrev) {
-								x = valPrev;
+							if (x !== valCurrent) {
+								x = valCurrent;
 								l = x === null ? "null" : String(x).trim().charAt(0).toLowerCase();
 								if (!(registry[l] instanceof Array)) {
 									registry[l] = [];
@@ -1643,10 +1641,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							registry[l].push(value.replace(nil, "\"\""));
 						});
 
-						if (first) {
-							order.sort(array.sort);
-							if (desc.test(query)) order.reverse();
-						}
+						order.sort(array.sort);
+						if (desc.test(query)) order.reverse();
 
 						order.each(function (i) {
 							registry[i].sort(array.sort);
@@ -1654,12 +1650,26 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
 						});
 
+						if (first) results = result;
+						else results.each(function (i, idx) {
+							if (i !== result[idx]) {
+								var a = key === prev ? i.key : i.data[prev],
+								    b = key === prev ? result[idx].key : result[idx].data[prev],
+								    x = [];
+
+								x.push(a);
+								x.push(b);
+								x.sort(array.sort);
+								if (a === x.first()) results[idx] = result[idx];
+							}
+						});
+
+						prev = prop;
 						if (first) first = false;
-						prev = query;
 					});
 
-					this.views[view] = result;
-					return result;
+					this.views[view] = results;
+					return results;
 				}
 				catch (e) {
 					error(e, arguments, this);
