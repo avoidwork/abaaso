@@ -265,6 +265,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Sorts the Array by parsing values
+		 * 
+		 * @param  {Mixed} a Argument to compare
+		 * @param  {Mixed} b Argument to compare
+		 * @return {Boolean} Boolean indicating sort order
+		 */
+		sort : function (a, b) {
+			return !isNaN(a) && !isNaN(b) ? number.parse(a) > number.parse(b) : a > b;
+		},
+
+		/**
 		 * Gets the total keys in an Array
 		 *
 		 * @method total
@@ -1597,21 +1608,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    result  = [],
 					    nil     = /^null/,
 					    key     = this.key,
-					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev, sort, parse;
+					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev, parse, sort;
 
 					// Malformed query
 					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
-
-					parse = function (arg) {
-						return String(arg).indexOf(".") < 0 ? parseInt(value) : parseFloat(value);
-					};
-
-					sort = function (a, b) {
-						return !isNaN(a) && !isNaN(b) ? parse(a) > parse(b) : a > b;
-					};
 
 					queries.each(function (query) {
 						query    = query.replace(asc, "");
@@ -1638,17 +1641,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							registry[l].push(value.replace(nil, "\"\""));
 						});
 
-						order.sort(sort);
-						if (first && desc.test(query)) order.reverse();
+						if (first) {
+							order.sort(array.sort);
+							if (desc.test(query)) order.reverse();
+						}
 
 						order.each(function (i) {
-							registry[i].sort(sort);
+							registry[i].sort(array.sort);
 							if (desc.test(query)) registry[i].reverse();
 							registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
 						});
 
 						if (first) first = false;
-
 						prev = query;
 					});
 
@@ -2873,6 +2877,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		odd : function (arg) {
 			return !(arg % 2 === 0);
+		},
+
+		/**
+		 * Parses the argument
+		 * 
+		 * @param  {Mixed} arg Number to parse
+		 * @return {Number}     Integer or float
+		 */
+		parse : function (arg) {
+			return String(arg).indexOf(".") < 0 ? parseInt(value) : parseFloat(value);
 		}
 	};
 
