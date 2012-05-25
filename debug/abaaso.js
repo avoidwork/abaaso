@@ -1330,7 +1330,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								s = this.records[i].data[f];
 								if (!keys[this.records[i].key] && r.test(s)) {
 									keys[this.records[i].key] = i;
-									result.push(this.records[i]);
+									if (result.index(this.records[i]) < 0) result.push(this.records[i]);
 								}
 							}
 						}
@@ -1607,6 +1607,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    self    = this,
 					    result  = [],
 					    results = [],
+					    reorder = [],
 					    nil     = /^null/,
 					    key     = this.key,
 					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev;
@@ -1620,6 +1621,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						query    = query.replace(asc, "");
 						prop     = query.replace(desc, "");
 						order    = [];
+						reorder  = [];
 						x        = null;
 						records  = first ? self.records.clone() : result.clone();
 						if (!first) result   = [];
@@ -1651,18 +1653,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 
 						if (first) results = result;
-						else results.each(function (i, idx) {
-							if (i !== result[idx]) {
-								var a = key === prev ? i.key : i.data[prev],
-								    b = key === prev ? result[idx].key : result[idx].data[prev],
-								    x = [];
+						else {
+							results.each(function (i, idx) {
+								var a = idx,
+								    b = result.index(i);
 
-								x.push(a);
-								x.push(b);
-								x.sort(array.sort);
-								if (a === x.first()) results[idx] = result[idx];
-							}
-						});
+								a <= b ? reorder.push(i) : reorder.push(result[idx]);
+							});
+							results = reorder;
+						}
 
 						prev = prop;
 						if (first) first = false;
