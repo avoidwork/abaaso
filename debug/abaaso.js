@@ -1695,7 +1695,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							sorted = bucket(query, recs);
 							order  = sorted.order;
 							recs   = [];
-							order.each(function (i) { recs = recs.concat(sorted.registry[i]); });
+							order.each(function (i) {
+								if (qdx > 1 && (prev = queries[qdx - 1]) && desc.test(prev)) sorted.registry[i].reverse();
+								recs = recs.concat(sorted.registry[i]);
+							});
 						});
 
 						result  = recs;
