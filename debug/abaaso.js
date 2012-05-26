@@ -1624,12 +1624,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    reorder = [],
 					    nil     = /^null/,
 					    key     = this.key,
-					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev;
+					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev, find;
 
 					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
 					if (this.total === 0) return this.records;
+
+					find = function (a, p, c) {
+						return a.index(a.filter(function (g) { if (g.data[p] === c) return true; }).first());
+					}
 
 					queries.reverse();
 
@@ -1670,11 +1674,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (first) reorder = results = result;
 						else result.each(function (i, idx) {
-							var a, b, z, find;
-
-							find = function (a, p, c) {
-								return a.index(a.filter(function (g) { if (g.data[p] === c) return true; }).first());
-							}
+							var a, b, z;
 
 							if (reorder.index(i) >= 0) return;
 
@@ -1698,7 +1698,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								if (!ascending) x.reverse(array.sort);
 								switch (true) {
 									case a === x.first():
-										reorder.splice(idx, 0, i);
+										if (qdx > 1 && idx === 1 & reorder.length === 1 && desc.test(queries[qdx - 1]) && x[0] !== x[1]) n = find(reorder, prev, reorder.first().data[prev]) < idx ? 0 : idx;
+										else if (reorder.length === 1 && x[0] === x[1]) n = idx;
+										else if (reorder.length === 1 && find(reorder, prev, reorder.first().data[prev]) === 0) n = 0;
+										else n = idx;
+										reorder.splice(n, 0, i);
 										break;
 									case z.length > 0 && z.first() === i.data[prop]:
 										reorder.splice((n - 1), 0, i);
