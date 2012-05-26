@@ -1610,34 +1610,75 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				try {
 					if (typeof query === "undefined" || String(query).isEmpty()) throw Error(label.error.invalidArguments);
 
-					create      = (create === true);
-					var obj     = this.parentNode,
-					    view    = query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase(),
-					    queries = query.explode(),
-					    first   = true,
-					    needle  = /:::(.*)$/,
-					    asc     = /\s*asc$/i,
-					    desc    = /\s*desc$/i,
-					    self    = this,
-					    result  = [],
-					    results = [],
-					    reorder = [],
-					    nil     = /^null/,
-					    key     = this.key,
-					    order, records, value, index, registry, l, prev, x, prop, valCurrent, valPrev, find;
+					create       = (create === true);
+					var obj      = this.parentNode,
+					    view     = query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase(),
+					    queries  = query.explode(),
+					    needle   = /:::(.*)$/,
+					    asc      = /\s*asc$/i,
+					    desc     = /\s*desc$/i,
+					    nil      = /^null/,
+					    self     = this,
+					    key      = this.key,
+					    result   = [],
+					    order    = [],
+					    records  = [],
+					    registry = {},
+					    ascend;
 
-					if (queries.last().isEmpty()) throw Error(label.error.invalidArguments);
+					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
 
 					if (!create && this.views[view] instanceof Array) return this.views[view];
-					if (this.total === 0) return this.records;
+					if (this.total === 0) return [];
 
-					find = function (a, p, c) {
-						return a.index(a.filter(function (g) { if (g.data[p] === c) return true; }).first());
+					records = this.records.clone();
+
+					// Getting the primary query & sort; chunking records
+					[queries.reverse().pop()].each(function (query) {
+						query    = query.replace(asc, "");
+						ascend   = !desc.test(query);
+						var prop = query.replace(desc, ""),
+						    pk   = (key === prop);
+
+						records.each(function (r) {
+							var val = pk ? r.key : r.data[prop],
+							    k   = val === null ? "null" : String(val).charAt(0).toLowerCase();
+
+							if (!(registry[k] instanceof Array)) {
+								registry[k] = [];
+								order.push(k);
+							}
+							registry[k].push(r);
+						});
+
+						order.sort(array.sort);
+						if (!ascend) order.reverse();
+						order.each(function (k) {
+							registry[k].sort(array.sort);
+							if (!ascend) registry[k].reverse();
+						});
+					});
+
+					// Applying the remaining queries to the chunked data
+					if (queries.length > 0) {
+						$.iterate(registry, function (data) {
+							var order = [],
+							    stash = [],
+							    first = true;
+
+							data.each(function (r, idx) {
+								queries.each(function (query) {
+									debugger;
+								});
+							});
+						});
 					}
 
-					queries.reverse();
+					// Joining the results in the final order
+					order.each(function (k) { result = result.concat(registry[k]); });
 
-					queries.each(function (query, qdx) {
+					//queries.reverse();
+					/*queries.each(function (query, qdx) {
 						query    = query.replace(asc, "");
 						prop     = query.replace(desc, "");
 						order    = [];
@@ -1719,10 +1760,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						prev = prop;
 						if (first) first = false;
-					});
+					});*/
 
-					this.views[view] = reorder;
-					return reorder;
+					this.views[view] = result;
+					return result;
 				}
 				catch (e) {
 					error(e, arguments, this);
