@@ -1618,12 +1618,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    asc      = /\s*asc$/i,
 					    desc     = /\s*desc$/i,
 					    nil      = /^null/,
-					    self     = this,
 					    key      = this.key,
 					    result   = [],
-					    order    = [],
 					    records  = [],
-					    registry = {},
 					    bucket;
 
 					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
