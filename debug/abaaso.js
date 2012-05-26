@@ -1685,34 +1685,25 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						return {order: order, registry: registry};
 					};
 
-					// Getting the primary query & results
-					[queries.reverse().pop()].each(function (query) {
-						var sorted = bucket(query, records);
+					queries.reverse();
 
-						order    = sorted.order;
-						registry = sorted.registry;
-					});
+					queries.each(function (query, qdx) {
+						var order  = [],
+						    recs   = records.clone(),
+						    sorted = {},
+						    merged = [],
+						    prev;
 
-					// Applying the remaining queries to the chunked data
-					if (queries.length > 0) {
-						$.iterate(registry, function (records, key) {
-							var order  = [],
-							    recs   = records.clone(),
-							    sorted = {};
-
-							queries.each(function (query) {
-								sorted = bucket(query, recs);
-								order  = sorted.order;
-								recs   = [];
-								order.each(function (i) { recs = recs.concat(sorted.registry[i]); });
-							});
-
-							registry[key] = recs;
+						queries.each(function (query, qdx) {
+							sorted = bucket(query, recs);
+							order  = sorted.order;
+							recs   = [];
+							order.each(function (i) { recs = recs.concat(sorted.registry[i]); });
 						});
-					}
 
-					// Joining the results in the final order
-					order.each(function (k) { result = result.concat(registry[k]); });
+						result  = recs;
+						records = result;
+					});
 
 					this.views[view] = result;
 					return result;
