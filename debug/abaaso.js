@@ -1624,7 +1624,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    order    = [],
 					    records  = [],
 					    registry = {},
-					    ascend;
+					    bucket;
 
 					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
 
@@ -1633,12 +1633,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					records = this.records.clone();
 
-					// Getting the primary query & sort; chunking records
-					[queries.reverse().pop()].each(function (query) {
-						query    = query.replace(asc, "");
-						ascend   = !desc.test(query);
-						var prop = query.replace(desc, ""),
-						    pk   = (key === prop);
+					bucket = function (query, records) {
+						query        = query.replace(asc, "");
+						var ascend   = !desc.test(query),
+						    prop     = query.replace(desc, ""),
+						    pk       = (key === prop),
+						    order    = [],
+						    registry = {};
 
 						records.each(function (r) {
 							var val = pk ? r.key : r.data[prop],
@@ -1657,110 +1658,37 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							registry[k].sort(array.sort);
 							if (!ascend) registry[k].reverse();
 						});
+
+						return {order: order, registry: registry};
+					};
+
+					// Getting the primary query & results
+					[queries.reverse().pop()].each(function (query) {
+						var sorted = bucket(query, records);
+
+						order    = sorted.order;
+						registry = sorted.registry;
 					});
 
 					// Applying the remaining queries to the chunked data
 					if (queries.length > 0) {
-						$.iterate(registry, function (data) {
+						$.iterate(registry, function (records) {
 							var order = [],
 							    stash = [],
 							    first = true;
 
-							data.each(function (r, idx) {
-								queries.each(function (query) {
-									debugger;
+							debugger;
+
+							/*queries.each(function (query) {
+								records.each(function (r, idx) {
+									void(0);
 								});
-							});
+							});*/
 						});
 					}
 
 					// Joining the results in the final order
 					order.each(function (k) { result = result.concat(registry[k]); });
-
-					//queries.reverse();
-					/*queries.each(function (query, qdx) {
-						query    = query.replace(asc, "");
-						prop     = query.replace(desc, "");
-						order    = [];
-						reorder  = [];
-						registry = {};
-						x        = null;
-						records  = first ? self.records.clone() : result.clone();
-						if (!first) result = [];
-
-						if (key !== prop && !records[0].data.hasOwnProperty(prop)) throw Error(label.error.invalidArguments);
-
-						records.each(function (rec, idx) {
-							valCurrent = key === prop ? rec.key : rec.data[prop];
-							if (x !== valCurrent) {
-								x = valCurrent;
-								l = x === null ? "null" : String(x).trim().charAt(0).toLowerCase();
-								if (!(registry[l] instanceof Array)) {
-									registry[l] = [];
-									order.push(l);
-								}
-							}
-							value = String(valCurrent).trim() + ":::" + idx;
-							registry[l].push(value.replace(nil, "\"\""));
-						});
-
-						order.sort(array.sort);
-						if (desc.test(query)) order.reverse();
-
-						order.each(function (i) {
-							registry[i].sort(array.sort);
-							if (desc.test(query)) registry[i].reverse();
-							registry[i].each(function (v) { result.push(records[needle.exec(v)[1]]); });
-						});
-
-						if (first) reorder = results = result;
-						else result.each(function (i, idx) {
-							var a, b, z;
-
-							if (reorder.index(i) >= 0) return;
-
-							a = idx;
-							b = results.index(i);
-
-							if (a === b) reorder.splice(b, 0, i);
-							else {
-								var x = [],
-								    n = results.index(i),
-								    ascending = asc.test(queries[qdx - 1]);
-
-								a = key === prev ? i.key : i.data[prev];
-								b = key === prev ? results[idx].key : results[idx].data[prev];
-								z = typeof reorder[n] !== "undefined" && reorder[n].data[prop] !== i.data[prop] ? [reorder[n].data[prop], i.data[prop]].sort(array.sort) : [];
-								if (z.length > 0 && desc.test(query)) z.reverse();
-
-								x.push(a);
-								x.push(b);
-								x.sort(array.sort);
-								if (!ascending) x.reverse(array.sort);
-								switch (true) {
-									case a === x.first():
-										if (qdx > 1 && idx === 1 & reorder.length === 1 && desc.test(queries[qdx - 1]) && x[0] !== x[1]) n = find(reorder, prev, reorder.first().data[prev]) < idx ? 0 : idx;
-										else if (reorder.length === 1 && x[0] === x[1]) n = idx;
-										else if (reorder.length === 1 && find(reorder, prev, reorder.first().data[prev]) === 0) n = 0;
-										else n = idx;
-										reorder.splice(n, 0, i);
-										break;
-									case z.length > 0 && z.first() === i.data[prop]:
-										reorder.splice((n - 1), 0, i);
-										break;
-									case z.length > 0 && z.first() !== i.data[prop]:
-										if (find(reorder, prev, b) > n) n = find(reorder, prev, b);
-										reorder.splice((n + 1), 0, i);
-										break;
-									default:
-										reorder.splice(n, 0, i);
-								}
-							}
-						});
-
-						prev = prop;
-						if (first) first = false;
-					});*/
 
 					this.views[view] = result;
 					return result;
