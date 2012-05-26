@@ -1672,18 +1672,19 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					// Applying the remaining queries to the chunked data
 					if (queries.length > 0) {
-						$.iterate(registry, function (records) {
-							var order = [],
-							    stash = [],
-							    first = true;
+						$.iterate(registry, function (records, key) {
+							var order  = [],
+							    recs   = records.clone(),
+							    sorted = {};
 
-							debugger;
+							queries.each(function (query) {
+								sorted = bucket(query, recs);
+								order  = sorted.order;
+								recs   = [];
+								order.each(function (i) { recs = recs.concat(sorted.registry[i]); });
+							});
 
-							/*queries.each(function (query) {
-								records.each(function (r, idx) {
-									void(0);
-								});
-							});*/
+							registry[key] = recs;
 						});
 					}
 
