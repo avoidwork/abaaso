@@ -1633,12 +1633,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					records = this.records.clone();
 
+					/**
+					 * Something like a bucket sort, maybe...
+					 * 
+					 * @param  {String} query   SQL ORDER BY clause
+					 * @param  {Array}  records Array of records to process
+					 * @return {Object}         Result of the sort
+					 */
 					bucket = function (query, records) {
 						query        = query.replace(asc, "");
 						var ascend   = !desc.test(query),
 						    prop     = query.replace(desc, ""),
 						    pk       = (key === prop),
 						    order    = [],
+						    ordered  = [],
+						    stash    = [],
 						    registry = {};
 
 						records.each(function (r) {
@@ -1654,9 +1663,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						order.sort(array.sort);
 						if (!ascend) order.reverse();
+						
 						order.each(function (k) {
-							registry[k].sort(array.sort);
-							if (!ascend) registry[k].reverse();
+							stash   = [];
+							ordered = [];
+
+							registry[k].each(function (i, idx) {
+								var v = pk ? i.key : i.data[prop];
+
+								v = String(v).trim() + ":::" + idx;
+								stash.push(v.replace(nil, "\"\""));
+							});
+
+							stash.sort(array.sort);
+							if (desc.test(query)) stash.reverse();
+
+							stash.each(function (v) { ordered.push(registry[k][needle.exec(v)[1]]); });
+							registry[k] = ordered.clone();
 						});
 
 						return {order: order, registry: registry};
