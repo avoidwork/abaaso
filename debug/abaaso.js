@@ -1685,18 +1685,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					queries.reverse();
 
 					queries.each(function (query, qdx) {
-						var order  = [],
-						    recs   = records.clone(),
-						    sorted = {},
-						    merged = [],
+						var order   = [],
+						    recs    = records.clone(),
+						    sorted  = {},
+						    merged  = [],
+						    reverse = false,
 						    prev;
 
 						queries.each(function (query, qdx) {
-							sorted = bucket(query, recs);
-							order  = sorted.order;
-							recs   = [];
+							sorted  = bucket(query, recs);
+							order   = sorted.order;
+							recs    = [];
+							reverse = (qdx > 1 && (prev = queries[qdx - 1]) && desc.test(prev));
 							order.each(function (i) {
-								if (qdx > 1 && (prev = queries[qdx - 1]) && desc.test(prev)) sorted.registry[i].reverse();
+								if (reverse) sorted.registry[i].reverse();
 								recs = recs.concat(sorted.registry[i]);
 							});
 						});
