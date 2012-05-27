@@ -1649,7 +1649,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						records.each(function (r) {
 							var val = pk ? r.key : r.data[prop],
-							    k   = val === null ? "null" : String(val).charAt(0).toLowerCase();
+							    k   = val === null ? "null" : String(val).trim().charAt(0).toLowerCase();
 
 							if (!(registry[k] instanceof Array)) {
 								registry[k] = [];
