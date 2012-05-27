@@ -1619,8 +1619,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    desc     = /\s*desc$/i,
 					    nil      = /^null/,
 					    key      = this.key,
+					    order    = [],
 					    result   = [],
 					    records  = [],
+					    recs     = [],
+					    stash    = [],
+					    sorted   = {},
 					    bucket;
 
 					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
@@ -1635,16 +1639,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					 * 
 					 * @param  {String} query   SQL ORDER BY clause
 					 * @param  {Array}  records Array of records to process
+					 * @param  {Mixed}  prev    Null or previous field sorted
 					 * @return {Object}         Result of the sort
 					 */
-					bucket = function (query, records) {
+					bucket = function (query, records, prev) {
 						query        = query.replace(asc, "");
 						var ascend   = !desc.test(query),
 						    prop     = query.replace(desc, ""),
 						    pk       = (key === prop),
 						    order    = [],
 						    ordered  = [],
-						    stash    = [],
+						    recs     = [],
 						    registry = {};
 
 						records.each(function (r) {
@@ -1668,7 +1673,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							registry[k].each(function (i, idx) {
 								var v = pk ? i.key : i.data[prop];
 
-								v = String(v).trim() + ":::" + idx;
+								v = String(v).trim() + (prev !== null ? "-" + prev : "") + ":::" + idx;
 								stash.push(v.replace(nil, "\"\""));
 							});
 
@@ -1685,22 +1690,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					queries.reverse();
 
 					queries.each(function (query, qdx) {
-						var order   = [],
-						    recs    = records.clone(),
-						    sorted  = {},
-						    merged  = [],
-						    reverse = false,
-						    prev;
+						if (qdx === 0) recs = records.clone();
 
-						queries.each(function (query, qdx) {
-							sorted  = bucket(query, recs);
-							order   = sorted.order;
-							recs    = [];
-							reverse = (qdx > 1 && (prev = queries[qdx - 1]) && desc.test(prev));
-							order.each(function (i) {
-								if (reverse) sorted.registry[i].reverse();
-								recs = recs.concat(sorted.registry[i]);
-							});
+						var prev    = qdx > 1 ? queries[qdx - 1] : null,
+						    reverse = (prev !== null && desc.test(prev));
+
+						sorted  = bucket(query, recs, prev);
+						order   = sorted.order;
+						recs    = [];
+						reverse = (prev !== null && desc.test(prev));
+						order.each(function (i) {
+							if (reverse) sorted.registry[i].reverse();
+							recs = recs.concat(sorted.registry[i]);
 						});
 
 						result  = recs;
