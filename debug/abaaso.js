@@ -1699,7 +1699,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						order   = sorted.order;
 						recs    = [];
 						order.each(function (i, idx) {
-							if (prev !== null && !desc.test(prev) && sorted.registry[i].length > 1) {
+							if (prev !== null && (qdx === 1 || (qdx > 2 && !desc.test(prev))) && sorted.registry[i].length > 1) {
 								var tmp = {},
 								    rlt = [],
 								    rev = desc.test(prev);
