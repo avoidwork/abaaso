@@ -1620,12 +1620,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    nil      = /^null/,
 					    key      = this.key,
 					    order    = [],
+					    ordered  = [],
 					    result   = [],
 					    records  = [],
 					    recs     = [],
 					    stash    = [],
 					    sorted   = {},
-					    bucket;
+					    self     = this,
+					    bucket, sort;
 
 					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
 
@@ -1634,15 +1636,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					records = this.records.clone();
 
-					/**
-					 * Something like a bucket sort, maybe...
-					 * 
-					 * @param  {String} query   SQL ORDER BY clause
-					 * @param  {Array}  records Array of records to process
-					 * @param  {Mixed}  prev    Null or previous field sorted
-					 * @return {Object}         Result of the sort
-					 */
-					bucket = function (query, records, prev) {
+					bucket = function (query, records, prev, reverse) {
 						query        = query.replace(asc, "");
 						var ascend   = !desc.test(query),
 						    prop     = query.replace(desc, ""),
@@ -1654,7 +1648,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						records.each(function (r) {
 							var val = pk ? r.key : r.data[prop],
-							    k   = val === null ? "null" : String(val).toCamelCase();
+							    k   = val === null ? "null" : String(val)/*.trim();*/.toCamelCase();
 
 							if (!(registry[k] instanceof Array)) {
 								registry[k] = [];
@@ -1669,22 +1663,26 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						order.each(function (k) {
 							stash   = [];
 							ordered = [];
-
-							registry[k].each(function (i, idx) {
-								var v = pk ? i.key : i.data[prop];
-
-								v = String(v).trim() + (prev !== null ? "-" + prev : "") + ":::" + idx;
-								stash.push(v.replace(nil, "\"\""));
-							});
-
-							stash.sort(array.sort);
-							if (desc.test(query)) stash.reverse();
-
-							stash.each(function (v) { ordered.push(registry[k][needle.exec(v)[1]]); });
-							registry[k] = ordered.clone();
+							sort(registry[k], stash, ordered, query, prop, prev, reverse, pk);
 						});
 
 						return {order: order, registry: registry};
+					};
+
+					sort = function (data, tmp, target, query, prop, prev, reverse, pk) {
+						data.each(function (i, idx) {
+							var v  = pk ? i.key : i.data[prop],
+							    pv = prev !== null && (prev = prev.replace(desc, "")) ? ("-" + (prev === key ? i.key : i.data[prev])) : "";
+
+							v = String(v).trim() + pv + ":::" + idx;
+							tmp.push(v.replace(nil, "\"\""));
+						});
+
+						tmp.sort(array.sort);
+						if (desc.test(query)) tmp.reverse();
+
+						tmp.each(function (v) { target.push(data[needle.exec(v)[1]]); });
+						data = target.clone();
 					};
 
 					queries.reverse();
@@ -1692,15 +1690,43 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					queries.each(function (query, qdx) {
 						if (qdx === 0) recs = records.clone();
 
-						var prev    = qdx > 1 ? queries[qdx - 1] : null,
+						var prev    = qdx > 0 ? queries[qdx - 1] : null,
 						    reverse = (prev !== null && desc.test(prev));
 
-						sorted  = bucket(query, recs, prev);
+						sorted  = bucket(query, recs, prev, reverse);
 						order   = sorted.order;
 						recs    = [];
-						reverse = (prev !== null && desc.test(prev));
-						order.each(function (i) {
-							if (reverse) sorted.registry[i].reverse();
+						order.each(function (i, idx) {
+							if (prev !== null && sorted.registry[i].length > 1) {
+								var tmp = {},
+								    rlt = [],
+								    rev = desc.test(prev);
+
+								stash   = [];
+								ordered = [];
+
+								sorted.registry[i].each(function (r, rdx) {
+									var x = prev,
+									    k = key,
+									    p = prev.replace(desc, ""),
+									    y = (key === p),
+									    v = y ? r.key : r.data[p],
+									    n = v.charAt(0).toLowerCase();
+
+									if (typeof tmp[n] === "undefined") tmp[n] = [];
+									tmp[n].push(r);
+								});
+
+								$.iterate(tmp, function (n) {
+									var d = desc.test(prev),
+									    s = bucket(prev, n, null, false),
+									    a = s.registry[s.order.first()];
+
+									rlt = rlt.concat(a);
+								})
+
+								sorted.registry[i] = rlt;
+							}
 							recs = recs.concat(sorted.registry[i]);
 						});
 
