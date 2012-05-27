@@ -1678,8 +1678,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							tmp.push(v.replace(nil, "\"\""));
 						});
 
-						tmp.sort(array.sort);
-						if (desc.test(query)) tmp.reverse();
+						if (tmp.length > 1) {
+							tmp.sort(array.sort);
+							if (desc.test(query)) tmp.reverse();
+						}
 
 						tmp.each(function (v) { target.push(data[needle.exec(v)[1]]); });
 						data = target.clone();
@@ -1697,7 +1699,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						order   = sorted.order;
 						recs    = [];
 						order.each(function (i, idx) {
-							if (prev !== null && sorted.registry[i].length > 1) {
+							if (prev !== null && !desc.test(prev) && sorted.registry[i].length > 1) {
 								var tmp = {},
 								    rlt = [],
 								    rev = desc.test(prev);
@@ -1711,7 +1713,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									    p = prev.replace(desc, ""),
 									    y = (key === p),
 									    v = y ? r.key : r.data[p],
-									    n = v.charAt(0).toLowerCase();
+									    n = String(v).toCamelCase();
 
 									if (typeof tmp[n] === "undefined") tmp[n] = [];
 									tmp[n].push(r);
