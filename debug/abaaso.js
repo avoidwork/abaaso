@@ -1722,6 +1722,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									    s = bucket(prev, n, null, false),
 									    a = s.registry[s.order.first()];
 
+									if (d && a.length > 1) a.reverse();
 									rlt = rlt.concat(a);
 								})
 
