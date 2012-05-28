@@ -1620,7 +1620,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    key      = this.key,
 					    result   = [],
 					    records  = [],
-					    self     = this,
 					    bucket, sort, crawl;
 
 					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
