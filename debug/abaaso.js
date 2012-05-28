@@ -1619,7 +1619,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    nil      = /^null/,
 					    key      = this.key,
 					    result   = [],
-					    records  = this.records.clone(),
+					    records  = [],
 					    self     = this,
 					    bucket, sort, crawl;
 
