@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.5
+ * @version 2.0.6
  */
 (function (global) {
 "use strict";
@@ -1604,7 +1604,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {String} query   SQL (style) order by
 			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
-			 * @todo  does not preserve order past 2 clauses deep, will fix this
 			 */
 			sort : function (query, create) {
 				try {
@@ -1619,15 +1618,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    desc     = /\s*desc$/i,
 					    nil      = /^null/,
 					    key      = this.key,
-					    buckets  = {},
-					    order    = [],
-					    ordered  = [],
 					    result   = [],
-					    records  = [],
-					    recs     = [],
-					    stash    = [],
+					    records  = this.records.clone(),
 					    self     = this,
-					    bucket, sort;
+					    bucket, sort, crawl;
 
 					queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
 
@@ -1636,19 +1630,34 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					records = this.records.clone();
 
+					crawl = function (q, data) {
+						var queries = q.clone(),
+						    query   = q.first(),
+						    buckets = {},
+						    sorted  = {},
+						    result  = [];
+
+						queries.remove(0);
+						sorted = bucket(query, data, null, desc.test(query));
+						sorted.order.each(function (i) {
+							if (sorted.registry[i].length < 2) return;
+							if (queries.length > 0) sorted.registry[i] = crawl(queries, sorted.registry[i]);
+						});
+						sorted.order.each(function (i) { result = result.concat(sorted.registry[i]); });
+						return result;
+					}
+
 					bucket = function (query, records, prev, reverse) {
 						query        = query.replace(asc, "");
 						var ascend   = !desc.test(query),
 						    prop     = query.replace(desc, ""),
 						    pk       = (key === prop),
 						    order    = [],
-						    ordered  = [],
-						    recs     = [],
 						    registry = {};
 
 						records.each(function (r) {
 							var val = pk ? r.key : r.data[prop],
-							    k   = val === null ? "null" : String(val).trim(); //.toCamelCase();
+							    k   = val === null ? "null" : String(val).trim();
 
 							if (!(registry[k] instanceof Array)) {
 								registry[k] = [];
@@ -1662,23 +1671,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						
 						order.each(function (k) {
 							if (registry[k].length === 1) return;
-							stash   = [];
-							ordered = [];
-							registry[k] = sort(registry[k], stash, ordered, query, prop, prev, reverse, pk);
+							registry[k] = sort(registry[k], query, prop, prev, reverse, pk);
 						});
 
 						return {order: order, registry: registry};
 					};
 
-					sort = function (data, tmp, target, query, prop, prev, reverse, pk) {
+					sort = function (data, query, prop, prev, reverse, pk) {
+						var tmp    = [],
+						    sorted = [];
+
 						data.each(function (i, idx) {
-							var v  = pk ? i.key : i.data[prop],
-							    pv = ""; //prev !== null && (prev = prev.replace(desc, "")) ? ("-" + (prev === key ? i.key : i.data[prev])) : "";
+							var v  = pk ? i.key : i.data[prop];
 
-							// this seems like a good idea, because the values do not need consider previous position?
-							//if ((!desc.test(query) && !desc.test(prev)) || (desc.test(query) && desc.test(prev))) pv = "";
-
-							v = String(v).trim() + pv + ":::" + idx;
+							v = String(v).trim() + ":::" + idx;
 							tmp.push(v.replace(nil, "\"\""));
 						});
 
@@ -1687,103 +1693,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							if (desc.test(query)) tmp.reverse();
 						}
 
-						tmp.each(function (v) { target.push(data[needle.exec(v)[1]]); });
-						//data = target.clone();
-						return target;
+						tmp.each(function (v) { sorted.push(data[needle.exec(v)[1]]); });
+						return sorted;
 					};
 
-					[queries.reverse().pop()].each(function (query) {
-						var sorted;
-
-						sorted  = bucket(query, records, null, desc.test(query));
-						buckets = sorted.registry;
-						order   = sorted.order;
-					});
-
-					queries.reverse();
-
-					debugger;
-
-					$.iterate(sorted.registry, function (reg, rdx) {
-
-					});
-
-					// go after the buckets
-
-					/*queries.each(function (query, qdx) {
-						$.log (qdx + " : " + query);
-
-						if (qdx === 0) recs = records.clone();
-						if (qdx === 1) debugger;
-
-						var prev    = qdx > 0 ? queries[qdx - 1] : null,
-						    reverse = (prev !== null && desc.test(prev)),
-						    oldrecs = recs.clone();
-
-						sorted  = bucket(query, recs, prev, reverse);
-						order   = sorted.order;
-						recs    = [];
-						order.each(function (i, idx) {
-							
-							<!-- the secret sauce -->
-
-							if (qdx > 0 && sorted.registry[i].length > 1) {
-								
-								$.log("in the sauce");
-
-								var tmp    = {},
-								    rlt    = [],
-								    rev    = ((!desc.test(query) && desc.test(prev)) || (desc.test(query) && !desc.test(prev))),
-								    data   = sorted.registry[i], // by reference
-								    norder = [];
-
-								stash   = [];
-								ordered = [];
-
-								data.each(function (r, rdx) {
-									var x = prev,
-									    k = key,
-									    p = prev.replace(desc, ""),
-									    y = (key === p),
-									    v = y ? r.key : r.data[p],
-									    n = String(v).toCamelCase();
-
-									if (typeof tmp[n] === "undefined") {
-										norder.push(n);
-										tmp[n] = [];
-									}
-									tmp[n].push(r);
-								});
-
-								norder.each(function (i) {
-									var d, s, a;
-
-									if (tmp[i].length > 1) {
-										d = desc.test(prev),
-										s = bucket(prev, tmp[i], null, false),
-										a = s.registry[s.order.first()];
-										if (d) a.reverse();
-										rlt = rlt.concat(a);
-									}
-									else rlt = rlt.concat(tmp[i]);
-								});
-
-								// resort rlt?
-								var abc = bucket(query, rlt, prev, reverse);
-								debugger;
-								
-								sorted.registry[i] = rlt;
-							}
-
-							<!-- /the secret sauce -->
-
-							recs = recs.concat(sorted.registry[i]);
-						});
-
-						result  = recs;
-						records = result;
-					});*/
-
+					result           = crawl(queries, records);
 					this.views[view] = result;
 					return result;
 				}
@@ -4763,7 +4677,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.5"
+		version         : "2.0.6"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
