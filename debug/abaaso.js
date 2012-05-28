@@ -1699,7 +1699,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						order   = sorted.order;
 						recs    = [];
 						order.each(function (i, idx) {
-							if (prev !== null && sorted.registry[i].length > 1 && (qdx === 1 || (qdx > 2 && !desc.test(prev)))) {
+							/*if (prev !== null && sorted.registry[i].length > 1 && (qdx === 1 || (qdx > 2 && !desc.test(prev)))) {
 								var tmp = {},
 								    rlt = [],
 								    rev = desc.test(prev);
@@ -1726,11 +1726,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 									if (d && a.length > 1) a.reverse();
 									rlt = rlt.concat(a);
-								})
+								});
 
 								// iterate rlt & the table and put it back in order
 								sorted.registry[i] = rlt;
-							}
+							}*/
 							recs = recs.concat(sorted.registry[i]);
 						});
 
