@@ -1619,13 +1619,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    desc     = /\s*desc$/i,
 					    nil      = /^null/,
 					    key      = this.key,
+					    buckets  = {},
 					    order    = [],
 					    ordered  = [],
 					    result   = [],
 					    records  = [],
 					    recs     = [],
 					    stash    = [],
-					    sorted   = {},
 					    self     = this,
 					    bucket, sort;
 
@@ -1648,7 +1648,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						records.each(function (r) {
 							var val = pk ? r.key : r.data[prop],
-							    k   = val === null ? "null" : String(val).toCamelCase();
+							    k   = val === null ? "null" : String(val).trim(); //.toCamelCase();
 
 							if (!(registry[k] instanceof Array)) {
 								registry[k] = [];
@@ -1661,9 +1661,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						if (!ascend) order.reverse();
 						
 						order.each(function (k) {
+							if (registry[k].length === 1) return;
 							stash   = [];
 							ordered = [];
-							sort(registry[k], stash, ordered, query, prop, prev, reverse, pk);
+							registry[k] = sort(registry[k], stash, ordered, query, prop, prev, reverse, pk);
 						});
 
 						return {order: order, registry: registry};
@@ -1672,7 +1673,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					sort = function (data, tmp, target, query, prop, prev, reverse, pk) {
 						data.each(function (i, idx) {
 							var v  = pk ? i.key : i.data[prop],
-							    pv = prev !== null && (prev = prev.replace(desc, "")) ? ("-" + (prev === key ? i.key : i.data[prev])) : "";
+							    pv = ""; //prev !== null && (prev = prev.replace(desc, "")) ? ("-" + (prev === key ? i.key : i.data[prev])) : "";
+
+							// this seems like a good idea, because the values do not need consider previous position?
+							//if ((!desc.test(query) && !desc.test(prev)) || (desc.test(query) && desc.test(prev))) pv = "";
 
 							v = String(v).trim() + pv + ":::" + idx;
 							tmp.push(v.replace(nil, "\"\""));
@@ -1684,30 +1688,59 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						}
 
 						tmp.each(function (v) { target.push(data[needle.exec(v)[1]]); });
-						data = target.clone();
+						//data = target.clone();
+						return target;
 					};
+
+					[queries.reverse().pop()].each(function (query) {
+						var sorted;
+
+						sorted  = bucket(query, records, null, desc.test(query));
+						buckets = sorted.registry;
+						order   = sorted.order;
+					});
 
 					queries.reverse();
 
-					queries.each(function (query, qdx) {
+					debugger;
+
+					$.iterate(sorted.registry, function (reg, rdx) {
+
+					});
+
+					// go after the buckets
+
+					/*queries.each(function (query, qdx) {
+						$.log (qdx + " : " + query);
+
 						if (qdx === 0) recs = records.clone();
+						if (qdx === 1) debugger;
 
 						var prev    = qdx > 0 ? queries[qdx - 1] : null,
-						    reverse = (prev !== null && desc.test(prev));
+						    reverse = (prev !== null && desc.test(prev)),
+						    oldrecs = recs.clone();
 
 						sorted  = bucket(query, recs, prev, reverse);
 						order   = sorted.order;
 						recs    = [];
 						order.each(function (i, idx) {
-							/*if (prev !== null && sorted.registry[i].length > 1 && (qdx === 1 || (qdx > 2 && !desc.test(prev)))) {
-								var tmp = {},
-								    rlt = [],
-								    rev = desc.test(prev);
+							
+							<!-- the secret sauce -->
+
+							if (qdx > 0 && sorted.registry[i].length > 1) {
+								
+								$.log("in the sauce");
+
+								var tmp    = {},
+								    rlt    = [],
+								    rev    = ((!desc.test(query) && desc.test(prev)) || (desc.test(query) && !desc.test(prev))),
+								    data   = sorted.registry[i], // by reference
+								    norder = [];
 
 								stash   = [];
 								ordered = [];
 
-								sorted.registry[i].each(function (r, rdx) {
+								data.each(function (r, rdx) {
 									var x = prev,
 									    k = key,
 									    p = prev.replace(desc, ""),
@@ -1715,28 +1748,41 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									    v = y ? r.key : r.data[p],
 									    n = String(v).toCamelCase();
 
-									if (typeof tmp[n] === "undefined") tmp[n] = [];
+									if (typeof tmp[n] === "undefined") {
+										norder.push(n);
+										tmp[n] = [];
+									}
 									tmp[n].push(r);
 								});
 
-								$.iterate(tmp, function (n) {
-									var d = desc.test(prev),
-									    s = bucket(prev, n, null, false),
-									    a = s.registry[s.order.first()];
+								norder.each(function (i) {
+									var d, s, a;
 
-									if (d && a.length > 1) a.reverse();
-									rlt = rlt.concat(a);
+									if (tmp[i].length > 1) {
+										d = desc.test(prev),
+										s = bucket(prev, tmp[i], null, false),
+										a = s.registry[s.order.first()];
+										if (d) a.reverse();
+										rlt = rlt.concat(a);
+									}
+									else rlt = rlt.concat(tmp[i]);
 								});
 
-								// iterate rlt & the table and put it back in order
+								// resort rlt?
+								var abc = bucket(query, rlt, prev, reverse);
+								debugger;
+								
 								sorted.registry[i] = rlt;
-							}*/
+							}
+
+							<!-- /the secret sauce -->
+
 							recs = recs.concat(sorted.registry[i]);
 						});
 
 						result  = recs;
 						records = result;
-					});
+					});*/
 
 					this.views[view] = result;
 					return result;
