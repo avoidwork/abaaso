@@ -1610,8 +1610,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (typeof query === "undefined" || String(query).isEmpty()) throw Error(label.error.invalidArguments);
 
 					create       = (create === true);
-					var obj      = this.parentNode,
-					    view     = query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase(),
+					var view     = query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase(),
 					    queries  = query.explode(),
 					    needle   = /:::(.*)$/,
 					    asc      = /\s*asc$/i,
