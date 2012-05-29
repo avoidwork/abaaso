@@ -1632,7 +1632,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					crawl = function (q, data) {
 						var queries = q.clone(),
 						    query   = q.first(),
-						    buckets = {},
 						    sorted  = {},
 						    result  = [];
 
