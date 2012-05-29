@@ -1602,7 +1602,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * @method sort
 			 * @param  {String} query   SQL (style) order by
-			 * @param  {String} create  [Optional, default is true] Boolean determines whether to recreate a view if it exists
+			 * @param  {String} create  [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
 			 * @return {Array} View of data
 			 */
 			sort : function (query, create) {
