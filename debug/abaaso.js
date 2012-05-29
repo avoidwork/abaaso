@@ -1646,8 +1646,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					bucket = function (query, records, reverse) {
 						query        = query.replace(asc, "");
-						var ascend   = !desc.test(query),
-						    prop     = query.replace(desc, ""),
+						var prop     = query.replace(desc, ""),
 						    pk       = (key === prop),
 						    order    = [],
 						    registry = {};
@@ -1664,7 +1663,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 
 						order.sort(array.sort);
-						if (!ascend) order.reverse();
+						if (reverse) order.reverse();
 						
 						order.each(function (k) {
 							if (registry[k].length === 1) return;
@@ -1687,7 +1686,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (tmp.length > 1) {
 							tmp.sort(array.sort);
-							if (desc.test(query)) tmp.reverse();
+							if (reverse) tmp.reverse();
 						}
 
 						tmp.each(function (v) { sorted.push(data[needle.exec(v)[1]]); });
