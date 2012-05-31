@@ -2954,7 +2954,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
 
 				var instance = null,
-				    regex    = /click|drag|drop|key|mouse/,
+				    regex    = /click|dragstart|dragenter|dragleave|dragend|key|mouse/,
 				    l        = observer.listeners,
 				    o        = this.id(obj),
 				    n        = false,
