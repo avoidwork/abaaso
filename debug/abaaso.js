@@ -2954,9 +2954,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
 
 				var instance = null,
-				    l = observer.listeners,
-				    o = this.id(obj),
-				    n = false,
+				    regex    = /click|drag|drop|key|mousedown|mouseup/,
+				    l        = observer.listeners,
+				    o        = this.id(obj),
+				    n        = false,
 				    item, add, reg;
 
 				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -2980,13 +2981,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						add = (typeof instance.addEventListener === "function");
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
-							if (!e) e = global.event;
-							if (!/click|dragstart|drop|mousedown|mouseup/.test(e.type) && e.type.indexOf("key")) {
+							if (!regex.test(e.type)) {
 								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 								if (typeof e.preventDefault === "function")  e.preventDefault();
 								if (typeof e.stopPropagation === "function") e.stopPropagation();
 							}
-							typeof instance.fire === "function" ? instance.fire(event, e) : observer.fire(obj, event, e);
+							observer.fire(obj, event, e);
 						}, false);
 					}
 				}
@@ -3055,7 +3055,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
 				l = this.list(obj, event).active;
 				utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
-				$.observer.fired++;
 				return obj;
 			}
 			catch (e) {
@@ -4330,7 +4329,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			log     : observer.log,
 			add     : observer.add,
 			fire    : observer.fire,
-			fired   : 0,
 			list    : observer.list,
 			remove  : observer.remove
 		},
