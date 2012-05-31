@@ -1900,15 +1900,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			// Getters & setters
 			switch (true) {
-				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-					Object.defineProperty(obj.data, "uri",     {get: methods.uri.getter, set: methods.uri.setter});
-					Object.defineProperty(obj.data, "expires", {get: methods.expires.getter, set: methods.expires.setter});
-					break;
-				case typeof obj.data.__defineGetter__ === "function":
-					obj.data.__defineGetter__("expires", methods.expires.getter);
-					obj.data.__defineSetter__("expires", methods.expires.setter);
-					obj.data.__defineGetter__("uri", methods.uri.getter);
-					obj.data.__defineSetter__("uri", methods.uri.setter);
+				case (!client.ie || client.version > 8):
+					utility.property(obj.data, "uri",     {get: methods.uri.getter,     set: methods.uri.setter});
+					utility.property(obj.data, "expires", {get: methods.expires.getter, set: methods.expires.setter});
 					break;
 				default: // Only exists when no getters/setters (IE8)
 					obj.data.setExpires = function (arg) {
@@ -3312,18 +3306,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					default:
 						getter = function () { return s[k]; },
 						setter = function (arg) { s[k] = arg; };
-
-						switch (true) {
-							case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-								Object.defineProperty(o, k, {get: getter, set: setter});
-								break;
-							case typeof o.__defineGetter__ === "function":
-								o.__defineGetter__(k, getter);
-								o.__defineSetter__(k, setter);
-								break;
-							default:
-								o[k] = s[k];
-						}
+						utility.property(o, k, {get: getter, set: setter, value: s[k]});
 				}
 			});
 			return obj;
@@ -3683,10 +3666,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param {Object} descriptor Descriptor of the property
 		 */
 		property : function (obj, prop, descriptor) {
+			if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
+
 			var define;
 
-			if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 			define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
+			if (define && typeof descriptor.value !== "undefined" && typeof descriptor.get !== "undefined") delete descriptor.value;
 			define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
 		},
 
@@ -4542,18 +4527,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			};
 
 			switch (true) {
-				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
-					Object.defineProperty($.state,      "current", {get: getter, set: setter});
+				case (!client.ie || client.version > 8):
+					utility.property(abaaso.state, "current", {get: getter, set: setter});
+					utility.property($.state,      "current", {get: getter, set: setter});
 					break;
-				case typeof abaaso.state.__defineGetter__ === "function":
-					abaaso.state.__defineGetter__("current", getter);
-					abaaso.state.__defineSetter__("current", setter);
-					$.state.__defineGetter__("current", getter);
-					$.state.__defineSetter__("current", setter);
-					break;
-				default:
-					// Pure hackery, only exists when needed
+				default: // Pure hackery, only exists when needed
 					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
 					$.state.change      = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
 			}
