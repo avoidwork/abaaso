@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.8
+ * @version 2.0.9
  */
 (function (global) {
 "use strict";
@@ -1901,7 +1901,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Getters & setters
 			switch (true) {
 				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
-					Object.defineProperty(obj.data, "uri", {get: methods.uri.getter, set: methods.uri.setter});
+					Object.defineProperty(obj.data, "uri",     {get: methods.uri.getter, set: methods.uri.setter});
 					Object.defineProperty(obj.data, "expires", {get: methods.expires.getter, set: methods.expires.setter});
 					break;
 				case typeof obj.data.__defineGetter__ === "function":
@@ -3676,6 +3676,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
+		 * 
+		 * @param {Object} obj        Object to decorate
+		 * @param {String} prop       Name of property to set
+		 * @param {Object} descriptor Descriptor of the property
+		 */
+		property : function (obj, prop, descriptor) {
+			var define;
+
+			if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
+			define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
+			define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
+		},
+
+		/**
 		 * Sets methods on a prototype object
 		 *
 		 * @method proto
@@ -3970,16 +3985,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           hyphenate: function () { return string.hyphenate(this); },
 				           trim     : function () { return string.trim(this); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
-			},
-			define = ((!client.ie || client.version > 8) && typeof Object.defineProperty === "function"),
-			setter = function (obj, method, fn) {
-				if (define) Object.defineProperty(obj, method, {value: fn, enumerable: false});
-				else obj[method] = fn;
 			};
 
-			// Applying the methods
-			for (i in methods[type]) setter(obj.prototype, i, methods[type][i]);
-			if (type !== "function") for (i in methods.shared) setter(obj.prototype, i, methods.shared[i]);
+			utility.iterate(methods[type], function (v, k) { utility.property(obj.prototype, k, {value: v}); });
+			if (type !== "function") utility.iterate(methods.shared, function (v, k) { utility.property(obj.prototype, k, {value: v}); });
 			return obj;
 		},
 
@@ -4535,7 +4544,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			switch (true) {
 				case (!client.ie || client.version > 8) && typeof Object.defineProperty === "function":
 					Object.defineProperty(abaaso.state, "current", {get: getter, set: setter});
-					Object.defineProperty($.state, "current", {get: getter, set: setter});
+					Object.defineProperty($.state,      "current", {get: getter, set: setter});
 					break;
 				case typeof abaaso.state.__defineGetter__ === "function":
 					abaaso.state.__defineGetter__("current", getter);
@@ -4653,6 +4662,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (obj instanceof Element) obj.genId();
 			return element.create(type, args, obj, "first");
 		},
+		property        : utility.property,
 		put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 		queryString     : utility.queryString,
 		ready           : false,
@@ -4675,7 +4685,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.8"
+		version         : "2.0.9"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
