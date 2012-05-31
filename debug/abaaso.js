@@ -433,7 +433,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					return false;
 			}
 			}),
-		expire  : 0,
 		firefox : (function () { return /firefox/i.test(navigator.userAgent); })(),
 		ie      : (function () { return /msie/i.test(navigator.userAgent); })(),
 		ios     : (function () { return /ipad|iphone/i.test(navigator.userAgent); })(),
@@ -1901,8 +1900,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Getters & setters
 			switch (true) {
 				case (!client.ie || client.version > 8):
-					utility.property(obj.data, "uri",     {get: methods.uri.getter,     set: methods.uri.setter});
-					utility.property(obj.data, "expires", {get: methods.expires.getter, set: methods.expires.setter});
+					utility.property(obj.data, "uri",     {enumerable: true, get: methods.uri.getter,     set: methods.uri.setter});
+					utility.property(obj.data, "expires", {enumerable: true, get: methods.expires.getter, set: methods.expires.setter});
 					break;
 				default: // Only exists when no getters/setters (IE8)
 					obj.data.setExpires = function (arg) {
@@ -3306,7 +3305,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					default:
 						getter = function () { return s[k]; },
 						setter = function (arg) { s[k] = arg; };
-						utility.property(o, k, {get: getter, set: setter, value: s[k]});
+						utility.property(o, k, {enumerable: true, get: getter, set: setter, value: s[k]});
 				}
 			});
 			return obj;
@@ -4290,7 +4289,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			blackberry : client.blackberry,
 			css3    : false,
 			chrome  : client.chrome,
-			expire  : client.expire,
 			firefox : client.firefox,
 			ie      : client.ie,
 			ios     : client.ios,
@@ -4528,8 +4526,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			switch (true) {
 				case (!client.ie || client.version > 8):
-					utility.property(abaaso.state, "current", {get: getter, set: setter});
-					utility.property($.state,      "current", {get: getter, set: setter});
+					utility.property(abaaso.state, "current", {enumerable: true, get: getter, set: setter});
+					utility.property($.state,      "current", {enumerable: true, get: getter, set: setter});
 					break;
 				default: // Pure hackery, only exists when needed
 					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
