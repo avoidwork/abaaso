@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.0.7
+ * @version 2.0.8
  */
 (function (global) {
 "use strict";
@@ -414,9 +414,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	 * @namespace abaaso
 	 */
 	client = {
-		android : (function () { return (typeof navigator !== "undefined") && /android/i.test(navigator.userAgent); })(),
-		blackberry : (function () { return (typeof navigator !== "undefined") && /blackberry/i.test(navigator.userAgent); })(),
-		chrome  : (function () { return (typeof navigator !== "undefined") && /chrome/i.test(navigator.userAgent); })(),
+		android : (function () { return /android/i.test(navigator.userAgent); })(),
+		blackberry : (function () { return /blackberry/i.test(navigator.userAgent); })(),
+		chrome  : (function () { return /chrome/i.test(navigator.userAgent); })(),
 		css3    : (function () {
 			switch (true) {
 				case this.mobile:
@@ -434,19 +434,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 			}),
 		expire  : 0,
-		firefox : (function () { return (typeof navigator !== "undefined") && /firefox/i.test(navigator.userAgent); })(),
-		ie      : (function () { return (typeof navigator !== "undefined") && /msie/i.test(navigator.userAgent); })(),
-		ios     : (function () { return (typeof navigator !== "undefined") && /ipad|iphone/i.test(navigator.userAgent); })(),
-		linux   : (function () { return (typeof navigator !== "undefined") && /linux|bsd|unix/i.test(navigator.userAgent); })(),
-		mobile  : (function () { return (typeof navigator !== "undefined") && /android|blackberry|ipad|iphone|meego|webos/i.test(navigator.userAgent); })(),
-		playbook: (function () { return (typeof navigator !== "undefined") && /playbook/i.test(navigator.userAgent); })(),
-		opera   : (function () { return (typeof navigator !== "undefined") && /opera/i.test(navigator.userAgent); })(),
-		osx     : (function () { return (typeof navigator !== "undefined") && /macintosh/i.test(navigator.userAgent); })(),
-		safari  : (function () { return (typeof navigator !== "undefined") && /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		server  : (function () { return (typeof navigator === "undefined"); })(),
-		tablet  : (function () { abaaso.client.tablet = this.tablet = (typeof navigator !== "undefined") && /android|ipad|playbook|webos/i.test(navigator.userAgent) && (abaaso.client.size.x >= 1000 || abaaso.client.size.y >= 1000); }),
-		webos   : (function () { return (typeof navigator !== "undefined") && /webos/i.test(navigator.userAgent); })(),
-		windows : (function () { return (typeof navigator !== "undefined") && /windows/i.test(navigator.userAgent); })(),
+		firefox : (function () { return /firefox/i.test(navigator.userAgent); })(),
+		ie      : (function () { return /msie/i.test(navigator.userAgent); })(),
+		ios     : (function () { return /ipad|iphone/i.test(navigator.userAgent); })(),
+		linux   : (function () { return /linux|bsd|unix/i.test(navigator.userAgent); })(),
+		mobile  : (function () { abaaso.client.mobile = this.mobile = /blackberry|iphone|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.x < 720 || abaaso.client.size.y < 720)); }),
+		playbook: (function () { return /playbook/i.test(navigator.userAgent); })(),
+		opera   : (function () { return /opera/i.test(navigator.userAgent); })(),
+		osx     : (function () { return /macintosh/i.test(navigator.userAgent); })(),
+		safari  : (function () { return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
+		tablet  : (function () { abaaso.client.tablet = this.tablet = /ipad|playbook|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.x >= 720 || abaaso.client.size.y >= 720)); }),
+		webos   : (function () { return /webos/i.test(navigator.userAgent); })(),
+		windows : (function () { return /windows/i.test(navigator.userAgent); })(),
 		version : (function () {
 			var version = 0;
 			switch (true) {
@@ -954,10 +953,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var x = 0,
 			    y = 0;
 
-			if (!client.server) {
-				x = typeof document.documentElement !== "undefined" ? document.documentElement.clientWidth  : document.body.clientWidth;
-				y = typeof document.documentElement !== "undefined" ? document.documentElement.clientHeight : document.body.clientHeight;
-			}
+			x = typeof document.documentElement !== "undefined" ? document.documentElement.clientWidth  : document.body.clientWidth;
+			y = typeof document.documentElement !== "undefined" ? document.documentElement.clientHeight : document.body.clientHeight;
 
 			return {x: x, y: y};
 		}
@@ -1003,7 +1000,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var result = {},
 			    item, items;
 
-			if (!client.server && typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
+			if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
 				items = document.cookie.split(';');
 				items.each(function (i) {
 					item = i.split("=");
@@ -4451,8 +4448,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Describing the Client
 			abaaso.client.size = client.size();
 			client.version();
-			client.css3();
+			client.mobile();
 			client.tablet();
+			client.css3();
 
 			// IE7 and older is not supported
 			if (client.ie && client.version < 8) return;
@@ -4501,23 +4499,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			$.error.log = abaaso.error.log = [];
 
 			// Setting events & garbage collection
-			if (!client.server) {
-				$.on(global, "error",      function (e) { $.fire("error", e); });
-				$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
-				$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
-				$.on(global, "load",       function ()  { $.fire("render").un("render"); });
-				$.on(global, "DOMNodeInserted", function (e) {
-					var obj = e.target;
-					if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
-						obj.genId();
-						$.fire("afterCreate", obj);
-					}
-				});
-				$.on(global, "DOMNodeRemoved", function (e) {
-					var id = e.target.id;
-					if (typeof id !== "undefined" && !id.isEmpty()) observer.remove(e.target);
-				});
-			}
+			$.on(global, "error",      function (e) { $.fire("error", e); });
+			$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
+			$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+			$.on(global, "load",       function ()  { $.fire("render").un("render"); });
+			$.on(global, "DOMNodeInserted", function (e) {
+				var obj = e.target;
+				if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
+					obj.genId();
+					$.fire("afterCreate", obj);
+				}
+			});
+			$.on(global, "DOMNodeRemoved", function (e) {
+				var id = e.target.id;
+				if (typeof id !== "undefined" && !id.isEmpty()) observer.remove(e.target);
+			});
 
 			// abaaso.state.current getter/setter
 			var getter, setter;
@@ -4560,7 +4556,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				case typeof global.define === "function":
 					global.define("abaaso", function () { return abaaso.init(); });
 					break;
-				case client.server:
 				case (/complete|loaded/.test(document.readyState)):
 					abaaso.init();
 					break;
@@ -4680,7 +4675,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.0.7"
+		version         : "2.0.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
