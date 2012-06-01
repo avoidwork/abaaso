@@ -2653,6 +2653,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			clear   : "Clear",
 			close   : "Close",
 			cont    : "Continue",
+			create	: "Create",
 			del     : "Delete",
 			edit    : "Edit",
 			find    : "Find",
