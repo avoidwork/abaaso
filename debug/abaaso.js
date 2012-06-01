@@ -274,8 +274,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		sort : function (a, b) {
 			var result;
 
-			if (!isNaN(a) && !isNaN(b)) result = number.parse(a) > number.parse(b);
-			else switch (true) {
+			if (!isNaN(a)) a = number.parse(a);
+			if (!isNaN(b)) b = number.parse(b);
+
+			switch (true) {
 				case a < b:
 					result = -1;
 					break;
