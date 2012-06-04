@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.1.2
+ * @version 2.1.3
  */
 (function (global) {
 "use strict";
@@ -787,7 +787,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						if (headers === null) headers = {};
 						if (contentType !== null) headers["Content-Type"] = contentType;
 						if (headers.hasOwnProperty("callback")) delete headers.callback;
-						utility.iterate(headers, function (v, k) { if (v !== null && v !== "withCredentials") xhr.setRequestHeader(k, v); });
+						utility.iterate(headers, function (v, k) { if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v); });
 					}
 
 					// Cross Origin Resource Sharing (CORS)
@@ -1168,7 +1168,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 										case i.indexOf("//") === -1:
 											i = self.uri + i;
 										default:
-											i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", widthCredentials: self.credentials});
+											i.get(function (arg) { set(arg, idx); }, null, {Accept: "application/json", withCredentials: self.credentials});
 											break;
 									}
 									else self.del(i, false, sync);
@@ -1289,7 +1289,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						obj.fire("syncDataDelete", args);
 						break;
 					case r.test(p):
-						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, {Accept: "application/json", widthCredentials: this.credentials});
+						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, {Accept: "application/json", withCredentials: this.credentials});
 						break;
 					default:
 						obj.fire("failedDataDelete", args);
@@ -1759,7 +1759,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					failure = function () { obj.fire("failedDataSync"); };
 
 					obj.fire("beforeDataSync");
-					this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {Accept: "application/json", widthCredentials: this.credentials});
+					this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {Accept: "application/json", withCredentials: this.credentials});
 					return this;
 				}
 				catch (e) {
@@ -4666,7 +4666,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.1.2"
+		version         : "2.1.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
