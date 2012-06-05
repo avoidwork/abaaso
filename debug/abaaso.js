@@ -1318,6 +1318,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					    nth2   = n.length,
 					    obj    = this.parentNode,
 					    keys   = {},
+					    regex  = new RegExp(),
 					    x, y, f, r, s, p, i, a;
 
 					r = this.records.first();
@@ -1339,9 +1340,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							for (y = 0; y < nth2; y++) {
 								f = h[x];
 								p = n[y];
-								r = new RegExp(p, modifiers);
+								regex.compile(p, modifiers);
 								s = this.records[i].data[f];
-								if (!keys[this.records[i].key] && r.test(s)) {
+								if (!keys[this.records[i].key] && regex.test(s)) {
 									keys[this.records[i].key] = i;
 									if (result.index(this.records[i]) < 0) result.push(this.records[i]);
 								}
