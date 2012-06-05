@@ -1301,13 +1301,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * Finds needle in the haystack
 			 *
 			 * @method find
-			 * @param  {Mixed} needle   String, Number or Pattern to test for
-			 * @param  {Mixed} haystack [Optional] The field(s) to search
+			 * @param  {Mixed}  needle    String, Number or Pattern to test for
+			 * @param  {Mixed}  haystack  [Optional] The field(s) to search
+			 * @param  {String} modifiers [Optional] Regex modifiers
 			 * @return {Array} Array of results
 			 */
-			find : function (needle, haystack) {
+			find : function (needle, haystack, modifiers) {
 				try {
 					if (typeof needle === "undefined") throw Error(label.error.invalidArguments);
+					if (typeof modifiers !== "string" || String(modifiers).isEmpty()) modifiers = "gi";
 
 					var h      = [],
 					    n      = typeof needle === "string" ? needle.explode() : needle,
@@ -1337,7 +1339,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							for (y = 0; y < nth2; y++) {
 								f = h[x];
 								p = n[y];
-								r = new RegExp(p, "gi");
+								r = new RegExp(p, modifiers);
 								s = this.records[i].data[f];
 								if (!keys[this.records[i].key] && r.test(s)) {
 									keys[this.records[i].key] = i;
