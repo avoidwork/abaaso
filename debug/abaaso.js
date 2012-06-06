@@ -3244,7 +3244,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Uncapitalizes the String
 		 * 
 		 * @param  {String} obj String to capitalize
-		 * @return {String} Capitalized String
+		 * @return {String} Uncapitalized String
 		 */
 		uncapitalize : function (obj) {
 			obj = string.trim(obj);
