@@ -1602,16 +1602,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * Returns a view, or creates a view and returns it
 			 *
 			 * @method sort
-			 * @param  {String} query   SQL (style) order by
-			 * @param  {String} create  [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
+			 * @param  {String} query       SQL (style) order by
+			 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
+			 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" (insensitive = "ci", sensitive = "cs", mixed = "ms")
 			 * @return {Array} View of data
 			 */
-			sort : function (query, create) {
+			sort : function (query, create, sensitivity) {
 				try {
 					if (typeof query === "undefined" || String(query).isEmpty()) throw Error(label.error.invalidArguments);
+					if (!/ci|cs|ms/.test(sensitivity)) sensitivity = "ci";
 
 					create       = (create === true);
-					var view     = query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase(),
+					var view     = (query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase()) + sensitivity.toUpperCase(),
 					    queries  = query.explode(),
 					    needle   = /:::(.*)$/,
 					    asc      = /\s*asc$/i,
@@ -1654,7 +1656,19 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						records.each(function (r) {
 							var val = pk ? r.key : r.data[prop],
-							    k   = val === null ? "null" : String(val).toCamelCase();
+							    k   = val === null ? "null" : String(val);
+
+							switch (sensitivity) {
+								case "ci":
+									k = k.toCamelCase();
+									break;
+								case "cs":
+									k = k.trim();
+									break;
+								case "ms":
+									k = k.trim().slice(0, 1).toLowerCase();
+									break;
+							}
 
 							if (!(registry[k] instanceof Array)) {
 								registry[k] = [];
@@ -3224,6 +3238,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		trim : function (obj) {
 			return obj.replace(/^\s+|\s+$/g, "");
+		},
+
+		/**
+		 * Uncapitalizes the String
+		 * 
+		 * @param  {String} obj String to capitalize
+		 * @return {String} Capitalized String
+		 */
+		uncapitalize : function (obj) {
+			obj = string.trim(obj);
+			return obj.charAt(0).toLowerCase() + obj.slice(1);
 		}
 	};
 
@@ -3977,7 +4002,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           toCamelCase: function () { return string.toCamelCase(this); },
 				           hyphenate: function () { return string.hyphenate(this); },
 				           trim     : function () { return string.trim(this); },
-				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }}
+				           un       : function (event, id, state) { return $.un.call(this, event, id, state); },
+				           uncapitalize: function () { return string.uncapitalize(this); }}
 			};
 
 			utility.iterate(methods[type], function (v, k) { utility.property(obj.prototype, k, {value: v}); });
