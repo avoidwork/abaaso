@@ -3939,12 +3939,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		return element.size(this);
 				           },
 				           text     : function (arg) {
-				           		var args = {};
-
 				           		this.genId();
-				           		if (typeof this.value !== "undefined") args.value = arg;
-				           		args.innerHTML = arg;
-				           		return this.update(args);
+				           		return typeof arg === "undefined" ? this.innerText : this.update({innerText: arg});
 				           },
 				           tpl      : function (arg) { return $.tpl(arg, this); },
 				           un       : function (event, id, state) {
