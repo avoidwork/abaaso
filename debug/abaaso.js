@@ -2516,6 +2516,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				utility.iterate(args, function (v, k) {
 					switch (k) {
 						case "innerHTML":
+						case "innerText":
 						case "type":
 						case "src":
 							obj[k] = v;
