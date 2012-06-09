@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.1.4
+ * @version 2.1.5
  */
 (function (global) {
 "use strict";
@@ -973,10 +973,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method expire
 		 * @param  {String} name Name of the cookie to expire
+		 * @param  {String} domain [Optional] Domain to set the cookie for
+		 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
 		 * @return {String} Name of the expired cookie
 		 */
-		expire : function (name) {
-			if (typeof cookie.get(name) !== "undefined") cookie.set(name, "", "-1s");
+		expire : function (name, domain, secure) {
+			if (typeof cookie.get(name) !== "undefined") cookie.set(name, "", "-1s", domain, secure);
 			return name;
 		},
 
@@ -1002,9 +1004,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    item, items;
 
 			if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
-				items = document.cookie.split(';');
+				items = document.cookie.explode(";");
 				items.each(function (i) {
-					item = i.split("=");
+					item = i.explode("=");
 					result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
 				});
 			}
@@ -1020,19 +1022,27 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String} name   Name of the cookie to create
 		 * @param  {String} value  Value to set
 		 * @param  {String} offset A positive or negative integer followed by "d", "h", "m" or "s"
+		 * @param  {String} domain [Optional] Domain to set the cookie for
+		 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
 		 * @return {Object} The new cookie
 		 */
-		set : function (name, value, offset) {
+		set : function (name, value, offset, domain, secure) {
+			if (typeof value === "undefined") value = "";
+			value     += ";";
 			if (typeof offset === "undefined") offset = "";
+			domain     = (typeof domain === "string") ? (" domain=" + domain + ";") : "";
+			secure     = (secure === true) ? "; secure" : "";
 			var expire = "",
 			    span   = null,
 			    type   = null,
 			    types  = ["d", "h", "m", "s"],
+			    regex  = new RegExp(),
 			    i      = types.length;
 
 			if (!offset.isEmpty()) {
 				while (i--) {
-					if (new RegExp(types[i]).test(offset)) {
+					regex.compile(types[i]);
+					if (regex.test(offset)) {
 						type = types[i];
 						span = parseInt(offset);
 						break;
@@ -1057,8 +1067,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						break;
 				}
 			}
-			if (expire instanceof Date) expire = "; expires=" + expire.toUTCString();
-			document.cookie = name.toString().trim() + "=" + value + expire + "; path=/";
+			if (expire instanceof Date) expire = " expires=" + expire.toUTCString() + ";";
+			document.cookie = (name.toString().trim() + "=" + value + expire + domain + " path=/" + secure);
 			return cookie.get(name);
 		}
 	};
@@ -4699,7 +4709,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.1.4"
+		version         : "2.1.5"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
