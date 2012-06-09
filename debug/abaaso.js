@@ -1415,7 +1415,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						    nodes   = $("#" + form.id + " input"),
 						    entity  = nodes[0].name.match(/(.*)\[/)[1],
 						    result  = true,
-						    newData = {};
+						    newData = {},
+						    guid;
 
 						self.parentNode.fire("beforeDataFormSubmit");
 
@@ -1430,6 +1431,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									if (typeof i.type !== "undefined" && /button|submit|reset/.test(i.type)) return;
 									utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 								});
+								guid = $.genId(true);
+								self.parentNode.on("afterDataSet", function () {
+									this.un("afterDataSet", guid);
+									form.destroy();
+								}, guid);
 								self.set(key, newData[entity]);
 								break;
 						}
