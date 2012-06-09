@@ -1373,6 +1373,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			form : function (record, target, test) {
 				try {
+					test      = (test !== false);
 					var empty = (record === null),
 					    self  = this,
 					    entity, obj, handler, structure, key, data;
