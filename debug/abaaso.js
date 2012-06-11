@@ -2165,7 +2165,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		data : function (obj, key, value) {
 			var result = undefined,
 			    regex  = new RegExp(),
-				coerce, compile, tmp;
+			    coerce, compile, tmp;
 
 			compile = function (regex, pattern, modifiers) {
 				return !regex.compile(pattern, modifiers);
