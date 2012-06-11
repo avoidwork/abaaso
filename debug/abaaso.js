@@ -2176,8 +2176,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case compile(regex, "\\d") && regex.test(value):
 						value = number.parse(value);
 						break;
-					case compile(regex, "/^(true|false)/$") && regex.test(value):
-						value = (/true/i.test(value));
+					case compile(regex, "/^(true|false)/$", "i") && regex.test(value):
+						value = (compile(regex, "true", "i") && regex.test(value));
 						break;
 					case value === "undefined":
 						value = undefined;
