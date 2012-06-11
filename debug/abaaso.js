@@ -2165,7 +2165,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		data : function (obj, key, value) {
 			var result = undefined,
 			    regex  = new RegExp(),
-				coerce, compile;
+				coerce, compile, tmp;
 
 			compile = function (regex, pattern, modifiers) {
 				return !regex.compile(pattern, modifiers);
@@ -2176,7 +2176,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case compile(regex, "\\d") && regex.test(value):
 						value = number.parse(value);
 						break;
-					case compile(regex, "/^(true|false)/$", "i") && regex.test(value):
+					case compile(regex, "^(true|false)$", "i") && regex.test(value):
 						value = (compile(regex, "true", "i") && regex.test(value));
 						break;
 					case value === "undefined":
@@ -2185,8 +2185,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case value === "null":
 						value = null;
 						break;
-					case typeof json.decode(value, true) !== "undefined":
-						value = json.decode(value, true);
+					case (tmp = json.decode(value, true)) && typeof tmp !== "undefined":
+						value = tmp;
 						break;
 				}
 				return value;
