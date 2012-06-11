@@ -2154,6 +2154,64 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Data attribute facade acting as a getter (with coercion) & setter
+		 *
+		 * @method  data
+		 * @param  {Mixed}  obj   Element or Array of Elements or $ queries
+		 * @param  {String} key   Data key
+		 * @param  {Mixed}  value Boolean, Number or String to set
+		 * @return {Mixed}        undefined, Element or value
+		 */
+		data : function (obj, key, value) {
+			var result = undefined,
+			    regex  = new RegExp(),
+				coerce, compile;
+
+			compile = function (regex, pattern, modifiers) {
+				return !regex.compile(pattern, modifiers);
+			};
+
+			coerce = function (value) {
+				switch (true) {
+					case compile(regex, "\\d") && regex.test(value):
+						value = number.parse(value);
+						break;
+					case compile(regex, "/^(true|false)/$") && regex.test(value):
+						value = (/true/i.test(value));
+						break;
+					case value === "undefined":
+						value = undefined;
+						break;
+					case value === "null":
+						value = null;
+						break;
+					case typeof json.decode(value, true) !== "undefined":
+						value = json.decode(value, true);
+						break;
+				}
+				return value;
+			};
+
+			if (typeof value !== "undefined") {
+				obj.hasOwnProperty("dataset") ? obj.dataset[key] = value : obj["data-" + key] = value.toString();
+				result = obj;
+			}
+			else {
+				switch (true) {
+					case obj.hasOwnProperty("dataset") && key in obj.dataset:
+						result = coerce(obj.dataset[key]);
+						break;
+					case obj.hasOwnProperty("data-" + key):
+						result = coerce(obj["data-" + key]);
+						break;
+					default :
+						result = undefined;
+				}
+			}
+			return result;
+		},
+
+		/**
 		 * Destroys an Element
 		 *
 		 * Events: beforeDestroy  Fires before the destroy starts
@@ -3852,6 +3910,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		}
 				           		this.style[key] = value;
 				           		return this;
+				           },
+				           data      : function (key, value) {
+				           		this.genId();
+				           		return element.data(this, key, value);
 				           },
 				           destroy   : function () { return element.destroy(this); },
 				           disable   : function () { return element.disable(this); },
