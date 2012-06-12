@@ -2581,23 +2581,25 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			try {
 				obj  = utility.object(obj);
 				args = args || {};
+				var regex;
 
 				if (obj instanceof Array) return obj.each(function (i) { element.update(i, args); });
 
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeUpdate");
+				regex = /innerHTML|innerText|type|src/;
 
 				utility.iterate(args, function (v, k) {
-					switch (k) {
-						case "innerHTML":
-						case "innerText":
-						case "type":
-						case "src":
+					switch (true) {
+						case regex.test(k):
 							obj[k] = v;
 							break;
-						case "class":
+						case k === "class":
 							!v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
+							break;
+						case k.indexOf("data") > -1:
+							element.data(obj, k.replace("data-", ""), v);
 							break;
 						case "id":
 							var o = observer.listeners;
@@ -3807,6 +3809,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           contains : function (arg) { return array.contains(this, arg); },
 				           create   : function (type, args, position) { var a = []; this.each(function (i) { if (typeof i.create === "function") a.push(i.create(type, args, position)); }); return a; },
 				           css      : function (key, value) { return this.each(function (i) { if (typeof i.css === "function") i.css(key, value); }); },
+				           data     : function (key, value) { var a = []; this.each(function (i) { if (typeof i.data === "function") a.push(i.data(key, value)); }); return a; },
 				           diff     : function (arg) { return array.diff(this, arg); },
 				           disable  : function () { return this.each(function (i) { if (typeof i.disable === "function") i.disable(); }); },
 				           destroy  : function () { this.each(function (i) { if (typeof i.destroy === "function") i.destroy(); }); return []; },
