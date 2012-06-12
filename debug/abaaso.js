@@ -3439,7 +3439,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    tmp;
 
 			switch (true) {
-				case utility.compile(regex, "\\d") && regex.test(result):
+				case utility.compile(regex, "^\\d$") && regex.test(result):
 					result = number.parse(result);
 					break;
 				case utility.compile(regex, "^(true|false)$", "i") && regex.test(result):
