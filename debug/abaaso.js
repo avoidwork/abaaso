@@ -2163,34 +2163,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Mixed}        undefined, Element or value
 		 */
 		data : function (obj, key, value) {
-			var result = undefined,
-			    regex  = new RegExp(),
-			    coerce, compile, tmp;
-
-			compile = function (regex, pattern, modifiers) {
-				return !regex.compile(pattern, modifiers);
-			};
-
-			coerce = function (value) {
-				switch (true) {
-					case compile(regex, "\\d") && regex.test(value):
-						value = number.parse(value);
-						break;
-					case compile(regex, "^(true|false)$", "i") && regex.test(value):
-						value = (compile(regex, "true", "i") && regex.test(value));
-						break;
-					case value === "undefined":
-						value = undefined;
-						break;
-					case value === "null":
-						value = null;
-						break;
-					case (tmp = json.decode(value, true)) && typeof tmp !== "undefined":
-						value = tmp;
-						break;
-				}
-				return value;
-			};
+			var result = undefined;
 
 			if (typeof value !== "undefined") {
 				obj.hasOwnProperty("dataset") ? obj.dataset[key] = value : obj["data-" + key] = value.toString();
@@ -2199,10 +2172,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			else {
 				switch (true) {
 					case obj.hasOwnProperty("dataset") && key in obj.dataset:
-						result = coerce(obj.dataset[key]);
+						result = utility.coerce(obj.dataset[key]);
 						break;
 					case obj.hasOwnProperty("data-" + key):
-						result = coerce(obj["data-" + key]);
+						result = utility.coerce(obj["data-" + key]);
 						break;
 					default :
 						result = undefined;
@@ -3455,6 +3428,49 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Coerces a String to a Type
+		 * 
+		 * @param  {String} value String to coerce
+		 * @return {Mixed}        Typed version of the String
+		 */
+		coerce : function (value) {
+			var result = utility.clone(value),
+			    regex  = new RegExp(),
+			    tmp;
+
+			switch (true) {
+				case utility.compile(regex, "\\d") && regex.test(result):
+					result = number.parse(result);
+					break;
+				case utility.compile(regex, "^(true|false)$", "i") && regex.test(result):
+					result = (utility.compile(regex, "true", "i") && regex.test(result));
+					break;
+				case result === "undefined":
+					result = undefined;
+					break;
+				case result === "null":
+					result = null;
+					break;
+				case (tmp = json.decode(result, true)) && typeof tmp !== "undefined":
+					result = tmp;
+					break;
+			}
+			return result;
+		},
+
+		/**
+		 * Recompiles a RegExp
+		 * 
+		 * @param  {Object} regex     RegExp
+		 * @param  {String} pattern   Regular expression pattern
+		 * @param  {String} modifiers Modifiers to apply to the pattern
+		 * @return {Object}           RegExp
+		 */
+		compile : function (regex, pattern, modifiers) {
+			return !regex.compile(pattern, modifiers);
+		},
+
+		/**
 		 * Allows deep setting of properties without knowing
 		 * if the structure is valid
 		 *
@@ -4669,6 +4685,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 		clear           : element.clear,
 		clone           : utility.clone,
+		coerce          : utility.coerce,
+		compile         : utility.compile,
 		create          : element.create,
 		css             : element.css,
 		decode          : json.decode,
