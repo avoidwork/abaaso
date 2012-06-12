@@ -3459,12 +3459,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Recompiles a RegExp
+		 * Recompiles a RegExp by reference
+		 *
+		 * This is ideal when you need to recompile a regex for use within a conditional statement
 		 * 
 		 * @param  {Object} regex     RegExp
 		 * @param  {String} pattern   Regular expression pattern
 		 * @param  {String} modifiers Modifiers to apply to the pattern
-		 * @return {Object}           RegExp
+		 * @return {Boolean}          true
 		 */
 		compile : function (regex, pattern, modifiers) {
 			return !regex.compile(pattern, modifiers);
