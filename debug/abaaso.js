@@ -2163,24 +2163,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Mixed}        undefined, Element or value
 		 */
 		data : function (obj, key, value) {
-			var result = undefined;
+			var result;
 
 			if (typeof value !== "undefined") {
-				obj.hasOwnProperty("dataset") ? obj.dataset[key] = value : obj["data-" + key] = value.toString();
+				typeof obj.dataset === "object" ? obj.dataset[key] = value : element.attr(obj, "data-" + key, value);
 				result = obj;
 			}
-			else {
-				switch (true) {
-					case obj.hasOwnProperty("dataset") && key in obj.dataset:
-						result = utility.coerce(obj.dataset[key]);
-						break;
-					case obj.hasOwnProperty("data-" + key):
-						result = utility.coerce(obj["data-" + key]);
-						break;
-					default :
-						result = undefined;
-				}
-			}
+			else result = utility.coerce(typeof obj.dataset === "object" ? obj.dataset[key] : element.attr(obj, "data-" + key));
 			return result;
 		},
 
