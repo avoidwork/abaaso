@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.1.6
+ * @version 2.1.7
  */
 (function (global) {
 "use strict";
@@ -2529,6 +2529,26 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Getter / setter for an Element's text
+		 * 
+		 * @param  {Object} obj Element
+		 * @param  {String} arg [Optional] Value to set
+		 * @return {Object}     Element
+		 */
+		text : function (obj, arg) {
+			var key     = typeof obj.textContent !== "undefined" ? "textContent" : "innerText",
+			    payload = {},
+			    set     = false;
+
+			if (typeof arg !== "undefined") {
+				set          = true;
+				payload[key] = arg;
+			}
+
+			return set ? obj.update(payload) : obj[key];
+		},
+
+		/**
 		 * Updates an Element
 		 *
 		 * Events: beforeUpdate  Fires before the update starts
@@ -2550,7 +2570,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				obj.fire("beforeUpdate");
-				regex = /innerHTML|innerText|type|src/;
+				regex = /innerHTML|innerText|textContent|type|src/;
 
 				utility.iterate(args, function (v, k) {
 					switch (true) {
@@ -4030,7 +4050,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           text     : function (arg) {
 				           		this.genId();
-				           		return typeof arg === "undefined" ? this.innerText : this.update({innerText: arg});
+				           		return element.text(this, arg);
 				           },
 				           tpl      : function (arg) { return $.tpl(arg, this); },
 				           un       : function (event, id, state) {
@@ -4783,7 +4803,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.1.6"
+		version         : "2.1.7"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
