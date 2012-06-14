@@ -2545,7 +2545,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				payload[key] = arg;
 			}
 
-			return set ? obj.update(payload) : obj[key];
+			return set ? element.update(obj, payload) : obj[key];
 		},
 
 		/**
