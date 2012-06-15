@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.1.7
+ * @version 2.1.8
  */
 (function (global) {
 "use strict";
@@ -3027,7 +3027,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			try {
 				obj   = utility.object(obj);
 				scope = scope || abaaso;
-				state = state || "active";
+				state = state || abaaso.state.current;
 
 				if (obj instanceof Array) return obj.each(function (i) { observer.add(i, event, fn, id, scope, state); });
 
@@ -3128,13 +3128,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				var o = this.id(obj),
 				    a = arg,
+				    s = abaaso.state.current,
 				    c, l;
 
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
-				l = this.list(obj, event).active;
-				utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
+				l = this.list(obj, event)[s];
+				if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
 				return obj;
 			}
 			catch (e) {
@@ -3204,29 +3205,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			else typeof id === "undefined" ? l[o][event][state] = {} : delete l[o][event][state][id];
 
 			return obj;
-		},
-
-		/**
-		 * Triggers an Observer state change
-		 *
-		 * @method state
-		 * @param  {String} arg Application state
-		 * @return {Object} abaaso
-		 */
-		state : function (arg) {
-			var l = this.listeners,
-			    p = $.state.previous,
-			    e;
-
-			utility.iterate(l, function (v, k) {
-				utility.iterate(v, function (s, d) {
-					v[p]     = v.active;
-					v.active = v[arg] || {};
-					if (typeof v[arg] !== "undefined") delete v[arg];
-				});
-			});
-			$.fire(arg);
-			return abaaso;
 		}
 	};
 
@@ -4656,7 +4634,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 					abaaso.state.previous = abaaso.state._current;
 					abaaso.state._current = arg;
-					return observer.state(arg);
+					return abaaso.fire(arg);
 				}
 				catch (e) {
 					error(e, arguments, this);
@@ -4803,7 +4781,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.1.7"
+		version         : "2.1.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
