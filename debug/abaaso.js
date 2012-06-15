@@ -3049,15 +3049,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (state === c && n) {
 					switch (true) {
-						case utility.compile(regex, "\/", "g") && !regex.test(o) && o !== "abaaso":
 						case utility.compile(regex, "body|document|window", "i") && regex.test(o):
+						case utility.compile(regex, "\/", "g") && !regex.test(o) && o !== "abaaso":
 							instance = obj;
 							break;
 						default:
 							instance = null;
 					}
 
-					if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && n && (regex.test(o) || typeof instance.listeners === "function")) {
+					if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && utility.compile(regex, "body|document|window", "i") && (regex.test(o) || typeof instance.listeners === "function")) {
 						add = (typeof instance.addEventListener === "function");
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
