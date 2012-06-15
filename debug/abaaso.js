@@ -1775,7 +1775,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							obj.on("afterDataBatch", function () {
 								obj.un("afterDataBatch", guid).un("failedDataBatch", guid);
 								if (reindex) self.reindex();
-								obj.fire("afterDataSync", arg);
+								obj.fire("afterDataSync", self.get());
 							}, guid);
 
 							obj.on("failedDataBatch", function () {
@@ -1786,11 +1786,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						}
 						catch (e) {
 							error(e, arguments, this);
-							obj.fire("failedDataSync");
+							obj.fire("failedDataSync", arg);
 						}
 					};
 
-					failure = function () { obj.fire("failedDataSync"); };
+					failure = function (e) { obj.fire("failedDataSync", e); };
 
 					obj.fire("beforeDataSync");
 					this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {Accept: "application/json", withCredentials: this.credentials});
