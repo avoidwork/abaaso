@@ -3057,11 +3057,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							instance = null;
 					}
 
-					if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && utility.compile(regex, "body|document|window", "i") && (regex.test(o) || typeof instance.listeners === "function")) {
+					utility.compile(regex, "body|document|window", "i");
+
+					if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && (regex.test(o) || typeof instance.listeners === "function")) {
 						add = (typeof instance.addEventListener === "function");
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
-							if (utility.compile(regex, "click|dragstart|dragenter|dragleave|dragend|key|mouse") && !regex.test(e.type)) {
+							if (!regex.test(e.type)) {
 								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 								if (typeof e.preventDefault === "function")  e.preventDefault();
 								if (typeof e.stopPropagation === "function") e.stopPropagation();
