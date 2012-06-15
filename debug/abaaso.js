@@ -3034,7 +3034,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
 
 				var instance = null,
-				    regex    = /click|dragstart|dragenter|dragleave|dragend|key|mouse/,
+				    regex    = new RegExp(),
 				    l        = observer.listeners,
 				    o        = this.id(obj),
 				    n        = false,
@@ -3045,24 +3045,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (typeof l[o] === "undefined")                      l[o]               = {};
 				if (typeof l[o][event] === "undefined" && (n = true)) l[o][event]        = {};
-				if (typeof l[o][event].active === "undefined")        l[o][event].active = {};
 				if (typeof l[o][event][state] === "undefined")        l[o][event][state] = {};
 
 				if (state === c && n) {
 					switch (true) {
-						case (/body|document|window/i.test(o)):
-						case !/\//g.test(o) && o !== "abaaso":
+						case utility.compile(regex, "\/", "g") && !regex.test(o) && o !== "abaaso":
+						case utility.compile(regex, "body|document|window", "i") && regex.test(o):
 							instance = obj;
 							break;
 						default:
 							instance = null;
 					}
 
-					if (instance !== null && event.toLowerCase() !== "afterjsonp" && typeof instance !== "undefined" && (/body|document|window/i.test(o) || (typeof instance.listeners === "function" && array.cast(instance.listeners(event).active).length === 0))) {
+					if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && n && (regex.test(o) || typeof instance.listeners === "function")) {
 						add = (typeof instance.addEventListener === "function");
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
-							if (!regex.test(e.type)) {
+							if (utility.compile(regex, "click|dragstart|dragenter|dragleave|dragend|key|mouse") && !regex.test(e.type)) {
 								if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
 								if (typeof e.preventDefault === "function")  e.preventDefault();
 								if (typeof e.stopPropagation === "function") e.stopPropagation();
@@ -3187,7 +3186,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		remove : function (obj, event, id, state) {
 			obj   = utility.object(obj);
-			state = state || "active";
+			state = state || abaaso.state.current;
 
 			if (obj instanceof Array) return obj.each(function (i) { observer.remove(i, event, id, state); });
 
