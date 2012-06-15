@@ -3456,7 +3456,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Boolean}          true
 		 */
 		compile : function (regex, pattern, modifiers) {
-			return !regex.compile(pattern, modifiers);
+			regex.compile(pattern, modifiers);
+			return true;
 		},
 
 		/**
