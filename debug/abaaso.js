@@ -1599,7 +1599,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (uri !== null) p = uri.allows(method);
 
-				obj.fire("beforeDataSet");
+				obj.fire("beforeDataSet", {key: key, data: data});
 				switch (true) {
 					case sync:
 					case this.callback !== null:
