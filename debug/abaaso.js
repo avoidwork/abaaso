@@ -3171,7 +3171,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					r = l[o][event];
 					break;
 				default:
-					r = {active: {}};
+					r = {};
 			}
 			return r;
 		},
