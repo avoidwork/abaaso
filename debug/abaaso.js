@@ -3038,6 +3038,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    l        = observer.listeners,
 				    o        = this.id(obj),
 				    n        = false,
+				    c        = abaaso.state.current,
 				    item, add, reg;
 
 				if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -3047,7 +3048,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof l[o][event].active === "undefined")        l[o][event].active = {};
 				if (typeof l[o][event][state] === "undefined")        l[o][event][state] = {};
 
-				if (state === "active" && n) {
+				if (state === c && n) {
 					switch (true) {
 						case (/body|document|window/i.test(o)):
 						case !/\//g.test(o) && o !== "abaaso":
