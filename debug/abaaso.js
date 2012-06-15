@@ -1136,7 +1136,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						guid = utility.genId(true),
 					    key;
 
-					obj.fire("beforeDataBatch");
+					obj.fire("beforeDataBatch", data);
 
 					switch (type) {
 						case "set":
