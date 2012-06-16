@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.1.9
+ * @version 2.2.0
  */
 (function (global) {
 "use strict";
@@ -2267,11 +2267,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Finds all child nodes of type arg in obj
+		 * Finds all childNodes equal to "obj > arg"
 		 * 
 		 * @param  {Mixed} obj  [description]
 		 * @param  {String} arg Type of Element to find
-		 * @return {Array}      Array of Elements
+		 * @return {Mixed}      Array of Elements or undefined
 		 */
 		find : function (obj, arg) {
 			try {
@@ -2301,31 +2301,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Determines if obj is equal to arg
+		 * Determines if obj is equal to arg, supports nodeNames & CSS2+ selectors
 		 * 
 		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
 		 * @param  {String}  arg Property to query
-		 * @return {Boolean}     True if the property is true
+		 * @return {Mixed}       Boolean or undefined
 		 */
 		is : function (obj, arg) {
 			try {
-				var result = false,
-				    regex;
+				var regex;
 
 				obj = utility.object(obj);
 
 				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				utility.genId(obj);
-				regex = new RegExp();
-
-				switch (true) {
-					case utility.compile(regex, "\\.|:") && !regex.test(arg):
-						result = utility.compile(regex, arg, "i") && regex.test(obj.nodeName);
-						break;
-				}
-
-				return result;
+				regex = /:/;
+				return regex.test(arg) ? (obj === obj.parentNode.find(obj.nodeName.toLowerCase() + arg).first()) : (utility.compile(regex, arg, "i") && regex.test(obj.nodeName));
 			}
 			catch(e) {
 				error(e, arguments, this);
@@ -4866,7 +4858,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.1.9"
+		version         : "2.2.0"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
