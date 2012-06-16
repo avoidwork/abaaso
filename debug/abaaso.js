@@ -2296,7 +2296,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Boolean}     True if 1 or more Elements are found
 		 */
 		has : function (obj, arg) {
-			return (element.find(obj, arg).length > 0);
+			var result = element.find(obj, arg);
+			return (!isNaN(result.length) && result.length > 0);
 		},
 
 		/**
