@@ -2267,7 +2267,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Finds all instances of arg in obj
+		 * Finds all child nodes of type arg in obj
 		 * 
 		 * @param  {Mixed} obj  [description]
 		 * @param  {String} arg Type of Element to find
@@ -2280,7 +2280,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 				utility.genId(obj);
-				return $("#" + obj.id + " " + arg);
+				return $("#" + obj.id + " > " + arg);
 			}
 			catch(e) {
 				error(e, arguments, this);
@@ -2307,8 +2307,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Boolean}     True if the property is true
 		 */
 		is : function (obj, arg) {
-			// @todo implement this
-			return true;
+			try {
+				obj = utility.object(obj);
+
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+
+				utility.genId(obj);
+
+				// @todo finish this
+
+				return true;
+			}
+			catch(e) {
+				error(e, arguments, this);
+				return undefined;
+			}
 		},
 
 		/**
@@ -3868,8 +3881,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           destroy  : function () { this.each(function (i) { if (typeof i.destroy === "function") i.destroy(); }); return []; },
 				           each     : function (arg) { return array.each(this, arg); },
 				           enable   : function () { return this.each(function (i) { if (typeof i.enable === "function") i.enable(); }); },
+				           find     : function (arg) { var a = []; this.each(function (i) { if (typeof i.find === "function") a.push(i.find(arg)); }); return a; },
 				           first    : function () { return array.first(this); },
 				           get      : function (uri, headers) { this.each(function (i) { if (typeof i.get === "function") i.get(uri, headers); }); return []; },
+				           has      : function (arg) { var a = []; this.each(function (i) { if (typeof i.has === "function") a.push(i.has(arg)); }); return a; },
 				           hasClass : function (arg) { var a = []; this.each(function (i) { if (typeof i.hasClass === "function") a.push(i.hasClass(arg)); }); return a; },
 				           hide     : function () { return this.each(function (i){ if (typeof i.hide === "function") i.hide(); }); },
 				           html     : function (arg) {
@@ -3881,6 +3896,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           index    : function (arg) { return array.index(this, arg); },
 				           indexed  : function () { return array.indexed(this); },
 				           intersect: function (arg) { return array.intersect(this, arg); },
+				           is       : function (arg) { var a = []; this.each(function (i) { if (typeof i.is === "function") a.push(i.is(arg)); }); return a; },
 				           isAlphaNum: function () { var a = []; this.each(function (i) { if (typeof i.isAlphaNum === "function") a.push(i.isAlphaNum()); }); return a; },
 				           isBoolean: function () { var a = []; this.each(function (i) { if (typeof i.isBoolean === "function") a.push(i.isBoolean()); }); return a; },
 				           isChecked: function () { var a = []; this.each(function (i) { if (typeof i.isChecked === "function") a.push(i.isChecked()); }); return a; },
@@ -3974,6 +3990,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           destroy   : function () { return element.destroy(this); },
 				           disable   : function () { return element.disable(this); },
 				           enable    : function () { return element.enable(this); },
+				           find      : function (arg) {
+				           		utility.genId(this);;
+				           		return element.find(this, arg);
+				           },
 				           get       : function (uri, headers) {
 				           		this.fire("beforeGet");
 				           		var cached = cache.get(uri),
@@ -3984,6 +4004,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		        : this.html(cached.response).fire("afterGet");
 
 				           		return this;
+				           },
+				           has      : function (arg) {
+				           		utility.genId(this);;
+				           		return element.has(this, arg);
 				           },
 				           hasClass : function (arg) {
 				           		utility.genId(this);;
@@ -3996,6 +4020,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           html     : function (arg) {
 				           		utility.genId(this);;
 				           		return typeof arg === "undefined" ? this.innerHTML : this.update({innerHTML: arg});
+				           },
+				           is       : function (arg) {
+				           		utility.genId(this);;
+				           		return element.is(this, arg);
 				           },
 				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
 				           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
