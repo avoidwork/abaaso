@@ -2870,8 +2870,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method clear
 		 * @return {Object} abaaso
 		 */
-		clear : function () {
-			return $.un(global, "message");
+		clear : function (state) {
+			if (typeof state === "undefined") state = "all";
+			return $.un(global, "message", "message", state);
 		},
 
 		/**
@@ -2900,8 +2901,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Function} fn  Callback function
 		 * @return {Object} abaaso
 		 */
-		recv : function (fn) {
-			return $.on(global, "message", fn);
+		recv : function (fn, state) {
+			if (typeof state === "undefined") state = "all";
+			return $.on(global, "message", fn, "message", global, state);
 		}
 	};
 
@@ -3106,7 +3108,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof l[o][event] === "undefined" && (n = true)) l[o][event]        = {};
 				if (typeof l[o][event][state] === "undefined")        l[o][event][state] = {};
 
-				if (state === c && n) {
+				if (n) {
 					switch (true) {
 						case utility.compile(regex, "body|document|window", "i") && regex.test(o):
 						case utility.compile(regex, "\/", "g") && !regex.test(o) && o !== "abaaso":
@@ -3195,8 +3197,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 				if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
-				l = this.list(obj, event)[s];
+				l = this.list(obj, event).all;
 				if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
+				if (s !== "all") {
+					l = this.list(obj, event)[s];
+					if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
+				}
 				return obj;
 			}
 			catch (e) {
@@ -3947,36 +3953,36 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           	},
 				           validate : function () { var a = []; this.each(function (i) { if (typeof i.validate === "function") a.push(i.validate()); }); return a; }},
 				element : {addClass : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.klass(this, arg, true);
 				           },
 				           after    : function (type, args) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.create(type, args, this, "after");
 				           },
 				           append   : function (type, args) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.create(type, args, this, "last");
 				           },
 				           attr     : function (key, value) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.attr(this, key, value);
 				           },
 				           before   : function (type, args) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.create(type, args, this, "before");
 				           },
 				           clear    : function () {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.clear(this);
 				           },
 				           create   : function (type, args, position) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.create(type, args, this, position);
 				           },
 				           css       : function (key, value) {
 				           		var i;
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
 				           			key = key.replace("-", "");
 				           			key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
@@ -3985,14 +3991,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		return this;
 				           },
 				           data      : function (key, value) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.data(this, key, value);
 				           },
 				           destroy   : function () { return element.destroy(this); },
 				           disable   : function () { return element.disable(this); },
 				           enable    : function () { return element.enable(this); },
 				           find      : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.find(this, arg);
 				           },
 				           get       : function (uri, headers) {
@@ -4007,23 +4013,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		return this;
 				           },
 				           has      : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.has(this, arg);
 				           },
 				           hasClass : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.hasClass(this, arg);
 				           },
 				           hide     : function () {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.hide(this);
 				           },
 				           html     : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return typeof arg === "undefined" ? this.innerHTML : this.update({innerHTML: arg});
 				           },
 				           is       : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.is(this, arg);
 				           },
 				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
@@ -4035,7 +4041,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isEmail  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
 				           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
 				           isHidden : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.hidden(this);
 				           },
 				           isIP     : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
@@ -4076,48 +4082,48 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           loading  : function () { return $.loading.create(this); },
 				           on       : function (event, listener, id, scope, state) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return $.on.call(this, event, listener, id, scope, state);
 				           },
 				           prepend  : function (type, args) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.create(type, args, this, "first");
 				           },
 				           prependChild: function (child) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.prependChild(this, child);
 				           },
 				           position : function () {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.position(this);
 				           },
 				           removeClass : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.klass(this, arg, false);
 				           },
 				           show     : function () {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.show(this);
 				           },
 				           size     : function () {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.size(this);
 				           },
 				           text     : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.text(this, arg);
 				           },
 				           tpl      : function (arg) { return utility.tpl(arg, this); },
 				           un       : function (event, id, state) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return $.un.call(this, event, id, state);
 				           },
 				           update   : function (args) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.update(this, args);
 				           },
 				           val      : function (arg) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return element.val(this, arg);
 				           },
 				           validate : function () { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
@@ -4129,12 +4135,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }},
 				shared  : {fire     : function (event, args) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return $.fire.call(this, event, args);
 				           },
 				           genId    : function () { return utility.genId(this); },
 				           listeners: function (event) {
-				           		utility.genId(this);;
+				           		utility.genId(this);
 				           		return $.listeners.call(this, event);
 				           }},
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
@@ -4686,9 +4692,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			$.error.log = abaaso.error.log = [];
 
 			// Setting events & garbage collection
-			$.on(global, "error",      function (e) { $.fire("error", e); });
-			$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); });
-			$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); });
+			$.on(global, "error",      function (e) { $.fire("error", e); }, "error", global, "all");
+			$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); }, "hash", global, "all");
+			$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
 			$.on(global, "load",       function ()  { $.fire("render").un("render"); });
 			$.on(global, "DOMNodeInserted", function (e) {
 				var obj = e.target;
@@ -4696,11 +4702,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					utility.genId(obj);
 					$.fire("afterCreate", obj);
 				}
-			});
+			}, "mutation", global, "all");
 			$.on(global, "DOMNodeRemoved", function (e) {
 				var id = e.target.id;
 				if (typeof id !== "undefined" && !id.isEmpty()) observer.remove(e.target);
-			});
+			}, "mutation", global, "all");
 
 			// abaaso.state.current getter/setter
 			var getter, setter;
