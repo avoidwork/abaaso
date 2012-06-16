@@ -2277,7 +2277,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			try {
 				obj = utility.object(obj);
 
-				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				utility.genId(obj);
 				return $("#" + obj.id + " > " + arg);
@@ -2301,7 +2301,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Determines if obj.style.arg is equal to arg
+		 * Determines if obj is equal to arg
 		 * 
 		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
 		 * @param  {String}  arg Property to query
@@ -2309,15 +2309,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		is : function (obj, arg) {
 			try {
+				var result = false,
+				    regex;
+
 				obj = utility.object(obj);
 
-				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				utility.genId(obj);
+				regex = new RegExp();
 
-				// @todo finish this
+				switch (true) {
+					case utility.compile(regex, "\\.|:") && !regex.test(arg):
+						result = utility.compile(regex, arg, "i") && regex.test(obj.nodeName);
+						break;
+				}
 
-				return true;
+				return result;
 			}
 			catch(e) {
 				error(e, arguments, this);
