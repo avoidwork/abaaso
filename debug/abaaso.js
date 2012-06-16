@@ -4271,6 +4271,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		tpl : function (arg, target) {
 			try {
+				var frag;
+
 				switch (true) {
 					case typeof arg !== "object":
 					case !(/object|undefined/.test(typeof target)) && typeof (target = target.charAt(0) === "#" ? $(target) : $(target)[0]) === "undefined":
@@ -4279,8 +4281,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (typeof target === "undefined") target = $("body")[0];
 
-				var frag = document.createDocumentFragment();
-
+				target.fire("beforeTemplate");
+				frag = document.createDocumentFragment();
 				switch (true) {
 					case arg instanceof Array:
 						arg.each(function (i, idx) { element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
@@ -4298,9 +4300,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							}
 						});
 				}
-
 				target.appendChild(frag);
-				return target;
+				return target.fire("afterTemplate");
 			}
 			catch (e) {
 				error(e, arguments, this);
