@@ -2267,6 +2267,51 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Finds all instances of arg in obj
+		 * 
+		 * @param  {Mixed} obj  [description]
+		 * @param  {String} arg Type of Element to find
+		 * @return {Array}      Array of Elements
+		 */
+		find : function (obj, arg) {
+			try {
+				obj = utility.object(obj);
+
+				if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+
+				utility.genId(obj);
+				return $("#" + obj.id + " " + arg);
+			}
+			catch(e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Determines if arg is in obj
+		 * 
+		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
+		 * @param  {String}  arg Type of Element to find
+		 * @return {Boolean}     True if 1 or more Elements are found
+		 */
+		has : function (obj, arg) {
+			return (element.find(obj, arg).length > 0);
+		},
+
+		/**
+		 * Determines if obj.style.arg is equal to arg
+		 * 
+		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
+		 * @param  {String}  arg Property to query
+		 * @return {Boolean}     True if the property is true
+		 */
+		is : function (obj, arg) {
+			// @todo implement this
+			return true;
+		},
+
+		/**
 		 * Determines of "obj" has "klass" in it's cssName
 		 * 
 		 * @method hasClass
