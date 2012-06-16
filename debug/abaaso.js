@@ -1442,7 +1442,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									if (typeof i.type !== "undefined" && /button|submit|reset/.test(i.type)) return;
 									utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 								});
-								guid = $.genId(true);
+								guid = utility.genId(true);
 								self.parentNode.on("afterDataSet", function () {
 									this.un("afterDataSet", guid);
 									form.destroy();
@@ -1590,7 +1590,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
-				    args   = {data: typeof record !== "undefined" ? $.merge(record.data, data) : data, key: key, record: undefined},
+				    args   = {data: typeof record !== "undefined" ? utility.merge(record.data, data) : data, key: key, record: undefined},
 				    uri    = this.uri === null ? null : this.uri + "/" + key,
 				    r      = /true|undefined/,
 				    p;
@@ -1834,7 +1834,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							clearTimeout($.repeating[id]);
 							delete $.repeating[id];
 
-							if (arg !== null) $.defer(function () { $.repeat(function () { if (!cache.expire(self.uri)) self.uri.fire("beforeExpire").fire("expire").fire("afterExpire"); }, expires, id); }, expires);
+							if (arg !== null) utility.defer(function () { utility.repeat(function () { if (!cache.expire(self.uri)) self.uri.fire("beforeExpire").fire("expire").fire("afterExpire"); }, expires, id); }, expires);
 						}
 						catch (e) {
 							error(e, arguments, this);
@@ -1877,7 +1877,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			};
 
 			obj = utility.object(obj);
-			$.genId(obj);
+			utility.genId(obj);
 
 			// Hooking observer if not present in prototype chain
 			if (typeof obj.fire === "undefined")      obj.fire      = function (event, arg) { return $.fire.call(this, event, arg); };
@@ -1887,7 +1887,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			obj.fire("beforeDataStore");
 
-			obj.data = $.extend(this.methods);
+			obj.data = utility.extend(this.methods);
 			obj.data.parentNode = obj; // Recursion, useful
 			obj.data.clear();          // Setting properties
 
@@ -3885,36 +3885,36 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           	},
 				           validate : function () { var a = []; this.each(function (i) { if (typeof i.validate === "function") a.push(i.validate()); }); return a; }},
 				element : {addClass : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.klass(this, arg, true);
 				           },
 				           after    : function (type, args) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.create(type, args, this, "after");
 				           },
 				           append   : function (type, args) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.create(type, args, this, "last");
 				           },
 				           attr     : function (key, value) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.attr(this, key, value);
 				           },
 				           before   : function (type, args) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.create(type, args, this, "before");
 				           },
 				           clear    : function () {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.clear(this);
 				           },
 				           create   : function (type, args, position) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.create(type, args, this, position);
 				           },
 				           css       : function (key, value) {
 				           		var i;
-				           		this.genId();
+				           		utility.genId(this);;
 				           		if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
 				           			key = key.replace("-", "");
 				           			key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
@@ -3923,7 +3923,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		return this;
 				           },
 				           data      : function (key, value) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.data(this, key, value);
 				           },
 				           destroy   : function () { return element.destroy(this); },
@@ -3941,15 +3941,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		return this;
 				           },
 				           hasClass : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.hasClass(this, arg);
 				           },
 				           hide     : function () {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.hide(this);
 				           },
 				           html     : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return typeof arg === "undefined" ? this.innerHTML : this.update({innerHTML: arg});
 				           },
 				           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : this.innerText}).pass; },
@@ -3961,7 +3961,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isEmail  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : this.innerText.isEmail(); },
 				           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : this.innerText.isEmpty(); },
 				           isHidden : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.hidden(this);
 				           },
 				           isIP     : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : this.innerText.isIP(); },
@@ -4002,48 +4002,48 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           },
 				           loading  : function () { return $.loading.create(this); },
 				           on       : function (event, listener, id, scope, state) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return $.on.call(this, event, listener, id, scope, state);
 				           },
 				           prepend  : function (type, args) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.create(type, args, this, "first");
 				           },
 				           prependChild: function (child) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.prependChild(this, child);
 				           },
 				           position : function () {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.position(this);
 				           },
 				           removeClass : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.klass(this, arg, false);
 				           },
 				           show     : function () {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.show(this);
 				           },
 				           size     : function () {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.size(this);
 				           },
 				           text     : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.text(this, arg);
 				           },
-				           tpl      : function (arg) { return $.tpl(arg, this); },
+				           tpl      : function (arg) { return utility.tpl(arg, this); },
 				           un       : function (event, id, state) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return $.un.call(this, event, id, state);
 				           },
 				           update   : function (args) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.update(this, args);
 				           },
 				           val      : function (arg) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return element.val(this, arg);
 				           },
 				           validate : function () { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !this.innerText.isEmpty(); }},
@@ -4055,12 +4055,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }},
 				shared  : {fire     : function (event, args) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return $.fire.call(this, event, args);
 				           },
 				           genId    : function () { return utility.genId(this); },
 				           listeners: function (event) {
-				           		this.genId();
+				           		utility.genId(this);;
 				           		return $.listeners.call(this, event);
 				           }},
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
@@ -4619,7 +4619,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			$.on(global, "DOMNodeInserted", function (e) {
 				var obj = e.target;
 				if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
-					obj.genId();
+					utility.genId(obj);
 					$.fire("afterCreate", obj);
 				}
 			});
