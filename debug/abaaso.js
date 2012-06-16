@@ -2316,8 +2316,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				utility.genId(obj);
-				regex = /:/;
-				return regex.test(arg) ? (obj === obj.parentNode.find(obj.nodeName.toLowerCase() + arg).first()) : (utility.compile(regex, arg, "i") && regex.test(obj.nodeName));
+				regex = /^:/;
+				return regex.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).index(obj) > -1) : (utility.compile(regex, arg, "i") && regex.test(obj.nodeName));
 			}
 			catch(e) {
 				error(e, arguments, this);
