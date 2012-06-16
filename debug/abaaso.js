@@ -4301,7 +4301,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 				}
 				target.appendChild(frag);
-				return target.fire("afterTemplate", array.cast(template.childNodes).last());
+				return target.fire("afterTemplate", array.cast(target.childNodes).last());
 			}
 			catch (e) {
 				error(e, arguments, this);
