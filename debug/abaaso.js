@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.2.2
+ * @version 2.2.3
  */
 (function (global) {
 "use strict";
@@ -221,7 +221,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		last : function (obj) {
 			var nth = obj.length;
-			return nth > 1 ? obj[(nth - 1)] : obj.first();
+			return obj[nth > 1 ? (nth - 1) : 0];
 		},
 
 		/**
@@ -4279,7 +4279,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		tpl : function (arg, target) {
 			try {
-				var frag, nodes;
+				var frag;
 
 				switch (true) {
 					case typeof arg !== "object":
@@ -4290,7 +4290,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof target === "undefined") target = $("body")[0];
 
 				target.fire("beforeTemplate");
-				nodes = target.childNodes;
 				frag  = document.createDocumentFragment();
 				switch (true) {
 					case arg instanceof Array:
@@ -4310,7 +4309,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 				}
 				target.appendChild(frag);
-				return target.fire("afterTemplate", nodes[nodes.length - 1]);
+				return target.fire("afterTemplate", array.last(target.childNodes));
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -4874,7 +4873,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.2.2"
+		version         : "2.2.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
