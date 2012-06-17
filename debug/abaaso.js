@@ -2301,31 +2301,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Determines if obj is equal to arg, supports nodeNames & CSS2+ selectors
-		 * 
-		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
-		 * @param  {String}  arg Property to query
-		 * @return {Mixed}       Boolean or undefined
-		 */
-		is : function (obj, arg) {
-			try {
-				var regex;
-
-				obj = utility.object(obj);
-
-				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
-
-				utility.genId(obj);
-				regex = /^:/;
-				return regex.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).index(obj) > -1) : (utility.compile(regex, arg, "i") && regex.test(obj.nodeName));
-			}
-			catch(e) {
-				error(e, arguments, this);
-				return undefined;
-			}
-		},
-
-		/**
 		 * Determines of "obj" has "klass" in it's cssName
 		 * 
 		 * @method hasClass
@@ -2398,6 +2373,31 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
 			}
 			catch (e) {
+				error(e, arguments, this);
+				return undefined;
+			}
+		},
+
+		/**
+		 * Determines if obj is equal to arg, supports nodeNames & CSS2+ selectors
+		 * 
+		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
+		 * @param  {String}  arg Property to query
+		 * @return {Mixed}       Boolean or undefined
+		 */
+		is : function (obj, arg) {
+			try {
+				var regex;
+
+				obj = utility.object(obj);
+
+				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
+
+				utility.genId(obj);
+				regex = /^:/;
+				return regex.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).index(obj) > -1) : (utility.compile(regex, arg, "i") && regex.test(obj.nodeName));
+			}
+			catch(e) {
 				error(e, arguments, this);
 				return undefined;
 			}
