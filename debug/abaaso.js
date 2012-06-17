@@ -3379,6 +3379,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (String(arg).indexOf("?") > -1) return undefined;
 
 			var result = [],
+			    tmp    = [],
 			    obj, sel;
 
 			arg      = arg.trim();
@@ -3387,7 +3388,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Recursive processing, ends up below
 			if (arg.indexOf(",") > -1) arg = arg.explode();
 			if (arg instanceof Array) {
-				arg.each(function (i) { result.push($(i, nodelist)); });
+				arg.each(function (i) { tmp.push($(i, nodelist)); });
+				tmp.each(function (i) { result = result.concat(i); });
 				return result;
 			}
 
