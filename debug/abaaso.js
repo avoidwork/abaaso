@@ -2267,7 +2267,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Finds all childNodes equal to "obj > arg"
+		 * Finds descendant childNodes of "obj" equal to "arg"
 		 * 
 		 * @param  {Mixed} obj  [description]
 		 * @param  {String} arg Type of Element to find
@@ -2280,7 +2280,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				utility.genId(obj);
-				return $("#" + obj.id + " > " + arg);
+				return $("#" + obj.id + " " + arg);
 			}
 			catch(e) {
 				error(e, arguments, this);
