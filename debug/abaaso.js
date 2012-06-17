@@ -213,15 +213,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Returns the last node of the array
+		 * Returns the last index of the Array
 		 *
 		 * @method last
 		 * @param  {Array} obj Array
-		 * @return {Mixed} Last node of Array
+		 * @return {Mixed} Last index of Array
 		 */
 		last : function (obj) {
-			var nth = obj.length;
-			return obj[nth > 1 ? (nth - 1) : 0];
+			return obj[obj.length - 1];
 		},
 
 		/**
