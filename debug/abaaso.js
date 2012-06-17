@@ -2267,8 +2267,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Finds descendant childNodes of "obj" equal to "arg"
-		 * 
+		 * Finds descendant childNodes of Element matched by arg
+		 *
+		 * @method find
 		 * @param  {Mixed} obj  [description]
 		 * @param  {String} arg Type of Element to find
 		 * @return {Mixed}      Array of Elements or undefined
@@ -2289,8 +2290,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Determines if arg is in obj
-		 * 
+		 * Determines if Element has descendants matching arg
+		 *
+		 * @method has
 		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
 		 * @param  {String}  arg Type of Element to find
 		 * @return {Boolean}     True if 1 or more Elements are found
@@ -2301,7 +2303,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Determines of "obj" has "klass" in it's cssName
+		 * Determines if obj has a specific CSS class
 		 * 
 		 * @method hasClass
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
@@ -2379,8 +2381,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Determines if obj is equal to arg, supports nodeNames & CSS2+ selectors
-		 * 
+		 * Determines if Element is equal to arg, supports nodeNames & CSS2+ selectors
+		 *
+		 * @method is
 		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
 		 * @param  {String}  arg Property to query
 		 * @return {Mixed}       Boolean or undefined
@@ -4266,14 +4269,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Transforms JSON to HTML and appends to Body or target Element
 		 *
-		 * @method create
+		 * Events: beforeTemplate     Fires before the template is appended to the target
+		 *         afterTemplate      Fires after after the template is appended to the target, parameter for listeners is the new Element
+		 *
+		 * @method tpl
 		 * @param  {Object} data   JSON Object describing HTML
 		 * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
 		 * @return {Object} Target Element
 		 */
 		tpl : function (arg, target) {
 			try {
-				var frag;
+				var frag, nodes;
 
 				switch (true) {
 					case typeof arg !== "object":
@@ -4284,7 +4290,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof target === "undefined") target = $("body")[0];
 
 				target.fire("beforeTemplate");
-				frag = document.createDocumentFragment();
+				nodes = target.childNodes;
+				frag  = document.createDocumentFragment();
 				switch (true) {
 					case arg instanceof Array:
 						arg.each(function (i, idx) { element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
@@ -4303,7 +4310,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 				}
 				target.appendChild(frag);
-				return target.fire("afterTemplate", array.cast(target.childNodes).last());
+				return target.fire("afterTemplate", nodes[nodes.length - 1]);
 			}
 			catch (e) {
 				error(e, arguments, this);
