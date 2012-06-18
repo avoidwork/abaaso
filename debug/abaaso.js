@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.2.5
+ * @version 2.2.6
  */
 (function (global) {
 "use strict";
@@ -4362,7 +4362,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return element.create(type, args, obj, "last");
 		},
 		bootstrap       : function () {
-			var fn = function (e) {
+			var cleanup, fn;
+			
+			cleanup = function (obj) {
+				var nodes = [];
+
+				if (obj.childNodes.length > 0) nodes = array.cast(obj.childNodes);
+				observer.remove(obj);
+				nodes.each(function (i) { cleanup(i); });
+			};
+
+			fn = function (e) {
 				if (/complete|loaded/.test(document.readyState)) {
 					if (typeof abaaso.timer.init !== "undefined") {
 						clearInterval(abaaso.timer.init);
@@ -4511,10 +4521,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					$.fire("afterCreate", obj);
 				}
 			}, "mutation", global, "all");
-			$.on(global, "DOMNodeRemoved", function (e) {
-				var id = e.target.id;
-				if (typeof id !== "undefined" && !id.isEmpty()) observer.remove(e.target);
-			}, "mutation", global, "all");
+			$.on(global, "DOMNodeRemoved", function (e) { cleanup(e.target); }, "mutation", global, "all");
 
 			// abaaso.state.current getter/setter
 			var getter, setter;
@@ -4666,7 +4673,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.2.5"
+		version         : "2.2.6"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
