@@ -754,40 +754,46 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof xhr.ontimeout === "object")  xhr.ontimeout  = timeout;
 				if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 
-				xhr.open(type.toUpperCase(), uri, true);
+				try {
+					xhr.open(type.toUpperCase(), uri, true);
 
-				// Setting Content-Type value
-				if (headers !== null && headers.hasOwnProperty("Content-Type")) contentType = headers["Content-Type"];
-				if (cors && contentType === null) contentType = "text/plain";
+					// Setting Content-Type value
+					if (headers !== null && headers.hasOwnProperty("Content-Type")) contentType = headers["Content-Type"];
+					if (cors && contentType === null) contentType = "text/plain";
 
-				// Transforming payload
-				if (payload !== null) {
-					if (payload.hasOwnProperty("xml")) payload = payload.xml;
-					if (doc && payload instanceof Document) payload = xml.decode(payload);
-					if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
-					if (!(ab && payload instanceof ArrayBuffer) && payload instanceof Object) {
-						contentType = "application/json";
-						payload = json.encode(payload);
+					// Transforming payload
+					if (payload !== null) {
+						if (payload.hasOwnProperty("xml")) payload = payload.xml;
+						if (doc && payload instanceof Document) payload = xml.decode(payload);
+						if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
+						if (!(ab && payload instanceof ArrayBuffer) && payload instanceof Object) {
+							contentType = "application/json";
+							payload = json.encode(payload);
+						}
+						if (contentType === null && ab && payload instanceof ArrayBuffer) contentType = "application/octet-stream";
+						if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					}
-					if (contentType === null && ab && payload instanceof ArrayBuffer) contentType = "application/octet-stream";
-					if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
+
+					// Setting headers
+					if (typeof xhr.setRequestHeader === "function") {
+						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
+						if (headers === null) headers = {};
+						if (contentType !== null) headers["Content-Type"] = contentType;
+						if (headers.hasOwnProperty("callback")) delete headers.callback;
+						utility.iterate(headers, function (v, k) { if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v); });
+					}
+
+					// Cross Origin Resource Sharing (CORS)
+					if (typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
+
+					// Firing event & sending request
+					uri.fire("beforeXHR", {xhr: xhr, uri: uri});
+					payload !== null ? xhr.send(payload) : xhr.send();
 				}
-
-				// Setting headers
-				if (typeof xhr.setRequestHeader === "function") {
-					if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
-					if (headers === null) headers = {};
-					if (contentType !== null) headers["Content-Type"] = contentType;
-					if (headers.hasOwnProperty("callback")) delete headers.callback;
-					utility.iterate(headers, function (v, k) { if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v); });
+				catch (e) {
+					error(e, arguments, this, true);
+					uri.fire("failed" + typed);
 				}
-
-				// Cross Origin Resource Sharing (CORS)
-				if (typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
-
-				// Firing event & sending request
-				uri.fire("beforeXHR", {xhr: xhr, uri: uri});
-				payload !== null ? xhr.send(payload) : xhr.send();
 			}
 			return uri;
 		},
@@ -4527,8 +4533,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					utility.property($.state,      "current", {enumerable: true, get: getter, set: setter});
 					break;
 				default: // Pure hackery, only exists when needed
-					abaaso.state.change = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
-					$.state.change      = function (arg) { abaaso.state.current = arg; return setter.call(abaaso.state, arg); };
+					abaaso.state.change = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
+					$.state.change      = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
 			}
 
 			$.ready = true;
