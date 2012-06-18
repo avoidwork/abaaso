@@ -4367,9 +4367,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			cleanup = function (obj) {
 				var nodes = [];
 
-				if (obj.childNodes.length > 0) nodes = array.cast(obj.childNodes);
 				observer.remove(obj);
-				nodes.each(function (i) { cleanup(i); });
+				if (obj.childNodes.length > 0) nodes = array.cast(obj.childNodes);
+				if (nodes.length > 0) nodes.each(function (i) { cleanup(i); });
 			};
 
 			fn = function (e) {
