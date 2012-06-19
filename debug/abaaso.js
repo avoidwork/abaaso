@@ -1996,7 +1996,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * An id is generated if not specified with args
 		 *
-		 * Events: beforeCreate  Fires after the Element has been created, but not set
+		 * Events: beforeCreate  Fires before the Element has been created, but not set
 		 *         afterCreate   Fires after the Element has been appended to it's parent
 		 *
 		 * @method create
@@ -2033,7 +2033,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
 			$.fire("beforeCreate", uid);
-			uid.fire("beforeCreate");
+			target.fire("beforeCreate", uid);
 			obj = document.createElement(type);
 			obj.id = uid;
 			if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
@@ -2062,7 +2062,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				default:
 					target.appendChild(obj);
 			}
-			obj.fire("afterCreate");
+			target.fire("afterCreate", obj);
 			$.fire("afterCreate", obj);
 			return obj;
 		},
