@@ -2009,7 +2009,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		create : function (type, args, target, pos) {
 			if (typeof type === "undefined" || String(type).isEmpty()) throw Error(label.error.invalidArguments);
 
-			var obj, uid;
+			var obj, uid, frag;
 
 			switch (true) {
 				case typeof target !== "undefined":
@@ -2023,17 +2023,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 
 			if (typeof target === "undefined") throw Error(label.error.invalidArguments);
-
-			uid = typeof args !== "undefined"
-			       && typeof args !== "string"
-			       && typeof args.childNodes === "undefined"
-			       && typeof args.id !== "undefined"
-			       && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId();
+			
+			frag = (target instanceof DocumentFragment);
+			uid  = typeof args !== "undefined"
+			        && typeof args !== "string"
+			        && typeof args.childNodes === "undefined"
+			        && typeof args.id !== "undefined"
+			        && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId();
 
 			if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
 			$.fire("beforeCreate", uid);
-			target.fire("beforeCreate", uid);
+			if (!frag) target.fire("beforeCreate", uid);
+			else if (frag && target.parentNode !== null) target.parentNode.fire("beforeCreate", uid);
+
 			obj = document.createElement(type);
 			obj.id = uid;
 			if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
@@ -2062,8 +2065,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				default:
 					target.appendChild(obj);
 			}
-			target.fire("afterCreate", obj);
+
+			if (!frag) target.fire("afterCreate", obj);
+			else if (frag && target.parentNode !== null) target.parentNode.fire("afterCreate", obj);
 			$.fire("afterCreate", obj);
+			
 			return obj;
 		},
 
