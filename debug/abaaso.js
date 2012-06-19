@@ -4520,6 +4520,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				var obj = e.target;
 				if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
 					utility.genId(obj);
+					if (obj.parentNode instanceof Element) obj.parentNode.fire("afterCreate", obj);
 					$.fire("afterCreate", obj);
 				}
 			}, "mutation", global, "all");
