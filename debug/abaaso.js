@@ -2024,7 +2024,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (typeof target === "undefined") throw Error(label.error.invalidArguments);
 			
-			frag = (target instanceof DocumentFragment);
+			frag = !(target instanceof Element);
 			uid  = typeof args !== "undefined"
 			        && typeof args !== "string"
 			        && typeof args.childNodes === "undefined"
