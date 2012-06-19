@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.2.6
+ * @version 2.2.7
  */
 (function (global) {
 "use strict";
@@ -4074,13 +4074,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Transforms JSON to HTML and appends to Body or target Element
 		 *
-		 * Events: beforeTemplate     Fires before the template is appended to the target
-		 *         afterTemplate      Fires after after the template is appended to the target, parameter for listeners is the new Element
-		 *
 		 * @method tpl
 		 * @param  {Object} data   JSON Object describing HTML
 		 * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
-		 * @return {Object} Target Element
+		 * @return {Object}        New Element created from the template
 		 */
 		tpl : function (arg, target) {
 			var frag;
@@ -4093,7 +4090,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (typeof target === "undefined") target = $("body")[0];
 
-			target.fire("beforeTemplate");
 			frag  = document.createDocumentFragment();
 			switch (true) {
 				case arg instanceof Array:
@@ -4113,7 +4109,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					});
 			}
 			target.appendChild(frag);
-			return target.fire("afterTemplate", array.last(target.childNodes));
+			return array.last(target.childNodes);
 		}
 	};
 
@@ -4673,7 +4669,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.2.6"
+		version         : "2.2.7"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
