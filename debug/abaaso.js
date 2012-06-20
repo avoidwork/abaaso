@@ -1299,12 +1299,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @method find
 			 * @param  {Mixed}  needle    String, Number or Pattern to test for
 			 * @param  {Mixed}  haystack  [Optional] The field(s) to search
-			 * @param  {String} modifiers [Optional] Regex modifiers
+			 * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
 			 * @return {Array} Array of results
 			 */
 			find : function (needle, haystack, modifiers) {
 				if (typeof needle === "undefined") throw Error(label.error.invalidArguments);
-				if (typeof modifiers !== "string" || String(modifiers).isEmpty()) modifiers = "gi";
+				switch (true) {
+					case typeof modifiers === "undefined":
+					case String(modifiers).isEmpty():
+						modifiers = "gi";
+						break;
+					case modifiers === null:
+						modifiers = "";
+						break;
+				}
 
 				var h      = [],
 				    n      = typeof needle === "string" ? needle.explode() : needle,
