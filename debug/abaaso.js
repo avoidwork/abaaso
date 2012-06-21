@@ -3966,7 +3966,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
 				           capitalize: function () { return string.capitalize(this); },
 				           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
-				           expire   : function (uri, silent) { return cache.expire(uri, silent); },
+				           expire   : function (silent) { return cache.expire(this, silent); },
 				           explode  : function (arg) { return string.explode(this, arg); },
 				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 				           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
