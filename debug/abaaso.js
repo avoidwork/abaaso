@@ -490,13 +490,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			switch (true) {
 				case command === "delete":
-					result = !((uri.permissions(command).bit & 1) === 0);
+					result = !((client.permissions(uri, command).bit & 1) === 0);
 					break;
 				case command === "get":
-					result = !((uri.permissions(command).bit & 4) === 0);
+					result = !((client.permissions(uri, command).bit & 4) === 0);
 					break;
 				case (/post|put/.test(command)):
-					result = !((uri.permissions(command).bit & 2) === 0);
+					result = !((client.permissions(uri, command).bit & 2) === 0);
 					break;
 				default:
 					result = false;
@@ -511,9 +511,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 2 -w- write
 		 * 3 -wd write and delete
 		 * 4 r-- read
-		 * 5 r-x read and delete
+		 * 5 r-d read and delete
 		 * 6 rw- read and write
-		 * 7 rwx read, write and delete
+		 * 7 rwd read, write and delete
 		 *
 		 * @method bit
 		 * @param  {Array} args Array of commands the URI accepts
