@@ -1211,6 +1211,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.credentials = null;
 					this.expires     = null;
 					this._expires    = null;
+					this.headers     = {Accept: "application/json", "Content-Type": "application/json"};
 					this.key         = null;
 					this.keys        = {};
 					this.records     = [];
@@ -1281,7 +1282,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						obj.fire("syncDataDelete", args);
 						break;
 					case r.test(p):
-						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, {Accept: "application/json", withCredentials: this.credentials});
+						uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, utility.merge({withCredentials: this.credentials}, this.headers));
 						break;
 					default:
 						obj.fire("failedDataDelete", args);
@@ -1585,7 +1586,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						obj.fire("syncDataSet", args);
 						break;
 					case r.test(p):
-						uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function () { obj.fire("failedDataSet"); }, data);
+						uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function () { obj.fire("failedDataSet"); }, data, utility.merge({withCredentials: this.credentials}, this.headers));
 						break;
 					default:
 						obj.fire("failedDataSet", args);
@@ -1764,7 +1765,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				failure = function (e) { obj.fire("failedDataSync", e); };
 
 				obj.fire("beforeDataSync");
-				this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, {Accept: "application/json", withCredentials: this.credentials});
+				this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, utility.merge({withCredentials: this.credentials}, this.headers));
 				return this;
 			}
 		},
@@ -1821,6 +1822,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							case arg !== null:
 								arg.on("expire", function () { this.sync(true); }, "dataSync", this);
 								cache.expire(arg, true);
+								if (this.total > 0) this.clear(true);
 								this.sync();
 								break;
 							default:
