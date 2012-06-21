@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.2.8
+ * @version 2.2.9
  */
 (function (global) {
 "use strict";
@@ -438,12 +438,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		ie      : (function () { return /msie/i.test(navigator.userAgent); })(),
 		ios     : (function () { return /ipad|iphone/i.test(navigator.userAgent); })(),
 		linux   : (function () { return /linux|bsd|unix/i.test(navigator.userAgent); })(),
-		mobile  : (function () { abaaso.client.mobile = this.mobile = /blackberry|iphone|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.x < 720 || abaaso.client.size.y < 720)); }),
+		mobile  : (function () { abaaso.client.mobile = this.mobile = /blackberry|iphone|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.height < 720 || abaaso.client.size.width < 720)); }),
 		playbook: (function () { return /playbook/i.test(navigator.userAgent); })(),
 		opera   : (function () { return /opera/i.test(navigator.userAgent); })(),
 		osx     : (function () { return /macintosh/i.test(navigator.userAgent); })(),
 		safari  : (function () { return /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-		tablet  : (function () { abaaso.client.tablet = this.tablet = /ipad|playbook|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.x >= 720 || abaaso.client.size.y >= 720)); }),
+		tablet  : (function () { abaaso.client.tablet = this.tablet = /ipad|playbook|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.width >= 720 || abaaso.client.size.width >= 720)); }),
 		webos   : (function () { return /webos/i.test(navigator.userAgent); })(),
 		windows : (function () { return /windows/i.test(navigator.userAgent); })(),
 		version : (function () {
@@ -944,13 +944,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Object} Describes the View {x: ?, y: ?}
 		 */
 		size : function () {
-			var x = 0,
-			    y = 0;
+			var view = typeof document.documentElement !== "undefined" ? document.documentElement : document.body;
 
-			x = typeof document.documentElement !== "undefined" ? document.documentElement.clientWidth  : document.body.clientWidth;
-			y = typeof document.documentElement !== "undefined" ? document.documentElement.clientHeight : document.body.clientHeight;
-
-			return {x: x, y: y};
+			return {height: view.clientHeight, width: view.clientWidth};
 		}
 	};
 
@@ -2434,7 +2430,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Object} Size {x:, y:}, Array of sizes or undefined
 		 */
 		size : function (obj) {
-			var num, x, y;
+			var num, height, width;
 
 			obj = utility.object(obj);
 			if (obj instanceof Array) {
@@ -2455,10 +2451,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				return !isNaN(parseInt(n)) ? parseInt(n) : 0;
 			};
 
-			x = obj.offsetHeight + num(obj.style.paddingTop)  + num(obj.style.paddingBottom) + num(obj.style.borderTop)  + num(obj.style.borderBottom);
-			y = obj.offsetWidth  + num(obj.style.paddingLeft) + num(obj.style.paddingRight)  + num(obj.style.borderLeft) + num(obj.style.borderRight);
+			height = obj.offsetHeight + num(obj.style.paddingTop)  + num(obj.style.paddingBottom) + num(obj.style.borderTop)  + num(obj.style.borderBottom);
+			width  = obj.offsetWidth  + num(obj.style.paddingLeft) + num(obj.style.paddingRight)  + num(obj.style.borderLeft) + num(obj.style.borderRight);
 
-			return {x: x, y: y};
+			return {height: height, width: width};
 		},
 
 		/**
@@ -4684,7 +4680,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.2.8"
+		version         : "2.2.9"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
