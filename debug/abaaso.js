@@ -661,11 +661,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			curi = curi.replace(callback+"=?", "");
 
-			curi.on("afterJSONP", function (arg) {
-				this.un("afterJSONP", guid).un("failedJSONP", guid);
+			curi.once("afterJSONP", function (arg) {
+				this.un("failedJSONP", guid);
 				if (typeof success === "function") success(arg);
-			}, guid).on("failedJSONP", function () {
-				this.un("afterJSONP", guid).un("failedJSONP", guid);
+			}, guid).once("failedJSONP", function () {
+				this.un("failedJSONP", guid);
 				if (typeof failure === "function") failure();
 			}, guid);
 
@@ -726,22 +726,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    doc          = (typeof Document !== "undefined"),
 			    ab           = (typeof ArrayBuffer !== "undefined");
 
-			if (type === "delete") {
-				uri.on("afterDelete", function () {
-					uri.un("afterDelete", guid);
-					cache.expire(uri);
-				}, guid);
-			}
+			if (type === "delete") uri.once("afterDelete", function () { cache.expire(this); });
 
-			uri.on("after" + typed, function (arg) {
-			   		uri.un("after" + typed, guid).un("failed" + typed, guid);
-			   		if (typeof success === "function") success(arg);
-				}, guid)
-			   .on("failed" + typed, function (arg) {
-			   		uri.un("after" + typed, guid).un("failed" + typed, guid);
-			   		if (typeof failure === "function") failure(arg);
-			   	}, guid)
-			   .fire("before" + typed);
+			uri.once("after" + typed, function (arg) {
+				uri.un("failed" + typed, guid);
+				if (typeof success === "function") success(arg);
+			}, guid).once("failed" + typed, function (arg) {
+				uri.un("after" + typed, guid);
+				if (typeof failure === "function") failure(arg);
+			}, guid).fire("before" + typed);
 
 			if (type !== "head" && uri.allows(type) === false) return uri.fire("failed" + typed);
 
@@ -3101,6 +3094,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				observer.remove(obj, event, guid);
 				fn.call(scope, arg);
 			}, guid, scope, state);
+
+			return obj;
 		},
 
 		/**
