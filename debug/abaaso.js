@@ -641,7 +641,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {String} URI to query
 		 */
 		jsonp : function (uri, success, failure, args) {
-			var curi = new String(uri).toString(),
+			var curi = uri,
 			    guid = utility.guid(true),
 			    callback, cbid, s;
 
