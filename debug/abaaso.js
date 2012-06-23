@@ -1101,12 +1101,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							delete rec[self.key];
 						}
 
-						obj.on("afterDataSet", function () {
-							this.un("afterDataSet", guid).un("failedDataSet", guid);
+						obj.once("afterDataSet", function () {
+							this.un("failedDataSet", guid);
 							if (++r && r === nth) completed();
-						}, guid).on("failedDataSet", function () {
-							this.un("afterDataSet", guid).un("failedDataSet", guid);
-						}, guid);
+						}, guid).once("failedDataSet", function () { this.un("afterDataSet", guid); }, guid);
 
 						self.set(key, rec, sync);
 					},
@@ -1122,24 +1120,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				switch (type) {
 					case "set":
 						if (sync) this.clear(true);
-						obj.on("failedDataSet", function () {
-							obj.un("failedDataSet", guid);
+						obj.once("failedDataSet", function () {
 							if (!f) {
 								f = true;
 								obj.fire("failedDataBatch");
 							}
-						}, guid);
+						});
 						break;
 					case "del":
 						obj.on("afterDataDelete", function () {
 							if (r++ && r === nth) completed();
-						}, guid).on("failedDataDelete", function () {
-							obj.un("failedDataDelete", guid).un("afterDataDelete", guid);
+						}, guid).once("failedDataDelete", function () {
+							obj.un("afterDataDelete", guid);
 							if (!f) {
 								f = true;
 								obj.fire("failedDataBatch");
 							}
-						}, guid);
+						});
 						break;
 				}
 
@@ -1420,10 +1417,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 							});
 							guid = utility.genId(true);
-							self.parentNode.on("afterDataSet", function () {
-								this.un("afterDataSet", guid);
-								form.destroy();
-							}, guid);
+							self.parentNode.once("afterDataSet", function () { form.destroy(); });
 							self.set(key, newData[entity]);
 							break;
 					}
@@ -1737,15 +1731,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							}
 						});
 
-						obj.on("afterDataBatch", function () {
-							obj.un("afterDataBatch", guid).un("failedDataBatch", guid);
+						obj.once("afterDataBatch", function () {
+							this.un("failedDataBatch", guid);
 							if (reindex) self.reindex();
-							obj.fire("afterDataSync", self.get());
+							this.fire("afterDataSync", self.get());
 						}, guid);
 
-						obj.on("failedDataBatch", function () {
-							obj.un("afterDataBatch", guid).un("failedDataBatch", guid).fire("failedDataSync");
-						}, guid);
+						obj.once("failedDataBatch", function () { this.un("afterDataBatch", guid).fire("failedDataSync"); }, guid);
 
 						self.batch("set", data, true);
 					}
@@ -1832,6 +1824,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof obj.fire === "undefined")      obj.fire      = function (event, arg) { return $.fire.call(this, event, arg); };
 			if (typeof obj.listeners === "undefined") obj.listeners = function (event) { return $.listeners.call(this, event); };
 			if (typeof obj.on === "undefined")        obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
+			if (typeof obj.once === "undefined")      obj.once      = function (event, listener, id, scope, standby) { return $.once.call(this, event, listener, id, scope, standby); };
 			if (typeof obj.un === "undefined")        obj.un        = function (event, id) { return $.un.call(this, event, id); };
 
 			obj.fire("beforeDataStore");
