@@ -3735,6 +3735,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           each     : function (arg) { return array.each(this, arg); },
 				           enable   : function () { return this.each(function (i) { i.enable(); }); },
 				           find     : function (arg) { var a = []; this.each(function (i) { a.push(i.find(arg)); }); return a; },
+				           fire     : function (event, arg) { return this.each(function (i) { i.fire(event, arg); }); },
 				           first    : function () { return array.first(this); },
 				           get      : function (uri, headers) { this.each(function (i) { i.get(uri, headers); }); return []; },
 				           has      : function (arg) { var a = []; this.each(function (i) { a.push(i.has(arg)); }); return a; },
@@ -3766,6 +3767,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isString : function () { var a = []; this.each(function (i) { a.push(i.isString()); }); return a; },
 				           keys     : function () { return array.keys(this); },
 				           last     : function (arg) { return array.last(this); },
+				           listeners: function (event) { var a = []; this.each(function (i) { a = a.concat(i.listeners(event)); }); return a; },
 				           loading  : function () { return this.each(function (i) { i.loading(); }); },
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           once     : function (event, listener, id, scope, state) { return this.each(function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
@@ -3849,7 +3851,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		utility.genId(this);
 				           		return element.find(this, arg);
 				           },
-				           get       : function (uri, headers) {
+				           fire     : function (event, args) {
+				           		utility.genId(this);
+				           		return $.fire.call(this, event, args);
+				           },
+				           genId    : function () { return utility.genId(this); },
+				           get      : function (uri, headers) {
 				           		this.fire("beforeGet");
 				           		var cached = cache.get(uri),
 				           		    guid   = utility.guid(true),
@@ -3928,6 +3935,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		client.jsonp(uri, fn, function () { target.text(label.error.serverError); }, callback);
 				           		return this;
 				           },
+				           listeners: function (event) {
+				           		utility.genId(this);
+				           		return $.listeners.call(this, event);
+				           },
 				           loading  : function () { return $.loading.create(this); },
 				           on       : function (event, listener, id, scope, state) {
 				           		utility.genId(this);
@@ -3981,25 +3992,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           validate : function () { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
 				"function": {reflect: function () { return utility.reflect(this); }},
 				number  : {diff     : function (arg) { return number.diff.call(this, arg); },
+				           fire     : function (event, args) { $.fire.call(this.toString(), event, args); return this; },
 				           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
 				           isEven   : function () { return number.even(this); },
 				           isOdd    : function () { return number.odd(this); },
-				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
-				           un       : function (event, id, state) { return $.un.call(this, event, id, state); }},
-				shared  : {fire     : function (event, args) {
-				           		utility.genId(this);
-				           		return $.fire.call(this, event, args);
-				           },
-				           genId    : function () { return utility.genId(this); },
-				           listeners: function (event) {
-				           		utility.genId(this);
-				           		return $.listeners.call(this, event);
-				           }},
+				           listeners: function (event) { return $.listeners.call(this.toString(), event); },
+				           on       : function (event, listener, id, scope, state) { $.on.call(this.toString(), event, listener, id, scope || this, state); return this; },
+				           once     : function (event, listener, id, scope, state) { $.once.call(this.toString(), event, listener, id, scope || this, state); return this; },
+				           un       : function (event, id, state) { $.un.call(this.toString(), event, id, state); return this; }},
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
 				           capitalize: function () { return string.capitalize(this); },
 				           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
 				           expire   : function (silent) { return cache.expire(this, silent); },
 				           explode  : function (arg) { return string.explode(this, arg); },
+				           fire     : function (event, args) { return $.fire.call(this, event, args); },
 				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 				           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
 				           isBoolean: function () { return validate.test({"boolean": this}).pass; },
@@ -4013,9 +4019,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           isPhone  : function () { return validate.test({phone: this}).pass; },
 				           isString : function () { return validate.test({string: this}).pass; },
 				           jsonp    : function (success, failure, callback) { return client.jsonp(this, success, failure, callback); },
+				           listeners: function (event) { return $.listeners.call(this, event); },
 				           post     : function (success, failure, args, headers) { return client.request(this, "POST", success, failure, args, headers); },
 				           put      : function (success, failure, args, headers) { return client.request(this, "PUT", success, failure, args, headers); },
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
+				           once     : function (event, listener, id, scope, state) { return $.once.call(this, event, listener, id, scope, state); },
 				           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
 				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function () { return client.permissions(this); },
@@ -4027,7 +4035,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			};
 
 			utility.iterate(methods[type], function (v, k) { utility.property(obj.prototype, k, {value: v}); });
-			if (type !== "function") utility.iterate(methods.shared, function (v, k) { utility.property(obj.prototype, k, {value: v}); });
 			return obj;
 		},
 
