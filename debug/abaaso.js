@@ -3067,7 +3067,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Adds a listener for a single execution
 		 * 
-		 * @method add
+		 * @method once
 		 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
 		 * @param  {String}   event Event being fired
 		 * @param  {Function} fn    Event handler
