@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.3.0
+ * @version 2.3.1
  */
 (function (global) {
 "use strict";
@@ -1211,7 +1211,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.credentials = null;
 					this.expires     = null;
 					this._expires    = null;
-					this.headers     = {Accept: "application/json", "Content-Type": "application/json"};
+					this.headers     = {Accept: "application/json"};
 					this.key         = null;
 					this.keys        = {};
 					this.records     = [];
@@ -3079,6 +3079,31 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Adds a listener for a single execution
+		 * 
+		 * @method add
+		 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
+		 * @param  {String}   event Event being fired
+		 * @param  {Function} fn    Event handler
+		 * @param  {String}   id    [Optional / Recommended] The id for the listener
+		 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
+		 * @param  {String}   state [Optional] The state the listener is for
+		 * @return {Mixed}          Entity, Array of Entities or undefined
+		 */
+		once : function (obj, event, fn, id, scope, state) {
+			var guid = id || utility.genId();
+
+			if (typeof scope === "undefined") scope = abaaso;
+
+			if (obj instanceof Array) return obj.each(function (i) { observer.once(i, event, fn, id, scope, state); });
+
+			observer.add(obj, event, function (arg) {
+				observer.remove(obj, event, guid);
+				fn.call(scope, arg);
+			}, guid, scope, state);
+		},
+
+		/**
 		 * Removes listeners
 		 *
 		 * @method remove
@@ -3743,6 +3768,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           last     : function (arg) { return array.last(this); },
 				           loading  : function () { return this.each(function (i) { i.loading(); }); },
 				           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
+				           once     : function (event, listener, id, scope, state) { return this.each(function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 				           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 				           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
 				           range    : function (start, end) { return array.range(this, start, end); },
@@ -3906,6 +3932,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) {
 				           		utility.genId(this);
 				           		return $.on.call(this, event, listener, id, scope, state);
+				           },
+				           once     : function (event, listener, id, scope, state) {
+				           		utility.genId(this);
+				           		return $.once.call(this, event, listener, id, scope, state);
 				           },
 				           prepend  : function (type, args) {
 				           		utility.genId(this);
@@ -4318,7 +4348,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			playbook: client.playbook,
 			safari  : client.safari,
 			tablet  : client.tablet,
-			size    : {x: 0, y: 0},
+			size    : {height: 0, width: 0},
 			version : 0,
 			webos   : client.webos,
 			windows : client.windows,
@@ -4350,6 +4380,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			add     : observer.add,
 			fire    : observer.fire,
 			list    : observer.list,
+			once    : observer.once,
 			remove  : observer.remove
 		},
 		state           : {
@@ -4485,10 +4516,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			delete $.init;
 
 			// Unbinding observer methods to maintain scope
-			$.fire           = abaaso.fire;
-			$.on             = abaaso.on;
-			$.un             = abaaso.un;
-			$.listeners      = abaaso.listeners;
+			$.fire      = abaaso.fire;
+			$.on        = abaaso.on;
+			$.once      = abaaso.once;
+			$.un        = abaaso.un;
+			$.listeners = abaaso.listeners;
 
 			// Setting initial application state
 			abaaso.state._current = abaaso.state.current = "initial";
@@ -4652,6 +4684,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof s === "undefined") s = o;
 			return observer.add.call(observer, o, e, l, i, s, st);
 		},
+		once            : function (obj, event, listener, id, scope, state) {
+			var all = typeof listener === "function",
+			    o, e, l, i, s, st;
+
+			o  = all ? obj      : this;
+			e  = all ? event    : obj;
+			l  = all ? listener : event;
+			i  = all ? id       : listener;
+			s  = all ? scope    : id;
+			st = all ? state    : scope;
+
+			if (typeof o === "undefined" || o === $) o = abaaso;
+			if (typeof s === "undefined") s = o;
+			return observer.once.call(observer, o, e, l, i, s, st);
+		},
 		options         : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
 		permissions     : client.permissions,
 		position        : element.position,
@@ -4683,7 +4730,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.3.0"
+		version         : "2.3.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
