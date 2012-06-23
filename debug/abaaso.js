@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.3.1
+ * @version 2.3.2
  */
 (function (global) {
 "use strict";
@@ -608,6 +608,33 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Parses an XHR response
+		 * 
+		 * @param  {Object} xhr  XHR Object
+		 * @param  {String} type [Optional] Content-Type header value
+		 * @return {Mixed}       Array, Boolean, Document, Number, Object or String
+		 */
+		parse : function (xhr, type) {
+			type = type || "";
+			var result, obj;
+
+			switch (true) {
+				case (/json|plain|javascript/.test(type) || type.isEmpty()) && Boolean(obj = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText), true)):
+					result = obj;
+					break;
+				case (/xml/.test(type) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
+					result = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseXML);
+					break;
+				case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
+					result = xml.decode(xhr.responseText);
+					break;
+				default:
+					result = xhr.responseText;
+			}
+			return result;
+		},
+
+		/**
 		 * Returns the permission of the cached URI
 		 *
 		 * @method permissions
@@ -785,7 +812,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 				catch (e) {
 					error(e, arguments, this, true);
-					uri.fire("failed" + typed);
+					uri.fire("failed" + typed, {response: client.parse(xhr), xhr: xhr});
 				}
 			}
 			return uri;
@@ -815,7 +842,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		response : function (xhr, uri, type) {
 			var typed = type.toLowerCase().capitalize(),
-			    l     = location;
+			    l     = location,
+			    state = null,
+			    s, o, cors, r, t;
 
 			switch (true) {
 				case xhr.readyState === 2:
@@ -833,33 +862,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							case 205:
 							case 206:
 							case 301:
-								var state = null,
-								    s     = abaaso.state,
-								    o     = client.headers(xhr, uri, type),
-								    cors  = client.cors(uri),
-								    r, t, x;
+								s    = abaaso.state;
+								o    = client.headers(xhr, uri, type);
+								cors = client.cors(uri);
 
 								switch (true) {
 									case type === "head":
 										return uri.fire("afterHead", o.headers);
 									case type !== "delete" && /200|301/.test(xhr.status):
 										t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
-										switch (true) {
-											case (/json|plain|javascript/.test(t) || t.isEmpty()) && Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText), true)):
-												r = x;
-												break;
-											case (/xml/.test(t) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
-												r = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseXML);
-												break;
-											case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
-												r = xml.decode(xhr.responseText);
-												break;
-											default:
-												r = xhr.responseText;
-										}
-
+										r = client.parse(xhr, t);
 										if (typeof r === "undefined") throw Error(label.error.serverError);
-
 										cache.set(uri, "response", (o.response = r));
 										break;
 								}
@@ -904,7 +917,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 					catch (e) {
 						error(e, arguments, this, true);
-						uri.fire("failed" + typed, xhr);
+						uri.fire("failed" + typed, {response: client.parse(xhr), xhr: xhr});
 					}
 					break;
 				case client.ie && client.cors(uri): // XDomainRequest
@@ -1023,7 +1036,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (!offset.isEmpty()) {
 				while (i--) {
-					regex.compile(types[i]);
+					utility.compile(regex, types[i]);
 					if (regex.test(offset)) {
 						type = types[i];
 						span = parseInt(offset);
@@ -1330,7 +1343,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						for (y = 0; y < nth2; y++) {
 							f = h[x];
 							p = n[y];
-							regex.compile(p, modifiers);
+							utility.compile(regex, p, modifiers);
 							s = this.records[i].data[f];
 							if (!keys[this.records[i].key] && regex.test(s)) {
 								keys[this.records[i].key] = i;
@@ -2278,15 +2291,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Mixed}       Boolean or undefined
 		 */
 		is : function (obj, arg) {
-			var regex;
-
 			obj = utility.object(obj);
 
 			if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 			utility.genId(obj);
-			regex = /^:/;
-			return regex.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).index(obj) > -1) : (utility.compile(regex, arg, "i") && regex.test(obj.nodeName));
+			return /^:/.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).index(obj) > -1) : new RegExp(arg, "i").test(obj.nodeName);
 		},
 
 		/**
@@ -2783,9 +2793,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var m = abaaso.mouse;
 			switch (true) {
 				case typeof e === "object":
-					var x = e.pageX ? e.pageX : ((client.ie && client.version < 9 ? document.documentElement.scrollLeft : document.body.scrollLeft) + e.clientX),
-					    y = e.pageY ? e.pageY : ((client.ie && client.version < 9 ? document.documentElement.scrollTop  : document.body.scrollTop)  + e.clientY),
-					    c = false;
+					var view = document[client.ie && client.version < 9 ? "documentElement" : "body"],
+					    x    = e.pageX ? e.pageX : (view.scrollLeft + e.clientX),
+					    y    = e.pageY ? e.pageY : (view.scrollTop  + e.clientY),
+					    c    = false;
 
 					if (m.pos.x !== x) c = true;
 					$.mouse.prev.x = m.prev.x = Number(m.pos.x);
@@ -2929,11 +2940,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
 
 			var instance = null,
-			    regex    = new RegExp(),
 			    l        = observer.listeners,
 			    o        = this.id(obj),
 			    n        = false,
 			    c        = abaaso.state.current,
+			    b        = /body|document|window/i,
 			    item, add, reg;
 
 			if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -2944,24 +2955,22 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (n) {
 				switch (true) {
-					case utility.compile(regex, "body|document|window", "i") && regex.test(o):
-					case utility.compile(regex, "\/", "g") && !regex.test(o) && o !== "abaaso":
+					case b.test(o):
+					case !/\//g.test(o) && o !== "abaaso":
 						instance = obj;
 						break;
 					default:
 						instance = null;
 				}
 
-				utility.compile(regex, "body|document|window", "i");
-
-				if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && (regex.test(o) || typeof instance.listeners === "function")) {
+				if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && (b.test(o) || typeof instance.listeners === "function")) {
 					add = (typeof instance.addEventListener === "function");
 					reg = (typeof instance.attachEvent === "object" || add);
 					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
-						if (!regex.test(e.type)) {
-							if (typeof e.cancelBubble !== "undefined")   e.cancelBubble = true;
-							if (typeof e.preventDefault === "function")  e.preventDefault();
-							if (typeof e.stopPropagation === "function") e.stopPropagation();
+						if (!b.test(e.type)) {
+							if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
+							if (typeof e.preventDefault  === "function")  e.preventDefault();
+							if (typeof e.stopPropagation === "function")  e.stopPropagation();
 						}
 						observer.fire(obj, event, e);
 					}, false);
@@ -3343,15 +3352,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		coerce : function (value) {
 			var result = utility.clone(value),
-			    regex  = new RegExp(),
 			    tmp;
 
 			switch (true) {
-				case utility.compile(regex, "^\\d$") && regex.test(result):
+				case (/\d$/.test(result)):
 					result = number.parse(result);
 					break;
-				case utility.compile(regex, "^(true|false)$", "i") && regex.test(result):
-					result = (utility.compile(regex, "true", "i") && regex.test(result));
+				case (/^(true|false)$/i.test(result)):
+					result = /true/i.test(result);
 					break;
 				case result === "undefined":
 					result = undefined;
@@ -4727,7 +4735,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.3.1"
+		version         : "2.3.2"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
