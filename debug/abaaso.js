@@ -3079,12 +3079,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		once : function (obj, event, fn, id, scope, state) {
 			var guid = id || utility.genId();
 
-			if (typeof scope === "undefined") scope = abaaso;
+			obj   = utility.object(obj);
+			scope = scope || abaaso;
+			state = state || abaaso.state.current;
 
 			if (obj instanceof Array) return obj.each(function (i) { observer.once(i, event, fn, id, scope, state); });
 
 			observer.add(obj, event, function (arg) {
-				observer.remove(obj, event, guid);
+				observer.remove(obj, event, guid, state);
 				fn.call(scope, arg);
 			}, guid, scope, state);
 
