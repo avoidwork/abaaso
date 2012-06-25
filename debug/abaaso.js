@@ -350,7 +350,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			silent = (silent === true);
 			if (typeof cache.items[uri] !== "undefined") {
 				delete cache.items[uri];
-				if (!silent) uri.fire("beforeExpire").fire("expire").fire("afterExpire");
+				if (!silent) uri.fire("beforeExpire, expire, afterExpire");
 				return true;
 			}
 			else return false;
