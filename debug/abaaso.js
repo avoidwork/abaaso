@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.3.4
+ * @version 2.3.5
  */
 (function (global) {
 "use strict";
@@ -2923,7 +2923,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method add
 		 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
-		 * @param  {String}   event Event being fired
+		 * @param  {String}   event Event, or Events being fired (comma delimited supported)
 		 * @param  {Function} fn    Event handler
 		 * @param  {String}   id    [Optional / Recommended] The id for the listener
 		 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
@@ -2937,6 +2937,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (obj instanceof Array) return obj.each(function (i) { observer.add(i, event, fn, id, scope, state); });
 
+			event = event.explode();
+
 			if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
 
 			var instance = null,
@@ -2949,36 +2951,39 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-			if (typeof l[o] === "undefined")                      l[o]               = {};
-			if (typeof l[o][event] === "undefined" && (n = true)) l[o][event]        = {};
-			if (typeof l[o][event][state] === "undefined")        l[o][event][state] = {};
+			event.each(function (i) {
+				n = false;
+				if (typeof l[o] === "undefined")                  l[o]           = {};
+				if (typeof l[o][i] === "undefined" && (n = true)) l[o][i]        = {};
+				if (typeof l[o][i][state] === "undefined")        l[o][i][state] = {};
 
-			if (n) {
-				switch (true) {
-					case b.test(o):
-					case !/\//g.test(o) && o !== "abaaso":
-						instance = obj;
-						break;
-					default:
-						instance = null;
+				if (n) {
+					switch (true) {
+						case b.test(o):
+						case !/\//g.test(o) && o !== "abaaso":
+							instance = obj;
+							break;
+						default:
+							instance = null;
+					}
+
+					if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (b.test(o) || typeof instance.listeners === "function")) {
+						add = (typeof instance.addEventListener === "function");
+						reg = (typeof instance.attachEvent === "object" || add);
+						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
+							if (!b.test(e.type)) {
+								if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
+								if (typeof e.preventDefault  === "function")  e.preventDefault();
+								if (typeof e.stopPropagation === "function")  e.stopPropagation();
+							}
+							observer.fire(obj, i, e);
+						}, false);
+					}
 				}
 
-				if (instance !== null && typeof instance !== "undefined" && event.toLowerCase() !== "afterjsonp" && (b.test(o) || typeof instance.listeners === "function")) {
-					add = (typeof instance.addEventListener === "function");
-					reg = (typeof instance.attachEvent === "object" || add);
-					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + event, function (e) {
-						if (!b.test(e.type)) {
-							if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
-							if (typeof e.preventDefault  === "function")  e.preventDefault();
-							if (typeof e.stopPropagation === "function")  e.stopPropagation();
-						}
-						observer.fire(obj, event, e);
-					}, false);
-				}
-			}
-
-			item = {fn: fn, scope: scope};
-			l[o][event][state][id] = item;
+				item = {fn: fn, scope: scope};
+				l[o][i][state][id] = item;
+			});
 
 			return obj;
 		},
@@ -3017,29 +3022,33 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method fire
 		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
-		 * @param  {String} event Event being fired
+		 * @param  {String} event Event, or Events being fired (comma delimited supported)
 		 * @param  {Mixed}  arg   [Optional] Argument supplied to the listener
 		 * @return {Mixed} Entity, Array of Entities or undefined
 		 */
 		fire : function (obj, event, arg) {
-			obj = utility.object(obj);
-
+			obj      = utility.object(obj);
 			if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, arg); });
-
-			var o = this.id(obj),
-			    a = arg,
-			    s = abaaso.state.current,
-			    c, l;
+			event    = event.explode();
+			var o    = this.id(obj),
+			    a    = arg,
+			    s    = abaaso.state.current,
+			    log  = ($.observer.log || abaaso.observer.log),
+			    self = this,
+			    c, l, list;
 
 			if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
-			if ($.observer.log || abaaso.observer.log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + event);
-			l = this.list(obj, event).all;
-			if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
-			if (s !== "all") {
-				l = this.list(obj, event)[s];
+			event.each(function (e) {
+				if (log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + e);
+				list = self.list(obj, e);
+				l = list.all;
 				if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
-			}
+				if (s !== "all") {
+					l = list[s];
+					if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
+				}
+			});
 			return obj;
 		},
 
@@ -3107,7 +3116,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method remove
 		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
-		 * @param  {String} event [Optional] Event being fired
+		 * @param  {String} event [Optional] Event, or Events being fired (comma delimited supported)
 		 * @param  {String} id    [Optional] Listener id
 		 * @param  {String} state [Optional] The state the listener is for
 		 * @return {Mixed}  Entity, Array of Entities or undefined
@@ -3125,13 +3134,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			switch (true) {
 				case typeof o === "undefined":
 				case typeof l[o] === "undefined":
-				case typeof event !== "undefined" && typeof l[o][event] === "undefined":
 					return obj;
 			}
 
 			if (typeof event === "undefined") delete l[o];
-			else typeof id === "undefined" ? l[o][event][state] = {} : delete l[o][event][state][id];
-
+			else {
+				event = event.explode();
+				event.each(function (e) {
+					if (typeof l[o][e] === "undefined") return obj;
+					typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
+				});
+			}
 			return obj;
 		}
 	};
@@ -4737,7 +4750,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.3.4"
+		version         : "2.3.5"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
