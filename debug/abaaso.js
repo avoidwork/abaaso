@@ -1521,11 +1521,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			reindex : function () {
 				var nth = this.total,
 				    obj = this.parentNode,
+				    key = (this.key !== null),
 				    i;
 
 				this.views = {};
 				for(i = 0; i < nth; i++) {
-					if (this.records[i].key.isNumber()) {
+					if (!key && this.records[i].key.isNumber()) {
 						delete this.keys[this.records[i].key];
 						this.keys[i.toString()] = {};
 						this.records[i].key = i.toString();
