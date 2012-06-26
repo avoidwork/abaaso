@@ -1770,7 +1770,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			/**
 			 * Tears down a store & expires all records associated to an API
 			 * 
-			 * @param  {Boolean} clear True or false to hard reset the store
+			 * @param  {Boolean} sync  True for a soft reset, or false for a hard reset of the store
 			 * @return {Undefined}     undefined
 			 */
 			teardown : function (sync) {
