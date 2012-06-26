@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.3.5
+ * @version 2.3.6
  */
 (function (global) {
 "use strict";
@@ -1765,6 +1765,25 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				obj.fire("beforeDataSync");
 				this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, utility.merge({withCredentials: this.credentials}, this.headers));
 				return this;
+			},
+
+			/**
+			 * Tears down a store & expires all records associated to an API
+			 * 
+			 * @param  {Boolean} clear True or false to hard reset the store
+			 * @return {Undefined}     undefined
+			 */
+			teardown : function (clear) {
+				clear       = !(clear === false);
+				var uri     = this.uri,
+				    records;
+
+				if (uri !== null) {
+					cache.expire(uri, true);
+					records = this.get();
+					records.each(function (i) { cache.expire((uri + "/" + i.key), true); });
+				}
+				this.clear(clear);
 			}
 		},
 
@@ -4750,7 +4769,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.3.5"
+		version         : "2.3.6"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
