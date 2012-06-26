@@ -1830,20 +1830,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								return;
 							case this._uri !== null:
 								this._uri.un("expire", "dataSync");
-								cache.expire(this._uri, true);
+								this.teardown(true);
 							default:
 								this._uri = arg;
 						}
 
-						switch (true) {
-							case arg !== null:
-								arg.on("expire", function () { this.sync(true); }, "dataSync", this);
-								cache.expire(arg, true);
-								if (this.total > 0) this.clear(true);
-								this.sync();
-								break;
-							default:
-								this.clear(true);
+						if (arg !== null) {
+							arg.on("expire", function () { this.sync(true); }, "dataSync", this);
+							cache.expire(arg, true);
+							this.sync();
 						}
 					}
 				}
