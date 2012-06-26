@@ -1773,8 +1773,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {Boolean} clear True or false to hard reset the store
 			 * @return {Undefined}     undefined
 			 */
-			teardown : function (clear) {
-				clear   = !(clear === false);
+			teardown : function (sync) {
+				sync    = (sync === true);
 				var uri = this.uri,
 				    records;
 
@@ -1783,7 +1783,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					records = this.get();
 					records.each(function (i) { cache.expire((uri + "/" + i.key), true); });
 				}
-				this.clear(clear);
+				this.clear(sync);
 			}
 		},
 
