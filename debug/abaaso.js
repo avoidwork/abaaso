@@ -1774,8 +1774,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @return {Undefined}     undefined
 			 */
 			teardown : function (clear) {
-				clear       = !(clear === false);
-				var uri     = this.uri,
+				clear   = !(clear === false);
+				var uri = this.uri,
 				    records;
 
 				if (uri !== null) {
