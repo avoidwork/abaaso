@@ -1211,6 +1211,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (!sync) {
 					obj.fire("beforeDataClear");
 					this.callback    = null;
+					this.collections = [];
 					this.credentials = null;
 					this.expires     = null;
 					this._expires    = null;
@@ -1226,6 +1227,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					obj.fire("afterDataClear");
 				}
 				else {
+					this.collections = [];
 					this.keys        = {};
 					this.records     = [];
 					this.total       = 0;
@@ -1262,6 +1264,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				utility.iterate(record.data, function (v, k) {
 					if (ignored && ignore.index(k) > -1) return;
 					if (v.indexOf("//") >= 0) {
+						self.collections.push(k);
 						record.data[k] = data.register({id: record.key + "-" + k});
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						record.data[k].data.key     = key;
@@ -1913,6 +1916,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				this.total--;
 				this.views = {};
 				if (data.reindex) this.reindex();
+				utility.iterate(record.data, function (v, k) {
+					if (v === null) return;
+					if (typeof v.data !== "undefined") v.data.teardown();
+				});
 				this.parentNode.fire("afterDataDelete", record);
 				return this.parentNode;
 			}, "recordDelete", obj.data);
