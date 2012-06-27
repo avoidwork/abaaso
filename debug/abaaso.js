@@ -1618,6 +1618,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (typeof record !== "undefined") args.record = this.records[this.keys[record.key].index];
 
+				this.collections.each(function (i) { delete args.data[i]; });
+
 				if (uri !== null) p = uri.allows(method);
 
 				obj.fire("beforeDataSet", {key: key, data: data});
