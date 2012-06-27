@@ -1528,7 +1528,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @return {Mixed} Individual record, or Array of records
 			 */
 			get : function (record, end) {
-				var records = this.records.clone(),
+				var records = this.records,
 				    obj     = this.parentNode,
 				    r;
 
@@ -1550,7 +1550,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						r = undefined;
 				}
 
-				return r;
+				return utility.clone(r);
 			},
 
 			/**
@@ -1595,11 +1595,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @return {Object} The data store
 			 */
 			set : function (key, data, sync) {
-				key  = key === null ? undefined : key.toString();
+				if (key === null) key = undefined;
 				sync = (sync === true);
 
 				switch (true) {
-					case (typeof key === "undefined" || key.isEmpty()) && this.uri === null:
+					case (typeof key === "undefined" || String(key).isEmpty()) && this.uri === null:
 					case typeof data === "undefined":
 					case data instanceof Array:
 					case data instanceof Number:
@@ -1608,11 +1608,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						throw Error(label.error.invalidArguments);
 				}
 
-				var record = typeof this.keys[key] === "undefined" && typeof this.records[key] === "undefined" ? undefined : this.get(key),
+				var record = typeof key === "undefined" ? undefined : this.get(key),
 				    obj    = this.parentNode,
 				    method = typeof key === "undefined" ? "post" : "put",
 				    args   = {data: typeof record !== "undefined" ? utility.merge(record.data, data) : data, key: key, record: undefined},
-				    uri    = this.uri === null ? null : this.uri + "/" + key,
+				    uri    = this.uri,
 				    r      = /true|undefined/,
 				    p;
 
@@ -1620,7 +1620,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				this.collections.each(function (i) { delete args.data[i]; });
 
-				if (uri !== null) p = uri.allows(method);
+				if (uri !== null) {
+					if (typeof record !== "undefined") uri += "/" + record.key;
+					p = uri.allows(method);
+				}
 
 				obj.fire("beforeDataSet", {key: key, data: data});
 				switch (true) {
