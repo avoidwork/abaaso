@@ -1814,13 +1814,20 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			teardown : function (sync) {
 				sync    = (sync === true);
-				var uri = this.uri,
+				var self = this,
+				    uri  = this.uri,
 				    records;
 
 				if (uri !== null) {
 					cache.expire(uri, true);
 					records = this.get();
-					records.each(function (i) { cache.expire((uri + "/" + i.key), true); });
+					records.each(function (i) {
+						cache.expire((uri + "/" + i.key), true);
+						utility.iterate(i.data, function (v, k) {
+							if (v === null) return;
+							if (typeof v.data !== "undefined") v.data.teardown();
+						});
+					});
 				}
 				this.clear(sync);
 			}
