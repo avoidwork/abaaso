@@ -1245,6 +1245,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			crawl : function (arg, ignore, key) {
 				var ignored = false,
+				    self    = this,
 				    record;
 
 				if (typeof arg === "undefined" || (typeof arg !== "number" && typeof arg !== "string")) throw Error(label.error.invalidArguments);
@@ -1262,8 +1263,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (ignored && ignore.index(k) > -1) return;
 					if (v.indexOf("//") >= 0) {
 						record.data[k] = data.register({id: record.key + "-" + k});
-						record.data[k].data.key = key;
-						record.data[k].data.uri = v;
+						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
+						record.data[k].data.key     = key;
+						record.data[k].data.uri     = v;
 					}
 				});
 				return this.get(arg);
