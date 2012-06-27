@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.3.6
+ * @version 2.3.7
  */
 (function (global) {
 "use strict";
@@ -1232,6 +1232,36 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.views       = {};
 				}
 				return this;
+			},
+
+			/**
+			 * Crawls a record's properties and creates data stores when URIs are detected
+			 * 
+			 * @method crawl
+			 * @param  {Mixed}  arg    Record key or index
+			 * @param  {String} ignore [Optional] Comma delimited fields to ignore
+			 * @param  {String} key    [Optional] data.key property to set on new stores, defaults to record.key
+			 * @return {Object}        Record
+			 */
+			crawl : function (arg, ignore, key) {
+				var record;
+
+				if (typeof arg === "undefined" || (typeof arg !== "number" && typeof arg !== "string")) throw Error(label.error.invalidArguments);
+
+				record = this.get(arg);
+				record = this.records[this.keys[record.key].index];
+				key    = key || this.key;
+				ignore = ignore.explode() || [];
+
+				utility.iterate(record.data, function (v, k) {
+					if (ignore.index(k) > -1) return;
+					if (v.indexOf("//") >= 0) {
+						record.data[k] = data.register({id: record.key + "-" + k});
+						record.data[k].data.key = key;
+						record.data[k].data.uri = v;
+					}
+				});
+				return this.get(arg);
 			},
 
 			/**
@@ -4765,7 +4795,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.3.6"
+		version         : "2.3.7"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
