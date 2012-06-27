@@ -1550,7 +1550,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						r = undefined;
 				}
 
-				return utility.clone(r);
+				r = r instanceof Array ? utility.clone(r) : utility.clone([r])[0];
+				return r;
 			},
 
 			/**
