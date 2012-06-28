@@ -4805,7 +4805,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		reflect         : utility.reflect,
 		repeat          : utility.repeat,
 		repeating       : {},
-		stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", src: arg, media: media || "screen, print"}, $("head")[0]); },
+		stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]); },
 		script          : function (arg, target, pos) { return element.create("script", {type: "application/javascript", src: arg}, target || $("head")[0], pos); },
 		store           : function (arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
