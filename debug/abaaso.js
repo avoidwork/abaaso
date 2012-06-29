@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.3.9
+ * @version 2.4.0
  */
 (function (global) {
 "use strict";
@@ -3663,15 +3663,24 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 		/**
 		 * Iterates an Object and executes a function against the properties
+		 *
+		 * Iteration can be stopped by returning false from fn
 		 * 
 		 * @param  {Object}   obj Object to iterate
 		 * @param  {Function} fn  Function to execute against properties
 		 * @return {Object} Object
 		 */
 		iterate : function (obj, fn) {
-			var i;
+			var i, result;
 
-			for (i in obj) if (Object.prototype.hasOwnProperty.call(obj, i) && typeof fn === "function") fn.call(obj, obj[i], i);
+			if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+			for (i in obj) {
+				if (Object.prototype.hasOwnProperty.call(obj, i)) {
+					result = fn.call(obj, obj[i], i);
+					if (result === false) break;
+				}
+			}
 			return obj;
 		},
 
@@ -4823,7 +4832,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.3.9"
+		version         : "2.4.0"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
