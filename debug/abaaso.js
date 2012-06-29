@@ -37,7 +37,7 @@
  *         beforeCreate   Fires when an Element is about to be created; parameter for listeners is the (new) Element.id value
  *         beforeDestroy  Fires when an Element is about to be destroyed; parameter for listeners is the (to be removed) Element
  *         error          Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
- *         beforeHash     Fires before the hash event
+ *         beforeHash     Fires before the hash event; parameter for listeners is the hash value
  *         hash           Fires when window.location.hash changes; parameter for listeners is the hash value
  *         afterHash      Fires after the hash event; parameter for listeners is the hash value
  *
@@ -4643,7 +4643,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			// Setting events & garbage collection
 			$.on(global, "error",      function (e) { $.fire("error", e); }, "error", global, "all");
-			$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash, afterHash", location.hash); }, "hash", global, "all");
+			$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
 			$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
 			$.on(global, "load",       function ()  { $.fire("render").un("render"); });
 			$.on(global, "DOMNodeInserted", function (e) {
