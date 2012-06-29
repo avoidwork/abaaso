@@ -1798,7 +1798,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							this.fire("afterDataSync", self.get());
 						}, guid);
 
-						obj.once("failedDataBatch", function () { this.un("afterDataBatch", guid).fire("failedDataSync"); }, guid);
+						obj.once("failedDataBatch", function () { this.fire("failedDataSync"); }, guid);
 
 						self.batch("set", data, true);
 					}
@@ -1872,7 +1872,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						clearTimeout($.repeating[id]);
 						delete $.repeating[id];
 
-						if (arg !== null) utility.defer(function () { utility.repeat(function () { if (!cache.expire(self.uri)) self.uri.fire("beforeExpire").fire("expire").fire("afterExpire"); }, expires, id); }, expires);
+						if (arg !== null) utility.defer(function () { utility.repeat(function () { if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire"); }, expires, id); }, expires);
 					}
 				},
 				uri : {
@@ -4643,7 +4643,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			// Setting events & garbage collection
 			$.on(global, "error",      function (e) { $.fire("error", e); }, "error", global, "all");
-			$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash", location.hash).fire("afterHash", location.hash); }, "hash", global, "all");
+			$.on(global, "hashchange", function ()  { $.fire("beforeHash").fire("hash, afterHash", location.hash); }, "hash", global, "all");
 			$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
 			$.on(global, "load",       function ()  { $.fire("render").un("render"); });
 			$.on(global, "DOMNodeInserted", function (e) {
