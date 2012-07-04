@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.1
+ * @version 2.4.2
  */
 (function (global) {
 "use strict";
@@ -895,7 +895,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 										uri.fire("reset");
 										break;
 									case 301:
-										uri.fire("moved", o.response);
+										uri.fire("moved", utility.clone(o.response));
 										break;
 								}
 								break;
@@ -1106,27 +1106,30 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    r    = 0,
 				    nth  = 0,
 				    f    = false,
-				    set  = function (rec, key) {
-				    	var guid = utility.genId();
+				    guid = utility.genId(true),
+				    completed, key, set;
 
-				    	if (self.key !== null && typeof rec[self.key] !== "undefined") {
-							key = rec[self.key];
-							delete rec[self.key];
-						}
+				completed = function () {
+					if (type === "del") this.reindex();
+					obj.fire("afterDataBatch");
+				};
 
-						obj.once("afterDataSet", function () {
-							this.un("failedDataSet", guid);
-							if (++r && r === nth) completed();
-						}, guid).once("failedDataSet", function () { this.un("afterDataSet", guid); }, guid);
+				set  = function (data, key) {
+					var guid = utility.genId(),
+					    rec  = utility.clone(data);
 
-						self.set(key, rec, sync);
-					},
-					completed = function () {
-						if (type === "del") this.reindex();
-						obj.fire("afterDataBatch");
-					},
-					guid = utility.genId(true),
-				    key;
+					if (self.key !== null && typeof rec[self.key] !== "undefined") {
+						key = rec[self.key];
+						delete rec[self.key];
+					}
+
+					obj.once("afterDataSet", function () {
+						this.un("failedDataSet", guid);
+						if (++r && r === nth) completed();
+					}, guid).once("failedDataSet", function () { this.un("afterDataSet", guid); }, guid);
+
+					self.set(key, rec, sync);
+				};
 
 				obj.fire("beforeDataBatch", data);
 
@@ -1142,7 +1145,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						break;
 					case "del":
 						obj.on("afterDataDelete", function () {
-							if (r++ && r === nth) completed();
+							if (r++ && r === nth) {
+								obj.un("afterDataDelete", guid);
+								completed();
+							}
 						}, guid).once("failedDataDelete", function () {
 							obj.un("afterDataDelete", guid);
 							if (!f) {
@@ -1388,7 +1394,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							s = this.records[i].data[f];
 							if (!keys[this.records[i].key] && regex.test(s)) {
 								keys[this.records[i].key] = i;
-								if (result.index(this.records[i]) < 0) result.push(this.records[i]);
+								if (result.index(this.records[i]) < 0) result.push(utility.clone(this.records[i]));
 							}
 						}
 					}
@@ -1621,7 +1627,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				this.collections.each(function (i) { delete args.data[i]; });
 
-				if (uri !== null) {
+				if (!sync && uri !== null) {
 					if (typeof record !== "undefined") uri += "/" + record.key;
 					p = uri.allows(method);
 				}
@@ -1784,11 +1790,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
-						if (arg instanceof Array) data = arg.clone();
+						if (arg instanceof Array) data = utility.clone(arg);
 						else utility.iterate(arg, function (i) {
 							if (!found && i instanceof Array) {
 								found = true;
-								data  = i.clone();
+								data  = utility.clone(i);
 							}
 						});
 
@@ -1917,6 +1923,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			obj.on("syncDataDelete", function (data) {
 				var record = this.get(data.record);
+
 				this.records.remove(data.record);
 				delete this.keys[data.key];
 				this.total--;
@@ -1930,8 +1937,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				return this.parentNode;
 			}, "recordDelete", obj.data);
 
-			obj.on("syncDataSet", function (data) {
-				var record;
+			obj.on("syncDataSet", function (arg) {
+				var data = utility.clone(arg),
+				    record;
+
 				switch (true) {
 					case typeof data.record === "undefined":
 						var index = this.total;
@@ -1949,7 +1958,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						this.keys[data.key].index = index;
 						this.records[index] = {};
 						record      = this.records[index];
-						record.data = utility.clone(data.data);
+						record.data = data.data;
 						record.key  = data.key;
 						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
 						break;
@@ -4832,7 +4841,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.1"
+		version         : "2.4.2"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
