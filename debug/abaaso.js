@@ -746,7 +746,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    timeout      = function (arg) { uri.fire("timeout" + typed, arg); },
 			    doc          = (typeof Document !== "undefined"),
 			    ab           = (typeof ArrayBuffer !== "undefined"),
-                blob         = (typeof Blob !== "undefined");
+			    blob         = (typeof Blob !== "undefined");
 
 			if (type === "delete") uri.once("afterDelete", function () { cache.expire(this); });
 
