@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.2
+ * @version 2.4.3
  */
 (function (global) {
 "use strict";
@@ -99,21 +99,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Finds the index of arg(s) in instance
-		 *
+		 * Determines if obj contains arg
+		 * 
 		 * @method contains
-		 * @param  {Array}  obj  Array to search
-		 * @param  {String} arg  Comma delimited string of search values
-		 * @return {Mixed}  Integer or an array of integers representing the location of the arg(s)
+		 * @param  {Array} obj Array to search
+		 * @param  {Mixed} arg Value to look for
+		 * @return {Boolean}   True if found, false if not
 		 */
 		contains : function (obj, arg) {
-			var indices = [],
-			    nth, i;
-
-			arg = typeof arg.indexOf === "function" ? arg.explode() : [arg];
-			nth = obj.length;
-			arg.each(function (idx) { for (i = 0; i < nth; i++) if (idx === obj[i]) indices.push(i); });
-			return indices.sort(function(a, b) { return a - b; });
+			return (array.index(obj, arg) > -1);
 		},
 
 		/**
@@ -1224,6 +1218,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.headers     = {Accept: "application/json"};
 					this.key         = null;
 					this.keys        = {};
+					this.loaded      = false;
 					this.records     = [];
 					this.source      = null;
 					this.total       = 0;
@@ -1235,6 +1230,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				else {
 					this.collections = [];
 					this.keys        = {};
+					this.loaded      = false;
 					this.records     = [];
 					this.total       = 0;
 					this.views       = {};
@@ -1267,10 +1263,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					ignore  = ignore.explode();
 				}
 
+				self.collections = [];
+
 				utility.iterate(record.data, function (v, k) {
 					if (ignored && ignore.index(k) > -1) return;
 					if (v.indexOf("//") >= 0) {
-						self.collections.push(k);
+						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.register({id: record.key + "-" + k});
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						record.data[k].data.key     = key;
@@ -1801,6 +1799,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						obj.once("afterDataBatch", function () {
 							this.un("failedDataBatch", guid);
 							if (reindex) self.reindex();
+							self.loaded = true;
 							this.fire("afterDataSync", self.get());
 						}, guid);
 
@@ -4841,7 +4840,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.2"
+		version         : "2.4.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
