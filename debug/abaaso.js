@@ -1796,14 +1796,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							}
 						});
 
-						obj.once("afterDataBatch", function () {
-							this.un("failedDataBatch", guid);
-							if (reindex) self.reindex();
+						obj.once("afterDataBatch", function (arg) {
 							self.loaded = true;
-							this.fire("afterDataSync", self.get());
+							if (reindex) self.reindex();
+							this.un("failedDataBatch", guid).fire("afterDataSync", self.get());
 						}, guid);
 
-						obj.once("failedDataBatch", function () { this.fire("failedDataSync"); }, guid);
+						obj.once("failedDataBatch", function (arg) {
+							self.clear(true);
+							this.fire("failedDataSync");
+						}, guid);
 
 						self.batch("set", data, true);
 					}
