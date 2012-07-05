@@ -745,7 +745,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    fail         = function (arg) { uri.fire("failed" + typed, arg); },
 			    timeout      = function (arg) { uri.fire("timeout" + typed, arg); },
 			    doc          = (typeof Document !== "undefined"),
-			    ab           = (typeof ArrayBuffer !== "undefined");
+			    ab           = (typeof ArrayBuffer !== "undefined"),
+			    blob         = (typeof Blob !== "undefined");
 
 			if (type === "delete") uri.once("afterDelete", function () { cache.expire(this); });
 
@@ -767,6 +768,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof xhr.onerror === "object")    xhr.onerror    = fail;
 				if (typeof xhr.ontimeout === "object")  xhr.ontimeout  = timeout;
 				if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
+				if (typeof xhr.upload.onprogress === "object") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
 
 				try {
 					xhr.open(type.toUpperCase(), uri, true);
@@ -780,11 +782,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						if (payload.hasOwnProperty("xml")) payload = payload.xml;
 						if (doc && payload instanceof Document) payload = xml.decode(payload);
 						if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
-						if (!(ab && payload instanceof ArrayBuffer) && payload instanceof Object) {
+						if (!(ab && payload instanceof ArrayBuffer) && !(blob && payload instanceof Blob) && payload instanceof Object) {
 							contentType = "application/json";
 							payload = json.encode(payload);
 						}
-						if (contentType === null && ab && payload instanceof ArrayBuffer) contentType = "application/octet-stream";
+						if (contentType === null && ((ab && payload instanceof ArrayBuffer) || (blob && payload instanceof Blob))) contentType = "application/octet-stream";
 						if (contentType === null) contentType = "application/x-www-form-urlencoded; charset=UTF-8";
 					}
 
