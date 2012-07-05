@@ -712,12 +712,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 		 *
-		 * Events: beforeXHR       Fires before the XmlHttpRequest is made
-		 *         before[type]    Fires before the XmlHttpRequest is made, type specific
-		 *         failed[type]    Fires on error
-		 *         progress[type]  Fires on progress (CORS)
-		 *         received[type]  Fires on XHR readystate 2, clears the timeout only!
-		 *         timeout[type]   Fires 30s after XmlHttpRequest is made
+		 * Events: beforeXHR             Fires before the XmlHttpRequest is made
+		 *         before[type]          Fires before the XmlHttpRequest is made, type specific
+		 *         failed[type]          Fires on error
+		 *         progress[type]        Fires on progress
+		 *         progressUpload[type]  Fires on upload progress
+		 *         received[type]        Fires on XHR readystate 2
+		 *         timeout[type]         Fires 30s after XmlHttpRequest is made
 		 *
 		 * @method request
 		 * @param  {String}   uri     URI to query
