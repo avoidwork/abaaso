@@ -1104,14 +1104,18 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    nth  = 0,
 				    f    = false,
 				    guid = utility.genId(true),
-				    completed, key, set;
+				    completed, failure, key, set, success;
 
 				completed = function () {
 					if (type === "del") this.reindex();
 					obj.fire("afterDataBatch");
 				};
 
-				set  = function (data, key) {
+				failure = function (arg) {
+					obj.fire("failedDataSet", arg);
+				};
+
+				set = function (data, key) {
 					var guid = utility.genId(),
 					    rec  = utility.clone(data);
 
@@ -1172,7 +1176,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									case i.indexOf("//") === -1:
 										i = self.uri + i;
 									default:
-										i.get(function (arg) { set(self.source === null ? arg : arg[self.source], idx); }, null, utility.merge({withCredentials: self.credentials}, self.headers));
+										i.get(function (arg) { set(self.source === null ? arg : arg[self.source], idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 										break;
 								}
 								else self.del(i, false, sync);
@@ -1245,6 +1249,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			/**
 			 * Crawls a record's properties and creates data stores when URIs are detected
+			 *
+			 * Events: afterDataRetrieve  Fires after the store has retrieved all data from crawling
 			 * 
 			 * @method crawl
 			 * @param  {Mixed}  arg    Record key or index
@@ -1273,6 +1279,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					if (v.indexOf("//") >= 0) {
 						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.register({id: record.key + "-" + k});
+						record.data[k].on("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						record.data[k].data.key     = key;
 						record.data[k].data.source  = self.source;
@@ -1626,7 +1633,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (typeof record !== "undefined") args.record = this.records[this.keys[record.key].index];
 
-				this.collections.each(function (i) { delete args.data[i]; });
+				this.collections.each(function (i) { if (typeof args.data[i] === "object") delete args.data[i]; });
 
 				if (!sync && uri !== null) {
 					if (typeof record !== "undefined") uri += "/" + record.key;
