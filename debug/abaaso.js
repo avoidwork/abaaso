@@ -1223,6 +1223,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.keys        = {};
 					this.loaded      = false;
 					this.records     = [];
+					this.retrieve    = false;
 					this.source      = null;
 					this.total       = 0;
 					this.views       = {};
@@ -1967,10 +1968,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
 						break;
 					default:
-						data.record.data = utility.clone(data.data);
+						data.record.data = data.data;
 						record = data.record;
 				}
 				this.views = {};
+				if (this.retrieve) this.crawl(record.key);
 				this.parentNode.fire("afterDataSet", record);
 			}, "recordSet", obj.data);
 
