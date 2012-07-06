@@ -870,7 +870,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 										t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 										r = client.parse(xhr, t);
 										if (typeof r === "undefined") throw Error(label.error.serverError);
-										cache.set(uri, "response", (o.response = r));
+										cache.set(uri, "response", (o.response = utility.clone(r)));
 										break;
 								}
 
@@ -883,7 +883,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									case 202:
 									case 203:
 									case 206:
-										uri.fire("after" + typed, utility.clone(o.response));
+										uri.fire("after" + typed, r);
 										break;
 									case 204:
 										uri.fire("after" + typed);
@@ -892,7 +892,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 										uri.fire("reset");
 										break;
 									case 301:
-										uri.fire("moved", utility.clone(o.response));
+										uri.fire("moved", r);
 										break;
 								}
 								break;
@@ -1964,7 +1964,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						this.keys[data.key].index = index;
 						this.records[index] = {};
 						record      = this.records[index];
-						record.data = data.data;
+						record.data = utility.clone(data.data);
 						record.key  = data.key;
 						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
 						break;
