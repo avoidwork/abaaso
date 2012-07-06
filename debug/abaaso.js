@@ -1115,9 +1115,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					obj.fire("failedDataSet", arg);
 				};
 
-				set = function (data, key) {
-					var guid = utility.genId(),
-					    rec  = utility.clone(data);
+				set = function (rec, key) {
+					var guid = utility.genId();
 
 					if (self.key !== null && typeof rec[self.key] !== "undefined") {
 						key = rec[self.key];
@@ -1402,7 +1401,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							s = this.records[i].data[f];
 							if (!keys[this.records[i].key] && regex.test(s)) {
 								keys[this.records[i].key] = i;
-								if (result.index(this.records[i]) < 0) result.push(utility.clone(this.records[i]));
+								if (result.index(this.records[i]) < 0) result.push(this.records[i]);
 							}
 						}
 					}
@@ -1564,7 +1563,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						r = undefined;
 				}
 
-				r = r instanceof Array ? utility.clone(r) : utility.clone([r])[0];
 				return r;
 			},
 
@@ -1678,15 +1676,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    nil      = /^null/,
 				    key      = this.key,
 				    result   = [],
-				    records  = [],
 				    bucket, sort, crawl;
 
 				queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
 
 				if (!create && this.views[view] instanceof Array) return this.views[view];
 				if (this.total === 0) return [];
-
-				records = this.records.clone();
 
 				crawl = function (q, data) {
 					var queries = q.clone(),
@@ -1765,7 +1760,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					return sorted;
 				};
 
-				result           = crawl(queries, records);
+				result           = crawl(queries, this.records);
 				this.views[view] = result;
 				return result;
 			},
@@ -1798,11 +1793,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
 
-						if (arg instanceof Array) data = utility.clone(arg);
+						if (arg instanceof Array) data = arg;
 						else utility.iterate(arg, function (i) {
 							if (!found && i instanceof Array) {
 								found = true;
-								data  = utility.clone(i);
+								data  = i;
 							}
 						});
 
@@ -1971,7 +1966,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						this.keys[data.key].index = index;
 						this.records[index] = {};
 						record      = this.records[index];
-						record.data = utility.clone(data.data);
+						record.data = data.data;
 						record.key  = data.key;
 						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
 						break;
