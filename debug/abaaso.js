@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.3
+ * @version 2.4.4
  */
 (function (global) {
 "use strict";
@@ -1219,6 +1219,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.expires     = null;
 					this._expires    = null;
 					this.headers     = {Accept: "application/json"};
+					this.ignore      = [];
 					this.key         = null;
 					this.keys        = {};
 					this.loaded      = false;
@@ -1256,7 +1257,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    self    = this,
 				    record;
 
-				if (typeof arg === "undefined" || (typeof arg !== "number" && typeof arg !== "string")) throw Error(label.error.invalidArguments);
+				if (typeof arg !== "number" && typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				record = this.get(arg);
 				record = this.records[this.keys[record.key].index];
@@ -1267,10 +1268,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					ignore  = ignore.explode();
 				}
 
-				self.collections = [];
-
 				utility.iterate(record.data, function (v, k) {
-					if (ignored && ignore.index(k) > -1) return;
+					if (typeof v !== "string" || (ignored && ignore.index(k) > -1)) return;
 					if (v.indexOf("//") >= 0) {
 						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.register({id: record.key + "-" + k});
@@ -1800,6 +1799,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							}
 						});
 
+						if (typeof data === "undefined") data = [arg];
+
 						obj.once("afterDataBatch", function (arg) {
 							self.loaded = true;
 							if (reindex) self.reindex();
@@ -1972,7 +1973,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						record = data.record;
 				}
 				this.views = {};
-				if (this.retrieve) this.crawl(record.key);
+				if (this.retrieve) this.crawl(record.key, this.ignore.length > 0 ? this.ignore.join(",") : undefined);
 				this.parentNode.fire("afterDataSet", record);
 			}, "recordSet", obj.data);
 
@@ -4847,7 +4848,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.3"
+		version         : "2.4.4"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
