@@ -122,7 +122,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var a = array1.length > array2.length ? array1 : array2,
 			    b = a === array1 ? array2 : array1;
 
-			return a.filter(function (key) { if (b.indexOf(key) === -1) return true; });
+			return a.filter(function (key) { return !array.contains(b, key); });
 		},
 
 		/**
@@ -136,7 +136,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		each : function (obj, fn) {
 			var n = 0;
 
-			obj.forEach(function (i) { fn(i, n++); });
+			obj.forEach(function (i) { fn.call(obj, i, n++); });
 			return obj;
 		},
 
@@ -189,7 +189,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var a = array1.length > array2.length ? array1 : array2,
 			    b = a === array1 ? array2 : array1;
 
-			return a.filter(function (key) { if (b.indexOf(key) > -1) return true; });
+			return a.filter(function (key) { return array.contains(b, key); });
 		},
 
 		/**
