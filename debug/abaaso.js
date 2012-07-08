@@ -1112,7 +1112,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				};
 
 				failure = function (arg) {
-					obj.fire("failedDataSet", arg);
+					obj.fire("failedDataSet", arg).fire("failedDataBatch");
 				};
 
 				set = function (data, key) {
@@ -1127,37 +1127,32 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					obj.once("afterDataSet", function () {
 						this.un("failedDataSet", guid);
 						if (++r && r === nth) completed();
-					}, guid).once("failedDataSet", function () { this.un("afterDataSet", guid); }, guid);
+					}, guid).once("failedDataSet", function () {
+						this.un("afterDataSet", guid)
+						if (!f) {
+							f = true;
+							this.fire("failedDataBatch");
+						}
+					}, guid);
 
 					self.set(key, rec, sync);
 				};
 
 				obj.fire("beforeDataBatch", data);
 
-				switch (type) {
-					case "set":
-						if (sync) this.clear(true);
-						obj.once("failedDataSet", function () {
-							if (!f) {
-								f = true;
-								obj.fire("failedDataBatch");
-							}
-						});
-						break;
-					case "del":
-						obj.on("afterDataDelete", function () {
-							if (r++ && r === nth) {
-								obj.un("afterDataDelete", guid);
-								completed();
-							}
-						}, guid).once("failedDataDelete", function () {
-							obj.un("afterDataDelete", guid);
-							if (!f) {
-								f = true;
-								obj.fire("failedDataBatch");
-							}
-						});
-						break;
+				if (type === "del") {
+					obj.on("afterDataDelete", function () {
+						if (r++ && r === nth) {
+							obj.un("afterDataDelete, failedDataDelete", guid);
+							completed();
+						}
+					}, guid).once("failedDataDelete", function () {
+						obj.un("afterDataDelete", guid);
+						if (!f) {
+							f = true;
+							obj.fire("failedDataBatch");
+						}
+					}, guid);
 				}
 
 				if (data instanceof Array) {
@@ -1219,6 +1214,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					obj.fire("beforeDataClear");
 					this.callback    = null;
 					this.collections = [];
+					this.crawled     = false;
 					this.credentials = null;
 					this.expires     = null;
 					this._expires    = null;
@@ -1265,9 +1261,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (typeof arg !== "number" && typeof arg !== "string") throw Error(label.error.invalidArguments);
 
-				record = this.get(arg);
-				record = this.records[this.keys[record.key].index];
-				key    = key || this.key;
+				this.crawled = true;
+				record       = this.get(arg);
+				record       = this.records[this.keys[record.key].index];
+				key          = key || this.key;
 
 				if (typeof ignore === "string") {
 					ignored = true;
