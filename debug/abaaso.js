@@ -1272,7 +1272,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 
 				utility.iterate(record.data, function (v, k) {
-					if (typeof v !== "string" || (ignored && array.contains(ignore, k))) return;
+					if (typeof v !== "string" || (ignored && ignore.contains(k))) return;
 					if (v.indexOf("//") >= 0) {
 						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.register({id: record.key + "-" + k});
@@ -1399,7 +1399,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							s = this.records[i].data[f];
 							if (!keys[this.records[i].key] && regex.test(s)) {
 								keys[this.records[i].key] = i;
-								if (result.index(this.records[i]) < 0) result.push(this.records[i]);
+								if (!result.contains(this.records[i])) result.push(this.records[i]);
 							}
 						}
 					}
@@ -2337,7 +2337,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-			return obj.className.explode(" ").index(klass) > -1;
+			return obj.className.explode(" ").contains(klass);
 		},
 
 		/**
@@ -2398,7 +2398,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 			utility.genId(obj);
-			return /^:/.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).index(obj) > -1) : new RegExp(arg, "i").test(obj.nodeName);
+			return /^:/.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).contains(obj)) : new RegExp(arg, "i").test(obj.nodeName);
 		},
 
 		/**
@@ -2429,7 +2429,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			classes = obj.className.explode(" ");
 
 			arg.each(function (i) {
-				if (add && classes.index(i) < 0) classes.push(i);
+				if (add && !classes.contains(i)) classes.push(i);
 				else if (!add) arg === "*" ? classes = [] : classes.remove(i);
 			});
 
