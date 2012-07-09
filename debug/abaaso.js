@@ -1324,7 +1324,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				args   = {key: key, record: record, reindex: reindex};
 
-				if (this.uri !== null) {
+				if (!sync && this.callback !== null && this.uri !== null) {
 					uri = this.uri + "/" + key;
 					p   = uri.allows("delete");
 				}
@@ -1631,7 +1631,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				this.collections.each(function (i) { if (typeof args.data[i] === "object") delete args.data[i]; });
 
-				if (!sync && uri !== null) {
+				if (!sync && this.callback !== null && uri !== null) {
 					if (typeof record !== "undefined") uri += "/" + record.key;
 					p = uri.allows(method);
 				}
@@ -1950,7 +1950,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (data.reindex) this.reindex();
 				utility.iterate(record.data, function (v, k) {
 					if (v === null) return;
-					if (typeof v.data !== "undefined") v.data.teardown();
+					if (typeof v.data !== "undefined" && typeof v.data.teardown === "function") v.data.teardown();
 				});
 				this.parentNode.fire("afterDataDelete", record);
 				return this.parentNode;
