@@ -1324,7 +1324,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				args   = {key: key, record: record, reindex: reindex};
 
-				if (!sync && this.callback !== null && this.uri !== null) {
+				if (!sync && this.callback === null && this.uri !== null) {
 					uri = this.uri + "/" + key;
 					p   = uri.allows("delete");
 				}
@@ -1631,7 +1631,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				this.collections.each(function (i) { if (typeof args.data[i] === "object") delete args.data[i]; });
 
-				if (!sync && this.callback !== null && uri !== null) {
+				if (!sync && this.callback === null && uri !== null) {
 					if (typeof record !== "undefined") uri += "/" + record.key;
 					p = uri.allows(method);
 				}
