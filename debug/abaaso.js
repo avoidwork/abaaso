@@ -1272,7 +1272,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 
 				utility.iterate(record.data, function (v, k) {
-					if (typeof v !== "string" || (ignored && ignore.index(k) > -1)) return;
+					if (typeof v !== "string" || (ignored && array.contains(ignore, k))) return;
 					if (v.indexOf("//") >= 0) {
 						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.register({id: record.key + "-" + k});
