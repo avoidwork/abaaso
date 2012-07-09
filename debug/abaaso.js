@@ -3856,7 +3856,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           destroy  : function () { this.each(function (i) { i.destroy(); }); return []; },
 				           each     : function (arg) { return array.each(this, arg); },
 				           enable   : function () { return this.each(function (i) { i.enable(); }); },
-				           find     : function (arg) { var a = []; this.each(function (i) { a.push(i.find(arg)); }); return a; },
+				           find     : function (arg) { var a = []; this.each(function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
 				           fire     : function (event, arg) { return this.each(function (i) { i.fire(event, arg); }); },
 				           first    : function () { return array.first(this); },
 				           get      : function (uri, headers) { this.each(function (i) { i.get(uri, headers); }); return []; },
