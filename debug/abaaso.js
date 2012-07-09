@@ -866,7 +866,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								switch (true) {
 									case type === "head":
 										return uri.fire("afterHead", o.headers);
-									case type !== "delete" && /200|301/.test(xhr.status):
+									case type !== "delete" && /200|201/.test(xhr.status):
 										t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 										r = client.parse(xhr, t);
 										if (typeof r === "undefined") throw Error(label.error.serverError);
@@ -880,12 +880,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								switch (xhr.status) {
 									case 200:
 									case 201:
-									case 202:
-									case 203:
-									case 206:
 										uri.fire("after" + typed, r);
 										break;
+									case 202:
+									case 203:
 									case 204:
+									case 206:
 										uri.fire("after" + typed);
 										break;
 									case 205:
