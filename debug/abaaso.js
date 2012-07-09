@@ -378,7 +378,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				cache.expire(uri);
 				return false;
 			}
-			return cache.items[uri];
+			return utility.clone(cache.items[uri]);
 		},
 
 		/**
@@ -761,7 +761,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			if (type !== "head" && uri.allows(type) === false) return uri.fire("failed" + typed);
 
-			if (type === "get" && Boolean(cached)) uri.fire("afterGet", utility.clone(cached.response));
+			if (type === "get" && Boolean(cached)) uri.fire("afterGet", cached.response);
 			else {
 				xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
 
@@ -1138,7 +1138,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					self.set(key, rec, sync);
 				};
 
-				obj.fire("beforeDataBatch", data);
+				obj.un("afterDataSet, failedDataSet, afterDataDelete, failedDataDelete").fire("beforeDataBatch", data);
 
 				if (type === "del") {
 					obj.on("afterDataDelete", function () {
@@ -1809,7 +1809,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						obj.once("failedDataBatch", function (arg) {
 							self.clear(true);
-							this.fire("failedDataSync");
+							this.un("afterDataBatch", guid).fire("failedDataSync");
 						}, guid);
 
 						self.batch("set", data, true);
@@ -1837,10 +1837,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				sync    = (sync === true);
 				var self = this,
 				    uri  = this.uri,
-				    records;
+				    records, id;
 
 				if (uri !== null) {
 					cache.expire(uri, true);
+					id = this.parentNode.id + "DataExpire";
+
+					if (typeof $.repeating[id] !== "undefined") {
+						clearTimeout($.repeating[id]);
+						delete $.repeating[id];
+					}
+
 					records = this.get();
 					records.each(function (i) {
 						cache.expire((uri + "/" + i.key), true);
@@ -1884,7 +1891,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						clearTimeout($.repeating[id]);
 						delete $.repeating[id];
 
-						if (arg !== null) utility.defer(function () { utility.repeat(function () { if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire"); }, expires, id); }, expires);
+						if (arg === null) return;
+
+						utility.defer(function () {
+							utility.repeat(function () {
+								if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
+							}, expires, id);
+						}, expires);
 					}
 				},
 				uri : {
@@ -4759,16 +4772,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Stopping multiple executions
 			delete abaaso.init;
 			delete abaaso.bootstrap;
-
-			// Setting up cache expiration
-			var expiration = function () {
-				var expiration = this;
-				$.timer.expire = setTimeout(function () {
-					cache.clean();
-					expiration.call(expiration);
-				}, $.expires);
-			}
-			expiration.call(expiration);
 
 			// Firing events to setup
 			return $.fire("init").un("init").fire("ready").un("ready");
