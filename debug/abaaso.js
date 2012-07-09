@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.5
+ * @version 2.4.6
  */
 (function (global) {
 "use strict";
@@ -3129,7 +3129,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 			event.each(function (e) {
-				if (log) utility.log("[" + new Date().toLocaleTimeString() + " - " + o + "] " + e);
+				if (log) utility.log(o + " - " + e);
 				list = self.list(obj, e);
 				l = list.all;
 				if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
@@ -3743,7 +3743,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		log : function (arg) {
 			try {
-				console.log(arg);
+				console.log("[" + new Date().toLocaleTimeString() + "] " + arg);
 			}
 			catch (e) {
 				error(e, arguments, this);
@@ -4848,7 +4848,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.5"
+		version         : "2.4.6"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
