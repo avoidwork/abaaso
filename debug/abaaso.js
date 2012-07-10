@@ -641,7 +641,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1}};
 
 			if (bit & 1) result.allows.push("DELETE");
-			if (bit & 2) (function () { result.allows.push("PUT"); result.allows.push("PUT"); })();
+			if (bit & 2) (function () { result.allows.push("POST"); result.allows.push("PUT"); })();
 			if (bit & 4) result.allows.push("GET");
 			return result;
 		},
