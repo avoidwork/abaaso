@@ -1397,7 +1397,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							p = n[y];
 							utility.compile(regex, p, modifiers);
 							s = this.records[i].data[f];
-							if (!keys[this.records[i].key] && regex.test(s)) {
+							if (typeof s.data !== "object" && !keys[this.records[i].key] && regex.test(s)) {
 								keys[this.records[i].key] = i;
 								if (!result.contains(this.records[i])) result.push(this.records[i]);
 							}
