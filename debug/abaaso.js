@@ -1855,7 +1855,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						observer.remove(uri + "/" + i.key);
 						utility.iterate(i.data, function (v, k) {
 							if (v === null) return;
-							if (v.hasOwnProperty("data") && typeof v.data.teardown === "function") v.data.teardown();
+							if (v.hasOwnProperty("data") && typeof v.data.teardown === "function") {
+								observer.remove(v.id);
+								v.data.teardown();
+							}
 						});
 					});
 				}
