@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.7
+ * @version 2.4.8
  */
 (function (global) {
 "use strict";
@@ -1841,6 +1841,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (uri !== null) {
 					cache.expire(uri, true);
+					observer.remove(uri);
 					id = this.parentNode.id + "DataExpire";
 
 					if (typeof $.repeating[id] !== "undefined") {
@@ -1851,6 +1852,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					records = this.get();
 					records.each(function (i) {
 						cache.expire((uri + "/" + i.key), true);
+						observer.remove(uri + "/" + i.key);
 						utility.iterate(i.data, function (v, k) {
 							if (v === null) return;
 							if (v.hasOwnProperty("data") && typeof v.data.teardown === "function") v.data.teardown();
@@ -1895,6 +1897,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						utility.defer(function () {
 							utility.repeat(function () {
+								if (self.uri === null) return false;
 								if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
 							}, expires, id);
 						}, expires);
@@ -3240,13 +3243,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 
 			if (typeof event === "undefined") delete l[o];
-			else {
-				event = event.explode();
-				event.each(function (e) {
-					if (typeof l[o][e] === "undefined") return obj;
-					typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
-				});
-			}
+			else event.explode().each(function (e) {
+				if (typeof l[o][e] === "undefined") return obj;
+				typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
+			});
+
 			return obj;
 		}
 	};
@@ -4851,7 +4852,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.7"
+		version         : "2.4.8"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
