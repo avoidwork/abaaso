@@ -1213,10 +1213,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.collections = [];
 					this.crawled     = false;
 					this.credentials = null;
-					if (this._uri !== null) {
-						this.expires  = null;
-						this._expires = null;
-					}
+					this.expires     = null;
+					this._expires    = null;
 					this.headers     = {Accept: "application/json"};
 					this.ignore      = [];
 					this.key         = null;
