@@ -1213,8 +1213,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.collections = [];
 					this.crawled     = false;
 					this.credentials = null;
-					this.expires     = null;
-					this._expires    = null;
+					if (this._uri !== null) {
+						this.expires  = null;
+						this._expires = null;
+					}
 					this.headers     = {Accept: "application/json"};
 					this.ignore      = [];
 					this.key         = null;
@@ -1880,7 +1882,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				expires : {
 					getter : function () { return this._expires; },
 					setter : function (arg) {
-						if (this.uri === null || (arg !== null && (isNaN(arg) || typeof arg === "boolean"))) throw Error(label.error.invalidArguments);
+						if (arg !== null && this.uri === null  && isNaN(arg)) throw Error(label.error.invalidArguments);
 
 						if (this._expires === arg) return;
 						this._expires = arg;
@@ -1896,7 +1898,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						utility.defer(function () {
 							utility.repeat(function () {
-								if (self.uri === null) return false;
+								if (self.uri === null) {
+									typeof self.setExpires === "function" ? self.setExpires(null) : self.expires = null;
+									return false;
+								}
 								if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
 							}, expires, id);
 						}, expires);
