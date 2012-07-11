@@ -766,8 +766,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
 
 				// Setting events
-				if (typeof xhr.onerror === "object")    xhr.onerror    = fail;
-				if (typeof xhr.ontimeout === "object")  xhr.ontimeout  = timeout;
+				if (typeof xhr.ontimeout  === "object") xhr.ontimeout  = timeout;
 				if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
 				if (typeof xhr.upload.onprogress === "object") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
 
