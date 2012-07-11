@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.8
+ * @version 2.4.9
  */
 (function (global) {
 "use strict";
@@ -1233,6 +1233,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 				else {
 					this.collections = [];
+					this.ignore      = [];
 					this.keys        = {};
 					this.loaded      = false;
 					this.records     = [];
@@ -1829,11 +1830,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			/**
 			 * Tears down a store & expires all records associated to an API
 			 * 
-			 * @param  {Boolean} sync  True for a soft reset, or false for a hard reset of the store
 			 * @return {Undefined}     undefined
 			 */
-			teardown : function (sync) {
-				sync    = (sync === true);
+			teardown : function () {
 				var uri = this.uri,
 				    records, id;
 
@@ -1860,7 +1859,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						});
 					});
 				}
-				this.clear(sync);
+				this.clear(true);
 			}
 		},
 
@@ -3149,7 +3148,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 			event.each(function (e) {
-				if (log) utility.log(o + " - " + e);
+				if (log) utility.log(o + " fired " + e);
 				list = self.list(obj, e);
 				l = list.all;
 				if (typeof l !== "undefined") utility.iterate(l, function (i, k) { i.fn.call(i.scope, a); });
@@ -4856,7 +4855,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.8"
+		version         : "2.4.9"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
