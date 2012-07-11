@@ -1832,8 +1832,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 */
 			teardown : function (sync) {
 				sync    = (sync === true);
-				var self = this,
-				    uri  = this.uri,
+				var uri = this.uri,
 				    records, id;
 
 				if (uri !== null) {
