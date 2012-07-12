@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.4.9
+ * @version 2.5.0
  */
 (function (global) {
 "use strict";
@@ -412,22 +412,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		android : (function () { return /android/i.test(navigator.userAgent); })(),
 		blackberry : (function () { return /blackberry/i.test(navigator.userAgent); })(),
 		chrome  : (function () { return /chrome/i.test(navigator.userAgent); })(),
-		css3    : (function () {
-			switch (true) {
-				case this.mobile:
-				case this.tablet:
-				case this.chrome  && this.version > 5:
-				case this.firefox && this.version > 2:
-				case this.ie      && this.version > 8:
-				case this.opera   && this.version > 8:
-				case this.safari  && this.version > 4:
-					this.css3 = true;
-					return true;
-				default:
-					this.css3 = false;
-					return false;
-			}
-			}),
 		firefox : (function () { return /firefox/i.test(navigator.userAgent); })(),
 		ie      : (function () { return /msie/i.test(navigator.userAgent); })(),
 		ios     : (function () { return /ipad|iphone/i.test(navigator.userAgent); })(),
@@ -1109,7 +1093,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				};
 
 				failure = function (arg) {
-					obj.fire("failedDataSet", arg).fire("failedDataBatch");
+					obj.fire("failedDataSet, failedDataBatch", arg);
 				};
 
 				set = function (data, key) {
@@ -1135,7 +1119,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					self.set(key, rec, sync);
 				};
 
-				obj.un("afterDataSet, failedDataSet, afterDataDelete, failedDataDelete").fire("beforeDataBatch", data);
+				obj.fire("beforeDataBatch", data);
 
 				if (type === "del") {
 					obj.on("afterDataDelete", function () {
@@ -1221,6 +1205,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.keys        = {};
 					this.loaded      = false;
 					this.records     = [];
+					this.recursive   = false;
 					this.retrieve    = false;
 					this.source      = null;
 					this.total       = 0;
@@ -1278,6 +1263,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						record.data[k].data.key     = key;
 						record.data[k].data.source  = self.source;
+						if (self.retrieve && self.recursive) {
+							record.data[k].data.recursive = true;
+							record.data[k].data.retrieve  = true;
+						}
 						record.data[k].data.uri     = v;
 					}
 				});
@@ -2035,7 +2024,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		attr : function (obj, key, value) {
 			if (typeof value === "string") value = value.trim();
 
-			var target;
+			var regex = /checked|disabled/,
+			    target;
 
 			obj = utility.object(obj);
 			if (obj instanceof Array) return obj.attr(key, value);
@@ -2043,9 +2033,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
 			switch (true) {
-				case /checked|disabled/.test(key) && typeof value === "undefined":
+				case regex.test(key) && typeof value === "undefined":
 					return obj[key];
-				case /checked|disabled/.test(key) && typeof value !== "undefined":
+				case regex.test(key) && typeof value !== "undefined":
 					obj[key] = value;
 					return obj;
 				case obj.nodeName === "SELECT" && key === "selected" && typeof value === "undefined":
@@ -2612,7 +2602,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					case k === "class":
 						!v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
 						break;
-					case k.indexOf("data") > -1:
+					case k.indexOf("data-") === 0:
 						element.data(obj, k.replace("data-", ""), v);
 						break;
 					case "id":
@@ -3269,6 +3259,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		capitalize : function (obj) {
 			obj = string.trim(obj);
 			return obj.charAt(0).toUpperCase() + obj.slice(1);
+		},
+
+		/**
+		 * Escapes meta characters within a string
+		 * 
+		 * @param  {String} obj String to escape
+		 * @return {String}     Escaped string
+		 */
+		escape : function (obj) {
+			return obj.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 		},
 
 		/**
@@ -4127,6 +4127,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
 				           capitalize: function () { return string.capitalize(this); },
 				           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
+				           escape   : function () { return string.escape(this); },
 				           expire   : function (silent) { return cache.expire(this, silent); },
 				           explode  : function (arg) { return string.explode(this, arg); },
 				           fire     : function (event, args) { return $.fire.call(this, event, args); },
@@ -4467,7 +4468,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Properties
 			android : client.android,
 			blackberry : client.blackberry,
-			css3    : false,
 			chrome  : client.chrome,
 			firefox : client.firefox,
 			ie      : client.ie,
@@ -4632,7 +4632,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			client.version();
 			client.mobile();
 			client.tablet();
-			client.css3();
 
 			// IE7 and older is not supported
 			if (client.ie && client.version < 8) return;
@@ -4853,7 +4852,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.4.9"
+		version         : "2.5.0"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
