@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.0
+ * @version 2.5.1
  */
 (function (global) {
 "use strict";
@@ -65,6 +65,19 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	 * @namespace abaaso
 	 */
 	array = {
+		/**
+		 * Adds 'arg' to 'obj' if it is not found
+		 * 
+		 * @method add
+		 * @param  {Array} obj Array to receive 'arg'
+		 * @param  {Mixed} arg Argument to set in 'obj'
+		 * @return {Array}     Array that was queried
+		 */
+		add : function (obj, arg) {
+			if (!array.contains(obj, arg)) obj.push(arg);
+			return obj;
+		},
+
 		/**
 		 * Returns an Object (NodeList, etc.) as an Array
 		 *
@@ -1245,6 +1258,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				if (typeof arg !== "number" && typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 				this.crawled = true;
+				this.loaded  = false;
 				record       = this.get(arg);
 				record       = this.records[this.keys[record.key].index];
 				key          = key || this.key;
@@ -1386,7 +1400,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							s = this.records[i].data[f];
 							if (typeof s.data !== "object" && !keys[this.records[i].key] && regex.test(s)) {
 								keys[this.records[i].key] = i;
-								if (!result.contains(this.records[i])) result.push(this.records[i]);
+								result.add(this.records[i]);
 							}
 						}
 					}
@@ -2417,21 +2431,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
 			obj.fire("beforeClassChange");
-
 			add     = (add !== false);
 			arg     = arg.explode();
 			classes = obj.className.explode(" ");
-
-			arg.each(function (i) {
-				if (add && !classes.contains(i)) classes.push(i);
-				else if (!add) arg === "*" ? classes = [] : classes.remove(i);
-			});
-
+			arg.each(function (i) { add ? classes.add(i) : (arg === "*" ? classes = [] : classes.remove(i)); });
 			classes = classes.join(" ");
 			client.ie && client.version < 9 ? obj.className = classes : obj.attr("class", classes);
-
 			obj.fire("afterClassChange");
-
 			return obj;
 		},
 
@@ -3842,7 +3848,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Collection of methods to add to prototypes
 			var i,
 			    methods = {
-				array   : {addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
+				array   : {add      : function (arg) { return array.add(this, arg); },
+					       addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
 				           after    : function (type, args) { var a = []; this.each(function (i) { a.push(i.after(type, args)); }); return a; },
 				           append   : function (type, args) { var a = []; this.each(function (i) { a.push(i.append(type, args)); }); return a; },
 				           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
@@ -4852,7 +4859,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.0"
+		version         : "2.5.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
