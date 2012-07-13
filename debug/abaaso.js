@@ -3849,7 +3849,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			var i,
 			    methods = {
 				array   : {add      : function (arg) { return array.add(this, arg); },
-					       addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
+				           addClass : function (arg) { return this.each(function (i) { i.addClass(arg); }); },
 				           after    : function (type, args) { var a = []; this.each(function (i) { a.push(i.after(type, args)); }); return a; },
 				           append   : function (type, args) { var a = []; this.each(function (i) { a.push(i.append(type, args)); }); return a; },
 				           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
