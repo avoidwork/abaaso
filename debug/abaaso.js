@@ -1275,10 +1275,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						record.data[k] = data.register({id: record.key + "-" + k});
 						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
+						ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 						record.data[k].data.key     = key;
 						record.data[k].data.source  = self.source;
 						if (self.recursive && self.retrieve) {
-							record.data[k].data.ignore    = ignore;
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
 						}
