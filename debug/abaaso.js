@@ -3302,6 +3302,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Returns singular form of the string
+		 * 
+		 * @param  {String} obj String to transform
+		 * @return {String}     Transformed string
+		 */
+		singular : function (obj) {
+			return /s$/.test(obj) ? obj.slice(0, -1) : obj;
+		},
+
+		/**
 		 * Transforms the case of a String into CamelCase
 		 * 
 		 * @param  {String} obj String to capitalize
@@ -4141,6 +4151,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           explode  : function (arg) { return string.explode(this, arg); },
 				           fire     : function (event, args) { return $.fire.call(this, event, args); },
 				           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
+				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
+				           hyphenate: function () { return string.hyphenate(this); },
 				           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
 				           isBoolean: function () { return validate.test({"boolean": this}).pass; },
 				           isDate   : function () { return validate.test({date: this}).pass; },
@@ -4159,10 +4171,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
 				           once     : function (event, listener, id, scope, state) { return $.once.call(this, event, listener, id, scope, state); },
 				           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
-				           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 				           permissions: function () { return client.permissions(this); },
+				           singular : function () { return string.singular(this); },
 				           toCamelCase: function () { return string.toCamelCase(this); },
-				           hyphenate: function () { return string.hyphenate(this); },
 				           trim     : function () { return string.trim(this); },
 				           un       : function (event, id, state) { return $.un.call(this, event, id, state); },
 				           uncapitalize: function () { return string.uncapitalize(this); }}
