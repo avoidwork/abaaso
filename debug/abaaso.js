@@ -1862,6 +1862,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					});
 				}
 				this.clear(true);
+				return this;
 			}
 		},
 
