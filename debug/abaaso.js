@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.2
+ * @version 2.5.3
  */
 (function (global) {
 "use strict";
@@ -278,10 +278,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Boolean} Boolean indicating sort order
 		 */
 		sort : function (a, b) {
-			var result;
+			var nums = false,
+			    result;
 
-			if (!isNaN(a)) a = number.parse(a);
-			if (!isNaN(b)) b = number.parse(b);
+			if (!isNaN(a) && !isNaN(b)) nums = true;
+
+			a = nums ? number.parse(a) : String(a);
+			b = nums ? number.parse(b) : String(b);
 
 			switch (true) {
 				case a < b:
@@ -4872,7 +4875,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.2"
+		version         : "2.5.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
