@@ -2633,6 +2633,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 		/**
 		 * Gets or sets the value of Element
+		 *
+		 * Events: beforeValue  Fires before the object receives a new value
+		 *         afterValue   Fires after the object receives a new value
 		 * 
 		 * @param  {Mixed}  obj   Element or Array of Elements or $ queries
 		 * @param  {Mixed}  value [Optional] Value to set
@@ -2666,6 +2669,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					break;
 				default:
 					value = String(value);
+					obj.fire("beforeValue");
 					switch (true) {
 						case (/radio|checkbox/gi.test(obj.type)):
 							items = $("input[name='" + obj.name + "']");
@@ -2689,6 +2693,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						default:
 							typeof obj.value !== "undefined" ? obj.value = value : element.text(obj, value);
 					}
+					obj.fire("afterValue");
 					output = obj;
 			}
 			return output;
