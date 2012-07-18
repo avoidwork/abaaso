@@ -1105,6 +1105,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				completed = function () {
 					if (type === "del") this.reindex();
+					self.loaded = true;
 					obj.fire("afterDataBatch");
 				};
 
@@ -1807,7 +1808,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						if (typeof data === "undefined") data = [arg];
 
 						obj.once("afterDataBatch", function (arg) {
-							self.loaded = true;
 							if (reindex) self.reindex();
 							this.un("failedDataBatch", guid).fire("afterDataSync", self.get());
 						}, guid);
