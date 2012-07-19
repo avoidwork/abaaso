@@ -1380,7 +1380,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				    obj    = this.parentNode,
 				    keys   = {},
 				    regex  = new RegExp(),
-				    x, y, f, r, s, p, i, a;
+				    a      = this.total,
+				    x, y, f, r, s, p, i;
+
+				if (a === 0) return result;
 
 				r = this.records.first();
 				switch (true) {
@@ -1394,7 +1397,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				}
 
 				nth = h.length;
-				a   = this.total;
 
 				for (i = 0; i < a; i++) {
 					for (x = 0; x < nth; x++) {
