@@ -2022,7 +2022,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								if (self.source !== null) args = args[self.source];
 								if (typeof args[self.key] !== "undefined") delete args[self.key];
 								utility.merge(record.data, args);
-								if (self.retrieve) self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
+								if (self.retrieve) {
+									self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
+									self.loaded = true;
+								}
 								self.parentNode.fire("afterDataSet", record);
 							}, function () { self.parentNode.fire("failedDataSet"); }, self.headers);
 						}
