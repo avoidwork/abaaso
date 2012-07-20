@@ -4390,7 +4390,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				var i, p, v, c, o, x, t = {}, nth, result, invalid = [], tracked = {};
 
 				if (args.id.isEmpty()) args.genId();
-				c = $("#" + args.id + " > input").concat($("#" + args.id + " > select"));
+				c = $("#" + args.id + " input").concat($("#" + args.id + " select"));
 				c.each(function (i) {
 					p = validate.pattern[i.nodeName.toLowerCase()] ? validate.pattern[i.nodeName.toLowerCase()] : ((!i.id.isEmpty() && validate.pattern[i.id.toLowerCase()]) ? validate.pattern[i.id.toLowerCase()] : "notEmpty");
 					v = i.val();
