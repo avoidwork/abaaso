@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.3
+ * @version 2.5.4
  */
 (function (global) {
 "use strict";
@@ -1115,7 +1115,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				set = function (data, key) {
 					var guid = utility.genId(),
-					    rec  = utility.clone(data);
+					    rec  = {};
+
+					if (typeof rec.batch !== "function") rec = utility.clone(data);
+					else $.iterate(data, function (v, k) { if (!self.collections.contains(k)) rec[k] = utility.clone(v); });
 
 					if (self.key !== null && typeof rec[self.key] !== "undefined") {
 						key = rec[self.key];
@@ -1221,6 +1224,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					this.key         = null;
 					this.keys        = {};
 					this.loaded      = false;
+					this.pointer     = null;
 					this.records     = [];
 					this.recursive   = false;
 					this.retrieve    = false;
@@ -1281,6 +1285,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 						record.data[k].data.key     = key;
+						record.data[k].data.pointer = self.pointer;
 						record.data[k].data.source  = self.source;
 						if (self.recursive && self.retrieve) {
 							record.data[k].data.recursive = true;
@@ -1652,7 +1657,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						obj.fire("syncDataSet", args);
 						break;
 					case r.test(p):
-						uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function () { obj.fire("failedDataSet"); }, data, utility.merge({withCredentials: this.credentials}, this.headers));
+						uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function (e) { obj.fire("failedDataSet"); }, data, utility.merge({withCredentials: this.credentials}, this.headers));
 						break;
 					default:
 						obj.fire("failedDataSet", args);
@@ -1971,8 +1976,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}, "recordDelete", obj.data);
 
 			obj.on("syncDataSet", function (arg) {
-				var data = utility.clone(arg),
-				    record;
+				var data = typeof arg.record === "undefined" ? utility.clone(arg) : arg,
+				    fire = true,
+				    self = this,
+				    record, uri;
 
 				switch (true) {
 					case typeof data.record === "undefined":
@@ -1983,25 +1990,50 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								this.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
-							data.key = this.key === null ? array.cast(data.result).first() : data.result[this.key];
-							data.key = data.key.toString();
+							if (this.source !== null) data.result = data.result[this.source];
+							if (this.key === null) data.key = array.cast(data.result).first();
+							else {
+								data.key = data.result[this.key];
+								delete data.result[this.key];
+							}
+							if (typeof data.key !== "string") data.key = data.key.toString();
+							data.data = data.result;
 						}
-						if (typeof data.data[data.key] !== "undefined") data.key = data.data[data.key];
 						this.keys[data.key] = {};
 						this.keys[data.key].index = index;
 						this.records[index] = {};
-						record      = this.records[index];
-						record.data = data.data;
-						record.key  = data.key;
-						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
+						record     = this.records[index];
+						record.key = data.key;
+						if (this.pointer === null || typeof data.data[this.pointer] === "undefined") {
+							record.data = data.data;
+							if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
+						}
+						else {
+							fire = false;
+							uri  = data.data[this.pointer];
+							if (typeof uri === "undefined") {
+								delete this.records[index];
+								delete this.keys[data.key];
+								this.fire("failedDataSet");
+								throw Error(label.error.expectedObject);
+							}
+							record.data = {};
+							uri.get(function (args) {
+								if (self.source !== null) args = args[self.source];
+								if (typeof args[self.key] !== "undefined") delete args[self.key];
+								utility.merge(record.data, args);
+								if (self.retrieve) self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
+								self.parentNode.fire("afterDataSet", record);
+							}, function () { self.parentNode.fire("failedDataSet"); }, self.headers);
+						}
 						break;
 					default:
 						data.record.data = data.data;
 						record = data.record;
 				}
 				this.views = {};
-				if (this.retrieve) this.crawl(record.key, this.ignore.length > 0 ? this.ignore.join(",") : undefined);
-				this.parentNode.fire("afterDataSet", record);
+				if (this.retrieve) this.crawl(record.key, this.ignore.length > 0 ? this.ignore.join(",") : undefined, this.key);
+				if (fire) this.parentNode.fire("afterDataSet", record);
 			}, "recordSet", obj.data);
 
 			// Getters & setters
@@ -4882,7 +4914,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.3"
+		version         : "2.5.4"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
