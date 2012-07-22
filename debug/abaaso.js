@@ -4049,7 +4049,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		var cached = cache.get(uri),
 				           		    self   = this;
 
-				           		!cached ? uri.get(function (arg) { self.html(arg).fire("afterGet"); }, function (arg) { self.fire("failedGet", {response: client.parse(arg), xhr: xhr}); }, headers)
+				           		!cached ? uri.get(function (arg) { self.html(arg).fire("afterGet"); }, function (arg) { self.fire("failedGet", {response: client.parse(arg), xhr: arg}); }, headers)
 				           		        : this.html(cached.response).fire("afterGet");
 
 				           		return this;
