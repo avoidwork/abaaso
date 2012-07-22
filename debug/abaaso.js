@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.4
+ * @version 2.5.5
  */
 (function (global) {
 "use strict";
@@ -3207,7 +3207,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method list
 		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
 		 * @param  {String} event Event being queried
-		 * @return {Array} Array of listeners for the event
+		 * @return {Mixed}        Object or Array of listeners for the event
 		 */
 		list : function (obj, event) {
 			obj   = utility.object(obj);
@@ -4047,10 +4047,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           get      : function (uri, headers) {
 				           		this.fire("beforeGet");
 				           		var cached = cache.get(uri),
-				           		    guid   = utility.guid(true),
 				           		    self   = this;
 
-				           		!cached ? uri.get(function (a) { self.html(a).fire("afterGet"); }, null, headers)
+				           		!cached ? uri.get(function (arg) { self.html(arg).fire("afterGet"); }, function (arg) { self.fire("failedGet", {response: client.parse(arg), xhr: xhr}); }, headers)
 				           		        : this.html(cached.response).fire("afterGet");
 
 				           		return this;
@@ -4177,7 +4176,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		utility.genId(this);
 				           		return element.val(this, arg);
 				           },
-				           validate : function () { return this.nodeName === "FORM" ? validate.test(this).pass : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
+				           validate : function () { return this.nodeName === "FORM" ? validate.test(this) : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
 				"function": {reflect: function () { return utility.reflect(this); }},
 				number  : {diff     : function (arg) { return number.diff.call(this, arg); },
 				           fire     : function (event, args) { $.fire.call(this.toString(), event, args); return this; },
@@ -4384,21 +4383,34 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		test : function (args) {
 			var exception = false,
 			    invalid   = [],
-			    value     = null;
+			    tracked   = {},
+			    value     = null,
+			    result    = [],
+			    c         = [],
+			    inputs    = [],
+			    selects   = [],
+			    i, p, o, x, nth;
 
 			if (typeof args.nodeName !== "undefined" && args.nodeName === "FORM") {
-				var i, p, v, c, o, x, t = {}, nth, result, invalid = [], tracked = {};
-
 				if (args.id.isEmpty()) args.genId();
-				c = $("#" + args.id + " input").concat($("#" + args.id + " select"));
+				inputs  = $("#" + args.id + " input");
+				selects = $("#" + args.id + " select");
+				if (inputs.length > 0)  c = c.concat(inputs);
+				if (selects.length > 0) c = c.concat(selects);
 				c.each(function (i) {
+					var z = {},
+					    p, v, r;
+
 					p = validate.pattern[i.nodeName.toLowerCase()] ? validate.pattern[i.nodeName.toLowerCase()] : ((!i.id.isEmpty() && validate.pattern[i.id.toLowerCase()]) ? validate.pattern[i.id.toLowerCase()] : "notEmpty");
 					v = i.val();
 					if (v === null) v = "";
-					t[p] = v;
+					z[p] = v;
+					r    = validate.test(z)
+					if (!r.pass) {
+						invalid.push({element: i, test: p, value: v});
+						exception = true;
+					}
 				});
-				result = this.test(t);
-				return result;
 			}
 			else {
 				utility.iterate(args, function (i, k) {
@@ -4428,15 +4440,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							}
 							break;
 						default:
-							var p = typeof validate.pattern[k] !== "undefined" ? validate.pattern[k] : k;
+							p = typeof validate.pattern[k] !== "undefined" ? validate.pattern[k] : k;
 							if (!p.test(value)) {
 								invalid.push({test: k, value: value});
 								exception = true;
 							}
 					}
 				});
-				return {pass: !exception, invalid: invalid};
 			}
+			return {pass: !exception, invalid: invalid};
 		}
 	};
 
@@ -4917,7 +4929,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.4"
+		version         : "2.5.5"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
