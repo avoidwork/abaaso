@@ -4611,6 +4611,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 		bootstrap       : function () {
 			var cleanup, fn;
+
+			if (typeof abaaso.bootstrap === "function") delete abaaso.bootstrap;
 			
 			cleanup = function (obj) {
 				var nodes = [];
@@ -4849,7 +4851,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		init            : function () {
 			// Stopping multiple executions
 			delete abaaso.init;
-			delete abaaso.bootstrap;
 
 			// Firing events to setup
 			return $.fire("init").un("init").fire("ready").un("ready");
