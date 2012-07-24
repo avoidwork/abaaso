@@ -3063,6 +3063,30 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		parse : function (arg) {
 			return String(arg).indexOf(".") < 0 ? parseInt(arg) : parseFloat(arg);
+		},
+
+		/**
+		 * Rounds a number up or down
+		 * 
+		 * @param  {Number} arg       Float to round
+		 * @param  {String} direction [Optional] "up" or "down", defaults to "down"
+		 * @return {Number}           Rounded interger
+		 */
+		round : function (arg, direction) {
+			var result = 0;
+
+			if (String(arg).indexOf(".") < 0) return arg;
+			if (!/down|up/.test(direction)) direction = "down";
+			result = arg.toFixed(0);
+			switch (direction) {
+				case "down":
+					if (result > arg) result--;
+					break;
+				case "up":
+					if (result < arg) result++;
+					break;
+			}
+			return parseInt(result);
 		}
 	};
 
@@ -4202,6 +4226,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           listeners: function (event) { return $.listeners.call(this.toString(), event); },
 				           on       : function (event, listener, id, scope, state) { $.on.call(this.toString(), event, listener, id, scope || this, state); return this; },
 				           once     : function (event, listener, id, scope, state) { $.once.call(this.toString(), event, listener, id, scope || this, state); return this; },
+				           roundDown: function () { return number.round(this, "down"); },
+				           roundUp  : function () { return number.round(this, "up"); },
 				           un       : function (event, id, state) { $.un.call(this.toString(), event, id, state); return this; }},
 				string  : {allows   : function (arg) { return client.allows(this, arg); },
 				           capitalize: function () { return string.capitalize(this); },
