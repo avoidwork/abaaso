@@ -3890,7 +3890,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 			var define;
 
-			define = (typeof Object.defineProperty === "function");
+			define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
 			if (define && typeof descriptor.value !== "undefined" && typeof descriptor.get !== "undefined") delete descriptor.value;
 			define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
 			return obj;
