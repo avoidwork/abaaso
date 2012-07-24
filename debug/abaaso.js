@@ -3056,10 +3056,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Parses the argument
+		 * Parses the number
 		 * 
 		 * @param  {Mixed} arg Number to parse
-		 * @return {Number}     Integer or float
+		 * @return {Number}    Integer or float
 		 */
 		parse : function (arg) {
 			return String(arg).indexOf(".") < 0 ? parseInt(arg) : parseFloat(arg);
