@@ -450,7 +450,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					version = navigator.userAgent.replace(/(.*firefox\/)/gi, "");
 					break;
 				case this.ie:
-					version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "");
+					version = parseInt(navigator.userAgent.replace(/(.*msie|;.*)/gi, ""));
 					if (document.documentMode < version) version = document.documentMode;
 					break;
 				case this.opera:
