@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.6
+ * @version 2.5.7
  */
 (function (global) {
 "use strict";
@@ -766,7 +766,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				// Setting events
 				if (typeof xhr.ontimeout  === "object") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e); };
 				if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
-				if (typeof xhr.upload.onprogress === "object") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
+				if (typeof typeof xhr.upload === "object" && typeof xhr.upload.onprogress === "object") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
 
 				try {
 					xhr.open(type.toUpperCase(), uri, true);
@@ -3878,18 +3878,21 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
 		 * 
-		 * @param {Object} obj        Object to decorate
-		 * @param {String} prop       Name of property to set
-		 * @param {Object} descriptor Descriptor of the property
+		 * @method property
+		 * @param  {Object} obj        Object to decorate
+		 * @param  {String} prop       Name of property to set
+		 * @param  {Object} descriptor Descriptor of the property
+		 * @return {Object}            Object receiving the property
 		 */
 		property : function (obj, prop, descriptor) {
 			if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
 			var define;
 
-			define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
+			define = (typeof Object.defineProperty === "function");
 			if (define && typeof descriptor.value !== "undefined" && typeof descriptor.get !== "undefined") delete descriptor.value;
 			define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
+			return obj;
 		},
 
 		/**
@@ -4930,7 +4933,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.6"
+		version         : "2.5.7"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
