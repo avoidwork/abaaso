@@ -2991,6 +2991,17 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Tests if an number is even
+		 *
+		 * @method even
+		 * @param {Number} arg Number to test
+		 * @return {Boolean} True if even, or undefined
+		 */
+		even : function (arg) {
+			return arg % 2 === 0;
+		},
+
+		/**
 		 * Formats a Number to a delimited String
 		 * 
 		 * @method format
@@ -3023,14 +3034,14 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
-		 * Tests if an number is even
-		 *
-		 * @method even
-		 * @param {Number} arg Number to test
-		 * @return {Boolean} True if even, or undefined
+		 * Returns half of a, or true if a is half of b
+		 * 
+		 * @param  {Number} a Number to divide
+		 * @param  {Number} b [Optional] Number to test a against
+		 * @return {Mixed}    Boolean if b is passed, Number if b is undefined
 		 */
-		even : function (arg) {
-			return arg % 2 === 0;
+		half : function (a, b) {
+			return typeof b !== "undefined" ? ((a / b) === .5) : (a / 2);
 		},
 
 		/**
@@ -4185,6 +4196,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				number  : {diff     : function (arg) { return number.diff.call(this, arg); },
 				           fire     : function (event, args) { $.fire.call(this.toString(), event, args); return this; },
 				           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
+				           half     : function (arg) { return number.half(this, arg); },
 				           isEven   : function () { return number.even(this); },
 				           isOdd    : function () { return number.odd(this); },
 				           listeners: function (event) { return $.listeners.call(this.toString(), event); },
