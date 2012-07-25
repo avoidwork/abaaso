@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.8
+ * @version 2.5.9
  */
 (function (global) {
 "use strict";
@@ -4790,7 +4790,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			// Hooking abaaso into native Objects
 			utility.proto(Array, "array");
 			if (typeof Element !== "undefined") utility.proto(Element, "element");
-			if (client.ie && client.version === 8) utility.proto(HTMLDocument, "element");
+			if (client.ie && client.version === 8 && typeof HTMLDocument !== "undefined") utility.proto(HTMLDocument, "element");
 			utility.proto(Function, "function");
 			utility.proto(Number, "number");
 			utility.proto(String, "string");
@@ -4972,7 +4972,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.8"
+		version         : "2.5.9"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
