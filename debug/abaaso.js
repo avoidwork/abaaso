@@ -3073,20 +3073,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Number}           Rounded interger
 		 */
 		round : function (arg, direction) {
-			var result = 0;
-
 			if (String(arg).indexOf(".") < 0) return arg;
 			if (!/down|up/.test(direction)) direction = "down";
-			result = arg.toFixed(0);
-			switch (direction) {
-				case "down":
-					if (result > arg) result--;
-					break;
-				case "up":
-					if (result < arg) result++;
-					break;
-			}
-			return parseInt(result);
+			return Math[direction === "down" ? "floor" : "ceil"](arg);
 		}
 	};
 
