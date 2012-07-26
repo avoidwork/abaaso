@@ -147,12 +147,13 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Array} Array
 		 */
 		each : function (obj, fn) {
-			var n = 0, terminate;
+			var nth = obj.length,
+			    i, r;
 
-			obj.forEach(function (i) {
-				if (terminate === false) return;
-				terminate = fn.call(obj, i, n++);
-			});
+			for (i = 0; i < nth; i++) {
+				r = fn.call(obj, i, n++);
+				if (r === false) break;
+			}
 			return obj;
 		},
 
