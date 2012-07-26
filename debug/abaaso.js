@@ -151,7 +151,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    i, r;
 
 			for (i = 0; i < nth; i++) {
-				r = fn.call(obj, i, n++);
+				r = fn.call(obj, obj[i], i);
 				if (r === false) break;
 			}
 			return obj;
