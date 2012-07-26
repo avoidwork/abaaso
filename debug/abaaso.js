@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.5.9
+ * @version 2.6.0
  */
 (function (global) {
 "use strict";
@@ -1362,12 +1362,23 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * @method find
 			 * @param  {Mixed}  needle    String, Number or Pattern to test for
-			 * @param  {Mixed}  haystack  [Optional] The field(s) to search
+			 * @param  {String} haystack  [Optional] Commma delimited string of the field(s) to search
 			 * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
-			 * @return {Array} Array of results
+			 * @return {Array}            Array of results
 			 */
 			find : function (needle, haystack, modifiers) {
 				if (typeof needle === "undefined") throw Error(label.error.invalidArguments);
+
+				needle     = typeof needle   === "string" ? needle.explode() : [needle];
+				haystack   = typeof haystack === "string" ? haystack.explode() : null;
+
+				var result = [],
+				    obj    = this.parentNode,
+				    keys   = [],
+				    regex  = new RegExp();
+
+				if (this.total === 0) return result;
+
 				switch (true) {
 					case typeof modifiers === "undefined":
 					case String(modifiers).isEmpty():
@@ -1378,46 +1389,40 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						break;
 				}
 
-				var h      = [],
-				    n      = typeof needle === "string" ? needle.explode() : needle,
-				    result = [],
-				    nth,
-				    nth2   = n.length,
-				    obj    = this.parentNode,
-				    keys   = {},
-				    regex  = new RegExp(),
-				    a      = this.total,
-				    x, y, f, r, s, p, i;
+				// No haystack, testing everything
+				if (haystack === null) {
+					this.records.each(function (r) {
+						utility.iterate(r.data, function (v, k) {
+							if (keys.contains(r.key)) return false;
+							if (typeof v.data === "object") return;
 
-				if (a === 0) return result;
-
-				r = this.records.first();
-				switch (true) {
-					case typeof haystack === "string":
-						h = haystack.explode()
-						i = h.length;
-						while (i--) { if (!r.data.hasOwnProperty(h[i])) throw Error(label.error.invalidArguments); }
-						break;
-					default:
-						utility.iterate(r.data, function (v, k) { h.push(k); });
+							needle.each(function (n) {
+								utility.compile(regex, n, modifiers);
+								if (regex.test(v)) {
+									keys.push(r.key);
+									result.add(r);
+									return false;
+								}
+							});
+						});
+					});
 				}
+				// Looking through the haystack
+				else this.records.each(function (r) {
+					haystack.each(function (h) {
+						if (keys.contains(r.key)) return false;
+						if (typeof r.data[h] === "undefined" || typeof r.data[h].data === "object") return;
 
-				nth = h.length;
-
-				for (i = 0; i < a; i++) {
-					for (x = 0; x < nth; x++) {
-						for (y = 0; y < nth2; y++) {
-							f = h[x];
-							p = n[y];
-							utility.compile(regex, p, modifiers);
-							s = this.records[i].data[f];
-							if (typeof s.data !== "object" && !keys[this.records[i].key] && regex.test(s)) {
-								keys[this.records[i].key] = i;
-								result.add(this.records[i]);
+						needle.each(function (n) {
+							utility.compile(regex, n, modifiers);
+							if (regex.test(r.data[h])) {
+								keys.push(r.key);
+								result.add(r);
+								return false;
 							}
-						}
-					}
-				}
+						});
+					});
+				});
 
 				return result;
 			},
@@ -4961,7 +4966,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.5.9"
+		version         : "2.6.0"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
