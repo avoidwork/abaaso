@@ -147,9 +147,12 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Array} Array
 		 */
 		each : function (obj, fn) {
-			var n = 0;
+			var n = 0, terminate;
 
-			obj.forEach(function (i) { fn.call(obj, i, n++); });
+			obj.forEach(function (i) {
+				if (terminate === false) return;
+				terminate = fn.call(obj, i, n++);
+			});
 			return obj;
 		},
 
