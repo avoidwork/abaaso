@@ -84,7 +84,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method cast
 		 * @param  {Object}  obj Object to cast
 		 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
-		 * @return {Array}   Object as an Array
+		 * @return {Array}       Object as an Array
 		 */
 		cast : function (obj, key) {
 			key   = (key === true);
@@ -105,7 +105,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @method clone
 		 * @param  {Array} obj Array to clone
-		 * @return {Array} Clone of Array
+		 * @return {Array}     Clone of Array
 		 */
 		clone : function (obj) {
 			return utility.clone(obj);
@@ -129,7 +129,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method diff
 		 * @param  {Array} array1 Source Array
 		 * @param  {Array} array2 Comparison Array
-		 * @return {Array} Array of the differences
+		 * @return {Array}        Array of the differences
 		 */
 		diff : function (array1, array2) {
 			var a = array1.length > array2.length ? array1 : array2,
@@ -144,7 +144,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @param  {Array}    obj Array to iterate
 		 * @param  {Function} fn  Function to execute on index values
-		 * @return {Array} Array
+		 * @return {Array}        Array
 		 */
 		each : function (obj, fn) {
 			var nth = obj.length,
@@ -162,7 +162,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method first
 		 * @param  {Array} obj The array
-		 * @return {Mixed} The first node of the array
+		 * @return {Mixed}     The first node of the array
 		 */
 		first : function (obj) {
 			return obj[0];
@@ -174,7 +174,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method index
 		 * @param  {Array} obj Array to search
 		 * @param  {Mixed} arg Value to find index of
-		 * @return {Number} The position of arg in instance
+		 * @return {Number}    The position of arg in instance
 		 */
 		index : function (obj, arg) {
 			return obj.indexOf(arg);
@@ -185,7 +185,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method indexed
 		 * @param  {Array} obj Array to index
-		 * @return {Array} Indexed Array
+		 * @return {Array}     Indexed Array
 		 */
 		indexed : function (obj) {
 			var indexed = [];
@@ -200,7 +200,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method intersect
 		 * @param  {Array} array1 Source Array
 		 * @param  {Array} array2 Comparison Array
-		 * @return {Array} Array of the intersections
+		 * @return {Array}        Array of the intersections
 		 */
 		intersect : function (array1, array2) {
 			var a = array1.length > array2.length ? array1 : array2,
@@ -214,7 +214,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method keys
 		 * @param  {Array} obj Array to extract keys from
-		 * @return {Array} Array of the keys
+		 * @return {Array}     Array of the keys
 		 */
 		keys : function (obj) {
 			var keys = [];
@@ -228,7 +228,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method last
 		 * @param  {Array} obj Array
-		 * @return {Mixed} Last index of Array
+		 * @return {Mixed}     Last index of Array
 		 */
 		last : function (obj) {
 			return obj[obj.length - 1];
@@ -240,7 +240,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Array}  obj   Array to iterate
 		 * @param  {Number} start Starting index
 		 * @param  {Number} end   Ending index
-		 * @return {Array}       Array of indices
+		 * @return {Array}        Array of indices
 		 */
 		range : function (obj, start, end) {
 			var result = [],
@@ -254,10 +254,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Removes indices from an Array without recreating it
 		 *
 		 * @method remove
-		 * @param  {Array}   obj   Array to remove from
+		 * @param  {Array}  obj   Array to remove from
 		 * @param  {Number} start Starting index
 		 * @param  {Number} end   [Optional] Ending index
-		 * @return {Array} Modified Array
+		 * @return {Array}        Modified Array
 		 */
 		remove : function (obj, start, end) {
 			if (typeof start === "string") {
@@ -308,7 +308,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method total
 		 * @param  {Array} obj Array to find the length of
-		 * @return {Number} Number of keys in Array
+		 * @return {Number}    Number of keys in Array
 		 */
 		total : function (obj) {
 			return array.indexed(obj).length;
@@ -318,7 +318,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Casts an Array to Object
 		 * 
 		 * @param  {Array} ar Array to transform
-		 * @return {Object} New object
+		 * @return {Object}   New object
 		 */
 		toObject : function (ar) {
 			var obj = {},
@@ -358,7 +358,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method expire
 		 * @param  {String}  uri    URI of the local representation
 		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
-		 * @return {Undefined} undefined
+		 * @return {Undefined}      undefined
 		 */
 		expire : function (uri, silent) {
 			silent = (silent === true);
@@ -375,7 +375,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method expired
 		 * @param  {Object} uri Cached URI object
-		 * @return {Boolean} True if the URI has expired
+		 * @return {Boolean}    True if the URI has expired
 		 */
 		expired : function (uri) {
 			var item = cache.items[uri];
@@ -389,7 +389,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String}  uri    URI/Identifier for the resource to retrieve from cache
 		 * @param  {Boolean} expire [Optional] If 'false' the URI will not expire
 		 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
-		 * @return {Mixed} URI Object {headers, response} or False
+		 * @return {Mixed}          URI Object {headers, response} or False
 		 */
 		get : function (uri, expire) {
 			expire = (expire !== false);
@@ -408,7 +408,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String} uri      URI to set or update
 		 * @param  {String} property Property of the cached URI to set
 		 * @param  {Mixed} value     Value to set
-		 * @return {Mixed} URI Object {headers, response} or undefined
+		 * @return {Mixed}           URI Object {headers, response} or undefined
 		 */
 		set : function (uri, property, value) {
 			if (typeof cache.items[uri] === "undefined") {
@@ -477,7 +477,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method allows
 		 * @param  {String} uri     URI to query
 		 * @param  {String} command Command to query for
-		 * @return {Boolean} True if the command is allowed
+		 * @return {Boolean}        True if the command is allowed
 		 */
 		allows : function (uri, command) {
 			if (uri.isEmpty() || command.isEmpty()) throw Error(label.error.invalidArguments);
@@ -544,7 +544,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @method cors
 		 * @param  {String} uri  URI to parse
-		 * @return {Boolean} True if CORS
+		 * @return {Boolean}     True if CORS
 		 */
 		cors : function (uri) {
 			return (uri.indexOf("//") > -1 && uri.indexOf("//" + location.host) === -1);
@@ -557,7 +557,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Object} xhr  XMLHttpRequest Object
 		 * @param  {String} uri  URI to request
 		 * @param  {String} type Type of request
-		 * @return {Object} Cached URI representation
+		 * @return {Object}      Cached URI representation
 		 * @private
 		 */
 		headers : function (xhr, uri, type) {
@@ -638,7 +638,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method permissions
 		 * @param  {String} uri URI to query
-		 * @return {Object} Contains an Array of available commands, the permission bit and a map
+		 * @return {Object}     Contains an Array of available commands, the permission bit and a map
 		 */
 		permissions : function (uri) {
 			var cached = cache.get(uri, false),
@@ -664,7 +664,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Function} success A handler function to execute when an appropriate response been received
 		 * @param  {Function} failure [Optional] A handler function to execute on error
 		 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request (CORS)
-		 * @return {String} URI to query
+		 * @return {String}           URI to query
 		 */
 		jsonp : function (uri, success, failure, args) {
 			var curi = uri,
@@ -732,7 +732,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Function} failure [Optional] A handler function to execute on error
 		 * @param  {Mixed}    args    Data to send with the request
 		 * @param  {Object}   headers Custom request headers (can be used to set withCredentials)
-		 * @return {String} URI to query
+		 * @return {String}           URI to query
 		 * @private
 		 */
 		request : function (uri, type, success, failure, args, headers) {
@@ -966,10 +966,10 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Expires a cookie if it exists
 		 *
 		 * @method expire
-		 * @param  {String} name Name of the cookie to expire
+		 * @param  {String} name   Name of the cookie to expire
 		 * @param  {String} domain [Optional] Domain to set the cookie for
 		 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
-		 * @return {String} Name of the expired cookie
+		 * @return {String}        Name of the expired cookie
 		 */
 		expire : function (name, domain, secure) {
 			if (typeof cookie.get(name) !== "undefined") cookie.set(name, "", "-1s", domain, secure);
@@ -981,7 +981,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method get
 		 * @param  {String} name Name of the cookie to get
-		 * @return {Mixed} Cookie or undefined
+		 * @return {Mixed}       Cookie or undefined
 		 */
 		get : function (name) {
 			return cookie.list()[name];
@@ -1018,7 +1018,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String} offset A positive or negative integer followed by "d", "h", "m" or "s"
 		 * @param  {String} domain [Optional] Domain to set the cookie for
 		 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
-		 * @return {Object} The new cookie
+		 * @return {Object}        The new cookie
 		 */
 		set : function (name, value, offset, domain, secure) {
 			if (typeof value === "undefined") value = "";
@@ -1092,7 +1092,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {String}  type Type of action to perform
 			 * @param  {Mixed}   data Array of keys or indices to delete, or Object containing multiple records to set
 			 * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
-			 * @return {Object} Data store
+			 * @return {Object}       Data store
 			 */
 			batch : function (type, data, sync) {
 				type = type.toString().toLowerCase();
@@ -1210,7 +1210,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * @method clear
 			 * @param {Boolean} sync [Optional] Boolean to limit clearing of properties
-			 * @return {Object} Data store
+			 * @return {Object}      Data store
 			 */
 			clear : function (sync) {
 				sync    = (sync === true);
@@ -1314,7 +1314,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {Mixed}   record  Record key or index
 			 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
 			 * @param  {Boolean} sync    [Optional] True if called by data.sync
-			 * @return {Object} Data store
+			 * @return {Object}          Data store
 			 */
 			del : function (record, reindex, sync) {
 				if (typeof record === "undefined" || (typeof record !== "number" && typeof record !== "string")) throw Error(label.error.invalidArguments);
@@ -1442,7 +1442,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {Mixed}   record null, record, key or index
 			 * @param  {Object}  target Target HTML Element
 			 * @param  {Boolean} test   [Optional] Test form before setting values
-			 * @return {Object} Generated HTML form
+			 * @return {Object}         Generated HTML form
 			 */
 			form : function (record, target, test) {
 				test      = (test !== false);
@@ -1481,7 +1481,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				 * 
 				 * @method handler
 				 * @param  {Object} event Window event
-				 * @return {Undefined} undefined
+				 * @return {Undefined}    undefined
 				 */
 				handler = function (event) {
 					var form    = event.srcElement.parentNode,
@@ -1520,7 +1520,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				 * @param  {Object} record Data store record
 				 * @param  {Object} obj    [description]
 				 * @param  {String} name   [description]
-				 * @return {Undefined} undefined
+				 * @return {Undefined}     undefined
 				 */
 				structure = function (record, obj, name) {
 					var x, id;
@@ -1559,7 +1559,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @method get
 			 * @param  {Mixed}  record Key, index or Array of pagination start & end
 			 * @param  {Number} end    [Optional] Ceiling for pagination
-			 * @return {Mixed} Individual record, or Array of records
+			 * @return {Mixed}         Individual record, or Array of records
 			 */
 			get : function (record, end) {
 				var records = this.records,
@@ -1626,7 +1626,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {Mixed}   key  Integer or String to use as a Primary Key
 			 * @param  {Object}  data Key:Value pairs to set as field values
 			 * @param  {Boolean} sync [Optional] True if called by data.sync
-			 * @return {Object} The data store
+			 * @return {Object}       The data store
 			 */
 			set : function (key, data, sync) {
 				if (key === null) key = undefined;
@@ -1682,7 +1682,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * @param  {String} query       SQL (style) order by
 			 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
 			 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" (insensitive = "ci", sensitive = "cs", mixed = "ms")
-			 * @return {Array} View of data
+			 * @return {Array}               View of data
 			 */
 			sort : function (query, create, sensitivity) {
 				if (typeof query === "undefined" || String(query).isEmpty()) throw Error(label.error.invalidArguments);
@@ -1795,7 +1795,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 *
 			 * @method sync
 			 * @param {Boolean} reindex [Optional] True will reindex the data store
-			 * @return {Object} Data store
+			 * @return {Object}         Data store
 			 */
 			sync : function (reindex) {
 				if (this.uri === null || this.uri.isEmpty()) throw Error(label.error.invalidArguments);
@@ -1852,7 +1852,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			/**
 			 * Tears down a store & expires all records associated to an API
 			 * 
-			 * @return {Undefined}     undefined
+			 * @return {Undefined} undefined
 			 */
 			teardown : function () {
 				var uri = this.uri,
@@ -1895,7 +1895,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method register
 		 * @param  {Object} obj  Object to register with
 		 * @param  {Mixed}  data [Optional] Data to set with this.batch
-		 * @return {Object} Object registered with
+		 * @return {Object}      Object registered with
 		 */
 		register : function (obj, data) {
 			if (obj instanceof Array) return obj.each(function (i) { data.register(i, data); });
@@ -2085,7 +2085,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Mixed}  obj   Element or Array of Elements or $ queries
 		 * @param  {String} name  Attribute name
 		 * @param  {Mixed}  value Attribute value
-		 * @return {Object} Element or Array of Elements
+		 * @return {Object}       Element or Array of Elements
 		 */
 		attr : function (obj, key, value) {
 			if (typeof value === "string") value = value.trim();
@@ -2135,7 +2135,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method clear
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element or Array of Elements
+		 * @return {Mixed}     Element or Array of Elements
 		 */
 		clear : function (obj) {
 			obj = utility.object(obj);
@@ -2171,7 +2171,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 		 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
 		 * @param  {Mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
-		 * @return {Object} Element that was created or undefined
+		 * @return {Object}        Element that was created or undefined
 		 */
 		create : function (type, args, target, pos) {
 			if (typeof type === "undefined" || String(type).isEmpty()) throw Error(label.error.invalidArguments);
@@ -2245,7 +2245,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method css
 		 * @param  {String} content CSS to put in a style tag
-		 * @return {Object} Element created or undefined
+		 * @return {Object}         Element created or undefined
 		 */
 		css : function (content) {
 			var ss, css;
@@ -2286,7 +2286,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method destroy
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}     Element, Array of Elements or undefined
 		 */
 		destroy : function (obj) {
 			obj = utility.object(obj);
@@ -2314,7 +2314,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method disable
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}     Element, Array of Elements or undefined
 		 */
 		disable : function (obj) {
 			obj = utility.object(obj);
@@ -2338,7 +2338,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method enable
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}     Element, Array of Elements or undefined
 		 */
 		enable : function (obj) {
 			obj = utility.object(obj);
@@ -2389,7 +2389,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @method hasClass
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}     Element, Array of Elements or undefined
 		 */
 		hasClass : function (obj, klass) {
 			obj = utility.object(obj);
@@ -2408,7 +2408,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method hide
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}     Element, Array of Elements or undefined
 		 */
 		hide : function (obj) {
 			obj = utility.object(obj);
@@ -2434,7 +2434,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method hidden
 		 * @param  {Mixed} obj Element or $ query
-		 * @return {Mixed} Boolean indicating if Object is hidden
+		 * @return {Mixed}     Boolean indicating if Object is hidden
 		 */
 		hidden : function (obj) {
 			obj = utility.object(obj);
@@ -2471,7 +2471,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Mixed}   obj Element or Array of Elements or $ queries
 		 * @param  {String}  arg Class to add or remove (can be a wildcard)
 		 * @param  {Boolean} add Boolean to add or remove, defaults to true
-		 * @return {Mixed} Element or Array of Elements
+		 * @return {Mixed}       Element or Array of Elements
 		 */
 		klass : function (obj, arg, add) {
 			var classes;
@@ -2498,7 +2498,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method position
 		 * @param  {Mixed} obj Element or $ query
-		 * @return {Object} Object {left: n, top: n}
+		 * @return {Object}    Object {left: n, top: n}
 		 */
 		position : function (obj) {
 			obj = utility.object(obj);
@@ -2536,7 +2536,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method prependChild
 		 * @param  {Object} obj   Target Element
 		 * @param  {Object} child Child Element
-		 * @return {Object} Target Element
+		 * @return {Object}       Target Element
 		 */
 		prependChild : function (obj, child) {
 			obj = utility.object(obj);
@@ -2554,7 +2554,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method show
 		 * @param  {Mixed} obj Element or Array of Elements or $ queries
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}     Element, Array of Elements or undefined
 		 */
 		show : function (obj) {
 			obj = utility.object(obj);
@@ -2578,8 +2578,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Returns the size of the Object
 		 *
 		 * @method size
-		 * @param obj {Mixed} Instance, Array of Instances of $() friendly ID
-		 * @return {Object} Size {x:, y:}, Array of sizes or undefined
+		 * @param  {Mixed} obj Instance, Array of Instances of $() friendly ID
+		 * @return {Object}    Size {x:, y:}, Array of sizes or undefined
 		 */
 		size : function (obj) {
 			var num, height, width;
@@ -2597,7 +2597,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			 * Casts n to a number or returns zero
 			 *
 			 * @param  {Mixed} n The value to cast
-			 * @return {Number} The casted value or zero
+			 * @return {Number}  The casted value or zero
 			 */
 			num = function (n) {
 				return !isNaN(parseInt(n)) ? parseInt(n) : 0;
@@ -2638,7 +2638,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method update
 		 * @param  {Mixed}  obj  Element or Array of Elements or $ queries
 		 * @param  {Object} args Collection of properties
-		 * @return {Mixed} Element, Array of Elements or undefined
+		 * @return {Mixed}       Element, Array of Elements or undefined
 		 */
 		update : function (obj, args) {
 			obj  = utility.object(obj);
@@ -2686,7 +2686,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @param  {Mixed}  obj   Element or Array of Elements or $ queries
 		 * @param  {Mixed}  value [Optional] Value to set
-		 * @return {Object} Element or Array of Elements
+		 * @return {Object}       Element or Array of Elements
 		 */
 		val : function (obj, value) {
 			var output = null, items;
@@ -2758,9 +2758,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Decodes the argument
 		 *
 		 * @method decode
-		 * @param  {String} arg String to parse
+		 * @param  {String}  arg    String to parse
 		 * @param  {Boolean} silent [Optional] Silently fail
-		 * @return {Mixed} Entity resulting from parsing JSON, or undefined
+		 * @return {Mixed}          Entity resulting from parsing JSON, or undefined
 		 */
 		decode : function (arg, silent) {
 			try {
@@ -2778,7 +2778,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method encode
 		 * @param  {Mixed}   arg    Entity to encode
 		 * @param  {Boolean} silent [Optional] Silently fail
-		 * @return {String} JSON, or undefined
+		 * @return {String}         JSON, or undefined
 		 */
 		encode : function (arg, silent) {
 			try {
@@ -2898,7 +2898,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method send
 		 * @param  {Object} target Object to receive message
 		 * @param  {Mixed}  arg    Entity to send as message
-		 * @return {Object} target
+		 * @return {Object}        target
 		 */
 		send : function (target, arg) {
 			try {
@@ -2914,8 +2914,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Sets a handler for recieving a message
 		 *
 		 * @method recv
-		 * @param  {Function} fn  Callback function
-		 * @return {Object} abaaso
+		 * @param  {Function} fn Callback function
+		 * @return {Object}      abaaso
 		 */
 		recv : function (fn, state) {
 			if (typeof state === "undefined") state = "all";
@@ -2946,7 +2946,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method track
 		 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
-		 * @return {Object} abaaso.mouse
+		 * @return {Object}  abaaso.mouse
 		 */
 		track : function (e) {
 			var m = abaaso.mouse;
@@ -2991,7 +2991,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method odd
 		 * @param {Number} arg Number to compare
-		 * @return {Number} The absolute difference
+		 * @return {Number}    The absolute difference
 		 */
 		diff : function (arg) {
 			if (typeof arg !== "number" || typeof this !== "number") throw Error(label.error.expectedNumber);
@@ -3004,7 +3004,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method even
 		 * @param {Number} arg Number to test
-		 * @return {Boolean} True if even, or undefined
+		 * @return {Boolean}   True if even, or undefined
 		 */
 		even : function (arg) {
 			return arg % 2 === 0;
@@ -3017,7 +3017,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Number} arg       Number to format
 		 * @param  {String} delimiter [Optional] String to delimit the Number with
 		 * @param  {String} every     [Optional] Position to insert the delimiter, default is 3
-		 * @return {String} Number represented as a comma delimited String
+		 * @return {String}           Number represented as a comma delimited String
 		 */
 		format : function (arg, delimiter, every) {
 			if (typeof arg !== "number") throw Error(label.error.expectedNumber);
@@ -3058,7 +3058,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method odd
 		 * @param {Number} arg Number to test
-		 * @return {Boolean} True if odd, or undefined
+		 * @return {Boolean}   True if odd, or undefined
 		 */
 		odd : function (arg) {
 			return !(arg % 2 === 0);
@@ -3111,7 +3111,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String}   id    [Optional / Recommended] The id for the listener
 		 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
 		 * @param  {String}   state [Optional] The state the listener is for
-		 * @return {Mixed} Entity, Array of Entities or undefined
+		 * @return {Mixed}          Entity, Array of Entities or undefined
 		 */
 		add : function (obj, event, fn, id, scope, state) {
 			obj   = utility.object(obj);
@@ -3175,7 +3175,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Gets the Observer id of arg
 		 *
 		 * @method id
-		 * @param  {Mixed} Object or String
+		 * @param  {Mixed}  Object or String
 		 * @return {String} Observer id
 		 * @private
 		 */
@@ -3207,7 +3207,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
 		 * @param  {String} event Event, or Events being fired (comma delimited supported)
 		 * @param  {Mixed}  arg   [Optional] Argument supplied to the listener
-		 * @return {Mixed} Entity, Array of Entities or undefined
+		 * @return {Mixed}        Entity, Array of Entities or undefined
 		 */
 		fire : function (obj, event, arg) {
 			obj      = utility.object(obj);
@@ -3302,7 +3302,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String} event [Optional] Event, or Events being fired (comma delimited supported)
 		 * @param  {String} id    [Optional] Listener id
 		 * @param  {String} state [Optional] The state the listener is for
-		 * @return {Mixed}  Entity, Array of Entities or undefined
+		 * @return {Mixed}        Entity, Array of Entities or undefined
 		 */
 		remove : function (obj, event, id, state) {
 			obj   = utility.object(obj);
@@ -3341,7 +3341,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Capitalizes the String
 		 * 
 		 * @param  {String} obj String to capitalize
-		 * @return {String} Capitalized String
+		 * @return {String}     Capitalized String
 		 */
 		capitalize : function (obj) {
 			obj = string.trim(obj);
@@ -3363,7 +3363,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @param  {String} obj String to capitalize
 		 * @param  {String} arg String to split on
-		 * @return {Array} Array of the exploded String
+		 * @return {Array}      Array of the exploded String
 		 */
 		explode : function (obj, arg) {
 			if (typeof arg === "undefined" || arg.toString() === "") arg = ",";
@@ -3374,7 +3374,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Replaces all spaces in a string with dashes
 		 * 
 		 * @param  {String} obj String to hyphenate
-		 * @return {String} String with dashes instead of spaces
+		 * @return {String}     String with dashes instead of spaces
 		 */
 		hyphenate : function (obj) {
 			return string.trim(obj).replace(/\s+/g, "-");
@@ -3394,7 +3394,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Transforms the case of a String into CamelCase
 		 * 
 		 * @param  {String} obj String to capitalize
-		 * @return {String} Camel case String
+		 * @return {String}     Camel case String
 		 */
 		toCamelCase : function (obj) {
 			var s = string.trim(obj).toLowerCase().split(" "),
@@ -3414,7 +3414,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Trims the whitespace around a String
 		 * 
 		 * @param  {String} obj String to capitalize
-		 * @return {String} Trimmed String
+		 * @return {String}     Trimmed String
 		 */
 		trim : function (obj) {
 			return obj.replace(/^\s+|\s+$/g, "");
@@ -3424,7 +3424,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Uncapitalizes the String
 		 * 
 		 * @param  {String} obj String to capitalize
-		 * @return {String} Uncapitalized String
+		 * @return {String}     Uncapitalized String
 		 */
 		uncapitalize : function (obj) {
 			obj = string.trim(obj);
@@ -3447,7 +3447,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method $
 		 * @param  {String}  arg      Comma delimited string of target #id, .class, tag or selector
 		 * @param  {Boolean} nodelist [Optional] True will return a NodeList (by reference) for tags & classes
-		 * @return {Mixed} Element or Array of Elements
+		 * @return {Mixed}            Element or Array of Elements
 		 */
 		$ : function (arg, nodelist) {
 			// Blocking DOM query of unique URIs via $.on()
@@ -3497,7 +3497,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method alias
 		 * @param  {Object} obj    Object receiving aliasing
 		 * @param  {Object} origin Object providing structure to obj
-		 * @return {Object} Object receiving aliasing
+		 * @return {Object}        Object receiving aliasing
 		 */
 		alias : function (obj, origin) {
 			var o = obj,
@@ -3527,8 +3527,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Clones an Object
 		 *
 		 * @method clone
-		 * @param {Object}  obj     Object to clone
-		 * @return {Object} Clone of obj
+		 * @param {Object}  obj Object to clone
+		 * @return {Object}     Clone of obj
 		 */
 		clone : function (obj) {
 			var clone;
@@ -3611,7 +3611,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {String} args  Dot delimited string of the structure
 		 * @param  {Mixed}  value Value to set
 		 * @param  {Object} obj   Object receiving value
-		 * @return {Object} Object receiving value
+		 * @return {Object}       Object receiving value
 		 */
 		define : function (args, value, obj) {
 			args  = args.split(".");
@@ -3660,7 +3660,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Function} fn Function to defer execution of
 		 * @param  {Number}   ms Milliseconds to defer execution
 		 * @param  {Number}   id [Optional] ID of the deferred function
-		 * @return {Object} undefined
+		 * @return {Object}      undefined
 		 */
 		defer : function (fn, ms, id) {
 			if (typeof id === "undefined" || String(id).isEmpty()) id = utility.guid(true);
@@ -3686,11 +3686,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Error handling, with history in .log
 		 *
 		 * @method error
-		 * @param  {Mixed}   e        Error object or message to display
-		 * @param  {Array}   args     Array of arguments from the callstack
-		 * @param  {Mixed}   scope    Entity that was "this"
-		 * @param  {Boolean} warning  [Optional] Will display as console warning if true
-		 * @return {Undefined} undefined
+		 * @param  {Mixed}   e       Error object or message to display
+		 * @param  {Array}   args    Array of arguments from the callstack
+		 * @param  {Mixed}   scope   Entity that was "this"
+		 * @param  {Boolean} warning [Optional] Will display as console warning if true
+		 * @return {Undefined}       undefined
 		 */
 		error : function (e, args, scope, warning) {
 			var o;
@@ -3721,7 +3721,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method extend
 		 * @param  {Object} obj Object to extend
 		 * @param  {Object} arg [Optional] Object for decoration
-		 * @return {Object} Decorated obj
+		 * @return {Object}     Decorated obj
 		 */
 		extend : function (obj, arg) {
 			var o, f;
@@ -3749,7 +3749,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method genId
 		 * @param  {Mixed} obj [Optional] Object to receive id
-		 * @return {Mixed} Object or id
+		 * @return {Mixed}     Object or id
 		 */
 		genId : function (obj) {
 			var id;
@@ -3777,7 +3777,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method guid
 		 * @param {Boolean} safe [Optional] Strips - from GUID
-		 * @return {String} GUID
+		 * @return {String}      GUID
 		 */
 		guid : function (safe) {
 			safe  = (safe === true);
@@ -3796,7 +3796,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @param  {Object}   obj Object to iterate
 		 * @param  {Function} fn  Function to execute against properties
-		 * @return {Object} Object
+		 * @return {Object}       Object
 		 */
 		iterate : function (obj, fn) {
 			var i, result;
@@ -3818,7 +3818,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method loading
 		 * @param  {Mixed} obj Entity or Array of Entities or $ queries
-		 * @return {Mixed} Entity, Array of Entities or undefined
+		 * @return {Mixed}     Entity, Array of Entities or undefined
 		 */
 		loading : function (obj) {
 			var l = abaaso.loading;
@@ -3868,7 +3868,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @param  {Object} obj Object to decorate
 		 * @param  {Object} arg Object to decorate with
-		 * @return {Object} Object to decorate
+		 * @return {Object}     Object to decorate
 		 */
 		merge : function (obj, arg) {
 			utility.iterate(arg, function (v, k) {
@@ -3883,7 +3883,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @method module
 		 * @param  {String} arg Module name
 		 * @param  {Object} obj Module structure
-		 * @return {Object}
+		 * @return {Object}     Module registered
 		 */
 		module : function (arg, obj) {
 			if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object) throw Error(label.error.invalidArguments);
@@ -3902,7 +3902,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method object
 		 * @param  {Mixed} obj Entity or $ query
-		 * @returns {Mixed} Entity
+		 * @return {Mixed}     Entity
 		 * @private
 		 */
 		object : function (obj) {
@@ -3933,9 +3933,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Sets methods on a prototype object
 		 *
 		 * @method proto
-		 * @param  {Object} obj Object receiving prototype extension
+		 * @param  {Object} obj  Object receiving prototype extension
 		 * @param  {String} type Identifier of obj, determines what Arrays to apply
-		 * @return {Object} obj or undefined
+		 * @return {Object}      obj or undefined
 		 * @private
 		 */
 		proto : function (obj, type) {
@@ -4272,7 +4272,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method queryString
 		 * @param  {String} arg [Optional] Key to find in the querystring
-		 * @return {Object} Object of 1 or all key:value pairs in the querystring
+		 * @return {Object}     Object of 1 or all key:value pairs in the querystring
 		 */
 		queryString : function (arg) {
 			arg        = arg || ".*";
@@ -4319,7 +4319,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * 
 		 * @method reflect
 		 * @param  {Function} arg Function to reflect
-		 * @return {Array} Array of parameters
+		 * @return {Array}        Array of parameters
 		 */
 		reflect : function (arg) {
 			if (typeof arg === "undefined") arg = this;
@@ -4337,7 +4337,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @param  {Function} fn      Function to execute repeatedly
 		 * @param  {Number}   timeout Milliseconds to stagger the execution
 		 * @param  {String}   id      [Optional] Timeout ID
-		 * @return {String} Timeout ID
+		 * @return {String}           Timeout ID
 		 */
 		repeat : function (fn, timeout, id) {
 			id = id || utility.guid(true);
@@ -4418,7 +4418,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method test
 		 * @param  {Object} args Object to test {(pattern[name] || /pattern/) : (value || #object.id)}
-		 * @return {Object} Results
+		 * @return {Object}      Results
 		 */
 		test : function (args) {
 			var exception = false,
@@ -4504,7 +4504,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method decode
 		 * @param  {String} arg XML String
-		 * @return {Object} XML Object or undefined
+		 * @return {Object}     XML Object or undefined
 		 */
 		decode : function (arg) {
 			try {
@@ -4531,7 +4531,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 *
 		 * @method encode
 		 * @param  {Mixed} arg Object or Array to cast to XML String
-		 * @return {String} XML String or undefined
+		 * @return {String}    XML String or undefined
 		 */
 		encode : function (arg, wrap) {
 			try {
