@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.6.0
+ * @version 2.6.1
  */
 (function (global) {
 "use strict";
@@ -2358,17 +2358,22 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Finds descendant childNodes of Element matched by arg
 		 *
 		 * @method find
-		 * @param  {Mixed} obj  [description]
-		 * @param  {String} arg Type of Element to find
+		 * @param  {Mixed}  obj Element to search
+		 * @param  {String} arg Comma delimited string of descendant selectors
 		 * @return {Mixed}      Array of Elements or undefined
 		 */
 		find : function (obj, arg) {
+			var result = [];
+
 			obj = utility.object(obj);
-
 			if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
-
 			utility.genId(obj);
-			return $("#" + obj.id + " " + arg);
+			arg.explode().each(function (i) {
+				 $("#" + obj.id + " " + i).each(function (o) {
+				 	result.add(o);
+				 });
+			});
+			return result;
 		},
 
 		/**
@@ -4970,7 +4975,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.6.0"
+		version         : "2.6.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
