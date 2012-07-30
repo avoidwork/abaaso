@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.6.1
+ * @version 2.6.2
  */
 (function (global) {
 "use strict";
@@ -3134,7 +3134,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			    o        = this.id(obj),
 			    n        = false,
 			    c        = abaaso.state.current,
-			    b        = /body|document|window/i,
+			    globals  = /body|document|window/i,
+			    allowed  = /click|key|mousedown|mouseup/i,
 			    item, add, reg;
 
 			if (typeof o === "undefined" || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -3147,7 +3148,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 				if (n) {
 					switch (true) {
-						case b.test(o):
+						case globals.test(o):
 						case !/\//g.test(o) && o !== "abaaso":
 							instance = obj;
 							break;
@@ -3155,11 +3156,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							instance = null;
 					}
 
-					if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (b.test(o) || typeof instance.listeners === "function")) {
+					if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
 						add = (typeof instance.addEventListener === "function");
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
-							if (!b.test(e.type)) {
+							if (!globals.test(e.type) && !allowed.test(e.type)) {
 								if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
 								if (typeof e.preventDefault  === "function")  e.preventDefault();
 								if (typeof e.stopPropagation === "function")  e.stopPropagation();
@@ -4975,7 +4976,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.6.1"
+		version         : "2.6.2"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
