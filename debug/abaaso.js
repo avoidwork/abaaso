@@ -3895,7 +3895,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object) throw Error(label.error.invalidArguments);
 			
 			abaaso[arg] = obj;
-			if (typeof obj === "function") $[arg] = abaaso[arg].bind($[arg]);
+			if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? abaaso[arg].bind($[arg]) : abaaso[arg];
 			else {
 				$[arg] = {};
 				utility.alias($[arg], abaaso[arg]);
