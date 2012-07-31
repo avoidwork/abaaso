@@ -3160,11 +3160,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 						add = (typeof instance.addEventListener === "function");
 						reg = (typeof instance.attachEvent === "object" || add);
 						if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
-							if (!globals.test(e.type) && !allowed.test(e.type)) {
-								if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
-								if (typeof e.preventDefault  === "function")  e.preventDefault();
-								if (typeof e.stopPropagation === "function")  e.stopPropagation();
-							}
+							if (!globals.test(e.type) && !allowed.test(e.type)) utility.stop(e);
 							observer.fire(obj, i, e);
 						}, false);
 					}
@@ -4359,6 +4355,19 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		},
 
 		/**
+		 * Stops an Event from bubbling
+		 * 
+		 * @param  {Object} e Event
+		 * @return {Object}   Event
+		 */
+		stop : function (e) {
+			if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
+			if (typeof e.preventDefault  === "function")  e.preventDefault();
+			if (typeof e.stopPropagation === "function")  e.stopPropagation();
+			return e;
+		},
+
+		/**
 		 * Transforms JSON to HTML and appends to Body or target Element
 		 *
 		 * @method tpl
@@ -4962,6 +4971,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		repeating       : {},
 		stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]); },
 		script          : function (arg, target, pos) { return element.create("script", {type: "application/javascript", src: arg}, target || $("head")[0], pos); },
+		stop            : utility.stop,
 		store           : function (arg, args) { return data.register.call(data, arg, args); },
 		timer           : {},
 		tpl             : utility.tpl,
