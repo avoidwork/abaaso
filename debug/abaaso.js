@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.6.2
+ * @version 2.6.3
  */
 (function (global) {
 "use strict";
@@ -769,9 +769,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
 
 				// Setting events
-				if (typeof xhr.ontimeout  === "object") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e); };
-				if (typeof xhr.onprogress === "object") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
-				if (typeof typeof xhr.upload === "object" && typeof xhr.upload.onprogress === "object") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
+				if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e); };
+				if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
+				if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
 
 				try {
 					xhr.open(type.toUpperCase(), uri, true);
@@ -794,7 +794,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 					}
 
 					// Setting headers
-					if (typeof xhr.setRequestHeader === "function") {
+					if (typeof xhr.setRequestHeader !== "undefined") {
 						if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
 						if (headers === null) headers = {};
 						if (contentType !== null) headers["Content-Type"] = contentType;
@@ -4988,7 +4988,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.6.2"
+		version         : "2.6.3"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
