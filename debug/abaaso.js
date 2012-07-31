@@ -2999,7 +2999,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {Number}    The absolute difference
 		 */
 		diff : function (arg) {
-			if (typeof arg !== "number" || typeof this !== "number") throw Error(label.error.expectedNumber);
+			if (isNaN(arg) || isNaN(this)) throw Error(label.error.expectedNumber);
 
 			return Math.abs(this - arg);
 		},
@@ -3025,7 +3025,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * @return {String}           Number represented as a comma delimited String
 		 */
 		format : function (arg, delimiter, every) {
-			if (typeof arg !== "number") throw Error(label.error.expectedNumber);
+			if (isNaN(arg)) throw Error(label.error.expectedNumber);
 
 			arg       = arg.toString();
 			delimiter = delimiter || ",";
@@ -3885,6 +3885,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		
 		/**
 		 * Registers a module in the abaaso namespace
+		 *
+		 * IE8 will have factories (functions) duplicated onto $ because it will not respect the binding
 		 * 
 		 * @method module
 		 * @param  {String} arg Module name
@@ -3895,7 +3897,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object) throw Error(label.error.invalidArguments);
 			
 			abaaso[arg] = obj;
-			if (typeof obj === "function") $[arg] = /*!client.ie || client.version > 8 ? abaaso[arg].bind($[arg]) :*/ abaaso[arg];
+			if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? abaaso[arg].bind($[arg]) : abaaso[arg];
 			else {
 				$[arg] = {};
 				utility.alias($[arg], abaaso[arg]);
