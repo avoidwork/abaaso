@@ -1296,7 +1296,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
 						}
-						record.data[k].data.uri     = v;
+						typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
 					}
 				});
 				return this.get(arg);
