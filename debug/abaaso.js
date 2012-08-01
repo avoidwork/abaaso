@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.6.3
+ * @version 2.7.0
  */
 (function (global) {
 "use strict";
@@ -55,8 +55,8 @@ var document  = global.document,
 
 if (typeof global.$ === "undefined")      global.$      = null;
 if (typeof global.abaaso === "undefined") global.abaaso = (function () {
-	var $, array, cache, client, cookie, data, element, json, label,
-	    message, mouse, number, observer, string, utility, validate, xml, error;
+	var $, bootstrap, array, cache, client, cookie, data, element, json, label,
+	    message, mouse, number, observer, route, string, utility, validate, xml, error;
 
 	/**
 	 * Array methods
@@ -3333,6 +3333,111 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	};
 
 	/**
+	 * URI routing via hashtag
+	 * 
+	 * @class route
+	 * @namespace abaaso
+	 */
+	route = {
+		bang    : /\#|\!\//g,
+		regex   : new RegExp(),
+		word    : /\w/,
+		initial : null,
+
+		// Routing listeners
+		routes : {
+			error : function () {
+				utility.error(label.error.invalidArguments);
+				if (route.initial !== null) route.hash(route.initial);
+			}
+		},
+
+		/**
+		 * Deletes a route
+		 * 
+		 * @param  {String} name Route name
+		 * @return {Mixed} True or undefined
+		 */
+		del : function (name) {
+			if (name !== "error" && route.routes.hasOwnProperty(name)) {
+				if (route.initial === name) route.initial = null;
+				return (delete route.routes[name]);
+			}
+			else throw Error(label.error.invalidArguments);
+		},
+
+		/**
+		 * Getter / setter for the hashbang
+		 * 
+		 * @param  {String} arg Route to set
+		 * @return {String}     Current route
+		 */
+		hash : function (arg) {
+			var output = "";
+
+			if (typeof arg === "undefined") output = document.location.hash.replace(route.bang, "");
+			else {
+				output = arg.replace(route.bang, "");
+				document.location.hash = "!/" + output;
+			}
+			return output;
+		},
+
+		/**
+		 * Initializes the routing by loading the initial OR the first route registered
+		 * 
+		 * @return {String} Route being loaded
+		 */
+		init : function () {
+			var val = document.location.hash;
+
+			!route.word.test(val) ? route.hash(route.initial !== null ? route.initial : array.cast(route.routes, true).remove("error").first()) : route.load(val);
+			return val.replace(route.bang, "");
+		},
+
+		/**
+		 * Lists all routes
+		 * 
+		 * @return {Array} Array of registered routes
+		 */
+		list : function () {
+			return array.cast(route.routes, true);
+		},
+
+		/**
+		 * Loads the hash into the view
+		 * 
+		 * @method load
+		 * @module dashboard
+		 * @param  {String} name Route to load
+		 * @return {Mixed}       True or undefined
+		 */
+		load : function (name) {
+			var active = "error";
+
+			name = name.replace(route.bang, "");
+			if (typeof route.routes[name] !== "undefined") active = name;
+			else utility.iterate(route.routes, function (v, k) { if (utility.compile(route.regex, "^" + k + "$", "i") && route.regex.test(name)) return !(active = k); });
+			route.routes[active](name);
+			return true;
+		},
+
+		/**
+		 * Sets a route for a URI
+		 * 
+		 * @param  {String}   name Regex pattern for the route
+		 * @param  {Function} fn   Route listener
+		 * @return {Mixed}         True or undefined
+		 */
+		set : function (name, fn) {
+			if (typeof name !== "string" || name.isEmpty() || typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+			route.routes[name] = fn;
+			return true;
+		}
+	};
+
+	/**
 	 * String methods
 	 * 
 	 * @class string
@@ -4591,7 +4696,216 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		}
 	};
 
-	error = utility.error;
+	error     = utility.error;
+	bootstrap = function () {
+		var cleanup, fn;
+
+		if (typeof abaaso.bootstrap === "function") delete abaaso.bootstrap;
+		
+		cleanup = function (obj) {
+			var nodes = [];
+
+			observer.remove(obj);
+			if (obj.childNodes.length > 0) nodes = array.cast(obj.childNodes);
+			if (nodes.length > 0) nodes.each(function (i) { cleanup(i); });
+		};
+
+		fn = function (e) {
+			if (/complete|loaded/.test(document.readyState)) {
+				if (typeof abaaso.timer.init !== "undefined") {
+					clearInterval(abaaso.timer.init);
+					delete abaaso.timer.init;
+				}
+				if (typeof abaaso.init === "function") abaaso.init();
+			}
+		};
+
+		if (typeof Array.prototype.filter === "undefined") {
+			Array.prototype.filter = function (fn) {
+				"use strict";
+
+				if (this === void 0 || this === null || typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+				var i      = null,
+					t      = Object(this),
+					nth    = t.length >>> 0,
+					result = [],
+					prop   = arguments[1],
+					val    = null;
+
+				for (i = 0; i < nth; i++) {
+					if (i in t) {
+						val = t[i];
+						if (fn.call(prop, val, i, t)) result.push(val);
+					}
+				}
+
+				return result;
+			};
+		}
+
+		if (typeof Array.prototype.forEach === "undefined") {
+			Array.prototype.forEach = function (callback, thisArg) {
+				"use strict";
+
+				if (this === null || typeof callback !== "function") throw Error(label.error.invalidArguments);
+
+				var T,
+				    k   = 0,
+				    O   = Object(this),
+				    len = O.length >>> 0;
+
+				if (thisArg) T = thisArg;
+
+				while (k < len) {
+					var kValue;
+					if (k in O) {
+						kValue = O[k];
+						callback.call(T, kValue, k, O);
+					}
+					k++;
+				}
+			};
+		}
+
+		if (typeof Array.prototype.indexOf === "undefined") {
+			Array.prototype.indexOf = function(obj, start) {
+				"use strict";
+
+				for (var i = (start || 0), j = this.length; i < j; i++) {
+					if (this[i] === obj) return i;
+				}
+
+				return -1;
+			}
+		}
+
+		if (typeof Function.prototype.bind === "undefined") {
+			Function.prototype.bind = function (arg) {
+				"use strict";
+
+				var fn    = this,
+				    slice = Array.prototype.slice,
+				    args  = slice.call(arguments, 1);
+				
+				return function () {
+					return fn.apply(arg, args.concat(slice.call(arguments)));
+				};
+			};
+		}
+
+		// Describing the Client
+		abaaso.client.size = client.size();
+		client.version();
+		client.mobile();
+		client.tablet();
+
+		// IE7 and older is not supported
+		if (client.ie && client.version < 8) return;
+
+		// Binding helper & namespace to $
+		$ = abaaso.$.bind($);
+		utility.alias($, abaaso);
+		delete $.$;
+		delete $.bootstrap;
+		delete $.callback;
+		delete $.data;
+		delete $.init;
+
+		// Unbinding observer methods to maintain scope
+		$.fire      = abaaso.fire;
+		$.on        = abaaso.on;
+		$.once      = abaaso.once;
+		$.un        = abaaso.un;
+		$.listeners = abaaso.listeners;
+
+		// Setting initial application state
+		abaaso.state._current = abaaso.state.current = "initial";
+		$.state._current      = $.state.current      = abaaso.state.current;
+
+		// Setting sugar
+		switch (true) {
+			case global.$ === null:
+				global.$ = $;
+				break;
+			default:
+				global.a$ = $;
+				abaaso.aliased = "a$";
+		}
+
+		// Hooking abaaso into native Objects
+		utility.proto(Array, "array");
+		if (typeof Element !== "undefined") utility.proto(Element, "element");
+		if (client.ie && client.version === 8 && typeof HTMLDocument !== "undefined") utility.proto(HTMLDocument, "element");
+		utility.proto(Function, "function");
+		utility.proto(Number, "number");
+		utility.proto(String, "string");
+
+		// Creating a singleton
+		abaaso.constructor = abaaso;
+
+		// Creating error log
+		$.error.log = abaaso.error.log = [];
+
+		// Setting events & garbage collection
+		$.on(global, "error",      function (e) { $.fire("error", e); }, "error", global, "all");
+		$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
+		$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
+		$.on(global, "load",       function ()  { $.fire("render").un("render"); });
+		$.on(global, "DOMNodeInserted", function (e) {
+			var obj = e.target;
+			if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
+				utility.genId(obj);
+				if (obj.parentNode instanceof Element) obj.parentNode.fire("afterCreate", obj);
+				$.fire("afterCreate", obj);
+			}
+		}, "mutation", global, "all");
+		$.on(global, "DOMNodeRemoved", function (e) { cleanup(e.target); }, "mutation", global, "all");
+
+		// Routing listener
+		$.on("hash", function (arg) { if ($.route.enabled || abaaso.route.enabled) route.load(arg); }, "route", abaaso.route, "all");
+
+		// abaaso.state.current getter/setter
+		var getter, setter;
+		getter = function () { return this._current; };
+		setter = function (arg) {
+			if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty()) throw Error(label.error.invalidArguments);
+
+			abaaso.state.previous = abaaso.state._current;
+			abaaso.state._current = arg;
+			return abaaso.fire(arg);
+		};
+
+		switch (true) {
+			case (!client.ie || client.version > 8):
+				utility.property(abaaso.state, "current", {enumerable: true, get: getter, set: setter});
+				utility.property($.state,      "current", {enumerable: true, get: getter, set: setter});
+				break;
+			default: // Pure hackery, only exists when needed
+				abaaso.state.change = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
+				$.state.change      = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
+		}
+
+		$.ready = true;
+
+		// Preparing init()
+		switch (true) {
+			case typeof global.define === "function":
+				global.define("abaaso", function () { return abaaso.init(); });
+				break;
+			case (/complete|loaded/.test(document.readyState)):
+				abaaso.init();
+				break;
+			case typeof document.addEventListener === "function":
+				document.addEventListener("DOMContentLoaded", abaaso.init, false);
+				break;
+			case typeof document.attachEvent === "function":
+				document.attachEvent("onreadystatechange", fn);
+				break;
+			default:
+				abaaso.timer.init = setInterval(fn, 10);
+		}
+	};
 
 	// @constructor
 	return {
@@ -4666,212 +4980,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			if (obj instanceof Element) obj.genId();
 			return element.create(type, args, obj, "last");
 		},
-		bootstrap       : function () {
-			var cleanup, fn;
-
-			if (typeof abaaso.bootstrap === "function") delete abaaso.bootstrap;
-			
-			cleanup = function (obj) {
-				var nodes = [];
-
-				observer.remove(obj);
-				if (obj.childNodes.length > 0) nodes = array.cast(obj.childNodes);
-				if (nodes.length > 0) nodes.each(function (i) { cleanup(i); });
-			};
-
-			fn = function (e) {
-				if (/complete|loaded/.test(document.readyState)) {
-					if (typeof abaaso.timer.init !== "undefined") {
-						clearInterval(abaaso.timer.init);
-						delete abaaso.timer.init;
-					}
-					if (typeof abaaso.init === "function") abaaso.init();
-				}
-			};
-
-			if (typeof Array.prototype.filter === "undefined") {
-				Array.prototype.filter = function (fn) {
-					"use strict";
-
-					if (this === void 0 || this === null || typeof fn !== "function") throw Error(label.error.invalidArguments);
-
-					var i      = null,
-						t      = Object(this),
-						nth    = t.length >>> 0,
-						result = [],
-						prop   = arguments[1],
-						val    = null;
-
-					for (i = 0; i < nth; i++) {
-						if (i in t) {
-							val = t[i];
-							if (fn.call(prop, val, i, t)) result.push(val);
-						}
-					}
-
-					return result;
-				};
-			}
-
-			if (typeof Array.prototype.forEach === "undefined") {
-				Array.prototype.forEach = function (callback, thisArg) {
-					"use strict";
-
-					if (this === null || typeof callback !== "function") throw Error(label.error.invalidArguments);
-
-					var T,
-					    k   = 0,
-					    O   = Object(this),
-					    len = O.length >>> 0;
-
-					if (thisArg) T = thisArg;
-
-					while (k < len) {
-						var kValue;
-						if (k in O) {
-							kValue = O[k];
-							callback.call(T, kValue, k, O);
-						}
-						k++;
-					}
-				};
-			}
-
-			if (typeof Array.prototype.indexOf === "undefined") {
-				Array.prototype.indexOf = function(obj, start) {
-					"use strict";
-
-					for (var i = (start || 0), j = this.length; i < j; i++) {
-						if (this[i] === obj) return i;
-					}
-
-					return -1;
-				}
-			}
-
-			if (typeof Function.prototype.bind === "undefined") {
-				Function.prototype.bind = function (arg) {
-					"use strict";
-
-					var fn    = this,
-					    slice = Array.prototype.slice,
-					    args  = slice.call(arguments, 1);
-					
-					return function () {
-						return fn.apply(arg, args.concat(slice.call(arguments)));
-					};
-				};
-			}
-
-			// Describing the Client
-			abaaso.client.size = client.size();
-			client.version();
-			client.mobile();
-			client.tablet();
-
-			// IE7 and older is not supported
-			if (client.ie && client.version < 8) return;
-
-			// Binding helper & namespace to $
-			$ = abaaso.$.bind($);
-			utility.alias($, abaaso);
-			delete $.$;
-			delete $.bootstrap;
-			delete $.callback;
-			delete $.data;
-			delete $.init;
-
-			// Unbinding observer methods to maintain scope
-			$.fire      = abaaso.fire;
-			$.on        = abaaso.on;
-			$.once      = abaaso.once;
-			$.un        = abaaso.un;
-			$.listeners = abaaso.listeners;
-
-			// Setting initial application state
-			abaaso.state._current = abaaso.state.current = "initial";
-			$.state._current      = $.state.current      = abaaso.state.current;
-
-			// Setting sugar
-			switch (true) {
-				case global.$ === null:
-					global.$ = $;
-					break;
-				default:
-					global.a$ = $;
-					abaaso.aliased = "a$";
-			}
-
-			// Hooking abaaso into native Objects
-			utility.proto(Array, "array");
-			if (typeof Element !== "undefined") utility.proto(Element, "element");
-			if (client.ie && client.version === 8 && typeof HTMLDocument !== "undefined") utility.proto(HTMLDocument, "element");
-			utility.proto(Function, "function");
-			utility.proto(Number, "number");
-			utility.proto(String, "string");
-
-			// Creating a singleton
-			abaaso.constructor = abaaso;
-
-			// Creating error log
-			$.error.log = abaaso.error.log = [];
-
-			// Setting events & garbage collection
-			$.on(global, "error",      function (e) { $.fire("error", e); }, "error", global, "all");
-			$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
-			$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
-			$.on(global, "load",       function ()  { $.fire("render").un("render"); });
-			$.on(global, "DOMNodeInserted", function (e) {
-				var obj = e.target;
-				if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
-					utility.genId(obj);
-					if (obj.parentNode instanceof Element) obj.parentNode.fire("afterCreate", obj);
-					$.fire("afterCreate", obj);
-				}
-			}, "mutation", global, "all");
-			$.on(global, "DOMNodeRemoved", function (e) { cleanup(e.target); }, "mutation", global, "all");
-
-			// abaaso.state.current getter/setter
-			var getter, setter;
-			getter = function () { return this._current; };
-			setter = function (arg) {
-				if (arg === null || typeof arg !== "string" || this.current === arg || arg.isEmpty()) throw Error(label.error.invalidArguments);
-
-				abaaso.state.previous = abaaso.state._current;
-				abaaso.state._current = arg;
-				return abaaso.fire(arg);
-			};
-
-			switch (true) {
-				case (!client.ie || client.version > 8):
-					utility.property(abaaso.state, "current", {enumerable: true, get: getter, set: setter});
-					utility.property($.state,      "current", {enumerable: true, get: getter, set: setter});
-					break;
-				default: // Pure hackery, only exists when needed
-					abaaso.state.change = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
-					$.state.change      = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
-			}
-
-			$.ready = true;
-
-			// Preparing init()
-			switch (true) {
-				case typeof global.define === "function":
-					global.define("abaaso", function () { return abaaso.init(); });
-					break;
-				case (/complete|loaded/.test(document.readyState)):
-					abaaso.init();
-					break;
-				case typeof document.addEventListener === "function":
-					document.addEventListener("DOMContentLoaded", abaaso.init, false);
-					break;
-				case typeof document.attachEvent === "function":
-					document.attachEvent("onreadystatechange", fn);
-					break;
-				default:
-					abaaso.timer.init = setInterval(fn, 10);
-			}
-		},
+		bootstrap       : bootstrap,
 		clear           : element.clear,
 		clone           : utility.clone,
 		coerce          : utility.coerce,
@@ -4969,6 +5078,16 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		reflect         : utility.reflect,
 		repeat          : utility.repeat,
 		repeating       : {},
+		route           : {
+			enabled : false,
+			initial : null,
+			del     : route.del,
+			hash    : route.hash,
+			init    : route.init,
+			list    : route.list,
+			load    : route.load,
+			set     : route.set
+		},
 		stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]); },
 		script          : function (arg, target, pos) { return element.create("script", {type: "application/javascript", src: arg}, target || $("head")[0], pos); },
 		stop            : utility.stop,
@@ -4988,7 +5107,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.6.3"
+		version         : "2.7.0"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
