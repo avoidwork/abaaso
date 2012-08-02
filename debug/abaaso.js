@@ -4725,8 +4725,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 		if (typeof Array.prototype.filter === "undefined") {
 			Array.prototype.filter = function (fn) {
-				"use strict";
-
 				if (this === void 0 || this === null || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 				var i      = null,
@@ -4749,8 +4747,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 		if (typeof Array.prototype.forEach === "undefined") {
 			Array.prototype.forEach = function (callback, thisArg) {
-				"use strict";
-
 				if (this === null || typeof callback !== "function") throw Error(label.error.invalidArguments);
 
 				var T,
@@ -4773,8 +4769,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 		if (typeof Array.prototype.indexOf === "undefined") {
 			Array.prototype.indexOf = function(obj, start) {
-				"use strict";
-
 				for (var i = (start || 0), j = this.length; i < j; i++) {
 					if (this[i] === obj) return i;
 				}
@@ -4785,8 +4779,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 		if (typeof Function.prototype.bind === "undefined") {
 			Function.prototype.bind = function (arg) {
-				"use strict";
-
 				var fn    = this,
 				    slice = Array.prototype.slice,
 				    args  = slice.call(arguments, 1);
@@ -4816,7 +4808,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		delete $.init;
 		delete $.loading;
 
-		// Creating route.initial after binding so it's not conflicting
+		// Creating route.initial after alias() so it's not assumed
 		abaaso.route.initial = null;
 
 		// Short cut to loading.create
