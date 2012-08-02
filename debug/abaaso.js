@@ -3355,6 +3355,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Deletes a route
 		 * 
+		 * @method del
 		 * @param  {String} name Route name
 		 * @return {Mixed} True or undefined
 		 */
@@ -3369,6 +3370,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Getter / setter for the hashbang
 		 * 
+		 * @method hash
 		 * @param  {String} arg Route to set
 		 * @return {String}     Current route
 		 */
@@ -3386,6 +3388,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Initializes the routing by loading the initial OR the first route registered
 		 * 
+		 * @method init
 		 * @return {String} Route being loaded
 		 */
 		init : function () {
@@ -3398,6 +3401,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Lists all routes
 		 * 
+		 * @set list
 		 * @return {Array} Array of registered routes
 		 */
 		list : function () {
@@ -3408,7 +3412,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 * Loads the hash into the view
 		 * 
 		 * @method load
-		 * @module dashboard
 		 * @param  {String} name Route to load
 		 * @return {Mixed}       True or undefined
 		 */
@@ -3425,6 +3428,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		/**
 		 * Sets a route for a URI
 		 * 
+		 * @method set
 		 * @param  {String}   name Regex pattern for the route
 		 * @param  {Function} fn   Route listener
 		 * @return {Mixed}         True or undefined
