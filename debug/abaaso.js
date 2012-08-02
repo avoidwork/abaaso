@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.7.0
+ * @version 2.7.1
  */
 (function (global) {
 "use strict";
@@ -3339,16 +3339,15 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 	 * @namespace abaaso
 	 */
 	route = {
-		bang    : /\#|\!\//g,
-		regex   : new RegExp(),
-		word    : /\w/,
-		initial : null,
+		bang  : /\#|\!\//g,
+		regex : new RegExp(),
+		word  : /\w/,
 
 		// Routing listeners
 		routes : {
 			error : function () {
 				utility.error(label.error.invalidArguments);
-				if (route.initial !== null) route.hash(route.initial);
+				if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
 			}
 		},
 
@@ -3361,7 +3360,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		 */
 		del : function (name) {
 			if (name !== "error" && route.routes.hasOwnProperty(name)) {
-				if (route.initial === name) route.initial = null;
+				if (abaaso.route.initial === name) abaaso.route.initial = null;
 				return (delete route.routes[name]);
 			}
 			else throw Error(label.error.invalidArguments);
@@ -3394,7 +3393,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		init : function () {
 			var val = document.location.hash;
 
-			!route.word.test(val) ? route.hash(route.initial !== null ? route.initial : array.cast(route.routes, true).remove("error").first()) : route.load(val);
+			!route.word.test(val) ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes, true).remove("error").first()) : route.load(val);
 			return val.replace(route.bang, "");
 		},
 
@@ -4815,6 +4814,11 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		delete $.callback;
 		delete $.data;
 		delete $.init;
+		delete $.loading;
+		delete $.route.initial;
+
+		// Short cut to loading.create
+		$.loading = abaaso.loading.create.bind($.loading);
 
 		// Unbinding observer methods to maintain scope
 		$.fire      = abaaso.fire;
@@ -5111,7 +5115,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.7.0"
+		version         : "2.7.1"
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
