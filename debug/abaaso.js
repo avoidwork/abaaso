@@ -4275,7 +4275,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 				           		utility.genId(this);
 				           		return $.listeners.call(this, event);
 				           },
-				           loading  : function () { return $.loading.create(this); },
+				           loading  : function () { return utility.loading(this); },
 				           on       : function (event, listener, id, scope, state) {
 				           		utility.genId(this);
 				           		return $.on.call(this, event, listener, id, scope, state);
@@ -4815,7 +4815,9 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		delete $.data;
 		delete $.init;
 		delete $.loading;
-		delete $.route.initial;
+
+		// Creating route.initial after binding so it's not conflicting
+		abaaso.route.initial = null;
 
 		// Short cut to loading.create
 		$.loading = abaaso.loading.create.bind($.loading);
@@ -5088,7 +5090,6 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 		repeating       : {},
 		route           : {
 			enabled : false,
-			initial : null,
 			del     : route.del,
 			hash    : route.hash,
 			init    : route.init,
