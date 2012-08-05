@@ -44,7 +44,7 @@
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @module abaaso
- * @version 2.7.1
+ * @version 2.7.2
  */
 (function (global) {
 "use strict";
@@ -1177,7 +1177,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 									case i.indexOf("//") === -1:
 										i = self.uri + i;
 									default:
-										i.get(function (arg) { set(self.source === null ? arg : arg[self.source], idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+										i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 										break;
 								}
 								else self.del(i, false, sync);
@@ -1812,7 +1812,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 
 						var data, found = false, guid = utility.genId(true);
 
-						if (self.source !== null && typeof arg[self.source] !== "undefined") arg = arg[self.source];
+						if (self.source !== null) arg = utility.walk(arg, self.source);
 
 						if (arg instanceof Array) data = arg;
 						else utility.iterate(arg, function (i) {
@@ -2000,7 +2000,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 								this.fire("failedDataSet");
 								throw Error(label.error.expectedObject);
 							}
-							if (this.source !== null) data.result = data.result[this.source];
+							if (this.source !== null) data.result = utility.walk(data.result, this.source);
 							if (this.key === null) data.key = array.cast(data.result).first();
 							else {
 								data.key = data.result[this.key];
@@ -2029,7 +2029,7 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 							}
 							record.data = {};
 							uri.get(function (args) {
-								if (self.source !== null) args = args[self.source];
+								if (self.source !== null) args = utility.walk(args, self.source);
 								if (typeof args[self.key] !== "undefined") delete args[self.key];
 								utility.merge(record.data, args);
 								if (self.retrieve) {
@@ -4514,6 +4514,19 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			}
 			target.appendChild(frag);
 			return array.last(target.childNodes);
+		},
+
+		/**
+		 * Walks a structure and returns arg
+		 * 
+		 * @method  walk
+		 * @param  {Mixed}  obj  Object or Array
+		 * @param  {String} arg  String describing the property to return
+		 * @return {Mixed}       arg
+		 */
+		walk : function (obj, arg) {
+			arg.replace(/\]$/, "").replace(/\]/g, ".").split(/\.|\[/).each(function (i) { obj = obj[i]; });
+			return obj;
 		}
 	};
 
@@ -5108,7 +5121,8 @@ if (typeof global.abaaso === "undefined") global.abaaso = (function () {
 			return observer.remove.call(observer, o, e, i, s);
 		},
 		update          : element.update,
-		version         : "2.7.1"
+		version         : "2.7.2",
+		walk            : utility.walk
 	};
 })();
 if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
