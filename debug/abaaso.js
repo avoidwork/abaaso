@@ -53,7 +53,7 @@ var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof navigator === "undefined",
-    $, abaaso;
+    $, abaaso, external;
 
 abaaso = global.abaaso || (function () {
 	var bootstrap, array, cache, client, cookie, data, element, json, label,
@@ -673,6 +673,12 @@ abaaso = global.abaaso || (function () {
 			    guid = utility.guid(true),
 			    callback, cbid, s;
 
+			// Utilizing the sugar if namespace is not global
+			if (typeof external === "undefined") {
+				external = typeof global.abaaso !== "undefined" ? "abaaso" : global[abaaso.aliased];
+				if (typeof global[external].callback === "undefined") global[external].callback = {};
+			}
+
 			switch (true) {
 				case typeof args === "undefined":
 				case args === null:
@@ -687,7 +693,7 @@ abaaso = global.abaaso || (function () {
 					callback = "callback";
 			}
 
-			curi = curi.replace(callback+"=?", "");
+			curi = curi.replace(callback + "=?", "");
 
 			curi.once("afterJSONP", function (arg) {
 				this.un("failedJSONP", guid);
@@ -698,21 +704,20 @@ abaaso = global.abaaso || (function () {
 			}, guid);
 
 			do cbid = utility.genId().slice(0, 10);
-			while (typeof abaaso.callback[cbid] !== "undefined");
+			while (typeof global[external].callback[cbid] !== "undefined");
 
-			uri = uri.replace(callback + "=?", callback + "=abaaso.callback." + cbid);
+			uri = uri.replace(callback + "=?", callback + "=" + external + ".callback." + cbid);
 
-			abaaso.callback[cbid] = function (arg) {
+			global[external].callback[cbid] = function (arg) {
 				s.destroy();
-				clearTimeout(abaaso.timer[cbid]);
-				delete abaaso.timer[cbid];
-				delete abaaso.callback[cbid];
+				clearTimeout(utility.timer[cbid]);
+				delete utility.timer[cbid];
+				delete global[external].callback[cbid];
 				curi.fire("afterJSONP", arg);
 			};
 
-			s = $("head").create("script", {src: uri, type: "text/javascript"});
-			abaaso.timer[cbid] = setTimeout(function () { curi.fire("failedJSONP"); }, 30000);
-
+			s = $("head")[0].create("script", {src: uri, type: "text/javascript"});
+			utility.defer(function () { curi.fire("failedJSONP"); }, 30000, cbid);
 			return uri;
 		},
 
@@ -2867,6 +2872,7 @@ abaaso = global.abaaso || (function () {
 			invalidArguments      : "One or more arguments is invalid",
 			invalidDate           : "Invalid Date",
 			invalidFields         : "The following required fields are invalid: ",
+			notAvailable          : "Requested method is not available",
 			propertyNotFound      : "Could not find the requested property",
 			serverError           : "Server error has occurred",
 			serverForbidden       : "Forbidden to access URI",
@@ -3561,6 +3567,9 @@ abaaso = global.abaaso || (function () {
 	 * @namespace abaaso
 	 */
 	utility = {
+		// Collection of timers
+		timer : {},
+
 		/**
 		 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 		 * 
@@ -3785,10 +3794,15 @@ abaaso = global.abaaso || (function () {
 		 * @return {Object}      undefined
 		 */
 		defer : function (fn, ms, id) {
-			if (typeof id === "undefined" || String(id).isEmpty()) id = utility.guid(true);
-			var op = function () { delete abaaso.timer[id]; fn(); };
+			ms = ms || 10;
+			id = id || utility.guid(true);
 
-			abaaso.timer[id] = setTimeout(op, ms);
+			var op = function () {
+				delete utility.timer[id];
+				fn();
+			};
+
+			utility.timer[id] = setTimeout(op, ms);
 			return undefined;
 		},
 
@@ -4458,19 +4472,22 @@ abaaso = global.abaaso || (function () {
 		 * Return false from the function to halt recursion
 		 * 
 		 * @method repeat
-		 * @param  {Function} fn      Function to execute repeatedly
-		 * @param  {Number}   timeout Milliseconds to stagger the execution
-		 * @param  {String}   id      [Optional] Timeout ID
-		 * @return {String}           Timeout ID
+		 * @param  {Function} fn  Function to execute repeatedly
+		 * @param  {Number}   ms  Milliseconds to stagger the execution
+		 * @param  {String}   id  [Optional] Timeout ID
+		 * @return {String}       Timeout ID
 		 */
-		repeat : function (fn, timeout, id) {
+		repeat : function (fn, ms, id) {
+			ms = ms || 10;
 			id = id || utility.guid(true);
-			var r = function (fn, timeout, id) {
-				var r = this;
-				if (fn() !== false) $.repeating[id] = setTimeout(function () { r.call(r, fn, timeout, id); }, timeout);
-				else delete $.repeating[id];
+
+			var recursive = function (fn, ms, id) {
+				var recursive = this;
+
+				if (fn() !== false) utility.defer(function () { recursive.call(recursive, fn, ms, id); }, ms);
 			};
-			r.call(r, fn, timeout, id);
+
+			recursive.call(recursive, fn, ms, id);
 			return id;
 		},
 
@@ -4740,11 +4757,8 @@ abaaso = global.abaaso || (function () {
 
 		fn = function (e) {
 			if (/complete|loaded/.test(document.readyState)) {
-				if (typeof abaaso.timer.init !== "undefined") {
-					clearInterval(abaaso.timer.init);
-					delete abaaso.timer.init;
-				}
 				if (typeof abaaso.init === "function") abaaso.init();
+				return false;
 			}
 		};
 
@@ -4938,7 +4952,7 @@ abaaso = global.abaaso || (function () {
 				document.attachEvent("onreadystatechange", fn);
 				break;
 			default:
-				abaaso.timer.init = setInterval(fn, 10);
+				utility.timer.init = utility.repeat(fn);
 		}
 	};
 
@@ -5112,7 +5126,6 @@ abaaso = global.abaaso || (function () {
 		ready           : false,
 		reflect         : utility.reflect,
 		repeat          : utility.repeat,
-		repeating       : {},
 		route           : {
 			enabled : false,
 			del     : route.del,
@@ -5126,7 +5139,6 @@ abaaso = global.abaaso || (function () {
 		script          : function (arg, target, pos) { return element.create("script", {type: "application/javascript", src: arg}, target || $("head")[0], pos); },
 		stop            : utility.stop,
 		store           : function (arg, args) { return data.register.call(data, arg, args); },
-		timer           : {},
 		tpl             : utility.tpl,
 		un              : function (obj, event, id, state) {
 			var all = typeof id !== "undefined",
@@ -5158,6 +5170,6 @@ switch (true) {
 		define(function () { return abaaso; });
 		break;
 	default:
-		global.abaaso  = abaaso;
+		global.abaaso = abaaso;
 }
 })(this);
