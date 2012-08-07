@@ -675,7 +675,7 @@ abaaso = global.abaaso || (function () {
 
 			// Utilizing the sugar if namespace is not global
 			if (typeof external === "undefined") {
-				external = typeof global.abaaso !== "undefined" ? "abaaso" : global[abaaso.aliased];
+				external = typeof global.abaaso !== "undefined" ? "abaaso" : abaaso.aliased;
 				if (typeof global[external].callback === "undefined") global[external].callback = {};
 			}
 
