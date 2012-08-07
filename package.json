@@ -10,9 +10,11 @@
   },
   "main": "debug/abaaso.js",
   "engines": {
-    "node": "~0.6.11"
+    "node": ">=0.8"
   },
-  "dependencies": {},
+  "dependencies": {
+    "xmlhttprequest" : ">=1.4"
+  },
   "devDependencies": {},
   "optionalDependencies": {}
 }
