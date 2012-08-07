@@ -675,8 +675,11 @@ abaaso = global.abaaso || (function () {
 
 			// Utilizing the sugar if namespace is not global
 			if (typeof external === "undefined") {
-				external = typeof global.abaaso !== "undefined" ? "abaaso" : abaaso.aliased;
-				if (typeof global[external].callback === "undefined") global[external].callback = {};
+				if (typeof global.abaaso !== "undefined") {
+					global.abaaso = {};
+					global.abaaso.callback = {};
+				}
+				external = "abaaso";
 			}
 
 			switch (true) {
@@ -704,15 +707,15 @@ abaaso = global.abaaso || (function () {
 			}, guid);
 
 			do cbid = utility.genId().slice(0, 10);
-			while (typeof global[external].callback[cbid] !== "undefined");
+			while (typeof global.abaaso.callback[cbid] !== "undefined");
 
 			uri = uri.replace(callback + "=?", callback + "=" + external + ".callback." + cbid);
 
-			global[external].callback[cbid] = function (arg) {
+			global.abaaso.callback[cbid] = function (arg) {
 				s.destroy();
 				clearTimeout(utility.timer[cbid]);
 				delete utility.timer[cbid];
-				delete global[external].callback[cbid];
+				delete global.abaaso.callback[cbid];
 				curi.fire("afterJSONP", arg);
 			};
 
