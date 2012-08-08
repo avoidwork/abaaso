@@ -1,0 +1,1 @@
+var observer = require("../lib/abaaso.js").abaaso.observer;

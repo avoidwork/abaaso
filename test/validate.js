@@ -1,0 +1,1 @@
+var validate = require("../lib/abaaso.js").abaaso.validate;

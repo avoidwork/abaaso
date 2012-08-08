@@ -1,0 +1,1 @@
+var json = require("../lib/abaaso.js").abaaso.json;

@@ -1,0 +1,1 @@
+var string = require("../lib/abaaso.js").abaaso.string;

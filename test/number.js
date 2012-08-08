@@ -1,0 +1,1 @@
+var number = require("../lib/abaaso.js").abaaso.number;
