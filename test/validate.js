@@ -128,7 +128,6 @@ exports["number"] = {
 	}
 };
 
-// testing north american standard (can be overwritten)
 exports["phone"] = {
 	setUp: function (done) {
 		done();
