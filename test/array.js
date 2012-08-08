@@ -289,7 +289,13 @@ exports["toObject"] = {
 	direct: function (test) {
 		test.expect(2);
 		test.equal(array.toObject(this.val) instanceof Object, true, "Should be true");
-		test.equal(array.toObject(this.val)["0"], "abc", "Should be 'abc'");
+		test.equal(this.val["0"], "abc", "Should be 'abc'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.toObject() instanceof Object, true, "Should be true");
+		test.equal(this.val["0"], "abc", "Should be 'abc'");
 		test.done();
 	}
 };
