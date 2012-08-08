@@ -43,13 +43,13 @@ exports["clone"] = {
 		this.val = [true, false];
 		done();
 	},
-	"clone - direct": function (test) {
+	direct: function (test) {
 		test.expect(2);
 		test.equal(array.clone(this.val)[0], true, "Should be true");
 		test.equal(array.clone(this.val)[1], false, "Should be false");
 		test.done();
 	},
-	"clone - sugar": function (test) {
+	sugar: function (test) {
 		test.expect(2);
 		test.equal(this.val.clone()[0], true, "Should be true");
 		test.equal(this.val.clone()[1], false, "Should be false");
