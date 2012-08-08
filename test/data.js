@@ -25,9 +25,11 @@ exports["batch"] = {
 		done();
 	},
 	direct: function (test) {
-		test.expect(2);
+		test.expect(4);
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
+		test.equal(this.store.data.total, 2, "Should be 2");
 		test.equal(this.store.data.batch("del", [0, 1]), this.store.data, "Should match");
+		test.equal(this.store.data.total, 0, "Should be 0");
 		test.done();
 	}
 };
