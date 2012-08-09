@@ -9,6 +9,7 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Opera 9+
 * Apple iPhone / iPod Touch / iPad
 * Google Android
+* node.js & npm (npm install abaaso)
 
 ## Features
 
