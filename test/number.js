@@ -1,4 +1,4 @@
-var number = require("../lib/abaaso.js").abaaso.number;
+var number = require("../lib/abaaso.js").number;
 
 exports["diff"] = {
 	setUp: function (done) {

@@ -1,4 +1,4 @@
-var observer = require("../lib/abaaso.js").abaaso.observer,
+var observer = require("../lib/abaaso.js").observer,
     sample   = {};
 
 sample.obj   = {id: "test"};
