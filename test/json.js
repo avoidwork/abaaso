@@ -1,4 +1,4 @@
-var json = require("../lib/abaaso.js").abaaso.json;
+var json = require("../lib/abaaso.js").json;
 
 exports["decode"] = {
 	setUp: function (done) {
