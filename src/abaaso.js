@@ -1,24 +1,11 @@
 /**
  * abaaso
  *
- * Events: init           Fires when abaaso is ready; register modules on this event
- *         ready          Fires when the DOM is available
- *         render         Fires when the window resources have loaded
- *         resize         Fires when the window resizes; parameter for listeners is abaaso.client.size
- *         afterCreate    Fires after an Element is created; parameter for listeners is the (new) Element
- *         afterDestroy   Fires after an Element is destroyed; parameter for listeners is the (removed) Element.id value
- *         beforeCreate   Fires when an Element is about to be created; parameter for listeners is the (new) Element.id value
- *         beforeDestroy  Fires when an Element is about to be destroyed; parameter for listeners is the (to be removed) Element
- *         error          Fires when an Error is caught; parameter for listeners is the logged Object (abaaso.error.log[n])
- *         beforeHash     Fires before the hash event; parameter for listeners is the hash value
- *         hash           Fires when window.location.hash changes; parameter for listeners is the hash value
- *         afterHash      Fires after the hash event; parameter for listeners is the hash value
- *
  * @author Jason Mulligan <jason.mulligan@avoidwork.com>
  * @link http://abaaso.com/
  * @license BSD-3 http://opensource.org/licenses/BSD-3-Clause
  * @module abaaso
- * @version 2.8.6
+ * @version {{VERSION}}
  */
 (function (global) {
 
@@ -2107,7 +2094,7 @@ abaaso = global.abaaso || (function () {
 	/**
 	 * Element methods
 	 *
-	 * @class el
+	 * @class element
 	 * @namespace abaaso
 	 */
 	element = {
