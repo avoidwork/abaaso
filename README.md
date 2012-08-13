@@ -22,6 +22,12 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Deep Setting with define()
 * Namespace is available on $
 
+## How to build
+
+1. Install node.js & npm
+2. Run "npm install grunt -g"
+3. Run "git clone git://github.com/avoidwork/abaaso.git"
+4. Enter the abaaso directory & run "grunt" (this builds abaaso into _dist_ & runs the unit tests)
 
 ## License
 
@@ -29,4 +35,4 @@ abaaso is licensed under BSD-3 http://www.opensource.org/licenses/BSD-3-Clause
 
 ### Copyright
 
-Copyright (c) 2010 - 2012, Jason Mulligan <jason.mulligan@avoidwork.com>
+Copyright (c) 2012, Jason Mulligan <jason.mulligan@avoidwork.com>

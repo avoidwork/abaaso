@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 			files : ["grunt.js"]
 		},
 		min : {
-			"dist/abaaso.min.js": [ "<banner>", "dist/abaaso.js" ]
+			"dist/abaaso.min.js" : ["<banner>", "dist/abaaso.js"]
 		},
 		test : {
 			files : ["test/**/*.js"]
