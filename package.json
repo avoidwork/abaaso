@@ -25,15 +25,14 @@
     "node": ">= 0.6.0"
   },
   "scripts": {
-    "install": "grunt",
-    "test": "grunt test",
-    "update": "grunt"
+    "test": "grunt test"
   },
   "dependencies": {
-    "grunt": "~0.3.12",
     "localStorage" : ">= 1.0.0",
     "xmlhttprequest" : ">=1.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "grunt": "~0.3.12"
+  },
   "keywords": []
 }
