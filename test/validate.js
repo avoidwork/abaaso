@@ -2,7 +2,7 @@
  * Using sugar because it returns a boolean which is easy to validate
  * Note: whitespace is trimmed before testing
  */
-var validate = require("../lib/abaaso.js").validate;
+var validate = require("../dist/abaaso.js").validate;
 
 exports["alphanum"] = {
 	setUp: function (done) {

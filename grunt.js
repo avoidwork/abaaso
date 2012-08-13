@@ -29,11 +29,38 @@ module.exports = function (grunt) {
 				node    : true
 			},
 			globals: {
-			  exports : true
+				exports : true
+			}
+		},
+		concat: {
+			dist: {
+				src : [
+					"src/intro.js",
+					"src/array.js",
+					"src/cache.js",
+					"src/client.js",
+					"src/cookie.js",
+					"src/data.js",
+					"src/element.js",
+					"src/json.js",
+					"src/label.js",
+					"src/message.js",
+					"src/mouse.js",
+					"src/number.js",
+					"src/observer.js",
+					"src/route.js",
+					"src/string.js",
+					"src/utility.js",
+					"src/validate.js",
+					"src/xml.js",
+					"src/bootstrap.js",
+					"src/outro.js"
+				],
+				dest : "dist/abaaso.js"
 			}
 		},
 		min : {
-			"dist/abaaso.min.js": [ "<banner>", "src/abaaso.js" ]
+			"dist/abaaso.min.js": [ "<banner>", "dist/abaaso.js" ]
 		}
 	});
 
