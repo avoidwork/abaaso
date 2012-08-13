@@ -6,9 +6,9 @@ module.exports = function (grunt) {
         	         " * <%= pkg.name %>\n" +
         	         " *\n" +
         	         " * @author <%= pkg.author.name %> <<%= pkg.author.email %>>\n" +
+        	         " * @copyright <%= pkg.author.name %> <%= grunt.template.today('yyyy') %>\n" +
+        	         " * @license <%= pkg.licenses[0].type %> <<%= pkg.licenses[0].url %>>\n" +
         	         " * @link <%= pkg.homepage %>\n" +
-        	         " * @copyright <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>\n" +
-        	         " * @license <%= pkg.licenses[0].type %> - <%= pkg.licenses[0].url %>\n" +
         	         " * @module <%= pkg.name %>\n" +
         	         " * @version <%= pkg.version %>\n" +
         	         " */"
@@ -16,6 +16,7 @@ module.exports = function (grunt) {
 		concat: {
 			dist: {
 				src : [
+					"<banner>",
 					"src/intro.js",
 					"src/array.js",
 					"src/cache.js",

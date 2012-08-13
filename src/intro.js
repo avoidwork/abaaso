@@ -1,12 +1,3 @@
-/**
- * abaaso
- *
- * @author Jason Mulligan <jason.mulligan@avoidwork.com>
- * @link http://abaaso.com/
- * @license BSD-3 http://opensource.org/licenses/BSD-3-Clause
- * @module abaaso
- * @version {{VERSION}}
- */
 (function (global) {
 
 var document  = global.document,
