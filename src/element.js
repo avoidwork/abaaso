@@ -405,7 +405,7 @@ var element = {
 		else arg.each(function (i) {
 			if (i !== "*") obj.classList.remove(i);
 			else {
-				obj.className.explode(" ").each(function (x) { obj.classList.remove(x); });
+				obj.classList.each(function (x) { this.remove(x); });
 				return false;
 			}
 		});
