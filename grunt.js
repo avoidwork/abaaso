@@ -2,35 +2,16 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg : "<json:package.json>",
 		meta : {
-			banner : "/*! <%= pkg.name %> <%= pkg.version %> - <%= pkg.homepage %> */"
-		},
-		test : {
-			files : ["test/**/*.js"]
-		},
-		lint : {
-			files : ["grunt.js"]
-		},
-		watch : {
-			files : "<config:lint.files>",
-			tasks : "default"
-		},
-		jshint : {
-			options : {
-				curly   : true,
-				eqeqeq  : true,
-				immed   : true,
-				latedef : true,
-				newcap  : true,
-				noarg   : true,
-				sub     : true,
-				undef   : true,
-				boss    : true,
-				eqnull  : true,
-				node    : true
-			},
-			globals: {
-				exports : true
-			}
+        	banner : "/**\n" + 
+        	         " * <%= pkg.name %>\n" +
+        	         " *\n" +
+        	         " * @author <%= pkg.author.name %> <<%= pkg.author.email %>>\n" +
+        	         " * @link <%= pkg.homepage %>\n" +
+        	         " * @copyright <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>\n" +
+        	         " * @license <%= pkg.licenses[0].type %> - <%= pkg.licenses[0].url %>\n" +
+        	         " * @module <%= pkg.name %>\n" +
+        	         " * @version <%= pkg.version %>\n" +
+        	         " */"
 		},
 		concat: {
 			dist: {
@@ -59,10 +40,47 @@ module.exports = function (grunt) {
 				dest : "dist/abaaso.js"
 			}
 		},
+		lint : {
+			files : ["grunt.js"]
+		},
 		min : {
 			"dist/abaaso.min.js": [ "<banner>", "dist/abaaso.js" ]
+		},
+		test : {
+			files : ["test/**/*.js"]
+		},
+		watch : {
+			files : "<config:lint.files>",
+			tasks : "default"
+		},
+		jshint : {
+			options : {
+				curly   : true,
+				eqeqeq  : true,
+				immed   : true,
+				latedef : true,
+				newcap  : true,
+				noarg   : true,
+				sub     : true,
+				undef   : true,
+				boss    : true,
+				eqnull  : true,
+				node    : true
+			},
+			globals: {
+				exports : true
+			}
 		}
 	});
 
-	grunt.registerTask("default", "lint test");
+	grunt.registerTask("default", "concat version min test");
+
+	grunt.registerTask("version", function () {
+		var ver = grunt.config("pkg").version,
+		    fn  = "dist/abaaso.js",
+		    fp  = grunt.file.read("dist/abaaso.js");
+
+		console.log("Setting version to: " + ver);
+		grunt.file.write(fn, fp.replace(/{{VERSION}}/g, ver));
+	});
 };
