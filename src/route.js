@@ -144,7 +144,7 @@ var route = {
 		switch (true) {
 			case typeof route.routes[verb][name] !== "undefined":
 				active = name;
-				path   = "verb";
+				path   = verb;
 				break;
 			case typeof route.routes.all[name] !== "undefined":
 				active = name;
