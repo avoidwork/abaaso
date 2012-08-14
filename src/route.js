@@ -99,7 +99,7 @@ var route = {
 		var result;
 
 		if (typeof verb === "undefined") {
-			utility.iterate(routes.route, function (v, k) {
+			utility.iterate(route.routes, function (v, k) {
 				result[k] = [];
 				utility.iterate(v, function (fn, r) { result[k].push(r); });
 			});
