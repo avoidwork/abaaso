@@ -821,7 +821,7 @@ var utility = {
 			           isDate   : function () { return validate.test({date: this}).pass; },
 			           isDomain : function () { return validate.test({domain: this}).pass; },
 			           isEmail  : function () { return validate.test({email: this}).pass; },
-			           isEmpty  : function () { return !validate.test({notEmpty: this}).pass; },
+			           isEmpty  : function () { return (string.trim(this) === ""); },
 			           isIP     : function () { return validate.test({ip: this}).pass; },
 			           isInt    : function () { return validate.test({integer: this}).pass; },
 			           isNumber : function () { return validate.test({number: this}).pass; },
