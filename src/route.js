@@ -80,14 +80,40 @@ var route = {
 	 * @param  {String} name Route to load
 	 * @return {Mixed}       True or undefined
 	 */
-	load : function (name) {
+	load : function (name, arg) {
 		var active = "error";
 
 		name = name.replace(route.bang, "");
 		if (typeof route.routes[name] !== "undefined") active = name;
 		else utility.iterate(route.routes, function (v, k) { if (utility.compile(route.regex, "^" + k + "$", "i") && route.regex.test(name)) return !(active = k); });
-		route.routes[active](name);
+		route.routes[active](name, arg || name);
 		return true;
+	},
+
+	/**
+	 * Creates a Server with URI routing
+	 * 
+	 * @param  {Object} arg Server options
+	 * @return {Undefined}  undefined
+	 * @todo  Add SSL support
+	 */
+	server : function (args, fn) {
+		args    = args || {};
+		var ssl = (args.port === 443);
+
+		if (!server || ssl) throw Error(label.error.notSupported);
+
+		// Route parameters
+		args.host = args.host           || "127.0.0.1";
+		args.port = parseInt(args.port) || 8000;
+		args.verb = args.verb           || "GET";
+
+		http.createServer(function (req, res) {
+			if (req.method === args.verb) route.load(req.url, res);
+		}).on("error", function (e) {
+			error(e, this, arguments);
+			if (typeof fn === "function") fn(e);
+		}).listen(args.port, args.host);
 	},
 
 	/**

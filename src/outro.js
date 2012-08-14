@@ -175,6 +175,7 @@ return {
 		init    : route.init,
 		list    : route.list,
 		load    : route.load,
+		server  : route.server,
 		set     : route.set
 	},
 	stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]); },

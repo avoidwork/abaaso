@@ -15,9 +15,11 @@ var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof navigator === "undefined",
-    abaaso;
+    abaaso, http, https;
 
 if (server) {
+	http  = require("http");
+	https = require("https");
 	if (typeof Storage === "undefined")        localStorage   = require("localStorage");
 	if (typeof XMLHttpRequest === "undefined") XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 }
@@ -2872,6 +2874,7 @@ var label = {
 		invalidDate           : "Invalid Date",
 		invalidFields         : "The following required fields are invalid: ",
 		notAvailable          : "Requested method is not available",
+		notSupported          : "This feature is not supported by this platform",
 		propertyNotFound      : "Could not find the requested property",
 		serverError           : "Server error has occurred",
 		serverForbidden       : "Forbidden to access URI",
@@ -3436,14 +3439,40 @@ var route = {
 	 * @param  {String} name Route to load
 	 * @return {Mixed}       True or undefined
 	 */
-	load : function (name) {
+	load : function (name, arg) {
 		var active = "error";
 
 		name = name.replace(route.bang, "");
 		if (typeof route.routes[name] !== "undefined") active = name;
 		else utility.iterate(route.routes, function (v, k) { if (utility.compile(route.regex, "^" + k + "$", "i") && route.regex.test(name)) return !(active = k); });
-		route.routes[active](name);
+		route.routes[active](name, arg || name);
 		return true;
+	},
+
+	/**
+	 * Creates a Server with URI routing
+	 * 
+	 * @param  {Object} arg Server options
+	 * @return {Undefined}  undefined
+	 * @todo  Add SSL support
+	 */
+	server : function (args, fn) {
+		args    = args || {};
+		var ssl = (args.port === 443);
+
+		if (!server || ssl) throw Error(label.error.notSupported);
+
+		// Route parameters
+		args.host = args.host           || "127.0.0.1";
+		args.port = parseInt(args.port) || 8000;
+		args.verb = args.verb           || "GET";
+
+		http.createServer(function (req, res) {
+			if (req.method === args.verb) route.load(req.url, res);
+		}).on("error", function (e) {
+			error(e, this, arguments);
+			if (typeof fn === "function") fn(e);
+		}).listen(args.port, args.host);
 	},
 
 	/**
@@ -4387,7 +4416,7 @@ var utility = {
 			           isDate   : function () { return validate.test({date: this}).pass; },
 			           isDomain : function () { return validate.test({domain: this}).pass; },
 			           isEmail  : function () { return validate.test({email: this}).pass; },
-			           isEmpty  : function () { return !validate.test({notEmpty: this}).pass; },
+			           isEmpty  : function () { return (string.trim(this) === ""); },
 			           isIP     : function () { return validate.test({ip: this}).pass; },
 			           isInt    : function () { return validate.test({integer: this}).pass; },
 			           isNumber : function () { return validate.test({number: this}).pass; },
@@ -5198,6 +5227,7 @@ return {
 		init    : route.init,
 		list    : route.list,
 		load    : route.load,
+		server  : route.server,
 		set     : route.set
 	},
 	stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]); },
