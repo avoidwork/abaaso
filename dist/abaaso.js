@@ -3369,7 +3369,6 @@ var observer = {
 var route = {
 	bang  : /\#|\!\//g,
 	regex : new RegExp(),
-	word  : /\w/,
 
 	// Routing listeners
 	routes : {
@@ -3444,7 +3443,7 @@ var route = {
 	init : function () {
 		var val = document.location.hash;
 
-		!route.word.test(val) ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all, true).remove("error").first()) : route.load(val);
+		val.isEmpty() ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all, true).remove("error").first()) : route.load(val);
 		return val.replace(route.bang, "");
 	},
 
