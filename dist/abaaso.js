@@ -3445,7 +3445,7 @@ var route = {
 		name = name.replace(route.bang, "");
 		if (typeof route.routes[name] !== "undefined") active = name;
 		else utility.iterate(route.routes, function (v, k) { if (utility.compile(route.regex, "^" + k + "$", "i") && route.regex.test(name)) return !(active = k); });
-		route.routes[active](name, arg || name);
+		route.routes[active](arg || name);
 		return true;
 	},
 
