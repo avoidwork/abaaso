@@ -168,15 +168,16 @@ var route = {
 	 * Creates a Server with URI routing
 	 * 
 	 * @method server
-	 * @param  {Object} arg  Server options
-	 * @return {fn}     fn   Error handler
-	 * @todo  Add SSL support
+	 * @param  {Object}   arg  Server options
+	 * @param  {Function} fn   Error handler
+	 * @param  {Boolean}  ssl  Determines if HTTPS server is created
+	 * @return {Undefined}     undefined
 	 */
-	server : function (args, fn) {
-		args    = args || {};
-		var ssl = (args.port === 443);
+	server : function (args, fn, ssl) {
+		args = args || {};
+		ssl  = (ssl === true || args.port === 443);
 
-		if (!server || ssl) throw Error(label.error.notSupported);
+		if (!server) throw Error(label.error.notSupported);
 
 		// Enabling routing, in case it's not explicitly enabled prior to route.server()
 		$.route.enabled = abaaso.route.enabled = true;
@@ -185,12 +186,22 @@ var route = {
 		args.host = args.host           || "127.0.0.1";
 		args.port = parseInt(args.port) || 8000;
 
-		http.createServer(function (req, res) {
-			route.load(require("url").parse(req.url).pathname, res, req.method);
-		}).on("error", function (e) {
-			error(e, this, arguments);
-			if (typeof fn === "function") fn(e);
-		}).listen(args.port, args.host);
+		if (!ssl) {
+			http.createServer(function (req, res) {
+				route.load(require("url").parse(req.url).pathname, res, req.method);
+			}).on("error", function (e) {
+				error(e, this, arguments);
+				if (typeof fn === "function") fn(e);
+			}).listen(args.port, args.host);
+		}
+		else {
+			https.createServer(args, function (req, res) {
+				route.load(require("url").parse(req.url).pathname, res, req.method);
+			}).on("error", function (e) {
+				error(e, this, arguments);
+				if (typeof fn === "function") fn(e);
+			}).listen(args.port);
+		}
 	},
 
 	/**
