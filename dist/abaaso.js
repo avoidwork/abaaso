@@ -3444,7 +3444,7 @@ var route = {
 	init : function () {
 		var val = document.location.hash;
 
-		!route.word.test(val) ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes, true).remove("error").first()) : route.load(val);
+		!route.word.test(val) ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all, true).remove("error").first()) : route.load(val);
 		return val.replace(route.bang, "");
 	},
 
