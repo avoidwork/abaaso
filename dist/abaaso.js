@@ -14,7 +14,7 @@
 var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
-    server    = typeof navigator === "undefined",
+    server    = typeof document === "undefined",
     abaaso, http, https;
 
 if (server) {
@@ -2873,6 +2873,7 @@ var label = {
 		invalidArguments      : "One or more arguments is invalid",
 		invalidDate           : "Invalid Date",
 		invalidFields         : "The following required fields are invalid: ",
+		invalidRoute          : "The route could not be found",
 		notAvailable          : "Requested method is not available",
 		notSupported          : "This feature is not supported by this platform",
 		propertyNotFound      : "Could not find the requested property",
@@ -3359,6 +3360,8 @@ var observer = {
 
 /**
  * URI routing via hashtag
+ *
+ * Client side routes will be in routes.all
  * 
  * @class route
  * @namespace abaaso
@@ -3370,23 +3373,46 @@ var route = {
 
 	// Routing listeners
 	routes : {
-		error : function () {
-			utility.error(label.error.invalidArguments);
-			if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
-		}
+		all   : {
+			error : function () {
+				if (!server) {
+					utility.error(label.error.invalidRoute);
+					if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
+				}
+				else throw Error(label.error.invalidRoute);
+			}
+		},
+		del   : {},
+		get   : {},
+		put   : {},
+		post  : {}
+	},
+
+	/**
+	 * Determines which HTTP method to use
+	 * 
+	 * @param  {String} arg HTTP method
+	 * @return {[type]}     HTTP method to utilize
+	 */
+	method : function (arg) {
+		return /all|del|get|put|post/gi.test(arg) ? arg.toLowerCase() : "all";
 	},
 
 	/**
 	 * Deletes a route
 	 * 
 	 * @method del
-	 * @param  {String} name Route name
-	 * @return {Mixed} True or undefined
+	 * @param  {String} name  Route name
+	 * @param  {String} verb  HTTP method
+	 * @return {Mixed}        True or undefined
 	 */
-	del : function (name) {
-		if (name !== "error" && route.routes.hasOwnProperty(name)) {
+	del : function (name, verb) {
+		verb      = route.method(verb);
+		var error = (name === "error");
+
+		if ((error && verb !== "all") || (!error && route.routes[verb].hasOwnProperty(name))) {
 			if (abaaso.route.initial === name) abaaso.route.initial = null;
-			return (delete route.routes[name]);
+			return (delete route.routes[verb][name]);
 		}
 		else throw Error(label.error.invalidArguments);
 	},
@@ -3426,34 +3452,77 @@ var route = {
 	 * Lists all routes
 	 * 
 	 * @set list
-	 * @return {Array} Array of registered routes
+	 * @param {String} verb  HTTP method
+	 * @return {Mixed}       Hash of routes if not specified, else an Array of routes for a method
 	 */
-	list : function () {
-		return array.cast(route.routes, true);
+	list : function (verb) {
+		var result;
+
+		if (typeof verb === "undefined") {
+			utility.iterate(routes.route, function (v, k) {
+				result[k] = [];
+				utility.iterate(v, function (fn, r) { result[k].push(r); });
+			});
+		}
+		else result = array.cast(route.routes[verb], true);
+		return result;
 	},
 
 	/**
 	 * Loads the hash into the view
 	 * 
 	 * @method load
-	 * @param  {String} name Route to load
-	 * @return {Mixed}       True or undefined
+	 * @param  {String} name  Route to load
+	 * @param  {Object} arg   HTTP response (node)
+	 * @param  {String} verb  HTTP method
+	 * @return {Mixed}        True or undefined
 	 */
-	load : function (name, arg) {
-		var active = "error";
+	load : function (name, arg, verb) {
+		verb = route.method(verb);
+		var active = "",
+		    path   = "",
+		    result = true,
+		    find;
 
 		name = name.replace(route.bang, "");
-		if (typeof route.routes[name] !== "undefined") active = name;
-		else utility.iterate(route.routes, function (v, k) { if (utility.compile(route.regex, "^" + k + "$", "i") && route.regex.test(name)) return !(active = k); });
-		route.routes[active](arg || name);
-		return true;
+		find = function (pattern, method, arg) {
+			if (utility.compile(route.regex, "^" + pattern + "$", "i") && route.regex.test(arg)) {
+				active = pattern;
+				path   = method;
+				return false;
+			}
+		}
+
+		switch (true) {
+			case typeof route.routes[verb][name] !== "undefined":
+				active = name;
+				path   = "verb";
+				break;
+			case typeof route.routes.all[name] !== "undefined":
+				active = name;
+				path   = "all";
+				break;
+			default:
+				utility.iterate(route.routes[verb], function (v, k) { return find(k, verb, name); });
+				if (active.isEmpty()) utility.iterate(route.routes.all, function (v, k) { return find(k, "all", name); });
+		}
+
+		if (active.isEmpty()) {
+			active = "error";
+			path   = "all";
+			result = false;
+		}
+
+		route.routes[path][active](arg || active);
+		return result;
 	},
 
 	/**
 	 * Creates a Server with URI routing
 	 * 
-	 * @param  {Object} arg Server options
-	 * @return {Undefined}  undefined
+	 * @method server
+	 * @param  {Object} arg  Server options
+	 * @return {fn}     fn   Error handler
 	 * @todo  Add SSL support
 	 */
 	server : function (args, fn) {
@@ -3462,13 +3531,15 @@ var route = {
 
 		if (!server || ssl) throw Error(label.error.notSupported);
 
-		// Route parameters
+		// Enabling routing, in case it's not explicitly enabled prior to route.server()
+		$.route.enabled = abaaso.route.enabled = true;
+
+		// Server parameters
 		args.host = args.host           || "127.0.0.1";
 		args.port = parseInt(args.port) || 8000;
-		args.verb = args.verb           || "GET";
 
 		http.createServer(function (req, res) {
-			if (req.method === args.verb) route.load(req.url, res);
+			route.load(require("url").parse(req.url).pathname, res, req.method);
 		}).on("error", function (e) {
 			error(e, this, arguments);
 			if (typeof fn === "function") fn(e);
@@ -3479,14 +3550,15 @@ var route = {
 	 * Sets a route for a URI
 	 * 
 	 * @method set
-	 * @param  {String}   name Regex pattern for the route
-	 * @param  {Function} fn   Route listener
-	 * @return {Mixed}         True or undefined
+	 * @param  {String}   name  Regex pattern for the route
+	 * @param  {Function} fn    Route listener
+	 * @param  {String}   verb  HTTP method the route is for (default is GET)
+	 * @return {Mixed}          True or undefined
 	 */
-	set : function (name, fn) {
+	set : function (name, fn, verb) {
+		verb = server ? route.method(verb) : "all";
 		if (typeof name !== "string" || name.isEmpty() || typeof fn !== "function") throw Error(label.error.invalidArguments);
-
-		route.routes[name] = fn;
+		route.routes[verb][name] = fn;
 		return true;
 	}
 };

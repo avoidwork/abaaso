@@ -57,6 +57,7 @@ var label = {
 		invalidArguments      : "One or more arguments is invalid",
 		invalidDate           : "Invalid Date",
 		invalidFields         : "The following required fields are invalid: ",
+		invalidRoute          : "The route could not be found",
 		notAvailable          : "Requested method is not available",
 		notSupported          : "This feature is not supported by this platform",
 		propertyNotFound      : "Could not find the requested property",
