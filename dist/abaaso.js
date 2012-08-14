@@ -3458,13 +3458,21 @@ var route = {
 	list : function (verb) {
 		var result;
 
-		if (typeof verb === "undefined") {
-			utility.iterate(route.routes, function (v, k) {
-				result[k] = [];
-				utility.iterate(v, function (fn, r) { result[k].push(r); });
-			});
+		switch (true) {
+			case !server:
+				result = array.cast(route.routes.all, true);
+				break;
+			case typeof verb !== "undefined":
+				result = array.cast(route.routes[route.method(verb)], true);
+				break;
+			default:
+				result = {};
+				utility.iterate(route.routes, function (v, k) {
+					result[k] = [];
+					utility.iterate(v, function (fn, r) { result[k].push(r); });
+				});
 		}
-		else result = array.cast(route.routes[verb], true);
+
 		return result;
 	},
 
