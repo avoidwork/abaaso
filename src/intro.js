@@ -3,7 +3,7 @@
 var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
-    server    = typeof navigator === "undefined",
+    server    = typeof document === "undefined",
     abaaso, http, https;
 
 if (server) {
