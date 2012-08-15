@@ -6,7 +6,7 @@
  * @license BSD-3 <http://opensource.org/licenses/BSD-3-Clause>
  * @link http://abaaso.com
  * @module abaaso
- * @version 2.8.9
+ * @version 2.8.10
  */
 
 (function (global) {
@@ -5339,7 +5339,7 @@ return {
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,
-	version         : "2.8.9",
+	version         : "2.8.10",
 	walk            : utility.walk
 };
 })();
