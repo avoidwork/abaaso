@@ -1993,7 +1993,7 @@ var data = {
 		obj.on("syncDataDelete", function (data) {
 			var record = this.get(data.record);
 
-			this.records.remove(this.records.index(data.record));
+			this.records.remove(this.keys[data.key].index);
 			delete this.keys[data.key];
 			this.total--;
 			this.views = {};
