@@ -4041,9 +4041,10 @@ var utility = {
 	guid : function (safe) {
 		safe  = (safe === true);
 		var s = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); },
+		    r = [8,9,"a","b"],
 		    o;
 
-		o = (s() + s() + "-" + s() + "-4" + s().substr(0,3) + "-" + s() + "-" + s() + s() + s()).toLowerCase();
+		o = (s() + s() + "-" + s() + "-4" + s().substr(0,3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0,3) + "-" + s() + s() + s()).toLowerCase();
 		if (safe) o = o.replace(/-/gi, "");
 		return o;
 	},
