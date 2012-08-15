@@ -6,7 +6,7 @@
  * @license BSD-3 <http://opensource.org/licenses/BSD-3-Clause>
  * @link http://abaaso.com
  * @module abaaso
- * @version 2.8.9
+ * @version 2.8.10
  */
 
 (function (global) {
@@ -1993,7 +1993,7 @@ var data = {
 		obj.on("syncDataDelete", function (data) {
 			var record = this.get(data.record);
 
-			this.records.remove(this.records.index(data.record));
+			this.records.remove(this.keys[data.key].index);
 			delete this.keys[data.key];
 			this.total--;
 			this.views = {};
@@ -5339,7 +5339,7 @@ return {
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,
-	version         : "2.8.9",
+	version         : "2.8.10",
 	walk            : utility.walk
 };
 })();
