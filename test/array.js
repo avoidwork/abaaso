@@ -1,4 +1,4 @@
-var array = require("../dist/abaaso.js").array;
+var array = require("../lib/abaaso.js").array;
 
 exports["add"] = {
 	setUp: function (done) {

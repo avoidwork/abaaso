@@ -1,4 +1,4 @@
-var data   = require("../dist/abaaso.js").data,
+var data   = require("../lib/abaaso.js").data,
     sample = [];
 
 sample.push({
