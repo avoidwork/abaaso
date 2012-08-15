@@ -38,14 +38,14 @@ module.exports = function (grunt) {
 					"src/bootstrap.js",
 					"src/outro.js"
 				],
-				dest : "dist/abaaso.js"
+				dest : "lib/abaaso.js"
 			}
 		},
 		lint : {
 			files : ["grunt.js"]
 		},
 		min : {
-			"dist/abaaso.min.js" : ["<banner>", "dist/abaaso.js"]
+			"lib/abaaso.min.js" : ["<banner>", "lib/abaaso.js"]
 		},
 		test : {
 			files : ["test/**/*.js"]
@@ -78,8 +78,8 @@ module.exports = function (grunt) {
 
 	grunt.registerTask("version", function () {
 		var ver = grunt.config("pkg").version,
-		    fn  = "dist/abaaso.js",
-		    fp  = grunt.file.read("dist/abaaso.js");
+		    fn  = "lib/abaaso.js",
+		    fp  = grunt.file.read("lib/abaaso.js");
 
 		console.log("Setting version to: " + ver);
 		grunt.file.write(fn, fp.replace(/{{VERSION}}/g, ver));

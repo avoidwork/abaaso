@@ -1,4 +1,4 @@
-var string = require("../dist/abaaso.js").string;
+var string = require("../lib/abaaso.js").string;
 
 exports["capitalize"] = {
 	setUp: function (done) {

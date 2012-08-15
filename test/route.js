@@ -1,4 +1,4 @@
-var route = require("../dist/abaaso.js").route,
+var route = require("../lib/abaaso.js").route,
     path  = "/.*",
     fn    = function (arg) { return true; };
 
