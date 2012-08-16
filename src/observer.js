@@ -39,7 +39,7 @@ var observer = {
 		    n        = false,
 		    c        = abaaso.state.current,
 		    globals  = /body|document|window/i,
-		    allowed  = /click|key|mousedown|mouseup/i,
+		    allowed  = /click|error|key|mousedown|mouseup/i,
 		    item, add, reg;
 
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -64,7 +64,7 @@ var observer = {
 					add = (typeof instance.addEventListener === "function");
 					reg = (typeof instance.attachEvent === "object" || add);
 					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
-						if (!globals.test(e.type) && !allowed.test(e.type)) utility.stop(e);
+						if (!allowed.test(e.type)) utility.stop(e);
 						observer.fire(obj, i, e);
 					}, false);
 				}
