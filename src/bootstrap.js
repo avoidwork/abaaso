@@ -208,7 +208,7 @@ bootstrap = function () {
 	$.error.log = abaaso.error.log = [];
 
 	// Setting events & garbage collection
-	$.on(global, "error",      function (e) { $.fire("error", e); }, "error", global, "all");
+	$.on(global, "error", function (e) { $.fire("error", e); }, "error", global, "all");
 	if (!server) {
 		$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
 		$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
