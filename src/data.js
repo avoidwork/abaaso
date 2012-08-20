@@ -548,12 +548,12 @@ var data = {
 		 * 
 		 * @param  {Mixed}  obj  Record (Object, key or index) or store
 		 * @param  {Object} op   Operation to perform (get, remove or set)
-		 * @param  {String} type [Optional] Type of Storage to use (session or local, default is session)
+		 * @param  {String} type [Optional] Type of Storage to use (local or session, default is local)
 		 * @return {Object}      Record or store
 		 */
 		storage : function (obj, op, type) {
 			var record  = false,
-			    session = (!server && type !== "local"),
+			    session = (type === "session" && typeof sessionStorage !== "undefined"),
 			    ns      = /number|string/,
 			    result, key, data;
 
