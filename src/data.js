@@ -869,11 +869,10 @@ var data = {
 	 * @method register
 	 * @param  {Object} obj  Object to register with
 	 * @param  {Mixed}  data [Optional] Data to set with this.batch
+	 * @param  {Object} args [Optional] Arguments to set on the store
 	 * @return {Object}      Object registered with
 	 */
-	register : function (obj, data) {
-		if (obj instanceof Array) return obj.each(function (i) { data.register(i, data); });
-
+	register : function (obj, data, args) {
 		var methods = {
 			expires : {
 				getter : function () { return this._expires; },
@@ -942,6 +941,8 @@ var data = {
 		obj.data = utility.extend(this.methods);
 		obj.data.parentNode = obj; // Recursion, useful
 		obj.data.clear();          // Setting properties
+
+		if (args instanceof Object) utility.merge(obj.data, args);
 
 		obj.on("syncDataDelete", function (data) {
 			var record = this.get(data.record);
@@ -1040,7 +1041,7 @@ var data = {
 				};
 		}
 
-		if (typeof data === "object") obj.data.batch("set", data);
+		if (typeof data === "object" && data !== null) obj.data.batch("set", data);
 		obj.fire("afterDataStore");
 		return obj;
 	}
