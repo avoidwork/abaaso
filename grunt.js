@@ -82,6 +82,6 @@ module.exports = function (grunt) {
 		    fp  = grunt.file.read("lib/abaaso.js");
 
 		console.log("Setting version to: " + ver);
-		grunt.file.write(fn, fp.replace(/{{VERSION}}/g, ver));
+		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
 	});
 };
