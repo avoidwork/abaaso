@@ -829,7 +829,7 @@ var utility = {
 			           fire     : function (event, args) { return $.fire.call(this, event, args); },
 			           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 			           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
-			           hyphenate: function () { return string.hyphenate(this); },
+			           hyphenate: function (camel) { return string.hyphenate(this, camel); },
 			           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
 			           isBoolean: function () { return validate.test({"boolean": this}).pass; },
 			           isDate   : function () { return validate.test({date: this}).pass; },

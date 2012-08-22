@@ -182,6 +182,7 @@ var element = {
 			key = key.replace("-", "");
 			key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
 		}
+		else key = string.hyphenate(key, true);
 
 		if (typeof value !== "undefined") {
 			obj.style[key] = value;
