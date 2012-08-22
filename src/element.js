@@ -165,34 +165,42 @@ var element = {
 	},
 
 	/**
-	 * Creates a CSS stylesheet in the View
+	 * Gets or sets a CSS style attribute on an Element
 	 *
 	 * @method css
-	 * @param  {String} content CSS to put in a style tag
-	 * @return {Object}         Element created or undefined
+	 * @param  {Mixed}  obj   Element or $ query
+	 * @param  {String} key   CSS to put in a style tag
+	 * @param  {String} value [Optional] Value to set
+	 * @return {Object}       Element
 	 */
-	css : function (content) {
-		var ss, css;
-		ss = $("head").first().create("style", {type: "text/css"});
-		if (ss.styleSheet) ss.styleSheet.cssText = content;
-		else {
-			css = document.createTextNode(content);
-			ss.appendChild(css);
+	css : function (obj, key, value) {
+		obj = utility.object(obj);
+		key = key.indexOf("-") > -1 ? string.toCamelCase(key, true) : key;
+
+		var i, result;
+
+		if (typeof value !== "undefined") {
+			obj.style[key] = value;
+			result = obj;
 		}
-		return ss;
+		else result = obj.style[key];
+
+		return result;
 	},
 
 	/**
 	 * Data attribute facade acting as a getter (with coercion) & setter
 	 *
-	 * @method  data
-	 * @param  {Mixed}  obj   Element or Array of Elements or $ queries
+	 * @method data
+	 * @param  {Mixed}  obj   Element or $ query
 	 * @param  {String} key   Data key
 	 * @param  {Mixed}  value Boolean, Number or String to set
 	 * @return {Mixed}        undefined, Element or value
 	 */
 	data : function (obj, key, value) {
 		var result;
+
+		obj = utility.object(obj);
 
 		if (typeof value !== "undefined") {
 			typeof obj.dataset === "object" ? obj.dataset[key] = value : element.attr(obj, "data-" + key, value);

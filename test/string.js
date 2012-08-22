@@ -60,17 +60,20 @@ exports["explode"] = {
 
 exports["hyphenate"] = {
 	setUp: function (done) {
-		this.val = "hello world";
+		this.val  = "hello world";
+		this.val2 = "helloWorld";
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(string.hyphenate(this.val), "hello-world", "Should be 'hello-world'");
+		test.equal(string.hyphenate(this.val2, true), "hello-world", "Should be 'hello-world'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(this.val.hyphenate(), "hello-world", "Should be 'hello-world'");
+		test.equal(this.val2.hyphenate(true), "hello-world", "Should be 'hello-world'");
 		test.done();
 	}
 };
@@ -97,17 +100,20 @@ exports["singular"] = {
 
 exports["toCamelCase"] = {
 	setUp: function (done) {
-		this.val = "hello world";
+		this.val  = "hello world";
+		this.val2 = "hello-world";
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(string.toCamelCase(this.val), "helloWorld", "Should be 'helloWorld'");
+		test.equal(string.toCamelCase(this.val2), "helloWorld", "Should be 'helloWorld'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(this.val.toCamelCase(), "helloWorld", "Should be 'helloWorld'");
+		test.equal(this.val2.toCamelCase(), "helloWorld", "Should be 'helloWorld'");
 		test.done();
 	}
 };

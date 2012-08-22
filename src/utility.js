@@ -173,6 +173,25 @@ var utility = {
 	},
 
 	/**
+	 * Creates a CSS stylesheet in the View
+	 *
+	 * @method css
+	 * @param  {String} content CSS to put in a style tag
+	 * @param  {String} media   [Optional] Medias the stylesheet applies to
+	 * @return {Object}         Element created or undefined
+	 */
+	css : function (content, media) {
+		var ss, css;
+		ss = $("head")[0].create("style", {type: "text/css", media: media || "print, screen"});
+		if (ss.styleSheet) ss.styleSheet.cssText = content;
+		else {
+			css = document.createTextNode(content);
+			ss.appendChild(css);
+		}
+		return ss;
+	},
+
+	/**
 	 * Allows deep setting of properties without knowing
 	 * if the structure is valid
 	 *
@@ -633,14 +652,8 @@ var utility = {
 			           		return element.create(type, args, this, position);
 			           },
 			           css       : function (key, value) {
-			           		var i;
 			           		utility.genId(this);
-			           		if (!client.chrome && (i = key.indexOf("-")) && i > -1) {
-			           			key = key.replace("-", "");
-			           			key = key.slice(0, i) + key.charAt(i).toUpperCase() + key.slice(i + 1, key.length);
-			           		}
-			           		this.style[key] = value;
-			           		return this;
+			           		return element.css(this, key, value);
 			           },
 			           data      : function (key, value) {
 			           		utility.genId(this);
@@ -816,7 +829,7 @@ var utility = {
 			           fire     : function (event, args) { return $.fire.call(this, event, args); },
 			           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 			           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
-			           hyphenate: function () { return string.hyphenate(this); },
+			           hyphenate: function (camel) { return string.hyphenate(this, camel); },
 			           isAlphaNum: function () { return validate.test({alphanum: this}).pass; },
 			           isBoolean: function () { return validate.test({"boolean": this}).pass; },
 			           isDate   : function () { return validate.test({date: this}).pass; },
@@ -931,6 +944,31 @@ var utility = {
 
 		recursive.call(recursive, fn, ms, id);
 		return id;
+	},
+
+	/**
+	 * Creates a script Element to load an external script
+	 * 
+	 * @method script
+	 * @param  {String} arg    URL to script
+	 * @param  {Object} target [Optional] Element to receive the script
+	 * @param  {String} pos    [Optional] Position to create the script at within the target
+	 * @return {Object}        Script
+	 */
+	script : function (arg, target, pos) {
+		return element.create("script", {type: "application/javascript", src: arg}, target || $("head")[0], pos);
+	},
+
+	/**
+	 * Creates a link Element to load an external stylesheet
+	 * 
+	 * @method stylesheet
+	 * @param  {String} arg   URL to stylesheet
+	 * @param  {String} media [Optional] Medias the stylesheet applies to
+	 * @return {Objecct}      Stylesheet
+	 */
+	stylesheet : function (arg, media) {
+		return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]);
 	},
 
 	/**

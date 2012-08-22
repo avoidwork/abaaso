@@ -77,7 +77,7 @@ return {
 	coerce          : utility.coerce,
 	compile         : utility.compile,
 	create          : element.create,
-	css             : element.css,
+	css             : utility.css,
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
@@ -100,7 +100,7 @@ return {
 		return observer.fire(o, e, a);
 	},
 	genId           : utility.genId,
-		get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
+	get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
 	guid            : utility.guid,
 	headers         : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
 	hidden          : element.hidden,
@@ -178,8 +178,8 @@ return {
 		server  : route.server,
 		set     : route.set
 	},
-	stylesheet      : function (arg, media) { return element.create("link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $("head")[0]); },
-	script          : function (arg, target, pos) { return element.create("script", {type: "application/javascript", src: arg}, target || $("head")[0], pos); },
+	stylesheet      : utility.stylesheet,
+	script          : utility.script,
 	stop            : utility.stop,
 	store           : function (obj, arg, args) { return data.register.call(data, obj, arg, args); },
 	tpl             : utility.tpl,

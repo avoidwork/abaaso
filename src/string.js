@@ -41,11 +41,17 @@ var string = {
 	/**
 	 * Replaces all spaces in a string with dashes
 	 * 
-	 * @param  {String} obj String to hyphenate
-	 * @return {String}     String with dashes instead of spaces
+	 * @param  {String} obj   String to hyphenate
+	 * @param {Boolean} camel [Optional] Hyphenate camelCase
+	 * @return {String}       String with dashes instead of spaces
 	 */
-	hyphenate : function (obj) {
-		return string.trim(obj).replace(/\s+/g, "-");
+	hyphenate : function (obj, camel) {
+		camel = (camel === true);
+		var result;
+
+		result = string.trim(obj).replace(/\s+/g, "-");
+		if (camel) result = result.replace(/([A-Z])/g, "-\$1").toLowerCase();
+		return result;
 	},
 
 	/**
@@ -65,15 +71,13 @@ var string = {
 	 * @return {String}     Camel case String
 	 */
 	toCamelCase : function (obj) {
-		var s = string.trim(obj).toLowerCase().split(" "),
-		    r = [],
-		    x = 0,
-		    i, nth;
+		var s = string.trim(obj).toLowerCase().split(/\s|-/),
+		    r = [];
 
-		s.each(function (i) {
+		s.each(function (i, idx) {
 			i = string.trim(i);
 			if (i.isEmpty()) return;
-			r.push(x++ === 0 ? i : string.capitalize(i));
+			r.push(idx === 0 ? i : string.capitalize(i));
 		});
 		return r.join("");
 	},
