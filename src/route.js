@@ -15,8 +15,11 @@ var route = {
 		all   : {
 			error : function () {
 				if (!server) {
-					utility.error(label.error.invalidRoute);
-					if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
+					if (route.hash() === "") return history.go(-1);
+					else {
+						utility.error(label.error.invalidRoute);
+						if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
+					}
 				}
 				else throw Error(label.error.invalidRoute);
 			}
