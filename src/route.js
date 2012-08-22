@@ -148,13 +148,13 @@ var route = {
 				active = name;
 				path   = verb;
 				break;
-			case typeof route.routes.all[name] !== "undefined":
+			case verb !== "all" && typeof route.routes.all[name] !== "undefined":
 				active = name;
 				path   = "all";
 				break;
 			default:
 				utility.iterate(route.routes[verb], function (v, k) { return find(k, verb, name); });
-				if (active.isEmpty()) utility.iterate(route.routes.all, function (v, k) { return find(k, "all", name); });
+				if (active.isEmpty() && verb !== "all") utility.iterate(route.routes.all, function (v, k) { return find(k, "all", name); });
 		}
 
 		if (active.isEmpty()) {
