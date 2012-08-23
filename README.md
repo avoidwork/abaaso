@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/avoidwork/abaaso.png)](http://travis-ci.org/avoidwork/abaaso)
 ## What is Supported?
 
 All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
