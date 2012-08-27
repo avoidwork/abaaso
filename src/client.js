@@ -304,7 +304,7 @@ var client = {
 	 *         progress[type]        Fires on progress
 	 *         progressUpload[type]  Fires on upload progress
 	 *         received[type]        Fires on XHR readystate 2
-	 *         timeout[type]         Fires 30s after XmlHttpRequest is made
+	 *         timeout[type]         Fires when XmlHttpRequest times out
 	 *
 	 * @method request
 	 * @param  {String}   uri     URI to query
@@ -413,6 +413,7 @@ var client = {
 	 *         moved        Fires if a 301 response is received
 	 *         success      Fires if a 400 response is received
 	 *         failure      Fires if an exception is thrown
+	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
 	 * @method response
 	 * @param  {Object} xhr  XMLHttpRequest Object
@@ -460,6 +461,8 @@ var client = {
 
 							// Application state change triggered by hypermedia (HATEOAS)
 							if (s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
+
+							uri.fire("headers", o.headers);
 
 							switch (xhr.status) {
 								case 200:
