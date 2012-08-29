@@ -58,7 +58,7 @@ var xhr = function () {
 		this._listeners         = {};
 		this._params            = {};
 		this._request           = null;
-		this._response          = null;
+		this._resheaders        = {};
 		this._send              = false;
 		return this;
 	};
@@ -125,7 +125,7 @@ var xhr = function () {
 	 */
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		if (this.readyState < HEADERS_RECEIVED) throw Error("INVALID_STATE_ERR: Headers have not been received");
-		return typeof this._response.headers !== "undefined" ? this._response.headers : {};
+		return this._resheaders;
 	};
 
 	/**
@@ -138,7 +138,7 @@ var xhr = function () {
 		var result;
 
 		if (this.readyState < HEADERS_RECEIVED) throw Error("INVALID_STATE_ERR: Headers have not been received");
-		if (typeof this._response.headers !== "undefined") result = this._response.headers[header] || this._response.headers[header.toLowerCase()];
+		result = this._resheaders[header] || this._resheaders[header.toLowerCase()];
 		return result;
 	};
 
@@ -230,8 +230,10 @@ var xhr = function () {
 		handler = function (res) {
 			state.call(self, HEADERS_RECEIVED);
 
-			self.status    = res.statusCode;
-			self._response = res;
+			self.status      = res.statusCode;
+			self._resheaders = res.headers;
+
+			if (typeof self._resheaders["set-cookie"] !== "undefined" && self._resheaders["set-cookie"] instanceof Array) self._resheaders["set-cookie"] = self._resheaders["set-cookie"].join(";");
 
 			res.on("data", function (arg) {
 				res.setEncoding("utf8");
