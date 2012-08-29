@@ -156,7 +156,7 @@ bootstrap = function () {
 	// Cookie class is not relevant for server environment
 	if (server) {
 		delete abaaso.cookie;
-		XMLHttpRequest = xhr;
+		XMLHttpRequest = xhr();
 	}
 
 	// Binding helper & namespace to $

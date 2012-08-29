@@ -3,8 +3,10 @@
  * 
  * @return {Object} Instance of xhr
  */
-var xhr = (function () {
+var xhr = function () {
 	var url              = require("url"),
+	    http             = require("http"),
+	    https            = require("https"),
 	    UNSENT           = 0,
 	    OPENED           = 1,
 	    HEADERS_RECEIVED = 2,
@@ -287,4 +289,4 @@ var xhr = (function () {
 	};
 
 	return XMLHttpRequest;
-})();
+};
