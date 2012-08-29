@@ -5,8 +5,6 @@
  */
 var xhr = (function () {
 	var url              = require("url"),
-	    spawn            = require("child_process").spawn,
-	    fs               = require("fs"),
 	    UNSENT           = 0,
 	    OPENED           = 1,
 	    HEADERS_RECEIVED = 2,
@@ -26,9 +24,15 @@ var xhr = (function () {
 	 * @return {Object}      XMLHttpRequest
 	 */
 	state = function (arg) {
-		if (this.readyState !== arg) this.readyState = arg;
-		if (this._params.async || this.readyState < OPENED || this.readyState === DONE) this.dispatchEvent("readystatechange");
-		if (this.readyState === DONE && !this._error) this.dispatchEvent("load, loadend");
+		if (this.readyState !== arg) {
+			this.readyState = arg;
+			if (this._params.async || this.readyState < OPENED || this.readyState === DONE) this.dispatchEvent("readystatechange");
+			if (this.readyState === DONE && !this._error) {
+				this.dispatchEvent("loadstart");
+				this.dispatchEvent("load");
+				this.dispatchEvent("loadend");
+			}
+		}
 		return this;
 	};
 
@@ -38,7 +42,6 @@ var xhr = (function () {
 		this.onload             = null;
 		this.onloadend          = null;
 		this.onloadstart        = null;
-		this.onprogress         = null;
 		this.onreadystatechange = null;
 		this.readyState         = UNSENT;
 		this.response           = null;
@@ -66,7 +69,7 @@ var xhr = (function () {
 	 * @return {Object} XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.abort = function () {
-		if (this._request !== "null") {
+		if (this._request !== null) {
 			if (typeof this._request.abort === "function") this._request.abort();
 			this._request = null;
 		}
@@ -147,6 +150,8 @@ var xhr = (function () {
 	 * @return {Object}           XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+		if (typeof async !== "undefined" && async !== true) throw Error("Synchronous XMLHttpRequest requests are not supported");
+
 		this.abort();
 	    this._error  = false;
 	    this._params = {
@@ -192,12 +197,73 @@ var xhr = (function () {
 	 * @todo  finish this method
 	 */
 	XMLHttpRequest.prototype.send = function (data) {
+		data     = data || null;
+		var self = this,
+		    handler, handlerError, options, parsed, request, obj;
+
 		switch (true) {
 			case this.readyState < OPENED:
 				throw Error("INVALID_STATE_ERR: Object is not open");
 			case this._send:
 				throw Error("INVALID_STATE_ERR: Object is sending");
 		}
+
+		parsed      = url.parse(this._params.url);
+		parsed.port = parsed.port || (parsed.protocol === "https" ? 443 : 80);
+		if (this._params.user !== null && this._params.password !== null) parsed.auth = this._params.user + ":" + this._params.password;
+
+		if (data !== null) this._headers["Content-Length"] = data.length;
+
+		options = {
+			hostname : parsed.hostname,
+			path     : parsed.path,
+			port     : parsed.port,
+			method   : this._params.method,
+			headers  : this._headers
+		}
+
+		if (typeof parsed.auth !== "undefined") options.auth = parsed.auth;
+
+		handler = function (res) {
+			state.call(self, HEADERS_RECEIVED);
+
+			self.status    = res.statusCode;
+			self._response = res;
+
+			res.on("data", function (arg) {
+				res.setEncoding("utf8");
+				if (arg) self.responseText += arg;
+				if (self._send) state.call(self, LOADING);
+			});
+
+			res.on("end", function () {
+				if (self._send) {
+					state.call(self, DONE);
+					self._send = false;
+				}
+			});
+
+			res.on("error", function (err) {
+				handleError(err);
+			});
+		};
+
+		handlerError = function (err) {
+			self.status       = 503;
+			self.statusText   = err;
+			self.responseText = err.stack;
+			self._error       = true;
+			self.dispatchEvent("error");
+			state.call(self, DONE);
+		};
+
+		self.dispatchEvent("onreadystatechange");
+
+		obj           = parsed.protocol === "http:" ? http : https;
+		request       = obj.request(options, handler).on("error", handlerError);
+		self._request = request;
+
+		if (data !== null) request.write(data, "utf8");
 
 		return this;
 	};
@@ -221,5 +287,4 @@ var xhr = (function () {
 	};
 
 	return XMLHttpRequest;
-}();
-
+})();
