@@ -12,7 +12,7 @@ var xhr = function () {
 	    HEADERS_RECEIVED = 2,
 	    LOADING          = 3,
 	    DONE             = 4,
-	    XMLHttpRequest, headers, state;
+	    XMLHttpRequest, headers, handler, handlerError, state;
 
 	headers = {
 		"User-Agent" : "abaaso/{{VERSION}} node.js/" + process.versions.node.replace(/^v/, "") + " (" + string.capitalize(process.platform) + " V8/" + process.versions.v8 + ")",
@@ -37,6 +37,45 @@ var xhr = function () {
 		return this;
 	};
 
+	handler = function (res) {
+		var self = this;
+
+		state.call(this, HEADERS_RECEIVED);
+
+		this.status      = res.statusCode;
+		this._resheaders = res.headers;
+
+		if (typeof this._resheaders["set-cookie"] !== "undefined" && this._resheaders["set-cookie"] instanceof Array) this._resheaders["set-cookie"] = this._resheaders["set-cookie"].join(";");
+
+		res.on("data", function (arg) {
+			res.setEncoding("utf8");
+			if (self._send) {
+				if (arg) self.responseText += arg;
+				state.call(self, LOADING);
+			}
+		});
+
+		res.on("end", function () {
+			if (self._send) {
+				state.call(self, DONE);
+				self._send = false;
+			}
+		});
+
+		res.on("close", function (e) {
+			handlerError.call(self, e);
+		});
+	};
+
+	handlerError = function (e) {
+		this.status       = 503;
+		this.statusText   = e;
+		this.responseText = e.stack || e;
+		this._error       = true;
+		this.dispatchEvent("error");
+		state.call(this, DONE);
+	};
+
 	XMLHttpRequest = function () {
 		this.onabort            = null;
 		this.onerror            = null;
@@ -57,7 +96,6 @@ var xhr = function () {
 		this._headers           = headers;
 		this._listeners         = {};
 		this._params            = {};
-		this._request           = null;
 		this._resheaders        = {};
 		this._send              = false;
 		return this;
@@ -69,11 +107,6 @@ var xhr = function () {
 	 * @return {Object} XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.abort = function () {
-		if (this._request !== null) {
-			if (typeof this._request.abort === "function") this._request.abort();
-			this._request = null;
-		}
-
 		this._headers     = headers;
 		this.responseText = "";
 		this.responseXML  = "";
@@ -84,6 +117,7 @@ var xhr = function () {
 			state.call(this, DONE)
 		}
 
+		this.dispatchEvent("abort");
 		this.readyState = UNSENT;
 		return this;
 	};
@@ -126,7 +160,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		var result = "";
 
-		if (this.readyState < HEADERS_RECEIVED) throw Error("INVALID_STATE_ERR: Headers have not been received");
+		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error("INVALID_STATE_ERR: Headers have not been received");
 		utility.iterate(this._resheaders, function (v, k) { result += k + ": " + v + "\n"; });
 		return result;
 	};
@@ -140,7 +174,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.getResponseHeader = function (header) {
 		var result;
 
-		if (this.readyState < HEADERS_RECEIVED) throw Error("INVALID_STATE_ERR: Headers have not been received");
+		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error("INVALID_STATE_ERR: Headers have not been received");
 		result = this._resheaders[header] || this._resheaders[header.toLowerCase()];
 		return result;
 	};
@@ -205,7 +239,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.send = function (data) {
 		data     = data || null;
 		var self = this,
-		    handler, handlerError, options, parsed, request, obj;
+		    options, parsed, request, obj;
 
 		switch (true) {
 			case this.readyState < OPENED:
@@ -230,49 +264,12 @@ var xhr = function () {
 
 		if (typeof parsed.auth !== "undefined") options.auth = parsed.auth;
 
-		handler = function (res) {
-			state.call(self, HEADERS_RECEIVED);
-
-			self.status      = res.statusCode;
-			self._resheaders = res.headers;
-
-			if (typeof self._resheaders["set-cookie"] !== "undefined" && self._resheaders["set-cookie"] instanceof Array) self._resheaders["set-cookie"] = self._resheaders["set-cookie"].join(";");
-
-			res.on("data", function (arg) {
-				res.setEncoding("utf8");
-				if (arg) self.responseText += arg;
-				if (self._send) state.call(self, LOADING);
-			});
-
-			res.on("end", function () {
-				if (self._send) {
-					state.call(self, DONE);
-					self._send = false;
-				}
-			});
-
-			res.on("error", function (err) {
-				handlerError(err);
-			});
-		};
-
-		handlerError = function (err) {
-			if (err === "{ [Error: socket hang up] code: 'ECONNRESET' }") return; // by design
-			self.status       = 503;
-			self.statusText   = err;
-			self.responseText = err.stack;
-			self._error       = true;
-			self.dispatchEvent("error");
-			state.call(self, DONE);
-		};
-
 		self._send = true;
 		self.dispatchEvent("readystatechange");
 
 		obj           = parsed.protocol === "http:" ? http : https;
-		request       = obj.request(options, handler).on("error", handlerError);
-		self._request = request;
-		if (data !== null) request.write(data, "utf8");
+		request       = obj.request(options, function (arg) { handler.call(self, arg); }).on("error", function (e) { handlerError.call(self, e); });
+		data === null ? request.setSocketKeepAlive(true, 10000) : request.write(data, "utf8");
 		request.end();
 
 		self.dispatchEvent("loadstart");

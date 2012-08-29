@@ -119,7 +119,6 @@ var observer = {
 	fire : function (obj, event, arg) {
 		obj      = utility.object(obj);
 		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, arg); });
-		if (typeof event === "string") event = event.explode();
 
 		var o    = observer.id(obj),
 		    a    = arg,
@@ -129,9 +128,8 @@ var observer = {
 
 		if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
-		if (log) utility.log(o + " firing " + e);
-
-		event.each(function (e) {
+		event.explode().each(function (e) {
+			if (log) utility.log(o + " firing " + e);
 			list = observer.list(obj, e);
 			l = list.all;
 			if (typeof l !== "undefined") utility.iterate(l, function (i, k) {
