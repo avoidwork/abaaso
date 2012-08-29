@@ -411,7 +411,6 @@ var client = {
 	 *         after[type]  Fires after the XmlHttpRequest response is received, type specific
 	 *         reset        Fires if a 206 response is received
 	 *         moved        Fires if a 301 response is received
-	 *         success      Fires if a 400 response is received
 	 *         failure      Fires if an exception is thrown
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *

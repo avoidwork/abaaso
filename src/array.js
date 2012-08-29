@@ -196,12 +196,12 @@ var array = {
 	 *
 	 * @method remove
 	 * @param  {Array}  obj   Array to remove from
-	 * @param  {Number} start Starting index
+	 * @param  {Mixed}  start Starting index, or value to find within obj
 	 * @param  {Number} end   [Optional] Ending index
 	 * @return {Array}        Modified Array
 	 */
 	remove : function (obj, start, end) {
-		if (typeof start === "string") {
+		if (isNaN(start)) {
 			start = obj.index(start);
 			if (start === -1) return obj;
 		}

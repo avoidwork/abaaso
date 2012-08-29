@@ -34,6 +34,7 @@ module.exports = function (grunt) {
 					"src/string.js",
 					"src/utility.js",
 					"src/validate.js",
+					"src/xhr.js",
 					"src/xml.js",
 					"src/bootstrap.js",
 					"src/outro.js"
