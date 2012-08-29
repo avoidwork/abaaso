@@ -257,6 +257,7 @@ var xhr = function () {
 		};
 
 		handlerError = function (err) {
+			if (err === "{ [Error: socket hang up] code: 'ECONNRESET' }") return; // by design
 			self.status       = 503;
 			self.statusText   = err;
 			self.responseText = err.stack;
@@ -269,7 +270,7 @@ var xhr = function () {
 		self.dispatchEvent("readystatechange");
 
 		obj           = parsed.protocol === "http:" ? http : https;
-		request       = obj.request(options, handler);
+		request       = obj.request(options, handler).on("error", handlerError);
 		self._request = request;
 		if (data !== null) request.write(data, "utf8");
 		request.end();
