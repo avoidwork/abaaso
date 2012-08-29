@@ -15,7 +15,7 @@ var xhr = function () {
 	    XMLHttpRequest, headers, state;
 
 	headers = {
-		"User-Agent" : "abaaso/{{VERSION}} (node.js/" + process.version.replace(/^v/, "") + ")",
+		"User-Agent" : "abaaso/{{VERSION}} node.js/" + process.versions.node.replace(/^v/, "") + " (" + string.capitalize(process.platform) + " V8/" + process.versions.v8 + ")",
 		"Accept"     : "*/*"
 	};
 
@@ -53,7 +53,6 @@ var xhr = function () {
 		this.statusText         = "";
 
 		// Psuedo private for prototype chain
-		this._id                = utility.genId();
 		this._error             = false;
 		this._headers           = headers;
 		this._listeners         = {};
@@ -100,7 +99,7 @@ var xhr = function () {
 		if (!this._listeners.hasOwnProperty(event)) this._listeners[event] = [];
 		this._listeners[event].add(fn);
 		return this;
-    };
+	};
 
 	/**
 	 * Dispatches an event
@@ -157,16 +156,16 @@ var xhr = function () {
 		if (typeof async !== "undefined" && async !== true) throw Error("Synchronous XMLHttpRequest requests are not supported");
 
 		this.abort();
-	    this._error  = false;
-	    this._params = {
-	    	method   : method,
-	    	url      : url,
-	    	async    : async    || true,
-	    	user     : user     || null,
-	    	password : password || null
-	    };
-	    this.readyState = OPENED;
-	    return this;
+		this._error  = false;
+		this._params = {
+			method   : method,
+			url      : url,
+			async    : async    || true,
+			user     : user     || null,
+			password : password || null
+		}
+		this.readyState = OPENED;
+		return this;
 	};
 
 	/**
@@ -248,7 +247,7 @@ var xhr = function () {
 			});
 
 			res.on("error", function (err) {
-				handleError(err);
+				handlerError(err);
 			});
 		};
 
