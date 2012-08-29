@@ -124,8 +124,11 @@ var xhr = function () {
 	 * @return {Object} Response headers
 	 */
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
+		var result = "";
+
 		if (this.readyState < HEADERS_RECEIVED) throw Error("INVALID_STATE_ERR: Headers have not been received");
-		return this._resheaders;
+		utility.iterate(this._resheaders, function (v, k) { result += k + ": " + v + "\n"; });
+		return result;
 	};
 
 	/**
