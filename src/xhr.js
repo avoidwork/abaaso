@@ -15,7 +15,7 @@ var xhr = function () {
 	    XMLHttpRequest, headers, state;
 
 	headers = {
-		"User-Agent" : "node.js/" + process.version.replace(/^v/, ""),
+		"User-Agent" : "abaaso/{{VERSION}} (node.js/" + process.version.replace(/^v/, "") + ")",
 		"Accept"     : "*/*"
 	};
 
@@ -30,7 +30,6 @@ var xhr = function () {
 			this.readyState = arg;
 			if (this._params.async || this.readyState < OPENED || this.readyState === DONE) this.dispatchEvent("readystatechange");
 			if (this.readyState === DONE && !this._error) {
-				this.dispatchEvent("loadstart");
 				this.dispatchEvent("load");
 				this.dispatchEvent("loadend");
 			}
@@ -93,13 +92,13 @@ var xhr = function () {
 	/**
 	 * Adds an event listener to an XMLHttpRequest instance
 	 * 
-	 * @param {String}   type Event type to listen for
-	 * @param {Function} fn   Event handler
-	 * @return {Object}       XMLHttpRequest
+	 * @param {String}   event Event to listen for
+	 * @param {Function} fn    Event handler
+	 * @return {Object}        XMLHttpRequest
 	 */
-	XMLHttpRequest.prototype.addEventListener = function (type, fn) {
-		if (!this._listeners.hasOwnProperty(type)) this._listeners[type] = [];
-		this._listeners[type].add(fn);
+	XMLHttpRequest.prototype.addEventListener = function (event, fn) {
+		if (!this._listeners.hasOwnProperty(event)) this._listeners[event] = [];
+		this._listeners[event].add(fn);
 		return this;
     };
 
@@ -112,8 +111,11 @@ var xhr = function () {
 	XMLHttpRequest.prototype.dispatchEvent = function (event) {
 		var self = this;
 
-		if (this["on" + event] === "function") this["on" + event]();
-		if (this._listeners.hasOwnProperty(type)) this._listeners[event].each(function (i) { i.call(self); });
+		if (typeof this["on" + event] === "function") this["on" + event]();
+		if (this._listeners.hasOwnProperty(event)) this._listeners[event].each(function (i) {
+			if (typeof i === "function") i.call(self);
+		});
+
 		return this;
 	};
 
@@ -181,13 +183,13 @@ var xhr = function () {
 	/**
 	 * Removes an event listener from an XMLHttpRequest instance
 	 * 
-	 * @param {String}   type Event type to listen for
-	 * @param {Function} fn   Event handler
-	 * @return {Object}       XMLHttpRequest
+	 * @param {String}   event Event to listen for
+	 * @param {Function} fn    Event handler
+	 * @return {Object}        XMLHttpRequest
 	 */
-	XMLHttpRequest.prototype.removeEventListener = function (type, fn) {
-		if (!this._listeners.hasOwnProperty(type)) return;
-		this._listeners[type].remove(fn);
+	XMLHttpRequest.prototype.removeEventListener = function (event, fn) {
+		if (!this._listeners.hasOwnProperty(event)) return;
+		this._listeners[event].remove(fn);
 		return this;
 	};
 
@@ -259,13 +261,16 @@ var xhr = function () {
 			state.call(self, DONE);
 		};
 
-		self.dispatchEvent("onreadystatechange");
+		self._send = true;
+		self.dispatchEvent("readystatechange");
 
 		obj           = parsed.protocol === "http:" ? http : https;
 		request       = obj.request(options, handler).on("error", handlerError);
 		self._request = request;
-
 		if (data !== null) request.write(data, "utf8");
+		request.end();
+
+		self.dispatchEvent("loadstart");
 
 		return this;
 	};
