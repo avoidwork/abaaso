@@ -211,6 +211,7 @@ var data = {
 				ignored = true;
 				ignore  = ignore.explode();
 			}
+			else ignore = [];
 
 			utility.iterate(record.data, function (v, k) {
 				if (typeof v !== "string" || (ignored && ignore.contains(k))) return;

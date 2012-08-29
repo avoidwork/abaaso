@@ -269,7 +269,7 @@ var xhr = function () {
 		self.dispatchEvent("readystatechange");
 
 		obj           = parsed.protocol === "http:" ? http : https;
-		request       = obj.request(options, handler).on("error", handlerError);
+		request       = obj.request(options, handler);
 		self._request = request;
 		if (data !== null) request.write(data, "utf8");
 		request.end();
