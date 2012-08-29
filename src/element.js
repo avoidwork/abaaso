@@ -649,6 +649,7 @@ var element = {
 					default:
 						output = typeof obj.value !== "undefined" ? obj.value : element.text(obj);
 				}
+				if (typeof output === "string") output = output.trim();
 				break;
 			default:
 				value = String(value);
