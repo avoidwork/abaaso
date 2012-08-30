@@ -12,11 +12,13 @@ var xhr = function () {
 	    HEADERS_RECEIVED = 2,
 	    LOADING          = 3,
 	    DONE             = 4,
+	    regex            = RegExp(HEADERS_RECEIVED + "|" + LOADING),
 	    XMLHttpRequest, headers, handler, handlerError, state;
 
 	headers = {
-		"User-Agent" : "abaaso/{{VERSION}} node.js/" + process.versions.node.replace(/^v/, "") + " (" + string.capitalize(process.platform) + " V8/" + process.versions.v8 + ")",
-		"Accept"     : "*/*"
+		"User-Agent"   : "abaaso/{{VERSION}} node.js/" + process.versions.node.replace(/^v/, "") + " (" + string.capitalize(process.platform) + " V8/" + process.versions.v8 + ")",
+		"Content-Type" : "text/plain",
+		"Accept"       : "*/*"
 	};
 
 	/**
@@ -28,7 +30,7 @@ var xhr = function () {
 	state = function (arg) {
 		if (this.readyState !== arg) {
 			this.readyState = arg;
-			if (this._params.async || this.readyState < OPENED || this.readyState === DONE) this.dispatchEvent("readystatechange");
+			this.dispatchEvent("readystatechange");
 			if (this.readyState === DONE && !this._error) {
 				this.dispatchEvent("load");
 				this.dispatchEvent("loadend");
@@ -92,13 +94,14 @@ var xhr = function () {
 		this.statusText         = "";
 
 		// Psuedo private for prototype chain
+		this._id                = utility.genId();
 		this._error             = false;
-		this._headers           = headers;
+		this._headers           = {};
 		this._listeners         = {};
 		this._params            = {};
+		this._request           = null;
 		this._resheaders        = {};
 		this._send              = false;
-		return this;
 	};
 
 	/**
@@ -107,12 +110,17 @@ var xhr = function () {
 	 * @return {Object} XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.abort = function () {
-		this._headers     = headers;
+		if (this._request !== null) {
+			this._request.abort();
+			this._request = null;
+		}
+
 		this.responseText = "";
 		this.responseXML  = "";
 		this._error       = true;
+		this._headers     = {};
 
-		if (this._send === true || RegExp(HEADERS_RECEIVED + "|" + LOADING).test(this.readyState)) {
+		if (this._send === true || regex.test(this.readyState)) {
 			this._send = false;
 			state.call(this, DONE)
 		}
@@ -190,6 +198,8 @@ var xhr = function () {
 	 * @return {Object}           XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
+		var self = this;
+
 		if (typeof async !== "undefined" && async !== true) throw Error("Synchronous XMLHttpRequest requests are not supported");
 
 		this.abort();
@@ -201,6 +211,8 @@ var xhr = function () {
 			user     : user     || null,
 			password : password || null
 		}
+
+		utility.iterate(headers, function (v, k) { self._headers[k] = v; });
 		this.readyState = OPENED;
 		return this;
 	};
@@ -252,7 +264,10 @@ var xhr = function () {
 		parsed.port = parsed.port || (parsed.protocol === "https" ? 443 : 80);
 		if (this._params.user !== null && this._params.password !== null) parsed.auth = this._params.user + ":" + this._params.password;
 
-		if (data !== null) this._headers["Content-Length"] = data.length;
+		// Specifying Content-Length accordingly
+		if (/post|put/i.test(this._params.method)) this._headers["Content-Length"] = data !== null ? Buffer.byteLength(data) : 0;
+
+		this._headers["Host"] = parsed.hostname + (!/80|443/.test(parsed.port) ? ":" + parsed.port : "");
 
 		options = {
 			hostname : parsed.hostname,
@@ -270,6 +285,7 @@ var xhr = function () {
 		obj           = parsed.protocol === "http:" ? http : https;
 		request       = obj.request(options, function (arg) { handler.call(self, arg); }).on("error", function (e) { handlerError.call(self, e); });
 		data === null ? request.setSocketKeepAlive(true, 10000) : request.write(data, "utf8");
+		this._request = request;
 		request.end();
 
 		self.dispatchEvent("loadstart");
