@@ -214,21 +214,32 @@ var data = {
 			else ignore = [];
 
 			utility.iterate(record.data, function (v, k) {
-				if (typeof v !== "string" || (ignored && ignore.contains(k))) return;
-				if (v.indexOf("//") >= 0) {
+				var uri = v;
+
+				if (typeof uri !== "string" || (ignored && ignore.contains(k))) return;
+
+				switch (true) {
+					case (/^(?:https?|ftp):\/\//.test(uri) && uri.isUrl()):
+						break
+					case uri.indexOf("//") === 0:
+						uri = self.uri.replace(/\/\/.*/, "") + uri;
+						break;
+					case uri.indexOf("/") === 0:
+						uri = self.uri + uri;
+						break;
+				}
+
+				if (uri.isUrl()) {
 					if (!self.collections.contains(k)) self.collections.push(k);
-					record.data[k] = data.register({id: record.key + "-" + k});
+					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 					ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-					record.data[k].data.key     = key;
-					record.data[k].data.pointer = self.pointer;
-					record.data[k].data.source  = self.source;
 					if (self.recursive && self.retrieve) {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
 					}
-					typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
+					typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(uri) : record.data[k].data.uri = uri;
 				}
 			});
 			return this.get(arg);

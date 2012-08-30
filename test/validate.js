@@ -142,3 +142,20 @@ exports["phone"] = {
 		test.done();
 	}
 };
+
+exports["url"] = {
+	setUp: function (done) {
+		done();
+	},
+	sugar: function (test) {
+		test.expect(7);
+		test.equal("".isUrl(), false, "Should be false");
+		test.equal("abc".isUrl(), false, "Should be false");
+		test.equal("123".isUrl(), false, "Should be false");
+		test.equal("//blah.com".isUrl(), false, "Should be false");
+		test.equal("http://blah.com".isUrl(), true, "Should be true");
+		test.equal("https://blah.com".isUrl(), true, "Should be true");
+		test.equal("ftp://blah.com".isUrl(), true, "Should be true");
+		test.done();
+	}
+};

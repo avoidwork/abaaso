@@ -585,6 +585,7 @@ var utility = {
 			           isInt    : function () { var a = []; this.each(function (i) { a.push(i.isInt()); }); return a; },
 			           isNumber : function () { var a = []; this.each(function (i) { a.push(i.isNumber()); }); return a; },
 			           isPhone  : function () { var a = []; this.each(function (i) { a.push(i.isPhone()); }); return a; },
+			           isUrl    : function () { var a = []; this.each(function (i) { a.push(i.isUrl()); }); return a; },
 			           keys     : function () { return array.keys(this); },
 			           last     : function (arg) { return array.last(this); },
 			           listeners: function (event) { var a = []; this.each(function (i) { a = a.concat(i.listeners(event)); }); return a; },
@@ -717,6 +718,7 @@ var utility = {
 			           isInt    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : element.text(this).isInt(); },
 			           isNumber : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : element.text(this).isNumber(); },
 			           isPhone  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : element.text(this).isPhone(); },
+			           isUrl    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isUrl()    : element.text(this).isUrl(); },
 			           jsonp    : function (uri, property, callback) {
 			           		var target = this,
 			           		    arg    = property, fn;
@@ -840,6 +842,7 @@ var utility = {
 			           isInt    : function () { return validate.test({integer: this}).pass; },
 			           isNumber : function () { return validate.test({number: this}).pass; },
 			           isPhone  : function () { return validate.test({phone: this}).pass; },
+			           isUrl    : function () { return validate.test({url: this}).pass; },
 			           jsonp    : function (success, failure, callback) { return client.jsonp(this, success, failure, callback); },
 			           listeners: function (event) { return $.listeners.call(this, event); },
 			           post     : function (success, failure, args, headers) { return client.request(this, "POST", success, failure, args, headers); },
