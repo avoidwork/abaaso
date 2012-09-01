@@ -27,7 +27,7 @@ var cookie = {
 	 * @return {Mixed}       Cookie or undefined
 	 */
 	get : function (name) {
-		return cookie.list()[name];
+		return utility.coerce(cookie.list()[name]);
 	},
 
 	/**
