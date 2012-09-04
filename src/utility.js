@@ -300,7 +300,7 @@ var utility = {
 				type      : typeof e.type !== "undefined" ? e.type : "TypeError"
 			};
 
-			if (typeof console !== "undefined") console[!warning ? "error" : "warn"](o.message);
+			if (typeof console !== "undefined") console[!warning ? "error" : "warn"](o.stack || o.message);
 			$.error.log.push(o);
 			$.fire("error", o);
 		}
