@@ -211,25 +211,28 @@ var data = {
 				ignored = true;
 				ignore  = ignore.explode();
 			}
-			else ignore = [];
 
 			utility.iterate(record.data, function (v, k) {
-				var uri = v;
+				var uri  = v,
+				    pass = false;
 
 				if (typeof uri !== "string" || (ignored && ignore.contains(k))) return;
 
 				switch (true) {
-					case (/^(?:https?|ftp):\/\//.test(uri) && uri.isUrl()):
+					case (/^(?:https?|ftp):\/\//.test(uri)):
+						pass = true;
 						break
 					case uri.indexOf("//") === 0:
 						uri = self.uri.replace(/\/\/.*/, "") + uri;
+						pass = true;
 						break;
 					case uri.indexOf("/") === 0:
 						uri = self.uri + uri;
+						pass = true;
 						break;
 				}
 
-				if (uri.isUrl()) {
+				if (pass) {
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
@@ -556,48 +559,6 @@ var data = {
 		},
 
 		/**
-		 * Storage interface
-		 * 
-		 * @param  {Mixed}  obj  Record (Object, key or index) or store
-		 * @param  {Object} op   Operation to perform (get, remove or set)
-		 * @param  {String} type [Optional] Type of Storage to use (local or session, default is local)
-		 * @return {Object}      Record or store
-		 */
-		storage : function (obj, op, type) {
-			var record  = false,
-			    session = (type === "session" && typeof sessionStorage !== "undefined"),
-			    ns      = /number|string/,
-			    result, key, data;
-
-			if (!/number|object|string/.test(typeof obj) || !/get|remove|set/.test(op)) throw Error(label.error.invalidArguments);
-
-			record = (ns.test(obj) || (obj.hasOwnProperty("key") && !obj.hasOwnProperty("parentNode")));
-			if (record && !(obj instanceof Object)) obj = this.get(obj);
-			key    = record ? obj.key : obj.parentNode.id;
-
-			switch (op) {
-				case "get":
-					result = session ? sessionStorage.getItem(key) : localStorage.getItem(key);
-					if (result === null) throw Error(label.error.invalidArguments);
-					result = json.decode(result);
-					record ? this.set(key, result, true) : utility.merge(this, result);
-					result = record ? obj : this;
-					break;
-				case "remove":
-					session ? sessionStorage.removeItem(key) : localStorage.removeItem(key);
-					result = this;
-					break;
-				case "set":
-					data = json.encode(record ? obj.data : {total: this.total, keys: this.keys, records: this.records});
-					session ? sessionStorage.setItem(key, data) : localStorage.setItem(key, data);
-					result = this;
-					break;
-			}
-
-			return result;
-		},
-
-		/**
 		 * Creates or updates an existing record
 		 *
 		 * If a POST is issued, and the data.key property is not set the
@@ -631,14 +592,29 @@ var data = {
 			var record = typeof key === "undefined" ? undefined : this.get(key),
 			    obj    = this.parentNode,
 			    method = typeof key === "undefined" ? "post" : "put",
-			    args   = {data: typeof record !== "undefined" ? utility.merge(record.data, data) : data, key: key, record: undefined},
+			    self   = this,
+			    args   = {data: {}, key: key, record: undefined},
 			    uri    = this.uri,
 			    r      = /true|undefined/,
-			    p;
+			    p, success, failure;
 
-			if (typeof record !== "undefined") args.record = this.records[this.keys[record.key].index];
+			if (typeof record !== "undefined") {
+				args.record = this.records[this.keys[record.key].index];
+				utility.iterate(args.record.data, function (v, k) {
+					if (!self.collections.contains(k) && !self.ignore.contains(k)) args.data[k] = v;
+				});
+				utility.merge(args.data, data);
+			}
+			else args.data = data;
 
-			this.collections.each(function (i) { if (typeof args.data[i] === "object") delete args.data[i]; });
+			success = function (arg) {
+				args["result"] = arg;
+				obj.fire("syncDataSet", args);
+			};
+
+			failure = function (e) {
+				obj.fire("failedDataSet");
+			};
 
 			if (!sync && this.callback === null && uri !== null) {
 				if (typeof record !== "undefined") uri += "/" + record.key;
@@ -653,7 +629,7 @@ var data = {
 					obj.fire("syncDataSet", args);
 					break;
 				case r.test(p):
-					uri[method](function (arg) { args["result"] = arg; obj.fire("syncDataSet", args); }, function (e) { obj.fire("failedDataSet"); }, data, utility.merge({withCredentials: this.credentials}, this.headers));
+					uri[method](success, failure, data, utility.merge({withCredentials: this.credentials}, this.headers));
 					break;
 				default:
 					obj.fire("failedDataSet", args);
@@ -769,6 +745,48 @@ var data = {
 
 			result           = crawl(queries, this.records);
 			this.views[view] = result;
+			return result;
+		},
+
+		/**
+		 * Storage interface
+		 * 
+		 * @param  {Mixed}  obj  Record (Object, key or index) or store
+		 * @param  {Object} op   Operation to perform (get, remove or set)
+		 * @param  {String} type [Optional] Type of Storage to use (local or session, default is local)
+		 * @return {Object}      Record or store
+		 */
+		storage : function (obj, op, type) {
+			var record  = false,
+			    session = (type === "session" && typeof sessionStorage !== "undefined"),
+			    ns      = /number|string/,
+			    result, key, data;
+
+			if (!/number|object|string/.test(typeof obj) || !/get|remove|set/.test(op)) throw Error(label.error.invalidArguments);
+
+			record = (ns.test(obj) || (obj.hasOwnProperty("key") && !obj.hasOwnProperty("parentNode")));
+			if (record && !(obj instanceof Object)) obj = this.get(obj);
+			key    = record ? obj.key : obj.parentNode.id;
+
+			switch (op) {
+				case "get":
+					result = session ? sessionStorage.getItem(key) : localStorage.getItem(key);
+					if (result === null) throw Error(label.error.invalidArguments);
+					result = json.decode(result);
+					record ? this.set(key, result, true) : utility.merge(this, result);
+					result = record ? obj : this;
+					break;
+				case "remove":
+					session ? sessionStorage.removeItem(key) : localStorage.removeItem(key);
+					result = this;
+					break;
+				case "set":
+					data = json.encode(record ? obj.data : {total: this.total, keys: this.keys, records: this.records});
+					session ? sessionStorage.setItem(key, data) : localStorage.setItem(key, data);
+					result = this;
+					break;
+			}
+
 			return result;
 		},
 
@@ -1028,8 +1046,8 @@ var data = {
 					}
 					break;
 				default:
-					data.record.data = data.data;
-					record = data.record;
+					record = this.records[this.keys[data.record.key].index];
+					utility.merge(record.data, data.data);
 			}
 			this.views = {};
 			if (this.retrieve) this.crawl(record.key, this.ignore.length > 0 ? this.ignore.join(",") : undefined, this.key);
