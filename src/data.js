@@ -211,25 +211,28 @@ var data = {
 				ignored = true;
 				ignore  = ignore.explode();
 			}
-			else ignore = [];
 
 			utility.iterate(record.data, function (v, k) {
-				var uri = v;
+				var uri  = v,
+				    pass = false;
 
 				if (typeof uri !== "string" || (ignored && ignore.contains(k))) return;
 
 				switch (true) {
-					case (/^(?:https?|ftp):\/\//.test(uri) && uri.isUrl()):
+					case (/^(?:https?|ftp):\/\//.test(uri)):
+						pass = true;
 						break
 					case uri.indexOf("//") === 0:
 						uri = self.uri.replace(/\/\/.*/, "") + uri;
+						pass = true;
 						break;
 					case uri.indexOf("/") === 0:
 						uri = self.uri + uri;
+						pass = true;
 						break;
 				}
 
-				if (uri.isUrl()) {
+				if (pass) {
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
