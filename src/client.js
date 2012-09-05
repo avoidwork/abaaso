@@ -137,7 +137,7 @@ var client = {
 	 * @private
 	 */
 	headers : function (xhr, uri, type) {
-		var headers = String(xhr.getAllResponseHeaders()).split("\n"),
+		var headers = String(xhr.getAllResponseHeaders()).trim().split("\n"),
 		    items   = {},
 		    o       = {},
 		    allow   = null,
