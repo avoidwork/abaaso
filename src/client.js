@@ -67,10 +67,10 @@ var client = {
 			case command === "delete":
 				result = !((client.permissions(uri, command).bit & 1) === 0);
 				break;
-			case command === "get":
+			case (/^(head|get|options)$/.test(command)):
 				result = !((client.permissions(uri, command).bit & 4) === 0);
 				break;
-			case (/post|put/.test(command)):
+			case (/^(post|put)$/.test(command)):
 				result = !((client.permissions(uri, command).bit & 2) === 0);
 				break;
 			default:
@@ -100,7 +100,9 @@ var client = {
 
 		args.each(function (a) {
 			switch (a.toLowerCase()) {
+				case "head":
 				case "get":
+				case "options":
 					result |= 4;
 					break;
 				case "post":
@@ -325,13 +327,13 @@ var client = {
 	request : function (uri, type, success, failure, args, headers) {
 		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob;
 
-		if (/post|put/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
+		if (/^(post|put)$/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
 
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
 		cors         = client.cors(uri);
 		xhr          = (client.ie && client.version < 10 && cors) ? new XDomainRequest() : new XMLHttpRequest();
-		payload      = /post|put/i.test(type) && typeof args !== "undefined" ? args : null;
+		payload      = /^(post|put)$/i.test(type) && typeof args !== "undefined" ? args : null;
 		cached       = type === "get" ? cache.get(uri) : false;
 		typed        = type.capitalize();
 		guid         = utility.guid(true);
@@ -350,7 +352,7 @@ var client = {
 			if (typeof failure === "function") failure(arg);
 		}, guid).fire("before" + typed);
 
-		if (type !== "head" && uri.allows(type) === false) return uri.fire("failed" + typed);
+		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) return uri.fire("failed" + typed);
 
 		if (type === "get" && Boolean(cached)) uri.fire("afterGet", cached.response);
 		else {
@@ -456,6 +458,8 @@ var client = {
 							switch (true) {
 								case type === "head":
 									return uri.fire("afterHead", o.headers);
+								case type === "options":
+									return uri.fire("afterOptions", o.headers);
 								case type !== "delete" && /200|201/.test(xhr.status):
 									t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 									r = client.parse(xhr, t);
