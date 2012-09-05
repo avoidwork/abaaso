@@ -142,6 +142,7 @@ var client = {
 		    o       = {},
 		    allow   = null,
 		    expires = new Date(),
+		    cors    = client.cors(uri),
 		    header, value;
 
 		headers.each(function (h) {
@@ -151,7 +152,10 @@ var client = {
 				header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
 				header        = (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
 				items[header] = value;
-				if (/allow|access-control-allow-methods/i.test(header)) allow = value;
+				if (allow === null) {
+					if (cors && /^access-control-allow-methods$/i.test(header)) allow = value;
+					else if (/^allow$/i.test(header)) allow = value;
+				}
 			}
 		});
 
