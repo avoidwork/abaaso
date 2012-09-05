@@ -137,21 +137,25 @@ var client = {
 	 * @private
 	 */
 	headers : function (xhr, uri, type) {
-		var headers = String(xhr.getAllResponseHeaders()).split("\n"),
+		var headers = String(xhr.getAllResponseHeaders()).trim().split("\n"),
 		    items   = {},
 		    o       = {},
 		    allow   = null,
 		    expires = new Date(),
-		    header, value;
+		    cors    = client.cors(uri),
+		    rvalue  = /.*:\s+/,
+		    rheader = /:.*/;
 
 		headers.each(function (h) {
-			if (!h.isEmpty()) {
-				header        = h.toString();
-				value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
-				header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
-				header        = (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
-				items[header] = value;
-				if (/allow|access-control-allow-methods/i.test(header)) allow = value;
+			var header, value;
+
+			value         = h.replace(rvalue, "");
+			header        = h.replace(rheader, "");
+			header        = header.indexOf("-") === -1 ? header.capitalize() : (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
+			items[header] = value;
+			if (allow === null) {
+				if (cors && /^access-control-allow-methods$/i.test(header)) allow = value;
+				else if (/^allow$/i.test(header)) allow = value;
 			}
 		});
 
