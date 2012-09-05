@@ -143,13 +143,15 @@ var client = {
 		    allow   = null,
 		    expires = new Date(),
 		    cors    = client.cors(uri),
-		    header, value;
+		    rvalue  = /.*:\s+/,
+		    rheader = /:.*/;
 
 		headers.each(function (h) {
+			var header, value;
+
 			if (!h.isEmpty()) {
-				header        = h.toString();
-				value         = header.substr((header.indexOf(':') + 1), header.length).replace(/\s/, "");
-				header        = header.substr(0, header.indexOf(':')).replace(/\s/, "");
+				value         = h.replace(rvalue, "");
+				header        = h.replace(rheader, "");
 				header        = (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
 				items[header] = value;
 				if (allow === null) {
