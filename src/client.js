@@ -144,7 +144,9 @@ var client = {
 		    expires = new Date(),
 		    cors    = client.cors(uri),
 		    rvalue  = /.*:\s+/,
-		    rheader = /:.*/;
+		    rheader = /:.*/,
+		    rallow  = /^allow$/i,
+		    rcallow = /^access-control-allow-methods$/i;
 
 		headers.each(function (h) {
 			var header, value;
@@ -154,8 +156,8 @@ var client = {
 			header        = header.indexOf("-") === -1 ? header.capitalize() : (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
 			items[header] = value;
 			if (allow === null) {
-				if (cors && /^access-control-allow-methods$/i.test(header)) allow = value;
-				else if (/^allow$/i.test(header)) allow = value;
+				if (cors && rcallow.test(header)) allow = value;
+				else if (rallow.test(header)) allow = value;
 			}
 		});
 
