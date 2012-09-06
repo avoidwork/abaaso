@@ -941,8 +941,7 @@ var data = {
 						case this._uri === arg:
 							return;
 						case this._uri !== null:
-							this._uri.un("expire", "dataSync");
-							this.teardown(true);
+							this._uri.un();
 						default:
 							this._uri = arg;
 					}
