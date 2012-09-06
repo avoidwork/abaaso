@@ -210,7 +210,7 @@ switch (true) {
 		module.exports = abaaso;
 		break;
 	case typeof define === "function":
-		define(function () { return abaaso; });
+		define("abaaso", function () { return abaaso; });
 		break;
 	default:
 		global.abaaso = abaaso;
