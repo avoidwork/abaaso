@@ -503,27 +503,36 @@ var data = {
 		 * If the key is an integer, cast to a string before sending as an argument!
 		 *
 		 * @method get
-		 * @param  {Mixed}  record Key, index or Array of pagination start & end
+		 * @param  {Mixed}  record Key, index or Array of pagination start & end; or comma delimited String of keys or indices
 		 * @param  {Number} end    [Optional] Ceiling for pagination
 		 * @return {Mixed}         Individual record, or Array of records
 		 */
 		get : function (record, end) {
 			var records = this.records,
 			    obj     = this.parentNode,
+			    type    = typeof record,
+			    self    = this,
 			    r;
 
 			switch (true) {
-				case typeof record === "undefined":
+				case type === "undefined":
 				case String(record).length === 0:
 					r = records;
 					break;
-				case typeof record === "string" && typeof this.keys[record] !== "undefined":
+				case type === "string" && record.indexOf(",") > -1:
+					r = [];
+					record.explode().each(function (i) {
+						if (!isNaN(i)) i = parseInt(i);
+						r.push(self.get(i));
+					});
+					break;
+				case type === "string" && typeof this.keys[record] !== "undefined":
 					r = records[this.keys[record].index];
 					break;
-				case typeof record === "number" && typeof end === "undefined":
+				case type === "number" && typeof end === "undefined":
 					r = records[parseInt(record)];
 					break;
-				case typeof record === "number" && typeof end === "number":
+				case type === "number" && typeof end === "number":
 					r = records.range(parseInt(record), parseInt(end));
 					break;
 				default:

@@ -33,6 +33,22 @@ exports["batch"] = {
 	}
 };
 
+exports["delimited"] = {
+	setUp: function (done) {
+		this.store = data.register({id: "test"}, sample, {key: "id"});
+		done();
+	},
+	direct: function (test) {
+		test.expect(5);
+		test.equal(this.store.data.get("0, 1").length, 2, "Should match");
+		test.equal(this.store.data.get("0, 1")[0].key, "8ao7dhfga", "Should match");
+		test.equal(this.store.data.get("0, 1")[1].key, "as7d6fts3", "Should match");
+		test.equal(this.store.data.get("8ao7dhfga, as7d6fts3")[0].key, "8ao7dhfga", "Should match");
+		test.equal(this.store.data.get("8ao7dhfga, as7d6fts3")[1].key, "as7d6fts3", "Should match");
+		test.done();
+	}
+};
+
 exports["find"] = {
 	setUp: function (done) {
 		this.store = data.register({id: "test"}, null, {key: "id"});
