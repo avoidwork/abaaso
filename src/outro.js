@@ -35,7 +35,9 @@ return {
 	},
 	cookie          : cookie,
 	data            : data,
+	datalist        : datalist,
 	element         : element,
+	filter          : filter,
 	json            : json,
 	label           : label,
 	loading         : {
