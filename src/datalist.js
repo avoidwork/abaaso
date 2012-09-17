@@ -75,7 +75,8 @@ var datalist = (function () {
 	/**
 	 * Changes the page index of the DataList
 	 * 
-	 * @return {Object}  DataList instance
+	 * @param  {Number} arg Page to display
+	 * @return {Object}     DataList instance
 	 */
 	factory.prototype.page = function (arg) {
 		if (isNaN(arg)) throw Error(label.error.invalidArguments);
