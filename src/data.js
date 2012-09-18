@@ -968,11 +968,7 @@ var data = {
 		utility.genId(obj);
 
 		// Hooking observer if not present in prototype chain
-		if (typeof obj.fire === "undefined")      obj.fire      = function (event, arg) { return $.fire.call(this, event, arg); };
-		if (typeof obj.listeners === "undefined") obj.listeners = function (event) { return $.listeners.call(this, event); };
-		if (typeof obj.on === "undefined")        obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
-		if (typeof obj.once === "undefined")      obj.once      = function (event, listener, id, scope, standby) { return $.once.call(this, event, listener, id, scope, standby); };
-		if (typeof obj.un === "undefined")        obj.un        = function (event, id) { return $.un.call(this, event, id); };
+		if (typeof obj.fire === "undefined") observer.hook(obj);
 
 		obj.fire("beforeDataStore");
 

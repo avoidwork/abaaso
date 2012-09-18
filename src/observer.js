@@ -146,6 +146,21 @@ var observer = {
 	},
 
 	/**
+	 * Provides observer hooks on obj
+	 * 
+	 * @param  {Object} obj Object to receive hooks
+	 * @return {Object}     Object that received hooks
+	 */
+	hook : function (obj) {
+		obj.fire      = function (event, arg) { return $.fire.call(this, event, arg); };
+		obj.listeners = function (event) { return $.listeners.call(this, event); };
+		obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
+		obj.once      = function (event, listener, id, scope, standby) { return $.once.call(this, event, listener, id, scope, standby); };
+		obj.un        = function (event, id) { return $.un.call(this, event, id); };
+		return obj;
+	},
+
+	/**
 	 * Gets the listeners for an event
 	 *
 	 * @method list

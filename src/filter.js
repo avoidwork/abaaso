@@ -4,7 +4,7 @@
  * @param  {Object} obj      Element to receive the filter
  * @param  {Object} datalist List Module linked to the data store required
  * @param  {String} filters  Comma delimited string of fields to filter by
- * @return {Object}          Instance of filter
+ * @return {Object}          Filter instance
  */
 var filter = (function () {
 	var factory;
@@ -25,7 +25,7 @@ var filter = (function () {
 	/**
 	 * Initiate all event listeners
 	 *
-	 * @returns {Undefined} undefined
+	 * @return {Object} Filter instance
 	 */
 	factory.prototype.init = function () {
 		this.element.on("keyup", this.update, "filter", this);
@@ -33,9 +33,27 @@ var filter = (function () {
 	};
 
 	/**
+	 * Set the filters
+	 * 
+	 * Create an object based on comma separated key string
+	 * 
+	 * @param {String} fields Comma separated filters
+	 * @return {Object} Filter instance
+	 */
+	factory.prototype.set = function (fields) {
+		var obj = {};
+
+		if (typeof fields !== "string" || String(fields).isEmpty()) throw Error(label.error.invalidArguments);
+
+		fields.explode().each(function (v) { obj[v] = ""; });
+		this.filters = obj;
+		return this;
+	};
+
+	/**
 	 * Cancel all event listeners
 	 *
-	 * @returns {Undefined} undefined
+	 * @return {Object} Filter instance
 	 */
 	factory.prototype.teardown = function () {
 		this.element.un("keyup", "filter");
@@ -45,7 +63,8 @@ var filter = (function () {
 	/**
 	 * Update the results list
 	 *
-	 * @returns {Undefined} undefined
+	 * @param  {Object} e Keyboard event
+	 * @return {Object}   Filter instance
 	 */
 	factory.prototype.update = function (e) {
 		var val = this.element.val();
@@ -58,24 +77,6 @@ var filter = (function () {
 
 		this.datalist.pageIndex = 1;
 		this.datalist.refresh();
-		return this;
-	};
-
-	/**
-	 * Set the filters
-	 * 
-	 * Create an object based on comma separated key string
-	 * 
-	 * @param {String} fields Comma separated filters
-	 * @returns {Undefined} undefined
-	 */
-	factory.prototype.set = function (fields) {
-		var obj = {};
-
-		if (typeof fields !== "string" || String(fields).isEmpty()) throw Error(label.error.invalidArguments);
-
-		fields.explode().each(function (v) { obj[v] = ""; });
-		this.filters = obj;
 		return this;
 	};
 

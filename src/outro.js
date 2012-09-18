@@ -51,6 +51,7 @@ return {
 		log     : observer.log,
 		add     : observer.add,
 		fire    : observer.fire,
+		hook    : observer.hook,
 		list    : observer.list,
 		once    : observer.once,
 		remove  : observer.remove
