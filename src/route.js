@@ -174,9 +174,11 @@ var route = {
 	 * @param  {Object}   arg  Server options
 	 * @param  {Function} fn   Error handler
 	 * @param  {Boolean}  ssl  Determines if HTTPS server is created
-	 * @return {Undefined}     undefined
+	 * @return {Object}        Server
 	 */
 	server : function (args, fn, ssl) {
+		var obj;
+
 		args = args || {};
 		ssl  = (ssl === true || args.port === 443);
 
@@ -190,7 +192,7 @@ var route = {
 		args.port = parseInt(args.port) || 8000;
 
 		if (!ssl) {
-			http.createServer(function (req, res) {
+			obj = http.createServer(function (req, res) {
 				route.load(require("url").parse(req.url).pathname, res, req.method);
 			}).on("error", function (e) {
 				error(e, this, arguments);
@@ -198,13 +200,15 @@ var route = {
 			}).listen(args.port, args.host);
 		}
 		else {
-			https.createServer(args, function (req, res) {
+			obj = https.createServer(args, function (req, res) {
 				route.load(require("url").parse(req.url).pathname, res, req.method);
 			}).on("error", function (e) {
 				error(e, this, arguments);
 				if (typeof fn === "function") fn(e);
 			}).listen(args.port);
 		}
+
+		return obj;
 	},
 
 	/**
