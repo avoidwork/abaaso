@@ -7,12 +7,14 @@
  * @namespace abaaso
  */
 var route = {
-	bang  : /\#|\!\//g,
-	regex : new RegExp(),
+	bang    : /\#|\!\//g,
+	nget    : /^(head|options)$/i,
+	methods : /^(all|delete|get|put|post|head|options)$/i,
+	regex   : new RegExp(),
 
 	// Routing listeners
 	routes : {
-		all   : {
+		all       : {
 			error : function () {
 				if (!server) {
 					if (route.hash() === "") return history.go(-1);
@@ -24,10 +26,10 @@ var route = {
 				else throw Error(label.error.invalidRoute);
 			}
 		},
-		del   : {},
-		get   : {},
-		put   : {},
-		post  : {}
+		"delete" : {},
+		get      : {},
+		put      : {},
+		post     : {}
 	},
 
 	/**
@@ -37,7 +39,7 @@ var route = {
 	 * @return {[type]}     HTTP method to utilize
 	 */
 	method : function (arg) {
-		return /all|del|get|put|post/gi.test(arg) ? arg.toLowerCase() : "all";
+		return route.methods.test(arg) ? arg.toLowerCase() : "all";
 	},
 
 	/**
@@ -123,16 +125,21 @@ var route = {
 	 * 
 	 * @method load
 	 * @param  {String} name  Route to load
-	 * @param  {Object} arg   HTTP response (node)
-	 * @param  {String} verb  HTTP method
+	 * @param  {Object} arg   [Optional] HTTP response (node)
+	 * @param  {String} req   [Optional] HTTP request (node)
 	 * @return {Mixed}        True or undefined
 	 */
-	load : function (name, arg, verb) {
-		verb = route.method(verb);
+	load : function (name, res, req) {
+		if (typeof req === "undefined") req = "all";
+
 		var active = "",
 		    path   = "",
 		    result = true,
+		    verb   = route.method(req.method || req),
 		    find;
+
+		// Not a GET, but assuming the route is smart enough to strip the entity body
+		if (route.nget.test(verb)) verb = "get";
 
 		name = name.replace(route.bang, "");
 		find = function (pattern, method, arg) {
@@ -163,7 +170,7 @@ var route = {
 			result = false;
 		}
 
-		route.routes[path][active](arg || active);
+		route.routes[path][active](res || active, req);
 		return result;
 	},
 
@@ -193,7 +200,7 @@ var route = {
 
 		if (!ssl) {
 			obj = http.createServer(function (req, res) {
-				route.load(require("url").parse(req.url).pathname, res, req.method);
+				route.load(require("url").parse(req.url).pathname, res, req);
 			}).on("error", function (e) {
 				error(e, this, arguments);
 				if (typeof fn === "function") fn(e);
@@ -201,7 +208,7 @@ var route = {
 		}
 		else {
 			obj = https.createServer(args, function (req, res) {
-				route.load(require("url").parse(req.url).pathname, res, req.method);
+				route.load(require("url").parse(req.url).pathname, res, req);
 			}).on("error", function (e) {
 				error(e, this, arguments);
 				if (typeof fn === "function") fn(e);
