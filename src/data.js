@@ -106,7 +106,7 @@ var data = {
 									set(i, idx);
 									break;
 								case i.indexOf("//") === -1:
-									i = self.uri + i;
+									i = self.uri + (/^\//.test(i) ? i : "/" + i);
 								default:
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
