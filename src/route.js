@@ -195,7 +195,7 @@ var route = {
 		$.route.enabled = abaaso.route.enabled = true;
 
 		// Server parameters
-		args.host = args.host           || "127.0.0.1";
+		args.host = args.host           || undefined;
 		args.port = parseInt(args.port) || 8000;
 
 		if (!ssl) {
