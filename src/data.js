@@ -106,7 +106,7 @@ var data = {
 									set(i, idx);
 									break;
 								case i.indexOf("//") === -1 && i.charAt(0) !== "/": // Relative path to store, i.e. a child
-									i   = self.uri + (/^\//.test(i) ? i : "/" + i);
+									i   = self.uri + "/" + i;
 								default:
 									idx = i.replace(/.*\//, "");
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
@@ -214,26 +214,10 @@ var data = {
 			}
 
 			utility.iterate(record.data, function (v, k) {
-				var uri  = v,
-				    pass = false;
+				if (typeof v !== "string" || (ignored && ignore.contains(k))) return;
 
-				if (typeof uri !== "string" || (ignored && ignore.contains(k))) return;
-
-				switch (true) {
-					case (/^(?:https?|ftp):\/\//.test(uri)):
-						pass = true;
-						break
-					case uri.indexOf("//") === 0:
-						uri = self.uri.replace(/\/\/.*/, "") + uri;
-						pass = true;
-						break;
-					case uri.indexOf("/") === 0:
-						uri = self.uri + uri;
-						pass = true;
-						break;
-				}
-
-				if (pass) {
+				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
+				if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
@@ -243,7 +227,7 @@ var data = {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
 					}
-					typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(uri) : record.data[k].data.uri = uri;
+					typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
 				}
 			});
 			return this.get(arg);
