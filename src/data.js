@@ -106,17 +106,20 @@ var data = {
 									set(i, idx);
 									break;
 								case i.indexOf("//") === -1 && i.charAt(0) !== "/": // Relative path to store, i.e. a child
-									i = self.uri + (/^\//.test(i) ? i : "/" + i);
+									i   = self.uri + (/^\//.test(i) ? i : "/" + i);
+									idx = i.replace(/.*\//, "");
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
 								case i.indexOf("//") === -1 && i.charAt(0) === "/": // Relative path to host
 									scheme = /(http?s:)/.exec(i)
 									scheme = scheme !== null ? scheme[1] : "";
-									i = /(\/\/[a-zA-Z0-9\.-]+)/.exec(self.uri)[1] + i;
-									i = scheme + "//" + i;
+									i      = /(\/\/[a-zA-Z0-9\.-]+)/.exec(self.uri)[1] + i;
+									i      = scheme + "//" + i;
+									idx    = i.replace(/.*\//, "");
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
 								default:
+									idx = i.replace(/.*\//, "");
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
 							}
