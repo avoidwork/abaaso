@@ -77,6 +77,7 @@ var data = {
 				if (rec instanceof Array && self.uri !== null) {
 					params = {
 						headers   : self.headers,
+						ignore    : array.clone(self.ignore),
 						key       : self.key,
 						pointer   : self.pointer,
 						recursive : self.recursive,
