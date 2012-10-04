@@ -232,20 +232,29 @@ var data = {
 			}
 
 			utility.iterate(record.data, function (v, k) {
-				if (typeof v !== "string" || (ignored && ignore.contains(k))) return;
+				switch (true) {
+					case ignored && ignore.contains(k):
+					case !(v instanceof Array) && typeof v !== "string":
+						return;
+				}
 
-				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
-				if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
-					if (!self.collections.contains(k)) self.collections.push(k);
-					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-					record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
-					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-					if (self.recursive && self.retrieve) {
-						record.data[k].data.recursive = true;
-						record.data[k].data.retrieve  = true;
+				if (v instanceof Array) v.each(function (i) {
+					$.log("Make this into a store: "+ i);
+				});
+				else {
+					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
+					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
+						if (!self.collections.contains(k)) self.collections.push(k);
+						record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
+						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
+						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
+						ignore.each(function (i) { record.data[k].data.ignore.add(i); });
+						if (self.recursive && self.retrieve) {
+							record.data[k].data.recursive = true;
+							record.data[k].data.retrieve  = true;
+						}
+						typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
 					}
-					typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
 				}
 			});
 			return this.get(arg);
