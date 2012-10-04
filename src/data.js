@@ -51,7 +51,8 @@ var data = {
 
 			set = function (data, key) {
 				var guid = utility.genId(),
-				    rec  = {};
+				    rec  = {},
+				    idx, params;
 
 				if (typeof rec.batch !== "function") rec = utility.clone(data);
 				else $.iterate(data, function (v, k) { if (!self.collections.contains(k)) rec[k] = utility.clone(v); });
@@ -72,7 +73,23 @@ var data = {
 					}
 				}, guid);
 
-				self.set(key, rec, sync);
+				// Consumed a relational end point, making a store & re-consuming from uri setter
+				if (rec instanceof Array && self.uri !== null) {
+					params = {
+						headers   : self.headers,
+						key       : self.key,
+						pointer   : self.pointer,
+						recursive : self.recursive,
+						retrieve  : self.retrieve,
+						source    : self.source
+					};
+					self.set(key, {}, sync);
+					idx = self.keys[key].index;
+					self.collections.add(key);
+					self.records[idx] = abaaso.store({id: self.parentNode.id + "-" + key}, null, params);
+					typeof self.records[idx].data.setUri === "function" ? self.records[idx].data.setUri(self.uri + "/" + key) : self.records[idx].data.uri = self.uri + "/" + key;
+				}
+				else self.set(key, rec, sync);
 			};
 
 			obj.fire("beforeDataBatch", data);
