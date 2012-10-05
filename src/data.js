@@ -54,8 +54,7 @@ var data = {
 				    rec  = {},
 				    idx, params;
 
-				if (typeof rec.batch !== "function") rec = utility.clone(data);
-				else $.iterate(data, function (v, k) { if (!self.collections.contains(k)) rec[k] = utility.clone(v); });
+				typeof rec.batch !== "function" ? rec = utility.clone(data) : utility.iterate(data, function (v, k) { if (!self.collections.contains(k)) rec[k] = utility.clone(v); });
 
 				if (self.key !== null && typeof rec[self.key] !== "undefined") {
 					key = rec[self.key];
@@ -73,24 +72,7 @@ var data = {
 					}
 				}, guid);
 
-				// Consumed a relational end point, making a store & re-consuming from uri setter
-				if (rec instanceof Array && self.uri !== null) {
-					params = {
-						headers   : self.headers,
-						ignore    : array.clone(self.ignore),
-						key       : self.key,
-						pointer   : self.pointer,
-						recursive : self.recursive,
-						retrieve  : self.retrieve,
-						source    : self.source
-					};
-					self.set(key, {}, sync);
-					idx = self.keys[key].index;
-					self.collections.add(key);
-					self.records[idx] = abaaso.store({id: self.parentNode.id + "-" + key}, null, params);
-					typeof self.records[idx].data.setUri === "function" ? self.records[idx].data.setUri(self.uri + "/" + key) : self.records[idx].data.uri = self.uri + "/" + key;
-				}
-				else self.set(key, rec, sync);
+				rec instanceof Array && self.uri !== null ? self.generate(key) : self.set(key, rec, sync);
 			};
 
 			obj.fire("beforeDataBatch", data);
@@ -507,6 +489,33 @@ var data = {
 			obj.css("display", "inherit");
 			this.parentNode.fire("afterDataForm", obj);
 			return obj;
+		},
+
+		/**
+		 * Generates a RESTful store (replacing a record) when consuming an API end point
+		 *
+		 * @param  {Object} key  Record key
+		 * @return {Object}      Data store
+		 */
+		generate : function (key) {
+			var params, idx;
+			
+			params = {
+				headers   : this.headers,
+				ignore    : array.clone(this.ignore),
+				key       : this.key,
+				pointer   : this.pointer,
+				recursive : this.recursive,
+				retrieve  : this.retrieve,
+				source    : this.source
+			};
+
+			this.set(key, {}, true);
+			idx = this.keys[key].index;
+			this.collections.add(key);
+			this.records[idx] = data.register({id: this.parentNode.id + "-" + key}, null, params);
+			typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(this.uri + "/" + key) : this.records[idx].data.uri = this.uri + "/" + key;
+			return this;
 		},
 
 		/**
