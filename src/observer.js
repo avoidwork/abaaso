@@ -113,15 +113,14 @@ var observer = {
 	 * @method fire
 	 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
 	 * @param  {String} event Event, or Events being fired (comma delimited supported)
-	 * @param  {Mixed}  arg   [Optional] Argument supplied to the listener
 	 * @return {Mixed}        Entity, Array of Entities or undefined
 	 */
-	fire : function (obj, event, arg) {
+	fire : function (obj, event) {
 		obj      = utility.object(obj);
-		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, arg); });
+		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, array.cast(arguments).remove(1).remove(0)); });
 
 		var o    = observer.id(obj),
-		    a    = arg,
+		    a    = array.cast(arguments).remove(1).remove(0),
 		    s    = abaaso.state.current,
 		    log  = ($.observer.log || abaaso.observer.log),
 		    c, l, list;
@@ -133,12 +132,12 @@ var observer = {
 			list = observer.list(obj, e);
 			l = list.all;
 			if (typeof l !== "undefined") utility.iterate(l, function (i, k) {
-				i.fn.call(i.scope, a);
+				i.fn.apply(i.scope, a);
 			});
 			if (s !== "all") {
 				l = list[s];
 				if (typeof l !== "undefined") utility.iterate(l, function (i, k) {
-					i.fn.call(i.scope, a);
+					i.fn.apply(i.scope, a);
 				});
 			}
 		});
@@ -152,7 +151,7 @@ var observer = {
 	 * @return {Object}     Object that received hooks
 	 */
 	hook : function (obj) {
-		obj.fire      = function (event, arg) { return $.fire.call(this, event, arg); };
+		obj.fire      = function () { observer.fire.apply(observer, [this].concat(array.cast(arguments))); return this; };
 		obj.listeners = function (event) { return $.listeners.call(this, event); };
 		obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
 		obj.once      = function (event, listener, id, scope, standby) { return $.once.call(this, event, listener, id, scope, standby); };
@@ -213,9 +212,9 @@ var observer = {
 
 		if (obj instanceof Array) return obj.each(function (i) { observer.once(i, event, fn, id, scope, state); });
 
-		observer.add(obj, event, function (arg) {
+		observer.add(obj, event, function () {
 			observer.remove(obj, event, guid, state);
-			fn.call(scope, arg);
+			fn.apply(scope, arguments);
 		}, guid, scope, state);
 
 		return obj;

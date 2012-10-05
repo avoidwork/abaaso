@@ -561,7 +561,10 @@ var utility = {
 			           each     : function (arg) { return array.each(this, arg); },
 			           enable   : function () { return this.each(function (i) { i.enable(); }); },
 			           find     : function (arg) { var a = []; this.each(function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
-			           fire     : function (event, arg) { return this.each(function (i) { i.fire(event, arg); }); },
+			           fire     : function () {
+			           		var args = arguments;
+			           		return this.each(function (i) { i.fire.apply(i, args); });
+			           	},
 			           first    : function () { return array.first(this); },
 			           get      : function (uri, headers) { this.each(function (i) { i.get(uri, headers); }); return []; },
 			           has      : function (arg) { var a = []; this.each(function (i) { a.push(i.has(arg)); }); return a; },
@@ -672,9 +675,10 @@ var utility = {
 			           		utility.genId(this);
 			           		return element.find(this, arg);
 			           },
-			           fire     : function (event, args) {
+			           fire     : function () {
 			           		utility.genId(this);
-			           		return $.fire.call(this, event, args);
+			           		observer.fire.apply(observer, [this].concat(array.cast(arguments)));
+			           		return this;
 			           },
 			           genId    : function () { return utility.genId(this); },
 			           get      : function (uri, headers) {
@@ -816,7 +820,7 @@ var utility = {
 			           validate : function () { return this.nodeName === "FORM" ? validate.test(this) : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
 			"function": {reflect: function () { return utility.reflect(this); }},
 			number  : {diff     : function (arg) { return number.diff (this, arg); },
-			           fire     : function (event, args) { $.fire.call(this.toString(), event, args); return this; },
+			           fire     : function () { return observer.fire.apply(observer, [this.toString()].concat(array.cast(arguments))); return this; },
 			           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
 			           half     : function (arg) { return number.half(this, arg); },
 			           isEven   : function () { return number.even(this); },
@@ -833,7 +837,7 @@ var utility = {
 			           escape   : function () { return string.escape(this); },
 			           expire   : function (silent) { return cache.expire(this, silent); },
 			           explode  : function (arg) { return string.explode(this, arg); },
-			           fire     : function (event, args) { return $.fire.call(this, event, args); },
+			           fire     : function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); },
 			           get      : function (success, failure, headers) { return client.request(this, "GET", success, failure, null, headers); },
 			           headers  : function (success, failure) { return client.request(this, "HEAD", success, failure); },
 			           hyphenate: function (camel) { return string.hyphenate(this, camel); },
