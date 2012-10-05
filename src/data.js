@@ -51,8 +51,7 @@ var data = {
 
 			set = function (data, key) {
 				var guid = utility.genId(),
-				    rec  = {},
-				    idx, params;
+				    rec  = {};
 
 				typeof rec.batch !== "function" ? rec = utility.clone(data) : utility.iterate(data, function (v, k) { if (!self.collections.contains(k)) rec[k] = utility.clone(v); });
 
@@ -220,9 +219,22 @@ var data = {
 						return;
 				}
 
-				if (v instanceof Array) v.each(function (i) {
-					$.log("Make this into a store: "+ i);
-				});
+				if (v instanceof Array) {
+					// Possibly a subset of the collection, so it relies on valid URI paths
+					if (!self.collections.contains(k)) self.collections.push(k);
+					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
+					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
+					ignore.each(function (i) { record.data[k].data.ignore.add(i); });
+					if (self.recursive && self.retrieve) {
+						record.data[k].data.recursive = true;
+						record.data[k].data.retrieve  = true;
+					}
+
+					if (v.length > 0) {
+						record.data[k].once("afterDataBatch", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
+						record.data[k].data.batch("set", v, true);
+					}
+				}
 				else {
 					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
 					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
@@ -495,10 +507,13 @@ var data = {
 		 * Generates a RESTful store (replacing a record) when consuming an API end point
 		 *
 		 * @param  {Object} key  Record key
+		 * @param  {String} uri  [Optional] Related URI
 		 * @return {Object}      Data store
 		 */
-		generate : function (key) {
+		generate : function (key, uri) {
 			var params, idx;
+
+			if (typeof uri === "undefined") uri = this.uri + "/" + key;
 			
 			params = {
 				headers   : this.headers,
@@ -514,7 +529,7 @@ var data = {
 			idx = this.keys[key].index;
 			this.collections.add(key);
 			this.records[idx] = data.register({id: this.parentNode.id + "-" + key}, null, params);
-			typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(this.uri + "/" + key) : this.records[idx].data.uri = this.uri + "/" + key;
+			typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(uri) : this.records[idx].data.uri = uri;
 			return this;
 		},
 
