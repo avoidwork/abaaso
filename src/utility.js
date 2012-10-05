@@ -520,6 +520,8 @@ var utility = {
 	property : function (obj, prop, descriptor) {
 		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
+		if (obj.hasOwnProperty(prop)) return;
+
 		var define;
 
 		define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
