@@ -29,7 +29,7 @@ var data = {
 			type = type.toString().toLowerCase();
 			sync = (sync === true);
 
-			if (!/^(set|del)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
+			if (!/^(set|delete)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
 			var obj  = this.parentNode,
 			    self = this,
@@ -40,7 +40,7 @@ var data = {
 			    completed, failure, key, set, success;
 
 			completed = function () {
-				if (type === "del") self.reindex();
+				if (type === "delete") self.reindex();
 				self.loaded = true;
 				obj.fire("afterDataBatch");
 			};
@@ -76,7 +76,7 @@ var data = {
 
 			obj.fire("beforeDataBatch", data);
 
-			if (type === "del") {
+			if (type === "delete") {
 				obj.on("afterDataDelete", function () {
 					if (r++ && r === nth) {
 						obj.un("afterDataDelete, failedDataDelete", guid);
@@ -111,7 +111,7 @@ var data = {
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
 							}
-							else self.del(i, false, sync);
+							else self.delete(i, false, sync);
 						});
 				}
 			}
@@ -126,7 +126,7 @@ var data = {
 						else key = k.toString();
 						self.set(key, v, sync);
 					}
-					else self.del(v, false, sync);
+					else self.delete(v, false, sync);
 				});
 			}
 
@@ -268,7 +268,7 @@ var data = {
 		 * @param  {Boolean} sync    [Optional] True if called by data.sync
 		 * @return {Object}          Data store
 		 */
-		del : function (record, reindex, sync) {
+		delete : function (record, reindex, sync) {
 			if (typeof record === "undefined" || !/number|string/.test(typeof record)) throw Error(label.error.invalidArguments);
 
 			reindex  = (reindex !== false);
@@ -305,7 +305,7 @@ var data = {
 					obj.fire("syncDataDelete", args);
 					break;
 				case r.test(p):
-					uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, utility.merge({withCredentials: this.credentials}, this.headers));
+					uri.delete(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, utility.merge({withCredentials: this.credentials}, this.headers));
 					break;
 				default:
 					obj.fire("failedDataDelete", args);

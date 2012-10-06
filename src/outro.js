@@ -91,16 +91,18 @@ return {
 	expire          : cache.clean,
 	expires         : 120000,
 	extend          : utility.extend,
-	fire            : function (obj, event, arg) {
-		var all = typeof arg !== "undefined",
-		    o, e, a;
+	fire            : function (arg) {
+		var local = (typeof arg === "string"),
+		    args  = array.cast(arguments),
+		    obj   = this;
 
-		o = all ? obj   : this;
-		e = all ? event : obj;
-		a = all ? arg   : event;
+		if (local) {
+			if (obj === $) obj = abaaso;
+			args = [obj].concat(args);
+		}
 
-		if (typeof o === "undefined" || o === $) o = abaaso;
-		return observer.fire(o, e, a);
+		observer.fire.apply(observer, args);
+		return this;
 	},
 	genId           : utility.genId,
 	get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
