@@ -24,7 +24,7 @@ return {
 		windows : client.windows,
 
 		// Methods
-		del     : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
+		delete  : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
 		get     : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
 		headers : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
 		post    : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
@@ -84,7 +84,7 @@ return {
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
-	del             : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
+	delete          : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
 	destroy         : element.destroy,
 	encode          : json.encode,
 	error           : utility.error,
