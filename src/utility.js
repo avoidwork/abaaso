@@ -520,7 +520,7 @@ var utility = {
 	property : function (obj, prop, descriptor) {
 		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
-		if (obj.hasOwnProperty(prop)) return;
+		if (server && obj.hasOwnProperty(prop)) return;
 
 		var define;
 
