@@ -29,7 +29,7 @@ var data = {
 			type = type.toString().toLowerCase();
 			sync = (sync === true);
 
-			if (!/^(set|del)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
+			if (!/^(set|delete)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
 			var obj  = this.parentNode,
 			    self = this,
@@ -40,7 +40,7 @@ var data = {
 			    completed, failure, key, set, success;
 
 			completed = function () {
-				if (type === "del") self.reindex();
+				if (type === "delete") self.reindex();
 				self.loaded = true;
 				obj.fire("afterDataBatch");
 			};
@@ -76,7 +76,7 @@ var data = {
 
 			obj.fire("beforeDataBatch", data);
 
-			if (type === "del") {
+			if (type === "delete") {
 				obj.on("afterDataDelete", function () {
 					if (r++ && r === nth) {
 						obj.un("afterDataDelete, failedDataDelete", guid);
