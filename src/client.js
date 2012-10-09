@@ -354,7 +354,15 @@ var client = {
 
 		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) return uri.fire("failed" + typed, null, {status: 405});
 
-		if (type === "get" && Boolean(cached)) uri.fire("afterGet", cached.response);
+		if (type === "get" && Boolean(cached)) {
+			if (server) {
+				// Decorating XHR for proxy behavior
+				xhr.readyState  = 4;
+				xhr.status      = 200;
+				xhr._resheaders = cached.headers;
+			}
+			uri.fire("afterGet", cached.response, (server ? xhr : undefined));
+		}
 		else {
 			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
 
