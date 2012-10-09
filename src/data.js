@@ -108,6 +108,7 @@ var data = {
 									i   = self.uri + "/" + i;
 								default:
 									idx = i.replace(/.*\//, "");
+									if (idx.isEmpty()) break;
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
 							}
@@ -224,7 +225,7 @@ var data = {
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					ignore.each(function (i) { record.data[k].data.ignore.add(i); });
+					if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 					if (self.recursive && self.retrieve) {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
@@ -242,7 +243,7 @@ var data = {
 						record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-						ignore.each(function (i) { record.data[k].data.ignore.add(i); });
+						if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 						if (self.recursive && self.retrieve) {
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
