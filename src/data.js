@@ -224,7 +224,7 @@ var data = {
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					ignore.each(function (i) { record.data[k].data.ignore.add(i); });
+					if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 					if (self.recursive && self.retrieve) {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
@@ -242,7 +242,7 @@ var data = {
 						record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-						ignore.each(function (i) { record.data[k].data.ignore.add(i); });
+						if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 						if (self.recursive && self.retrieve) {
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
