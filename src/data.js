@@ -513,8 +513,6 @@ var data = {
 		 */
 		generate : function (key, uri) {
 			var params, idx;
-
-			if (typeof uri === "undefined") uri = this.uri + "/" + key;
 			
 			params = {
 				headers   : this.headers,
@@ -526,12 +524,27 @@ var data = {
 				source    : this.source
 			};
 
-			this.set(key, {}, true);
-			idx = this.keys[key].index;
-			this.collections.add(key);
+			// Create stub or teardown existing data store
+			if (typeof this.keys[key] !== "undefined") {
+				idx = this.keys[key].index;
+				if (typeof this.records[idx].data.teardown === "function") this.records[idx].data.teardown();
+			}
+			else {
+				this.set(key, {}, true);
+				idx = this.keys[key].index;
+				this.collections.add(key);
+			}
+
+			// Creating new child data store
 			this.records[idx] = data.register({id: this.parentNode.id + "-" + key}, null, params);
-			typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(uri) : this.records[idx].data.uri = uri;
-			return this;
+
+			// Conditionally making the store RESTful
+			if (this.uri !== null && typeof uri === "undefined") {
+				uri = this.uri + "/" + key;
+				typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(uri) : this.records[idx].data.uri = uri;
+			}
+
+			return this.records[idx].data;
 		},
 
 		/**
@@ -580,7 +593,7 @@ var data = {
 		},
 
 		/**
-		 * Reindices the data store
+		 * Reindexes the data store
 		 *
 		 * @method reindex
 		 * @return {Object} Data store
@@ -628,7 +641,9 @@ var data = {
 			switch (true) {
 				case (typeof key === "undefined" || String(key).isEmpty()) && this.uri === null:
 				case typeof data === "undefined":
+					throw Error(label.error.invalidArguments);
 				case data instanceof Array:
+					return this.generate(key).batch("set", data, true);
 				case data instanceof Number:
 				case data instanceof String:
 				case typeof data !== "object":
@@ -913,10 +928,7 @@ var data = {
 				observer.remove(uri);
 				id = this.parentNode.id + "DataExpire";
 
-				if (typeof $.repeating[id] !== "undefined") {
-					clearTimeout($.repeating[id]);
-					delete $.repeating[id];
-				}
+				utility.clearTimers(id);
 
 				records = this.get();
 				records.each(function (i) {
@@ -962,20 +974,17 @@ var data = {
 					    expires = arg,
 					    self    = this;
 
-					clearTimeout($.repeating[id]);
-					delete $.repeating[id];
+					utility.clearTimers(id);
 
 					if (arg === null) return;
 
-					utility.defer(function () {
-						utility.repeat(function () {
-							if (self.uri === null) {
-								typeof self.setExpires === "function" ? self.setExpires(null) : self.expires = null;
-								return false;
-							}
-							if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
-						}, expires, id);
-					}, expires);
+					utility.repeat(function () {
+						if (self.uri === null) {
+							typeof self.setExpires === "function" ? self.setExpires(null) : self.expires = null;
+							return false;
+						}
+						if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
+					}, expires, id);
 				}
 			},
 			uri : {

@@ -93,6 +93,28 @@ var utility = {
 	},
 
 	/**
+	 * Clears deferred & repeating functions
+	 * 
+	 * @param  {String} id ID of timer(s)
+	 * @return {Undefined} undefined
+	 */
+	clearTimers : function (id) {
+		if (typeof id === "undefined" || String(id).isEmpty()) throw Error(label.error.invalidArguments);
+
+		// deferred
+		if (typeof utility.timer[id] !== "undefined") {
+			clearTimeout(utility.timer[id]);
+			delete utility.timer[id];
+		}
+
+		// repeating
+		if (typeof $.repeating[id] !== "undefined") {
+			clearTimeout($.repeating[id]);
+			delete $.repeating[id];
+		}
+	},
+
+	/**
 	 * Clones an Object
 	 *
 	 * @method clone
@@ -948,13 +970,17 @@ var utility = {
 		ms = ms || 10;
 		id = id || utility.guid(true);
 
-		var recursive = function (fn, ms, id) {
-			var recursive = this;
+		utility.defer(function () {
+			var recursive = function (fn, ms, id) {
+				var recursive = this;
 
-			if (fn() !== false) utility.defer(function () { recursive.call(recursive, fn, ms, id); }, ms);
-		};
+				if (fn() !== false) $.repeating[id] = setTimeout(function () { recursive.call(recursive, fn, ms, id); }, ms);
+				else delete $.repeating[id];
+			};
 
-		recursive.call(recursive, fn, ms, id);
+			recursive.call(recursive, fn, ms, id);
+		}, ms, id);
+
 		return id;
 	},
 
