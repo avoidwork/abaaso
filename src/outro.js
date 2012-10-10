@@ -173,6 +173,7 @@ return {
 	ready           : false,
 	reflect         : utility.reflect,
 	repeat          : utility.repeat,
+	repeating       : {},
 	route           : {
 		enabled : false,
 		del     : route.del,
