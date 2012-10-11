@@ -44,7 +44,7 @@
 		this.store       = ref[0];
 
 		// Applying customization
-		if (options instanceof Object) utility.iterate(options, function (v, k) { self[k] = v; });
+		if (options instanceof Object) $.iterate(options, function (v, k) { self[k] = v; });
 
 		return this.bootstrap();
 	};
@@ -208,21 +208,21 @@
 			var html = String(self.template);
 
 			html = html.replace("{{" + self.store.key + "}}", i.key)
-			utility.iterate(i.data, function (v, k) {
+			$.iterate(i.data, function (v, k) {
 				regex.compile("{{" + k + "}}", "g");
 				html = html.replace(regex, v);
 			});
 			return {li: html.replace(cleanup, self.placeholder)};
 		}
 		else fn = function (i) {
-			var obj = json.encode(self.template);
+			var obj = $.encode(self.template);
 
 			obj = obj.replace("{{" + self.store.key + "}}", i.key)
-			json.iterate(i.data, function (v, k) {
+			$.iterate(i.data, function (v, k) {
 				regex.compile("{{" + k + "}}", "g");
-				obj = obj.replace(regex, json.encode(v).replace(/(^")|("$)/g, "")); // stripping first and last " to concat to valid JSON
+				obj = obj.replace(regex, $.encode(v).replace(/(^")|("$)/g, "")); // stripping first and last " to concat to valid JSON
 			});
-			obj = json.decode(obj.replace(cleanup, self.placeholder));
+			obj = $.decode(obj.replace(cleanup, self.placeholder));
 			return {li: obj};
 		};
 
@@ -233,7 +233,7 @@
 		consumed.each(function (i) {
 			if (self.filter === null || !(self.filter instanceof Object)) items.push({key: i.key, template: fn(i)});
 			else {
-				utility.iterate(self.filter, function (v, k) {
+				$.iterate(self.filter, function (v, k) {
 					if (registry.index(i.key) > -1) return;
 
 					var x     = 0,
