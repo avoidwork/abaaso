@@ -112,7 +112,7 @@ var data = {
 									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 									break;
 							}
-							else self.delete(i, false, sync);
+							else self.del(i, false, sync);
 						});
 				}
 			}
@@ -127,7 +127,7 @@ var data = {
 						else key = k.toString();
 						self.set(key, v, sync);
 					}
-					else self.delete(v, false, sync);
+					else self.del(v, false, sync);
 				});
 			}
 
@@ -269,7 +269,7 @@ var data = {
 		 * @param  {Boolean} sync    [Optional] True if called by data.sync
 		 * @return {Object}          Data store
 		 */
-		delete : function (record, reindex, sync) {
+		del : function (record, reindex, sync) {
 			if (typeof record === "undefined" || !/number|string/.test(typeof record)) throw Error(label.error.invalidArguments);
 
 			reindex  = (reindex !== false);
@@ -306,7 +306,7 @@ var data = {
 					obj.fire("syncDataDelete", args);
 					break;
 				case r.test(p):
-					uri.delete(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, utility.merge({withCredentials: this.credentials}, this.headers));
+					uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, utility.merge({withCredentials: this.credentials}, this.headers));
 					break;
 				default:
 					obj.fire("failedDataDelete", args);

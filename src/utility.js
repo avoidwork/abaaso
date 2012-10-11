@@ -855,7 +855,7 @@ var utility = {
 			           un       : function (event, id, state) { $.un.call(this.toString(), event, id, state); return this; }},
 			string  : {allows   : function (arg) { return client.allows(this, arg); },
 			           capitalize: function () { return string.capitalize(this); },
-			           delete   : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
+			           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
 			           escape   : function () { return string.escape(this); },
 			           expire   : function (silent) { return cache.expire(this, silent); },
 			           explode  : function (arg) { return string.explode(this, arg); },
