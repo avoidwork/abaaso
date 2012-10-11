@@ -374,6 +374,6 @@ var range = function () {
 	return [start, end];
 };
 
+// Registering module
 abaaso.module("datalist", datalist);
-
 })($);

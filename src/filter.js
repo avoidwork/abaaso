@@ -11,14 +11,6 @@
 
 var filter;
 
-/**
- * List filter factory
- * 
- * @param  {Object} obj      Element to receive the filter
- * @param  {Object} datalist List Module linked to the data store required
- * @param  {String} filters  Comma delimited string of fields to filter by
- * @return {Object}          Instance of filter
- */
 filter = function (obj, datalist, filters) {
 	var ref = [datalist];
 
@@ -89,7 +81,6 @@ filter.prototype.set = function (fields) {
 	return this;
 };
 
-
+// Registering module
 abaaso.module("filter", filter);
-
 })($);
