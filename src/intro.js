@@ -4,7 +4,7 @@ var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof document === "undefined",
-    abaaso, http, https, url;
+    $, abaaso, http, https, url;
 
 if (server) {
 	url   = require("url");
@@ -18,4 +18,4 @@ if (server) {
 abaaso = global.abaaso || (function () {
 "use strict";
 
-var $, bootstrap, error, external;
+var bootstrap, error, external;
