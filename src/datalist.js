@@ -17,39 +17,7 @@
  */
 var datalist = (function () {
 	var position = /bottom|top/,
-	    bootstrap, factory, garbage, now, pages, range; 
-
-	/**
-	 * Bootstraps the instance
-	 * @return {[type]} [description]
-	 */
-	bootstrap = function () {
-		var self = this,
-		    fn;
-
-		// Cleaning up orphaned element(s)
-		this.store.parentNode.on("afterDataDelete", function (r) {
-			this.element.fire("beforeDataListRefresh");
-			if (garbage(this.store.parentNode, element.id, "afterDataDelete", "delete-" + element.id)) return;
-			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.refresh();
-			else this.element.find("> li[data-key='" + r.key + "']").destroy();
-			this.element.fire("afterDataListRefresh");
-		}, "delete-" + element.id, this);
-
-		fn = function () {
-			var ev = this.store.retrieve ? "afterDataRetrieve" : "afterDataSync";
-
-			this.store.parentNode.once(ev, function () {
-				if (garbage(this.store.parentNode, element.id, ev, "refresh-" + element.id)) return;
-				if (!this.refreshing && (ev === "afterDataRetrieve" || this.store.loaded)) this.refresh();
-				fn.call(this);
-			}, "refresh-" + element.id, this);
-
-			if (now.call(this)) this.refresh();
-		}
-
-		now.call(this) ? fn.call(this) : this.store.parentNode.once(this.store.parentNode.retrieve ? "afterDataRetrieve" : "afterDataSync", fn, "initialize-" + element.id, this);
-	};
+	    factory, garbage, now, pages, range;
 
 	factory = function (target, store, template, options) {
 		var ref  = [store],
@@ -78,9 +46,38 @@ var datalist = (function () {
 		// Applying customization
 		if (options instanceof Object) utility.iterate(options, function (v, k) { self[k] = v; });
 
-		// Setting up instance
-		if (!client.ie || client.version > 8) bootstrap.call(this);
-		else utility.defer(function () { bootstrap.call(self); }, 25);
+		return this.bootstrap();
+	};
+
+	/**
+	 * Bootstraps the instance
+	 * @return {[type]} [description]
+	 */
+	factory.prototype.bootstrap = function () {
+		var fn;
+
+		// Cleaning up orphaned element(s)
+		this.store.parentNode.on("afterDataDelete", function (r) {
+			this.element.fire("beforeDataListRefresh");
+			if (garbage(this.store.parentNode, element.id, "afterDataDelete", "delete-" + element.id)) return;
+			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.refresh();
+			else this.element.find("> li[data-key='" + r.key + "']").destroy();
+			this.element.fire("afterDataListRefresh");
+		}, "delete-" + element.id, this);
+
+		fn = function () {
+			var ev = this.store.retrieve ? "afterDataRetrieve" : "afterDataSync";
+
+			this.store.parentNode.once(ev, function () {
+				if (garbage(this.store.parentNode, element.id, ev, "refresh-" + element.id)) return;
+				if (!this.refreshing && (ev === "afterDataRetrieve" || this.store.loaded)) this.refresh();
+				fn.call(this);
+			}, "refresh-" + element.id, this);
+
+			if (now.call(this)) this.refresh();
+		}
+
+		now.call(this) ? fn.call(this) : this.store.parentNode.once(this.store.parentNode.retrieve ? "afterDataRetrieve" : "afterDataSync", fn, "initialize-" + element.id, this);
 
 		return this;
 	};
