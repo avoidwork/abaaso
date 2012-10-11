@@ -47,7 +47,9 @@ var datalist = (function () {
 
 			if (now.call(this)) {
 				if (!client.ie || client.version > 8) this.refresh();
-				else utility.defer(self.refresh);
+				else utility.defer(function () {
+					factory.prototype.refresh.call(self);
+				});
 			}
 		}
 
