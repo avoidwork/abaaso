@@ -24,7 +24,6 @@ module.exports = function (grunt) {
 					"src/cookie.js",
 					"src/data.js",
 					"src/element.js",
-					"src/filter.js",
 					"src/json.js",
 					"src/label.js",
 					"src/message.js",
@@ -40,6 +39,7 @@ module.exports = function (grunt) {
 					"src/bootstrap.js",
 					"src/constructor.js",
 					"src/datalist.js",
+					"src/filter.js",
 					"src/outro.js"
 				],
 				dest : "lib/abaaso.js"

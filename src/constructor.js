@@ -35,7 +35,6 @@ return {
 	cookie          : cookie,
 	data            : data,
 	element         : element,
-	filter          : filter,
 	json            : json,
 	label           : label,
 	loading         : {
