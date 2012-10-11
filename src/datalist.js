@@ -17,34 +17,14 @@
  */
 var datalist = (function () {
 	var position = /bottom|top/,
-	    factory, garbage, now, pages, range; 
+	    bootstrap, factory, garbage, now, pages, range; 
 
-	factory = function (target, store, template, options) {
-		var ref  = [store],
-		    self = this,
-		    element, fn;
-
-		if (!(target instanceof Element) || typeof store !== "object" || !/string|object/.test(typeof template)) throw Error(label.error.invalidArguments);
-
-		element          = target.create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
-		this.element     = element;
-		this.callback    = null;
-		this.filter      = null;
-		this.pageIndex   = 1;
-		this.pageSize    = null;
-		this.pageRange   = 5;
-		this.pagination  = "bottom"; // "top" or "bottom|top" are also valid
-		this.placeholder = "";
-		this.order       = "";
-		this.ready       = false;
-		this.refreshing  = false;
-		this.template    = template;
-		this.total       = 0;
-		this.sensitivity = "ci";
-		this.store       = ref[0];
-
-		// Applying customization
-		if (options instanceof Object) utility.iterate(options, function (v, k) { self[k] = v; });
+	/**
+	 * Bootstraps the instance
+	 * @return {[type]} [description]
+	 */
+	bootstrap = function () {
+		var fn;
 
 		// Cleaning up orphaned element(s)
 		this.store.parentNode.on("afterDataDelete", function (r) {
@@ -68,6 +48,37 @@ var datalist = (function () {
 		}
 
 		now.call(this) ? fn.call(this) : this.store.parentNode.once(this.store.parentNode.retrieve ? "afterDataRetrieve" : "afterDataSync", fn, "initialize-" + element.id, this);
+	};
+
+	factory = function (target, store, template, options) {
+		var ref  = [store],
+		    self = this,
+		    element;
+
+		if (!(target instanceof Element) || typeof store !== "object" || !/string|object/.test(typeof template)) throw Error(label.error.invalidArguments);
+
+		element          = target.create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
+		this.element     = element;
+		this.callback    = null;
+		this.filter      = null;
+		this.pageIndex   = 1;
+		this.pageSize    = null;
+		this.pageRange   = 5;
+		this.pagination  = "bottom"; // "top" or "bottom|top" are also valid
+		this.placeholder = "";
+		this.order       = "";
+		this.ready       = false;
+		this.refreshing  = false;
+		this.template    = template;
+		this.total       = 0;
+		this.sensitivity = "ci";
+		this.store       = ref[0];
+
+		// Applying customization
+		if (options instanceof Object) utility.iterate(options, function (v, k) { self[k] = v; });
+
+		// Setting up instance
+		bootstrap.call(this);
 
 		return this;
 	};
