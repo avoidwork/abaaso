@@ -24,7 +24,8 @@ var datalist = (function () {
 	 * @return {[type]} [description]
 	 */
 	bootstrap = function () {
-		var fn;
+		var self = this,
+		    fn;
 
 		// Cleaning up orphaned element(s)
 		this.store.parentNode.on("afterDataDelete", function (r) {
@@ -44,7 +45,10 @@ var datalist = (function () {
 				fn.call(this);
 			}, "refresh-" + element.id, this);
 
-			if (now.call(this)) !client.ie || client.version > 8 ? this.refresh() : factory.prototype.refresh.call(this);
+			if (now.call(this)) {
+				if (!client.ie || client.version > 8) this.refresh();
+				else utility.defer(self.refresh);
+			}
 		}
 
 		now.call(this) ? fn.call(this) : this.store.parentNode.once(this.store.parentNode.retrieve ? "afterDataRetrieve" : "afterDataSync", fn, "initialize-" + element.id, this);
