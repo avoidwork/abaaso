@@ -44,7 +44,7 @@ var datalist = (function () {
 				fn.call(this);
 			}, "refresh-" + element.id, this);
 
-			if (now.call(this)) this.refresh();
+			if (now.call(this)) !client.ie || client.version > 8 ? this.refresh() : factory.prototype.refresh.call(this);
 		}
 
 		now.call(this) ? fn.call(this) : this.store.parentNode.once(this.store.parentNode.retrieve ? "afterDataRetrieve" : "afterDataSync", fn, "initialize-" + element.id, this);
