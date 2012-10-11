@@ -15,7 +15,7 @@
  * @param  {Object} options  Optional parameters to set on the DataList
  * @return {Object}          DataList instance
  */
-var datalist = (function () {
+(function ($) {
 	var position = /bottom|top/,
 	    factory, garbage, now, pages, range;
 
@@ -24,7 +24,7 @@ var datalist = (function () {
 		    self = this,
 		    element;
 
-		if (!(target instanceof Element) || typeof store !== "object" || !/string|object/.test(typeof template)) throw Error(label.error.invalidArguments);
+		if (!(target instanceof Element) || typeof store !== "object" || !/string|object/.test(typeof template)) throw Error($.label.error.invalidArguments);
 
 		element          = target.create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
 		this.element     = element;
@@ -89,7 +89,7 @@ var datalist = (function () {
 	 * @return {Object}     DataList instance
 	 */
 	factory.prototype.page = function (arg) {
-		if (isNaN(arg)) throw Error(label.error.invalidArguments);
+		if (isNaN(arg)) throw Error($.label.error.invalidArguments);
 
 		this.pageIndex = arg;
 		this.refresh();
@@ -115,7 +115,7 @@ var datalist = (function () {
 		    i     = 0,
 		    diff, li, anchor;
 
-		if (!position.test(pos)) throw Error(label.error.invalidArguments);
+		if (!position.test(pos)) throw Error($.label.error.invalidArguments);
 
 		// Removing the existing controls
 		list.each(function (i) { if (typeof i !== "undefined") i.destroy(); });
@@ -300,7 +300,7 @@ var datalist = (function () {
 	 * @return {Object}              DataList instance
 	 */
 	factory.prototype.sort = function (order, sensitivity) {
-		if (typeof order !== "string") throw Error(label.error.invalidArguments);
+		if (typeof order !== "string") throw Error($.label.error.invalidArguments);
 		this.element.fire("beforeDataListSort");
 		this.order       = order;
 		this.sensitivity = sensitivity || "ci";
@@ -357,7 +357,7 @@ var datalist = (function () {
 	 * @return {Number} Total pages
 	 */
 	pages = function () {
-		if (isNaN(this.pageSize)) throw Error(label.error.invalidArguments);
+		if (isNaN(this.pageSize)) throw Error($.label.error.invalidArguments);
 		return (this.total / this.pageSize).roundUp();
 	};
 
@@ -373,5 +373,6 @@ var datalist = (function () {
 		return [start, end];
 	};
 
-	return factory;
-})();
+	// Registering as a module
+	abaaso.module("datalist", factory);
+})($);
