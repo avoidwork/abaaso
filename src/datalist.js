@@ -290,10 +290,10 @@ var datalist = {
 			refreshing  : false,
 			template    : template,
 			total       : 0,
-			sensitivity : "ci",
-			store       : ref[0]
+			sensitivity : "ci"
 		};
 		instance = utility.extend(datalist.methods, params);
+		instance.store = ref[0];
 
 		// Applying customization
 		if (options instanceof Object) utility.iterate(options, function (v, k) { instance[k] = v; });
