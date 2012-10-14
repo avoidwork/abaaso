@@ -45,7 +45,7 @@ var observer = {
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 		// Named function, never removed
-		handler = function abaaso (e) {
+		handler = function abaaso (e, i) {
 			if (!allowed.test(e.type)) utility.stop(e);
 			observer.fire(obj, i, e);
 		};
@@ -69,7 +69,7 @@ var observer = {
 				if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
 					add = (typeof instance.addEventListener === "function");
 					reg = (typeof instance.attachEvent === "object" || add);
-					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, handler, false);
+					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) { handler(e, i); }, false);
 				}
 			}
 
