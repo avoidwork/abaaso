@@ -1,4 +1,7 @@
-}
+})();
+
+// Conditional bootstrap incase of multiple loading
+if (typeof abaaso.bootstrap === "function") abaaso.bootstrap();
 
 // Node, AMD & window supported
 switch (true) {

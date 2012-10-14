@@ -202,8 +202,3 @@ return {
 	version         : "{{VERSION}}",
 	walk            : utility.walk
 };
-})();
-
-// Conditional bootstrap incase of multiple loading
-if (typeof abaaso.bootstrap === "function") {
-abaaso.bootstrap();
