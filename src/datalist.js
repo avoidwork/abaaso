@@ -6,7 +6,7 @@
  * Requires a CSS class named "hidden" to toggle "display:none" of list items
  */
 var datalist = {
-	position : /top|botton/,
+	position : /top|bottom/,
 
 	// Inherited by data stores
 	methods : {
