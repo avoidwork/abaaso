@@ -34,6 +34,7 @@ return {
 	},
 	cookie          : cookie,
 	data            : data,
+	datalist        : datalist.factory,
 	element         : element,
 	json            : json,
 	label           : label,
