@@ -160,6 +160,7 @@ var data = {
 				this.ignore      = [];
 				this.key         = null;
 				this.keys        = {};
+				this.leafs       = [];
 				this.loaded      = false;
 				this.pointer     = null;
 				this.records     = [];
@@ -226,7 +227,8 @@ var data = {
 					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 					if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-					if (self.recursive && self.retrieve) {
+					self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
+					if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
 					}
@@ -244,7 +246,8 @@ var data = {
 						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-						if (self.recursive && self.retrieve) {
+						self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
+						if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
 						}
@@ -517,6 +520,7 @@ var data = {
 			params = {
 				headers   : this.headers,
 				ignore    : array.clone(this.ignore),
+				leafs     : array.clone(this.leafs),
 				key       : this.key,
 				pointer   : this.pointer,
 				recursive : this.recursive,
