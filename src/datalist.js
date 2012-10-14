@@ -206,7 +206,7 @@ var datalist = {
 			}
 
 			// Rendering pagination elements
-			if (position.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
+			if (datalist.position.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
 			else {
 				$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
 				if (typeof obj !== "undefined") obj.destroy();
