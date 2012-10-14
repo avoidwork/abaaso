@@ -1,6 +1,5 @@
 /**
- * Template data store, use $.store(obj), abaaso.store(obj) or abaaso.data(obj)
- * to register it with an Object
+ * DataStore
  *
  * RESTful behavior is supported, by setting the 'key' & 'uri' properties
  *

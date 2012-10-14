@@ -1,10 +1,8 @@
 /**
- * DataList filter factory
+ * DataList Filter
  * 
- * @param  {Object} obj      Element to receive the filter
- * @param  {Object} datalist List Module linked to the data store required
- * @param  {String} filters  Comma delimited string of fields to filter by
- * @return {Object}          Filter instance
+ * @class filter
+ * @namespace abaaso
  */
 var filter = {
 	methods : {
@@ -66,6 +64,14 @@ var filter = {
 		}
 	},
 
+	/**
+	 * DataList filter factory
+	 * 
+	 * @param  {Object} obj      Element to receive the filter
+	 * @param  {Object} datalist List Module linked to the data store required
+	 * @param  {String} filters  Comma delimited string of fields to filter by
+	 * @return {Object}          Filter instance
+	 */
 	factory : function (obj, datalist, filters) {
 		var instance = {},
 		    ref = [datalist];

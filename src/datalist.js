@@ -2,8 +2,10 @@
  * DataList
  *
  * Provides a reactive View of a DataStore
- *
  * Requires a CSS class named "hidden" to toggle "display:none" of list items
+ *
+ * @class datalist
+ * @namespace abaaso
  */
 var datalist = {
 	position : /top|bottom/,
