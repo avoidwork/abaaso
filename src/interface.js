@@ -33,9 +33,10 @@ return {
 		permissions : client.permissions
 	},
 	cookie          : cookie,
-	data            : data,
+	data            : data.factory,
 	datalist        : datalist.factory,
 	element         : element,
+	filter          : filter.factory,
 	json            : json,
 	label           : label,
 	loading         : {
@@ -185,7 +186,7 @@ return {
 	stylesheet      : utility.stylesheet,
 	script          : utility.script,
 	stop            : utility.stop,
-	store           : function (obj, arg, args) { return data.register.call(data, obj, arg, args); },
+	store           : data.factory,
 	tpl             : utility.tpl,
 	un              : function (obj, event, id, state) {
 		var all = typeof id !== "undefined",

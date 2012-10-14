@@ -1,10 +1,8 @@
 /**
- * Template data store, use $.store(obj), abaaso.store(obj) or abaaso.data.register(obj)
+ * Template data store, use $.store(obj), abaaso.store(obj) or abaaso.data(obj)
  * to register it with an Object
  *
  * RESTful behavior is supported, by setting the 'key' & 'uri' properties
- *
- * Do not use this directly!
  *
  * @class data
  * @namespace abaaso
@@ -224,7 +222,7 @@ var data = {
 				if (v instanceof Array) {
 					// Possibly a subset of the collection, so it relies on valid URI paths
 					if (!self.collections.contains(k)) self.collections.push(k);
-					record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
+					record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 					if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
 					self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
@@ -242,7 +240,7 @@ var data = {
 					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
 					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
 						if (!self.collections.contains(k)) self.collections.push(k);
-						record.data[k] = data.register({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
+						record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
@@ -540,7 +538,7 @@ var data = {
 			}
 
 			// Creating new child data store
-			this.records[idx] = data.register({id: this.parentNode.id + "-" + key}, null, params);
+			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
 
 			// Conditionally making the store RESTful
 			if (this.uri !== null && typeof uri === "undefined") {
@@ -964,7 +962,7 @@ var data = {
 	 * @param  {Object} args [Optional] Arguments to set on the store
 	 * @return {Object}      Object registered with
 	 */
-	register : function (obj, data, args) {
+	factory : function (obj, recs, args) {
 		var methods = {
 			expires : {
 				getter : function () { return this._expires; },
@@ -1022,7 +1020,7 @@ var data = {
 
 		obj.fire("beforeDataStore");
 
-		obj.data = utility.extend(this.methods);
+		obj.data = utility.extend(data.methods);
 		obj.data.parentNode = obj; // Recursion, useful
 		obj.data.clear();          // Setting properties
 
@@ -1125,7 +1123,7 @@ var data = {
 				};
 		}
 
-		if (typeof data === "object" && data !== null) obj.data.batch("set", data);
+		if (typeof recs === "object" && recs !== null) obj.data.batch("set", recs);
 		obj.fire("afterDataStore");
 		return obj;
 	}

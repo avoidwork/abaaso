@@ -20,7 +20,7 @@ sample.push({
 // Performing data.batch() "in" and "out" performs all core functions
 exports["batch"] = {
 	setUp: function (done) {
-		this.store = data.register({id: "test"}, null, {key: "id"});
+		this.store = data({id: "test"}, null, {key: "id"});
 		done();
 	},
 	direct: function (test) {
@@ -35,7 +35,7 @@ exports["batch"] = {
 
 exports["delimited"] = {
 	setUp: function (done) {
-		this.store = data.register({id: "test"}, sample, {key: "id"});
+		this.store = data({id: "test"}, sample, {key: "id"});
 		done();
 	},
 	direct: function (test) {
@@ -51,7 +51,7 @@ exports["delimited"] = {
 
 exports["find"] = {
 	setUp: function (done) {
-		this.store = data.register({id: "test"}, null, {key: "id"});
+		this.store = data({id: "test"}, null, {key: "id"});
 		done();
 	},
 	direct: function (test) {
@@ -65,7 +65,7 @@ exports["find"] = {
 
 exports["sort"] = {
 	setUp: function (done) {
-		this.store = data.register({id: "test"}, null, {key: "id"});
+		this.store = data({id: "test"}, null, {key: "id"});
 		done();
 	},
 	direct: function (test) {
@@ -80,7 +80,7 @@ exports["sort"] = {
 
 exports["storage"] = {
 	setUp: function (done) {
-		this.store = data.register({id: "test"}, null, {key: "id"});
+		this.store = data({id: "test"}, null, {key: "id"});
 		done();
 	},
 	direct: function (test) {
@@ -99,7 +99,7 @@ exports["storage"] = {
 
 exports["teardown"] = {
 	setUp: function (done) {
-		this.store = data.register({id: "test"}, null, {key: "id"});
+		this.store = data({id: "test"}, null, {key: "id"});
 		done();
 	},
 	direct: function (test) {

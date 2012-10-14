@@ -72,10 +72,9 @@ var filter = {
 
 		if (!(obj instanceof Element) || (typeof datalist !== "undefined" && typeof datalist.store === "undefined") || (typeof filters !== "string" || String(filters).isEmpty())) throw Error($.label.error.invalidArguments);
 
-		instance = utility.extend(filter.methods);
+		instance = utility.extend(filter.methods, {filters: {}});
 		instance.datalist = ref[0];
 		instance.element  = obj;
-		instance.filters  = {};
 		instance.set(filters);
 		instance.element.on("afterValue", this.update, "value", this);
 		return instance.init();
