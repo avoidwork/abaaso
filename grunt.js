@@ -25,7 +25,7 @@ module.exports = function (grunt) {
 					"src/data.js",
 					"src/datalist.js",
 					"src/element.js",
-					//"src/filter.js",
+					"src/filter.js",
 					"src/json.js",
 					"src/label.js",
 					"src/message.js",
