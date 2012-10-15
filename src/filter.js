@@ -53,7 +53,7 @@ var filter = {
 			var val = this.element.val();
 			
 			if (!val.isEmpty()) {
-				$.iterate(this.filters, function (v, k) { this[k] = "^" + val.escape().replace("\\*", ".*"); });
+				utility.iterate(this.filters, function (v, k) { this[k] = "^" + val.escape().replace("\\*", ".*"); });
 				this.datalist.filter = this.filters;
 			}
 			else this.datalist.filter = null;
@@ -82,7 +82,7 @@ var filter = {
 		instance.datalist = ref[0];
 		instance.element  = obj;
 		instance.set(filters);
-		instance.element.on("afterValue", this.update, "value", this);
+		instance.element.on("afterValue", instance.update, "value", instance);
 		return instance.init();
 	}
 };
