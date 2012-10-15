@@ -44,8 +44,7 @@ var observer = {
 
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		// Named function, never removed
-		handler = function abaaso (e, i) {
+		handler = function (e, i) {
 			if (!allowed.test(e.type)) utility.stop(e);
 			observer.fire(obj, i, e);
 		};
