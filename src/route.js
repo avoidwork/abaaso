@@ -131,15 +131,17 @@ var route = {
 			case !server:
 				result = array.cast(route.routes.all.all, true);
 				break;
-			case typeof verb !== "undefined":
+			case typeof verb !== "undefined" && route.routes.hasOwnProperty(host):
 				result = array.cast(route.routes[host][route.method(verb)], true);
 				break;
 			default:
 				result = {};
-				utility.iterate(route.routes[host], function (v, k) {
-					result[k] = [];
-					utility.iterate(v, function (fn, r) { result[k].push(r); });
-				});
+				if (route.routes.hasOwnProperty(host)) {
+					utility.iterate(route.routes[host], function (v, k) {
+						result[k] = [];
+						utility.iterate(v, function (fn, r) { result[k].push(r); });
+					});
+				}
 		}
 
 		if (!server && host !== "all") {
