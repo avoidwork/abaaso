@@ -253,12 +253,6 @@ var datalist = {
 
 	/**
 	 * Creates an instance of datalist
-	 * 
-	 * Options: callback    Function to execute after creating a templated record display, parameter is the new Element
-	 *          filter      Object describing key:value pairs to filter the list on ({property: "someValue"}), accepts comma delimited values
-	 *          placeholder String to use in lieu of an undefined record (data) property
-	 *          start       Start position for pagination
-	 *          end         End position for pagination
 	 *
 	 * Events: beforeDataList  Fires before target receives the DataList
 	 *         afterDataList   Fires after DataList is setup in target
