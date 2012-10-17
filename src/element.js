@@ -626,7 +626,10 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	val : function (obj, value) {
-		var output = null, items;
+		var output = null,
+		    select = /^select$/i,
+		    check  = /^(radio|checkbox)$/i,
+		    items;
 
 		obj = utility.object(obj);
 
@@ -635,7 +638,7 @@ var element = {
 		switch (true) {
 			case typeof value === "undefined":
 				switch (true) {
-					case (/radio|checkbox/gi.test(obj.type)):
+					case (check.test(obj.type)):
 						if (obj.name.isEmpty()) throw Error(label.error.expectedProperty);
 						items = $("input[name='" + obj.name + "']");
 						items.each(function (i) {
@@ -643,7 +646,7 @@ var element = {
 							if (i.checked) output = i.value;
 						});
 						break;
-					case (/select/gi.test(obj.type)):
+					case (select.test(obj.type)):
 						output = obj.options[obj.selectedIndex].value;
 						break;
 					default:
@@ -655,22 +658,22 @@ var element = {
 				value = String(value);
 				obj.fire("beforeValue");
 				switch (true) {
-					case (/radio|checkbox/gi.test(obj.type)):
+					case (check.test(obj.type)):
 						items = $("input[name='" + obj.name + "']");
 						items.each(function (i) {
-							if (output !== null) return;
 							if (i.value === value) {
 								i.checked = true;
 								output    = i;
+								return false;
 							}
 						});
 						break;
-					case (/select/gi.test(obj.type)):
-						array.cast(obj.options).each(function (i) {
-							if (output !== null) return;
+					case (select.test(obj.type)):
+						obj.find("> *").each(function (i) {
 							if (i.value === value) {
 								i.selected = true;
 								output     = i;
+								return false;
 							}
 						});
 						break;
