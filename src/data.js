@@ -34,6 +34,7 @@ var data = {
 			    nth  = 0,
 			    f    = false,
 			    guid = utility.genId(true),
+			    root = /^\/[^\/]/,
 			    completed, failure, key, set, success;
 
 			completed = function () {
@@ -102,7 +103,9 @@ var data = {
 									set(i, idx);
 									break;
 								case i.indexOf("//") === -1 && i.charAt(0) !== "/": // Relative path to store, i.e. a child
-									i   = self.uri + "/" + i;
+									i   = "/" + i;
+								case root.test(i): // Root path, relative to store (e.g. a domain);
+									i   = self.uri + i;
 								default:
 									idx = i.replace(/.*\//, "");
 									if (idx.isEmpty()) break;
