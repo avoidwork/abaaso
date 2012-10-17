@@ -110,12 +110,12 @@ var datalist = {
 			redraw       = (redraw !== false);
 			var element  = this.element,
 			    template = (typeof this.template === "object"),
-			    key      = (!template && String(this.template).replace(/{{|}}/g, "") === this.store.key),
+			    key      = (!template && String(this.template).replace(/\{\{|\}\}/g, "") === this.store.key),
 			    consumed = [],
 			    items    = [],
 			    self     = this,
 			    callback = (typeof this.callback === "function"),
-			    cleanup  = /{{.*}}/g,
+			    cleanup  = /\{\{.*\}\}/g,
 			    regex    = new RegExp(),
 			    registry = [], // keeps track of records in the list (for filtering)
 			    limit    = [],

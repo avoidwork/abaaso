@@ -28,7 +28,7 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 1. Install node.js & npm
 2. Run "npm install grunt -g"
 3. Run "git clone git://github.com/avoidwork/abaaso.git"
-4. Enter the abaaso directory & run "grunt" (this builds abaaso into _dist_ & runs the unit tests)
+4. Enter the abaaso directory & run "grunt" (this builds abaaso into _lib_ & runs the unit tests)
 
 ## License
 
