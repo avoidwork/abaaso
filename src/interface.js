@@ -159,6 +159,7 @@ return {
 		return observer.once(o, e, l, i, s, st);
 	},
 	options         : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
+	parse           : utility.parse,
 	permissions     : client.permissions,
 	position        : element.position,
 	post            : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
