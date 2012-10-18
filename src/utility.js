@@ -545,7 +545,7 @@ var utility = {
 		parsed = {
 			protocol : obj.protocol,
 			hostname : obj.hostname,
-			port     : obj.port,
+			port     : !obj.port.isEmpty() ? parseInt(obj.port) : "",
 			pathname : obj.pathname,
 			search   : obj.search,
 			hash     : obj.hash,

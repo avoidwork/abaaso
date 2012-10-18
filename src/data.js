@@ -35,7 +35,7 @@ var data = {
 			    f    = false,
 			    guid = utility.genId(true),
 			    root = /^\/[^\/]/,
-			    completed, failure, key, set, success;
+			    completed, failure, key, set, success, parsed;
 
 			completed = function () {
 				if (type === "delete") self.reindex();
@@ -105,7 +105,8 @@ var data = {
 								case i.indexOf("//") === -1 && i.charAt(0) !== "/": // Relative path to store, i.e. a child
 									i   = "/" + i;
 								case root.test(i): // Root path, relative to store (e.g. a domain);
-									i   = utility.parse(self.uri).hostname + i;
+								    parsed = utility.parse(self.uri);
+									i      = parsed.protocol + "//" + parsed.host + i;
 								default:
 									idx = i.replace(/.*\//, "");
 									if (idx.isEmpty()) break;
