@@ -105,7 +105,7 @@ var data = {
 								case i.indexOf("//") === -1 && i.charAt(0) !== "/": // Relative path to store, i.e. a child
 									i   = "/" + i;
 								case root.test(i): // Root path, relative to store (e.g. a domain);
-									i   = self.uri + i;
+									i   = utility.parse(self.uri).hostname + i;
 								default:
 									idx = i.replace(/.*\//, "");
 									if (idx.isEmpty()) break;

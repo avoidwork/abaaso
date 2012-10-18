@@ -531,6 +531,31 @@ var utility = {
 	},
 
 	/**
+	 * Parses a URI into an Object
+	 * 
+	 * @param  {String} uri URI to parse
+	 * @return {Object}     Parsed URI
+	 */
+	parse : function (uri) {
+		var obj    = document.createElement("a"),
+		    parsed = {};
+
+		obj.href = uri;
+
+		parsed = {
+			protocol : obj.protocol,
+			hostname : obj.hostname,
+			port     : obj.port,
+			pathname : obj.pathname,
+			search   : obj.search,
+			hash     : obj.hash,
+			host     : obj.host,
+		};
+
+		return parsed;
+	},
+
+	/**
 	 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
 	 * 
 	 * @method property
