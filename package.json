@@ -33,5 +33,5 @@
   "devDependencies": {
     "grunt": "~0.3.12"
   },
-  "keywords": []
+  "keywords": ["rest", "api", "consumer", "hateoas", "server", "proxy"]
 }
