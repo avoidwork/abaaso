@@ -973,7 +973,8 @@ var data = {
 			expires : {
 				getter : function () { return this._expires; },
 				setter : function (arg) {
-					if (arg !== null && this.uri === null  && isNaN(arg)) throw Error(label.error.invalidArguments);
+					// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
+					if ((arg !== null && this.uri === null) || (arg !== null && (isNaN(arg) || arg < 1000))) throw Error(label.error.invalidArguments);
 
 					if (this._expires === arg) return;
 					this._expires = arg;
