@@ -32,6 +32,7 @@ module.exports = function (grunt) {
 					"src/mouse.js",
 					"src/number.js",
 					"src/observer.js",
+					"src/promise.js",
 					"src/route.js",
 					"src/string.js",
 					"src/utility.js",

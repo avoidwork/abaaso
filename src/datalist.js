@@ -10,7 +10,7 @@
 var datalist = {
 	position : /top|bottom/,
 
-	// Inherited by data stores
+	// Inherited by datalists
 	methods : {
 		/**
 		 * Changes the page index of the DataList

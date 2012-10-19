@@ -167,6 +167,7 @@ return {
 		if (obj instanceof Element) obj.genId();
 		return element.create(type, args, obj, "first");
 	},
+	promise         : promise.factory,
 	property        : utility.property,
 	put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 	queryString     : utility.queryString,
