@@ -26,9 +26,9 @@ var promise = {
 		},
 
 		/**
-		 * Promise is broken
+		 * Registers a failure handler for a Promise
 		 * 
-		 * @param  {Function} fn Function to execute upon broken promise
+		 * @param  {Function} fn Executed when/if promise is broken
 		 * @return {Object}      Promise instance
 		 */
 		fail : function (fn) {
@@ -65,7 +65,7 @@ var promise = {
 		},
 
 		/**
-		 * Registers handlers for a Promise
+		 * Registers handler(s) for a Promise
 		 * 
 		 * @param  {Function} success Executed when/if promise is resolved
 		 * @param  {Function} failure [Optional] Executed when/if promise is broken
