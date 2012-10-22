@@ -125,6 +125,8 @@ var promise = {
 		this.error     = null;
 		this.fulfilled = null;
 
+		if (typeof Object.freeze === "function") Object.freeze(this);
+
 		return this;
 	},
 
