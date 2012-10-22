@@ -9,15 +9,15 @@
 var promise = {
 	// States of a promise
 	state : {
-		broken   : "broken",
-		initial  : "unresolved",
-		complete : "kept",
+		broken  : "smashed",
+		initial : "unresolved",
+		kept    : "fulfilled",
 	},
 
 	// Inherited by promises
 	methods : {
 		/**
-		 * Promise cannot be kept
+		 * Promise is broken
 		 * 
 		 * @param  {Function} fn Function to execute upon broken promise
 		 * @return {Object}      Promise instance
@@ -28,33 +28,46 @@ var promise = {
 		},
 
 		/**
-		 * Keeps a promise
+		 * Promise is kept
 		 * 
 		 * @param  {String} arg Promise status
 		 * @return {Object}     Promise instance
 		 */
-		keep : function (arg) {
-			promise.resolve.call(this, promise.state.complete, arg);
+		fulfill : function (arg) {
+			promise.resolve.call(this, promise.state.kept, arg);
 			return this;
 		},
 
 		/**
-		 * Returns status of promise
+		 * Smashes a Promise
+		 * 
+		 * @return {String} Status of promise
+		 */
+		smash : function (arg) {
+			promise.resolve.call(this, promise.state.broken, arg);
+			return this;
+		},
+
+		/**
+		 * Returns status of a Promise
 		 * 
 		 * @return {String} Status of promise
 		 */
 		status : function () {
-			return this.status;
+			return this.state;
 		},
 
 		/**
-		 * When a promise is kept, execute a function
+		 * Registers handlers for a Promise
 		 * 
-		 * @param  {Function} fn Function to execute
-		 * @return {Object}      Promise instance
+		 * @param  {Function} success Executed when/if promise is kept
+		 * @param  {Function} failure [Optional] Executed when/if promise is broken
+		 * @return {Object}           Promise instance
 		 */
-		when : function (fn) {
-			promise.vouch.call(this, promise.state.complete, fn);
+		when : function (success, failure) {
+			if (typeof success !== "function") throw Error(label.error.invalidArguments);
+			promise.vouch.call(this, promise.state.kept, success);
+			if (typeof failure === "function") this.fail(failure);
 			return this;
 		}
 	},
@@ -70,9 +83,9 @@ var promise = {
 
 		// Promise structure
 		params = {
-			broken  : [],
+			failed  : [],
 			outcome : null,
-			status  : promise.state.initial,
+			state   : promise.state.initial,
 			waiting : []
 		};
 
@@ -81,19 +94,19 @@ var promise = {
 	},
 
 	/**
-	 * Resolves a promise (kept or broken)
+	 * Resolves a Promise (kept or broken)
 	 * 
 	 * @param  {String} state State to resolve
 	 * @param  {String} val   Value to set
 	 * @return {Object}       Promise instance
 	 */
 	resolve : function (state, val) {
-		if (this.status !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{status}}", this.status));
+		if (this.state !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{status}}", this.status));
 
-		this.status  = state;
+		this.state   = state;
 		this.outcome = val;
 
-		this[state === promise.state.complete ? "waiting" : "broken"].each(function (fn) {
+		this[state === promise.state.kept ? "waiting" : "failed"].each(function (fn) {
 			try {
 				if (typeof fn === "function") fn(val);
 			}
@@ -102,7 +115,7 @@ var promise = {
 			}
 		});
 
-		this.broken  = null;
+		this.failed  = null;
 		this.waiting = null;
 
 		return this;
@@ -117,9 +130,9 @@ var promise = {
 	 */
 	vouch : function (state, fn) {
 		if (String(state).isEmpty() || typeof fn !== "function") throw Error(label.error.invalidArguments);
-		switch (this.status) {
+		switch (this.state) {
 			case promise.state.initial:
-				this[state === promise.state.complete ? "waiting" : "broken"].push(fn);
+				this[state === promise.state.kept ? "waiting" : "failed"].add(fn);
 				break;
 			case state:
 				fn(this.outcome);
