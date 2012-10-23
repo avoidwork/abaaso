@@ -14,9 +14,9 @@ var xml = {
 	 */
 	decode : function (arg) {
 		try {
-			if (typeof arg !== "string" || arg.isEmpty()) throw Error(label.error.invalidArguments);
-
 			var x;
+
+			if (typeof arg !== "string" || arg.isEmpty()) throw Error(label.error.invalidArguments);
 
 			if (client.ie) {
 				x = new ActiveXObject("Microsoft.XMLDOM");
@@ -43,9 +43,9 @@ var xml = {
 		try {
 			if (typeof arg === "undefined") throw Error(label.error.invalidArguments);
 
-			wrap = !(wrap === false);
-			var x    = wrap ? "<xml>" : "",
-			    top  = !(arguments[2] === false),
+			wrap    = !(wrap === false);
+			var x   = wrap ? "<xml>" : "",
+			    top = !(arguments[2] === false),
 			    node, i;
 
 			if (arg !== null && typeof arg.xml !== "undefined") arg = arg.xml;

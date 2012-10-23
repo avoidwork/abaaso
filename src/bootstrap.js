@@ -271,6 +271,6 @@ bootstrap = function () {
 			document.attachEvent("onreadystatechange", fn);
 			break;
 		default:
-			utility.timer.init = utility.repeat(fn);
+			utility.repeat(fn);
 	}
 };

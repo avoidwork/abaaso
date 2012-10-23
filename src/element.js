@@ -521,7 +521,7 @@ var element = {
 		 * @return {Number}  The casted value or zero
 		 */
 		num = function (n) {
-			return !isNaN(parseInt(n)) ? parseInt(n) : 0;
+			return !isNaN(n) ? parseInt(n) : 0;
 		};
 
 		height = obj.offsetHeight + num(obj.style.paddingTop)  + num(obj.style.paddingBottom) + num(obj.style.borderTop)  + num(obj.style.borderBottom);
@@ -580,9 +580,10 @@ var element = {
 	 * @return {Object}      Element
 	 */
 	update : function (obj, args) {
+		var regex;
+
 		obj  = utility.object(obj);
 		args = args || {};
-		var regex;
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 

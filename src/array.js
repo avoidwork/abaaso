@@ -135,7 +135,9 @@ var array = {
 	indexed : function (obj) {
 		var indexed = [];
 
-		utility.iterate(obj, function (v, k) { typeof v === "object" ? indexed = indexed.concat(array.indexed(v)) : indexed.push(v); });
+		utility.iterate(obj, function (v, k) {
+			typeof v === "object" ? indexed = indexed.concat(array.indexed(v)) : indexed.push(v);
+		});
 		return indexed;
 	},
 

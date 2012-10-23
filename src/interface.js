@@ -55,6 +55,17 @@ return {
 		once    : observer.once,
 		remove  : observer.remove
 	},
+	repeating       : {},
+	route           : {
+		enabled : false,
+		del     : route.del,
+		hash    : route.hash,
+		init    : route.init,
+		list    : route.list,
+		load    : route.load,
+		server  : route.server,
+		set     : route.set
+	},
 	state           : {
 		_current    : null,
 		header      : null,
@@ -174,17 +185,6 @@ return {
 	ready           : false,
 	reflect         : utility.reflect,
 	repeat          : utility.repeat,
-	repeating       : {},
-	route           : {
-		enabled : false,
-		del     : route.del,
-		hash    : route.hash,
-		init    : route.init,
-		list    : route.list,
-		load    : route.load,
-		server  : route.server,
-		set     : route.set
-	},
 	stylesheet      : utility.stylesheet,
 	script          : utility.script,
 	stop            : utility.stop,

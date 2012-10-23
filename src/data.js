@@ -628,8 +628,8 @@ var data = {
 		/**
 		 * Creates or updates an existing record
 		 *
-		 * If a POST is issued, and the data.key property is not set the
-		 * first property of the response object will be used as the key
+		 * If a POST is issued and the data.key property is not set, the
+		 * URI is parsed for the key
 		 *
 		 * Events: beforeDataSet  Fires before the record is set
 		 *         afterDataSet   Fires after the record is set, the record is the argument for listeners

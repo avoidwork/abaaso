@@ -24,7 +24,12 @@ var mouse = {
 	 * @return {Object}  abaaso.mouse
 	 */
 	track : function (e) {
-		var m = abaaso.mouse;
+		var m = abaaso.mouse,
+		    e = "mousemove",
+		    n = "tracking";
+
+		if (server) return m;
+
 		switch (true) {
 			case typeof e === "object":
 				var view = document[client.ie && client.version < 9 ? "documentElement" : "body"],
@@ -45,7 +50,7 @@ var mouse = {
 				if (c && m.log) utility.log(m.pos.x + " [" + m.diff.x + "], " + m.pos.y + " [" + m.diff.y + "]");
 				break;
 			case typeof e === "boolean":
-				e ? observer.add(document, "mousemove", abaaso.mouse.track, "tracking") : observer.remove(document, "mousemove", "tracking");
+				e ? observer.add(document, e, abaaso.mouse.track, n) : observer.remove(document, e, n);
 				$.mouse.enabled = m.enabled = e;
 				break;
 		}

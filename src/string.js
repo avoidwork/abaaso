@@ -46,8 +46,9 @@ var string = {
 	 * @return {String}       String with dashes instead of spaces
 	 */
 	hyphenate : function (obj, camel) {
-		camel = (camel === true);
 		var result;
+
+		camel = (camel === true);
 
 		result = string.trim(obj).replace(/\s+/g, "-");
 		if (camel) result = result.replace(/([A-Z])/g, "-\$1").toLowerCase();
