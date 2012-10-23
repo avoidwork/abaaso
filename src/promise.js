@@ -108,7 +108,7 @@ var promise = {
 	 * @return {Object}       Promise instance
 	 */
 	resolve : function (state, val) {
-		if (this.state !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{status}}", this.status));
+		if (this.state !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{outcome}}", this.outcome));
 
 		this.state   = state;
 		this.outcome = val;

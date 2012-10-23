@@ -26,7 +26,7 @@ exports["kept"] = {
 		done();
 	},
 	test: function (test) {
-		test.expect(10);
+		test.expect(11);
 		test.equal(this.promise.then(this.handler), this.promise, "Should be instance");
 		test.equal(this.promise.status(), "unfulfilled", "Should be \"unfulfilled\"");
 		test.equal(this.promise.resolved(), false, "Should be false");
@@ -37,6 +37,7 @@ exports["kept"] = {
 		test.equal(this.promise.fulfilled, null, "Should match");
 		test.equal(this.promise.error, null, "Should match");
 		test.equal(Object.isFrozen(this.promise), true, "Should match");
+		test.throws(function () { this.promise.done(this.outcome); }, Error, "Promise is fulfilled");
 		test.done();
 	}
 };
@@ -50,7 +51,7 @@ exports["unkept"] = {
 		done();
 	},
 	test: function (test) {
-		test.expect(11);
+		test.expect(12);
 		test.equal(this.promise.then(this.success, this.failure), this.promise, "Should be instance");
 		test.equal(this.promise.status(), "unfulfilled", "Should be \"unfulfilled\"");
 		test.equal(this.promise.resolved(), false, "Should be false");
@@ -62,6 +63,7 @@ exports["unkept"] = {
 		test.equal(this.promise.fulfilled, null, "Should match");
 		test.equal(this.promise.error, null, "Should match");
 		test.equal(Object.isFrozen(this.promise), true, "Should match");
+		test.throws(function () { this.promise.done(this.outcome); }, Error, "Promise is fulfilled");
 		test.done();
 	}
 };
