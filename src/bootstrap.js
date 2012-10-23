@@ -165,7 +165,6 @@ bootstrap = function () {
 	delete $.$;
 	delete $.bootstrap;
 	delete $.callback;
-	delete $.data;
 	delete $.init;
 	delete $.loading;
 

@@ -33,10 +33,7 @@ return {
 		permissions : client.permissions
 	},
 	cookie          : cookie,
-	data            : data.factory,
-	datalist        : datalist.factory,
 	element         : element,
-	filter          : filter.factory,
 	json            : json,
 	label           : label,
 	loading         : {
@@ -91,6 +88,8 @@ return {
 	compile         : utility.compile,
 	create          : element.create,
 	css             : utility.css,
+	data            : data.factory,
+	datalist        : datalist.factory,
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
@@ -101,6 +100,7 @@ return {
 	expire          : cache.clean,
 	expires         : 120000,
 	extend          : utility.extend,
+	filter          : filter.factory,
 	fire            : function (arg) {
 		var local = (typeof arg === "string"),
 		    args  = array.cast(arguments),
