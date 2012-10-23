@@ -15,25 +15,13 @@ var promise = {
 	// Inherited by promises
 	methods : {
 		/**
-		 * Promise is resolved
-		 * 
-		 * @param  {String} arg Promise status
-		 * @return {Object}     Promise instance
-		 */
-		done : function (arg) {
-			promise.resolve.call(this, promise.state.resolved, arg);
-			return this;
-		},
-
-		/**
 		 * Registers a failure handler for a Promise
 		 * 
 		 * @param  {Function} fn Executed when/if promise is broken
 		 * @return {Object}      Promise instance
 		 */
 		fail : function (fn) {
-			promise.vouch.call(this, promise.state.broken, fn);
-			return this;
+			return promise.vouch.call(this, promise.state.broken, fn);
 		},
 
 		/**
@@ -42,8 +30,17 @@ var promise = {
 		 * @return {String} Status of promise
 		 */
 		reject : function (arg) {
-			promise.resolve.call(this, promise.state.broken, arg);
-			return this;
+			return promise.resolve.call(this, promise.state.broken, arg);
+		},
+
+		/**
+		 * Promise is resolved
+		 * 
+		 * @param  {String} arg Promise status
+		 * @return {Object}     Promise instance
+		 */
+		resolve : function (arg) {
+			return promise.resolve.call(this, promise.state.resolved, arg);
 		},
 
 		/**
@@ -69,13 +66,50 @@ var promise = {
 		 * 
 		 * @param  {Function} success Executed when/if promise is resolved
 		 * @param  {Function} failure [Optional] Executed when/if promise is broken
-		 * @return {Object}           Promise instance
+		 * @return {Object}           New Promise instance
 		 */
 		then : function (success, failure) {
-			if (typeof success !== "function") throw Error(label.error.invalidArguments);
-			promise.vouch.call(this, promise.state.resolved, success);
-			if (typeof failure === "function") this.fail(failure);
-			return this;
+			var self     = this,
+			    instance = promise.factory(),
+			    fn;
+
+			fn = function (yay) {
+				var handler = yay ? success : failure,
+				    result;
+
+				try {
+					if (typeof handler !== "function") throw self.outcome;
+					result = handler(self.outcome);
+					if (!yay && typeof instance.fulfilled === "function") self.state = promise.state.resolved
+				}
+				catch (e) {
+					result     = e.message || e;
+					self.state = promise.state.broken;
+				}
+				finally {
+					if (typeof result !== "undefined") self.outcome = result;
+					switch (true) {
+						case instance.fulfilled === null && instance.error === null:
+							result = self;
+							break;
+						case self.state === promise.state.resolved && instance.fulfilled !== null:
+							result = instance.resolve(self.outcome);
+							break;
+						case self.state === promise.state.broken && instance.error !== null:
+							result = instance.reject(self.outcome);
+							break;
+					}
+				}
+
+				self.state   = result.state;
+				self.outcome = result.outcome;
+
+				return self.outcome;
+			};
+
+			promise.vouch.call(this, promise.state.resolved, function () { fn(true); });
+			if (typeof failure === "function") this.fail(function () { fn(false); });
+			return instance;
 		}
 	},
 
@@ -90,8 +124,8 @@ var promise = {
 
 		// Promise structure
 		params = {
-			error     : [],
-			fulfilled : [],
+			error     : null,
+			fulfilled : null,
 			outcome   : null,
 			state     : promise.state.initial
 		};
@@ -101,26 +135,22 @@ var promise = {
 	},
 
 	/**
-	 * Resolves a Promise (resolved or broken)
+	 * Resolves a Promise (fulfilled or failed)
 	 * 
 	 * @param  {String} state State to resolve
 	 * @param  {String} val   Value to set
 	 * @return {Object}       Promise instance
 	 */
 	resolve : function (state, val) {
+		var handler = state === promise.state.resolved ? "fulfilled" : "error";
+
 		if (this.state !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{outcome}}", this.outcome));
 
-		this.state   = state;
-		this.outcome = val;
+		this.state     = state;
+		this.outcome   = val;
 
-		this[state === promise.state.resolved ? "fulfilled" : "error"].each(function (fn) {
-			try {
-				if (typeof fn === "function") fn(val);
-			}
-			catch (e) {
-				error(e, this, arguments);
-			}
-		});
+		// The state & outcome can mutate here
+		this[handler](val);
 
 		this.error     = null;
 		this.fulfilled = null;
@@ -138,10 +168,11 @@ var promise = {
 	 * @return {Object}         Promise instance
 	 */
 	vouch : function (state, fn) {
-		if (String(state).isEmpty() || typeof fn !== "function") throw Error(label.error.invalidArguments);
+		if (String(state).isEmpty()) throw Error(label.error.invalidArguments);
+
 		switch (this.state) {
 			case promise.state.initial:
-				this[state === promise.state.resolved ? "fulfilled" : "error"].add(fn);
+				this[state === promise.state.resolved ? "fulfilled" : "error"] = fn;
 				break;
 			case state:
 				fn(this.outcome);
