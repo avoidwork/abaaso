@@ -128,7 +128,7 @@ var element = {
 		if (!frag) target.fire("beforeCreate", uid);
 		else if (frag && target.parentNode !== null) target.parentNode.fire("beforeCreate", uid);
 
-		obj = document.createElement(type);
+		obj = !/svg/i.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		obj.id = uid;
 		if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
 		switch (true) {
