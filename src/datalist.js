@@ -190,7 +190,7 @@ var datalist = {
 			// Pagination supporting filtering
 			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
 				limit = datalist.range.call(this);
-				items = items.range(limit[0], limit[1]);
+				items = items.limit(limit[0], limit[1]);
 			}
 
 			// Preparing the target element
@@ -371,7 +371,7 @@ var datalist = {
 	 */
 	range : function () {
 		var start = (this.pageIndex * this.pageSize) - this.pageSize,
-		    end   = (start          + this.pageSize) - 1;
+		    end   = this.pageSize;
 
 		return [start, end];
 	}

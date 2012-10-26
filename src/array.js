@@ -183,6 +183,26 @@ var array = {
 	},
 
 	/**
+	 * Returns a limited range of indices from the Array
+	 * 
+	 * @param  {Array}  obj    Array to iterate
+	 * @param  {Number} start  Starting index
+	 * @param  {Number} offset Number of indices from `start` to return
+	 * @return {Array}         Array of indices
+	 */
+	limit : function (obj, start, offset) {
+		var result = [],
+		    end    = start + offset,
+		    i      = 0;
+
+		for (i = start; i <= end; i++) {
+			if (typeof obj[i] !== "undefined") result.push(obj[i]);
+		}
+
+		return result;
+	},
+
+	/**
 	 * Finds the maximum value in an Array
 	 * 
 	 * @param  {Array} obj Array to parse
@@ -267,22 +287,6 @@ var array = {
 			}
 		}
 
-		return result;
-	},
-
-	/**
-	 * Returns a range of indices from the Array
-	 * 
-	 * @param  {Array}  obj   Array to iterate
-	 * @param  {Number} start Starting index
-	 * @param  {Number} end   Ending index
-	 * @return {Array}        Array of indices
-	 */
-	range : function (obj, start, end) {
-		var result = [],
-		    i;
-
-		for (i = start; i <= end; i++) if (typeof obj[i] !== "undefined") result.push(obj[i]);
 		return result;
 	},
 

@@ -202,6 +202,27 @@ exports["last"] = {
 	}
 };
 
+exports["limit"] = {
+	setUp: function (done) {
+		this.val = ["a", "b", "c", "d", "e"];
+		done();
+	},
+	direct: function (test) {
+		test.expect(3);
+		test.equal(array.limit(this.val, 3, 1).length, 2, "Should be 2");
+		test.equal(array.limit(this.val, 3, 1)[0], "d", "Should be 'd'");
+		test.equal(array.limit(this.val, 3, 1)[1], "e", "Should be 'e'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(3);
+		test.equal(this.val.limit(3, 1).length, 2, "Should be 2");
+		test.equal(this.val.limit(3, 1)[0], "d", "Should be 'd'");
+		test.equal(this.val.limit(3, 1)[1], "e", "Should be 'e'");
+		test.done();
+	}
+};
+
 exports["max"] = {
 	setUp: function (done) {
 		this.val = [1, 3, 7, 2, 10];
@@ -292,27 +313,6 @@ exports["mode"] = {
 		test.equal(this.single.mode(), 7, "Should be '7'");
 		test.equal(this.many.mode().length, 2, "Should be '2' ([7, 10])");
 		test.equal(this.none.mode(), undefined, "Should be 'undefined'");
-		test.done();
-	}
-};
-
-exports["range"] = {
-	setUp: function (done) {
-		this.val = ["a", "b", "c", "d", "e"];
-		done();
-	},
-	direct: function (test) {
-		test.expect(3);
-		test.equal(array.range(this.val, 3, 4).length, 2, "Should be 2");
-		test.equal(array.range(this.val, 3, 4)[0], "d", "Should be 'd'");
-		test.equal(array.range(this.val, 3, 4)[1], "e", "Should be 'e'");
-		test.done();
-	},
-	sugar: function (test) {
-		test.expect(3);
-		test.equal(this.val.range(3, 4).length, 2, "Should be 2");
-		test.equal(this.val.range(3, 4)[0], "d", "Should be 'd'");
-		test.equal(this.val.range(3, 4)[1], "e", "Should be 'e'");
 		test.done();
 	}
 };

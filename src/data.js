@@ -562,10 +562,10 @@ var data = {
 		 *
 		 * @method get
 		 * @param  {Mixed}  record Key, index or Array of pagination start & end; or comma delimited String of keys or indices
-		 * @param  {Number} end    [Optional] Ceiling for pagination
+		 * @param  {Number} offset [Optional] Offset from `record` for pagination
 		 * @return {Mixed}         Individual record, or Array of records
 		 */
-		get : function (record, end) {
+		get : function (record, offset) {
 			var records = this.records,
 			    obj     = this.parentNode,
 			    type    = typeof record,
@@ -587,11 +587,11 @@ var data = {
 				case type === "string" && typeof this.keys[record] !== "undefined":
 					r = records[this.keys[record].index];
 					break;
-				case type === "number" && typeof end === "undefined":
+				case type === "number" && typeof offset === "undefined":
 					r = records[parseInt(record)];
 					break;
-				case type === "number" && typeof end === "number":
-					r = records.range(parseInt(record), parseInt(end));
+				case type === "number" && typeof offset === "number":
+					r = records.limit(parseInt(record), parseInt(offset));
 					break;
 				default:
 					r = undefined;
