@@ -669,6 +669,7 @@ var utility = {
 			           once     : function (event, listener, id, scope, state) { return this.each(function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 			           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
+			           range    : function () { return array.range(this); },
 			           remove   : function (start, end) { return array.remove(this, start, end); },
 			           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },

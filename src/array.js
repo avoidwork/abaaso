@@ -291,6 +291,16 @@ var array = {
 	},
 
 	/**
+	 * Finds the range of the Array (of numbers)
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Range of the array (float or integer)
+	 */
+	range : function (obj) {
+		return array.max(obj) - array.min(obj);
+	},
+
+	/**
 	 * Removes indices from an Array without recreating it
 	 *
 	 * @method remove

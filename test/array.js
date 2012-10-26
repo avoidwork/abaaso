@@ -317,6 +317,23 @@ exports["mode"] = {
 	}
 };
 
+exports["range"] = {
+	setUp: function (done) {
+		this.val = [5, 1, 3, 8];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.range(this.val), 7, "Should be '7'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.range(), 7, "Should be '7'");
+		test.done();
+	}
+};
+
 exports["remove"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
