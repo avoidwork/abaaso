@@ -202,6 +202,40 @@ exports["last"] = {
 	}
 };
 
+exports["max"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 7, 2, 10];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.max(this.val), 10, "Should be '10'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.max(), 10, "Should be '10'");
+		test.done();
+	}
+};
+
+exports["mix"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 7, 2, 10];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.min(this.val), 1, "Should be '1'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.min(), 1, "Should be '1'");
+		test.done();
+	}
+};
+
 exports["range"] = {
 	setUp: function (done) {
 		this.val = ["a", "b", "c", "d", "e"];

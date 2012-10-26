@@ -659,6 +659,8 @@ var utility = {
 			           last     : function (arg) { return array.last(this); },
 			           listeners: function (event) { var a = []; this.each(function (i) { a = a.concat(i.listeners(event)); }); return a; },
 			           loading  : function () { return this.each(function (i) { i.loading(); }); },
+			           max      : function () { return array.max(this); },
+			           min      : function () { return array.min(this); },
 			           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           once     : function (event, listener, id, scope, state) { return this.each(function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },

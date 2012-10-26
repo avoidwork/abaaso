@@ -183,6 +183,26 @@ var array = {
 	},
 
 	/**
+	 * Finds the maximum value in an Array
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Number, String, etc.
+	 */
+	max : function (obj) {
+		return array.last(obj.sort(array.sort));
+	},
+
+	/**
+	 * Finds the minimum value in an Array
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Number, String, etc.
+	 */
+	min : function (obj) {
+		return obj.sort(array.sort)[0];
+	},
+
+	/**
 	 * Returns a range of indices from the Array
 	 * 
 	 * @param  {Array}  obj   Array to iterate
