@@ -203,6 +203,20 @@ var array = {
 	},
 
 	/**
+	 * Finds the median value of an Array (of numbers)
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Median number of the Array (float or integer)
+	 */
+	median : function (obj) {
+		var nth    = obj.length,
+		    mid    = number.round(nth / 2, "down"),
+		    sorted = obj.sort(array.sort);
+
+		return number.odd(nth) ? sorted[mid] : ((sorted[mid - 1] + sorted[mid]) / 2);
+	},
+
+	/**
 	 * Finds the minimum value in an Array
 	 * 
 	 * @param  {Array} obj Array to parse

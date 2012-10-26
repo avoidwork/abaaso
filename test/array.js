@@ -236,6 +236,26 @@ exports["mean"] = {
 	}
 };
 
+exports["median"] = {
+	setUp: function (done) {
+		this.even = [5, 1, 3, 8];
+		this.odd  = [5, 1, 3];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.median(this.even), 4, "Should be '4'");
+		test.equal(array.median(this.odd), 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.even.median(), 4, "Should be '4'");
+		test.equal(this.odd.median(), 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["mix"] = {
 	setUp: function (done) {
 		this.val = [1, 3, 7, 2, 10];
