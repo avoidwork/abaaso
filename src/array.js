@@ -59,7 +59,7 @@ var array = {
 
 		while (++i < nth) {
 			start = i * size;
-			result.push(array.limit(obj, start, (size - 1)));
+			result.push(array.limit(obj, start, size));
 		}
 
 		return result;
@@ -219,7 +219,7 @@ var array = {
 		    i      = start - 1,
 		    nth    = start + offset;
 
-		while (++i <= nth) {
+		while (++i < nth) {
 			if (typeof obj[i] !== "undefined") result.push(obj[i]);
 		}
 
