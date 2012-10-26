@@ -193,6 +193,16 @@ var array = {
 	},
 
 	/**
+	 * Finds the mean value of an Array (of numbers)
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Mean number of the Array (float or integer)
+	 */
+	mean : function (obj) {
+		return (array.sum(obj) / obj.length);
+	},
+
+	/**
 	 * Finds the minimum value in an Array
 	 * 
 	 * @param  {Array} obj Array to parse

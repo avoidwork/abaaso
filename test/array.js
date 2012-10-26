@@ -219,6 +219,23 @@ exports["max"] = {
 	}
 };
 
+exports["mean"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 5];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.mean(this.val), 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.mean(), 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["mix"] = {
 	setUp: function (done) {
 		this.val = [1, 3, 7, 2, 10];
