@@ -228,16 +228,16 @@ exports["limit"] = {
 	},
 	direct: function (test) {
 		test.expect(3);
-		test.equal(array.limit(this.val, 3, 1).length, 2, "Should be 2");
-		test.equal(array.limit(this.val, 3, 1)[0], "d", "Should be 'd'");
-		test.equal(array.limit(this.val, 3, 1)[1], "e", "Should be 'e'");
+		test.equal(array.limit(this.val, 3, 2).length, 2, "Should be 2");
+		test.equal(array.limit(this.val, 3, 2)[0], "d", "Should be 'd'");
+		test.equal(array.limit(this.val, 3, 2)[1], "e", "Should be 'e'");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(3);
-		test.equal(this.val.limit(3, 1).length, 2, "Should be 2");
-		test.equal(this.val.limit(3, 1)[0], "d", "Should be 'd'");
-		test.equal(this.val.limit(3, 1)[1], "e", "Should be 'e'");
+		test.equal(this.val.limit(3, 2).length, 2, "Should be 2");
+		test.equal(this.val.limit(3, 2)[0], "d", "Should be 'd'");
+		test.equal(this.val.limit(3, 2)[1], "e", "Should be 'e'");
 		test.done();
 	}
 };

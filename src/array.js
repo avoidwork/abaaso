@@ -188,7 +188,10 @@ var array = {
 	keys : function (obj) {
 		var keys = [];
 
-		typeof Object.keys === "function" ? keys = Object.keys(obj) : utility.iterate(obj, function (v, k) { keys.push(k); });
+		if (typeof Object.keys === "function") keys = Object.keys(obj)
+		else utility.iterate(obj, function (v, k) {
+			keys.push(k);
+		});
 		return keys;
 	},
 
@@ -208,15 +211,15 @@ var array = {
 	 * 
 	 * @param  {Array}  obj    Array to iterate
 	 * @param  {Number} start  Starting index
-	 * @param  {Number} offset Number of indices from `start` to return
+	 * @param  {Number} offset Number of indices to return
 	 * @return {Array}         Array of indices
 	 */
 	limit : function (obj, start, offset) {
 		var result = [],
-		    end    = start + offset,
-		    i      = 0;
+		    i      = start - 1,
+		    nth    = start + offset;
 
-		for (i = start; i <= end; i++) {
+		while (++i <= nth) {
 			if (typeof obj[i] !== "undefined") result.push(obj[i]);
 		}
 
@@ -234,10 +237,10 @@ var array = {
 	},
 
 	/**
-	 * Finds the mean value of an Array (of numbers)
+	 * Finds the mean of an Array (of numbers)
 	 * 
 	 * @param  {Array} obj Array to parse
-	 * @return {Number}    Mean number of the Array (float or integer)
+	 * @return {Number}    Mean of the Array (float or integer)
 	 */
 	mean : function (obj) {
 		return (array.sum(obj) / obj.length);
