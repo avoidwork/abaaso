@@ -275,17 +275,23 @@ exports["mix"] = {
 
 exports["mode"] = {
 	setUp: function (done) {
-		this.val = [1, 3, 7, 1, 2, 10, 7, 7, 3, 10];
+		this.single = [1, 3, 7, 1, 2, 10, 7, 7, 3, 10];
+		this.many   = [1, 3, 7, 1, 2, 10, 7, 7, 3, 10, 10];
+		this.none   = [];
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
-		test.equal(array.mode(this.val), 7, "Should be '7'");
+		test.expect(3);
+		test.equal(array.mode(this.single), 7, "Should be '7'");
+		test.equal(array.mode(this.many).length, 2, "Should be '2' ([7, 10])");
+		test.equal(array.mode(this.none), undefined, "Should be 'undefined'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
-		test.equal(this.val.mode(), 7, "Should be '7'");
+		test.expect(3);
+		test.equal(this.single.mode(), 7, "Should be '7'");
+		test.equal(this.many.mode().length, 2, "Should be '2' ([7, 10])");
+		test.equal(this.none.mode(), undefined, "Should be 'undefined'");
 		test.done();
 	}
 };
