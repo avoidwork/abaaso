@@ -272,6 +272,24 @@ var array = {
 	},
 
 	/**
+	 * Gets the summation of an Array of numbers
+	 * 
+	 * @param  {Array} obj Array to sum
+	 * @return {Number}    Summation of Array
+	 */
+	sum : function (obj) {
+		var result = 0;
+
+		array.each(obj, function (i) {
+			if (typeof i !== "number") return;
+
+			result += number.parse(i);
+		});
+
+		return result;
+	},
+
+	/**
 	 * Gets the total keys in an Array
 	 *
 	 * @method total

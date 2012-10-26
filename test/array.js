@@ -296,6 +296,23 @@ exports["sort"] = {
 	}
 };
 
+exports["sum"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 5];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.sum(this.val), 9, "Should be '9'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.sum(), 9, "Should be '9'");
+		test.done();
+	}
+};
+
 exports["total"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
