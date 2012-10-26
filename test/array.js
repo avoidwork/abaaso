@@ -273,6 +273,23 @@ exports["mix"] = {
 	}
 };
 
+exports["mode"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 7, 1, 2, 10, 7, 7, 3, 10];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.mode(this.val), 7, "Should be '7'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.mode(), 7, "Should be '7'");
+		test.done();
+	}
+};
+
 exports["range"] = {
 	setUp: function (done) {
 		this.val = ["a", "b", "c", "d", "e"];

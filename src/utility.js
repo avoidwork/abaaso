@@ -663,6 +663,7 @@ var utility = {
 			           mean     : function () { return array.mean(this); },
 			           median   : function () { return array.median(this); },
 			           min      : function () { return array.min(this); },
+			           mode     : function () { return array.mode(this); },
 			           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           once     : function (event, listener, id, scope, state) { return this.each(function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },

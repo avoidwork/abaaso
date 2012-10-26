@@ -227,6 +227,31 @@ var array = {
 	},
 
 	/**
+	 * Finds the mode value of an Array
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Mode value of the Array
+	 */
+	mode : function (obj) {
+		var values = {},
+		    count  = 0,
+		    mode   = 0;
+
+		array.each(obj, function (i) {
+			!values.hasOwnProperty(i) ? values[i] = 1 : values[i]++;
+		});
+
+		utility.iterate(values, function (v, k) {
+			if (v > count) {
+				count = v;
+				mode  = k;
+			}
+		});
+
+		return mode;
+	},
+
+	/**
 	 * Returns a range of indices from the Array
 	 * 
 	 * @param  {Array}  obj   Array to iterate
