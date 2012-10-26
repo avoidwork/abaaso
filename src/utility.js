@@ -610,6 +610,7 @@ var utility = {
 			           append   : function (type, args) { var a = []; this.each(function (i) { a.push(i.append(type, args)); }); return a; },
 			           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
 			           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
+			           chunk    : function (size) { return array.chunk(this, size); },
 			           clear    : function (arg) { return this.each(function (i) { i.clear(); }); },
 			           clone    : function () { return utility.clone(this); },
 			           contains : function (arg) { return array.contains(this, arg); },

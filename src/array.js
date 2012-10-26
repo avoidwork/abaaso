@@ -45,6 +45,27 @@ var array = {
 	},
 
 	/**
+	 * Transforms an Array to a 2D Array of chunks
+	 * 
+	 * @param  {Array}  obj  Array to parse
+	 * @param  {Number} size Chunk size (integer)
+	 * @return {Array}       Chunked Array
+	 */
+	chunk : function (obj, size) {
+		var result = [],
+		    nth    = number.round((obj.length / size), "up"),
+		    start  = 0,
+		    i      = -1;
+
+		while (++i < nth) {
+			start = i * size;
+			result.push(array.limit(obj, start, (size - 1)));
+		}
+
+		return result;
+	},
+
+	/**
 	 * Clones an Array
 	 * 
 	 * @method clone
@@ -291,7 +312,7 @@ var array = {
 	},
 
 	/**
-	 * Finds the range of the Array (of numbers)
+	 * Finds the range of the Array (of numbers) values
 	 * 
 	 * @param  {Array} obj Array to parse
 	 * @return {Number}    Range of the array (float or integer)

@@ -38,6 +38,25 @@ exports["cast"] = {
 	}
 };
 
+exports["chunk"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.chunk(this.val, 5).length, 2, "Should be '2'");
+		test.equal(array.chunk(this.val, 5)[0].length, 5, "Should be '5'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.chunk(5).length, 2, "Should be '2'");
+		test.equal(this.val.chunk(5)[0].length, 5, "Should be '5'");
+		test.done();
+	}
+};
+
 exports["clone"] = {
 	setUp: function (done) {
 		this.val = [true, false];
