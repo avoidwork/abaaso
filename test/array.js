@@ -378,19 +378,40 @@ exports["remove"] = {
 
 exports["split"] = {
 	setUp: function (done) {
-		this.val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+		this.lower = 21;
+		this.upper = 100;
 		done();
 	},
-	direct: function (test) {
-		test.expect(2);
-		test.equal(array.split(this.val, 5).length, 5, "Should be '5'");
-		test.equal(array.split(this.val, 5)[0].length, 2, "Should be '2'");
+	lower: function (test) {
+		var i      = -1,
+		    ar     = [],
+		    result = this.lower - 1;
+
+		while (++i < this.lower) ar.push(i);
+
+		test.expect(6);
+		test.equal(array.split(ar, 3).length, 3, "Should be '3'");
+		test.equal(array.split(ar, 3)[0].length, 7, "Should be '7'");
+		test.equal(array.split(ar, 3).last().last(), result, "Should be '" + result + "'");
+		test.equal(ar.split(3).length, 3, "Should be '3'");
+		test.equal(ar.split(3)[0].length, 7, "Should be '7'");
+		test.equal(ar.split(3).last().last(), result, "Should be '" + result + "'");
 		test.done();
 	},
-	sugar: function (test) {
-		test.expect(2);
-		test.equal(this.val.split(5).length, 5, "Should be '5'");
-		test.equal(this.val.split(5)[0].length, 2, "Should be '2'");
+	upper: function (test) {
+		var i      = -1,
+		    ar     = [],
+		    result = this.upper - 1;
+
+		while (++i < this.upper) ar.push(i);
+
+		test.expect(6);
+		test.equal(array.split(ar, 43).length, 43, "Should be '43'");
+		test.equal(array.split(ar, 43)[0].length, 3, "Should be '3'");
+		test.equal(array.split(ar, 43).last().last(), result, "Should be '" + result + "'");
+		test.equal(ar.split(43).length, 43, "Should be '43'");
+		test.equal(ar.split(43)[0].length, 3, "Should be '3'");
+		test.equal(ar.split(43).last().last(), result, "Should be '" + result + "'");
 		test.done();
 	}
 };
