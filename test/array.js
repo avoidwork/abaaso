@@ -376,6 +376,25 @@ exports["remove"] = {
 	}
 };
 
+exports["split"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.split(this.val, 5).length, 5, "Should be '5'");
+		test.equal(array.split(this.val, 5)[0].length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.split(5).length, 5, "Should be '5'");
+		test.equal(this.val.split(5)[0].length, 2, "Should be '2'");
+		test.done();
+	}
+};
+
 exports["sort"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz", "A", "d", 123];

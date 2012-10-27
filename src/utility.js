@@ -675,6 +675,7 @@ var utility = {
 			           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
+			           split    : function (size) { return array.split(this, size); },
 			           sum      : function () { return array.sum(this); },
 			           text     : function (arg) {
 			           		return this.each(function (node) {

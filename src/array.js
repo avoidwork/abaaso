@@ -349,6 +349,40 @@ var array = {
 	},
 
 	/**
+	 * Splits an Array by divisor
+	 * 
+	 * @param  {Array}  obj     Array to parse
+	 * @param  {Number} divisor Integer to divide the Array by
+	 * @return {Array}          Split Array
+	 */
+	split : function (obj, divisor) {
+		var result  = [],
+		    total   = obj.length,
+		    nth     = Math.ceil(total / divisor),
+		    low     = Math.floor(total / divisor),
+		    lower   = Math.ceil(total / nth),
+		    lowered = false,
+		    start   = 0,
+		    i       = -1;
+
+		// Finding the fold
+		if (number.diff(total, (divisor * nth)) > nth) {
+			lower = total - (low * divisor) + low;
+		}
+
+		while (++i < divisor) {
+			if (!lowered && lower < divisor && (i + 1) === lower) {
+				--nth;
+				lowered = true;
+			}
+			if (i > 0) start = start + nth;
+			result.push(array.limit(obj, start, nth));
+		}
+
+		return result;
+	},
+
+	/**
 	 * Sorts the Array by parsing values
 	 * 
 	 * @param  {Mixed} a Argument to compare
