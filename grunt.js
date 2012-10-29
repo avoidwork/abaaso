@@ -31,6 +31,7 @@ module.exports = function (grunt) {
 					"src/message.js",
 					"src/mouse.js",
 					"src/number.js",
+					"src/oauth.js",
 					"src/observer.js",
 					"src/promise.js",
 					"src/route.js",
