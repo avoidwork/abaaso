@@ -39,7 +39,7 @@ var observer = {
 		    n        = false,
 		    c        = abaaso.state.current,
 		    globals  = /body|document|window/i,
-		    allowed  = /click|error|key|mousedown|mouseup/i,
+		    allowed  = /click|error|key|mousedown|mouseup|submit/i,
 		    item, add, reg, handler;
 
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
