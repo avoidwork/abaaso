@@ -364,7 +364,14 @@ var client = {
 			uri.fire("afterGet", cached.response, (server ? xhr : undefined));
 		}
 		else {
-			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
+			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { 
+				try {
+					client.response(xhr, uri, type);
+				}
+				catch (e) {
+					debugger;
+				}
+			};
 
 			// Setting events
 			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e); };
@@ -521,6 +528,7 @@ var client = {
 					default:
 						exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
 				}
+				xhr.onreadystatechange = null;
 				xhr = null;
 				break;
 			case xdr: // XDomainRequest
@@ -537,6 +545,7 @@ var client = {
 				cache.set(uri, "permission", client.bit(["get"]));
 				cache.set(uri, "response", r);
 				uri.fire("afterGet", r, xhr);
+				xhr.onload = null;
 				xhr = null;
 				break;
 		}
