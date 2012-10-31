@@ -364,15 +364,13 @@ var client = {
 			uri.fire("afterGet", cached.response, (server ? xhr : undefined));
 		}
 		else {
-			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) {
-				client.response(xhr, uri, type);
-			};
+			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type); };
 
 			// Setting events
-			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { debugger; uri.fire("failed" + typed, e); };
-			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e); };
-			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
-			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
+			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { uri.fire("failed" + typed, e, xhr); };
+			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e, xhr); };
+			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
+			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
 
 			try {
 				xhr.open(type.toUpperCase(), uri, true);
