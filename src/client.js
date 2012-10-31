@@ -441,8 +441,8 @@ var client = {
 		var typed = type.toLowerCase().capitalize(),
 		    l     = location,
 		    state = null,
-		    exception,
-		    s, o, cors, r, t;
+		    xdr   = client.ie && typeof xhr.readyState === "undefined",
+		    exception, s, o, r, t, x;
 
 		// server-side exception handling
 		exception = function (e, xhr) {
@@ -451,10 +451,10 @@ var client = {
 		}
 
 		switch (true) {
-			case xhr.readyState === 2:
+			case !xdr && xhr.readyState === 2:
 				uri.fire("received" + typed, null, xhr);
 				break;
-			case xhr.readyState === 4:
+			case !xdr && xhr.readyState === 4:
 				uri.fire("afterXHR", null, xhr);
 				switch (xhr.status) {
 					case 200:
@@ -465,9 +465,8 @@ var client = {
 					case 205:
 					case 206:
 					case 301:
-						s    = abaaso.state;
-						o    = client.headers(xhr, uri, type);
-						cors = client.cors(uri);
+						s = abaaso.state;
+						o = client.headers(xhr, uri, type);
 
 						switch (true) {
 							case type === "head":
@@ -521,9 +520,7 @@ var client = {
 						exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
 				}
 				break;
-			case client.ie && client.cors(uri): // XDomainRequest
-				var r, x;
-
+			case xdr: // XDomainRequest
 				switch (true) {
 					case Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
 						r = x;
@@ -534,7 +531,6 @@ var client = {
 					default:
 						r = xhr.responseText;
 				}
-
 				cache.set(uri, "permission", client.bit(["get"]));
 				cache.set(uri, "response", r);
 				uri.fire("afterGet", r, xhr);

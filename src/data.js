@@ -51,7 +51,10 @@ var data = {
 				var guid = utility.genId(),
 				    rec  = {};
 
-				typeof rec.batch !== "function" ? rec = utility.clone(data) : utility.iterate(data, function (v, k) { if (!self.collections.contains(k)) rec[k] = utility.clone(v); });
+				if (typeof rec.batch !== "function") rec = utility.clone(data)
+				else utility.iterate(data, function (v, k) {
+					if (!self.collections.contains(k)) rec[k] = utility.clone(v);
+				});
 
 				if (self.key !== null && typeof rec[self.key] !== "undefined") {
 					key = rec[self.key];
@@ -113,7 +116,9 @@ var data = {
 								default:
 									idx = i.replace(/.*\//, "");
 									if (idx.isEmpty()) break;
-									i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+									utility.defer(function () {
+										i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+									});
 									break;
 							}
 							else self.del(i, false, sync);

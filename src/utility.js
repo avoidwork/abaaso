@@ -276,7 +276,7 @@ var utility = {
 	defer : function (fn, ms, id) {
 		var op;
 
-		ms = ms || 10;
+		ms = ms || 4;
 		id = id || utility.guid(true);
 
 		op = function () {
