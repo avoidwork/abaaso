@@ -397,7 +397,9 @@ var client = {
 					if (headers === null) headers = {};
 					if (contentType !== null) headers["Content-Type"] = contentType;
 					if (headers.hasOwnProperty("callback")) delete headers.callback;
-					utility.iterate(headers, function (v, k) { if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v); });
+					utility.iterate(headers, function (v, k) {
+						if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v);
+					});
 				}
 
 				// Cross Origin Resource Sharing (CORS)
@@ -519,6 +521,7 @@ var client = {
 					default:
 						exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
 				}
+				xhr = null;
 				break;
 			case xdr: // XDomainRequest
 				switch (true) {
@@ -534,6 +537,7 @@ var client = {
 				cache.set(uri, "permission", client.bit(["get"]));
 				cache.set(uri, "response", r);
 				uri.fire("afterGet", r, xhr);
+				xhr = null;
 				break;
 		}
 		return uri;
