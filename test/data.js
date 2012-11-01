@@ -1,4 +1,5 @@
-var data   = require("../lib/abaaso.js").data,
+var abaaso = require("../lib/abaaso.js"),
+    data   = abaaso.data,
     sample = [];
 
 sample.push({
@@ -24,28 +25,36 @@ exports["batch"] = {
 		done();
 	},
 	direct: function (test) {
-		test.expect(4);
+		test.expect(3);
+		this.store.once("afterDataBatch", function () {
+			test.equal(this.store.data.total, 2, "Should be 2");
+			this.store.once("afterDataBatch", function () {
+				test.equal(this.store.data.total, 0, "Should be 0");
+				test.done();
+			}, "teardown", this);
+			this.store.data.batch("delete", [0, 1]);
+		}, "setup", this);
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
-		test.equal(this.store.data.total, 2, "Should be 2");
-		test.equal(this.store.data.batch("delete", [0, 1]), this.store.data, "Should match");
-		test.equal(this.store.data.total, 0, "Should be 0");
-		test.done();
 	}
 };
 
 exports["delimited"] = {
 	setUp: function (done) {
-		this.store = data({id: "test"}, sample, {key: "id"});
+		this.id    = "test";
+		this.store = {};
 		done();
 	},
 	direct: function (test) {
 		test.expect(5);
-		test.equal(this.store.data.get("0, 1").length, 2, "Should match");
-		test.equal(this.store.data.get("0, 1")[0].key, "8ao7dhfga", "Should match");
-		test.equal(this.store.data.get("0, 1")[1].key, "as7d6fts3", "Should match");
-		test.equal(this.store.data.get("8ao7dhfga, as7d6fts3")[0].key, "8ao7dhfga", "Should match");
-		test.equal(this.store.data.get("8ao7dhfga, as7d6fts3")[1].key, "as7d6fts3", "Should match");
-		test.done();
+		this.id.on("afterDataBatch", function () {
+			test.equal(this.store.data.get("0, 1").length, 2, "Should match");
+			test.equal(this.store.data.get("0, 1")[0].key, "8ao7dhfga", "Should match");
+			test.equal(this.store.data.get("0, 1")[1].key, "as7d6fts3", "Should match");
+			test.equal(this.store.data.get("8ao7dhfga, as7d6fts3")[0].key, "8ao7dhfga", "Should match");
+			test.equal(this.store.data.get("8ao7dhfga, as7d6fts3")[1].key, "as7d6fts3", "Should match");
+			test.done();
+		}, "setup", this);
+		this.store = data({id: this.id}, sample, {key: "id"});
 	}
 };
 
@@ -56,10 +65,12 @@ exports["find"] = {
 	},
 	direct: function (test) {
 		test.expect(3);
+		this.store.on("afterDataBatch", function () {
+			test.equal(this.store.data.find("John")[0].key, "8ao7dhfga", "Should be true");
+			test.equal(this.store.data.total, 2, "Should be 2");
+			test.done();
+		}, "setup", this);
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
-		test.equal(this.store.data.find("John")[0].key, "8ao7dhfga", "Should be true");
-		test.equal(this.store.data.total, 2, "Should be 2");
-		test.done();
 	}
 };
 
@@ -70,15 +81,17 @@ exports["sort"] = {
 	},
 	direct: function (test) {
 		test.expect(4);
+		this.store.on("afterDataBatch", function () {
+			test.equal(this.store.data.sort("lastname")[0].key, "as7d6fts3", "Should be true");
+			test.equal(this.store.data.total, 2, "Should be 2");
+			test.equal(this.store.data.views.lastnameCI.length, 2, "Should be 2");
+			test.done();
+		}, "setup", this);
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
-		test.equal(this.store.data.sort("lastname")[0].key, "as7d6fts3", "Should be true");
-		test.equal(this.store.data.total, 2, "Should be 2");
-		test.equal(this.store.data.views.lastnameCI.length, 2, "Should be 2");
-		test.done();
 	}
 };
 
-exports["storage"] = {
+/*exports["storage"] = {
 	setUp: function (done) {
 		this.store = data({id: "test"}, null, {key: "id"});
 		done();
@@ -95,7 +108,7 @@ exports["storage"] = {
 		test.equal(localStorage.getItem(this.store.id), null, "Should match");
 		test.done();
 	}
-};
+};*/
 
 exports["teardown"] = {
 	setUp: function (done) {
@@ -103,10 +116,14 @@ exports["teardown"] = {
 		done();
 	},
 	direct: function (test) {
-		test.expect(3);
+		test.expect(2);
+		this.store.on("afterDataBatch", function () {
+			this.store.data.teardown();
+		}, "setup", this);
+		this.store.on("afterDataTeardown", function () {
+			test.equal(this.store.data.total, 0, "Should be 0");
+			test.done();
+		}, "teardown", this);
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
-		test.equal(this.store.data.teardown(), this.store.data, "Should match");
-		test.equal(this.store.data.total, 0, "Should be 0");
-		test.done();
 	}
 };

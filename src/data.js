@@ -17,21 +17,23 @@ var data = {
 		 *         failedDataBatch  Fires when an exception occurs
 		 *
 		 * @method batch
-		 * @param  {String}  type Type of action to perform
-		 * @param  {Mixed}   data Array of keys or indices to delete, or Object containing multiple records to set
-		 * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
-		 * @return {Object}       Data store
+		 * @param  {String}  type  Type of action to perform (set/del/delete)
+		 * @param  {Mixed}   data  Array of keys or indices to delete, or Object containing multiple records to set
+		 * @param  {Boolean} sync  [Optional] Syncs store with data, if true everything is erased
+		 * @param  {Number}  chunk Size to chunk Array to batch set or delete
+		 * @return {Object}        Data store
 		 */
-		batch : function (type, data, sync) {
-			type = type.toString().toLowerCase();
-			sync = (sync === true);
+		batch : function (type, data, sync, chunk) {
+			type  = type.toString().toLowerCase();
+			sync  = (sync === true);
+			chunk = chunk || 1000;
 
-			if (!/^(set|delete)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
+			if (!/^(set|del|delete)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
 			var obj  = this.parentNode,
 			    self = this,
 			    r    = 0,
-			    nth  = 0,
+			    nth  = data.length,
 			    f    = false,
 			    guid = utility.genId(true),
 			    root = /^\/[^\/]/,
@@ -72,7 +74,8 @@ var data = {
 					}
 				}, guid);
 
-				rec instanceof Array && self.uri !== null ? self.generate(key) : self.set(key, rec, sync);
+				if (rec instanceof Array && self.uri !== null) self.generate(key);
+				else self.set(key, rec, sync);
 			};
 
 			obj.fire("beforeDataBatch", data);
@@ -92,16 +95,13 @@ var data = {
 				}, guid);
 			}
 
-			if (data instanceof Array) {
-				nth = data.length;
-				switch (nth) {
-					case 0:
-						completed();
-						break;
-					default:
-						data.sort().reverse().each(function (i, idx) {
-							idx = idx.toString();
-							if (type === "set") switch (true) {
+			if (type === "set") data.chunk(chunk).each(function (a, adx) {
+					var offset = adx * chunk;
+
+					$.defer(function () {
+						a.each(function (i, idx) {
+							idx = (offset + idx).toString();
+							switch (true) {
 								case typeof i === "object":
 									set(i, idx);
 									break;
@@ -121,24 +121,12 @@ var data = {
 									});
 									break;
 							}
-							else self.del(i, false, sync);
 						});
-				}
-			}
-			else {
-				nth = array.cast(data, true).length;
-				utility.iterate(data, function (v, k) {
-					if (type === "set") {
-						if (self.key !== null && typeof v[self.key] !== "undefined") {
-							key = v[self.key];
-							delete v[self.key];
-						}
-						else key = k.toString();
-						self.set(key, v, sync);
-					}
-					else self.del(v, false, sync);
+					});
 				});
-			}
+			else data.sort(array.sort).reverse().each(function (i) {
+				self.del(i, false, sync);
+			});
 
 			return this;
 		},
@@ -215,7 +203,7 @@ var data = {
 			this.crawled = true;
 			this.loaded  = false;
 			record       = this.get(arg);
-			record       = this.records[this.keys[record.key].index];
+			record       = this.records[this.keys[record.key]];
 			key          = key || this.key;
 
 			if (typeof ignore === "string") {
@@ -293,9 +281,8 @@ var data = {
 			switch (typeof record) {
 				case "string":
 					key    = record;
-					record = this.keys[key];
 					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
-					record = record.index;
+					record = this.keys[key];
 					break;
 				default:
 					key = this.records[record];
@@ -539,12 +526,12 @@ var data = {
 
 			// Create stub or teardown existing data store
 			if (typeof this.keys[key] !== "undefined") {
-				idx = this.keys[key].index;
+				idx = this.keys[key];
 				if (typeof this.records[idx].data.teardown === "function") this.records[idx].data.teardown();
 			}
 			else {
 				this.set(key, {}, true);
-				idx = this.keys[key].index;
+				idx = this.keys[key];
 				this.collections.add(key);
 			}
 
@@ -590,7 +577,7 @@ var data = {
 					});
 					break;
 				case type === "string" && typeof this.keys[record] !== "undefined":
-					r = records[this.keys[record].index];
+					r = records[this.keys[record]];
 					break;
 				case type === "number" && typeof offset === "undefined":
 					r = records[parseInt(record)];
@@ -615,17 +602,17 @@ var data = {
 			var nth = this.total,
 			    obj = this.parentNode,
 			    key = (this.key !== null),
-			    i;
+			    i   = -1;
 
 			this.views = {};
-			if (nth === 0) return this;
-			for(i = 0; i < nth; i++) {
-				if (!key && this.records[i].key.isNumber()) {
-					delete this.keys[this.records[i].key];
-					this.keys[i.toString()] = {};
-					this.records[i].key = i.toString();
+			if (nth !== 0) {
+				while (++i < nth) {
+					if (!key && this.records[i].key.isNumber()) {
+						delete this.keys[this.records[i].key];
+						this.records[i].key = i.toString();
+					}
+					this.keys[this.records[i].key] = i;
 				}
-				this.keys[this.records[i].key].index = i;
 			}
 			return this;
 		},
@@ -673,7 +660,7 @@ var data = {
 			    p, success, failure;
 
 			if (typeof record !== "undefined") {
-				args.record = this.records[this.keys[record.key].index];
+				args.record = this.records[this.keys[record.key]];
 				utility.iterate(args.record.data, function (v, k) {
 					if (!self.collections.contains(k) && !self.ignore.contains(k)) args.data[k] = v;
 				});
@@ -957,6 +944,7 @@ var data = {
 				});
 			}
 			this.clear(true);
+			this.parentNode.fire("afterDataTeardown");
 			return this;
 		}
 	},
@@ -1041,7 +1029,7 @@ var data = {
 		obj.on("syncDataDelete", function (data) {
 			var record = this.get(data.record);
 
-			this.records.remove(this.keys[data.key].index);
+			this.records.remove(this.keys[data.key]);
 			delete this.keys[data.key];
 			this.total--;
 			this.views = {};
@@ -1078,11 +1066,10 @@ var data = {
 						if (typeof data.key !== "string") data.key = data.key.toString();
 						data.data = data.result;
 					}
-					this.keys[data.key] = {};
-					this.keys[data.key].index = index;
+					this.keys[data.key] = index;
 					this.records[index] = {};
-					record     = this.records[index];
-					record.key = data.key;
+					record              = this.records[index];
+					record.key          = data.key;
 					if (this.pointer === null || typeof data.data[this.pointer] === "undefined") {
 						record.data = data.data;
 						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
@@ -1110,7 +1097,7 @@ var data = {
 					}
 					break;
 				default:
-					record = this.records[this.keys[data.record.key].index];
+					record = this.records[this.keys[data.record.key]];
 					utility.merge(record.data, data.data);
 			}
 			this.views = {};
