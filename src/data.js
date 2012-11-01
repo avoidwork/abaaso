@@ -604,14 +604,16 @@ var data = {
 			    key = (this.key !== null),
 			    i   = -1;
 
-			this.views = {};
-			if (nth !== 0) {
-				while (++i < nth) {
-					if (!key && this.records[i].key.isNumber()) {
-						delete this.keys[this.records[i].key];
-						this.records[i].key = i.toString();
+			if (nth > 0 && nth < this.records.length) {
+				this.views = {};
+				if (nth !== 0) {
+					while (++i < nth) {
+						if (!key && this.records[i].key.isNumber()) {
+							delete this.keys[this.records[i].key];
+							this.records[i].key = i.toString();
+						}
+						this.keys[this.records[i].key] = i;
 					}
-					this.keys[this.records[i].key] = i;
 				}
 			}
 			return this;
