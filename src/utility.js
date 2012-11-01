@@ -932,7 +932,7 @@ var utility = {
 			           permissions: function () { return client.permissions(this); },
 			           singular : function () { return string.singular(this); },
 			           toCamelCase: function () { return string.toCamelCase(this); },
-			           toNumber : function () { return number.parse(this); },
+			           toNumber : function (base) { return number.parse(this, base); },
 			           trim     : function () { return string.trim(this); },
 			           un       : function (event, id, state) { return $.un.call(this, event, id, state); },
 			           uncapitalize: function () { return string.uncapitalize(this); }}
