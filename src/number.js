@@ -86,11 +86,13 @@ var number = {
 	/**
 	 * Parses the number
 	 * 
-	 * @param  {Mixed} arg Number to parse
-	 * @return {Number}    Integer or float
+	 * @param  {Mixed}  arg  Number to parse
+	 * @param  {Number} base Integer representing the base or radix
+	 * @return {Number}      Integer or float
 	 */
-	parse : function (arg) {
-		return String(arg).indexOf(".") < 0 ? parseInt(arg) : parseFloat(arg);
+	parse : function (arg, base) {
+		if (base === null) base = undefined;
+		return isNaN(base) ? Number(arg) : parseInt(arg, base);
 	},
 
 	/**

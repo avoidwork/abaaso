@@ -19,12 +19,12 @@ var utility = {
 	 * @return {Mixed}            Element or Array of Elements
 	 */
 	$ : function (arg, nodelist) {
-		// Blocking node or DOM query of unique URIs via $.on()
-		if (server || String(arg).indexOf("?") > -1) return undefined;
-
 		var result = [],
 		    tmp    = [],
 		    obj, sel;
+
+		// Blocking node or DOM query of unique URIs via $.on()
+		if (server || String(arg).indexOf("?") > -1) return undefined;
 
 		arg      = arg.trim();
 		nodelist = (nodelist === true);
@@ -204,6 +204,7 @@ var utility = {
 	 */
 	css : function (content, media) {
 		var ss, css;
+
 		ss = $("head")[0].create("style", {type: "text/css", media: media || "print, screen"});
 		if (ss.styleSheet) ss.styleSheet.cssText = content;
 		else {
@@ -224,13 +225,13 @@ var utility = {
 	 * @return {Object}       Object receiving value
 	 */
 	define : function (args, value, obj) {
+		var p   = obj,
+		    nth = args.length;
+
 		args  = args.split(".");
 		if (typeof obj   === "undefined") obj   = this;
 		if (typeof value === "undefined") value = null;
 		if (obj === $) obj = abaaso;
-
-		var p   = obj,
-		    nth = args.length;
 
 		args.each(function (i, idx) {
 			var num = idx + 1 < nth && !isNaN(parseInt(args[idx + 1])),
@@ -273,10 +274,12 @@ var utility = {
 	 * @return {Object}      undefined
 	 */
 	defer : function (fn, ms, id) {
-		ms = ms || 10;
+		var op;
+
+		ms = ms || 0;
 		id = id || utility.guid(true);
 
-		var op = function () {
+		op = function () {
 			delete utility.timer[id];
 			fn();
 		};
@@ -345,7 +348,6 @@ var utility = {
 		var o, f;
 
 		if (typeof obj === "undefined") throw Error(label.error.invalidArguments);
-
 		if (typeof arg === "undefined") arg = {};
 
 		switch (true) {
@@ -372,12 +374,13 @@ var utility = {
 	genId : function (obj) {
 		var id;
 
-		switch (true) {
-			case obj instanceof Array:
-			case obj instanceof String:
-			case typeof obj === "string":
-			case typeof obj !== "undefined" && typeof obj.id !== "undefined" && obj.id !== "":
-				return obj;
+		if (typeof obj !== "undefined") {
+			switch (true) {
+				case typeof obj.id !== "undefined" && obj.id !== "":
+				case obj instanceof Array:
+				case obj instanceof String || typeof obj === "string":
+					return obj;
+			}
 		}
 
 		do id = utility.domId(utility.guid(true));
@@ -398,12 +401,13 @@ var utility = {
 	 * @return {String}      GUID
 	 */
 	guid : function (safe) {
-		safe  = (safe === true);
 		var s = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); },
-		    r = [8,9,"a","b"],
+		    r = [8, 9, "a", "b"],
 		    o;
 
-		o = (s() + s() + "-" + s() + "-4" + s().substr(0,3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0,3) + "-" + s() + s() + s()).toLowerCase();
+		safe  = (safe === true);
+
+		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s()).toLowerCase();
 		if (safe) o = o.replace(/-/gi, "");
 		return o;
 	},
@@ -418,12 +422,13 @@ var utility = {
 	 * @return {Object}       Object
 	 */
 	iterate : function (obj, fn) {
-		var i, result;
+		var has = Object.prototype.hasOwnProperty,
+		    i, result;
 
 		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 		for (i in obj) {
-			if (Object.prototype.hasOwnProperty.call(obj, i)) {
+			if (has.call(obj, i)) {
 				result = fn.call(obj, obj[i], i);
 				if (result === false) break;
 			}
@@ -473,8 +478,10 @@ var utility = {
 	 * @private
 	 */
 	log : function (arg) {
+		var ts = !server || typeof arg !== "object";
+
 		try {
-			console.log("[" + new Date().toLocaleTimeString() + "] " + arg);
+			console.log((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
 		}
 		catch (e) {
 			error(e, arguments, this);
@@ -573,11 +580,10 @@ var utility = {
 	 * @return {Object}            Object receiving the property
 	 */
 	property : function (obj, prop, descriptor) {
-		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
-
-		if (server && obj.hasOwnProperty(prop)) return;
-
 		var define;
+
+		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
+		if (server && obj.hasOwnProperty(prop)) return;
 
 		define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
 		if (define && typeof descriptor.value !== "undefined" && typeof descriptor.get !== "undefined") delete descriptor.value;
@@ -604,6 +610,7 @@ var utility = {
 			           append   : function (type, args) { var a = []; this.each(function (i) { a.push(i.append(type, args)); }); return a; },
 			           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
 			           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
+			           chunk    : function (size) { return array.chunk(this, size); },
 			           clear    : function (arg) { return this.each(function (i) { i.clear(); }); },
 			           clone    : function () { return utility.clone(this); },
 			           contains : function (arg) { return array.contains(this, arg); },
@@ -651,17 +658,25 @@ var utility = {
 			           isUrl    : function () { var a = []; this.each(function (i) { a.push(i.isUrl()); }); return a; },
 			           keys     : function () { return array.keys(this); },
 			           last     : function (arg) { return array.last(this); },
+			           limit    : function (start, offset) { return array.limit(this, start, offset); },
 			           listeners: function (event) { var a = []; this.each(function (i) { a = a.concat(i.listeners(event)); }); return a; },
 			           loading  : function () { return this.each(function (i) { i.loading(); }); },
+			           max      : function () { return array.max(this); },
+			           mean     : function () { return array.mean(this); },
+			           median   : function () { return array.median(this); },
+			           min      : function () { return array.min(this); },
+			           mode     : function () { return array.mode(this); },
 			           on       : function (event, listener, id, scope, state) { return this.each(function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           once     : function (event, listener, id, scope, state) { return this.each(function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
 			           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 			           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
-			           range    : function (start, end) { return array.range(this, start, end); },
+			           range    : function () { return array.range(this); },
 			           remove   : function (start, end) { return array.remove(this, start, end); },
 			           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
+			           split    : function (size) { return array.split(this, size); },
+			           sum      : function () { return array.sum(this); },
 			           text     : function (arg) {
 			           		return this.each(function (node) {
 			           			if (typeof node !== "object") node = utility.object(node);
@@ -917,7 +932,7 @@ var utility = {
 			           permissions: function () { return client.permissions(this); },
 			           singular : function () { return string.singular(this); },
 			           toCamelCase: function () { return string.toCamelCase(this); },
-			           toNumber : function () { return number.parse(this); },
+			           toNumber : function (base) { return number.parse(this, base); },
 			           trim     : function () { return string.trim(this); },
 			           un       : function (event, id, state) { return $.un.call(this, event, id, state); },
 			           uncapitalize: function () { return string.uncapitalize(this); }}
@@ -935,10 +950,11 @@ var utility = {
 	 * @return {Object}     Object of 1 or all key:value pairs in the querystring
 	 */
 	queryString : function (arg) {
-		arg        = arg || ".*";
 		var obj    = {},
 		    result = location.search.isEmpty() ? null : location.search.replace("?", ""),
 		    item;
+
+		arg = arg || ".*";
 
 		if (result !== null) {
 			result = result.split("&");
@@ -1007,7 +1023,11 @@ var utility = {
 			var recursive = function (fn, ms, id) {
 				var recursive = this;
 
-				if (fn() !== false) $.repeating[id] = setTimeout(function () { recursive.call(recursive, fn, ms, id); }, ms);
+				if (fn() !== false) {
+					$.repeating[id] = setTimeout(function () {
+						recursive.call(recursive, fn, ms, id);
+					}, ms);
+				}
 				else delete $.repeating[id];
 			};
 
@@ -1077,7 +1097,9 @@ var utility = {
 		frag  = document.createDocumentFragment();
 		switch (true) {
 			case arg instanceof Array:
-				arg.each(function (i, idx) { element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]); });
+				arg.each(function (i, idx) {
+					element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]);
+				});
 				break;
 			default:
 				utility.iterate(arg, function (i, k) {
@@ -1105,7 +1127,9 @@ var utility = {
 	 * @return {Mixed}       arg
 	 */
 	walk : function (obj, arg) {
-		arg.replace(/\]$/, "").replace(/\]/g, ".").split(/\.|\[/).each(function (i) { obj = obj[i]; });
+		arg.replace(/\]$/, "").replace(/\]/g, ".").split(/\.|\[/).each(function (i) {
+			obj = obj[i];
+		});
 		return obj;
 	}
 };

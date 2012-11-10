@@ -102,18 +102,23 @@ exports["parse"] = {
 	setUp: function (done) {
 		this.v1 = "10";
 		this.v2 = "2.5";
+		this.v3 = "10a";
 		done();
 	},
 	direct: function (test) {
-		test.expect(2);
+		test.expect(4);
 		test.equal(number.parse(this.v1), 10, "Should be 10");
+		test.equal(number.parse(this.v1, null), 10, "Should be 10");
 		test.equal(number.parse(this.v2), 2.5, "Should be 2.5");
+		test.equal(number.parse(this.v3, 10), 10, "Should be 10");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(2);
+		test.expect(4);
 		test.equal(this.v1.toNumber(), 10, "Should be 10");
+		test.equal(this.v1.toNumber(null), 10, "Should be 10");
 		test.equal(this.v2.toNumber(), 2.5, "Should be 2.5");
+		test.equal(this.v3.toNumber(10), 10, "Should be 10");
 		test.done();
 	}
 };

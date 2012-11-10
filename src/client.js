@@ -362,14 +362,16 @@ var client = {
 				xhr._resheaders = cached.headers;
 			}
 			uri.fire("afterGet", cached.response, (server ? xhr : undefined));
+			xhr = null;
 		}
 		else {
-			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function () { client.response(xhr, uri, type); };
+			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type); };
 
 			// Setting events
-			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e); };
-			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e); };
-			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e); };
+			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { uri.fire("failed" + typed, e, xhr); };
+			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e, xhr); };
+			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
+			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
 
 			try {
 				xhr.open(type.toUpperCase(), uri, true);
@@ -397,7 +399,9 @@ var client = {
 					if (headers === null) headers = {};
 					if (contentType !== null) headers["Content-Type"] = contentType;
 					if (headers.hasOwnProperty("callback")) delete headers.callback;
-					utility.iterate(headers, function (v, k) { if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v); });
+					utility.iterate(headers, function (v, k) {
+						if (v !== null && k !== "withCredentials") xhr.setRequestHeader(k, v);
+					});
 				}
 
 				// Cross Origin Resource Sharing (CORS)
@@ -441,8 +445,8 @@ var client = {
 		var typed = type.toLowerCase().capitalize(),
 		    l     = location,
 		    state = null,
-		    exception,
-		    s, o, cors, r, t;
+		    xdr   = client.ie && typeof xhr.readyState === "undefined",
+		    exception, s, o, r, t, x;
 
 		// server-side exception handling
 		exception = function (e, xhr) {
@@ -451,10 +455,10 @@ var client = {
 		}
 
 		switch (true) {
-			case xhr.readyState === 2:
+			case !xdr && xhr.readyState === 2:
 				uri.fire("received" + typed, null, xhr);
 				break;
-			case xhr.readyState === 4:
+			case !xdr && xhr.readyState === 4:
 				uri.fire("afterXHR", null, xhr);
 				switch (xhr.status) {
 					case 200:
@@ -465,9 +469,8 @@ var client = {
 					case 205:
 					case 206:
 					case 301:
-						s    = abaaso.state;
-						o    = client.headers(xhr, uri, type);
-						cors = client.cors(uri);
+						s = abaaso.state;
+						o = client.headers(xhr, uri, type);
 
 						switch (true) {
 							case type === "head":
@@ -520,10 +523,10 @@ var client = {
 					default:
 						exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
 				}
+				xhr.onreadystatechange = null;
+				xhr = null;
 				break;
-			case client.ie && client.cors(uri): // XDomainRequest
-				var r, x;
-
+			case xdr: // XDomainRequest
 				switch (true) {
 					case Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
 						r = x;
@@ -534,10 +537,11 @@ var client = {
 					default:
 						r = xhr.responseText;
 				}
-
 				cache.set(uri, "permission", client.bit(["get"]));
 				cache.set(uri, "response", r);
 				uri.fire("afterGet", r, xhr);
+				xhr.onload = null;
+				xhr = null;
 				break;
 		}
 		return uri;

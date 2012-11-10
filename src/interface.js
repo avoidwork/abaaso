@@ -33,10 +33,7 @@ return {
 		permissions : client.permissions
 	},
 	cookie          : cookie,
-	data            : data.factory,
-	datalist        : datalist.factory,
 	element         : element,
-	filter          : filter.factory,
 	json            : json,
 	label           : label,
 	loading         : {
@@ -54,6 +51,17 @@ return {
 		list    : observer.list,
 		once    : observer.once,
 		remove  : observer.remove
+	},
+	repeating       : {},
+	route           : {
+		enabled : false,
+		del     : route.del,
+		hash    : route.hash,
+		init    : route.init,
+		list    : route.list,
+		load    : route.load,
+		server  : route.server,
+		set     : route.set
 	},
 	state           : {
 		_current    : null,
@@ -80,6 +88,8 @@ return {
 	compile         : utility.compile,
 	create          : element.create,
 	css             : utility.css,
+	data            : data.factory,
+	datalist        : datalist.factory,
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
@@ -90,6 +100,7 @@ return {
 	expire          : cache.clean,
 	expires         : 120000,
 	extend          : utility.extend,
+	filter          : filter.factory,
 	fire            : function (arg) {
 		var local = (typeof arg === "string"),
 		    args  = array.cast(arguments),
@@ -167,23 +178,13 @@ return {
 		if (obj instanceof Element) obj.genId();
 		return element.create(type, args, obj, "first");
 	},
+	promise         : promise.factory,
 	property        : utility.property,
 	put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 	queryString     : utility.queryString,
 	ready           : false,
 	reflect         : utility.reflect,
 	repeat          : utility.repeat,
-	repeating       : {},
-	route           : {
-		enabled : false,
-		del     : route.del,
-		hash    : route.hash,
-		init    : route.init,
-		list    : route.list,
-		load    : route.load,
-		server  : route.server,
-		set     : route.set
-	},
 	stylesheet      : utility.stylesheet,
 	script          : utility.script,
 	stop            : utility.stop,

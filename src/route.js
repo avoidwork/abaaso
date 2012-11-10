@@ -74,10 +74,15 @@ var route = {
 	hash : function (arg) {
 		var output = "";
 
-		if (typeof arg === "undefined") output = document.location.hash.replace(route.bang, "");
-		else {
-			output = arg.replace(route.bang, "");
-			document.location.hash = "!/" + output;
+		switch (true) {
+			case server:
+				break;
+			case typeof arg === "undefined":
+				output = document.location.hash.replace(route.bang, "");
+				break;
+			default:
+				output = arg.replace(route.bang, "");
+				document.location.hash = "!/" + output;
 		}
 		return output;
 	},
@@ -279,7 +284,7 @@ var route = {
 	 * @return {Mixed}          True or undefined
 	 */
 	set : function (name, fn, verb, host) {
-		host = server ? (host || "all") : "all";
+		host = server ? (host || "all")    : "all";
 		verb = server ? route.method(verb) : "all";
 		if (typeof name !== "string" || name.isEmpty() || typeof fn !== "function") throw Error(label.error.invalidArguments);
 		route.hostname(host)[verb][name] = fn;

@@ -30,18 +30,37 @@ var array = {
 		key   = (key === true);
 		var o = [];
 
-		switch (true) {
-			case !isNaN(obj.length):
-				if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
-				else {
-					try { o = Array.prototype.slice.call(obj); }
-					catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
-				}
-				break;
-			default:
-				key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
+		if (!isNaN(obj.length)) {
+			if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
+			else {
+				try { o = Array.prototype.slice.call(obj); }
+				catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
+			}
 		}
+		else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
+
 		return o;
+	},
+
+	/**
+	 * Transforms an Array to a 2D Array of chunks
+	 * 
+	 * @param  {Array}  obj  Array to parse
+	 * @param  {Number} size Chunk size (integer)
+	 * @return {Array}       Chunked Array
+	 */
+	chunk : function (obj, size) {
+		var result = [],
+		    nth    = number.round((obj.length / size), "up"),
+		    start  = 0,
+		    i      = -1;
+
+		while (++i < nth) {
+			start = i * size;
+			result.push(array.limit(obj, start, size));
+		}
+
+		return result;
 	},
 
 	/**
@@ -93,9 +112,10 @@ var array = {
 	 */
 	each : function (obj, fn) {
 		var nth = obj.length,
-		    i, r;
+		    i   = -1,
+		    r;
 
-		for (i = 0; i < nth; i++) {
+		while (++i < nth) {
 			r = fn.call(obj, obj[i], i);
 			if (r === false) break;
 		}
@@ -135,7 +155,9 @@ var array = {
 	indexed : function (obj) {
 		var indexed = [];
 
-		utility.iterate(obj, function (v, k) { typeof v === "object" ? indexed = indexed.concat(array.indexed(v)) : indexed.push(v); });
+		utility.iterate(obj, function (v, k) {
+			typeof v === "object" ? indexed = indexed.concat(array.indexed(v)) : indexed.push(v);
+		});
 		return indexed;
 	},
 
@@ -164,7 +186,10 @@ var array = {
 	keys : function (obj) {
 		var keys = [];
 
-		typeof Object.keys === "function" ? keys = Object.keys(obj) : utility.iterate(obj, function (v, k) { keys.push(k); });
+		if (typeof Object.keys === "function") keys = Object.keys(obj)
+		else utility.iterate(obj, function (v, k) {
+			keys.push(k);
+		});
 		return keys;
 	},
 
@@ -180,19 +205,110 @@ var array = {
 	},
 
 	/**
-	 * Returns a range of indices from the Array
+	 * Returns a limited range of indices from the Array
 	 * 
-	 * @param  {Array}  obj   Array to iterate
-	 * @param  {Number} start Starting index
-	 * @param  {Number} end   Ending index
-	 * @return {Array}        Array of indices
+	 * @param  {Array}  obj    Array to iterate
+	 * @param  {Number} start  Starting index
+	 * @param  {Number} offset Number of indices to return
+	 * @return {Array}         Array of indices
 	 */
-	range : function (obj, start, end) {
+	limit : function (obj, start, offset) {
 		var result = [],
-		    i;
+		    i      = start - 1,
+		    nth    = start + offset;
 
-		for (i = start; i <= end; i++) if (typeof obj[i] !== "undefined") result.push(obj[i]);
+		while (++i < nth) {
+			if (typeof obj[i] !== "undefined") result.push(obj[i]);
+		}
+
 		return result;
+	},
+
+	/**
+	 * Finds the maximum value in an Array
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Number, String, etc.
+	 */
+	max : function (obj) {
+		return array.last(obj.sort(array.sort));
+	},
+
+	/**
+	 * Finds the mean of an Array (of numbers)
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Mean of the Array (float or integer)
+	 */
+	mean : function (obj) {
+		return (array.sum(obj) / obj.length);
+	},
+
+	/**
+	 * Finds the median value of an Array (of numbers)
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Median number of the Array (float or integer)
+	 */
+	median : function (obj) {
+		var nth    = obj.length,
+		    mid    = number.round(nth / 2, "down"),
+		    sorted = obj.sort(array.sort);
+
+		return number.odd(nth) ? sorted[mid] : ((sorted[mid - 1] + sorted[mid]) / 2);
+	},
+
+	/**
+	 * Finds the minimum value in an Array
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Number, String, etc.
+	 */
+	min : function (obj) {
+		return obj.sort(array.sort)[0];
+	},
+
+	/**
+	 * Finds the mode value of an Array
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Mode value of the Array
+	 */
+	mode : function (obj) {
+		var values = {},
+		    count  = 0,
+		    nth    = 0,
+		    mode   = [],
+		    result;
+
+		// Counting values
+		array.each(obj, function (i) {
+			!isNaN(values[i]) ? ++values[i] : values[i] = 1;
+		});
+
+		// Finding the highest occurring count
+		count = array.max(array.cast(values));
+
+		// Finding values that match the count
+		utility.iterate(values, function (v, k) {
+			if (v === count) mode.push(number.parse(k));
+		});
+
+		// Determining the result
+		nth = mode.length;
+		if (nth > 0) result = nth === 1 ? mode[0] : mode;
+
+		return result;
+	},
+
+	/**
+	 * Finds the range of the Array (of numbers) values
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Range of the array (float or integer)
+	 */
+	range : function (obj) {
+		return array.max(obj) - array.min(obj);
 	},
 
 	/**
@@ -217,6 +333,40 @@ var array = {
 		obj.length = start < 0 ? (length + start) : start;
 		obj.push.apply(obj, remaining);
 		return obj;
+	},
+
+	/**
+	 * Splits an Array by divisor
+	 * 
+	 * @param  {Array}  obj     Array to parse
+	 * @param  {Number} divisor Integer to divide the Array by
+	 * @return {Array}          Split Array
+	 */
+	split : function (obj, divisor) {
+		var result  = [],
+		    total   = obj.length,
+		    nth     = Math.ceil(total / divisor),
+		    low     = Math.floor(total / divisor),
+		    lower   = Math.ceil(total / nth),
+		    lowered = false,
+		    start   = 0,
+		    i       = -1;
+
+		// Finding the fold
+		if (number.diff(total, (divisor * nth)) > nth) {
+			lower = total - (low * divisor) + low - 1;
+		}
+
+		while (++i < divisor) {
+			if (!lowered && lower < divisor && i === lower) {
+				--nth;
+				lowered = true;
+			}
+			if (i > 0) start = start + nth;
+			result.push(array.limit(obj, start, nth));
+		}
+
+		return result;
 	},
 
 	/**
@@ -245,6 +395,24 @@ var array = {
 			default:
 				result = 0;
 		}
+		return result;
+	},
+
+	/**
+	 * Gets the summation of an Array of numbers
+	 * 
+	 * @param  {Array} obj Array to sum
+	 * @return {Number}    Summation of Array
+	 */
+	sum : function (obj) {
+		var result = 0;
+
+		array.each(obj, function (i) {
+			if (typeof i !== "number") return;
+
+			result += number.parse(i);
+		});
+
 		return result;
 	},
 

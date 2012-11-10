@@ -165,7 +165,6 @@ bootstrap = function () {
 	delete $.$;
 	delete $.bootstrap;
 	delete $.callback;
-	delete $.data;
 	delete $.init;
 	delete $.loading;
 
@@ -271,6 +270,6 @@ bootstrap = function () {
 			document.attachEvent("onreadystatechange", fn);
 			break;
 		default:
-			utility.timer.init = utility.repeat(fn);
+			utility.repeat(fn);
 	}
 };
