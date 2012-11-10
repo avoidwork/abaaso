@@ -43,7 +43,6 @@ return {
 	message         : message,
 	mouse           : mouse,
 	number          : number,
-	oauth           : oauth,
 	observer        : {
 		log     : observer.log,
 		add     : observer.add,
