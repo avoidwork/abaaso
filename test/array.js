@@ -503,3 +503,27 @@ exports["toObject"] = {
 		test.done();
 	}
 };
+
+exports["zip"] = {
+	setUp: function (done) {
+		this.val = [0, 1];
+		this.a   = 1;
+		done();
+	},
+	direct: function (test) {
+		test.expect(4);
+		test.equal(array.zip(this.val, this.a).length, 2, "Should be 2");
+		test.equal(array.zip(this.val, this.a)[0].length, 2, "Should be 2");
+		test.equal(array.zip(this.val, this.a)[1].length, 2, "Should be 2");
+		test.equal(array.zip(this.val, this.a)[1][1], null, "Should be null");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(4);
+		test.equal(this.val.zip(this.a).length, 2, "Should be 2");
+		test.equal(this.val.zip(this.a)[0].length, 2, "Should be 2");
+		test.equal(this.val.zip(this.a)[1].length, 2, "Should be 2");
+		test.equal(this.val.zip(this.a)[1][1], null, "Should be null");
+		test.done();
+	}
+};
