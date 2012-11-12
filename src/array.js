@@ -453,5 +453,32 @@ var array = {
 
 		while (i--) obj[i.toString()] = ar[i];
 		return obj;
+	},
+
+	/**
+	 * Converts any arguments to Arrays, then merges elements of `obj` with corresponding elements from each argument
+	 * 
+	 * @param  {Array} obj  Array to transform
+	 * @param  {Mixed} args Number, String or Array to merge
+	 * @return {Array}      Array
+	 */
+	zip : function (obj, args) {
+		var result = [];
+
+		// Preparing args
+		if (!(args instanceof Array)) args = array.cast(args);
+		args.each(function (i, idx) {
+			if (!(i instanceof Array)) args[idx] = array.cast(i);
+		});
+
+		// Building result Array
+		obj.each(function (i, idx) {
+			result[idx] = [i];
+			args.each(function (x) {
+				result[idx].push(x[idx] || null);
+			});
+		});
+
+		return result;
 	}
 };

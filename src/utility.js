@@ -702,7 +702,8 @@ var utility = {
 			           		});
 			           		return same ? a[0] : a;
 			           	},
-			           validate : function () { var a = []; this.each(function (i) { a.push(i.validate()); }); return a; }},
+			           validate : function () { var a = []; this.each(function (i) { a.push(i.validate()); }); return a; },
+			           zip      : function () { return array.zip(this, arguments); }},
 			element : {addClass : function (arg) {
 			           		utility.genId(this);
 			           		return element.klass(this, arg, true);
