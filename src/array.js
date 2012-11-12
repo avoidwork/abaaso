@@ -134,6 +134,22 @@ var array = {
 	},
 
 	/**
+	 * Flattens a 2D Array
+	 * 
+	 * @param  {Array} obj 2D Array to flatten
+	 * @return {Array}     Flatten Array
+	 */
+	flat : function (obj) {
+		var result = [];
+
+		result = obj.reduce(function (a, b) {
+			return a.concat(b);
+		}, result);
+
+		return result;
+	},
+
+	/**
 	 * Facade to indexOf for shorter syntax
 	 *
 	 * @method index
@@ -407,10 +423,8 @@ var array = {
 	sum : function (obj) {
 		var result = 0;
 
-		array.each(obj, function (i) {
-			if (typeof i !== "number") return;
-
-			result += number.parse(i);
+		result = obj.reduce(function (prev, cur) {
+			return prev + cur;
 		});
 
 		return result;

@@ -27,7 +27,7 @@ var promise = {
 		/**
 		 * Breaks a Promise
 		 * 
-		 * @return {String} Status of promise
+		 * @return {String} arg Status of promise
 		 */
 		reject : function (arg) {
 			return promise.resolve.call(this, promise.state.broken, arg);
@@ -36,8 +36,8 @@ var promise = {
 		/**
 		 * Promise is resolved
 		 * 
-		 * @param  {String} arg Promise status
-		 * @return {Object}     Promise instance
+		 * @param  {Mixed} arg Promise outcome
+		 * @return {Object}    Promise instance
 		 */
 		resolve : function (arg) {
 			return promise.resolve.call(this, promise.state.resolved, arg);
