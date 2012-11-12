@@ -134,6 +134,22 @@ var array = {
 	},
 
 	/**
+	 * Flattens a 2D Array
+	 * 
+	 * @param  {Array} obj 2D Array to flatten
+	 * @return {Array}     Flatten Array
+	 */
+	flatten : function (obj) {
+		var result = [];
+
+		result = obj.reduce(function (a, b) {
+			return a.concat(b);
+		}, result);
+
+		return result;
+	},
+
+	/**
 	 * Facade to indexOf for shorter syntax
 	 *
 	 * @method index
