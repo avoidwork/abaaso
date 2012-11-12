@@ -468,7 +468,7 @@ var array = {
 		// Preparing args
 		if (!(args instanceof Array)) args = array.cast(args);
 		args.each(function (i, idx) {
-			if (!(i instanceof Array)) args[idx] = array.cast(i);
+			if (!(i instanceof Array)) this[idx] = [i];
 		});
 
 		// Building result Array
