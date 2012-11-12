@@ -139,7 +139,7 @@ var array = {
 	 * @param  {Array} obj 2D Array to flatten
 	 * @return {Array}     Flatten Array
 	 */
-	flatten : function (obj) {
+	flat : function (obj) {
 		var result = [];
 
 		result = obj.reduce(function (a, b) {

@@ -628,6 +628,7 @@ var utility = {
 			           		return this.each(function (i) { i.fire.apply(i, args); });
 			           	},
 			           first    : function () { return array.first(this); },
+			           flat     : function () { return array.flat(this); },
 			           get      : function (uri, headers) { this.each(function (i) { i.get(uri, headers); }); return []; },
 			           has      : function (arg) { var a = []; this.each(function (i) { a.push(i.has(arg)); }); return a; },
 			           hasClass : function (arg) { var a = []; this.each(function (i) { a.push(i.hasClass(arg)); }); return a; },

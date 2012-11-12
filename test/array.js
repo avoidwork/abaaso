@@ -129,6 +129,23 @@ exports["first"] = {
 	}
 };
 
+exports["flat"] = {
+	setUp: function (done) {
+		this.val = [[0, 1], [2, 3], [4, 5]];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.flat(this.val).length, 6, "Should be an Array of 6 indices");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.flat().length, 6, "Should be an Array of 6 indices");
+		test.done();
+	}
+};
+
 exports["index"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
