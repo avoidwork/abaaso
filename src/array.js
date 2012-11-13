@@ -167,6 +167,16 @@ var array = {
 	},
 
 	/**
+	 * Determines if an Array is empty
+	 * 
+	 * @param  {Array} obj Array to inspect
+	 * @return {Boolean}   `true` if there's no indices
+	 */
+	empty : function (obj) {
+		return (obj.length > 0);
+	},
+
+	/**
 	 * Returns the first Array node
 	 *
 	 * @method first

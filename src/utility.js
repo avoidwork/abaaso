@@ -623,7 +623,7 @@ var utility = {
 			           disable  : function () { return this.each(function (i) { i.disable(); }); },
 			           destroy  : function () { this.each(function (i) { i.destroy(); }); return []; },
 			           each     : function (arg) { return array.each(this, arg); },
-			           empty    : function () { return array.clear(this); },
+			           empty    : function () { return array.empty(this); },
 			           enable   : function () { return this.each(function (i) { i.enable(); }); },
 			           find     : function (arg) { var a = []; this.each(function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
 			           fire     : function () {
