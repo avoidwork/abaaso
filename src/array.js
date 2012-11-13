@@ -408,7 +408,7 @@ var array = {
 
 		remove = obj.filter(fn);
 		array.each(remove, function (i, idx) {
-			array.remove(obj, i);
+			array.remove(obj, array.index(obj, i));
 		});
 
 		return obj;
