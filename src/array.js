@@ -177,6 +177,17 @@ var array = {
 	},
 
 	/**
+	 * Determines if `a` is equal to `b`
+	 * 
+	 * @param  {Array} a Array to compare
+	 * @param  {Array} b Array to compare
+	 * @return {Boolean} `true` if the Arrays match
+	 */
+	equal : function (a, b) {
+		return (json.encode(a) === json.encode(b));
+	},
+
+	/**
 	 * Returns the first Array node
 	 *
 	 * @method first

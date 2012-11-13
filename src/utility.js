@@ -625,6 +625,7 @@ var utility = {
 			           each     : function (arg) { return array.each(this, arg); },
 			           empty    : function () { return array.empty(this); },
 			           enable   : function () { return this.each(function (i) { i.enable(); }); },
+			           equal    : function (arg) { return array.equal(this, arg); },
 			           find     : function (arg) { var a = []; this.each(function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
 			           fire     : function () {
 			           		var args = arguments;
