@@ -201,7 +201,7 @@ var array = {
 		    i   = !isNaN(start)  ? start      : 0,
 		    nth = !isNaN(offset) ? i + offset : obj.length;
 
-		for (; i < nth; i++) {
+		for (; i <= nth; i++) {
 			obj[i] = fn ? arg(obj[i]) : arg;
 		}
 		
