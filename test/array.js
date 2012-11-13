@@ -698,6 +698,25 @@ exports["sum"] = {
 	}
 };
 
+exports["take"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.take(this.val, 1)[0], 0, "Should be '0'");
+		test.equal(array.take(this.val, 3).length, 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.take(1)[0], 0, "Should be '0'");
+		test.equal(this.val.take(3).length, 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["total"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];

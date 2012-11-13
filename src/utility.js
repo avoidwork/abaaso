@@ -689,6 +689,7 @@ var utility = {
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
 			           split    : function (size) { return array.split(this, size); },
 			           sum      : function () { return array.sum(this); },
+			           take     : function (arg) { return array.take(this, arg); },
 			           text     : function (arg) {
 			           		return this.each(function (node) {
 			           			if (typeof node !== "object") node = utility.object(node);

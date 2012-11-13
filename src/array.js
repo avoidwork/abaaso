@@ -627,6 +627,17 @@ var array = {
 	},
 
 	/**
+	 * Takes the first `arg` indices from `obj`
+	 * 
+	 * @param  {Array}  obj Array to parse
+	 * @param  {Number} arg Offset from 0 to return
+	 * @return {Array}      Subset of `obj`
+	 */
+	take : function (obj, arg) {
+		return array.limit(obj, 0, arg);
+	},
+
+	/**
 	 * Gets the total keys in an Array
 	 *
 	 * @method total
