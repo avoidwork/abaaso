@@ -396,6 +396,25 @@ var array = {
 	},
 
 	/**
+	 * Deletes every element of `obj` for which `fn` evaluates to true
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        [description]
+	 */
+	remove_if : function (obj, fn) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+		var remove = [];
+
+		remove = obj.filter(fn);
+		array.each(remove, function (i, idx) {
+			array.remove(obj, i);
+		});
+
+		return obj;
+	},
+
+	/**
 	 * Splits an Array by divisor
 	 * 
 	 * @param  {Array}  obj     Array to parse
