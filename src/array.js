@@ -173,7 +173,7 @@ var array = {
 	 * @return {Boolean}   `true` if there's no indices
 	 */
 	empty : function (obj) {
-		return (obj.length > 0);
+		return (obj.length === 0);
 	},
 
 	/**
