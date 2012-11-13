@@ -280,6 +280,26 @@ var array = {
 	},
 
 	/**
+	 * Keeps every element of `obj` for which `fn` evaluates to true
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
+	 */
+	keep_if : function (obj, fn) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+		var result = [],
+		    remove = [];
+
+		result = obj.filter(fn);
+		remove = array.diff(obj, result);
+		array.each(remove, function (i, idx) {
+			array.remove(obj, array.index(obj, i));
+		});
+		return obj;
+	},
+
+	/**
 	 * Returns the keys in an Associative Array
 	 *
 	 * @method keys
@@ -453,7 +473,6 @@ var array = {
 		array.each(remove, function (i, idx) {
 			array.remove(obj, array.index(obj, i));
 		});
-
 		return obj;
 	},
 

@@ -662,6 +662,7 @@ var utility = {
 			           isNumber : function () { var a = []; this.each(function (i) { a.push(i.isNumber()); }); return a; },
 			           isPhone  : function () { var a = []; this.each(function (i) { a.push(i.isPhone()); }); return a; },
 			           isUrl    : function () { var a = []; this.each(function (i) { a.push(i.isUrl()); }); return a; },
+			           keep_if  : function (fn) { return array.keep_if(this, fn); },
 			           keys     : function () { return array.keys(this); },
 			           last     : function (arg) { return array.last(this); },
 			           limit    : function (start, offset) { return array.limit(this, start, offset); },
