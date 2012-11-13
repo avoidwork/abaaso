@@ -532,6 +532,22 @@ var array = {
 	},
 
 	/**
+	 * Finds the last index of `arg` in `obj`
+	 * 
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Index or undefined
+	 */
+	rindex : function (obj, arg) {
+		var result;
+
+		obj.each(function (i, idx) {
+			if (i === arg) result = idx;
+		});
+		return result;
+	},
+
+	/**
 	 * Splits an Array by divisor
 	 * 
 	 * @param  {Array}  obj     Array to parse

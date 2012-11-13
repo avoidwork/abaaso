@@ -604,6 +604,27 @@ exports["remove_while"] = {
 	}
 };
 
+exports["rindex"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 1, 1, 2];
+		this.a   = 1;
+		this.b   = 3;
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.rindex(this.val, this.a), 3, "Should be '3'");
+		test.equal(array.rindex(this.val, this.b), undefined, "Should be 'undefined'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.rindex(this.a), 3, "Should be '3'");
+		test.equal(this.val.rindex(this.b), undefined, "Should be 'undefined'");
+		test.done();
+	}
+};
+
 exports["split"] = {
 	setUp: function (done) {
 		this.lower = 21;
