@@ -400,7 +400,7 @@ var array = {
 	 * 
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
-	 * @return {Array}        [description]
+	 * @return {Array}        Array
 	 */
 	remove_if : function (obj, fn) {
 		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -412,6 +412,31 @@ var array = {
 		});
 
 		return obj;
+	},
+
+	/**
+	 * Deletes elements of `obj` until `fn` evaluates to false
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
+	 */
+	remove_while : function (obj, fn) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+		var remove = [];
+
+		array.each(obj, function (i) {
+			var result = fn(i);
+
+			if (result !== false) remove.push(i);
+			else return false;
+		});
+
+		array.each(remove, function (i, idx) {
+			array.remove(obj, array.index(obj, i));
+		});
+
+		return obj;	
 	},
 
 	/**

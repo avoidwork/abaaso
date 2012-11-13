@@ -677,6 +677,7 @@ var utility = {
 			           range    : function () { return array.range(this); },
 			           remove   : function (start, end) { return array.remove(this, start, end); },
 			           remove_if: function (fn) { return array.remove_if(this, fn); },
+			           remove_while: function (fn) { return array.remove_while(this, fn); },
 			           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
