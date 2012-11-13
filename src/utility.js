@@ -679,6 +679,7 @@ var utility = {
 			           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
 			           range    : function () { return array.range(this); },
 			           rassoc   : function (arg) { return array.rassoc(this, arg); },
+			           reject   : function (fn) { return array.reject(this, fn); },
 			           remove   : function (start, end) { return array.remove(this, start, end); },
 			           remove_if: function (fn) { return array.remove_if(this, fn); },
 			           remove_while: function (fn) { return array.remove_while(this, fn); },

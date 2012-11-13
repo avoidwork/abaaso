@@ -435,6 +435,36 @@ var array = {
 	},
 
 	/**
+	 * Searches a 2D Array `obj` for the first match of `arg` as a second index
+	 * 
+	 * @param  {Array} obj 2D Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Array or undefined
+	 */
+	rassoc : function (obj, arg) {
+		var result;
+
+		obj.each(function (i, idx) {
+			if (i[1] === arg) {
+				result = obj[idx];
+				return false;
+			}
+		});
+		return result;
+	},
+
+	/**
+	 * Returns Array containing the items in `obj` for which `fn()` is not true
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to execute against `obj` indices
+	 * @return {Array}        Array of indices which fn() is not true
+	 */
+	reject : function (obj, fn) {
+		return array.diff(obj, obj.filter(fn));
+	},
+
+	/**
 	 * Removes indices from an Array without recreating it
 	 *
 	 * @method remove
@@ -499,25 +529,6 @@ var array = {
 		});
 
 		return obj;	
-	},
-
-	/**
-	 * Searches a 2D Array `obj` for the first match of `arg` as a second index
-	 * 
-	 * @param  {Array} obj 2D Array to search
-	 * @param  {Mixed} arg Primitive to find
-	 * @return {Mixed}     Array or undefined
-	 */
-	rassoc : function (obj, arg) {
-		var result;
-
-		obj.each(function (i, idx) {
-			if (i[1] === arg) {
-				result = obj[idx];
-				return false;
-			}
-		});
-		return result;
 	},
 
 	/**

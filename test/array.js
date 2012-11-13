@@ -527,6 +527,24 @@ exports["rassoc"] = {
 	}
 };
 
+exports["reject"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		this.fn  = function (i) { return i.isEven(); };
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.reject(this.val, this.fn).length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.reject(this.fn).length, 2, "Should be '2'");
+		test.done();
+	}
+};
+
 exports["remove"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
