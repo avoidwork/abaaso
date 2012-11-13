@@ -502,6 +502,25 @@ var array = {
 	},
 
 	/**
+	 * Searches a 2D Array `obj` for the first match of `arg` as a second index
+	 * 
+	 * @param  {Array} obj 2D Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Array or undefined
+	 */
+	rassoc : function (obj, arg) {
+		var result;
+
+		obj.each(function (i, idx) {
+			if (i[1] === arg) {
+				result = obj[idx];
+				return false;
+			}
+		});
+		return result;
+	},
+
+	/**
 	 * Splits an Array by divisor
 	 * 
 	 * @param  {Array}  obj     Array to parse

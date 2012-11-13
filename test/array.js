@@ -502,6 +502,31 @@ exports["range"] = {
 	}
 };
 
+exports["rassoc"] = {
+	setUp: function (done) {
+		this.val = [[1, 3], [7, 2]];
+		this.a   = 3;
+		this.b   = 2;
+		this.c   = 1;
+		this.d   = undefined;
+		done();
+	},
+	direct: function (test) {
+		test.expect(3);
+		test.equal(array.rassoc(this.val, this.a)[1], this.a, "Should be '" + this.a + "'");
+		test.equal(array.rassoc(this.val, this.b)[1], this.b, "Should be '" + this.b + "'");
+		test.equal(array.rassoc(this.val, this.c), this.d, "Should be '" + this.d + "'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(3);
+		test.equal(this.val.rassoc(this.a)[1], this.a, "Should be '" + this.a + "'");
+		test.equal(this.val.rassoc(this.b)[1], this.b, "Should be '" + this.b + "'");
+		test.equal(this.val.rassoc(this.c), this.d, "Should be '" + this.d + "'");
+		test.done();
+	}
+};
+
 exports["remove"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
