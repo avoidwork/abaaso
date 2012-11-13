@@ -611,8 +611,10 @@ var utility = {
 			           attr     : function (key, value) { var a = []; this.each(function (i) { a.push(i.attr(key, value)); }); return a; },
 			           before   : function (type, args) { var a = []; this.each(function (i) { a.push(i.before(type, args)); }); return a; },
 			           chunk    : function (size) { return array.chunk(this, size); },
-			           clear    : function (arg) { return this.each(function (i) { i.clear(); }); },
+			           clear    : function () { return !server && this[0] instanceof Element ? this.each(function (i) { i.clear(); }) : array.clear(this); },
 			           clone    : function () { return utility.clone(this); },
+			           collect  : function (arg) { return array.collect(this, arg); },
+			           compact  : function () { return array.compact(this); },
 			           contains : function (arg) { return array.contains(this, arg); },
 			           create   : function (type, args, position) { var a = []; this.each(function (i) { a.push(i.create(type, args, position)); }); return a; },
 			           css      : function (key, value) { return this.each(function (i) { i.css(key, value); }); },
@@ -621,7 +623,10 @@ var utility = {
 			           disable  : function () { return this.each(function (i) { i.disable(); }); },
 			           destroy  : function () { this.each(function (i) { i.destroy(); }); return []; },
 			           each     : function (arg) { return array.each(this, arg); },
+			           empty    : function () { return array.empty(this); },
 			           enable   : function () { return this.each(function (i) { i.enable(); }); },
+			           equal    : function (arg) { return array.equal(this, arg); },
+			           fill     : function (arg, start, offset) { return array.fill(this, arg, start, offset); },
 			           find     : function (arg) { var a = []; this.each(function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
 			           fire     : function () {
 			           		var args = arguments;
@@ -657,6 +662,7 @@ var utility = {
 			           isNumber : function () { var a = []; this.each(function (i) { a.push(i.isNumber()); }); return a; },
 			           isPhone  : function () { var a = []; this.each(function (i) { a.push(i.isPhone()); }); return a; },
 			           isUrl    : function () { var a = []; this.each(function (i) { a.push(i.isUrl()); }); return a; },
+			           keep_if  : function (fn) { return array.keep_if(this, fn); },
 			           keys     : function () { return array.keys(this); },
 			           last     : function (arg) { return array.last(this); },
 			           limit    : function (start, offset) { return array.limit(this, start, offset); },
@@ -672,12 +678,18 @@ var utility = {
 			           position : function () { var a = []; this.each(function (i) { a.push(i.position()); }); return a; },
 			           prepend  : function (type, args) { var a = []; this.each(function (i) { a.push(i.prepend(type, args)); }); return a; },
 			           range    : function () { return array.range(this); },
+			           rassoc   : function (arg) { return array.rassoc(this, arg); },
+			           reject   : function (fn) { return array.reject(this, fn); },
 			           remove   : function (start, end) { return array.remove(this, start, end); },
+			           remove_if: function (fn) { return array.remove_if(this, fn); },
+			           remove_while: function (fn) { return array.remove_while(this, fn); },
 			           removeClass: function (arg) { return this.each(function (i) { i.removeClass(arg); }); },
+			           rindex   : function (arg) { return array.rindex(this, arg); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
 			           split    : function (size) { return array.split(this, size); },
 			           sum      : function () { return array.sum(this); },
+			           take     : function (arg) { return array.take(this, arg); },
 			           text     : function (arg) {
 			           		return this.each(function (node) {
 			           			if (typeof node !== "object") node = utility.object(node);
@@ -689,6 +701,7 @@ var utility = {
 			           total    : function () { return array.total(this); },
 			           toObject : function () { return array.toObject(this); },
 			           un       : function (event, id, state) { return this.each(function (i) { i.un(event, id, state); }); },
+			           unique   : function () { return array.unique(this); },
 			           update   : function (arg) { return this.each(function (i) { element.update(i, arg); }); },
 			           val      : function (arg) {
 			           		var a    = [],
@@ -702,7 +715,8 @@ var utility = {
 			           		});
 			           		return same ? a[0] : a;
 			           	},
-			           validate : function () { var a = []; this.each(function (i) { a.push(i.validate()); }); return a; }},
+			           validate : function () { var a = []; this.each(function (i) { a.push(i.validate()); }); return a; },
+			           zip      : function () { return array.zip(this, arguments); }},
 			element : {addClass : function (arg) {
 			           		utility.genId(this);
 			           		return element.klass(this, arg, true);

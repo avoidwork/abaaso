@@ -57,6 +57,23 @@ exports["chunk"] = {
 	}
 };
 
+exports["clear"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.clear(this.val).length, 0, "Should be '0'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.clear().length, 0, "Should be '0'");
+		test.done();
+	}
+};
+
 exports["clone"] = {
 	setUp: function (done) {
 		this.val = [true, false];
@@ -72,6 +89,41 @@ exports["clone"] = {
 		test.expect(2);
 		test.equal(this.val.clone()[0], true, "Should be true");
 		test.equal(this.val.clone()[1], false, "Should be false");
+		test.done();
+	}
+};
+
+exports["collect"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2];
+		this.fn  = function (i) { return i + "!"; };
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.collect(this.val, this.fn)[0], "0!", "Should be '0!'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.collect(this.fn)[0], "0!", "Should be '0!'");
+		test.done();
+	}
+};
+
+exports["compact"] = {
+	setUp: function (done) {
+		this.val = [0, null, 1];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.compact(this.val).length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.compact().length, 2, "Should be '2'");
 		test.done();
 	}
 };
@@ -108,6 +160,68 @@ exports["each"] = {
 	sugar: function (test) {
 		test.expect(1);
 		test.equal(this.val.each(function (i, idx) { self.val[idx] = "blah"; })[0], "blah", "Should be 'blah'");
+		test.done();
+	}
+};
+
+exports["empty"] = {
+	setUp: function (done) {
+		this.full  = [0, 1, 2, 3, 4];
+		this.empty = [];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.empty(this.full),  false, "Should be 'false'");
+		test.equal(array.empty(this.empty), true,  "Should be 'true'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.full.empty(),  false, "Should be 'false'");
+		test.equal(this.empty.empty(), true,  "Should be 'true'");
+		test.done();
+	}
+};
+
+exports["equal"] = {
+	setUp: function (done) {
+		this.a = [0];
+		this.b = [0];
+		this.c = []
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.equal(this.a, this.b), true, "Should be 'true'");
+		test.equal(array.equal(this.a, this.c), false,  "Should be 'false'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.a.equal(this.b), true, "Should be 'true'");
+		test.equal(this.a.equal(this.c), false,  "Should be 'false'");
+		test.done();
+	}
+};
+
+exports["fill"] = {
+	setUp: function (done) {
+		this.val = ["a", "b"];
+		done();
+	},
+	direct: function (test) {
+		test.expect(3);
+		test.equal(array.fill(this.val.clone(), "!")[0], "!", "Should be '!'");
+		test.equal(array.fill(this.val.clone(), "!", 1)[0], "a", "Should be 'a'");
+		test.equal(array.fill(this.val.clone(), "!", 1)[1], "!", "Should be '!'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(3);
+		test.equal(this.val.clone().fill("!")[0], "!", "Should be '!'");
+		test.equal(this.val.clone().fill("!", 1)[0], "a", "Should be 'a'");
+		test.equal(this.val.clone().fill("!", 1)[1], "!", "Should be '!'");
 		test.done();
 	}
 };
@@ -198,6 +312,24 @@ exports["intersect"] = {
 	sugar: function (test) {
 		test.expect(1);
 		test.equal(this.a1.intersect(this.a2).length, 1, "Should be 1 match");
+		test.done();
+	}
+};
+
+exports["keep_if"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		this.fn  = function (i) { return i.isOdd(); };
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.keep_if(this.val, this.fn).length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.keep_if(this.fn).length, 2, "Should be '2'");
 		test.done();
 	}
 };
@@ -370,6 +502,49 @@ exports["range"] = {
 	}
 };
 
+exports["rassoc"] = {
+	setUp: function (done) {
+		this.val = [[1, 3], [7, 2]];
+		this.a   = 3;
+		this.b   = 2;
+		this.c   = 1;
+		this.d   = undefined;
+		done();
+	},
+	direct: function (test) {
+		test.expect(3);
+		test.equal(array.rassoc(this.val, this.a)[1], this.a, "Should be '" + this.a + "'");
+		test.equal(array.rassoc(this.val, this.b)[1], this.b, "Should be '" + this.b + "'");
+		test.equal(array.rassoc(this.val, this.c), this.d, "Should be '" + this.d + "'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(3);
+		test.equal(this.val.rassoc(this.a)[1], this.a, "Should be '" + this.a + "'");
+		test.equal(this.val.rassoc(this.b)[1], this.b, "Should be '" + this.b + "'");
+		test.equal(this.val.rassoc(this.c), this.d, "Should be '" + this.d + "'");
+		test.done();
+	}
+};
+
+exports["reject"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		this.fn  = function (i) { return i.isEven(); };
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.reject(this.val, this.fn).length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.reject(this.fn).length, 2, "Should be '2'");
+		test.done();
+	}
+};
+
 exports["remove"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
@@ -389,6 +564,63 @@ exports["remove"] = {
 		test.equal(this.val.clone().remove(1).length, 1, "Should be 1");
 		test.equal(this.val.clone().remove("abc")[0], "xyz", "Should be 'xyz'");
 		test.equal(this.val.clone().remove("xyz")[0], "abc", "Should be 'abc'");
+		test.done();
+	}
+};
+
+exports["remove_if"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		this.fn  = function (i) { return i.isEven(); };
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.remove_if(this.val, this.fn).length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.remove_if(this.fn).length, 2, "Should be '2'");
+		test.done();
+	}
+};
+
+exports["remove_while"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		this.fn  = function (i) { return i < 3; };
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.remove_while(this.val, this.fn).length, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.remove_while(this.fn).length, 2, "Should be '2'");
+		test.done();
+	}
+};
+
+exports["rindex"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 1, 1, 2];
+		this.a   = 1;
+		this.b   = 3;
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.rindex(this.val, this.a), 3, "Should be '3'");
+		test.equal(array.rindex(this.val, this.b), -1, "Should be '-1'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.rindex(this.a), 3, "Should be '3'");
+		test.equal(this.val.rindex(this.b), -1, "Should be '-1'");
 		test.done();
 	}
 };
@@ -466,6 +698,25 @@ exports["sum"] = {
 	}
 };
 
+exports["take"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.take(this.val, 1)[0], 0, "Should be '0'");
+		test.equal(array.take(this.val, 3).length, 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.take(1)[0], 0, "Should be '0'");
+		test.equal(this.val.take(3).length, 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["total"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];
@@ -500,6 +751,47 @@ exports["toObject"] = {
 		test.expect(2);
 		test.equal(this.val.toObject() instanceof Object, true, "Should be true");
 		test.equal(this.val["0"], "abc", "Should be 'abc'");
+		test.done();
+	}
+};
+
+exports["unique"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 1, 2, 2, 3];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.unique(this.val).length, 4, "Should be '4'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.unique().length, 4, "Should be '4'");
+		test.done();
+	}
+};
+
+exports["zip"] = {
+	setUp: function (done) {
+		this.val = [0, 1];
+		this.a   = 1;
+		done();
+	},
+	direct: function (test) {
+		test.expect(4);
+		test.equal(array.zip(this.val, this.a).length, 2, "Should be 2");
+		test.equal(array.zip(this.val, this.a)[0].length, 2, "Should be 2");
+		test.equal(array.zip(this.val, this.a)[1].length, 2, "Should be 2");
+		test.equal(array.zip(this.val, this.a)[1][1], null, "Should be null");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(4);
+		test.equal(this.val.zip(this.a).length, 2, "Should be 2");
+		test.equal(this.val.zip(this.a)[0].length, 2, "Should be 2");
+		test.equal(this.val.zip(this.a)[1].length, 2, "Should be 2");
+		test.equal(this.val.zip(this.a)[1][1], null, "Should be null");
 		test.done();
 	}
 };

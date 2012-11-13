@@ -64,6 +64,16 @@ var array = {
 	},
 
 	/**
+	 * Clears an Array without destroying it
+	 * 
+	 * @param  {Array} obj Array to clear
+	 * @return {Array}     Cleared Array
+	 */
+	clear : function (obj) {
+		return obj.length > 0 ? array.remove(obj, 0, obj.length) : obj;
+	},
+
+	/**
 	 * Clones an Array
 	 * 
 	 * @method clone
@@ -87,6 +97,40 @@ var array = {
 	},
 
 	/**
+	 * Creates a new Array of the result of `fn` executed against every index of `obj`
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to execute against indices
+	 * @return {Array}        New Array
+	 */
+	collect : function (obj, fn) {
+		var result = [];
+
+		array.each(obj, function (i) {
+			result.push(fn(i));
+		});
+		return result;
+	},
+
+	/**
+	 * Compacts a Array by removing `null` or `undefined` indices
+	 * 
+	 * @param  {Array} obj    Array to compact
+	 * @param  {Boolean} diff Indicates to return resulting Array only if there's a difference
+	 * @return {Array}        Compacted copy of `obj`, or null (if `diff` is passed & no diff is found)
+	 */
+	compact : function (obj, diff) {
+		var valid  = /null|undefined/,
+		    result = [];
+
+		result = obj.filter(function (i) {
+			if (!valid.test(i)) return true;
+		});
+
+		return !diff ? result : (result.length < obj.length ? result : null);
+	},
+
+	/**
 	 * Finds the difference between array1 and array2
 	 *
 	 * @method diff
@@ -97,8 +141,8 @@ var array = {
 	diff : function (array1, array2) {
 		var result = [];
 
-		array1.each(function (i) { if (!array2.contains(i)) result.add(i); });
-		array2.each(function (i) { if (!array1.contains(i)) result.add(i); });
+		array.each(array1, function (i) { if (!array.contains(array2, i)) result.add(i); });
+		array.each(array2, function (i) { if (!array.contains(array1, i)) result.add(i); });
 		return result;
 	},
 
@@ -118,6 +162,49 @@ var array = {
 		while (++i < nth) {
 			r = fn.call(obj, obj[i], i);
 			if (r === false) break;
+		}
+		return obj;
+	},
+
+	/**
+	 * Determines if an Array is empty
+	 * 
+	 * @param  {Array} obj Array to inspect
+	 * @return {Boolean}   `true` if there's no indices
+	 */
+	empty : function (obj) {
+		return (obj.length === 0);
+	},
+
+	/**
+	 * Determines if `a` is equal to `b`
+	 * 
+	 * @param  {Array} a Array to compare
+	 * @param  {Array} b Array to compare
+	 * @return {Boolean} `true` if the Arrays match
+	 */
+	equal : function (a, b) {
+		return (json.encode(a) === json.encode(b));
+	},
+
+	/**
+	 * Fills `obj` with the evalution of `arg`, optionally from `start` to `offset`
+	 * 
+	 * @param  {Array}  obj   Array to fill
+	 * @param  {Mixed}  arg   String, Number of Function to fill with
+	 * @param  {Number} start [Optional] Index to begin filling at
+	 * @param  {Number} end   [Optional] Offset from start to stop filling at
+	 * @return {Array}        Filled Array
+	 */
+	fill : function (obj, arg, start, offset) {
+		var fn  = typeof arg === "function",
+		    l   = obj.length,
+		    i   = !isNaN(start)  ? start      : 0,
+		    nth = !isNaN(offset) ? i + offset : l - 1;
+
+		if (nth > (l - 1)) nth = l - 1;
+		for (; i <= nth; i++) {
+			obj[i] = fn ? arg(obj[i]) : arg;
 		}
 		return obj;
 	},
@@ -190,6 +277,26 @@ var array = {
 		    b = a === array1 ? array2 : array1;
 
 		return a.filter(function (key) { return array.contains(b, key); });
+	},
+
+	/**
+	 * Keeps every element of `obj` for which `fn` evaluates to true
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
+	 */
+	keep_if : function (obj, fn) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+		var result = [],
+		    remove = [];
+
+		result = obj.filter(fn);
+		remove = array.diff(obj, result);
+		array.each(remove, function (i, idx) {
+			array.remove(obj, array.index(obj, i));
+		});
+		return obj;
 	},
 
 	/**
@@ -328,6 +435,36 @@ var array = {
 	},
 
 	/**
+	 * Searches a 2D Array `obj` for the first match of `arg` as a second index
+	 * 
+	 * @param  {Array} obj 2D Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Array or undefined
+	 */
+	rassoc : function (obj, arg) {
+		var result;
+
+		array.each(obj, function (i, idx) {
+			if (i[1] === arg) {
+				result = obj[idx];
+				return false;
+			}
+		});
+		return result;
+	},
+
+	/**
+	 * Returns Array containing the items in `obj` for which `fn()` is not true
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to execute against `obj` indices
+	 * @return {Array}        Array of indices which fn() is not true
+	 */
+	reject : function (obj, fn) {
+		return array.diff(obj, obj.filter(fn));
+	},
+
+	/**
 	 * Removes indices from an Array without recreating it
 	 *
 	 * @method remove
@@ -349,6 +486,60 @@ var array = {
 		obj.length = start < 0 ? (length + start) : start;
 		obj.push.apply(obj, remaining);
 		return obj;
+	},
+
+	/**
+	 * Deletes every element of `obj` for which `fn` evaluates to true
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
+	 */
+	remove_if : function (obj, fn) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+		var remove = [];
+
+		remove = obj.filter(fn);
+		array.each(remove, function (i, idx) {
+			array.remove(obj, array.index(obj, i));
+		});
+		return obj;
+	},
+
+	/**
+	 * Deletes elements of `obj` until `fn` evaluates to false
+	 * 
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
+	 */
+	remove_while : function (obj, fn) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+		var remove = [];
+
+		array.each(obj, function (i) {
+			var result = fn(i);
+
+			if (result !== false) remove.push(i);
+			else return false;
+		});
+
+		array.each(remove, function (i, idx) {
+			array.remove(obj, array.index(obj, i));
+		});
+
+		return obj;	
+	},
+
+	/**
+	 * Facade for lastIndexOf()
+	 * 
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Index or undefined
+	 */
+	rindex : function (obj, arg) {
+		return obj.lastIndexOf(arg);
 	},
 
 	/**
@@ -431,6 +622,17 @@ var array = {
 	},
 
 	/**
+	 * Takes the first `arg` indices from `obj`
+	 * 
+	 * @param  {Array}  obj Array to parse
+	 * @param  {Number} arg Offset from 0 to return
+	 * @return {Array}      Subset of `obj`
+	 */
+	take : function (obj, arg) {
+		return array.limit(obj, 0, arg);
+	},
+
+	/**
 	 * Gets the total keys in an Array
 	 *
 	 * @method total
@@ -453,5 +655,47 @@ var array = {
 
 		while (i--) obj[i.toString()] = ar[i];
 		return obj;
+	},
+
+	/**
+	 * Returns an Array of unique indices of `obj`
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Array}     Array of unique indices
+	 */
+	unique : function (obj, fn) {
+		var result = [];
+
+		array.each(obj, function (i) {
+			array.add(result, i);
+		});
+		return result;
+	},
+
+	/**
+	 * Converts any arguments to Arrays, then merges elements of `obj` with corresponding elements from each argument
+	 * 
+	 * @param  {Array} obj  Array to transform
+	 * @param  {Mixed} args Argument instance or Array to merge
+	 * @return {Array}      Array
+	 */
+	zip : function (obj, args) {
+		var result = [];
+
+		// Preparing args
+		if (!(args instanceof Array)) args = typeof args === "object" ? array.cast(args) : [args];
+		array.each(args, function (i, idx) {
+			if (!(i instanceof Array)) this[idx] = [i];
+		});
+
+		// Building result Array
+		array.each(obj, function (i, idx) {
+			result[idx] = [i];
+			array.each(args, function (x) {
+				result[idx].push(x[idx] || null);
+			});
+		});
+
+		return result;
 	}
 };
