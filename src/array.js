@@ -70,7 +70,7 @@ var array = {
 	 * @return {Array}     Cleared Array
 	 */
 	clear : function (obj) {
-		return array.remove(obj, 0, obj.length);
+		return obj.length > 0 ? array.remove(obj, 0, obj.length) : obj;
 	},
 
 	/**
