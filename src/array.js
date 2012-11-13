@@ -193,13 +193,13 @@ var array = {
 	 * @param  {Array}  obj   Array to fill
 	 * @param  {Mixed}  arg   String, Number of Function to fill with
 	 * @param  {Number} start [Optional] Index to begin filling at
-	 * @param  {Number} end   [Optional] Index to stop filling at
+	 * @param  {Number} end   [Optional] Offset from start to stop filling at
 	 * @return {Array}        Filled Array
 	 */
 	fill : function (obj, arg, start, offset) {
 		var fn  = typeof arg === "function",
-		    i   = !isNaN(start)  ? start  : 0,
-		    nth = !isNaN(offset) ? offset : obj.length;
+		    i   = !isNaN(start)  ? start      : 0,
+		    nth = !isNaN(offset) ? i + offset : obj.length;
 
 		for (; i < nth; i++) {
 			obj[i] = fn ? arg(obj[i]) : arg;
