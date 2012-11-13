@@ -755,6 +755,23 @@ exports["toObject"] = {
 	}
 };
 
+exports["unique"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 1, 2, 2, 3];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.unique(this.val).length, 4, "Should be '4'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.unique().length, 4, "Should be '4'");
+		test.done();
+	}
+};
+
 exports["zip"] = {
 	setUp: function (done) {
 		this.val = [0, 1];

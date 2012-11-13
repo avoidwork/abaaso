@@ -701,6 +701,7 @@ var utility = {
 			           total    : function () { return array.total(this); },
 			           toObject : function () { return array.toObject(this); },
 			           un       : function (event, id, state) { return this.each(function (i) { i.un(event, id, state); }); },
+			           unique   : function () { return array.unique(this); },
 			           update   : function (arg) { return this.each(function (i) { element.update(i, arg); }); },
 			           val      : function (arg) {
 			           		var a    = [],

@@ -444,7 +444,7 @@ var array = {
 	rassoc : function (obj, arg) {
 		var result;
 
-		obj.each(function (i, idx) {
+		array.each(obj, function (i, idx) {
 			if (i[1] === arg) {
 				result = obj[idx];
 				return false;
@@ -541,7 +541,7 @@ var array = {
 	rindex : function (obj, arg) {
 		var result;
 
-		obj.each(function (i, idx) {
+		array.each(obj, function (i, idx) {
 			if (i === arg) result = idx;
 		});
 		return result;
@@ -660,6 +660,21 @@ var array = {
 
 		while (i--) obj[i.toString()] = ar[i];
 		return obj;
+	},
+
+	/**
+	 * Returns an Array of unique indices of `obj`
+	 * 
+	 * @param  {Array} obj Array to parse
+	 * @return {Array}     Array of unique indices
+	 */
+	unique : function (obj, fn) {
+		var result = [];
+
+		array.each(obj, function (i) {
+			array.add(result, i);
+		});
+		return result;
 	},
 
 	/**
