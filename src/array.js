@@ -532,19 +532,14 @@ var array = {
 	},
 
 	/**
-	 * Finds the last index of `arg` in `obj`
+	 * Facade for lastIndexOf()
 	 * 
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Primitive to find
 	 * @return {Mixed}     Index or undefined
 	 */
 	rindex : function (obj, arg) {
-		var result;
-
-		array.each(obj, function (i, idx) {
-			if (i === arg) result = idx;
-		});
-		return result;
+		return obj.lastIndexOf(arg);
 	},
 
 	/**

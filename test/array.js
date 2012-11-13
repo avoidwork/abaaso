@@ -614,13 +614,13 @@ exports["rindex"] = {
 	direct: function (test) {
 		test.expect(2);
 		test.equal(array.rindex(this.val, this.a), 3, "Should be '3'");
-		test.equal(array.rindex(this.val, this.b), undefined, "Should be 'undefined'");
+		test.equal(array.rindex(this.val, this.b), -1, "Should be '-1'");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(2);
 		test.equal(this.val.rindex(this.a), 3, "Should be '3'");
-		test.equal(this.val.rindex(this.b), undefined, "Should be 'undefined'");
+		test.equal(this.val.rindex(this.b), -1, "Should be '-1'");
 		test.done();
 	}
 };
