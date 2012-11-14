@@ -320,11 +320,14 @@ var array = {
 	 * Returns the last index of the Array
 	 *
 	 * @method last
-	 * @param  {Array} obj Array
-	 * @return {Mixed}     Last index of Array
+	 * @param  {Array}  obj Array
+	 * @param  {Number} arg [Optional] Negative offset from last index to return
+	 * @return {Mixed}      Last index(s) of Array
 	 */
-	last : function (obj) {
-		return obj[obj.length - 1];
+	last : function (obj, arg) {
+		var n = obj.length - 1;
+
+		return isNaN(arg) ? obj[n] : array.limit(obj, n - arg, n);
 	},
 
 	/**
@@ -463,6 +466,21 @@ var array = {
 	reject : function (obj, fn) {
 		return array.diff(obj, obj.filter(fn));
 	},
+	
+	/**
+	 * Replaces the contents of `obj` with `arg`
+	 * 
+	 * @param  {Array} obj Array to modify
+	 * @param  {Array} arg Array to become `obj`
+	 * @return {Array}     New version of `obj`
+	 */
+	replace : function (obj, arg) {
+		array.remove(obj, 0, obj.length);
+		array.each(arg, function (i) {
+			obj.push(i);
+		});
+		return obj;
+	},
 
 	/**
 	 * Removes indices from an Array without recreating it
@@ -532,6 +550,19 @@ var array = {
 	},
 
 	/**
+	 * Returns the "rest" of `obj` from `arg`
+	 * 
+	 * @param  {Array}  obj Array to parse
+	 * @param  {Number} arg [Optional] Start position of subset of `obj` (positive number only)
+	 * @return {Array}      Array of a subset of `obj`
+	 */
+	rest : function (obj, arg) {
+		arg = arg || 1;
+		if (arg < 1) arg = 1;
+		return array.limit(obj, arg, obj.length);
+	},
+
+	/**
 	 * Finds the last index of `arg` in `obj`
 	 * 
 	 * @param  {Array} obj Array to search
@@ -544,6 +575,44 @@ var array = {
 		array.each(obj, function (i, idx) {
 			if (i === arg) result = idx;
 		});
+		return result;
+	},
+
+	/**
+	 * Returns new Array with `arg` moved to the first index
+	 * 
+	 * @param  {Array}  obj Array to rotate
+	 * @param  {Number} arg Index to become the first index, if negative the rotation is in the opposite direction
+	 * @return {Array}      Newly rotated Array
+	 */
+	rotate : function (obj, arg) {
+		var result = [];
+
+		return result;
+	},
+
+	/**
+	 * Generates a series Array
+	 * 
+	 * @param  {Number} start  Start value the series
+	 * @param  {Number} end    [Optional] The end of the series
+	 * @param  {Number} offset [Optional] Offset for indices, default is 1
+	 * @return {Array}         Array of new series
+	 */
+	series : function (start, end, offset) {
+		var result = [],
+		    n      = 0;
+
+		start  = start  || 0;
+		end    = end    || start;
+		offset = offset || 1;
+		n      = start
+
+		while (n < end) {
+			result.push(start * offset);
+			n = start * offset;
+		}
+
 		return result;
 	},
 
