@@ -672,16 +672,16 @@ exports["series"] = {
 		test.expect(4);
 		test.equal(array.series(0, 5).length, 5, "Should be 5");
 		test.equal(array.series(0, 5).last(), 4, "Should be 4");
-		test.equal(array.series(0, 5, 5).length, 5, "Should be 5");
-		test.equal(array.series(0, 5, 5).last(), 20, "Should be 20");
+		test.equal(array.series(0, 25, 5).length, 5, "Should be 5");
+		test.equal(array.series(0, 25, 5).last(), 20, "Should be 20");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(4);
 		test.equal([].series(0, 5).length, 5, "Should be 5");
 		test.equal([].series(0, 5).last(), 4, "Should be 4");
-		test.equal([].series(0, 5, 5).length, 5, "Should be 5");
-		test.equal([].series(0, 5, 5).last(), 20, "Should be 20");
+		test.equal([].series(0, 25, 5).length, 5, "Should be 5");
+		test.equal([].series(0, 25, 5).last(), 20, "Should be 20");
 		test.done();
 	}
 };
