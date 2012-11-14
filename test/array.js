@@ -670,15 +670,15 @@ exports["rotate"] = {
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(array.rotate(this.val, 3)[0], 2, "Should be '2'");
-		//test.equal(array.rotate(this.val, -2)[0], 3, "Should be '3'");
+		test.equal(array.rotate(this.val, -2)[0], 3, "Should be '3'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(this.val.rotate(3)[0], 2, "Should be '2'");
-		//test.equal(this.val.rotate(-2)[0], 3, "Should be '3'");
+		test.equal(this.val.rotate(-2)[0], 3, "Should be '3'");
 		test.done();
 	}
 };

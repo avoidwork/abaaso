@@ -589,18 +589,12 @@ var array = {
 		var result = [],
 		    nth    = obj.length;
 
-		switch (true) {
-			case arg < 0:
-				arg += nth;
-			case arg > 0:
-				arg--;
-				result = array.limit(obj, arg, nth);
-				result = result.concat(array.limit(obj, 0, arg));
-				break;
-			default:
-				result = obj;
+		if (arg === 0) result = obj;
+		else {
+			arg    = arg < 0 ? arg += nth : arg--;
+			result = array.limit(obj, arg, nth);
+			result = result.concat(array.limit(obj, 0, arg));
 		}
-
 		return result;
 	},
 
