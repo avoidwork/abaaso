@@ -664,7 +664,6 @@ exports["rindex"] = {
 	}
 };
 
-/*
 exports["series"] = {
 	setUp: function (done) {
 		done();
@@ -686,7 +685,6 @@ exports["series"] = {
 		test.done();
 	}
 };
-*/
 
 exports["split"] = {
 	setUp: function (done) {
