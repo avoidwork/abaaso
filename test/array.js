@@ -664,6 +664,25 @@ exports["rindex"] = {
 	}
 };
 
+exports["rotate"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.rotate(this.val, 3)[0], 2, "Should be '2'");
+		//test.equal(array.rotate(this.val, -2)[0], 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.rotate(3)[0], 2, "Should be '2'");
+		//test.equal(this.val.rotate(-2)[0], 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["series"] = {
 	setUp: function (done) {
 		done();

@@ -586,16 +586,16 @@ var array = {
 	 * @return {Array}      Newly rotated Array
 	 */
 	rotate : function (obj, arg) {
-		var result = [];
+		var result = [],
+		    nth    = obj.length;
 
 		switch (true) {
+			case arg < 0:
+				arg += nth;
 			case arg > 0:
 				arg--;
-				result = array.limit(obj, arg, obj.length);
+				result = array.limit(obj, arg, nth);
 				result = result.concat(array.limit(obj, 0, arg));
-				break;
-			case arg < 0:
-				result = obj; // implement this
 				break;
 			default:
 				result = obj;
