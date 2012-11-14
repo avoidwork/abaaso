@@ -588,6 +588,18 @@ var array = {
 	rotate : function (obj, arg) {
 		var result = [];
 
+		switch (true) {
+			case arg > 0:
+				result = array.limit(obj, arg, obj.length);
+				result = result.concat(array.limit(obj, 0, arg));
+				break;
+			case arg < 0:
+				result = obj; // implement this
+				break;
+			default:
+				result = obj;
+		}
+
 		return result;
 	},
 
