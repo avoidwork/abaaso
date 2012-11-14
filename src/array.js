@@ -590,6 +590,7 @@ var array = {
 
 		switch (true) {
 			case arg > 0:
+				arg--;
 				result = array.limit(obj, arg, obj.length);
 				result = result.concat(array.limit(obj, 0, arg));
 				break;
