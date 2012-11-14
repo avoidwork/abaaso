@@ -355,17 +355,19 @@ exports["keys"] = {
 
 exports["last"] = {
 	setUp: function (done) {
-		this.val = ["abc", "xyz"];
+		this.val = ["abc", "xyz", "def"];
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
-		test.equal(array.last(this.val), "xyz", "Should be 'xyz'");
+		test.expect(2);
+		test.equal(array.last(this.val), "def", "Should be 'def'");
+		test.equal(array.last(this.val, 2)[0], "xyz", "Should be 'xyz'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
-		test.equal(this.val.last(), "xyz", "Should be 'xyz'");
+		test.expect(2);
+		test.equal(this.val.last(), "def", "Should be 'def'");
+		test.equal(this.val.last(2)[0], "xyz", "Should be 'xyz'");
 		test.done();
 	}
 };
@@ -604,6 +606,43 @@ exports["remove_while"] = {
 	}
 };
 
+exports["replace"] = {
+	setUp: function (done) {
+		this.a = ["abc", "xyz"];
+		this.b = [0, 1, 2];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.replace(this.a.clone(), this.b).length, 3, "Should be 3");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.a.clone().replace(this.b).length, 3, "Should be 3");
+		test.done();
+	}
+};
+
+exports["rest"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.rest(this.val).length, 2, "Should be 2");
+		test.equal(array.rest(this.val, 2).length, 1, "Should be 1");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.rest().length, 2, "Should be 2");
+		test.equal(this.val.rest(2).length, 1, "Should be 1");
+		test.done();
+	}
+};
+
 exports["rindex"] = {
 	setUp: function (done) {
 		this.val = [0, 1, 1, 1, 2];
@@ -621,6 +660,47 @@ exports["rindex"] = {
 		test.expect(2);
 		test.equal(this.val.rindex(this.a), 3, "Should be '3'");
 		test.equal(this.val.rindex(this.b), -1, "Should be '-1'");
+		test.done();
+	}
+};
+
+exports["rotate"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.rotate(this.val, 3)[0], 2, "Should be '2'");
+		test.equal(array.rotate(this.val, -2)[0], 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.rotate(3)[0], 2, "Should be '2'");
+		test.equal(this.val.rotate(-2)[0], 3, "Should be '3'");
+		test.done();
+	}
+};
+
+exports["series"] = {
+	setUp: function (done) {
+		done();
+	},
+	direct: function (test) {
+		test.expect(4);
+		test.equal(array.series(0, 5).length, 5, "Should be 5");
+		test.equal(array.series(0, 5).last(), 4, "Should be 4");
+		test.equal(array.series(0, 25, 5).length, 5, "Should be 5");
+		test.equal(array.series(0, 25, 5).last(), 20, "Should be 20");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(4);
+		test.equal([].series(0, 5).length, 5, "Should be 5");
+		test.equal([].series(0, 5).last(), 4, "Should be 4");
+		test.equal([].series(0, 25, 5).length, 5, "Should be 5");
+		test.equal([].series(0, 25, 5).last(), 20, "Should be 20");
 		test.done();
 	}
 };
