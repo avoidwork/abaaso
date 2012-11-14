@@ -607,7 +607,7 @@ var array = {
 		    n      = -1,
 		    nth    = Math.max(0, Math.ceil((end - start) / offset));
 
-		while (++n < end) {
+		while (++n < nth) {
 			result[n]  = start;
 			start     += offset;
 		}
