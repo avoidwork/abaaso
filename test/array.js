@@ -355,19 +355,19 @@ exports["keys"] = {
 
 exports["last"] = {
 	setUp: function (done) {
-		this.val = ["abc", "xyz"];
+		this.val = ["abc", "xyz", "def"];
 		done();
 	},
 	direct: function (test) {
 		test.expect(2);
-		test.equal(array.last(this.val), "xyz", "Should be 'xyz'");
-		test.equal(array.last(this.val, 1)[0], "abc", "Should be 'abc'");
+		test.equal(array.last(this.val), "def", "Should be 'def'");
+		test.equal(array.last(this.val, 1)[0], "xyz", "Should be 'xyz'");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(2);
-		test.equal(this.val.last(), "xyz", "Should be 'xyz'");
-		test.equal(this.val.last(1)[0], "abc", "Should be 'abc'");
+		test.equal(this.val.last(), "def", "Should be 'def'");
+		test.equal(this.val.last(1)[0], "xyz", "Should be 'xyz'");
 		test.done();
 	}
 };

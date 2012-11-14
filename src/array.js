@@ -325,9 +325,9 @@ var array = {
 	 * @return {Mixed}      Last index(s) of Array
 	 */
 	last : function (obj, arg) {
-		var n = obj.length - 1;
+		var n = obj.length;
 
-		return isNaN(arg) ? obj[n] : array.limit(obj, n - arg, n);
+		return isNaN(arg) ? obj[n - 1] : array.limit(obj, n - ++arg, n);
 	},
 
 	/**
