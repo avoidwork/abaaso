@@ -238,8 +238,9 @@ var route = {
 	 * @return {Object}        Server
 	 */
 	server : function (args, fn, ssl) {
-		var url = require("url"),
-		    handler, err, obj;
+		var handler, err, obj;
+
+		if (!server) return null;
 
 		args = args || {};
 		ssl  = (ssl === true || args.port === 443);

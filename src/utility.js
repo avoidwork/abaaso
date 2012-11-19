@@ -544,10 +544,14 @@ var utility = {
 	 * @return {Object}     Parsed URI
 	 */
 	parse : function (uri) {
-		var obj    = document.createElement("a"),
+		var obj    = {},
 		    parsed = {};
 
-		obj.href = uri;
+		if (!server) {
+			obj = document.createElement("a");
+			obj.href = uri;
+		}
+		else obj = url.parse(uri);
 
 		parsed = {
 			protocol : obj.protocol,
@@ -583,7 +587,6 @@ var utility = {
 		var define;
 
 		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
-		if (server && obj.hasOwnProperty(prop)) return;
 
 		define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
 		if (define && typeof descriptor.value !== "undefined" && typeof descriptor.get !== "undefined") delete descriptor.value;
