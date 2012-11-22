@@ -39,8 +39,8 @@ var data = {
 			    root = /^\/[^\/]/,
 			    completed, failure, key, set, success, parsed;
 
-			completed = function () {
-				if (type === "delete") self.reindex();
+			completed = function (reindex) {
+				if (type === "delete" && reindex !== false) self.reindex();
 				self.loaded = true;
 				obj.fire("afterDataBatch");
 			};
@@ -95,38 +95,41 @@ var data = {
 				}, guid);
 			}
 
-			if (type === "set") data.chunk(chunk).each(function (a, adx) {
-					var offset = adx * chunk;
+			if (data.length === 0) completed(false);
+			else {
+				if (type === "set") data.chunk(chunk).each(function (a, adx) {
+						var offset = adx * chunk;
 
-					$.defer(function () {
-						a.each(function (i, idx) {
-							idx = (offset + idx).toString();
-							switch (true) {
-								case typeof i === "object":
-									set(i, idx);
-									break;
-								case i.indexOf("//") === -1:
-									// Relative path to store, i.e. a child
-									if (i.charAt(0) !== "/") i = self.uri + "/" + i;
-									// Root path, relative to store, i.e. a domain
-									else if (self.uri !== null && root.test(i)) {
-										parsed = utility.parse(self.uri);
-										i      = parsed.protocol + "//" + parsed.host + i;
-									};
-								default:
-									idx = i.replace(/.*\//, "");
-									if (idx.isEmpty()) break;
-									utility.defer(function () {
-										i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
-									});
-									break;
-							}
+						$.defer(function () {
+							a.each(function (i, idx) {
+								idx = (offset + idx).toString();
+								switch (true) {
+									case typeof i === "object":
+										set(i, idx);
+										break;
+									case i.indexOf("//") === -1:
+										// Relative path to store, i.e. a child
+										if (i.charAt(0) !== "/") i = self.uri + "/" + i;
+										// Root path, relative to store, i.e. a domain
+										else if (self.uri !== null && root.test(i)) {
+											parsed = utility.parse(self.uri);
+											i      = parsed.protocol + "//" + parsed.host + i;
+										};
+									default:
+										idx = i.replace(/.*\//, "");
+										if (idx.isEmpty()) break;
+										utility.defer(function () {
+											i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+										});
+										break;
+								}
+							});
 						});
 					});
+				else data.sort(array.sort).reverse().each(function (i) {
+					self.del(i, false, sync);
 				});
-			else data.sort(array.sort).reverse().each(function (i) {
-				self.del(i, false, sync);
-			});
+			}
 
 			return this;
 		},
