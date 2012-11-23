@@ -357,7 +357,7 @@ var data = {
 
 						needle.each(function (n) {
 							utility.compile(regex, n, modifiers);
-							if (regex.test(v)) {
+							if (regex.test(String(v).escape())) {
 								keys.push(r.key);
 								result.add(r);
 								return false;
@@ -374,7 +374,7 @@ var data = {
 
 					needle.each(function (n) {
 						utility.compile(regex, n, modifiers);
-						if (regex.test(r.data[h])) {
+						if (regex.test(String(r.data[h]).escape())) {
 							keys.push(r.key);
 							result.add(r);
 							return false;
