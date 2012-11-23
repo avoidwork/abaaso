@@ -284,8 +284,8 @@ var data = {
 			switch (typeof record) {
 				case "string":
 					key    = record;
-					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
 					record = this.keys[key];
+					if (typeof record === "undefined") throw Error(label.error.invalidArguments);
 					break;
 				default:
 					key = this.records[record];
