@@ -353,7 +353,7 @@ var data = {
 				this.records.each(function (r) {
 					utility.iterate(r.data, function (v, k) {
 						if (keys.contains(r.key)) return false;
-						if (typeof v.data === "object") return;
+						if (v === null || typeof v.data === "object") return;
 
 						needle.each(function (n) {
 							utility.compile(regex, n, modifiers);
