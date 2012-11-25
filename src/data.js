@@ -40,7 +40,7 @@ var data = {
 			    completed, failure, key, set, success, parsed;
 
 			completed = function (reindex) {
-				if (type === "delete" && reindex !== false) self.reindex();
+				if (/^del/.test(type) && reindex !== false) self.reindex();
 				self.loaded = true;
 				obj.fire("afterDataBatch");
 			};
