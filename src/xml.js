@@ -64,7 +64,9 @@ var xml = {
 					x += node("item", arg);
 					break;
 				case typeof arg === "object":
-					utility.iterate(arg, function (v, k) { x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item"); });
+					utility.iterate(arg, function (v, k) {
+						x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item");
+					});
 					break;
 			}
 
