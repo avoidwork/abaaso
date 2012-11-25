@@ -610,8 +610,8 @@ var data = {
 			    key = (this.key !== null),
 			    i   = -1;
 
-			if (nth > 0 && nth < this.records.length) {
-				this.views = {};
+			this.views = {};
+			if (nth > 0) {
 				while (++i < nth) {
 					if (!key && this.records[i].key.isNumber()) {
 						delete this.keys[this.records[i].key];
