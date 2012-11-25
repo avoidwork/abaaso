@@ -65,7 +65,7 @@ var data = {
 
 				obj.once("afterDataSet", function () {
 					this.un("failedDataSet", guid);
-					if (++r && r === nth) completed();
+					if (++r === nth) completed();
 				}, guid).once("failedDataSet", function () {
 					this.un("afterDataSet", guid)
 					if (!f) {
@@ -84,7 +84,7 @@ var data = {
 
 			if (type === "delete") {
 				obj.on("afterDataDelete", function () {
-					if (r++ && r === nth) {
+					if (++r === nth) {
 						obj.un("afterDataDelete, failedDataDelete", guid);
 						completed();
 					}
@@ -102,7 +102,7 @@ var data = {
 				if (type === "set") data.chunk(chunk).each(function (a, adx) {
 						var offset = adx * chunk;
 
-						$.defer(function () {
+						utility.defer(function () {
 							a.each(function (i, idx) {
 								idx = (offset + idx).toString();
 								switch (true) {
