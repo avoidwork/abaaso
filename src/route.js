@@ -144,7 +144,9 @@ var route = {
 				if (route.routes.hasOwnProperty(host)) {
 					utility.iterate(route.routes[host], function (v, k) {
 						result[k] = [];
-						utility.iterate(v, function (fn, r) { result[k].push(r); });
+						utility.iterate(v, function (fn, r) {
+							result[k].push(r);
+						});
 					});
 				}
 		}
@@ -152,7 +154,9 @@ var route = {
 		if (!server && host !== "all") {
 			utility.iterate(route.routes.all, function (v, k) {
 				if (typeof result[k] === "undefined") result[k] = [];
-				utility.iterate(v, function (fn, r) { result[k].push(r); });
+				utility.iterate(v, function (fn, r) {
+					result[k].push(r);
+				});
 			});
 		}
 
@@ -196,8 +200,14 @@ var route = {
 					path   = "all";
 					break;
 				default:
-					utility.iterate(route.routes[host][verb], function (v, k) { return find(k, verb, name); });
-					if (active.isEmpty() && verb !== "all") utility.iterate(route.routes[host].all, function (v, k) { return find(k, "all", name); });
+					utility.iterate(route.routes[host][verb], function (v, k) {
+						return find(k, verb, name);
+					});
+					if (active.isEmpty() && verb !== "all") {
+						utility.iterate(route.routes[host].all, function (v, k) {
+							return find(k, "all", name);
+						});
+					}
 			}
 		};
 
@@ -215,9 +225,11 @@ var route = {
 		crawl(host, verb, name);
 
 		if (active.isEmpty()) {
-			if (host !== "all") crawl("all", verb, name);
+			if (host !== "all") {
+				host = "all";
+				crawl(host, verb, name);
+			}
 			if (active.isEmpty()) {
-				host   = "all";
 				active = "error";
 				path   = "all";
 				result = false;
