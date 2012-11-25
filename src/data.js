@@ -28,7 +28,7 @@ var data = {
 			sync  = (sync === true);
 			chunk = chunk || 1000;
 
-			if (!/^(set|del|delete)$/.test(type) || typeof data !== "object") throw Error(label.error.invalidArguments);
+			if (!/^(set|del|delete)$/.test(type) || (sync && /^del/.test(type)) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
 			var obj  = this.parentNode,
 			    self = this,
@@ -79,6 +79,8 @@ var data = {
 			};
 
 			obj.fire("beforeDataBatch", data);
+
+			if (sync) this.clear(sync);
 
 			if (type === "delete") {
 				obj.on("afterDataDelete", function () {
