@@ -37,10 +37,11 @@ var data = {
 			    f    = false,
 			    guid = utility.genId(true),
 			    root = /^\/[^\/]/,
+			    del  = /^del/,
 			    completed, failure, key, set, success, parsed;
 
 			completed = function (reindex) {
-				if (/^del/.test(type) && reindex !== false) self.reindex();
+				if (del.test(type) && reindex !== false) self.reindex();
 				self.loaded = true;
 				obj.fire("afterDataBatch");
 			};
@@ -82,7 +83,7 @@ var data = {
 
 			if (sync) this.clear(sync);
 
-			if (type === "delete") {
+			if (del.test(type)) {
 				obj.on("afterDataDelete", function () {
 					if (++r === nth) {
 						obj.un("afterDataDelete, failedDataDelete", guid);
