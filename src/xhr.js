@@ -166,7 +166,9 @@ var xhr = function () {
 		var result = "";
 
 		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error("INVALID_STATE_ERR: Headers have not been received");
-		utility.iterate(this._resheaders, function (v, k) { result += k + ": " + v + "\n"; });
+		utility.iterate(this._resheaders, function (v, k) {
+			result += k + ": " + v + "\n";
+		});
 		return result;
 	};
 
@@ -209,7 +211,9 @@ var xhr = function () {
 			password : password || null
 		}
 
-		utility.iterate(headers, function (v, k) { self._headers[k] = v; });
+		utility.iterate(headers, function (v, k) {
+			self._headers[k] = v;
+		});
 		this.readyState = OPENED;
 		return this;
 	};
@@ -258,7 +262,7 @@ var xhr = function () {
 		}
 
 		parsed      = url.parse(this._params.url);
-		parsed.port = parsed.port || (parsed.protocol === "https" ? 443 : 80);
+		parsed.port = parsed.port || (parsed.protocol === "https:" ? 443 : 80);
 		if (this._params.user !== null && this._params.password !== null) parsed.auth = this._params.user + ":" + this._params.password;
 
 		// Specifying Content-Length accordingly
