@@ -323,7 +323,7 @@ var data = {
 		 * Finds needle in the haystack
 		 *
 		 * @method find
-		 * @param  {Mixed}  needle    String, Number or Pattern to test for
+		 * @param  {Mixed}  needle    String, Number, RegExp Pattern or Function
 		 * @param  {String} haystack  [Optional] Commma delimited string of the field(s) to search
 		 * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
 		 * @return {Array}            Array of results
@@ -331,24 +331,28 @@ var data = {
 		find : function (needle, haystack, modifiers) {
 			if (typeof needle === "undefined") throw Error(label.error.invalidArguments);
 
-			needle     = typeof needle   === "string" ? needle.explode() : [needle];
-			haystack   = typeof haystack === "string" ? haystack.explode() : null;
-
 			var result = [],
 			    obj    = this.parentNode,
 			    keys   = [],
-			    regex  = new RegExp();
+			    regex  = new RegExp(),
+			    fn     = typeof needle === "function";
+
+			// Preparing parameters
+			needle     = typeof needle   === "string" ? needle.explode() : [needle];
+			haystack   = typeof haystack === "string" ? haystack.explode() : null;
 
 			if (this.total === 0) return result;
 
-			switch (true) {
-				case typeof modifiers === "undefined":
-				case String(modifiers).isEmpty():
-					modifiers = "gi";
-					break;
-				case modifiers === null:
-					modifiers = "";
-					break;
+			if (!fn) {
+				switch (true) {
+					case typeof modifiers === "undefined":
+					case String(modifiers).isEmpty():
+						modifiers = "gi";
+						break;
+					case modifiers === null:
+						modifiers = "";
+						break;
+				}
 			}
 
 			// No haystack, testing everything
@@ -359,8 +363,15 @@ var data = {
 						if (v === null || typeof v.data === "object") return;
 
 						needle.each(function (n) {
-							utility.compile(regex, n, modifiers);
-							if (regex.test(String(v).escape())) {
+							if (!fn) {
+								utility.compile(regex, n, modifiers);
+								if (regex.test(String(v).escape())) {
+									keys.push(r.key);
+									result.add(r);
+									return false;
+								}
+							}
+							else if (n(r) === true) {
 								keys.push(r.key);
 								result.add(r);
 								return false;
@@ -376,8 +387,15 @@ var data = {
 					if (typeof r.data[h] === "undefined" || typeof r.data[h].data === "object") return;
 
 					needle.each(function (n) {
-						utility.compile(regex, n, modifiers);
-						if (regex.test(String(r.data[h]).escape())) {
+						if (!fn) {
+							utility.compile(regex, n, modifiers);
+							if (regex.test(String(r.data[h]).escape())) {
+								keys.push(r.key);
+								result.add(r);
+								return false;
+							}
+						}
+						else if (n(r) === true) {
 							keys.push(r.key);
 							result.add(r);
 							return false;
@@ -506,7 +524,7 @@ var data = {
 			obj.create("input", {type: "reset", value: label.common.reset});
 			obj.css("display", "inherit");
 			this.parentNode.fire("afterDataForm", obj);
-			return obj;
+			return obj;  
 		},
 
 		/**
