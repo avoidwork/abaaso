@@ -47,7 +47,7 @@ var datalist = {
 			if (!datalist.position.test(pos)) throw Error(label.error.invalidArguments);
 
 			// Removing the existing controls
-			list.each(function (i) { if (typeof i !== "undefined") i.destroy(); });
+			array.each(list, function (i) { if (typeof i !== "undefined") i.destroy(); });
 			
 			// Halting because there's 1 page, or nothing
 			if (this.total === 0 || total === 1) return this;
@@ -64,7 +64,7 @@ var datalist = {
 				if (start < 1) start = 1;
 			}
 
-			pos.explode().each(function (i) {
+			array.each(pos.explode(), function (i) {
 				// Setting up the list
 				list = obj[i === "bottom" ? "after" : "before"]("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i});
 
@@ -159,7 +159,7 @@ var datalist = {
 			consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, false, this.sensitivity);
 
 			// Processing (filtering) records & generating templates
-			consumed.each(function (i) {
+			array.each(consumed, function (i) {
 				if (self.filter === null || !(self.filter instanceof Object)) items.push({key: i.key, template: fn(i)});
 				else {
 					utility.iterate(self.filter, function (v, k) {
@@ -196,7 +196,7 @@ var datalist = {
 			// Preparing the target element
 			if (redraw) {
 				element.clear();
-				items.each(function (i) {
+				array.each(items, function (i) {
 					var obj = element.tpl(i.template);
 					obj.data("key", i.key);
 					if (callback) self.callback(obj);
@@ -204,7 +204,9 @@ var datalist = {
 			}
 			else {
 				element.find("> li").addClass("hidden");
-				items.each(function (i) { element.find("> li[data-key='" + i.key + "']").removeClass("hidden"); });
+				array.each(items, function (i) {
+					element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
+				});
 			}
 
 			// Rendering pagination elements
@@ -361,7 +363,7 @@ var datalist = {
 	 */
 	pages : function () {
 		if (isNaN(this.pageSize)) throw Error(label.error.invalidArguments);
-		return (this.total / this.pageSize).roundUp();
+		return number(this.total / this.pageSize, "up");
 	},
 
 	/**
