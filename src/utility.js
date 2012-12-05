@@ -920,6 +920,7 @@ var utility = {
 			           listeners: function (event) { return $.listeners.call(this.toString(), event); },
 			           on       : function (event, listener, id, scope, state) { $.on.call(this.toString(), event, listener, id, scope || this, state); return this; },
 			           once     : function (event, listener, id, scope, state) { $.once.call(this.toString(), event, listener, id, scope || this, state); return this; },
+			           random   : function () { return number.random(this); },
 			           roundDown: function () { return number.round(this, "down"); },
 			           roundUp  : function () { return number.round(this, "up"); },
 			           un       : function (event, id, state) { $.un.call(this.toString(), event, id, state); return this; }},
@@ -960,7 +961,9 @@ var utility = {
 			           uncapitalize: function () { return string.uncapitalize(this); }}
 		};
 
-		utility.iterate(methods[type], function (v, k) { utility.property(obj.prototype, k, {value: v}); });
+		utility.iterate(methods[type], function (v, k) {
+			utility.property(obj.prototype, k, {value: v});
+		});
 		return obj;
 	},
 

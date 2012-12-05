@@ -96,6 +96,17 @@ var number = {
 	},
 
 	/**
+	 * Generates a random number between 0 and arg
+	 * 
+	 * @param  {Number} arg Ceiling for random number, default is 100
+	 * @return {Number}     Random number
+	 */
+	random : function (arg) {
+		arg = arg || 100;
+		return Math.floor((Math.random() * arg) + 1)
+	},
+
+	/**
 	 * Rounds a number up or down
 	 * 
 	 * @param  {Number} arg       Number to round
