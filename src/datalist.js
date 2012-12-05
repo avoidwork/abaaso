@@ -191,10 +191,7 @@ var datalist = {
 			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
 				ceiling = datalist.pages.call(this);
 				// Passed the end, so putting you on the end
-				if (this.pageIndex > ceiling) {
-					this.pageIndex = ceiling;
-					return this.refresh();
-				}
+				if (this.pageIndex > ceiling) return this.page(ceiling);
 				// Paginating the items
 				else {
 					limit = datalist.range.call(this);
@@ -313,11 +310,13 @@ var datalist = {
 
 		// Cleaning up orphaned element(s)
 		instance.store.parentNode.on("afterDataDelete", function (r) {
-			this.element.fire("beforeDataListRefresh");
 			if (datalist.garbage(this.store.parentNode, element.id, "afterDataDelete", "delete-" + element.id)) return;
 			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.refresh();
-			else this.element.find("> li[data-key='" + r.key + "']").destroy();
-			this.element.fire("afterDataListRefresh");
+			else {
+				this.element.fire("beforeDataListRefresh");
+				this.element.find("> li[data-key='" + r.key + "']").destroy();
+				this.element.fire("afterDataListRefresh");
+			}
 		}, "delete-" + element.id, instance);
 
 		fn = function () {
