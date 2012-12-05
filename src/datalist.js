@@ -36,7 +36,7 @@ var datalist = {
 			    page  = this.pageIndex,
 			    pos   = this.pagination,
 			    range = this.pageRange,
-			    mid   = range.half().roundDown(),
+			    mid   = number.round(number.half(range), "down"),
 			    start = page - mid,
 			    end   = page + mid,
 			    self  = this,
@@ -119,7 +119,7 @@ var datalist = {
 			    regex    = new RegExp(),
 			    registry = [], // keeps track of records in the list (for filtering)
 			    limit    = [],
-			    fn, obj;
+			    fn, obj, ceiling;
 
 			if (!this.ready) {
 				this.ready = true;
@@ -187,10 +187,19 @@ var datalist = {
 			// Total count of items in the list
 			this.total = items.length;
 
-			// Pagination supporting filtering
+			// Pagination (supports filtering)
 			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
-				limit = datalist.range.call(this);
-				items = items.limit(limit[0], limit[1]);
+				ceiling = datalist.pages.call(this);
+				// Passed the end, so putting you on the end
+				if (this.pageIndex > ceiling) {
+					this.pageIndex = ceiling;
+					return this.refresh();
+				}
+				// Paginating the items
+				else {
+					limit = datalist.range.call(this);
+					items = items.limit(limit[0], limit[1]);
+				}
 			}
 
 			// Preparing the target element
