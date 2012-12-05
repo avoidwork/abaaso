@@ -375,7 +375,7 @@ var datalist = {
 	 */
 	pages : function () {
 		if (isNaN(this.pageSize)) throw Error(label.error.invalidArguments);
-		return number(this.total / this.pageSize, "up");
+		return number.round(this.total / this.pageSize, "up");
 	},
 
 	/**
