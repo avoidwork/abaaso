@@ -36,7 +36,7 @@ var datalist = {
 			    page  = this.pageIndex,
 			    pos   = this.pagination,
 			    range = this.pageRange,
-			    mid   = range.half().roundDown(),
+			    mid   = number.round(number.half(range), "down"),
 			    start = page - mid,
 			    end   = page + mid,
 			    self  = this,
@@ -47,7 +47,7 @@ var datalist = {
 			if (!datalist.position.test(pos)) throw Error(label.error.invalidArguments);
 
 			// Removing the existing controls
-			list.each(function (i) { if (typeof i !== "undefined") i.destroy(); });
+			array.each(list, function (i) { if (typeof i !== "undefined") i.destroy(); });
 			
 			// Halting because there's 1 page, or nothing
 			if (this.total === 0 || total === 1) return this;
@@ -64,7 +64,7 @@ var datalist = {
 				if (start < 1) start = 1;
 			}
 
-			pos.explode().each(function (i) {
+			array.each(pos.explode(), function (i) {
 				// Setting up the list
 				list = obj[i === "bottom" ? "after" : "before"]("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i});
 
@@ -119,7 +119,7 @@ var datalist = {
 			    regex    = new RegExp(),
 			    registry = [], // keeps track of records in the list (for filtering)
 			    limit    = [],
-			    fn, obj;
+			    fn, obj, ceiling;
 
 			if (!this.ready) {
 				this.ready = true;
@@ -159,7 +159,7 @@ var datalist = {
 			consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, false, this.sensitivity);
 
 			// Processing (filtering) records & generating templates
-			consumed.each(function (i) {
+			array.each(consumed, function (i) {
 				if (self.filter === null || !(self.filter instanceof Object)) items.push({key: i.key, template: fn(i)});
 				else {
 					utility.iterate(self.filter, function (v, k) {
@@ -187,16 +187,25 @@ var datalist = {
 			// Total count of items in the list
 			this.total = items.length;
 
-			// Pagination supporting filtering
+			// Pagination (supports filtering)
 			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
-				limit = datalist.range.call(this);
-				items = items.limit(limit[0], limit[1]);
+				ceiling = datalist.pages.call(this);
+				// Passed the end, so putting you on the end
+				if (this.pageIndex > ceiling) {
+					this.pageIndex = ceiling;
+					return this.refresh();
+				}
+				// Paginating the items
+				else {
+					limit = datalist.range.call(this);
+					items = items.limit(limit[0], limit[1]);
+				}
 			}
 
 			// Preparing the target element
 			if (redraw) {
 				element.clear();
-				items.each(function (i) {
+				array.each(items, function (i) {
 					var obj = element.tpl(i.template);
 					obj.data("key", i.key);
 					if (callback) self.callback(obj);
@@ -204,7 +213,9 @@ var datalist = {
 			}
 			else {
 				element.find("> li").addClass("hidden");
-				items.each(function (i) { element.find("> li[data-key='" + i.key + "']").removeClass("hidden"); });
+				array.each(items, function (i) {
+					element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
+				});
 			}
 
 			// Rendering pagination elements
@@ -222,7 +233,10 @@ var datalist = {
 		/**
 		 * Sorts data list & refreshes element
 		 * 
-		 * Events: beforeDataListRefresh, afterDataListRefresh
+		 * Events: beforeDataListSort     Fires before the DataList sorts
+		 *         afterDataListSort      Fires after the DataList is sorted
+		 *         beforeDataListRefresh  Fires before the DataList refreshes
+		 *         afterDataListRefresh   Fires after the DataList refreshes
 		 * 
 		 * @param  {String} order       SQL "order by" statement
 		 * @param  {String} sensitivity [Optional] Defaults to "ci" ("ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive)
@@ -246,7 +260,7 @@ var datalist = {
 		teardown : function () {
 			var id = this.element.id;
 
-			this.store.parentNode.un("afterDataDelete", "delete-" + id).un("afterDataRetrieve, afterDataSync", "refresh-" + id);
+			this.store.parentNode.un("afterDataDelete", "delete-" + id, "afterDataRetrieve, afterDataSync", "refresh-" + id);
 			return this;
 		}
 	},
@@ -361,7 +375,7 @@ var datalist = {
 	 */
 	pages : function () {
 		if (isNaN(this.pageSize)) throw Error(label.error.invalidArguments);
-		return (this.total / this.pageSize).roundUp();
+		return number(this.total / this.pageSize, "up");
 	},
 
 	/**

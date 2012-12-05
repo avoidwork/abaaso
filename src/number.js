@@ -98,12 +98,11 @@ var number = {
 	/**
 	 * Rounds a number up or down
 	 * 
-	 * @param  {Number} arg       Float to round
+	 * @param  {Number} arg       Number to round
 	 * @param  {String} direction [Optional] "up" or "down", defaults to "down"
 	 * @return {Number}           Rounded interger
 	 */
 	round : function (arg, direction) {
-		if (String(arg).indexOf(".") < 0) return arg;
 		if (!/down|up/.test(direction)) direction = "down";
 		return Math[direction === "down" ? "floor" : "ceil"](arg);
 	}
