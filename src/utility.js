@@ -691,6 +691,7 @@ var utility = {
 			           rest     : function (arg) { return array.rest(this, arg); },
 			           rindex   : function (arg) { return array.rindex(this, arg); },
 			           rotate   : function (arg) { return array.rotate(this, arg); },
+			           serialize: function (string, encode) { return element.serialize(this, string, encode); },
 			           series   : function (start, end, offset) { return array.series(start, end, offset); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
@@ -879,6 +880,10 @@ var utility = {
 			           removeClass : function (arg) {
 			           		utility.genId(this);
 			           		return element.klass(this, arg, false);
+			           },
+			           serialize: function (string, encode) {
+			           		utility.genId(this);
+			           		return element.serialize(this, string, encode);
 			           },
 			           show     : function () {
 			           		utility.genId(this);
