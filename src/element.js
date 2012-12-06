@@ -494,7 +494,7 @@ var element = {
 				children.push(utility.object(i));
 			});
 		}
-		else children = obj.nodeName === "FORM" ? array.cast($("form")[0].childNodes) : [obj];
+		else children = obj.nodeName === "FORM" ? (typeof obj.elements !== "undefined" ? array.cast(obj.elements) : obj.find("button, input, select, textarea")) : [obj];
 
 		array.each(children, function (i) {
 			if (i.nodeName === "FORM") utility.merge(registry, json.decode(element.serialize(i)))
