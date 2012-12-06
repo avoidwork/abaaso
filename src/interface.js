@@ -182,6 +182,7 @@ return {
 	property        : utility.property,
 	put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
 	queryString     : utility.queryString,
+	random          : number.random,
 	ready           : false,
 	reflect         : utility.reflect,
 	repeat          : utility.repeat,

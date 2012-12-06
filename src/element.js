@@ -505,8 +505,8 @@ var element = {
 		else {
 			result = "";
 			utility.iterate(registry, function (v, k) {
-				!encode ? result += "&" + k + "=" + v
-				        : result += "&" + encodeURIComponent(k) + "=" + encodeURIComponent(v);
+				encode ? result += "&" + encodeURIComponent(k) + "=" + encodeURIComponent(v)
+				       : result += "&" + k + "=" + v;
 				result = result.replace(/^&/, "?");
 			});
 		}
