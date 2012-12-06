@@ -474,6 +474,47 @@ var element = {
 	},
 
 	/**
+	 * Serializes the childNodes of a Form, an Element, or Array of Elements or $ queries
+	 * 
+	 * @param  {Object}  obj    Form, individual Element, or $ query
+	 * @param  {Boolean} string [Optional] true if you want a query string, default is false (JSON)
+	 * @param  {Boolean} encode [Optional] true if you want to URI encode the value, default is true
+	 * @return {Mixed}          String or Object
+	 */
+	serialize : function (obj, string, encode) {
+		obj          = utility.object(obj);
+		string       = (string === true);
+		encode       = (encode !== false);
+		var children = [],
+		    registry = {},
+		    result;
+
+		if (obj instanceof Array) {
+			array.each(obj, function (i) {
+				children.push(utility.object(i));
+			});
+		}
+		else children = obj.nodeName === "FORM" ? array.cast($("form")[0].childNodes) : [obj];
+
+		array.each(children, function (i) {
+			if (i.nodeName === "FORM") utility.merge(registry, json.decode(element.serialize(i)))
+			else if (typeof registry[i.name] === "undefined") registry[i.name] = element.val(i);
+		});
+
+		if (!string) result = json.encode(registry);
+		else {
+			result = "";
+			utility.iterate(registry, function (v, k) {
+				!encode ? result += "&" + k + "=" + v
+				        : result += "&" + encodeURIComponent(k) + "=" + encodeURIComponent(v);
+				result = result.replace(/^&/, "?");
+			});
+		}
+
+		return result;
+	},
+
+	/**
 	 * Shows an Element if it's not visible
 	 *
 	 * Events: beforeEnable  Fires before the object is visible

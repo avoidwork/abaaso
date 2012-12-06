@@ -691,6 +691,7 @@ var utility = {
 			           rest     : function (arg) { return array.rest(this, arg); },
 			           rindex   : function (arg) { return array.rindex(this, arg); },
 			           rotate   : function (arg) { return array.rotate(this, arg); },
+			           serialize: function (string, encode) { return element.serialize(this, string, encode); },
 			           series   : function (start, end, offset) { return array.series(start, end, offset); },
 			           show     : function () { return this.each(function (i){ i.show(); }); },
 			           size     : function () { var a = []; this.each(function (i) { a.push(i.size()); }); return a; },
@@ -880,6 +881,10 @@ var utility = {
 			           		utility.genId(this);
 			           		return element.klass(this, arg, false);
 			           },
+			           serialize: function (string, encode) {
+			           		utility.genId(this);
+			           		return element.serialize(this, string, encode);
+			           },
 			           show     : function () {
 			           		utility.genId(this);
 			           		return element.show(this);
@@ -920,6 +925,7 @@ var utility = {
 			           listeners: function (event) { return $.listeners.call(this.toString(), event); },
 			           on       : function (event, listener, id, scope, state) { $.on.call(this.toString(), event, listener, id, scope || this, state); return this; },
 			           once     : function (event, listener, id, scope, state) { $.once.call(this.toString(), event, listener, id, scope || this, state); return this; },
+			           random   : function () { return number.random(this); },
 			           roundDown: function () { return number.round(this, "down"); },
 			           roundUp  : function () { return number.round(this, "up"); },
 			           un       : function (event, id, state) { $.un.call(this.toString(), event, id, state); return this; }},
@@ -960,7 +966,9 @@ var utility = {
 			           uncapitalize: function () { return string.uncapitalize(this); }}
 		};
 
-		utility.iterate(methods[type], function (v, k) { utility.property(obj.prototype, k, {value: v}); });
+		utility.iterate(methods[type], function (v, k) {
+			utility.property(obj.prototype, k, {value: v});
+		});
 		return obj;
 	},
 
