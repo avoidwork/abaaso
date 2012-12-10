@@ -474,7 +474,7 @@ var element = {
 	},
 
 	/**
-	 * Serializes the childNodes of a Form, an Element, or Array of Elements or $ queries
+	 * Serializes the elements of a Form, an Element, or Array of Elements or $ queries
 	 * 
 	 * @param  {Object}  obj    Form, individual Element, or $ query
 	 * @param  {Boolean} string [Optional] true if you want a query string, default is false (JSON)

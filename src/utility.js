@@ -1101,6 +1101,7 @@ var utility = {
 	stop : function (e) {
 		if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
 		if (typeof e.preventDefault  === "function")  e.preventDefault();
+		if (typeof e.returnValue     !== "undefined") e.returnValue  = false;
 		if (typeof e.stopPropagation === "function")  e.stopPropagation();
 		return e;
 	},
