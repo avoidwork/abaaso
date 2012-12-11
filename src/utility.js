@@ -325,10 +325,7 @@ var utility = {
 				type      : typeof e.type !== "undefined" ? e.type : "TypeError"
 			};
 
-			if (typeof console !== "undefined") {
-				console[!warning ? "error" : "warn"](o.message);
-				if (typeof o.stack !== "undefined") console[!warning ? "error" : "warn"](o.stack);
-			}
+			utility.log(o.stack || o.message, !warning ? "error" : "warn");
 			$.error.log.push(o);
 			$.fire("error", o);
 		}
@@ -473,19 +470,16 @@ var utility = {
 	 * Writes argument to the console
 	 *
 	 * @method log
-	 * @param  {String} arg String to write to the console
-	 * @return undefined;
 	 * @private
+	 * @param  {String} arg    String to write to the console
+	 * @param  {String} target [Optional] Target console, default is "log"
+	 * @return {Undefined}     undefined
 	 */
-	log : function (arg) {
+	log : function (arg, target) {
+		target =  target || "log";
 		var ts = !server || typeof arg !== "object";
 
-		try {
-			console.log((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
-		}
-		catch (e) {
-			error(e, arguments, this);
-		}
+		if (typeof console !== "undefined") console[target]((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
 		return undefined;
 	},
 
@@ -1101,8 +1095,11 @@ var utility = {
 	stop : function (e) {
 		if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
 		if (typeof e.preventDefault  === "function")  e.preventDefault();
-		if (typeof e.returnValue     !== "undefined") e.returnValue  = false;
 		if (typeof e.stopPropagation === "function")  e.stopPropagation();
+
+		// Assumed to always be valid, even if it's not decorated on `e` (I'm looking at you IE8)
+		e.returnValue = false;
+
 		return e;
 	},
 
