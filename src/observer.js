@@ -114,12 +114,12 @@ var observer = {
 		event.explode().each(function (e) {
 			if (log) utility.log(o + " firing " + e);
 			list = observer.list(obj, e);
-			array.cast(list.all).each(function (i) {
-				i.fn.apply(i.scope, a);
+			array.each(array.cast(list.all), function (i) {
+				return i.fn.apply(i.scope, a);
 			});
 			if (s !== "all") {
-				array.cast(list[s]).each(function (i) {
-					i.fn.apply(i.scope, a);
+				array.each(array.cast(list[s]), function (i) {
+					return i.fn.apply(i.scope, a);
 				});
 			}
 		});
