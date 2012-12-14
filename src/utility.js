@@ -38,20 +38,13 @@ var utility = {
 		}
 
 		// Getting Element(s)
-		switch (true) {
-			case (/\s|>/.test(arg)):
-				sel = arg.split(" ").filter(function (i) { if (i.trim() !== "" && i !== ">") return true; }).last();
-				obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
-				break;
-			case arg.indexOf("#") === 0 && arg.indexOf(":") === -1:
-				obj = isNaN(arg.charAt(1)) ? document.querySelector(arg) : document.getElementById(arg.substring(1));
-				break;
-			case arg.indexOf("#") > -1 && arg.indexOf(":") === -1:
-				obj = document.querySelector(arg);
-				break;
-			default:
-				obj = document.querySelectorAll(arg);
+		if (/\s|>/.test(arg)) {
+			sel = arg.split(" ").filter(function (i) { if (i.trim() !== "" && i !== ">") return true; }).last();
+			obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
 		}
+		else if (arg.indexOf("#") === 0 && arg.indexOf(":") === -1) obj = isNaN(arg.charAt(1)) ? document.querySelector(arg) : document.getElementById(arg.substring(1));
+		else if (arg.indexOf("#") > -1 && arg.indexOf(":") === -1) obj = document.querySelector(arg);
+		else obj = document.querySelectorAll(arg);
 
 		// Transforming obj if required
 		if (typeof obj !== "undefined" && obj !== null && !(obj instanceof Element) && !nodelist) obj = array.cast(obj);
@@ -75,18 +68,15 @@ var utility = {
 		utility.iterate(s, function (v, k) {
 			var getter, setter;
 
-			switch (true) {
-				case !(v instanceof RegExp) && typeof v === "function":
-					o[k] = v.bind(o[k]);
-					break;
-				case !(v instanceof RegExp) && !(v instanceof Array) && v instanceof Object:
-					if (typeof o[k] === "undefined") o[k] = {};
-					utility.alias(o[k], s[k]);
-					break;
-				default:
-					getter = function () { return s[k]; },
-					setter = function (arg) { s[k] = arg; };
-					utility.property(o, k, {enumerable: true, get: getter, set: setter, value: s[k]});
+			if (!(v instanceof RegExp) && typeof v === "function") o[k] = v.bind(o[k]);
+			else if (!(v instanceof RegExp) && !(v instanceof Array) && v instanceof Object) {
+				if (typeof o[k] === "undefined") o[k] = {};
+				utility.alias(o[k], s[k]);
+			}
+			else {
+				getter = function () { return s[k]; },
+				setter = function (arg) { s[k] = arg; };
+				utility.property(o, k, {enumerable: true, get: getter, set: setter, value: s[k]});
 			}
 		});
 		return obj;
@@ -124,29 +114,21 @@ var utility = {
 	clone : function (obj) {
 		var clone;
 
-		switch (true) {
-			case obj instanceof Array:
-				return [].concat(obj);
-			case typeof obj === "boolean":
-				return Boolean(obj);
-			case typeof obj === "function":
-				return obj;
-			case typeof obj === "number":
-				return Number(obj);
-			case typeof obj === "string":
-				return String(obj);
-			case !client.ie && !server && obj instanceof Document:
-				return xml.decode(xml.encode(obj));
-			case obj instanceof Object:
-				clone = json.decode(json.encode(obj));
-				if (typeof clone !== "undefined") {
-					if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
-					if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
-				}
-				return clone;
-			default:
-				return obj;
+		if (obj instanceof Array) return [].concat(obj);
+		else if (typeof obj === "boolean") return Boolean(obj);
+		else if (typeof obj === "function") return obj;
+		else if (typeof obj === "number") return Number(obj);
+		else if (typeof obj === "string") return String(obj);
+		else if (!client.ie && !server && obj instanceof Document) return xml.decode(xml.encode(obj));
+		else if (obj instanceof Object) {
+			clone = json.decode(json.encode(obj));
+			if (typeof clone !== "undefined") {
+				if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
+				if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
+			}
+			return clone;
 		}
+		else return obj;
 	},
 
 	/**
@@ -159,23 +141,11 @@ var utility = {
 		var result = utility.clone(value),
 		    tmp;
 
-		switch (true) {
-			case (/^\d$/.test(result)):
-				result = number.parse(result);
-				break;
-			case (/^(true|false)$/i.test(result)):
-				result = /true/i.test(result);
-				break;
-			case result === "undefined":
-				result = undefined;
-				break;
-			case result === "null":
-				result = null;
-				break;
-			case (tmp = json.decode(result, true)) && typeof tmp !== "undefined":
-				result = tmp;
-				break;
-		}
+		if (/^\d$/.test(result)) result = number.parse(result);
+		else if (/^(true|false)$/i.test(result)) result = /true/i.test(result);
+		else if (result === "undefined") result = undefined;
+		else if (result === "null") result = null;
+		else if ((tmp = json.decode(result, true)) && typeof tmp !== "undefined") result = tmp;
 		return result;
 	},
 
@@ -240,21 +210,11 @@ var utility = {
 			if (!isNaN(parseInt(i))) i = parseInt(i);
 			
 			// Creating or casting
-			switch (true) {
-				case typeof p[i] === "undefined":
-					p[i] = num ? [] : {};
-					break;
-				case p[i] instanceof Object && num:
-					p[i] = array.cast(p[i]);
-					break;
-				case p[i] instanceof Object:
-					break;
-				case p[i] instanceof Array && !num:
-					p[i] = p[i].toObject();
-					break;
-				default:
-					p[i] = {};
-			}
+			if (typeof p[i] === "undefined") p[i] = num ? [] : {};
+			else if (p[i] instanceof Object && num) p[i] = array.cast(p[i]);
+			else if (p[i] instanceof Object) void 0;
+			else if (p[i] instanceof Array && !num) p[i] = p[i].toObject();
+			else p[i] = {};
 
 			// Setting reference or value
 			idx + 1 === nth ? p[i] = val : p = p[i];
@@ -347,14 +307,11 @@ var utility = {
 		if (typeof obj === "undefined") throw Error(label.error.invalidArguments);
 		if (typeof arg === "undefined") arg = {};
 
-		switch (true) {
-			case typeof Object.create === "function":
-				o = Object.create(obj);
-				break;
-			default:
-				f = function () {};
-				f.prototype = obj;
-				o = new f();
+		if (typeof Object.create === "function") o = Object.create(obj);
+		else {
+			f = function () {};
+			f.prototype = obj;
+			o = new f();
 		}
 
 		utility.merge(o, arg);
@@ -371,14 +328,7 @@ var utility = {
 	genId : function (obj) {
 		var id;
 
-		if (typeof obj !== "undefined") {
-			switch (true) {
-				case typeof obj.id !== "undefined" && obj.id !== "":
-				case obj instanceof Array:
-				case obj instanceof String || typeof obj === "string":
-					return obj;
-			}
-		}
+		if (typeof obj !== "undefined" && ((typeof obj.id !== "undefined" && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
 		do id = utility.domId(utility.guid(true));
 		while (typeof $("#" + id) !== "undefined");
@@ -987,28 +937,16 @@ var utility = {
 
 				if (item[0].isEmpty()) return;
 
-				switch (true) {
-					case typeof item[1] === "undefined":
-					case item[1].isEmpty():
-						item[1] = "";
-						break;
-					case item[1].isNumber():
-						item[1] = Number(item[1]);
-						break;
-					case item[1].isBoolean():
-						item[1] = (item[1] === "true");
-						break;
-				}
+				if (typeof item[1] === "undefined" || item[1].isEmpty()) item[1] = "";
+				else if (item[1].isNumber()) item[1] = Number(item[1]);
+				else if (item[1].isBoolean()) item[1] = (item[1] === "true");
 
-				switch (true) {
-					case typeof obj[item[0]] === "undefined":
-						obj[item[0]] = item[1];
-						break;
-					case !(obj[item[0]] instanceof Array):
-						obj[item[0]] = [obj[item[0]]];
-					default:
-						obj[item[0]].push(item[1]);
+				if (typeof obj[item[0]] === "undefined") obj[item[0]] = item[1];
+				else if (!(obj[item[0]] instanceof Array)) {
+					obj[item[0]] = [obj[item[0]]];
+					obj[item[0]].push(item[1]);
 				}
+				else obj[item[0]].push(item[1]);
 			});
 		}
 		return obj;
@@ -1114,33 +1052,21 @@ var utility = {
 	tpl : function (arg, target) {
 		var frag;
 
-		switch (true) {
-			case typeof arg !== "object":
-			case !(/object|undefined/.test(typeof target)) && typeof (target = target.charAt(0) === "#" ? $(target) : $(target)[0]) === "undefined":
-				throw Error(label.error.invalidArguments);
-		}
+		if (typeof arg !== "object" || (!(/object|undefined/.test(typeof target)) && typeof (target = target.charAt(0) === "#" ? $(target) : $(target)[0]) === "undefined")) throw Error(label.error.invalidArguments);
 
 		if (typeof target === "undefined") target = $("body")[0];
 
 		frag  = document.createDocumentFragment();
-		switch (true) {
-			case arg instanceof Array:
-				arg.each(function (i, idx) {
-					element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]);
-				});
-				break;
-			default:
-				utility.iterate(arg, function (i, k) {
-					switch (true) {
-						case typeof i === "string":
-							element.create(k, frag).html(i);
-							break;
-						case i instanceof Array:
-						case i instanceof Object:
-							utility.tpl(i, element.create(k, frag));
-							break;
-					}
-				});
+		if (arg instanceof Array) {
+			arg.each(function (i, idx) {
+				element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]);
+			});
+		}
+		else {
+			utility.iterate(arg, function (i, k) {
+				if (typeof i === "string") element.create(k, frag).html(i);
+				else if ((i instanceof Array) || (i instanceof Object)) utility.tpl(i, element.create(k, frag));
+			});
 		}
 		target.appendChild(frag);
 		return array.last(target.childNodes);

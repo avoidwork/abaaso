@@ -23,33 +23,23 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
-		switch (true) {
-			case regex.test(key) && typeof value === "undefined":
-				return obj[key];
-			case regex.test(key) && typeof value !== "undefined":
-				obj[key] = value;
-				return obj;
-			case obj.nodeName === "SELECT" && key === "selected" && typeof value === "undefined":
-				return $("#" + obj.id + " option[selected=\"selected\"]").first() || $("#" + obj.id + " option").first();
-			case obj.nodeName === "SELECT" && key === "selected" && typeof value !== "undefined":
-				target = $("#" + obj.id + " option[selected=\"selected\"]").first();
-				if (typeof target !== "undefined") {
-					target.selected = false;
-					target.removeAttribute("selected");
-				}
-				target = $("#" + obj.id + " option[value=\"" + value + "\"]").first();
-				target.selected = true;
-				target.setAttribute("selected", "selected");
-				return obj;
-			case typeof value === "undefined":
-				return obj.getAttribute(key);
-			case value === null:
-				obj.removeAttribute(key);
-				return obj;
-			default:
-				obj.setAttribute(key, value);
-				return obj;
+		if (regex.test(key) && typeof value === "undefined") return obj[key];
+		else if (regex.test(key) && typeof value !== "undefined") obj[key] = value;
+		else if (obj.nodeName === "SELECT" && key === "selected" && typeof value === "undefined") return $("#" + obj.id + " option[selected=\"selected\"]").first() || $("#" + obj.id + " option").first();
+		else if (obj.nodeName === "SELECT" && key === "selected" && typeof value !== "undefined") {
+			target = $("#" + obj.id + " option[selected=\"selected\"]").first();
+			if (typeof target !== "undefined") {
+				target.selected = false;
+				target.removeAttribute("selected");
+			}
+			target = $("#" + obj.id + " option[value=\"" + value + "\"]").first();
+			target.selected = true;
+			target.setAttribute("selected", "selected");
 		}
+		else if (typeof value === "undefined") return obj.getAttribute(key);
+		else if (value === null) obj.removeAttribute(key);
+		else obj.setAttribute(key, value);
+		return obj;
 	},
 
 	/**
@@ -68,16 +58,9 @@ var element = {
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		obj.fire("beforeClear");
-		switch (true) {
-			case typeof obj.reset === "function":
-				obj.reset();
-				break;
-			case typeof obj.value !== "undefined":
-				obj.update({innerHTML: "", value: ""});
-				break;
-			default:
-				obj.update({innerHTML: ""});
-		}
+		if (typeof obj.reset === "function") obj.reset();
+		else if (typeof obj.value !== "undefined") obj.update({innerHTML: "", value: ""});
+		else obj.update({innerHTML: ""});
 		obj.fire("afterClear");
 		return obj;
 	},
@@ -102,16 +85,9 @@ var element = {
 
 		var obj, uid, frag;
 
-		switch (true) {
-			case typeof target !== "undefined":
-				target = utility.object(target);
-				break;
-			case typeof args !== "undefined" && (typeof args === "string" || typeof args.childNodes !== "undefined"):
-				target = utility.object(args);
-				break;
-			default:
-				target = document.body;
-		}
+		if (typeof target !== "undefined") target = utility.object(target);
+		else if (typeof args !== "undefined" && (typeof args === "string" || typeof args.childNodes !== "undefined")) target = utility.object(args);
+		else target = document.body;
 
 		if (typeof target === "undefined") throw Error(label.error.invalidArguments);
 		
@@ -130,32 +106,26 @@ var element = {
 
 		obj = !/svg/i.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		obj.id = uid;
+
 		if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
-		switch (true) {
-			case typeof pos === "undefined":
-			case pos === "last":
-				target.appendChild(obj);
-				break;
-			case pos === "first":
-				target.prependChild(obj);
-				break;
-			case pos === "after":
-				pos = {};
-				pos.after = target;
-				target    = target.parentNode;
-			case typeof pos.after !== "undefined":
-				target.insertBefore(obj, pos.after.nextSibling);
-				break;
-			case pos === "before":
-				pos = {};
-				pos.before = target;
-				target     = target.parentNode;
-			case typeof pos.before !== "undefined":
-				target.insertBefore(obj, pos.before);
-				break;
-			default:
-				target.appendChild(obj);
+
+		if (typeof pos === "undefined" || pos === "last") target.appendChild(obj);
+		else if (pos === "first") target.prependChild(obj);
+		else if (pos === "after") {
+			pos = {};
+			pos.after = target;
+			target    = target.parentNode;
+			target.insertBefore(obj, pos.after.nextSibling);
 		}
+		else if (typeof pos.after !== "undefined") target.insertBefore(obj, pos.after.nextSibling);
+		else if (pos === "before") {
+			pos = {};
+			pos.before = target;
+			target     = target.parentNode;
+			target.insertBefore(obj, pos.before);
+		}
+		else if (typeof pos.before !== "undefined") target.insertBefore(obj, pos.before);
+		else target.appendChild(obj);
 
 		if (!frag) target.fire("afterCreate", obj);
 		else if (frag && target.parentNode !== null) target.parentNode.fire("afterCreate", obj);
@@ -343,13 +313,10 @@ var element = {
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		obj.fire("beforeHide");
-		switch (true) {
-			case typeof obj.hidden === "boolean":
-				obj.hidden = true;
-				break;
-			default:
-				obj["data-display"] = obj.style.display;
-				obj.style.display = "none";
+		if (typeof obj.hidden === "boolean") obj.hidden = true;
+		else {
+			obj["data-display"] = obj.style.display;
+			obj.style.display = "none";
 		}
 		obj.fire("afterHide");
 		return obj;
@@ -530,13 +497,8 @@ var element = {
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		obj.fire("beforeShow");
-		switch (true) {
-			case typeof obj.hidden === "boolean":
-				obj.hidden = false;
-				break;
-			default:
-				obj.style.display = obj.getAttribute("data-display") !== null ? obj.getAttribute("data-display") : "inherit";
-		}
+		if (typeof obj.hidden === "boolean") obj.hidden = false;
+		else obj.style.display = obj.getAttribute("data-display") !== null ? obj.getAttribute("data-display") : "inherit";
 		obj.fire("afterShow");
 		return obj;
 	},
@@ -628,31 +590,23 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		obj.fire("beforeUpdate");
 		regex = /innerHTML|innerText|textContent|type|src/;
 
+		obj.fire("beforeUpdate");
 		utility.iterate(args, function (v, k) {
-			switch (true) {
-				case regex.test(k):
-					obj[k] = v;
-					break;
-				case k === "class":
-					!v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
-					break;
-				case k.indexOf("data-") === 0:
-					element.data(obj, k.replace("data-", ""), v);
-					break;
-				case "id":
-					var o = observer.listeners;
-					if (typeof o[obj.id] !== "undefined") {
-						o[k] = utility.clone(o[obj.id]);
-						delete o[obj.id];
-					}
-				default:
-					obj.attr(k, v);
-			}
-		});
+			if (regex.test(k)) obj[k] = v;
+			else if (k === "class") !v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
+			else if (k.indexOf("data-") === 0) element.data(obj, k.replace("data-", ""), v);
+			else if (k === "id") {
+				var o = observer.listeners;
 
+				if (typeof o[obj.id] !== "undefined") {
+					o[k] = utility.clone(o[obj.id]);
+					delete o[obj.id];
+				}
+			}
+			else obj.attr(k, v);
+		});
 		obj.fire("afterUpdate");
 		return obj;
 	},
@@ -677,53 +631,44 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		switch (true) {
-			case typeof value === "undefined":
-				switch (true) {
-					case (check.test(obj.type)):
-						if (obj.name.isEmpty()) throw Error(label.error.expectedProperty);
-						items = $("input[name='" + obj.name + "']");
-						items.each(function (i) {
-							if (output !== null) return;
-							if (i.checked) output = i.value;
-						});
-						break;
-					case (select.test(obj.type)):
-						output = obj.options[obj.selectedIndex].value;
-						break;
-					default:
-						output = typeof obj.value !== "undefined" ? obj.value : element.text(obj);
-				}
-				if (typeof output === "string") output = output.trim();
-				break;
-			default:
-				value = String(value);
-				obj.fire("beforeValue");
-				switch (true) {
-					case (check.test(obj.type)):
-						items = $("input[name='" + obj.name + "']");
-						items.each(function (i) {
-							if (i.value === value) {
-								i.checked = true;
-								output    = i;
-								return false;
-							}
-						});
-						break;
-					case (select.test(obj.type)):
-						obj.find("> *").each(function (i) {
-							if (i.value === value) {
-								i.selected = true;
-								output     = i;
-								return false;
-							}
-						});
-						break;
-					default:
-						typeof obj.value !== "undefined" ? obj.value = value : element.text(obj, value);
-				}
-				obj.fire("afterValue");
-				output = obj;
+		if (typeof value === "undefined") {
+			if (check.test(obj.type)) {
+				if (obj.name.isEmpty()) throw Error(label.error.expectedProperty);
+				items = $("input[name='" + obj.name + "']");
+				items.each(function (i) {
+					if (output !== null) return;
+					if (i.checked) output = i.value;
+				});
+			}
+			else if (select.test(obj.type)) output = obj.options[obj.selectedIndex].value;
+			else output = typeof obj.value !== "undefined" ? obj.value : element.text(obj);
+			if (typeof output === "string") output = output.trim();
+		}
+		else {
+			value = String(value);
+			obj.fire("beforeValue");
+			if (check.test(obj.type)) {
+				items = $("input[name='" + obj.name + "']");
+				items.each(function (i) {
+					if (i.value === value) {
+						i.checked = true;
+						output    = i;
+						return false;
+					}
+				});
+			}
+			else if (select.test(obj.type)) {
+				obj.find("> *").each(function (i) {
+					if (i.value === value) {
+						i.selected = true;
+						output     = i;
+						return false;
+					}
+				});
+			}
+			else typeof obj.value !== "undefined" ? obj.value = value : element.text(obj, value);
+			obj.fire("afterValue");
+			output = obj;
 		}
 		return output;
 	}

@@ -57,17 +57,11 @@ var xml = {
 				return output.replace(/n/g, name).replace(/v/, value);
 			}
 
-			switch (true) {
-				case typeof arg === "boolean":
-				case typeof arg === "number":
-				case typeof arg === "string":
-					x += node("item", arg);
-					break;
-				case typeof arg === "object":
-					utility.iterate(arg, function (v, k) {
-						x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item");
-					});
-					break;
+			if (/boolean|number|string/.test(typeof arg)) x += node("item", arg);
+			else if (typeof arg === "object") {
+				utility.iterate(arg, function (v, k) {
+					x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item");
+				});
 			}
 
 			x += wrap ? "</xml>" : "";

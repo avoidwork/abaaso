@@ -28,10 +28,8 @@ var mouse = {
 		    e = "mousemove",
 		    n = "tracking";
 
-		if (server) return m;
-
-		switch (true) {
-			case typeof e === "object":
+		if (!server) {
+			if (typeof e === "object") {
 				var view = document[client.ie && client.version < 9 ? "documentElement" : "body"],
 				    x    = e.pageX ? e.pageX : (view.scrollLeft + e.clientX),
 				    y    = e.pageY ? e.pageY : (view.scrollTop  + e.clientY),
@@ -48,11 +46,11 @@ var mouse = {
 				$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
 
 				if (c && m.log) utility.log(m.pos.x + " [" + m.diff.x + "], " + m.pos.y + " [" + m.diff.y + "]");
-				break;
-			case typeof e === "boolean":
+			}
+			else if (typeof e === "boolean") {
 				e ? observer.add(document, e, abaaso.mouse.track, n) : observer.remove(document, e, n);
 				$.mouse.enabled = m.enabled = e;
-				break;
+			}
 		}
 		return m;
 	}

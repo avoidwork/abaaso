@@ -56,14 +56,7 @@ var observer = {
 			if (typeof l[o][i][state] === "undefined")        l[o][i][state] = {};
 
 			if (n) {
-				switch (true) {
-					case globals.test(o):
-					case !/\//g.test(o) && o !== "abaaso":
-						instance = obj;
-						break;
-					default:
-						instance = null;
-				}
+				instance = (globals.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
 
 				if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
 					add = (typeof instance.addEventListener === "function");
@@ -90,22 +83,11 @@ var observer = {
 	id : function (arg) {
 		var id;
 
-		switch (true) {
-			case arg === abaaso:
-				id = "abaaso";
-				break;
-			case arg === global:
-				id = "window";
-				break;
-			case arg === !server && document:
-				id = "document";
-				break;
-			case arg === !server && document.body:
-				id = "body";
-				break;
-			default:
-				id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
-		}
+		if (arg === abaaso) id = "abaaso";
+		else if (arg === global) id = "window";
+		else if (arg === !server && document) id = "document";
+		else if (arg === !server && document.body) id = "body";
+		else id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
 		return id;
 	},
 
@@ -173,19 +155,10 @@ var observer = {
 		    o = observer.id(obj),
 		    r;
 
-		switch (true) {
-			case typeof l[o] === "undefined" && typeof event === "undefined":
-				r = {};
-				break;
-			case typeof l[o] !== "undefined" && (typeof event === "undefined" || String(event).isEmpty()):
-				r = l[o];
-				break;
-			case typeof l[o] !== "undefined" && typeof l[o][event] !== "undefined":
-				r = l[o][event];
-				break;
-			default:
-				r = {};
-		}
+		if (typeof l[o] === "undefined" && typeof event === "undefined") r = {};
+		else if (typeof l[o] !== "undefined" && (typeof event === "undefined" || String(event).isEmpty())) r = l[o];
+		else if (typeof l[o] !== "undefined" && typeof l[o][event] !== "undefined") r = l[o][event];
+		else r = {};
 		return r;
 	},
 
@@ -240,18 +213,13 @@ var observer = {
 		    l = observer.listeners,
 		    o = observer.id(obj);
 
-		switch (true) {
-			case typeof o === "undefined":
-			case typeof l[o] === "undefined":
-				return obj;
-		}
+		if (typeof o === "undefined" || typeof l[o] === "undefined") return obj;
 
 		if (typeof event === "undefined" || event === null) delete l[o];
 		else event.explode().each(function (e) {
 			if (typeof l[o][e] === "undefined") return obj;
 			typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
 		});
-
 		return obj;
 	}
 };

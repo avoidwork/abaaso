@@ -254,12 +254,8 @@ var xhr = function () {
 		var self = this,
 		    options, parsed, request, obj;
 
-		switch (true) {
-			case this.readyState < OPENED:
-				throw Error("INVALID_STATE_ERR: Object is not open");
-			case this._send:
-				throw Error("INVALID_STATE_ERR: Object is sending");
-		}
+		if (this.readyState < OPENED) throw Error("INVALID_STATE_ERR: Object is not open");
+		else if (this._send) throw Error("INVALID_STATE_ERR: Object is sending");
 
 		parsed      = url.parse(this._params.url);
 		parsed.port = parsed.port || (parsed.protocol === "https:" ? 443 : 80);
@@ -302,12 +298,8 @@ var xhr = function () {
 	 * @return {Object}       XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function (header, value) {
-		switch (true) {
-			case this.readyState !== OPENED:
-				throw Error("INVALID_STATE_ERR: Object is not usable");
-			case this._send:
-				throw Error("INVALID_STATE_ERR: Object is sending");
-		}
+		if (this.readyState !== OPENED) throw Error("INVALID_STATE_ERR: Object is not usable");
+		else if (this._send) throw Error("INVALID_STATE_ERR: Object is sending");
 		this._headers[header] = value;
 		return this;
 	};

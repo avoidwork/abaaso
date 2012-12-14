@@ -30,14 +30,16 @@ var array = {
 		key   = (key === true);
 		var o = [];
 
-		if (!isNaN(obj.length)) {
-			if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
-			else {
-				try { o = Array.prototype.slice.call(obj); }
-				catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
+		if (typeof obj !== "undefined") {
+			if (!isNaN(obj.length)) {
+				if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
+				else {
+					try { o = Array.prototype.slice.call(obj); }
+					catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
+				}
 			}
+			else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
 		}
-		else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
 
 		return o;
 	},
@@ -664,24 +666,17 @@ var array = {
 	 * @return {Boolean} Boolean indicating sort order
 	 */
 	sort : function (a, b) {
-		var nums = false,
-		    result;
+		var nums   = false,
+		    result = 0;
 
 		if (!isNaN(a) && !isNaN(b)) nums = true;
 
 		a = nums ? number.parse(a) : String(a);
 		b = nums ? number.parse(b) : String(b);
 
-		switch (true) {
-			case a < b:
-				result = -1;
-				break;
-			case a > b:
-				result = 1;
-				break;
-			default:
-				result = 0;
-		}
+		if (a < b)      result = -1;
+		else if (a > b) result = 1;
+
 		return result;
 	},
 

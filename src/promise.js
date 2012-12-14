@@ -88,17 +88,9 @@ var promise = {
 				}
 				finally {
 					if (typeof result !== "undefined") self.outcome = result;
-					switch (true) {
-						case instance.fulfilled === null && instance.error === null:
-							result = self;
-							break;
-						case self.state === promise.state.resolved && instance.fulfilled !== null:
-							result = instance.resolve(self.outcome);
-							break;
-						case self.state === promise.state.broken && instance.error !== null:
-							result = instance.reject(self.outcome);
-							break;
-					}
+					if (instance.fulfilled === null && instance.error === null) result = self;
+					else if (self.state === promise.state.resolved && instance.fulfilled !== null) result = instance.resolve(self.outcome);
+					else if (self.state === promise.state.broken && instance.error !== null) result = instance.reject(self.outcome);
 				}
 
 				self.state   = result.state;
