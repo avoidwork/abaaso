@@ -617,6 +617,17 @@ var data = {
 		},
 
 		/**
+		 * Record factory
+		 * 
+		 * @param  {Mixed}  key  Index or key
+		 * @param  {Object} data Record properties
+		 * @return {Object}      Record
+		 */
+		record : function (key, data) {
+			return data.record.factory.call(this, key, data);
+		},
+
+		/**
 		 * Reindexes the data store
 		 *
 		 * @method reindex
@@ -973,6 +984,43 @@ var data = {
 		}
 	},
 
+	// DataStore record sub class
+	record : {
+		methods : {
+			/**
+			 * Deletes the record from it's store
+			 * 
+			 * @return {Object} DataStore
+			 */
+			del : function () {
+				return this.parentNode.del(this.key);
+			},
+
+			/**
+			 * Sets a data property of the record
+			 * 
+			 * @param {String} key   Property to set
+			 * @param {Mixed}  value Value to set
+			 * @return {Object}      Record
+			 */
+			set : function (key, value) {
+				this.parentNode.set(this.key, {key: value});
+				return this;
+			},
+		},
+
+		/**
+		 * DataStore Record factory
+		 * 
+		 * @param  {[type]} key  [description]
+		 * @param  {[type]} data [description]
+		 * @return {[type]}      [description]
+		 */
+		factory : function (key, data) {
+			return utility.extend(data.record.methods, {key: key, data: data, parentNode: this});
+		}
+	}
+
 	/**
 	 * Registers a data store on an Object
 	 *
@@ -1044,12 +1092,16 @@ var data = {
 
 		obj.fire("beforeDataStore");
 
-		obj.data = utility.extend(data.methods);
-		obj.data.parentNode = obj; // Recursion, useful
-		obj.data.clear();          // Setting properties
+		// Creating store
+		obj.data = utility.extend(data.methods, {parentNode: obj});
+		
+		// Setting properties
+		obj.data.clear();
 
+		// Customizing store
 		if (args instanceof Object) utility.merge(obj.data, args);
 
+		// Delete listener
 		obj.on("syncDataDelete", function (data) {
 			var record = this.get(data.record);
 
@@ -1066,6 +1118,7 @@ var data = {
 			return this.parentNode;
 		}, "recordDelete", obj.data);
 
+		// Set listener
 		obj.on("syncDataSet", function (arg) {
 			var data = typeof arg.record === "undefined" ? utility.clone(arg) : arg,
 			    fire = true,
@@ -1074,10 +1127,11 @@ var data = {
 
 			switch (true) {
 				case typeof data.record === "undefined":
-					var index = this.total;
-					this.total++;
+					var index = this.total++;
+
 					if (typeof data.key === "undefined") {
 						if (typeof data.result === "undefined") {
+							this.total--;
 							this.fire("failedDataSet");
 							throw Error(label.error.expectedObject);
 						}
@@ -1112,12 +1166,15 @@ var data = {
 							if (self.source !== null) args = utility.walk(args, self.source);
 							if (typeof args[self.key] !== "undefined") delete args[self.key];
 							utility.merge(record.data, args);
+							record = self.record(record.key, record.data);
 							if (self.retrieve) {
 								self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
 								self.loaded = true;
 							}
 							self.parentNode.fire("afterDataSet", record);
-						}, function () { self.parentNode.fire("failedDataSet"); }, self.headers);
+						}, function () {
+							self.parentNode.fire("failedDataSet");
+						}, self.headers);
 					}
 					break;
 				default:
