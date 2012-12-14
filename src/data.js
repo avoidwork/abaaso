@@ -110,13 +110,16 @@ var data = {
 								else if (i.indexOf("//") === -1) {
 									// Relative path to store, i.e. a child
 									if (i.charAt(0) !== "/") i = self.uri + "/" + i;
+
 									// Root path, relative to store, i.e. a domain
 									else if (self.uri !== null && root.test(i)) {
 										parsed = utility.parse(self.uri);
 										i      = parsed.protocol + "//" + parsed.host + i;
 									}
+
 									idx = i.replace(/.*\//, "");
 									if (idx.isEmpty()) return;
+
 									i.get(function (arg) {
 										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
 									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
@@ -533,7 +536,7 @@ var data = {
 			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
 
 			// Conditionally making the store RESTful
-			if (this.uri !== null && typeof uri === "undefined") {
+			if (this.uri !== null && typeof uri === "undefined" && !this.leafs.contains(key)) {
 				uri = this.uri + "/" + key;
 				typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(uri) : this.records[idx].data.uri = uri;
 			}
