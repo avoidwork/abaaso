@@ -61,6 +61,7 @@ var label = {
 		notAvailable          : "Requested method is not available",
 		notSupported          : "This feature is not supported by this platform",
 		propertyNotFound      : "Could not find the requested property",
+		promisePending        : "The promise cannot be resolved while pending result",
 		promiseResolved       : "The promise has been resolved: {{outcome}}",
 		serverError           : "Server error has occurred",
 		serverForbidden       : "Forbidden to access URI",

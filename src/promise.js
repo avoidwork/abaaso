@@ -1,5 +1,5 @@
 /**
- * Promises/A
+ * Promises/A+
  *
  * @class promise
  * @namespace abaaso
@@ -9,21 +9,12 @@ var promise = {
 	state : {
 		broken   : "failed",
 		initial  : "unfulfilled",
+		pending  : "pending",
 		resolved : "fulfilled",
 	},
 
 	// Inherited by promises
 	methods : {
-		/**
-		 * Registers a failure handler for a Promise
-		 * 
-		 * @param  {Function} fn Executed when/if promise is broken
-		 * @return {Object}      Promise instance
-		 */
-		fail : function (fn) {
-			return promise.vouch.call(this, promise.state.broken, fn);
-		},
-
 		/**
 		 * Breaks a Promise
 		 * 
@@ -53,15 +44,6 @@ var promise = {
 		},
 
 		/**
-		 * Returns status of a Promise
-		 * 
-		 * @return {String} Status of promise
-		 */
-		status : function () {
-			return this.state;
-		},
-
-		/**
 		 * Registers handler(s) for a Promise
 		 * 
 		 * @param  {Function} success Executed when/if promise is resolved
@@ -75,32 +57,54 @@ var promise = {
 
 			fn = function (yay) {
 				var handler = yay ? success : failure,
-				    result;
+				    result, outcome;
 
 				try {
 					if (typeof handler !== "function") throw self.outcome;
 					result = handler(self.outcome);
-					if (!yay && typeof instance.fulfilled === "function") self.state = promise.state.resolved
+					if (!(result instanceof Promise) && !yay && instance.state === promise.state.initial && instance.fulfill.length > 0) self.state = promise.state.resolved
 				}
 				catch (e) {
 					result     = e.message || e;
 					self.state = promise.state.broken;
 				}
 				finally {
-					if (typeof result !== "undefined") self.outcome = result;
-					if (instance.fulfilled === null && instance.error === null) result = self;
-					else if (self.state === promise.state.resolved && instance.fulfilled !== null) result = instance.resolve(self.outcome);
-					else if (self.state === promise.state.broken && instance.error !== null) result = instance.reject(self.outcome);
+					// Not a Promise, passing result
+					if (!(result instanceof Promise)) {
+						outcome = result;
+
+						// Determining what the result will be and chaining events
+						if (instance.fulfill.length === 0 && instance.error.length === 0)              result = self;
+						else if (self.state === promise.state.resolved && instance.fulfill.length > 0) result = instance.resolve(outcome);
+						else if (self.state === promise.state.broken && instance.error.length > 0)     result = instance.reject(outcome);
+
+						self.state   = result.state;
+						self.outcome = result.outcome;
+						
+						return self.outcome;
+					}
+					// Assuming a `pending` state until `result` is resolved
+					else {
+						self.state        = promise.state.pending;
+						self.outcome      = null;
+						result.parentNode = self;
+						result.then(function (arg) {
+							self.state = promise.state.initial;
+							self.resolve(arg);
+						}, function (arg) {
+							self.state = promise.state.initial;
+							self.reject(arg);
+						});
+						return result;
+					}
 				}
-
-				self.state   = result.state;
-				self.outcome = result.outcome;
-
-				return self.outcome;
 			};
 
-			promise.vouch.call(this, promise.state.resolved, function () { fn(true); });
-			if (typeof failure === "function") this.fail(function () { fn(false); });
+			if (typeof success === "function") promise.vouch.call(this, promise.state.resolved, function () { return fn(true);  });
+			if (typeof failure === "function") promise.vouch.call(this, promise.state.broken,   function () { return fn(false); });
+
+			// Setting reference to `self`
+			instance.parentNode = self;
 			return instance;
 		}
 	},
@@ -111,19 +115,7 @@ var promise = {
 	 * @return {Object} Instance of promise
 	 */
 	factory : function () {
-		var instance = {},
-		    params   = {};
-
-		// Promise structure
-		params = {
-			error     : null,
-			fulfilled : null,
-			outcome   : null,
-			state     : promise.state.initial
-		};
-
-		instance = utility.extend(promise.methods, params);
-		return instance;
+		return new Promise();
 	},
 
 	/**
@@ -134,22 +126,44 @@ var promise = {
 	 * @return {Object}       Promise instance
 	 */
 	resolve : function (state, val) {
-		var handler = state === promise.state.resolved ? "fulfilled" : "error";
+		var handler = state === promise.state.broken ? "error" : "fulfill",
+		    self    = this,
+		    pending = false,
+		    result;
 
+		if (this.state === promise.state.pending) throw Error(label.error.promisePending);
 		if (this.state !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{outcome}}", this.outcome));
 
 		this.state     = state;
 		this.outcome   = val;
 
 		// The state & outcome can mutate here
-		this[handler](val);
+		array.each(this[handler], function (fn) {
+			result = fn.call(this, val);
+			if (result instanceof Promise) {
+				pending      = true;
+				self.state   = promise.state.initial
+				self.outcome = null;
+				return false;
+			}
+		});
 
-		this.error     = null;
-		this.fulfilled = null;
+		if (!pending) {
+			this.error   = [];
+			this.fulfill = [];
 
-		if (typeof Object.freeze === "function") Object.freeze(this);
+			// Reverse chaining
+			if (this.parentNode !== null && this.parentNode.state === promise.state.initial) {
+				result = this.parentNode[state === promise.state.resolved ? "resolve" : "reject"](this.outcome);
+				if (result instanceof Promise) return result;
+			}
 
-		return this;
+			// Freezing promise
+			if (typeof Object.freeze === "function") Object.freeze(this);
+
+			return this;
+		}
+		else return result;
 	},
 
 	/**
@@ -162,14 +176,25 @@ var promise = {
 	vouch : function (state, fn) {
 		if (String(state).isEmpty()) throw Error(label.error.invalidArguments);
 
-		switch (this.state) {
-			case promise.state.initial:
-				this[state === promise.state.resolved ? "fulfilled" : "error"] = fn;
-				break;
-			case state:
-				fn(this.outcome);
-		}
+		if (this.state === promise.state.initial) this[state === promise.state.resolved ? "fulfill" : "error"].push(fn);
+		else if (this.state === state) fn(this.outcome);
 
 		return this;
 	}
 };
+
+/**
+ * Promise factory
+ *
+ * @class Promise
+ * @namespace abaaso
+ */
+function Promise () {
+	this.error      = [];
+	this.fulfill    = [];
+	this.parentNode = null;
+	this.outcome    = null;
+	this.state      = promise.state.initial;
+};
+
+Promise.prototype = promise.methods;
