@@ -50,6 +50,8 @@ return {
 		hook    : observer.hook,
 		list    : observer.list,
 		once    : observer.once,
+		pause   : observer.pause,
+		unpause : observer.unpause,
 		remove  : observer.remove
 	},
 	repeating       : {},
@@ -171,6 +173,7 @@ return {
 	},
 	options         : function (uri, success, failure, timeout) { return client.request(uri, "OPTIONS", success, failure, null, null, timeout); },
 	parse           : utility.parse,
+	pause           : observer.pause,
 	permissions     : client.permissions,
 	position        : element.position,
 	post            : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "POST", success, failure, args, headers, timeout); },
@@ -203,6 +206,7 @@ return {
 		if (typeof o === "undefined" || o === $) o = abaaso;
 		return observer.remove(o, e, i, s);
 	},
+	unpause         : observer.unpause,
 	update          : element.update,
 	version         : "{{VERSION}}",
 	walk            : utility.walk
