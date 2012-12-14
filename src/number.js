@@ -103,7 +103,7 @@ var number = {
 	 */
 	random : function (arg) {
 		arg = arg || 100;
-		return Math.floor((Math.random() * arg) + 1)
+		return Math.floor(Math.random() * (arg + 1));
 	},
 
 	/**

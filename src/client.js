@@ -311,12 +311,14 @@ var client = {
 	 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/HEAD)
 	 * @param  {Function} success A handler function to execute when an appropriate response been received
 	 * @param  {Function} failure [Optional] A handler function to execute on error
-	 * @param  {Mixed}    args    Data to send with the request
-	 * @param  {Object}   headers Custom request headers (can be used to set withCredentials)
+	 * @param  {Mixed}    args    [Optional] Data to send with the request
+	 * @param  {Object}   headers [Optional] Custom request headers (can be used to set withCredentials)
+	 * @param  {Number}   timeout [Optional] Timeout in milliseconds, default is 30000
 	 * @return {String}           URI to query
 	 * @private
 	 */
-	request : function (uri, type, success, failure, args, headers) {
+	request : function (uri, type, success, failure, args, headers, timeout) {
+		timeout = timeout || 30000;
 		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob;
 
 		if (/^(post|put)$/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
@@ -358,6 +360,9 @@ var client = {
 		}
 		else {
 			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type); };
+
+			// Setting timeout
+			if (typeof xhr.timeout !== "undefined") xhr.timeout = timeout;
 
 			// Setting events
 			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { uri.fire("failed" + typed, e, xhr); };

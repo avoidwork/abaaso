@@ -23,13 +23,13 @@ return {
 		windows : client.windows,
 
 		// Methods
-		del     : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
-		get     : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
-		headers : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
-		post    : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
-		put     : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
+		del     : function (uri, success, failure, headers, timeout) { return client.request(uri, "DELETE", success, failure, null, headers, timeout); },
+		get     : function (uri, success, failure, headers, timeout) { return client.request(uri, "GET", success, failure, null, headers, timeout); },
+		headers : function (uri, success, failure, timeout) { return client.request(uri, "HEAD", success, failure, null, null, timeout); },
+		post    : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "POST", success, failure, args, headers, timeout); },
+		put     : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "PUT", success, failure, args, headers, timeout); },
 		jsonp   : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
-		options : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
+		options : function (uri, success, failure, timeout) { return client.request(uri, "OPTIONS", success, failure, null, null, timeout); },
 		permissions : client.permissions
 	},
 	cookie          : cookie,
@@ -93,7 +93,7 @@ return {
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
-	del             : function (uri, success, failure, headers) { return client.request(uri, "DELETE", success, failure, null, headers); },
+	del             : function (uri, success, failure, headers, timeout) { return client.request(uri, "DELETE", success, failure, null, headers, timeout); },
 	destroy         : element.destroy,
 	encode          : json.encode,
 	error           : utility.error,
@@ -115,9 +115,9 @@ return {
 		return this;
 	},
 	genId           : utility.genId,
-	get             : function (uri, success, failure, headers) { return client.request(uri, "GET", success, failure, null, headers); },
+	get             : function (uri, success, failure, headers, timeout) { return client.request(uri, "GET", success, failure, null, headers, timeout); },
 	guid            : utility.guid,
-	headers         : function (uri, success, failure) { return client.request(uri, "HEAD", success, failure); },
+	headers         : function (uri, success, failure, timeout) { return client.request(uri, "HEAD", success, failure, null, {}, timeout); },
 	hidden          : element.hidden,
 	id              : "abaaso",
 	init            : function () {
@@ -169,18 +169,18 @@ return {
 		if (typeof s === "undefined") s = o;
 		return observer.once(o, e, l, i, s, st);
 	},
-	options         : function (uri, success, failure) { return client.request(uri, "OPTIONS", success, failure); },
+	options         : function (uri, success, failure, timeout) { return client.request(uri, "OPTIONS", success, failure, null, null, timeout); },
 	parse           : utility.parse,
 	permissions     : client.permissions,
 	position        : element.position,
-	post            : function (uri, success, failure, args, headers) { return client.request(uri, "POST", success, failure, args, headers); },
+	post            : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "POST", success, failure, args, headers, timeout); },
 	prepend         : function (type, args, obj) {
 		if (obj instanceof Element) obj.genId();
 		return element.create(type, args, obj, "first");
 	},
 	promise         : promise.factory,
 	property        : utility.property,
-	put             : function (uri, success, failure, args, headers) { return client.request(uri, "PUT", success, failure, args, headers); },
+	put             : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "PUT", success, failure, args, headers, timeout); },
 	queryString     : utility.queryString,
 	random          : number.random,
 	ready           : false,
