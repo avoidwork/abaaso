@@ -115,6 +115,11 @@ var data = {
 										parsed = utility.parse(self.uri);
 										i      = parsed.protocol + "//" + parsed.host + i;
 									}
+									idx = i.replace(/.*\//, "");
+									if (idx.isEmpty()) return;
+									i.get(function (arg) {
+										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
+									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 								}
 								else {
 									idx = i.replace(/.*\//, "");
@@ -575,8 +580,8 @@ var data = {
 		 * @param  {Object} data Record properties
 		 * @return {Object}      Record
 		 */
-		record : function (key, data) {
-			return data.record.factory.call(this, key, data);
+		record : function (key, args) {
+			return data.record.factory.call(this, key, args);
 		},
 
 		/**
@@ -951,8 +956,11 @@ var data = {
 		 * @param  {[type]} data [description]
 		 * @return {[type]}      [description]
 		 */
-		factory : function (key, data) {
-			return utility.extend(data.record.methods, {key: key, data: data, parentNode: this});
+		factory : function (key, args) {
+			var obj = utility.extend(data.record.methods, {key: key, data: args});
+
+			obj.parentNode = this;
+			return obj;
 		}
 	},
 
@@ -1075,9 +1083,8 @@ var data = {
 					data.data = data.result;
 				}
 				this.keys[data.key] = index;
-				this.records[index] = {};
+				this.records[index] = self.record(data.key, {});
 				record              = this.records[index];
-				record.key          = data.key;
 				if (this.pointer === null || typeof data.data[this.pointer] === "undefined") {
 					record.data = data.data;
 					if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
@@ -1096,7 +1103,6 @@ var data = {
 						if (self.source !== null) args = utility.walk(args, self.source);
 						if (typeof args[self.key] !== "undefined") delete args[self.key];
 						utility.merge(record.data, args);
-						//record = self.record(record.key, record.data);
 						if (self.retrieve) {
 							self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
 							self.loaded = true;
