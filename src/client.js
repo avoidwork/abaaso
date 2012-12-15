@@ -255,8 +255,7 @@ var client = {
 	 * @return {String}           URI to query
 	 */
 	jsonp : function (uri, success, failure, args) {
-		var curi = uri,
-		    guid = utility.guid(true),
+		var deferred = promise.factory(),
 		    callback, cbid, s;
 
 		// Utilizing the sugar if namespace is not global
@@ -279,15 +278,13 @@ var client = {
 				callback = "callback";
 		}
 
-		curi = curi.replace(callback + "=?", "");
-
-		curi.once("afterJSONP", function (arg) {
-			this.un("failedJSONP", guid);
+		deferred.then(function (arg) {
 			if (typeof success === "function") success(arg);
-		}, guid).once("failedJSONP", function () {
-			this.un("failedJSONP", guid);
-			if (typeof failure === "function") failure();
-		}, guid);
+			return arg;
+		}, function (arg) {
+			if (typeof failure === "function") failure(arg);
+			return arg;
+		});
 
 		do cbid = utility.genId().slice(0, 10);
 		while (typeof global.abaaso.callback[cbid] !== "undefined");
@@ -299,11 +296,20 @@ var client = {
 			clearTimeout(utility.timer[cbid]);
 			delete utility.timer[cbid];
 			delete global.abaaso.callback[cbid];
-			curi.fire("afterJSONP", arg);
+			deferred.resolve(arg);
 		};
 
 		s = $("head")[0].create("script", {src: uri, type: "text/javascript"});
-		utility.defer(function () { curi.fire("failedJSONP"); }, 30000, cbid);
+		
+		utility.defer(function () {
+			try {
+				deferred.reject(undefined);
+			}
+			catch (e) {
+				error(e, arguments, this);
+			}
+		}, 30000, cbid);
+
 		return uri;
 	},
 
