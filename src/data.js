@@ -1054,6 +1054,7 @@ var data = {
 		 */
 		storage : function (obj, op, type) {
 			var record  = false,
+			    self    = this,
 			    session = (type === "session" && typeof sessionStorage !== "undefined"),
 			    ns      = /number|string/,
 			    result, key, data;
@@ -1069,7 +1070,13 @@ var data = {
 					result = session ? sessionStorage.getItem(key) : localStorage.getItem(key);
 					if (result === null) throw Error(label.error.invalidArguments);
 					result = json.decode(result);
-					record ? this.set(key, result, true) : utility.merge(this, result);
+					if (record) this.set(key, result, true);
+					else {
+						utility.merge(this, result);
+						array.each(self.records, function (i, idx) {
+							self.records[idx] = self.record(i.key, i.data);
+						});
+					}
 					result = record ? obj : this;
 					break;
 				case "remove":
@@ -1235,10 +1242,7 @@ var data = {
 		 * @return {[type]}      [description]
 		 */
 		factory : function (key, args) {
-			var obj = utility.extend(data.record.methods, {key: key, data: args});
-
-			obj.parentNode = this;
-			return obj;
+			return utility.extend(data.record.methods, {key: key, data: args});
 		}
 	},
 
