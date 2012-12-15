@@ -316,8 +316,7 @@ var client = {
 	/**
 	 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 	 *
-	 * Events: beforeXHR             Fires before the XmlHttpRequest is made
-	 *         before[type]          Fires before the XmlHttpRequest is made, type specific
+	 * Events: before[type]          Fires before the XmlHttpRequest is made, type specific
 	 *         failed[type]          Fires on error
 	 *         progress[type]        Fires on progress
 	 *         progressUpload[type]  Fires on upload progress
@@ -430,7 +429,6 @@ var client = {
 				if (typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
 
 				// Firing event & sending request
-				uri.fire("beforeXHR", uri, xhr);
 				payload !== null ? xhr.send(payload) : xhr.send();
 			}
 			catch (e) {
@@ -450,8 +448,7 @@ var client = {
 	 * Permissions are handled if the ACCEPT header is received; a bit is set on the cached
 	 * resource
 	 *
-	 * Events: afterXHR     Fires after the XmlHttpRequest response is received
-	 *         after[type]  Fires after the XmlHttpRequest response is received, type specific
+	 * Events: after[type]  Fires after the XmlHttpRequest response is received, type specific
 	 *         reset        Fires if a 206 response is received
 	 *         moved        Fires if a 301 response is received
 	 *         failure      Fires if an exception is thrown
@@ -481,7 +478,6 @@ var client = {
 
 		if (!xdr && xhr.readyState === 2) uri.fire("received" + typed, null, xhr);
 		else if (!xdr && xhr.readyState === 4) {
-			uri.fire("afterXHR", null, xhr);
 			switch (xhr.status) {
 				case 200:
 				case 201:
