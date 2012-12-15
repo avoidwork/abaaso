@@ -74,15 +74,12 @@ var route = {
 	hash : function (arg) {
 		var output = "";
 
-		switch (true) {
-			case server:
-				break;
-			case typeof arg === "undefined":
-				output = document.location.hash.replace(route.bang, "");
-				break;
-			default:
+		if (!server) {
+			if (typeof arg === "undefined") output = document.location.hash.replace(route.bang, "");
+			else {
 				output = arg.replace(route.bang, "");
 				document.location.hash = "!/" + output;
+			}
 		}
 		return output;
 	},
@@ -132,23 +129,18 @@ var route = {
 
 		var result;
 
-		switch (true) {
-			case !server:
-				result = array.cast(route.routes.all.all, true);
-				break;
-			case typeof verb !== "undefined" && route.routes.hasOwnProperty(host):
-				result = array.cast(route.routes[host][route.method(verb)], true);
-				break;
-			default:
-				result = [];
-				if (route.routes.hasOwnProperty(host)) {
-					utility.iterate(route.routes[host], function (v, k) {
-						result[k] = [];
-						utility.iterate(v, function (fn, r) {
-							result[k].push(r);
-						});
+		if (!server) result = array.cast(route.routes.all.all, true);
+		else if (typeof verb !== "undefined" && route.routes.hasOwnProperty(host)) result = array.cast(route.routes[host][route.method(verb)], true);
+		else {
+			result = [];
+			if (route.routes.hasOwnProperty(host)) {
+				utility.iterate(route.routes[host], function (v, k) {
+					result[k] = [];
+					utility.iterate(v, function (fn, r) {
+						result[k].push(r);
 					});
-				}
+				});
+			}
 		}
 
 		if (!server && host !== "all") {
@@ -190,24 +182,23 @@ var route = {
 
 		// Crawls the hostnames
 		crawl = function (host, verb, name) {
-			switch (true) {
-				case typeof route.routes[host][verb][name] !== "undefined":
-					active = name;
-					path   = verb;
-					break;
-				case verb !== "all" && typeof route.routes[host].all[name] !== "undefined":
-					active = name;
-					path   = "all";
-					break;
-				default:
-					utility.iterate(route.routes[host][verb], function (v, k) {
-						return find(k, verb, name);
+			if (typeof route.routes[host][verb][name] !== "undefined") {
+				active = name;
+				path   = verb;
+			}
+			else if (verb !== "all" && typeof route.routes[host].all[name] !== "undefined") {
+				active = name;
+				path   = "all";
+			}
+			else {
+				utility.iterate(route.routes[host][verb], function (v, k) {
+					return find(k, verb, name);
+				});
+				if (active.isEmpty() && verb !== "all") {
+					utility.iterate(route.routes[host].all, function (v, k) {
+						return find(k, "all", name);
 					});
-					if (active.isEmpty() && verb !== "all") {
-						utility.iterate(route.routes[host].all, function (v, k) {
-							return find(k, "all", name);
-						});
-					}
+				}
 			}
 		};
 

@@ -11,6 +11,12 @@ var observer = {
 	// Boolean indicating if events are logged to the console
 	log : false,
 
+	// Queue of events to fire
+	queue : [],
+
+	// If `true`, events are queued
+	silent : false,
+
 	/**
 	 * Adds a handler to an event
 	 *
@@ -56,14 +62,7 @@ var observer = {
 			if (typeof l[o][i][state] === "undefined")        l[o][i][state] = {};
 
 			if (n) {
-				switch (true) {
-					case globals.test(o):
-					case !/\//g.test(o) && o !== "abaaso":
-						instance = obj;
-						break;
-					default:
-						instance = null;
-				}
+				instance = (globals.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
 
 				if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
 					add = (typeof instance.addEventListener === "function");
@@ -90,22 +89,11 @@ var observer = {
 	id : function (arg) {
 		var id;
 
-		switch (true) {
-			case arg === abaaso:
-				id = "abaaso";
-				break;
-			case arg === global:
-				id = "window";
-				break;
-			case arg === !server && document:
-				id = "document";
-				break;
-			case arg === !server && document.body:
-				id = "body";
-				break;
-			default:
-				id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
-		}
+		if (arg === abaaso) id = "abaaso";
+		else if (arg === global) id = "window";
+		else if (arg === !server && document) id = "document";
+		else if (arg === !server && document.body) id = "body";
+		else id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
 		return id;
 	},
 
@@ -119,30 +107,38 @@ var observer = {
 	 */
 	fire : function (obj, event) {
 		obj      = utility.object(obj);
+		var quit = false,
+		    o, a, s, log, c, l, list;
+
 		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, array.cast(arguments).remove(1).remove(0)); });
 
-		var o    = observer.id(obj),
-		    a    = array.cast(arguments).remove(1).remove(0),
-		    s    = abaaso.state.current,
-		    log  = ($.observer.log || abaaso.observer.log),
-		    c, l, list;
+		if (observer.silent) observer.queue.push({obj: obj, event: event});
+		else {
+			o    = observer.id(obj);
+			a    = array.cast(arguments).remove(1).remove(0);
+			s    = abaaso.state.current;
+			log  = ($.observer.log || abaaso.observer.log);
 
-		if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
+			if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
-		event.explode().each(function (e) {
-			if (log) utility.log(o + " firing " + e);
-			list = observer.list(obj, e);
-			l = list.all;
-			if (typeof l !== "undefined") utility.iterate(l, function (i, k) {
-				i.fn.apply(i.scope, a);
-			});
-			if (s !== "all") {
-				l = list[s];
-				if (typeof l !== "undefined") utility.iterate(l, function (i, k) {
-					i.fn.apply(i.scope, a);
+			event.explode().each(function (e) {
+				if (log) utility.log(o + " firing " + e);
+				list = observer.list(obj, e);
+				array.each(array.cast(list.all), function (i) {
+					var result = i.fn.apply(i.scope, a);
+
+					if (result === false) {
+						quit = true;
+						return result;
+					}
 				});
-			}
-		});
+				if (!quit && s !== "all") {
+					array.each(array.cast(list[s]), function (i) {
+						return i.fn.apply(i.scope, a);
+					});
+				}
+			});
+		}
 		return obj;
 	},
 
@@ -175,19 +171,10 @@ var observer = {
 		    o = observer.id(obj),
 		    r;
 
-		switch (true) {
-			case typeof l[o] === "undefined" && typeof event === "undefined":
-				r = {};
-				break;
-			case typeof l[o] !== "undefined" && (typeof event === "undefined" || String(event).isEmpty()):
-				r = l[o];
-				break;
-			case typeof l[o] !== "undefined" && typeof l[o][event] !== "undefined":
-				r = l[o][event];
-				break;
-			default:
-				r = {};
-		}
+		if (typeof l[o] === "undefined" && typeof event === "undefined") r = {};
+		else if (typeof l[o] !== "undefined" && (typeof event === "undefined" || String(event).isEmpty())) r = l[o];
+		else if (typeof l[o] !== "undefined" && typeof l[o][event] !== "undefined") r = l[o][event];
+		else r = {};
 		return r;
 	},
 
@@ -223,6 +210,29 @@ var observer = {
 	},
 
 	/**
+	 * Pauses observer events, and queues them
+	 * 
+	 * @return {Boolean} `true` indicating observer is paused
+	 */
+	pause : function () {
+		return (observer.silent = true);
+	},
+
+	/**
+	 * Un-pauses observer and executes queued events
+	 * 
+	 * @return {Boolean} `false` indicating observer is un-paused
+	 */
+	unpause : function () {
+		observer.silent = false;
+		array.each(observer.queue, function (i) {
+			observer.fire(i.obj, i.event);
+		});
+		observer.queue = [];
+		return false;
+	},
+
+	/**
 	 * Removes listeners
 	 *
 	 * @method remove
@@ -242,18 +252,13 @@ var observer = {
 		    l = observer.listeners,
 		    o = observer.id(obj);
 
-		switch (true) {
-			case typeof o === "undefined":
-			case typeof l[o] === "undefined":
-				return obj;
-		}
+		if (typeof o === "undefined" || typeof l[o] === "undefined") return obj;
 
 		if (typeof event === "undefined" || event === null) delete l[o];
 		else event.explode().each(function (e) {
 			if (typeof l[o][e] === "undefined") return obj;
 			typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
 		});
-
 		return obj;
 	}
 };

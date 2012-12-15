@@ -17,42 +17,56 @@ var data = {
 		 *         failedDataBatch  Fires when an exception occurs
 		 *
 		 * @method batch
-		 * @param  {String}  type  Type of action to perform (set/del/delete)
-		 * @param  {Mixed}   data  Array of keys or indices to delete, or Object containing multiple records to set
-		 * @param  {Boolean} sync  [Optional] Syncs store with data, if true everything is erased
-		 * @param  {Number}  chunk Size to chunk Array to batch set or delete
-		 * @return {Object}        Data store
+		 * @param  {String}  type    Type of action to perform (set/del/delete)
+		 * @param  {Mixed}   data    Array of keys or indices to delete, or Object containing multiple records to set
+		 * @param  {Boolean} sync    [Optional] Syncs store with data, if true everything is erased
+		 * @param  {Number}  chunk   [Optional] Size to chunk Array to batch set or delete
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Data store
 		 */
-		batch : function (type, data, sync, chunk) {
-			type  = type.toString().toLowerCase();
-			sync  = (sync === true);
-			chunk = chunk || 1000;
+		batch : function (type, data, sync, chunk, discard, future) {
+			type    = type.toString().toLowerCase();
+			sync    = (sync === true);
+			chunk   = chunk || 1000;
+			discard = (discard === true);
 
 			if (!/^(set|del|delete)$/.test(type) || (sync && /^del/.test(type)) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
-			var obj  = this.parentNode,
-			    self = this,
-			    r    = 0,
-			    nth  = data.length,
-			    f    = false,
-			    guid = utility.genId(true),
-			    root = /^\/[^\/]/,
-			    del  = /^del/,
-			    completed, failure, key, set, success, parsed;
+			var obj      = this.parentNode,
+			    self     = this,
+			    r        = 0,
+			    nth      = data.length,
+			    f        = false,
+			    guid     = utility.genId(true),
+			    root     = /^\/[^\/]/,
+			    deferred = promise.factory(),
+			    completed, failure, key, set, del, success, parsed;
 
-			completed = function (reindex) {
-				if (del.test(type) && reindex !== false) self.reindex();
+			deferred.then(function (arg) {
+				if (/^del/.test(type)) self.reindex();
 				self.loaded = true;
-				obj.fire("afterDataBatch");
+				if (future instanceof Promise) future.resolve(arg);
+				if (!discard) obj.fire("afterDataBatch", arg);
+				return arg;
+			}, function (arg) {
+				if (future instanceof Promise) future.reject(arg);
+				if (!discard) obj.fire("failedDataBatch", arg);
+				return arg;
+			});
+
+			completed = function (arg) {
+				deferred.resolve(arg);
 			};
 
 			failure = function (arg) {
-				obj.fire("failedDataSet, failedDataBatch", arg);
+				deferred.reject(arg);
 			};
 
 			set = function (data, key) {
-				var guid = utility.genId(),
-				    rec  = {};
+				var deferred = promise.factory(),
+				    guid     = utility.genId(),
+				    rec      = {};
 
 				if (typeof rec.batch !== "function") rec = utility.clone(data)
 				else utility.iterate(data, function (v, k) {
@@ -64,39 +78,41 @@ var data = {
 					delete rec[self.key];
 				}
 
-				obj.once("afterDataSet", function () {
-					this.un("failedDataSet", guid);
-					if (++r === nth) completed();
-				}, guid).once("failedDataSet", function () {
-					this.un("afterDataSet", guid)
+				deferred.then(function (arg) {
+					if (++r === nth) completed(self.get());
+					return arg;
+				}, function (arg) {
 					if (!f) {
 						f = true;
-						this.fire("failedDataBatch");
+						failure(arg);
 					}
-				}, guid);
+					return arg;
+				});
 
-				if (rec instanceof Array && self.uri !== null) self.generate(key);
-				else self.set(key, rec, sync);
+				if (rec instanceof Array && self.uri !== null) self.generate(key, undefined, discard, deferred);
+				else self.set(key, rec, sync, discard, deferred);
 			};
 
-			obj.fire("beforeDataBatch", data);
+			del = function (i) {
+				var deferred = promise.factory();
 
-			if (sync) this.clear(sync);
-
-			if (del.test(type)) {
-				obj.on("afterDataDelete", function () {
-					if (++r === nth) {
-						obj.un("afterDataDelete, failedDataDelete", guid);
-						completed();
-					}
-				}, guid).once("failedDataDelete", function () {
-					obj.un("afterDataDelete", guid);
+				deferred.then(function (arg) {
+					if (++r === nth) completed(arg);
+					return arg;
+				}, function (arg) {
 					if (!f) {
 						f = true;
-						obj.fire("failedDataBatch");
+						failure(arg);
 					}
-				}, guid);
-			}
+					return arg;
+				});
+
+				self.del(i, false, sync, discard, deferred);
+			};
+
+			if (!discard) obj.fire("beforeDataBatch", data);
+
+			if (sync) this.clear(sync);
 
 			if (data.length === 0) completed(false);
 			else {
@@ -106,31 +122,36 @@ var data = {
 						utility.defer(function () {
 							a.each(function (i, idx) {
 								idx = (offset + idx).toString();
-								switch (true) {
-									case typeof i === "object":
-										set(i, idx);
-										break;
-									case i.indexOf("//") === -1:
-										// Relative path to store, i.e. a child
-										if (i.charAt(0) !== "/") i = self.uri + "/" + i;
-										// Root path, relative to store, i.e. a domain
-										else if (self.uri !== null && root.test(i)) {
-											parsed = utility.parse(self.uri);
-											i      = parsed.protocol + "//" + parsed.host + i;
-										};
-									default:
-										idx = i.replace(/.*\//, "");
-										if (idx.isEmpty()) break;
-										utility.defer(function () {
-											i.get(function (arg) { set(self.source === null ? arg : utility.walk(arg, self.source), idx); }, failure, utility.merge({withCredentials: self.credentials}, self.headers));
-										});
-										break;
+								if (typeof i === "object") set(i, idx);
+								else if (i.indexOf("//") === -1) {
+									// Relative path to store, i.e. a child
+									if (i.charAt(0) !== "/") i = self.uri + "/" + i;
+
+									// Root path, relative to store, i.e. a domain
+									else if (self.uri !== null && root.test(i)) {
+										parsed = utility.parse(self.uri);
+										i      = parsed.protocol + "//" + parsed.host + i;
+									}
+
+									idx = i.replace(/.*\//, "");
+									if (idx.isEmpty()) return;
+
+									i.get(function (arg) {
+										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
+									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+								}
+								else {
+									idx = i.replace(/.*\//, "");
+									if (idx.isEmpty()) return;
+									i.get(function (arg) {
+										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
+									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 								}
 							});
 						});
 					});
 				else data.sort(array.sort).reverse().each(function (i) {
-					self.del(i, false, sync);
+					del(i);
 				});
 			}
 
@@ -144,21 +165,23 @@ var data = {
 		 *         afterDataClear   Fires after the data is cleared
 		 *
 		 * @method clear
-		 * @param {Boolean} sync [Optional] Boolean to limit clearing of properties
-		 * @return {Object}      Data store
+		 * @param  {Boolean} sync    [Optional] Boolean to limit clearing of properties
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Data store
 		 */
-		clear : function (sync) {
+		clear : function (sync, discard, future) {
 			sync    = (sync === true);
+			discard = (discard === true);
 			var obj = this.parentNode;
 
 			if (!sync) {
-				obj.fire("beforeDataClear");
+				if (!discard) obj.fire("beforeDataClear");
 				this.callback    = null;
 				this.collections = [];
 				this.crawled     = false;
 				this.credentials = null;
 				this.expires     = null;
-				this._expires    = null;
 				this.headers     = {Accept: "application/json"};
 				this.ignore      = [];
 				this.key         = null;
@@ -173,8 +196,7 @@ var data = {
 				this.total       = 0;
 				this.views       = {};
 				this.uri         = null;
-				this._uri        = null;
-				obj.fire("afterDataClear");
+				if (!discard) obj.fire("afterDataClear");
 			}
 			else {
 				this.collections = [];
@@ -185,6 +207,8 @@ var data = {
 				this.total       = 0;
 				this.views       = {};
 			}
+
+			if (future instanceof Promise) future.resolve(true);
 			return this;
 		},
 
@@ -192,14 +216,17 @@ var data = {
 		 * Crawls a record's properties and creates data stores when URIs are detected
 		 *
 		 * Events: afterDataRetrieve  Fires after the store has retrieved all data from crawling
+		 *         failedDataRetrieve Fires if an exception occurs
 		 * 
 		 * @method crawl
-		 * @param  {Mixed}  arg    Record key or index
-		 * @param  {String} ignore [Optional] Comma delimited fields to ignore
-		 * @param  {String} key    [Optional] data.key property to set on new stores, defaults to record.key
-		 * @return {Object}        Record
+		 * @param  {Mixed}   arg     Record key or index
+		 * @param  {String}  ignore  [Optional] Comma delimited fields to ignore
+		 * @param  {String}  key     [Optional] data.key property to set on new stores, defaults to record.key
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Record
 		 */
-		crawl : function (arg, ignore, key) {
+		crawl : function (arg, ignore, key, discard, future) {
 			var ignored = false,
 			    self    = this,
 			    record;
@@ -211,6 +238,7 @@ var data = {
 			record       = this.get(arg);
 			record       = this.records[this.keys[record.key]];
 			key          = key || this.key;
+			discard      = (discard === true);
 
 			if (typeof ignore === "string") {
 				ignored = true;
@@ -218,43 +246,66 @@ var data = {
 			}
 
 			utility.iterate(record.data, function (v, k) {
-				switch (true) {
-					case ignored && ignore.contains(k):
-					case !(v instanceof Array) && typeof v !== "string":
-						return;
-				}
+				var deferred = promise.factory();
 
+				deferred.then(function (arg) {
+					if (future instanceof Promise) future.resolve(arg);
+					if (!discard) this.fire("afterDataRetrieve", arg);
+					return arg;
+				}, function (arg) {
+					if (future instanceof Promise) future.reject(arg);
+					if (!discard) this.fire("failedDataRetrieve", arg);
+					return arg;
+				});
+
+				if ((ignored && ignore.contains(k)) || (!(v instanceof Array) && typeof v !== "string")) return;
 				if (v instanceof Array) {
 					// Possibly a subset of the collection, so it relies on valid URI paths
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-					self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
+					
+					// Inheriting `ignored` collection
+					if (ignored) ignore.each(function (i) {
+						record.data[k].data.ignore.add(i);
+					});
+
+					// Inheriting `leafs` collection
+					self.leafs.each(function (i) {
+						record.data[k].data.leafs.add(i);
+					});
+
 					if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
 					}
 
-					if (v.length > 0) {
-						record.data[k].once("afterDataBatch", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
-						record.data[k].data.batch("set", v, true);
-					}
+					if (v.length > 0) record.data[k].data.batch("set", v, true, discard, deferred);
 				}
 				else {
 					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
 					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
+						// Possibly a subset of the collection, so it relies on valid URI paths
 						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-						if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-						self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
+						
+						// Inheriting `ignored` collection
+						if (ignored) ignore.each(function (i) {
+							record.data[k].data.ignore.add(i);
+						});
+
+						// Inheriting `leafs` collection
+						self.leafs.each(function (i) {
+							record.data[k].data.leafs.add(i);
+						});
+
 						if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
 						}
-						typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
+
+						record.data[k].data.setUri(v, discard, deferred);
 					}
 				}
 			});
@@ -273,27 +324,52 @@ var data = {
 		 * @param  {Mixed}   record  Record key or index
 		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
 		 * @param  {Boolean} sync    [Optional] True if called by data.sync
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
 		 * @return {Object}          Data store
 		 */
-		del : function (record, reindex, sync) {
+		del : function (record, reindex, sync, discard, future) {
 			if (typeof record === "undefined" || !/number|string/.test(typeof record)) throw Error(label.error.invalidArguments);
 
-			reindex  = (reindex !== false);
-			sync     = (sync === true);
-			var obj  = this.parentNode,
-			    r    = /true|undefined/,
+			reindex      = (reindex !== false);
+			sync         = (sync === true);
+			discard      = (discard === true);
+			var obj      = this.parentNode,
+			    self     = this,
+			    r        = /true|undefined/,
+			    deferred = promise.factory(),
 			    key, args, uri, p;
 
-			switch (typeof record) {
-				case "string":
-					key    = record;
-					record = this.keys[key];
-					if (typeof record === "undefined") throw Error(label.error.invalidArguments);
-					break;
-				default:
-					key = this.records[record];
-					if (typeof key === "undefined") throw Error(label.error.invalidArguments);
-					key = key.key;
+			deferred.then(function (arg) {
+				var record = self.get(arg.record);
+
+				self.records.remove(self.keys[arg.key]);
+				delete self.keys[arg.key];
+				self.total--;
+				self.views = {};
+				if (arg.reindex) self.reindex();
+				utility.iterate(record.data, function (v, k) {
+					if (v === null) return;
+					if (typeof v.data !== "undefined" && typeof v.data.teardown === "function") v.data.teardown();
+				});
+				if (future instanceof Promise) future.resolve(arg);
+				if (!discard) obj.fire("afterDataDelete", record);
+				return arg;
+			}, function (arg) {
+				if (future instanceof Promise) future.reject(arg);
+				if (!discard) obj.fire("failedDataDelete", args);
+				return arg;
+			});
+
+			if (typeof record === "string") {
+				key    = record;
+				record = this.keys[key];
+				if (typeof record === "undefined") throw Error(label.error.invalidArguments);
+			}
+			else {
+				key = this.records[record];
+				if (typeof key === "undefined") throw Error(label.error.invalidArguments);
+				key = key.key;
 			}
 
 			args   = {key: key, record: record, reindex: reindex};
@@ -303,19 +379,17 @@ var data = {
 				p   = uri.allows("delete");
 			}
 
-			obj.fire("beforeDataDelete", args);
-			switch (true) {
-				case sync:
-				case this.callback !== null:
-				case this.uri === null:
-					obj.fire("syncDataDelete", args);
-					break;
-				case r.test(p):
-					uri.del(function () { obj.fire("syncDataDelete", args); }, function () { obj.fire("failedDataDelete", args); }, utility.merge({withCredentials: this.credentials}, this.headers));
-					break;
-				default:
-					obj.fire("failedDataDelete", args);
+			if (!discard) obj.fire("beforeDataDelete", args);
+
+			if (sync || (this.callback !== null) || (this.uri === null)) deferred.resolve(args);
+			else if (r.test(p)) {
+				uri.del(function (arg) {
+					deferred.resolve(args);
+				}, function (e) {
+					deferred.reject(args);
+				}, utility.merge({withCredentials: this.credentials}, this.headers));
 			}
+			else deferred.reject(args);
 			return this;
 		},
 
@@ -342,15 +416,8 @@ var data = {
 			// Preparing parameters
 			if (!fn) {
 				needle = typeof needle === "string" ? needle.explode() : [needle];
-				switch (true) {
-					case typeof modifiers === "undefined":
-					case String(modifiers).isEmpty():
-						modifiers = "gi";
-						break;
-					case modifiers === null:
-						modifiers = "";
-						break;
-				}
+				if (typeof modifiers === "undefined" || String(modifiers).isEmpty()) modifiers = "gi";
+				else if (modifiers === null) modifiers = "";
 			}
 			haystack = typeof haystack === "string" ? haystack.explode() : null;
 
@@ -426,21 +493,11 @@ var data = {
 			    self  = this,
 			    entity, obj, handler, structure, key, data;
 
-			switch (true) {
-				case empty:
-					record = this.get(0);
-					break;
-				case !(record instanceof Object):
-					record = this.get(record);
-					break;
-			}
+			if (empty) record = this.get(0);
+			else if (!(record instanceof Object)) record = this.get(record);
 
-			switch (true) {
-				case typeof record === "undefined":
-					throw Error(label.error.invalidArguments);
-				case this.uri !== null && !this.uri.allows("post"): // POST & PUT are interchangable for this bit
-					throw Error(label.error.serverInvalidMethod);
-			}
+			if (typeof record === "undefined") throw Error(label.error.invalidArguments);
+			else if (this.uri !== null && !this.uri.allows("post")) throw Error(label.error.serverInvalidMethod);
 
 			key  = record.key;
 			data = record.data;
@@ -501,18 +558,17 @@ var data = {
 			structure = function (record, obj, name) {
 				var x, id;
 				utility.iterate(record, function (v, k) {
-					switch (true) {
-						case v instanceof Array:
-							x = 0;
-							v.each(function (o) { structure(o, obj, name + "[" + k + "][" + (x++) + "]"); });
-							break;
-						case v instanceof Object:
-							structure(v, obj, name + "[" + k + "]");
-							break;
-						default:
-							id = (name + "[" + k + "]").replace(/\[|\]/g, "");
-							obj.create("label", {"for": id}).html(k.capitalize());
-							obj.create("input", {id: id, name: name + "[" + k + "]", type: "text", value: empty ? "" : v});
+					if (v instanceof Array) {
+						x = 0;
+						v.each(function (o) {
+							structure(o, obj, name + "[" + k + "][" + (x++) + "]");
+						});
+					}
+					else if (v instanceof Object) structure(v, obj, name + "[" + k + "]");
+					else {
+						id = (name + "[" + k + "]").replace(/\[|\]/g, "");
+						obj.create("label", {"for": id}).html(k.capitalize());
+						obj.create("input", {id: id, name: name + "[" + k + "]", type: "text", value: empty ? "" : v});
 					}
 				});
 			};
@@ -530,12 +586,16 @@ var data = {
 		/**
 		 * Generates a RESTful store (replacing a record) when consuming an API end point
 		 *
-		 * @param  {Object} key  Record key
-		 * @param  {String} uri  [Optional] Related URI
-		 * @return {Object}      Data store
+		 * @param  {Object}  key     Record key
+		 * @param  {String}  uri     [Optional] Related URI
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Data store
 		 */
-		generate : function (key, uri) {
-			var params, idx;
+		generate : function (key, uri, discard, future) {
+			var deferred = promise.factory(),
+			    params   = {},
+			    idx;
 			
 			params = {
 				headers   : this.headers,
@@ -547,6 +607,14 @@ var data = {
 				retrieve  : this.retrieve,
 				source    : this.source
 			};
+
+			deferred.then(function (arg) {
+				if (future instanceof Promise) future.resolve(arg);
+				return arg;
+			}, function (arg) {
+				if (future instanceof Promise) future.reject(arg);
+				return arg;
+			});
 
 			// Create stub or teardown existing data store
 			if (typeof this.keys[key] !== "undefined") {
@@ -562,11 +630,12 @@ var data = {
 			// Creating new child data store
 			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
 
+			// Constructing relational URI
+			if (this.uri !== null && typeof uri === "undefined" && !this.leafs.contains(key)) uri = this.uri + "/" + key;
+			
 			// Conditionally making the store RESTful
-			if (this.uri !== null && typeof uri === "undefined") {
-				uri = this.uri + "/" + key;
-				typeof this.records[idx].data.setUri === "function" ? this.records[idx].data.setUri(uri) : this.records[idx].data.uri = uri;
-			}
+			if (typeof uri !== "undefined") this.records[idx].data.setUri(uri, discard, deferred);
+			else deferred.resolve(this.records[idx].data.get());
 
 			return this.records[idx].data;
 		},
@@ -588,32 +657,31 @@ var data = {
 			    self    = this,
 			    r;
 
-			switch (true) {
-				case type === "undefined":
-				case String(record).length === 0:
-					r = records;
-					break;
-				case type === "string" && record.indexOf(",") > -1:
-					r = [];
-					record.explode().each(function (i) {
-						if (!isNaN(i)) i = parseInt(i);
-						r.push(self.get(i));
-					});
-					break;
-				case type === "string" && typeof this.keys[record] !== "undefined":
-					r = records[this.keys[record]];
-					break;
-				case type === "number" && typeof offset === "undefined":
-					r = records[parseInt(record)];
-					break;
-				case type === "number" && typeof offset === "number":
-					r = records.limit(parseInt(record), parseInt(offset));
-					break;
-				default:
-					r = undefined;
+			if (type === "undefined" || String(record).length === 0) r = records;
+			else if (type === "string" && record.indexOf(",") > -1) {
+				r = [];
+				record.explode().each(function (i) {
+					if (!isNaN(i)) i = parseInt(i);
+					r.push(self.get(i));
+				});
 			}
-
+			else if (type === "string" && typeof this.keys[record] !== "undefined") r = records[this.keys[record]];
+			else if (type === "number" && typeof offset === "undefined")            r = records[parseInt(record)];
+			else if (type === "number" && typeof offset === "number")               r = records.limit(parseInt(record), parseInt(offset));
+			else r = undefined;
 			return r;
+		},
+
+		/**
+		 * Record factory
+		 * 
+		 * @method record
+		 * @param  {Mixed}  key  Index or key
+		 * @param  {Object} data Record properties
+		 * @return {Object}      Record
+		 */
+		record : function (key, args) {
+			return data.record.factory.call(this, key, args);
 		},
 
 		/**
@@ -653,35 +721,31 @@ var data = {
 		 *         failedDataSet  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method set
-		 * @param  {Mixed}   key  Integer or String to use as a Primary Key
-		 * @param  {Object}  data Key:Value pairs to set as field values
-		 * @param  {Boolean} sync [Optional] True if called by data.sync
-		 * @return {Object}       The data store
+		 * @param  {Mixed}   key     Integer or String to use as a Primary Key
+		 * @param  {Object}  data    Key:Value pairs to set as field values
+		 * @param  {Boolean} sync    [Optional] True if called by data.sync
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Data store
 		 */
-		set : function (key, data, sync) {
+		set : function (key, data, sync, discard, future) {
 			if (key === null) key = undefined;
-			sync = (sync === true);
+			sync    = (sync === true);
+			discard = (discard === true);
 
-			switch (true) {
-				case (typeof key === "undefined" || String(key).isEmpty()) && this.uri === null:
-				case typeof data === "undefined":
-					throw Error(label.error.invalidArguments);
-				case data instanceof Array:
-					return this.generate(key).batch("set", data, true);
-				case data instanceof Number:
-				case data instanceof String:
-				case typeof data !== "object":
-					throw Error(label.error.invalidArguments);
-			}
+			if (((typeof key === "undefined" || String(key).isEmpty()) && this.uri === null) || (typeof data === "undefined")) throw Error(label.error.invalidArguments);
+			else if (data instanceof Array) return this.generate(key).batch("set", data, true, discard, future);
+			else if ((data instanceof Number) || (data instanceof String) || (typeof data !== "object")) throw Error(label.error.invalidArguments);
 
-			var record = typeof key === "undefined" ? undefined : this.get(key),
-			    obj    = this.parentNode,
-			    method = typeof key === "undefined" ? "post" : "put",
-			    self   = this,
-			    args   = {data: {}, key: key, record: undefined},
-			    uri    = this.uri,
-			    r      = /true|undefined/,
-			    p, success, failure;
+			var record   = typeof key === "undefined" ? undefined : this.get(key),
+			    obj      = this.parentNode,
+			    method   = typeof key === "undefined" ? "post" : "put",
+			    self     = this,
+			    args     = {data: {}, key: key, record: undefined},
+			    uri      = this.uri,
+			    r        = /true|undefined/,
+			    deferred = promise.factory(),
+			    p;
 
 			if (typeof record !== "undefined") {
 				args.record = this.records[this.keys[record.key]];
@@ -692,34 +756,175 @@ var data = {
 			}
 			else args.data = data;
 
-			success = function (arg) {
-				args["result"] = arg;
-				obj.fire("syncDataSet", args);
-			};
+			deferred.then(function (arg) {
+				var data     = typeof arg.record === "undefined" ? utility.clone(arg) : arg,
+				    fire     = true,
+				    deferred = promise.factory(),
+				    record, uri;
 
-			failure = function (e) {
-				obj.fire("failedDataSet");
-			};
+				deferred.then(function (arg) {
+					if (future instanceof Promise) future.resolve(arg);
+					if (!discard && fire) self.parentNode.fire("afterDataSet", arg);
+					return arg;
+				}, function (arg) {
+					if (future instanceof Promise) future.reject(arg);
+					if (!discard) self.fire("failedDataSet");
+					throw Error(arg);
+				});
+
+				self.views = {};
+
+				if (typeof data.record === "undefined") {
+					var index = self.total++;
+
+					if (typeof data.key === "undefined") {
+						if (typeof data.result === "undefined") {
+							self.total--;
+							deferred.reject(label.error.expectedObject);
+						}
+					
+						if (self.source !== null) data.result = utility.walk(data.result, self.source);
+					
+						if (self.key === null) data.key = array.cast(data.result).first();
+						else {
+							data.key = data.result[self.key];
+							delete data.result[self.key];
+						}
+					
+						if (typeof data.key !== "string") data.key = data.key.toString();
+
+						data.data = data.result;
+					}
+
+					self.keys[data.key] = index;
+					self.records[index] = self.record(data.key, {});
+					record              = self.records[index];
+
+					if (self.pointer === null || typeof data.data[self.pointer] === "undefined") {
+						record.data = data.data;
+						if (self.key !== null && self.records[index].data.hasOwnProperty(self.key)) delete self.records[index].data[self.key];
+					}
+					else {
+						fire = false;
+						uri  = data.data[self.pointer];
+
+						if (typeof uri === "undefined" || uri === null) {
+							delete self.records[index];
+							delete self.keys[data.key];
+							deferred.reject(label.error.expectedObject);
+						}
+
+						record.data = {};
+
+						uri.get(function (args) {
+							if (self.source !== null) args = utility.walk(args, self.source);
+							if (typeof args[self.key] !== "undefined") delete args[self.key];
+							utility.merge(record.data, args);
+							if (self.retrieve) {
+								self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
+								self.loaded = true;
+							}
+							deferred.resolve(record);
+						}, function (e) {
+							deferred.reject(e);
+						}, self.headers);
+					}
+				}
+				else {
+					record = self.records[self.keys[data.record.key]];
+					utility.merge(record.data, data.data);
+				}
+
+				if (self.retrieve) self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
+				deferred.resolve(record);
+				return arg;
+			}, function (arg) {
+				if (future instanceof Promise) future.reject(arg);
+				if (!discard) obj.fire("failedDataSet", arg);
+				return arg;
+			});
 
 			if (!sync && this.callback === null && uri !== null) {
 				if (typeof record !== "undefined") uri += "/" + record.key;
 				p = uri.allows(method);
 			}
 
-			obj.fire("beforeDataSet", {key: key, data: data});
-			switch (true) {
-				case sync:
-				case this.callback !== null:
-				case this.uri === null:
-					obj.fire("syncDataSet", args);
-					break;
-				case r.test(p):
-					uri[method](success, failure, data, utility.merge({withCredentials: this.credentials}, this.headers));
-					break;
-				default:
-					obj.fire("failedDataSet", args);
+			if (!discard) obj.fire("beforeDataSet", {key: key, data: data});
+
+			if (sync || this.callback !== null || this.uri === null) deferred.resolve(args);
+			else if (r.test(p)) {
+				uri[method](function (arg) {
+					args["result"] = arg;
+					deferred.resolve(args);
+				}, function (e) {
+					deferred.reject(e);
+				}, data, utility.merge({withCredentials: this.credentials}, this.headers));
 			}
+			else deferred.reject(args);
 			return this;
+		},
+
+		/**
+		 * Gets or sets an explicit expiration of data
+		 *
+		 * @method setExpires
+		 * @param  {Number} arg  Milliseconds until data is stale
+		 * @param  {Mixed}  arg  Number or undefined
+		 * @return {Object}      Data store
+		 */
+		setExpires : function (arg) {
+			// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
+			if ((arg !== null && this.uri === null) || (arg !== null && (isNaN(arg) || arg < 1000))) throw Error(label.error.invalidArguments);
+
+			if (this.expires === arg) return;
+			this.expires = arg;
+
+			var id      = this.parentNode.id + "DataExpire",
+			    expires = arg,
+			    self    = this;
+
+			utility.clearTimers(id);
+
+			if (arg === null) return;
+
+			utility.repeat(function () {
+				if (self.uri === null) {
+					self.setExpires(null);
+					return false;
+				}
+				if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
+			}, expires, id);
+		},
+
+		/**
+		 * Sets the RESTful API end point
+		 * 
+		 * @method setUri
+		 * @param  {String}  arg     [Optional] API collection end point
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Data store
+		 */
+		setUri : function (arg, discard, future) {
+			var result;
+
+			if (arg !== null && arg.isEmpty()) throw Error(label.error.invalidArguments);
+
+			if (this.uri === arg) result = this.uri;
+			else {
+				if (this.uri !== null) this.uri.un();
+				result = this.uri = arg;
+
+				if (result !== null) {
+					result.on("expire", function () {
+						this.sync(true);
+					}, "dataSync", this);
+					cache.expire(result, true);
+					this.sync(true, discard, future);
+				}
+			}
+
+			return result;
 		},
 
 		/**
@@ -746,7 +951,9 @@ var data = {
 			    result   = [],
 			    bucket, sort, crawl;
 
-			queries.each(function (query) { if (String(query).isEmpty()) throw Error(label.error.invalidArguments); });
+			array.each(queries, function (query) {
+				if (String(query).isEmpty()) throw Error(label.error.invalidArguments);
+			});
 
 			if (!create && this.views[view] instanceof Array) return this.views[view];
 			if (this.total === 0) return [];
@@ -759,11 +966,13 @@ var data = {
 
 				queries.remove(0);
 				sorted = bucket(query, data, desc.test(query));
-				sorted.order.each(function (i) {
+				array.each(sorted.order, function (i) {
 					if (sorted.registry[i].length < 2) return;
 					if (queries.length > 0) sorted.registry[i] = crawl(queries, sorted.registry[i]);
 				});
-				sorted.order.each(function (i) { result = result.concat(sorted.registry[i]); });
+				array.each(sorted.order, function (i) {
+					result = result.concat(sorted.registry[i]);
+				});
 				return result;
 			}
 
@@ -800,7 +1009,7 @@ var data = {
 				order.sort(array.sort);
 				if (reverse) order.reverse();
 				
-				order.each(function (k) {
+				array.each(order, function (k) {
 					if (registry[k].length === 1) return;
 					registry[k] = sort(registry[k], query, prop, reverse, pk);
 				});
@@ -812,7 +1021,7 @@ var data = {
 				var tmp    = [],
 				    sorted = [];
 
-				data.each(function (i, idx) {
+				array.each(data, function (i, idx) {
 					var v  = pk ? i.key : i.data[prop];
 
 					v = String(v).trim() + ":::" + idx;
@@ -824,7 +1033,9 @@ var data = {
 					if (reverse) tmp.reverse();
 				}
 
-				tmp.each(function (v) { sorted.push(data[needle.exec(v)[1]]); });
+				array.each(tmp, function (v) {
+					sorted.push(data[needle.exec(v)[1]]);
+				});
 				return sorted;
 			};
 
@@ -883,58 +1094,74 @@ var data = {
 		 *         failedDataSync  Fires when an exception occurs
 		 *
 		 * @method sync
-		 * @param {Boolean} reindex [Optional] True will reindex the data store
-		 * @return {Object}         Data store
+		 * @param  {Boolean} reindex [Optional] True will reindex the data store
+		 * @param  {Boolean} discard [Optional] Discard events, default is false
+		 * @param  {Object}  future  [Optional] Promise
+		 * @return {Object}          Data store
 		 */
-		sync : function (reindex) {
+		sync : function (reindex, discard, future) {
 			if (this.uri === null || this.uri.isEmpty()) throw Error(label.error.invalidArguments);
 
-			reindex  = (reindex === true);
-			var self = this,
-			    obj  = self.parentNode,
-			    guid = utility.guid(true),
+			reindex      = (reindex === true);
+			discard      = (discard === true);
+			var self     = this,
+			    obj      = self.parentNode,
+			    guid     = utility.guid(true),
+			    deferred = promise.factory(),
 			    success, failure;
 
+			deferred.then(function (arg) {
+				if (typeof arg !== "object") throw Error(label.error.expectedObject);
+
+				var found    = false,
+				    deferred = promise.factory(),
+				    data;
+
+				if (self.source !== null) arg = utility.walk(arg, self.source);
+
+				if (arg instanceof Array) data = arg;
+				else utility.iterate(arg, function (i) {
+					if (!found && i instanceof Array) {
+						found = true;
+						data  = i;
+					}
+				});
+
+				if (typeof data === "undefined") data = [arg];
+
+				deferred.then(function (arg) {
+					var data = [];
+
+					if (reindex) self.reindex();
+					if (future instanceof Promise) future.resolve(arg);
+					if (!discard) obj.fire("afterDataSync", arg);
+					return data;
+				}, function (arg) {
+					self.clear(true);
+					if (future instanceof Promise) future.reject(arg);
+					if (!discard) obj.fire("failedDataSync", arg);
+					return arg;
+				});
+
+				self.batch("set", data, true, 1000, discard, deferred);
+				return arg;
+			}, function (arg) {
+				if (future instanceof Promise) future.reject(arg);
+
+				return arg;
+			});
+
 			success = function (arg) {
-				try {
-					if (typeof arg !== "object") throw Error(label.error.expectedObject);
-
-					var data, found = false, guid = utility.genId(true);
-
-					if (self.source !== null) arg = utility.walk(arg, self.source);
-
-					if (arg instanceof Array) data = arg;
-					else utility.iterate(arg, function (i) {
-						if (!found && i instanceof Array) {
-							found = true;
-							data  = i;
-						}
-					});
-
-					if (typeof data === "undefined") data = [arg];
-
-					obj.once("afterDataBatch", function (arg) {
-						if (reindex) self.reindex();
-						this.un("failedDataBatch", guid).fire("afterDataSync", self.get());
-					}, guid);
-
-					obj.once("failedDataBatch", function (arg) {
-						self.clear(true);
-						this.un("afterDataBatch", guid).fire("failedDataSync");
-					}, guid);
-
-					self.batch("set", data, true);
-				}
-				catch (e) {
-					error(e, arguments, this);
-					obj.fire("failedDataSync", arg);
-				}
+				deferred.resolve(arg);
 			};
 
-			failure = function (e) { obj.fire("failedDataSync", e); };
+			failure = function (e) {
+				deferred.reject(e);
+			};
 
-			obj.fire("beforeDataSync");
-			this.callback !== null ? this.uri.jsonp(success, failure, {callback: this.callback}) : this.uri.get(success, failure, utility.merge({withCredentials: this.credentials}, this.headers));
+			if (!discard) obj.fire("beforeDataSync");
+			this.callback !== null ? client.jsonp(this.uri, success, failure, {callback: this.callback})
+			                       : client.request(this.uri, "GET", success, failure, utility.merge({withCredentials: this.credentials}, this.headers));
 			return this;
 		},
 
@@ -973,6 +1200,48 @@ var data = {
 		}
 	},
 
+	// DataStore record sub class
+	record : {
+		methods : {
+			/**
+			 * Deletes the record from it's store
+			 * 
+			 * @param  {Boolean} discard [Optional] Discard events, default is false
+			 * @param  {Object}  future  [Optional] Promise
+			 * @return {Object}          Data Store
+			 */
+			del : function (discard, future) {
+				return this.parentNode.del(this.key, true, false, discard, future);
+			},
+
+			/**
+			 * Sets a data property of the record
+			 * 
+			 * @param {String} key   Property to set
+			 * @param {Mixed}  value Value to set
+			 * @return {Object}      Record
+			 */
+			set : function (key, value, discard, future) {
+				this.parentNode.set(this.key, {key: value}, false, discard, future);
+				return this;
+			}
+		},
+
+		/**
+		 * DataStore Record factory
+		 * 
+		 * @param  {[type]} key  [description]
+		 * @param  {[type]} data [description]
+		 * @return {[type]}      [description]
+		 */
+		factory : function (key, args) {
+			var obj = utility.extend(data.record.methods, {key: key, data: args});
+
+			obj.parentNode = this;
+			return obj;
+		}
+	},
+
 	/**
 	 * Registers a data store on an Object
 	 *
@@ -986,56 +1255,6 @@ var data = {
 	 * @return {Object}      Object registered with
 	 */
 	factory : function (obj, recs, args) {
-		var methods = {
-			expires : {
-				getter : function () { return this._expires; },
-				setter : function (arg) {
-					// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
-					if ((arg !== null && this.uri === null) || (arg !== null && (isNaN(arg) || arg < 1000))) throw Error(label.error.invalidArguments);
-
-					if (this._expires === arg) return;
-					this._expires = arg;
-
-					var id      = this.parentNode.id + "DataExpire",
-					    expires = arg,
-					    self    = this;
-
-					utility.clearTimers(id);
-
-					if (arg === null) return;
-
-					utility.repeat(function () {
-						if (self.uri === null) {
-							typeof self.setExpires === "function" ? self.setExpires(null) : self.expires = null;
-							return false;
-						}
-						if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
-					}, expires, id);
-				}
-			},
-			uri : {
-				getter : function () { return this._uri; },
-				setter : function (arg) {
-					if (arg !== null && arg.isEmpty()) throw Error(label.error.invalidArguments);
-
-					switch (true) {
-						case this._uri === arg:
-							return;
-						case this._uri !== null:
-							this._uri.un();
-						default:
-							this._uri = arg;
-					}
-
-					if (arg !== null) {
-						arg.on("expire", function () { this.sync(true); }, "dataSync", this);
-						cache.expire(arg, true);
-						this.sync();
-					}
-				}
-			}
-		};
-
 		obj = utility.object(obj);
 		utility.genId(obj);
 
@@ -1044,109 +1263,17 @@ var data = {
 
 		obj.fire("beforeDataStore");
 
+		// Creating store
 		obj.data = utility.extend(data.methods);
-		obj.data.parentNode = obj; // Recursion, useful
-		obj.data.clear();          // Setting properties
+		obj.data.parentNode = obj;
+		obj.data.clear();
 
+		// Customizing store
 		if (args instanceof Object) utility.merge(obj.data, args);
 
-		obj.on("syncDataDelete", function (data) {
-			var record = this.get(data.record);
-
-			this.records.remove(this.keys[data.key]);
-			delete this.keys[data.key];
-			this.total--;
-			this.views = {};
-			if (data.reindex) this.reindex();
-			utility.iterate(record.data, function (v, k) {
-				if (v === null) return;
-				if (typeof v.data !== "undefined" && typeof v.data.teardown === "function") v.data.teardown();
-			});
-			this.parentNode.fire("afterDataDelete", record);
-			return this.parentNode;
-		}, "recordDelete", obj.data);
-
-		obj.on("syncDataSet", function (arg) {
-			var data = typeof arg.record === "undefined" ? utility.clone(arg) : arg,
-			    fire = true,
-			    self = this,
-			    record, uri;
-
-			switch (true) {
-				case typeof data.record === "undefined":
-					var index = this.total;
-					this.total++;
-					if (typeof data.key === "undefined") {
-						if (typeof data.result === "undefined") {
-							this.fire("failedDataSet");
-							throw Error(label.error.expectedObject);
-						}
-						if (this.source !== null) data.result = utility.walk(data.result, this.source);
-						if (this.key === null) data.key = array.cast(data.result).first();
-						else {
-							data.key = data.result[this.key];
-							delete data.result[this.key];
-						}
-						if (typeof data.key !== "string") data.key = data.key.toString();
-						data.data = data.result;
-					}
-					this.keys[data.key] = index;
-					this.records[index] = {};
-					record              = this.records[index];
-					record.key          = data.key;
-					if (this.pointer === null || typeof data.data[this.pointer] === "undefined") {
-						record.data = data.data;
-						if (this.key !== null && this.records[index].data.hasOwnProperty(this.key)) delete this.records[index].data[this.key];
-					}
-					else {
-						fire = false;
-						uri  = data.data[this.pointer];
-						if (typeof uri === "undefined" || uri === null) {
-							delete this.records[index];
-							delete this.keys[data.key];
-							this.fire("failedDataSet");
-							throw Error(label.error.expectedObject);
-						}
-						record.data = {};
-						uri.get(function (args) {
-							if (self.source !== null) args = utility.walk(args, self.source);
-							if (typeof args[self.key] !== "undefined") delete args[self.key];
-							utility.merge(record.data, args);
-							if (self.retrieve) {
-								self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
-								self.loaded = true;
-							}
-							self.parentNode.fire("afterDataSet", record);
-						}, function () { self.parentNode.fire("failedDataSet"); }, self.headers);
-					}
-					break;
-				default:
-					record = this.records[this.keys[data.record.key]];
-					utility.merge(record.data, data.data);
-			}
-			this.views = {};
-			if (this.retrieve) this.crawl(record.key, this.ignore.length > 0 ? this.ignore.join(",") : undefined, this.key);
-			if (fire) this.parentNode.fire("afterDataSet", record);
-		}, "recordSet", obj.data);
-
-		// Getters & setters
-		switch (true) {
-			case (!client.ie || client.version > 8):
-				utility.property(obj.data, "uri",     {enumerable: true, get: methods.uri.getter,     set: methods.uri.setter});
-				utility.property(obj.data, "expires", {enumerable: true, get: methods.expires.getter, set: methods.expires.setter});
-				break;
-			default: // Only exists when no getters/setters (IE8)
-				obj.data.setExpires = function (arg) {
-					obj.data.expires = arg;
-					methods.expires.setter.call(obj.data, arg);
-				};
-				obj.data.setUri = function (arg) {
-					obj.data.uri = arg;
-					methods.uri.setter.call(obj.data, arg);
-				};
-		}
-
+		// Setting records
 		if (typeof recs === "object" && recs !== null) obj.data.batch("set", recs);
+		
 		obj.fire("afterDataStore");
 		return obj;
 	}

@@ -239,13 +239,12 @@ bootstrap = function () {
 	$.state._current      = $.state.current      = abaaso.state.current;
 
 	// Setting sugar
-	if (!server) switch (true) {
-		case typeof global.$ === "undefined" || global.$ === null:
-			global.$ = $;
-			break;
-		default:
-			global.a$ = $;
+	if (!server) {
+		if (typeof global.$ === "undefined" || global.$ === null) global.$ = $;
+		else {
+			global.a$      = $;
 			abaaso.aliased = "a$";
+		}
 	}
 
 	// Hooking abaaso into native Objects
@@ -270,11 +269,14 @@ bootstrap = function () {
 		$.on(global, "load",       function ()  { $.fire("render").un("render"); });
 		$.on(global, "DOMNodeInserted", function (e) {
 			var obj = e.target;
+			
 			if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
 				utility.genId(obj);
 				if (obj.parentNode instanceof Element) obj.parentNode.fire("afterCreate", obj);
 				$.fire("afterCreate", obj);
 			}
+
+			if (typeof Object.observe === "function") Object.observe(obj, function (arg) { obj.fire("change", arg); });
 		}, "mutation", global, "all");
 		$.on(global, "DOMNodeRemoved", function (e) { cleanup(e.target); }, "mutation", global, "all");
 
@@ -293,14 +295,14 @@ bootstrap = function () {
 		return abaaso.fire(arg);
 	};
 
-	switch (true) {
-		case (!client.ie || client.version > 8):
-			utility.property(abaaso.state, "current", {enumerable: true, get: getter, set: setter});
-			utility.property($.state,      "current", {enumerable: true, get: getter, set: setter});
-			break;
-		default: // Pure hackery, only exists when needed
-			abaaso.state.change = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
-			$.state.change      = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
+	if (!client.ie || client.version > 8) {
+		utility.property(abaaso.state, "current", {enumerable: true, get: getter, set: setter});
+		utility.property($.state,      "current", {enumerable: true, get: getter, set: setter});
+	}
+	// Pure hackery, only exists when needed
+	else {
+		abaaso.state.change = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
+		$.state.change      = function (arg) { setter.call(abaaso.state, arg); return abaaso.state.current = arg; };
 	}
 
 	$.ready = true;

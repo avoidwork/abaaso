@@ -57,25 +57,17 @@ var client = {
 	 */
 	allows : function (uri, command) {
 		if (uri.isEmpty() || command.isEmpty()) throw Error(label.error.invalidArguments);
-
 		if (!cache.get(uri, false)) return undefined;
 
-		command = command.toLowerCase();
-		var result;
+		command    = command.toLowerCase();
+		var result = false,
+		    bit    = 0;
 
-		switch (true) {
-			case command === "delete":
-				result = !((client.permissions(uri, command).bit & 1) === 0);
-				break;
-			case (/^(head|get|options)$/.test(command)):
-				result = !((client.permissions(uri, command).bit & 4) === 0);
-				break;
-			case (/^(post|put)$/.test(command)):
-				result = !((client.permissions(uri, command).bit & 2) === 0);
-				break;
-			default:
-				result = false;
-		}
+		if (command === "delete")                      bit = 1;
+		else if (/^(head|get|options)$/.test(command)) bit = 4;
+		else if (/^(post|put)$/.test(command))         bit = 2;
+
+		result = !((client.permissions(uri, command).bit & bit) === 0);
 		return result;
 	},
 
@@ -98,7 +90,7 @@ var client = {
 	bit : function (args) {
 		var result = 0;
 
-		args.each(function (a) {
+		array.each(args, function (a) {
 			switch (a.toLowerCase()) {
 				case "head":
 				case "get":
@@ -148,18 +140,30 @@ var client = {
 		    rvalue  = /.*:\s+/,
 		    rheader = /:.*/,
 		    rallow  = /^allow$/i,
-		    rcallow = /^access-control-allow-methods$/i;
+		    rcallow = /^access-control-allow-methods$/i,
+		    caps;
 
-		headers.each(function (h) {
+		// Capitalizes hyphenated headers
+		caps = function (header) {
+			var x = [];
+
+			array.each(header.explode("-"), function (i) {
+				x.push(i.capitalize())
+			});
+			return x.join("-");
+		};
+
+		array.each(headers, function (h) {
 			var header, value;
 
 			value         = h.replace(rvalue, "");
 			header        = h.replace(rheader, "");
-			header        = header.indexOf("-") === -1 ? header.capitalize() : (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
+			header        = header.indexOf("-") === -1 ? header.capitalize() : caps(header);
 			items[header] = value;
-			if (allow === null) {
-				if (cors && rcallow.test(header)) allow = value;
-				else if (rallow.test(header)) allow = value;
+
+			if ((cors && rcallow.test(header)) || rallow.test(header)) {
+				allow = value;
+				return false;
 			}
 		});
 
@@ -251,8 +255,7 @@ var client = {
 	 * @return {String}           URI to query
 	 */
 	jsonp : function (uri, success, failure, args) {
-		var curi = uri,
-		    guid = utility.guid(true),
+		var deferred = promise.factory(),
 		    callback, cbid, s;
 
 		// Utilizing the sugar if namespace is not global
@@ -275,15 +278,13 @@ var client = {
 				callback = "callback";
 		}
 
-		curi = curi.replace(callback + "=?", "");
-
-		curi.once("afterJSONP", function (arg) {
-			this.un("failedJSONP", guid);
+		deferred.then(function (arg) {
 			if (typeof success === "function") success(arg);
-		}, guid).once("failedJSONP", function () {
-			this.un("failedJSONP", guid);
-			if (typeof failure === "function") failure();
-		}, guid);
+			return arg;
+		}, function (arg) {
+			if (typeof failure === "function") failure(arg);
+			return arg;
+		});
 
 		do cbid = utility.genId().slice(0, 10);
 		while (typeof global.abaaso.callback[cbid] !== "undefined");
@@ -291,23 +292,31 @@ var client = {
 		uri = uri.replace(callback + "=?", callback + "=" + external + ".callback." + cbid);
 
 		global.abaaso.callback[cbid] = function (arg) {
-			s.destroy();
 			clearTimeout(utility.timer[cbid]);
 			delete utility.timer[cbid];
 			delete global.abaaso.callback[cbid];
-			curi.fire("afterJSONP", arg);
+			deferred.resolve(arg);
+			s.destroy();
 		};
 
 		s = $("head")[0].create("script", {src: uri, type: "text/javascript"});
-		utility.defer(function () { curi.fire("failedJSONP"); }, 30000, cbid);
+		
+		utility.defer(function () {
+			try {
+				deferred.reject(undefined);
+			}
+			catch (e) {
+				error(e, arguments, this);
+			}
+		}, 30000, cbid);
+
 		return uri;
 	},
 
 	/**
 	 * Creates an XmlHttpRequest to a URI (aliased to multiple methods)
 	 *
-	 * Events: beforeXHR             Fires before the XmlHttpRequest is made
-	 *         before[type]          Fires before the XmlHttpRequest is made, type specific
+	 * Events: before[type]          Fires before the XmlHttpRequest is made, type specific
 	 *         failed[type]          Fires on error
 	 *         progress[type]        Fires on progress
 	 *         progressUpload[type]  Fires on upload progress
@@ -319,13 +328,15 @@ var client = {
 	 * @param  {String}   type    Type of request (DELETE/GET/POST/PUT/HEAD)
 	 * @param  {Function} success A handler function to execute when an appropriate response been received
 	 * @param  {Function} failure [Optional] A handler function to execute on error
-	 * @param  {Mixed}    args    Data to send with the request
-	 * @param  {Object}   headers Custom request headers (can be used to set withCredentials)
+	 * @param  {Mixed}    args    [Optional] Data to send with the request
+	 * @param  {Object}   headers [Optional] Custom request headers (can be used to set withCredentials)
+	 * @param  {Number}   timeout [Optional] Timeout in milliseconds, default is 30000
 	 * @return {String}           URI to query
 	 * @private
 	 */
-	request : function (uri, type, success, failure, args, headers) {
-		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob;
+	request : function (uri, type, success, failure, args, headers, timeout) {
+		timeout = timeout || 30000;
+		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob, deferred;
 
 		if (/^(post|put)$/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
 
@@ -336,23 +347,29 @@ var client = {
 		payload      = /^(post|put)$/i.test(type) && typeof args !== "undefined" ? args : null;
 		cached       = type === "get" ? cache.get(uri) : false;
 		typed        = type.capitalize();
-		guid         = utility.guid(true);
 		contentType  = null;
 		doc          = (typeof Document !== "undefined");
 		ab           = (typeof ArrayBuffer !== "undefined");
 		blob         = (typeof Blob !== "undefined");
+		deferred     = promise.factory();
 
-		if (type === "delete") uri.once("afterDelete", function () { cache.expire(this); });
+		// Using a promise to resolve request
+		deferred.then(function (arg) {
+			if (type === "delete") cache.expire(uri);
+			if (typeof success === "function") success.call(uri, arg, xhr);
+			return arg;
+		}, function (arg) {
+			if (typeof failure === "function") failure.call(uri, arg, xhr);
+			return arg;
+		});
 
-		uri.once("after" + typed, function () {
-			uri.un("failed" + typed, guid);
-			if (typeof success === "function") success.apply(this, arguments);
-		}, guid).once("failed" + typed, function () {
-			uri.un("after" + typed, guid);
-			if (typeof failure === "function") failure.apply(this, arguments);
-		}, guid).fire("before" + typed);
+		uri.fire("before" + typed);
 
-		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) return uri.fire("failed" + typed, null, {status: 405});
+		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) {
+			xhr.status = 405;
+			deferred.reject(null);
+			return uri.fire("failed" + typed, null, xhr);
+		}
 
 		if (type === "get" && Boolean(cached)) {
 			if (server) {
@@ -361,15 +378,19 @@ var client = {
 				xhr.status      = 200;
 				xhr._resheaders = cached.headers;
 			}
-			uri.fire("afterGet", cached.response, (server ? xhr : undefined));
+			deferred.resolve(cached.response);
+			uri.fire("afterGet", cached.response, xhr);
 			xhr = null;
 		}
 		else {
-			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type); };
+			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type, deferred); };
+
+			// Setting timeout
+			if (typeof xhr.timeout !== "undefined") xhr.timeout = timeout;
 
 			// Setting events
-			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { uri.fire("failed" + typed, e, xhr); };
-			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e, xhr); };
+			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); };
+			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { deferred.reject(e); uri.fire("timeout" + typed, e, xhr); };
 			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
 			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
 
@@ -408,11 +429,11 @@ var client = {
 				if (typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean") xhr.withCredentials = headers.withCredentials;
 
 				// Firing event & sending request
-				uri.fire("beforeXHR", uri, xhr);
 				payload !== null ? xhr.send(payload) : xhr.send();
 			}
 			catch (e) {
 				error(e, arguments, this, true);
+				deferred.reject(e);
 				uri.fire("failed" + typed, client.parse(xhr), xhr);
 			}
 		}
@@ -427,21 +448,21 @@ var client = {
 	 * Permissions are handled if the ACCEPT header is received; a bit is set on the cached
 	 * resource
 	 *
-	 * Events: afterXHR     Fires after the XmlHttpRequest response is received
-	 *         after[type]  Fires after the XmlHttpRequest response is received, type specific
+	 * Events: after[type]  Fires after the XmlHttpRequest response is received, type specific
 	 *         reset        Fires if a 206 response is received
 	 *         moved        Fires if a 301 response is received
 	 *         failure      Fires if an exception is thrown
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
 	 * @method response
-	 * @param  {Object} xhr  XMLHttpRequest Object
-	 * @param  {String} uri  URI to query
-	 * @param  {String} type Type of request
-	 * @return {String} uri  URI to query
+	 * @param  {Object} xhr      XMLHttpRequest Object
+	 * @param  {String} uri      URI to query
+	 * @param  {String} type     Type of request
+	 * @param  {Object} deferred Promise to reconcile the response
+	 * @return {String} uri      URI to query
 	 * @private
 	 */
-	response : function (xhr, uri, type) {
+	response : function (xhr, uri, type, deferred) {
 		var typed = type.toLowerCase().capitalize(),
 		    l     = location,
 		    state = null,
@@ -450,100 +471,91 @@ var client = {
 
 		// server-side exception handling
 		exception = function (e, xhr) {
+			deferred.reject(e);
 			error(e, arguments, this, true);
 			uri.fire("failed" + typed, client.parse(xhr), xhr);
+		};
+
+		if (!xdr && xhr.readyState === 2) uri.fire("received" + typed, null, xhr);
+		else if (!xdr && xhr.readyState === 4) {
+			switch (xhr.status) {
+				case 200:
+				case 201:
+				case 202:
+				case 203:
+				case 204:
+				case 205:
+				case 206:
+				case 301:
+					s = abaaso.state;
+					o = client.headers(xhr, uri, type);
+
+					if (type === "head") return uri.fire("afterHead", o.headers);
+					else if (type === "options") return uri.fire("afterOptions", o.headers);
+					else if (type !== "delete" && /200|201/.test(xhr.status)) {
+						t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
+						r = client.parse(xhr, t);
+						if (typeof r === "undefined") throw Error(label.error.serverError);
+						cache.set(uri, "response", (o.response = utility.clone(r)));
+					}
+
+					// Application state change triggered by hypermedia (HATEOAS)
+					if (s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
+
+					uri.fire("headers", o.headers, xhr);
+
+					switch (xhr.status) {
+						case 200:
+						case 201:
+							deferred.resolve(r);
+							uri.fire("after" + typed, r, xhr);
+							break;
+						case 202:
+						case 203:
+						case 204:
+						case 206:
+							deferred.resolve(null);
+							uri.fire("after" + typed, null, xhr);
+							break;
+						case 205:
+							deferred.resolve(null);
+							uri.fire("reset", null, xhr);
+							break;
+						case 301:
+							deferred.resolve(r);
+							uri.fire("moved", r, xhr);
+							break;
+					}
+					break;
+				case 401:
+					exception(!server ? Error(label.error.serverUnauthorized) : label.error.serverUnauthorized, xhr);
+					break;
+				case 403:
+					cache.set(uri, "!permission", client.bit([type]));
+					exception(!server ? Error(label.error.serverForbidden) : label.error.serverForbidden, xhr);
+					break;
+				case 405:
+					cache.set(uri, "!permission", client.bit([type]));
+					exception(!server ? Error(label.error.serverInvalidMethod) : label.error.serverInvalidMethod, xhr);
+					break
+				default:
+					exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
+			}
+			xhr.onreadystatechange = null;
+			xhr = null;
+		}
+		else if (xdr) {
+			if (Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText)))) r = x;
+			else if (/<[^>]+>[^<]*]+>/.test(xhr.responseText)) r = xml.decode(xhr.responseText);
+			else r = xhr.responseText;
+			cache.set(uri, "permission", client.bit(["get"]));
+			cache.set(uri, "response", r);
+			deferred.resolve(r);
+			uri.fire("afterGet", r, xhr);
+			xhr.onload = null;
+			xhr = null;
 		}
 
-		switch (true) {
-			case !xdr && xhr.readyState === 2:
-				uri.fire("received" + typed, null, xhr);
-				break;
-			case !xdr && xhr.readyState === 4:
-				uri.fire("afterXHR", null, xhr);
-				switch (xhr.status) {
-					case 200:
-					case 201:
-					case 202:
-					case 203:
-					case 204:
-					case 205:
-					case 206:
-					case 301:
-						s = abaaso.state;
-						o = client.headers(xhr, uri, type);
-
-						switch (true) {
-							case type === "head":
-								return uri.fire("afterHead", o.headers);
-							case type === "options":
-								return uri.fire("afterOptions", o.headers);
-							case type !== "delete" && /200|201/.test(xhr.status):
-								t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
-								r = client.parse(xhr, t);
-								if (typeof r === "undefined") throw Error(label.error.serverError);
-								cache.set(uri, "response", (o.response = utility.clone(r)));
-								break;
-						}
-
-						// Application state change triggered by hypermedia (HATEOAS)
-						if (s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
-
-						uri.fire("headers", o.headers, xhr);
-
-						switch (xhr.status) {
-							case 200:
-							case 201:
-								uri.fire("after" + typed, r, xhr);
-								break;
-							case 202:
-							case 203:
-							case 204:
-							case 206:
-								uri.fire("after" + typed, null, xhr);
-								break;
-							case 205:
-								uri.fire("reset", null, xhr);
-								break;
-							case 301:
-								uri.fire("moved", r, xhr);
-								break;
-						}
-						break;
-					case 401:
-						exception(!server ? Error(label.error.serverUnauthorized) : label.error.serverUnauthorized, xhr);
-						break;
-					case 403:
-						cache.set(uri, "!permission", client.bit([type]));
-						exception(!server ? Error(label.error.serverForbidden) : label.error.serverForbidden, xhr);
-						break;
-					case 405:
-						cache.set(uri, "!permission", client.bit([type]));
-						exception(!server ? Error(label.error.serverInvalidMethod) : label.error.serverInvalidMethod, xhr);
-						break
-					default:
-						exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
-				}
-				xhr.onreadystatechange = null;
-				xhr = null;
-				break;
-			case xdr: // XDomainRequest
-				switch (true) {
-					case Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText))):
-						r = x;
-						break;
-					case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
-						r = xml.decode(xhr.responseText);
-						break;
-					default:
-						r = xhr.responseText;
-				}
-				cache.set(uri, "permission", client.bit(["get"]));
-				cache.set(uri, "response", r);
-				uri.fire("afterGet", r, xhr);
-				xhr.onload = null;
-				xhr = null;
-				break;
-		}
 		return uri;
 	},
 
