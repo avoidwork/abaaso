@@ -1147,7 +1147,7 @@ var data = {
 				return arg;
 			}, function (arg) {
 				if (future instanceof Promise) future.reject(arg);
-				
+
 				return arg;
 			});
 
@@ -1224,7 +1224,7 @@ var data = {
 			set : function (key, value, discard, future) {
 				this.parentNode.set(this.key, {key: value}, false, discard, future);
 				return this;
-			},
+			}
 		},
 
 		/**
