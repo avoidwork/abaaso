@@ -90,7 +90,7 @@ var client = {
 	bit : function (args) {
 		var result = 0;
 
-		args.each(function (a) {
+		array.each(args, function (a) {
 			switch (a.toLowerCase()) {
 				case "head":
 				case "get":
@@ -140,18 +140,30 @@ var client = {
 		    rvalue  = /.*:\s+/,
 		    rheader = /:.*/,
 		    rallow  = /^allow$/i,
-		    rcallow = /^access-control-allow-methods$/i;
+		    rcallow = /^access-control-allow-methods$/i,
+		    caps;
 
-		headers.each(function (h) {
+		// Capitalizes hyphenated headers
+		caps = function (header) {
+			var x = [];
+
+			array.each(header.explode("-"), function (i) {
+				x.push(i.capitalize())
+			});
+			return x.join("-");
+		};
+
+		array.each(headers, function (h) {
 			var header, value;
 
 			value         = h.replace(rvalue, "");
 			header        = h.replace(rheader, "");
-			header        = header.indexOf("-") === -1 ? header.capitalize() : (function () { var x = []; header.explode("-").each(function (i) { x.push(i.capitalize()) }); return x.join("-"); })();
+			header        = header.indexOf("-") === -1 ? header.capitalize() : caps(header);
 			items[header] = value;
-			if (allow === null) {
-				if (cors && rcallow.test(header)) allow = value;
-				else if (rallow.test(header)) allow = value;
+
+			if ((cors && rcallow.test(header)) || rallow.test(header)) {
+				allow = value;
+				return false;
 			}
 		});
 
@@ -319,7 +331,7 @@ var client = {
 	 */
 	request : function (uri, type, success, failure, args, headers, timeout) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob;
+		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob, deferred;
 
 		if (/^(post|put)$/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
 
@@ -330,23 +342,29 @@ var client = {
 		payload      = /^(post|put)$/i.test(type) && typeof args !== "undefined" ? args : null;
 		cached       = type === "get" ? cache.get(uri) : false;
 		typed        = type.capitalize();
-		guid         = utility.guid(true);
 		contentType  = null;
 		doc          = (typeof Document !== "undefined");
 		ab           = (typeof ArrayBuffer !== "undefined");
 		blob         = (typeof Blob !== "undefined");
+		deferred     = promise.factory();
 
-		if (type === "delete") uri.once("afterDelete", function () { cache.expire(this); });
+		// Using a promise to resolve request
+		deferred.then(function (arg) {
+			if (type === "delete") cache.expire(uri);
+			if (typeof success === "function") success.call(uri, arg, xhr);
+			return arg;
+		}, function (arg) {
+			if (typeof failure === "function") failure.call(uri, arg, xhr);
+			return arg;
+		});
 
-		uri.once("after" + typed, function () {
-			uri.un("failed" + typed, guid);
-			if (typeof success === "function") success.apply(this, arguments);
-		}, guid).once("failed" + typed, function () {
-			uri.un("after" + typed, guid);
-			if (typeof failure === "function") failure.apply(this, arguments);
-		}, guid).fire("before" + typed);
+		uri.fire("before" + typed);
 
-		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) return uri.fire("failed" + typed, null, {status: 405});
+		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) {
+			xhr.status = 405;
+			deferred.reject(null);
+			return uri.fire("failed" + typed, null, xhr);
+		}
 
 		if (type === "get" && Boolean(cached)) {
 			if (server) {
@@ -355,18 +373,19 @@ var client = {
 				xhr.status      = 200;
 				xhr._resheaders = cached.headers;
 			}
-			uri.fire("afterGet", cached.response, (server ? xhr : undefined));
+			deferred.resolve(cached.response);
+			uri.fire("afterGet", cached.response, xhr);
 			xhr = null;
 		}
 		else {
-			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type); };
+			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type, deferred); };
 
 			// Setting timeout
 			if (typeof xhr.timeout !== "undefined") xhr.timeout = timeout;
 
 			// Setting events
-			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { uri.fire("failed" + typed, e, xhr); };
-			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { uri.fire("timeout" + typed, e, xhr); };
+			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); };
+			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { deferred.reject(e); uri.fire("timeout" + typed, e, xhr); };
 			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
 			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
 
@@ -410,6 +429,7 @@ var client = {
 			}
 			catch (e) {
 				error(e, arguments, this, true);
+				deferred.reject(e);
 				uri.fire("failed" + typed, client.parse(xhr), xhr);
 			}
 		}
@@ -432,13 +452,14 @@ var client = {
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
 	 * @method response
-	 * @param  {Object} xhr  XMLHttpRequest Object
-	 * @param  {String} uri  URI to query
-	 * @param  {String} type Type of request
-	 * @return {String} uri  URI to query
+	 * @param  {Object} xhr      XMLHttpRequest Object
+	 * @param  {String} uri      URI to query
+	 * @param  {String} type     Type of request
+	 * @param  {Object} deferred Promise to reconcile the response
+	 * @return {String} uri      URI to query
 	 * @private
 	 */
-	response : function (xhr, uri, type) {
+	response : function (xhr, uri, type, deferred) {
 		var typed = type.toLowerCase().capitalize(),
 		    l     = location,
 		    state = null,
@@ -447,6 +468,7 @@ var client = {
 
 		// server-side exception handling
 		exception = function (e, xhr) {
+			deferred.reject(e);
 			error(e, arguments, this, true);
 			uri.fire("failed" + typed, client.parse(xhr), xhr);
 		};
@@ -483,18 +505,22 @@ var client = {
 					switch (xhr.status) {
 						case 200:
 						case 201:
+							deferred.resolve(r);
 							uri.fire("after" + typed, r, xhr);
 							break;
 						case 202:
 						case 203:
 						case 204:
 						case 206:
+							deferred.resolve(null);
 							uri.fire("after" + typed, null, xhr);
 							break;
 						case 205:
+							deferred.resolve(null);
 							uri.fire("reset", null, xhr);
 							break;
 						case 301:
+							deferred.resolve(r);
 							uri.fire("moved", r, xhr);
 							break;
 					}
@@ -522,6 +548,7 @@ var client = {
 			else r = xhr.responseText;
 			cache.set(uri, "permission", client.bit(["get"]));
 			cache.set(uri, "response", r);
+			deferred.resolve(r);
 			uri.fire("afterGet", r, xhr);
 			xhr.onload = null;
 			xhr = null;
