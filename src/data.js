@@ -1235,10 +1235,7 @@ var data = {
 		 * @return {[type]}      [description]
 		 */
 		factory : function (key, args) {
-			var obj = utility.extend(data.record.methods, {key: key, data: args});
-
-			obj.parentNode = this;
-			return obj;
+			return utility.extend(data.record.methods, {key: key, data: args});
 		}
 	},
 
