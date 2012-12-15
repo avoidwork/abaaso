@@ -17,42 +17,55 @@ var data = {
 		 *         failedDataBatch  Fires when an exception occurs
 		 *
 		 * @method batch
-		 * @param  {String}  type  Type of action to perform (set/del/delete)
-		 * @param  {Mixed}   data  Array of keys or indices to delete, or Object containing multiple records to set
-		 * @param  {Boolean} sync  [Optional] Syncs store with data, if true everything is erased
-		 * @param  {Number}  chunk Size to chunk Array to batch set or delete
-		 * @return {Object}        Data store
+		 * @param  {String}  type   Type of action to perform (set/del/delete)
+		 * @param  {Mixed}   data   Array of keys or indices to delete, or Object containing multiple records to set
+		 * @param  {Boolean} sync   [Optional] Syncs store with data, if true everything is erased
+		 * @param  {Number}  chunk  Size to chunk Array to batch set or delete
+		 * @param  {Object}  future [Optional] Promise
+		 * @return {Object}         Data store
 		 */
-		batch : function (type, data, sync, chunk) {
+		batch : function (type, data, sync, chunk, future) {
 			type  = type.toString().toLowerCase();
 			sync  = (sync === true);
 			chunk = chunk || 1000;
 
 			if (!/^(set|del|delete)$/.test(type) || (sync && /^del/.test(type)) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
-			var obj  = this.parentNode,
-			    self = this,
-			    r    = 0,
-			    nth  = data.length,
-			    f    = false,
-			    guid = utility.genId(true),
-			    root = /^\/[^\/]/,
-			    del  = /^del/,
-			    completed, failure, key, set, success, parsed;
+			var obj      = this.parentNode,
+			    self     = this,
+			    r        = 0,
+			    nth      = data.length,
+			    f        = false,
+			    guid     = utility.genId(true),
+			    root     = /^\/[^\/]/,
+			    del      = /^del/,
+			    deferred = promise.factory(),
+			    completed, failure, key, set, del, success, parsed;
 
-			completed = function (reindex) {
+			deferred.then(function (reindex) {
 				if (del.test(type) && reindex !== false) self.reindex();
 				self.loaded = true;
+				if (future instanceof Promise) future.resolve(true);
 				obj.fire("afterDataBatch");
+				return arg;
+			}, function (arg) {
+				if (future instanceof Promise) future.reject(arg);
+				obj.fire("failedDataSet, failedDataBatch", arg);
+				return arg;
+			});
+
+			completed = function (arg) {
+				deferred.resolve(arg);
 			};
 
 			failure = function (arg) {
-				obj.fire("failedDataSet, failedDataBatch", arg);
+				deferred.reject(arg);
 			};
 
 			set = function (data, key) {
-				var guid = utility.genId(),
-				    rec  = {};
+				var deferred = promise.factory(),
+				    guid     = utility.genId(),
+				    rec      = {};
 
 				if (typeof rec.batch !== "function") rec = utility.clone(data)
 				else utility.iterate(data, function (v, k) {
@@ -64,39 +77,41 @@ var data = {
 					delete rec[self.key];
 				}
 
-				obj.once("afterDataSet", function () {
-					this.un("failedDataSet", guid);
-					if (++r === nth) completed();
-				}, guid).once("failedDataSet", function () {
-					this.un("afterDataSet", guid)
+				deferred.then(function (arg) {
+					if (++r === nth) completed(self.data.get());
+					return arg;
+				}, function (arg) {
 					if (!f) {
 						f = true;
-						this.fire("failedDataBatch");
+						failure(arg);
 					}
-				}, guid);
+					return arg;
+				});
 
-				if (rec instanceof Array && self.uri !== null) self.generate(key);
-				else self.set(key, rec, sync);
+				if (rec instanceof Array && self.uri !== null) self.generate(key, deferred);
+				else self.set(key, rec, sync, deferred);
+			};
+
+			del = function (i) {
+				var deferred = promise.factory();
+
+				deferred.then(function (arg) {
+					if (++r === nth) completed(arg);
+					return arg;
+				}, function (arg) {
+					if (!f) {
+						f = true;
+						failure(arg);
+					}
+					return arg;
+				});
+
+				self.del(i, false, sync, deferred);
 			};
 
 			obj.fire("beforeDataBatch", data);
 
 			if (sync) this.clear(sync);
-
-			if (del.test(type)) {
-				obj.on("afterDataDelete", function () {
-					if (++r === nth) {
-						obj.un("afterDataDelete, failedDataDelete", guid);
-						completed();
-					}
-				}, guid).once("failedDataDelete", function () {
-					obj.un("afterDataDelete", guid);
-					if (!f) {
-						f = true;
-						obj.fire("failedDataBatch");
-					}
-				}, guid);
-			}
 
 			if (data.length === 0) completed(false);
 			else {
@@ -135,7 +150,7 @@ var data = {
 						});
 					});
 				else data.sort(array.sort).reverse().each(function (i) {
-					self.del(i, false, sync);
+					del(i);
 				});
 			}
 
@@ -202,9 +217,10 @@ var data = {
 		 * @param  {Mixed}  arg    Record key or index
 		 * @param  {String} ignore [Optional] Comma delimited fields to ignore
 		 * @param  {String} key    [Optional] data.key property to set on new stores, defaults to record.key
+		 * @param  {Object} future [Optional] Promise
 		 * @return {Object}        Record
 		 */
-		crawl : function (arg, ignore, key) {
+		crawl : function (arg, ignore, key, future) {
 			var ignored = false,
 			    self    = this,
 			    record;
@@ -223,38 +239,65 @@ var data = {
 			}
 
 			utility.iterate(record.data, function (v, k) {
+				var deferred = promise.factory();
+
+				deferred.then(function (arg) {
+					if (future instanceof Promise) future.resolve(self.data.get());
+					this.fire("afterDataRetrieve");
+					return arg;
+				}, function (arg) {
+					if (future instanceof Promise) future.reject(arg);
+					return arg;
+				});
+
 				if ((ignored && ignore.contains(k)) || (!(v instanceof Array) && typeof v !== "string")) return;
 				if (v instanceof Array) {
 					// Possibly a subset of the collection, so it relies on valid URI paths
 					if (!self.collections.contains(k)) self.collections.push(k);
 					record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-					self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
+					
+					// Inheriting `ignored` collection
+					if (ignored) ignore.each(function (i) {
+						record.data[k].data.ignore.add(i);
+					});
+
+					// Inheriting `leafs` collection
+					self.leafs.each(function (i) {
+						record.data[k].data.leafs.add(i);
+					});
+
 					if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
 						record.data[k].data.recursive = true;
 						record.data[k].data.retrieve  = true;
 					}
 
-					if (v.length > 0) {
-						record.data[k].once("afterDataBatch", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
-						record.data[k].data.batch("set", v, true);
-					}
+					if (v.length > 0) record.data[k].data.batch("set", v, true, deferred);
 				}
 				else {
 					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
 					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
+						// Possibly a subset of the collection, so it relies on valid URI paths
 						if (!self.collections.contains(k)) self.collections.push(k);
 						record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-						record.data[k].once("afterDataSync", function () { this.fire("afterDataRetrieve"); }, "dataRetrieve");
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-						if (ignored) ignore.each(function (i) { record.data[k].data.ignore.add(i); });
-						self.leafs.each(function (i) { record.data[k].data.leafs.add(i); });
+						
+						// Inheriting `ignored` collection
+						if (ignored) ignore.each(function (i) {
+							record.data[k].data.ignore.add(i);
+						});
+
+						// Inheriting `leafs` collection
+						self.leafs.each(function (i) {
+							record.data[k].data.leafs.add(i);
+						});
+
 						if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
 							record.data[k].data.recursive = true;
 							record.data[k].data.retrieve  = true;
 						}
-						typeof record.data[k].data.setUri === "function" ? record.data[k].data.setUri(v) : record.data[k].data.uri = v;
+
+						record.data[k].data.setUri(v, deferred);
 					}
 				}
 			});
