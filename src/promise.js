@@ -10,7 +10,7 @@ var promise = {
 		broken   : "failed",
 		initial  : "unfulfilled",
 		pending  : "pending",
-		resolved : "fulfilled",
+		resolved : "fulfilled"
 	},
 
 	// Inherited by promises

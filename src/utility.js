@@ -504,7 +504,7 @@ var utility = {
 			pathname : obj.pathname,
 			search   : obj.search,
 			hash     : obj.hash,
-			host     : obj.host,
+			host     : obj.host
 		};
 
 		// 'cause IE is ... IE; required for data.batch()
