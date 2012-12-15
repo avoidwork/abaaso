@@ -46,12 +46,12 @@ var data = {
 			deferred.then(function (arg) {
 				if (/^del/.test(type)) self.reindex();
 				self.loaded = true;
-				if (!discard) obj.fire("afterDataBatch", arg);
 				if (future instanceof Promise) future.resolve(arg);
+				if (!discard) obj.fire("afterDataBatch", arg);
 				return arg;
 			}, function (arg) {
-				if (!discard) obj.fire("failedDataBatch", arg);
 				if (future instanceof Promise) future.reject(arg);
+				if (!discard) obj.fire("failedDataBatch", arg);
 				return arg;
 			});
 
@@ -249,12 +249,12 @@ var data = {
 				var deferred = promise.factory();
 
 				deferred.then(function (arg) {
-					if (!discard) this.fire("afterDataRetrieve", arg);
 					if (future instanceof Promise) future.resolve(arg);
+					if (!discard) this.fire("afterDataRetrieve", arg);
 					return arg;
 				}, function (arg) {
-					if (!discard) this.fire("failedDataRetrieve", arg);
 					if (future instanceof Promise) future.reject(arg);
+					if (!discard) this.fire("failedDataRetrieve", arg);
 					return arg;
 				});
 
@@ -763,12 +763,12 @@ var data = {
 				    record, uri;
 
 				deferred.then(function (arg) {
-					if (!discard && fire) self.parentNode.fire("afterDataSet", arg);
 					if (future instanceof Promise) future.resolve(arg);
+					if (!discard && fire) self.parentNode.fire("afterDataSet", arg);
 					return arg;
 				}, function (arg) {
-					if (!discard) self.fire("failedDataSet");
 					if (future instanceof Promise) future.reject(arg);
+					if (!discard) self.fire("failedDataSet");
 					throw Error(arg);
 				});
 
@@ -839,8 +839,8 @@ var data = {
 				deferred.resolve(record);
 				return arg;
 			}, function (arg) {
-				if (!discard) obj.fire("failedDataSet", arg);
 				if (future instanceof Promise) future.reject(arg);
+				if (!discard) obj.fire("failedDataSet", arg);
 				return arg;
 			});
 
@@ -1133,21 +1133,21 @@ var data = {
 					var data = [];
 
 					if (reindex) self.reindex();
-					if (!discard) obj.fire("afterDataSync", arg);
 					if (future instanceof Promise) future.resolve(arg);
+					if (!discard) obj.fire("afterDataSync", arg);
 					return data;
 				}, function (arg) {
 					self.clear(true);
-					if (!discard) obj.fire("failedDataSync", arg);
 					if (future instanceof Promise) future.reject(arg);
+					if (!discard) obj.fire("failedDataSync", arg);
 					return arg;
 				});
 
 				self.batch("set", data, true, 1000, discard, deferred);
 				return arg;
 			}, function (arg) {
-				if (!discard) obj.fire("failedDataSync", arg);
 				if (future instanceof Promise) future.reject(arg);
+				
 				return arg;
 			});
 
