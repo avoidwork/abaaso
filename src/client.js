@@ -386,7 +386,8 @@ var client = {
 			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) { client.response(xhr, uri, type, deferred); };
 
 			// Setting timeout
-			if (typeof xhr.timeout !== "undefined") xhr.timeout = timeout;
+			try { if (typeof xhr.timeout !== "undefined") xhr.timeout = timeout; }
+			catch (e) { void 0; }
 
 			// Setting events
 			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); };
