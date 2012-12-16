@@ -718,13 +718,27 @@ var utility = {
 			           		return this;
 			           },
 			           genId    : function () { return utility.genId(this); },
-			           get      : function (uri, headers) {
-			           		this.fire("beforeGet");
-			           		var cached = cache.get(uri),
-			           		    self   = this;
+			           get      : function (uri, success, failure, headers, timeout) {
+			           		var deferred = $.promise(),
+			           		    self     = this;
 
-			           		!cached ? uri.get(function (arg) { self.html(arg).fire("afterGet"); }, function (arg) { self.fire("failedGet", {response: client.parse(arg), xhr: arg}); }, headers)
-			           		        : this.html(cached.response).fire("afterGet");
+			           		this.fire("beforeGet");
+
+			           		deferred.then(function (arg) {
+			           			self.html(arg).fire("afterGet");
+			           			if (typeof success === "function") success(arg);
+			           			return arg;
+			           		}, function (arg) {
+			           			self.html(arg || label.error.serverError).fire("failedGet");
+			           			if (typeof failure === "function") failure(arg);
+			           			return arg;
+			           		});
+
+			           		uri.get(function (arg) { 
+			           			deferred.resolve(arg);
+			           		}, function (arg) {
+			           			deferred.reject(arg);
+			           		}, headers, timeout);
 
 			           		return this;
 			           },
