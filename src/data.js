@@ -44,12 +44,12 @@ var data = {
 			deferred.then(function (arg) {
 				if (/^del/.test(type)) self.reindex();
 				self.loaded = true;
-				if (future instanceof Promise) future.resolve(arg);
 				obj.fire("afterDataBatch", arg);
+				if (future instanceof Promise) future.resolve(arg);
 				return arg;
 			}, function (arg) {
-				if (future instanceof Promise) future.reject(arg);
 				obj.fire("failedDataBatch", arg);
+				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
 
@@ -243,12 +243,12 @@ var data = {
 				var deferred = promise.factory();
 
 				deferred.then(function (arg) {
-					if (future instanceof Promise) future.resolve(arg);
 					this.fire("afterDataRetrieve", arg);
+					if (future instanceof Promise) future.resolve(arg);
 					return arg;
 				}, function (arg) {
-					if (future instanceof Promise) future.reject(arg);
 					this.fire("failedDataRetrieve", arg);
+					if (future instanceof Promise) future.reject(arg);
 					return arg;
 				});
 
@@ -344,12 +344,12 @@ var data = {
 					if (v === null) return;
 					if (typeof v.data !== "undefined" && typeof v.data.teardown === "function") v.data.teardown();
 				});
-				if (future instanceof Promise) future.resolve(arg);
 				obj.fire("afterDataDelete", record);
+				if (future instanceof Promise) future.resolve(arg);
 				return arg;
 			}, function (arg) {
-				if (future instanceof Promise) future.reject(arg);
 				obj.fire("failedDataDelete", args);
+				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
 
@@ -752,12 +752,12 @@ var data = {
 				    record, uri;
 
 				deferred.then(function (arg) {
-					if (future instanceof Promise) future.resolve(arg);
 					if (fire) self.parentNode.fire("afterDataSet", arg);
+					if (future instanceof Promise) future.resolve(arg);
 					return arg;
 				}, function (arg) {
-					if (future instanceof Promise) future.reject(arg);
 					self.fire("failedDataSet");
+					if (future instanceof Promise) future.reject(arg);
 					throw Error(arg);
 				});
 
@@ -828,8 +828,8 @@ var data = {
 				deferred.resolve(record);
 				return arg;
 			}, function (arg) {
-				if (future instanceof Promise) future.reject(arg);
 				obj.fire("failedDataSet", arg);
+				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
 
@@ -1126,21 +1126,21 @@ var data = {
 					var data = [];
 
 					if (reindex) self.reindex();
-					if (future instanceof Promise) future.resolve(arg);
 					obj.fire("afterDataSync", arg);
+					if (future instanceof Promise) future.resolve(arg);
 					return data;
 				}, function (arg) {
 					self.clear(true);
-					if (future instanceof Promise) future.reject(arg);
 					obj.fire("failedDataSync", arg);
+					if (future instanceof Promise) future.reject(arg);
 					return arg;
 				});
 
 				self.batch("set", data, true, 1000, deferred);
 				return arg;
 			}, function (arg) {
-				if (future instanceof Promise) future.reject(arg);
 				obj.fire("failedDataSync", arg);
+				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
 
