@@ -44,14 +44,14 @@ return {
 	mouse           : mouse,
 	number          : number,
 	observer        : {
-		log     : observer.log,
 		add     : observer.add,
+		discard : function (arg) { return observer.discard((arg !== false)); },
 		fire    : observer.fire,
 		hook    : observer.hook,
 		list    : observer.list,
+		log     : observer.log,
 		once    : observer.once,
-		pause   : observer.pause,
-		unpause : observer.unpause,
+		pause   : function (arg) { return observer.pause((arg !== false)); },
 		remove  : observer.remove
 	},
 	repeating       : {},
@@ -92,6 +92,7 @@ return {
 	css             : utility.css,
 	data            : data.factory,
 	datalist        : datalist.factory,
+	discard         : function (arg) { return observer.discard((arg !== false)); },
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
@@ -173,7 +174,7 @@ return {
 	},
 	options         : function (uri, success, failure, timeout) { return client.request(uri, "OPTIONS", success, failure, null, null, timeout); },
 	parse           : utility.parse,
-	pause           : observer.pause,
+	pause           : function (arg) { return observer.pause((arg !== false)); },
 	permissions     : client.permissions,
 	position        : element.position,
 	post            : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "POST", success, failure, args, headers, timeout); },
@@ -206,7 +207,6 @@ return {
 		if (typeof o === "undefined" || o === $) o = abaaso;
 		return observer.remove(o, e, i, s);
 	},
-	unpause         : observer.unpause,
 	update          : element.update,
 	version         : "{{VERSION}}",
 	walk            : utility.walk
