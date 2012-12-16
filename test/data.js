@@ -24,18 +24,22 @@ exports["batch"] = {
 		this.store = data({id: "test"}, null, {key: "id"});
 		done();
 	},
-	direct: function (test) {
-		test.expect(3);
+	set: function (test) {
+		test.expect(2);
 		this.store.once("afterDataBatch", function () {
 			test.equal(this.store.data.total, 2, "Should be 2");
-			this.store.once("afterDataBatch", function () {
-				test.equal(this.store.data.total, 0, "Should be 0");
-				test.done();
-			}, "teardown", this);
-			this.store.data.batch("delete", [0, 1]);
+			test.done();
 		}, "setup", this);
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
-	}
+	}/*,
+	del: function (test) {
+		test.expect(2);
+		this.store.once("afterDataBatch", function () {
+			test.equal(this.store.data.total, 0, "Should be 0");
+			test.done();
+		}, "teardown", this);
+		test.equal(this.store.data.batch("delete", [0, 1]), this.store.data, "Should match");
+	}*/
 };
 
 exports["delimited"] = {

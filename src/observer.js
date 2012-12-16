@@ -6,7 +6,10 @@
  */
 var observer = {
 	// Collection of listeners
-	listeners : {},
+	listeners  : {},
+
+	// Array copy of listeners for observer.fire()
+	alisteners : {},
 
 	// Boolean indicating if events are logged to the console
 	log : false,
@@ -16,6 +19,9 @@ var observer = {
 
 	// If `true`, events are queued
 	silent : false,
+
+	// If `true`, events are ignored
+	ignore : false,
 
 	/**
 	 * Adds a handler to an event
@@ -55,11 +61,8 @@ var observer = {
 			observer.fire(obj, i, e);
 		};
 
-		event.each(function (i) {
-			n = false;
-			if (typeof l[o] === "undefined")                  l[o]           = {};
-			if (typeof l[o][i] === "undefined" && (n = true)) l[o][i]        = {};
-			if (typeof l[o][i][state] === "undefined")        l[o][i][state] = {};
+		array.each(event, function (i) {
+			n = observer.prepare(o, i, state);
 
 			if (n) {
 				instance = (globals.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
@@ -67,15 +70,28 @@ var observer = {
 				if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
 					add = (typeof instance.addEventListener === "function");
 					reg = (typeof instance.attachEvent === "object" || add);
-					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) { handler(e, i); }, false);
+					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
+						handler(e, i);
+					}, false);
 				}
 			}
 
 			item = {fn: fn, scope: scope};
 			l[o][i][state][id] = item;
+			observer.sync(o, i, state);
 		});
 
 		return obj;
+	},
+
+	/**
+	 * Discard observer events
+	 * 
+	 * @return {Boolean} `true` indicating observer will ignore events until `false` is passed
+	 */
+	discard : function (arg) {
+		observer.ignore = arg;
+		return arg;
 	},
 
 	/**
@@ -110,30 +126,34 @@ var observer = {
 		var quit = false,
 		    o, a, s, log, c, l, list;
 
+		if (observer.ignore) return obj;
+
 		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, array.cast(arguments).remove(1).remove(0)); });
+
+		o = observer.id(obj);
+		if (typeof o === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 		if (observer.silent) observer.queue.push({obj: obj, event: event});
 		else {
-			o    = observer.id(obj);
-			a    = array.cast(arguments).remove(1).remove(0);
-			s    = abaaso.state.current;
-			log  = ($.observer.log || abaaso.observer.log);
+			a   = array.cast(arguments).remove(0, 1);
+			s   = abaaso.state.current;
+			log = ($.observer.log || abaaso.observer.log);
 
-			if (typeof o === "undefined" || String(o).isEmpty() || typeof obj === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
-
-			event.explode().each(function (e) {
+			array.each(event.explode(), function (e) {
 				if (log) utility.log(o + " firing " + e);
-				list = observer.list(obj, e);
-				array.each(array.cast(list.all), function (i) {
-					var result = i.fn.apply(i.scope, a);
+				list = observer.list(obj, e, observer.alisteners);
+				if (typeof list.all !== "undefined") {
+					array.each(list.all, function (i) {
+						var result = i.fn.apply(i.scope, a);
 
-					if (result === false) {
-						quit = true;
-						return result;
-					}
-				});
-				if (!quit && s !== "all") {
-					array.each(array.cast(list[s]), function (i) {
+						if (result === false) {
+							quit = true;
+							return result;
+						}
+					});
+				}
+				if (!quit && s !== "all" && typeof list[s] !== "undefined") {
+					array.each(list[s], function (i) {
 						return i.fn.apply(i.scope, a);
 					});
 				}
@@ -161,13 +181,14 @@ var observer = {
 	 * Gets the listeners for an event
 	 *
 	 * @method list
-	 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
-	 * @param  {String} event Event being queried
-	 * @return {Mixed}        Object or Array of listeners for the event
+	 * @param  {Mixed}  obj    Entity or Array of Entities or $ queries
+	 * @param  {String} event  Event being queried
+	 * @param  {Object} target [Optional] Listeners collection to access, default is `observer.listeners`
+	 * @return {Mixed}         Object or Array of listeners for the event
 	 */
-	list : function (obj, event) {
+	list : function (obj, event, target) {
 		obj   = utility.object(obj);
-		var l = observer.listeners,
+		var l = target || observer.listeners,
 		    o = observer.id(obj),
 		    r;
 
@@ -202,11 +223,42 @@ var observer = {
 		if (obj instanceof Array) return obj.each(function (i) { observer.once(i, event, fn, id, scope, state); });
 
 		observer.add(obj, event, function () {
-			observer.remove(obj, event, guid, state);
 			fn.apply(scope, arguments);
+			observer.remove(obj, event, guid, state);
 		}, guid, scope, state);
 
 		return obj;
+	},
+
+	/**
+	 * Prepares `listeners` & `alisteners` Objects
+	 * 
+	 * @param  {String} obj   Object to 
+	 * @param  {String} event Event
+	 * @param  {String} state Application state
+	 * @return {Boolean}      `true` if creating `event`
+	 */
+	prepare : function (obj, event, state) {
+		var n = false,
+		    l = observer.listeners,
+		    a = observer.alisteners;
+
+		if (typeof l[obj] === "undefined") {
+			l[obj] = {};
+			a[obj] = {};
+		}
+
+		if (typeof l[obj][event] === "undefined" && (n = true)) {
+			l[obj][event] = {};
+			a[obj][event] = {};
+		}
+
+		if (typeof l[obj][event][state] === "undefined") {
+			l[obj][event][state] = {};
+			a[obj][event][state] = [];
+		}
+
+		return n;
 	},
 
 	/**
@@ -214,22 +266,16 @@ var observer = {
 	 * 
 	 * @return {Boolean} `true` indicating observer is paused
 	 */
-	pause : function () {
-		return (observer.silent = true);
-	},
-
-	/**
-	 * Un-pauses observer and executes queued events
-	 * 
-	 * @return {Boolean} `false` indicating observer is un-paused
-	 */
-	unpause : function () {
-		observer.silent = false;
-		array.each(observer.queue, function (i) {
-			observer.fire(i.obj, i.event);
-		});
-		observer.queue = [];
-		return false;
+	pause : function (arg) {
+		if (arg === true) observer.silent = arg;
+		else if (arg === false) {
+			observer.silent = arg;
+			array.each(observer.queue, function (i) {
+				observer.fire(i.obj, i.event);
+			});
+			observer.queue = [];
+		}
+		return arg;
 	},
 
 	/**
@@ -246,19 +292,38 @@ var observer = {
 		obj   = utility.object(obj);
 		state = state || abaaso.state.current;
 
-		if (obj instanceof Array) return obj.each(function (i) { observer.remove(i, event, id, state); });
+		if (obj instanceof Array) return array.each(obj, function (i) { observer.remove(i, event, id, state); });
 
 		var instance = null,
 		    l = observer.listeners,
+		    a = observer.alisteners,
 		    o = observer.id(obj);
 
 		if (typeof o === "undefined" || typeof l[o] === "undefined") return obj;
 
-		if (typeof event === "undefined" || event === null) delete l[o];
-		else event.explode().each(function (e) {
-			if (typeof l[o][e] === "undefined") return obj;
-			typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
-		});
+		if (typeof event === "undefined" || event === null) {
+			delete l[o];
+			delete a[o];
+		}
+		else {
+			array.each(event.explode(), function (e) {
+				if (typeof l[o][e] === "undefined") return obj;
+				typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
+				observer.sync(o, e, state);
+			});
+		}
 		return obj;
+	},
+
+	/**
+	 * Syncs `alisteners` with `listeners`
+	 * 
+	 * @param  {String} obj   Object ID 
+	 * @param  {String} event Event
+	 * @param  {String} state Application state
+	 * @return {Undefined}    undefined
+	 */
+	sync : function (obj, event, state) {
+		observer.alisteners[obj][event][state] = array.cast(observer.listeners[obj][event][state]);
 	}
 };

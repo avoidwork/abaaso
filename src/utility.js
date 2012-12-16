@@ -195,10 +195,10 @@ var utility = {
 	 * @return {Object}       Object receiving value
 	 */
 	define : function (args, value, obj) {
+		args    = args.split(".");
 		var p   = obj,
 		    nth = args.length;
 
-		args  = args.split(".");
 		if (typeof obj   === "undefined") obj   = this;
 		if (typeof value === "undefined") value = null;
 		if (obj === $) obj = abaaso;
