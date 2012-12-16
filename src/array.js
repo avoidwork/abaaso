@@ -30,16 +30,14 @@ var array = {
 		key   = (key === true);
 		var o = [];
 
-		if (typeof obj !== "undefined") {
-			if (!isNaN(obj.length)) {
-				if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
-				else {
-					try { o = Array.prototype.slice.call(obj); }
-					catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
-				}
+		if (!isNaN(obj.length)) {
+			if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
+			else {
+				try { o = Array.prototype.slice.call(obj); }
+				catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
 			}
-			else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
 		}
+		else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
 
 		return o;
 	},
