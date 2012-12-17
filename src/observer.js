@@ -86,8 +86,9 @@ var observer = {
 
 	/**
 	 * Discard observer events
-	 * 
-	 * @return {Boolean} `true` indicating observer will ignore events until `false` is passed
+	 *
+	 * @param {Boolean} arg Boolean indicating if events will be ignored
+	 * @return              Current setting
 	 */
 	discard : function (arg) {
 		observer.ignore = arg;
@@ -264,7 +265,8 @@ var observer = {
 	/**
 	 * Pauses observer events, and queues them
 	 * 
-	 * @return {Boolean} `true` indicating observer is paused
+	 * @param  {Boolean} arg Boolean indicating if events will be queued
+	 * @return {Boolean}     Current setting
 	 */
 	pause : function (arg) {
 		if (arg === true) observer.silent = arg;

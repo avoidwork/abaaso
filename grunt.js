@@ -46,37 +46,12 @@ module.exports = function (grunt) {
 				dest : "lib/abaaso.js"
 			}
 		},
-		lint : {
-			files : ["grunt.js"]
-		},
 		min : {
 			"lib/abaaso.min.js" : ["<banner>", "lib/abaaso.js"]
 		},
 		test : {
 			files : ["test/**/*.js"]
 		},
-		watch : {
-			files : "<config:lint.files>",
-			tasks : "default"
-		},
-		jshint : {
-			options : {
-				curly   : true,
-				eqeqeq  : true,
-				immed   : true,
-				latedef : true,
-				newcap  : true,
-				noarg   : true,
-				sub     : true,
-				undef   : true,
-				boss    : true,
-				eqnull  : true,
-				node    : true
-			},
-			globals: {
-				exports : true
-			}
-		}
 	});
 
 	grunt.registerTask("default", "concat version min test");
