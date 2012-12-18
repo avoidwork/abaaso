@@ -93,6 +93,7 @@ return {
 	data            : data.factory,
 	datalist        : datalist.factory,
 	discard         : function (arg) { return observer.discard((arg !== false)); },
+	debounce        : utility.debounce,
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,

@@ -185,6 +185,26 @@ var utility = {
 	},
 
 	/**
+	 * Debounces a function
+	 * 
+	 * @method debounce
+	 * @param  {Function} fn    Function to execute
+	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 5000
+	 * @param  {Mixed}    scope `this` context during execution, default is `global`
+	 * @return {Undefined}      undefined
+	 */
+	debounce : function (fn, ms, scope) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+		ms    = ms    || 5000;
+		scope = scope || global;
+
+		return function debounced () {
+			utility.defer(fn.apply(scope, arguments), ms);
+		};
+	},
+
+	/**
 	 * Allows deep setting of properties without knowing
 	 * if the structure is valid
 	 *
@@ -240,6 +260,7 @@ var utility = {
 		id = id || utility.guid(true);
 
 		op = function () {
+			clearTimeout(utility.timer[id]);
 			delete utility.timer[id];
 			fn();
 		};
@@ -364,6 +385,7 @@ var utility = {
 	 *
 	 * Iteration can be stopped by returning false from fn
 	 * 
+	 * @method iterate
 	 * @param  {Object}   obj Object to iterate
 	 * @param  {Function} fn  Function to execute against properties
 	 * @return {Object}       Object
@@ -436,6 +458,7 @@ var utility = {
 	/**
 	 * Merges obj with arg
 	 * 
+	 * @method merge
 	 * @param  {Object} obj Object to decorate
 	 * @param  {Object} arg Object to decorate with
 	 * @return {Object}     Object to decorate
@@ -484,6 +507,7 @@ var utility = {
 	/**
 	 * Parses a URI into an Object
 	 * 
+	 * @method parse
 	 * @param  {String} uri URI to parse
 	 * @return {Object}     Parsed URI
 	 */
@@ -873,7 +897,8 @@ var utility = {
 			           		return element.val(this, arg);
 			           },
 			           validate : function () { return this.nodeName === "FORM" ? validate.test(this) : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
-			"function": {reflect: function () { return utility.reflect(this); }},
+			"function": {reflect: function () { return utility.reflect(this); },
+			           debounce : function (ms) { return utility.debounce(this, ms); }},
 			number  : {diff     : function (arg) { return number.diff (this, arg); },
 			           fire     : function () { return observer.fire.apply(observer, [this.toString()].concat(array.cast(arguments))); return this; },
 			           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
@@ -1041,6 +1066,7 @@ var utility = {
 	/**
 	 * Stops an Event from bubbling
 	 * 
+	 * @method stop
 	 * @param  {Object} e Event
 	 * @return {Object}   Event
 	 */
