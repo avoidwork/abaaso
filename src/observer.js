@@ -125,20 +125,23 @@ var observer = {
 	fire : function (obj, event) {
 		obj      = utility.object(obj);
 		var quit = false,
+		    a    = array.cast(arguments).remove(0, 1),
 		    o, a, s, log, c, l, list;
 
 		if (observer.ignore) return obj;
 
-		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, array.cast(arguments).remove(1).remove(0)); });
+		if (obj instanceof Array) {
+			a = [obj[i], event].concat(a);
+			return obj.each(function (i) { observer.fire.apply(observer, a); });
+		}
 
 		o = observer.id(obj);
 		if (typeof o === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 		if (observer.silent) observer.queue.push({obj: obj, event: event});
 		else {
-			a   = array.cast(arguments).remove(0, 1);
 			s   = abaaso.state.current;
-			log = ($.observer.log || abaaso.observer.log);
+			log = ($.logging || abaaso.logging);
 
 			array.each(event.explode(), function (e) {
 				if (log) utility.log(o + " firing " + e);
@@ -170,11 +173,11 @@ var observer = {
 	 * @return {Object}     Object that received hooks
 	 */
 	hook : function (obj) {
-		obj.fire      = function () { observer.fire.apply(observer, [this].concat(array.cast(arguments))); return this; };
-		obj.listeners = function (event) { return $.listeners.call(this, event); };
-		obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
-		obj.once      = function (event, listener, id, scope, standby) { return $.once.call(this, event, listener, id, scope, standby); };
-		obj.un        = function (event, id) { return $.un.call(this, event, id); };
+		obj.fire      = function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); },
+		obj.listeners = function (event) { return observer.list(this, event); };
+		obj.on        = function (event, listener, id, scope, standby) { return observer.add(this, event, listener, id, scope, standby); };
+		obj.once      = function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); };
+		obj.un        = function (event, id) { return observer.remove(this, event, id); };
 		return obj;
 	},
 
