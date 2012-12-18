@@ -189,18 +189,20 @@ var utility = {
 	 * 
 	 * @method debounce
 	 * @param  {Function} fn    Function to execute
-	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 5000
+	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 1000
 	 * @param  {Mixed}    scope `this` context during execution, default is `global`
 	 * @return {Undefined}      undefined
 	 */
 	debounce : function (fn, ms, scope) {
 		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		ms    = ms    || 5000;
+		ms    = ms    || 1000;
 		scope = scope || global;
 
 		return function debounced () {
-			utility.defer(fn.apply(scope, arguments), ms);
+			utility.defer(function () {
+				fn.apply(scope, arguments);
+			}, ms);
 		};
 	},
 
