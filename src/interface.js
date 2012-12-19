@@ -96,7 +96,7 @@ return {
 	filter          : filter.factory,
 	fire            : function (obj, event) {
 		var all  = typeof obj === "object",
-		    o    = all ? obj   : abaaso,
+		    o    = all ? obj   : (this !== $ ? this : abaaso),
 		    e    = all ? event : obj,
 		    args = [o, e].concat(array.cast(arguments).remove(0, !all ? 0 : 1));
 
@@ -119,7 +119,7 @@ return {
 	iterate         : utility.iterate,
 	jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 	listeners       : function (obj, event) {
-		obj = typeof obj === "object" ? obj : abaaso;
+		obj = typeof obj === "object" ? obj : (this !== $ ? this : abaaso);
 		return observer.list(obj, event);
 	},
 	log             : utility.log,
@@ -131,7 +131,7 @@ return {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : abaaso;
+		o  = all ? obj      : (this !== $ ? this : abaaso);
 		e  = all ? event    : obj;
 		l  = all ? listener : event;
 		i  = all ? id       : listener;
@@ -145,7 +145,7 @@ return {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : abaaso;
+		o  = all ? obj      : (this !== $ ? this : abaaso);
 		e  = all ? event    : obj;
 		l  = all ? listener : event;
 		i  = all ? id       : listener;
@@ -182,7 +182,7 @@ return {
 		var all = typeof obj === "object",
 		    o, e, i, s;
 
-		o = all ? obj   : abaaso;
+		o = all ? obj   : (this !== $ ? this : abaaso);
 		e = all ? event : obj;
 		i = all ? id    : event;
 		s = all ? state : id;
