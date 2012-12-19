@@ -98,7 +98,7 @@ return {
 		var all  = typeof obj === "object",
 		    o    = all ? obj   : abaaso,
 		    e    = all ? event : obj,
-		    args = [o, e].concat(array.cast(arguments).remove(0, 1));
+		    args = [o, e].concat(array.cast(arguments).remove(0, !all ? 0 : 1));
 
 		return observer.fire.apply(observer, args);
 	},
