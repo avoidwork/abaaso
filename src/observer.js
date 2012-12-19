@@ -320,7 +320,7 @@ var observer = {
 				if (typeof l[o][e] === "undefined") return obj;
 				if (typeof id === "undefined") {
 					l[o][e][state] = {}
-					if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
+					if (state === "all") if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
 				}
 				else delete l[o][e][state][id];
 				observer.sync(o, e, state);

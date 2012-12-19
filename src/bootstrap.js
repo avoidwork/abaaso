@@ -235,7 +235,7 @@ bootstrap = function () {
 	$.listeners = abaaso.listeners;
 
 	// Setting initial application state
-	abaaso.state._current = abaaso.state.current = "initial";
+	abaaso.state._current = abaaso.state.current = "all";
 	$.state._current      = $.state.current      = abaaso.state.current;
 
 	// Setting sugar
