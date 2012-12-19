@@ -11,6 +11,9 @@ var observer = {
 	// Array copy of listeners for observer.fire()
 	alisteners : {},
 
+	// Event listeners
+	elisteners : {},
+
 	// Boolean indicating if events are logged to the console
 	log : false,
 
@@ -22,6 +25,10 @@ var observer = {
 
 	// If `true`, events are ignored
 	ignore : false,
+
+	// Common regex patterns
+	regex_globals : /body|document|window/i,
+	regex_allowed : /click|error|key|mousedown|mouseup|submit/i,
 
 	/**
 	 * Adds a handler to an event
@@ -47,37 +54,52 @@ var observer = {
 
 		var instance = null,
 		    l        = observer.listeners,
+		    a        = observer.alisteners,
+		    ev       = observer.elisteners,
+		    gr       = observer.regex_globals,
+		    ar       = observer.regex_allowed,
 		    o        = observer.id(obj),
 		    n        = false,
 		    c        = abaaso.state.current,
-		    globals  = /body|document|window/i,
-		    allowed  = /click|error|key|mousedown|mouseup|submit/i,
-		    item, add, reg, handler;
+		    add, reg;
 
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		handler = function (e, i) {
-			if (!allowed.test(e.type)) utility.stop(e);
-			observer.fire(obj, i, e);
-		};
-
 		array.each(event, function (i) {
-			n = observer.prepare(o, i, state);
+			if (typeof l[o] === "undefined") {
+				l[o] = {};
+				a[o] = {};
+			}
 
-			if (n) {
-				instance = (globals.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
+			if (typeof l[o][event] === "undefined") {
+				l[o][event] = {};
+				a[o][event] = {};
+			}
 
-				if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
-					add = (typeof instance.addEventListener === "function");
-					reg = (typeof instance.attachEvent === "object" || add);
-					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
-						handler(e, i);
-					}, false);
+			if (typeof l[o][event][state] === "undefined") {
+				l[o][event][state] = {};
+				a[o][event][state] = [];
+			}
+
+			instance = (gr.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
+
+			// Setting up event listener if valid
+			if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (gr.test(o) || typeof instance.listeners === "function")) {
+				add = (typeof instance.addEventListener === "function");
+				reg = (typeof instance.attachEvent === "object" || add);
+				if (reg) {
+					// Registering event listener
+					ev[o + "_" + i] = function (e) {
+						if (!ar.test(e.type)) utility.stop(e);
+						observer.fire(obj, i, e);
+					};
+
+					// Hooking event listener
+					instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, observer.elisteners[o + "_" + i], false);
 				}
 			}
 
-			item = {fn: fn, scope: scope};
-			l[o][i][state][id] = item;
+			l[o][i][state][id] = {fn: fn, scope: scope};
 			observer.sync(o, i, state);
 		});
 
@@ -235,37 +257,6 @@ var observer = {
 	},
 
 	/**
-	 * Prepares `listeners` & `alisteners` Objects
-	 * 
-	 * @param  {String} obj   Object to 
-	 * @param  {String} event Event
-	 * @param  {String} state Application state
-	 * @return {Boolean}      `true` if creating `event`
-	 */
-	prepare : function (obj, event, state) {
-		var n = false,
-		    l = observer.listeners,
-		    a = observer.alisteners;
-
-		if (typeof l[obj] === "undefined") {
-			l[obj] = {};
-			a[obj] = {};
-		}
-
-		if (typeof l[obj][event] === "undefined" && (n = true)) {
-			l[obj][event] = {};
-			a[obj][event] = {};
-		}
-
-		if (typeof l[obj][event][state] === "undefined") {
-			l[obj][event][state] = {};
-			a[obj][event][state] = [];
-		}
-
-		return n;
-	},
-
-	/**
 	 * Pauses observer events, and queues them
 	 * 
 	 * @param  {Boolean} arg Boolean indicating if events will be queued
@@ -300,20 +291,36 @@ var observer = {
 		if (obj instanceof Array) return array.each(obj, function (i) { observer.remove(i, event, id, state); });
 
 		var instance = null,
-		    l = observer.listeners,
-		    a = observer.alisteners,
-		    o = observer.id(obj);
+		    l        = observer.listeners,
+		    a        = observer.alisteners,
+		    e        = observer.elisteners,
+		    o        = observer.id(obj),
+		    add, fn, reg;
+
+		fn = function () {
+			add = (typeof obj.addEventListener === "function");
+			reg = (typeof obj.attachEvent === "object" || add);
+			if (reg) {
+				obj[add ? "removeEventListener" : "detachEvent"]((add ? "" : "on") + event, e[o + "_" + event], false);
+				delete e[o + "_" + event];
+			}
+		}
 
 		if (typeof o === "undefined" || typeof l[o] === "undefined") return obj;
 
 		if (typeof event === "undefined" || event === null) {
 			delete l[o];
 			delete a[o];
+			if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
 		}
 		else {
 			array.each(event.explode(), function (e) {
 				if (typeof l[o][e] === "undefined") return obj;
-				typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
+				if (typeof id === "undefined") {
+					l[o][e][state] = {}
+					if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
+				}
+				else delete l[o][e][state][id];
 				observer.sync(o, e, state);
 			});
 		}
