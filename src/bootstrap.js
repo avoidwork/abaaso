@@ -266,7 +266,7 @@ bootstrap = function () {
 	if (!server) {
 		$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
 		$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
-		$.on(global, "load",       function ()  { $.fire("render").un("render"); $.un(this, "load"); });
+		$.on(global, "load",       function ()  { $.fire("render").un("render").un(this, "load"); });
 		$.on(global, "DOMNodeInserted", function (e) {
 			var obj = e.target;
 			
