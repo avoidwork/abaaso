@@ -185,6 +185,28 @@ var utility = {
 	},
 
 	/**
+	 * Debounces a function
+	 * 
+	 * @method debounce
+	 * @param  {Function} fn    Function to execute
+	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 1000
+	 * @param  {Mixed}    scope `this` context during execution, default is `global`
+	 * @return {Undefined}      undefined
+	 */
+	debounce : function (fn, ms, scope) {
+		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+		ms    = ms    || 1000;
+		scope = scope || global;
+
+		return function debounced () {
+			utility.defer(function () {
+				fn.apply(scope, arguments);
+			}, ms);
+		};
+	},
+
+	/**
 	 * Allows deep setting of properties without knowing
 	 * if the structure is valid
 	 *
@@ -240,6 +262,7 @@ var utility = {
 		id = id || utility.guid(true);
 
 		op = function () {
+			clearTimeout(utility.timer[id]);
 			delete utility.timer[id];
 			fn();
 		};
@@ -364,6 +387,7 @@ var utility = {
 	 *
 	 * Iteration can be stopped by returning false from fn
 	 * 
+	 * @method iterate
 	 * @param  {Object}   obj Object to iterate
 	 * @param  {Function} fn  Function to execute against properties
 	 * @return {Object}       Object
@@ -436,6 +460,7 @@ var utility = {
 	/**
 	 * Merges obj with arg
 	 * 
+	 * @method merge
 	 * @param  {Object} obj Object to decorate
 	 * @param  {Object} arg Object to decorate with
 	 * @return {Object}     Object to decorate
@@ -484,6 +509,7 @@ var utility = {
 	/**
 	 * Parses a URI into an Object
 	 * 
+	 * @method parse
 	 * @param  {String} uri URI to parse
 	 * @return {Object}     Parsed URI
 	 */
@@ -575,10 +601,7 @@ var utility = {
 			           equal    : function (arg) { return array.equal(this, arg); },
 			           fill     : function (arg, start, offset) { return array.fill(this, arg, start, offset); },
 			           find     : function (arg) { var a = []; this.each(function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
-			           fire     : function () {
-			           		var args = arguments;
-			           		return this.each(function (i) { i.fire.apply(i, args); });
-			           	},
+			           fire     : function () { var args = arguments; return this.each(function (i) { observer.fire.apply(observer, args); }); },
 			           first    : function () { return array.first(this); },
 			           flat     : function () { return array.flat(this); },
 			           get      : function (uri, headers) { this.each(function (i) { i.get(uri, headers); }); return []; },
@@ -714,12 +737,11 @@ var utility = {
 			           },
 			           fire     : function () {
 			           		utility.genId(this);
-			           		observer.fire.apply(observer, [this].concat(array.cast(arguments)));
-			           		return this;
+			           		return observer.fire.apply(observer, [this].concat(array.cast(arguments)));
 			           },
 			           genId    : function () { return utility.genId(this); },
 			           get      : function (uri, success, failure, headers, timeout) {
-			           		var deferred = $.promise(),
+			           		var deferred = promise.factory(),
 			           		    self     = this;
 
 			           		this.fire("beforeGet");
@@ -812,16 +834,16 @@ var utility = {
 			           },
 			           listeners: function (event) {
 			           		utility.genId(this);
-			           		return $.listeners.call(this, event);
+			           		return observer.list(this, event);
 			           },
 			           loading  : function () { return utility.loading(this); },
 			           on       : function (event, listener, id, scope, state) {
 			           		utility.genId(this);
-			           		return $.on.call(this, event, listener, id, scope, state);
+			           		return observer.add(this, event, listener, id, scope, state);
 			           },
 			           once     : function (event, listener, id, scope, state) {
 			           		utility.genId(this);
-			           		return $.once.call(this, event, listener, id, scope, state);
+			           		return observer.once(this, event, listener, id, scope, state);
 			           },
 			           prepend  : function (type, args) {
 			           		utility.genId(this);
@@ -862,7 +884,7 @@ var utility = {
 			           tpl      : function (arg) { return utility.tpl(arg, this); },
 			           un       : function (event, id, state) {
 			           		utility.genId(this);
-			           		return $.un.call(this, event, id, state);
+			           		return observer.remove(this, event, id, state);
 			           },
 			           update   : function (args) {
 			           		utility.genId(this);
@@ -873,20 +895,21 @@ var utility = {
 			           		return element.val(this, arg);
 			           },
 			           validate : function () { return this.nodeName === "FORM" ? validate.test(this) : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
-			"function": {reflect: function () { return utility.reflect(this); }},
+			"function": {reflect: function () { return utility.reflect(this); },
+			           debounce : function (ms) { return utility.debounce(this, ms); }},
 			number  : {diff     : function (arg) { return number.diff (this, arg); },
-			           fire     : function () { return observer.fire.apply(observer, [this.toString()].concat(array.cast(arguments))); return this; },
+			           fire     : function () { return observer.fire.apply(observer, [this.toString()].concat(array.cast(arguments))); },
 			           format   : function (delimiter, every) { return number.format(this, delimiter, every); },
 			           half     : function (arg) { return number.half(this, arg); },
 			           isEven   : function () { return number.even(this); },
 			           isOdd    : function () { return number.odd(this); },
-			           listeners: function (event) { return $.listeners.call(this.toString(), event); },
-			           on       : function (event, listener, id, scope, state) { $.on.call(this.toString(), event, listener, id, scope || this, state); return this; },
-			           once     : function (event, listener, id, scope, state) { $.once.call(this.toString(), event, listener, id, scope || this, state); return this; },
+			           listeners: function (event) { return observer.list(this.toString(), event); },
+			           on       : function (event, listener, id, scope, state) { observer.add(this.toString(), event, listener, id, scope || this, state); return this; },
+			           once     : function (event, listener, id, scope, state) { observer.once(this.toString(), event, listener, id, scope || this, state); return this; },
 			           random   : function () { return number.random(this); },
 			           roundDown: function () { return number.round(this, "down"); },
 			           roundUp  : function () { return number.round(this, "up"); },
-			           un       : function (event, id, state) { $.un.call(this.toString(), event, id, state); return this; }},
+			           un       : function (event, id, state) { observer.remove(this.toString(), event, id, state); return this; }},
 			string  : {allows   : function (arg) { return client.allows(this, arg); },
 			           capitalize: function () { return string.capitalize(this); },
 			           del      : function (success, failure, headers) { return client.request(this, "DELETE", success, failure, null, headers); },
@@ -909,18 +932,18 @@ var utility = {
 			           isPhone  : function () { return validate.test({phone: this}).pass; },
 			           isUrl    : function () { return validate.test({url: this}).pass; },
 			           jsonp    : function (success, failure, callback) { return client.jsonp(this, success, failure, callback); },
-			           listeners: function (event) { return $.listeners.call(this, event); },
+			           listeners: function (event) { return observer.list(this, event); },
 			           post     : function (success, failure, args, headers) { return client.request(this, "POST", success, failure, args, headers); },
 			           put      : function (success, failure, args, headers) { return client.request(this, "PUT", success, failure, args, headers); },
-			           on       : function (event, listener, id, scope, state) { return $.on.call(this, event, listener, id, scope, state); },
-			           once     : function (event, listener, id, scope, state) { return $.once.call(this, event, listener, id, scope, state); },
+			           on       : function (event, listener, id, scope, state) { return observer.add(this, event, listener, id, scope, state); },
+			           once     : function (event, listener, id, scope, state) { return observer.add(this, event, listener, id, scope, state); },
 			           options  : function (success, failure) { return client.request(this, "OPTIONS", success, failure); },
 			           permissions: function () { return client.permissions(this); },
 			           singular : function () { return string.singular(this); },
 			           toCamelCase: function () { return string.toCamelCase(this); },
 			           toNumber : function (base) { return number.parse(this, base); },
 			           trim     : function () { return string.trim(this); },
-			           un       : function (event, id, state) { return $.un.call(this, event, id, state); },
+			           un       : function (event, id, state) { return observer.remove(this, event, id, state); },
 			           uncapitalize: function () { return string.uncapitalize(this); }}
 		};
 
@@ -1041,6 +1064,7 @@ var utility = {
 	/**
 	 * Stops an Event from bubbling
 	 * 
+	 * @method stop
 	 * @param  {Object} e Event
 	 * @return {Object}   Event
 	 */

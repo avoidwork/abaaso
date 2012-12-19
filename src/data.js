@@ -858,7 +858,6 @@ var data = {
 		 *
 		 * @method setExpires
 		 * @param  {Number} arg  Milliseconds until data is stale
-		 * @param  {Mixed}  arg  Number or undefined
 		 * @return {Object}      Data store
 		 */
 		setExpires : function (arg) {

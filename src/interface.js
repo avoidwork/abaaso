@@ -43,17 +43,6 @@ return {
 	message         : message,
 	mouse           : mouse,
 	number          : number,
-	observer        : {
-		add     : observer.add,
-		discard : function (arg) { return observer.discard((arg !== false)); },
-		fire    : observer.fire,
-		hook    : observer.hook,
-		list    : observer.list,
-		log     : observer.log,
-		once    : observer.once,
-		pause   : function (arg) { return observer.pause((arg !== false)); },
-		remove  : observer.remove
-	},
 	repeating       : {},
 	route           : {
 		enabled : false,
@@ -93,6 +82,7 @@ return {
 	data            : data.factory,
 	datalist        : datalist.factory,
 	discard         : function (arg) { return observer.discard((arg !== false)); },
+	debounce        : utility.debounce,
 	decode          : json.decode,
 	defer           : utility.defer,
 	define          : utility.define,
@@ -104,71 +94,64 @@ return {
 	expires         : 120000,
 	extend          : utility.extend,
 	filter          : filter.factory,
-	fire            : function (arg) {
-		var local = (typeof arg === "string"),
-		    args  = array.cast(arguments),
-		    obj   = this;
+	fire            : function (obj, event) {
+		var all  = typeof obj === "object",
+		    o    = all ? obj   : abaaso,
+		    e    = all ? event : obj,
+		    args = [o, e].concat(array.cast(arguments).remove(0, 1));
 
-		if (local) {
-			if (obj === $) obj = abaaso;
-			args = [obj].concat(args);
-		}
-
-		observer.fire.apply(observer, args);
-		return this;
+		return observer.fire.apply(observer, args);
 	},
 	genId           : utility.genId,
 	get             : function (uri, success, failure, headers, timeout) { return client.request(uri, "GET", success, failure, null, headers, timeout); },
 	guid            : utility.guid,
 	headers         : function (uri, success, failure, timeout) { return client.request(uri, "HEAD", success, failure, null, {}, timeout); },
 	hidden          : element.hidden,
+	hook            : observer.hook,
 	id              : "abaaso",
 	init            : function () {
 		// Stopping multiple executions
 		delete abaaso.init;
 
 		// Firing events to setup
-		return $.fire("init").un("init").fire("ready").un("ready");
+		return $.fire("init, ready").un("init, ready");
 	},
 	iterate         : utility.iterate,
 	jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
-	listeners       : function (event) {
-		var obj = this;
-
-		if (typeof obj === "undefined" || obj === $) obj = abaaso;
+	listeners       : function (obj, event) {
+		obj = typeof obj === "object" ? obj : abaaso;
 		return observer.list(obj, event);
 	},
 	log             : utility.log,
+	logging         : observer.log,
 	merge           : utility.merge,
 	module          : utility.module,
 	object          : utility.object,
 	on              : function (obj, event, listener, id, scope, state) {
-		var all = typeof listener === "function",
+		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : this;
+		o  = all ? obj      : abaaso;
 		e  = all ? event    : obj;
 		l  = all ? listener : event;
 		i  = all ? id       : listener;
 		s  = all ? scope    : id;
 		st = all ? state    : scope;
 
-		if (typeof o === "undefined" || o === $) o = abaaso;
 		if (typeof s === "undefined") s = o;
 		return observer.add(o, e, l, i, s, st);
 	},
 	once            : function (obj, event, listener, id, scope, state) {
-		var all = typeof listener === "function",
+		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : this;
+		o  = all ? obj      : abaaso;
 		e  = all ? event    : obj;
 		l  = all ? listener : event;
 		i  = all ? id       : listener;
 		s  = all ? scope    : id;
 		st = all ? state    : scope;
 
-		if (typeof o === "undefined" || o === $) o = abaaso;
 		if (typeof s === "undefined") s = o;
 		return observer.once(o, e, l, i, s, st);
 	},
@@ -196,15 +179,13 @@ return {
 	store           : data.factory,
 	tpl             : utility.tpl,
 	un              : function (obj, event, id, state) {
-		var all = typeof id !== "undefined",
+		var all = typeof obj === "object",
 		    o, e, i, s;
 
-		o = all ? obj   : this;
+		o = all ? obj   : abaaso;
 		e = all ? event : obj;
 		i = all ? id    : event;
 		s = all ? state : id;
-
-		if (typeof o === "undefined" || o === $) o = abaaso;
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,

@@ -235,7 +235,7 @@ bootstrap = function () {
 	$.listeners = abaaso.listeners;
 
 	// Setting initial application state
-	abaaso.state._current = abaaso.state.current = "initial";
+	abaaso.state._current = abaaso.state.current = "all";
 	$.state._current      = $.state.current      = abaaso.state.current;
 
 	// Setting sugar
@@ -266,7 +266,7 @@ bootstrap = function () {
 	if (!server) {
 		$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
 		$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
-		$.on(global, "load",       function ()  { $.fire("render").un("render"); });
+		$.on(global, "load",       function ()  { $.fire("render").un("render"); $.un(this, "load"); });
 		$.on(global, "DOMNodeInserted", function (e) {
 			var obj = e.target;
 			

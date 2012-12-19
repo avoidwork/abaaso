@@ -11,6 +11,9 @@ var observer = {
 	// Array copy of listeners for observer.fire()
 	alisteners : {},
 
+	// Event listeners
+	elisteners : {},
+
 	// Boolean indicating if events are logged to the console
 	log : false,
 
@@ -22,6 +25,10 @@ var observer = {
 
 	// If `true`, events are ignored
 	ignore : false,
+
+	// Common regex patterns
+	regex_globals : /body|document|window/i,
+	regex_allowed : /click|error|key|mousedown|mouseup|submit/i,
 
 	/**
 	 * Adds a handler to an event
@@ -47,37 +54,54 @@ var observer = {
 
 		var instance = null,
 		    l        = observer.listeners,
+		    a        = observer.alisteners,
+		    ev       = observer.elisteners,
+		    gr       = observer.regex_globals,
+		    ar       = observer.regex_allowed,
 		    o        = observer.id(obj),
 		    n        = false,
 		    c        = abaaso.state.current,
-		    globals  = /body|document|window/i,
-		    allowed  = /click|error|key|mousedown|mouseup|submit/i,
-		    item, add, reg, handler;
+		    add, reg;
 
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		handler = function (e, i) {
-			if (!allowed.test(e.type)) utility.stop(e);
-			observer.fire(obj, i, e);
-		};
-
 		array.each(event, function (i) {
-			n = observer.prepare(o, i, state);
+			var eid = o + "_" + i;
 
-			if (n) {
-				instance = (globals.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
+			if (typeof l[o] === "undefined") {
+				l[o] = {};
+				a[o] = {};
+			}
 
-				if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && (globals.test(o) || typeof instance.listeners === "function")) {
-					add = (typeof instance.addEventListener === "function");
-					reg = (typeof instance.attachEvent === "object" || add);
-					if (reg) instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, function (e) {
-						handler(e, i);
-					}, false);
+			if (typeof l[o][event] === "undefined") {
+				l[o][event] = {};
+				a[o][event] = {};
+			}
+
+			if (typeof l[o][event][state] === "undefined") {
+				l[o][event][state] = {};
+				a[o][event][state] = [];
+			}
+
+			instance = (gr.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
+
+			// Setting up event listener if valid
+			if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && typeof ev[eid] === "undefined" && (gr.test(o) || typeof instance.listeners === "function")) {
+				add = (typeof instance.addEventListener === "function");
+				reg = (typeof instance.attachEvent === "object" || add);
+				if (reg) {
+					// Registering event listener
+					ev[eid] = function (e) {
+						if (!ar.test(e.type)) utility.stop(e);
+						observer.fire(obj, i, e);
+					};
+
+					// Hooking event listener
+					instance[add ? "addEventListener" : "attachEvent"]((add ? "" : "on") + i, ev[eid], false);
 				}
 			}
 
-			item = {fn: fn, scope: scope};
-			l[o][i][state][id] = item;
+			l[o][i][state][id] = {fn: fn, scope: scope};
 			observer.sync(o, i, state);
 		});
 
@@ -86,8 +110,9 @@ var observer = {
 
 	/**
 	 * Discard observer events
-	 * 
-	 * @return {Boolean} `true` indicating observer will ignore events until `false` is passed
+	 *
+	 * @param {Boolean} arg Boolean indicating if events will be ignored
+	 * @return              Current setting
 	 */
 	discard : function (arg) {
 		observer.ignore = arg;
@@ -124,20 +149,23 @@ var observer = {
 	fire : function (obj, event) {
 		obj      = utility.object(obj);
 		var quit = false,
+		    a    = array.cast(arguments).remove(0, 1),
 		    o, a, s, log, c, l, list;
 
 		if (observer.ignore) return obj;
 
-		if (obj instanceof Array) return obj.each(function (i) { observer.fire(obj[i], event, array.cast(arguments).remove(1).remove(0)); });
+		if (obj instanceof Array) {
+			a = [obj[i], event].concat(a);
+			return obj.each(function (i) { observer.fire.apply(observer, a); });
+		}
 
 		o = observer.id(obj);
 		if (typeof o === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
 
 		if (observer.silent) observer.queue.push({obj: obj, event: event});
 		else {
-			a   = array.cast(arguments).remove(0, 1);
 			s   = abaaso.state.current;
-			log = ($.observer.log || abaaso.observer.log);
+			log = ($.logging || abaaso.logging);
 
 			array.each(event.explode(), function (e) {
 				if (log) utility.log(o + " firing " + e);
@@ -169,11 +197,11 @@ var observer = {
 	 * @return {Object}     Object that received hooks
 	 */
 	hook : function (obj) {
-		obj.fire      = function () { observer.fire.apply(observer, [this].concat(array.cast(arguments))); return this; };
-		obj.listeners = function (event) { return $.listeners.call(this, event); };
-		obj.on        = function (event, listener, id, scope, standby) { return $.on.call(this, event, listener, id, scope, standby); };
-		obj.once      = function (event, listener, id, scope, standby) { return $.once.call(this, event, listener, id, scope, standby); };
-		obj.un        = function (event, id) { return $.un.call(this, event, id); };
+		obj.fire      = function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); },
+		obj.listeners = function (event) { return observer.list(this, event); };
+		obj.on        = function (event, listener, id, scope, standby) { return observer.add(this, event, listener, id, scope, standby); };
+		obj.once      = function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); };
+		obj.un        = function (event, id) { return observer.remove(this, event, id); };
 		return obj;
 	},
 
@@ -231,40 +259,10 @@ var observer = {
 	},
 
 	/**
-	 * Prepares `listeners` & `alisteners` Objects
-	 * 
-	 * @param  {String} obj   Object to 
-	 * @param  {String} event Event
-	 * @param  {String} state Application state
-	 * @return {Boolean}      `true` if creating `event`
-	 */
-	prepare : function (obj, event, state) {
-		var n = false,
-		    l = observer.listeners,
-		    a = observer.alisteners;
-
-		if (typeof l[obj] === "undefined") {
-			l[obj] = {};
-			a[obj] = {};
-		}
-
-		if (typeof l[obj][event] === "undefined" && (n = true)) {
-			l[obj][event] = {};
-			a[obj][event] = {};
-		}
-
-		if (typeof l[obj][event][state] === "undefined") {
-			l[obj][event][state] = {};
-			a[obj][event][state] = [];
-		}
-
-		return n;
-	},
-
-	/**
 	 * Pauses observer events, and queues them
 	 * 
-	 * @return {Boolean} `true` indicating observer is paused
+	 * @param  {Boolean} arg Boolean indicating if events will be queued
+	 * @return {Boolean}     Current setting
 	 */
 	pause : function (arg) {
 		if (arg === true) observer.silent = arg;
@@ -295,20 +293,37 @@ var observer = {
 		if (obj instanceof Array) return array.each(obj, function (i) { observer.remove(i, event, id, state); });
 
 		var instance = null,
-		    l = observer.listeners,
-		    a = observer.alisteners,
-		    o = observer.id(obj);
+		    l        = observer.listeners,
+		    a        = observer.alisteners,
+		    e        = observer.elisteners,
+		    o        = observer.id(obj),
+		    add, fn, reg;
+
+		fn = function () {
+			if (state !== "all") return;
+			add = (typeof obj.addEventListener === "function");
+			reg = (typeof obj.attachEvent === "object" || add);
+			if (reg) {
+				obj[add ? "removeEventListener" : "detachEvent"]((add ? "" : "on") + event, e[o + "_" + event], false);
+				delete e[o + "_" + event];
+			}
+		}
 
 		if (typeof o === "undefined" || typeof l[o] === "undefined") return obj;
 
 		if (typeof event === "undefined" || event === null) {
 			delete l[o];
 			delete a[o];
+			if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
 		}
 		else {
 			array.each(event.explode(), function (e) {
 				if (typeof l[o][e] === "undefined") return obj;
-				typeof id === "undefined" ? l[o][e][state] = {} : delete l[o][e][state][id];
+				if (typeof id === "undefined") {
+					l[o][e][state] = {}
+					if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
+				}
+				else delete l[o][e][state][id];
 				observer.sync(o, e, state);
 			});
 		}
