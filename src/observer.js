@@ -73,14 +73,14 @@ var observer = {
 				a[o] = {};
 			}
 
-			if (typeof l[o][event] === "undefined") {
-				l[o][event] = {};
-				a[o][event] = {};
+			if (typeof l[o][i] === "undefined") {
+				l[o][i] = {};
+				a[o][i] = {};
 			}
 
-			if (typeof l[o][event][state] === "undefined") {
-				l[o][event][state] = {};
-				a[o][event][state] = [];
+			if (typeof l[o][i][state] === "undefined") {
+				l[o][i][state] = {};
+				a[o][i][state] = [];
 			}
 
 			instance = (gr.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
