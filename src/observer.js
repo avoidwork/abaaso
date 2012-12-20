@@ -14,6 +14,9 @@ var observer = {
 	// Event listeners
 	elisteners : {},
 
+	// Tracks count of listeners per event across all states
+	clisteners : {},
+
 	// Boolean indicating if events are logged to the console
 	log : false,
 
@@ -56,6 +59,7 @@ var observer = {
 		    l        = observer.listeners,
 		    a        = observer.alisteners,
 		    ev       = observer.elisteners,
+		    cl       = observer.clisteners,
 		    gr       = observer.regex_globals,
 		    ar       = observer.regex_allowed,
 		    o        = observer.id(obj),
@@ -65,17 +69,19 @@ var observer = {
 
 		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
+		if (typeof l[o] === "undefined") {
+			l[o]  = {};
+			a[o]  = {};
+			cl[o] = {};
+		}
+
 		array.each(event, function (i) {
 			var eid = o + "_" + i;
 
-			if (typeof l[o] === "undefined") {
-				l[o] = {};
-				a[o] = {};
-			}
-
 			if (typeof l[o][i] === "undefined") {
-				l[o][i] = {};
-				a[o][i] = {};
+				l[o][i]  = {};
+				a[o][i]  = {};
+				cl[o][i] = 0;
 			}
 
 			if (typeof l[o][i][state] === "undefined") {
@@ -103,6 +109,7 @@ var observer = {
 
 			l[o][i][state][id] = {fn: fn, scope: scope};
 			observer.sync(o, i, state);
+			cl[o][i]++;
 		});
 
 		return obj;
@@ -296,14 +303,27 @@ var observer = {
 		    l        = observer.listeners,
 		    a        = observer.alisteners,
 		    e        = observer.elisteners,
+		    c        = observer.clisteners,
 		    o        = observer.id(obj),
 		    add, fn, reg;
 
-		fn = function () {
-			if (state !== "all") return;
+		/**
+		 * Removes DOM event hook
+		 * 
+		 * @param  {Mixed}  event String or null
+		 * @param  {Number} i     Amount of listeners being removed
+		 * @return {Undefined}    undefined
+		 */
+		fn = function (event, i) {
+			var unhook = false;
+
 			add = (typeof obj.addEventListener === "function");
 			reg = (typeof obj.attachEvent === "object" || add);
-			if (reg) {
+
+			if (event === null) unhook = true;
+			else if (typeof i === "number" && (c[o][event] = (c[o][event] - i)) === 0) unhook = true;
+
+			if (unhook && reg) {
 				obj[add ? "removeEventListener" : "detachEvent"]((add ? "" : "on") + event, e[o + "_" + event], false);
 				delete e[o + "_" + event];
 			}
@@ -314,20 +334,43 @@ var observer = {
 		if (typeof event === "undefined" || event === null) {
 			delete l[o];
 			delete a[o];
-			if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
+			delete c[o];
+			if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn(null);
 		}
 		else {
 			array.each(event.explode(), function (e) {
 				if (typeof l[o][e] === "undefined") return obj;
 				if (typeof id === "undefined") {
-					l[o][e][state] = {}
-					if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn();
+					if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn(e, array.keys(l[o][e][state]).length);
+					l[o][e][state] = {};
 				}
-				else delete l[o][e][state][id];
+				else {
+					fn(e, 1);
+					delete l[o][e][state][id];
+				}
 				observer.sync(o, e, state);
 			});
 		}
 		return obj;
+	},
+
+	/**
+	 * Returns the sum of active listeners for one or all Objects
+	 * 
+	 * @param  {Mixed} obj [Optional] Entity
+	 * @return {Object}     Object with total listeners per event
+	 */
+	sum : function (obj) {
+		var result = {},
+		    o;
+
+		if (typeof obj !== "undefined") {
+			obj    = utility.object(obj);
+			o      = observer.id(obj);
+			result = utility.clone(observer.clisteners[o]);
+		}
+		else result = utility.clone(observer.clisteners);
+		return result;
 	},
 
 	/**
