@@ -13,7 +13,7 @@ var message = {
 	 */
 	clear : function (state) {
 		if (typeof state === "undefined") state = "all";
-		return $.un(global, "message", "message", state);
+		return observer.un(global, "message", "message", state);
 	},
 
 	/**
@@ -43,6 +43,6 @@ var message = {
 	 */
 	recv : function (fn, state) {
 		if (typeof state === "undefined") state = "all";
-		return $.on(global, "message", fn, "message", global, state);
+		return observer.on(global, "message", fn, "message", global, state);
 	}
 };

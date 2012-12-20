@@ -261,12 +261,11 @@ var element = {
 		var result = [];
 
 		obj = utility.object(obj);
+
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
-		utility.genId(obj);
-		arg.explode().each(function (i) {
-			 $("#" + obj.id + " " + i).each(function (o) {
-			 	result.add(o);
-			 });
+
+		array.each(arg.explode(), function (i) {
+			result = result.concat($("#" + obj.id + " " + i));
 		});
 		return result;
 	},
@@ -375,11 +374,11 @@ var element = {
 		obj.fire("beforeClassChange");
 		add = (add !== false);
 		arg = arg.explode(" ");
-		if (add) arg.each(function (i) { obj.classList.add(i); });
-		else arg.each(function (i) {
+		if (add) array.each(arg, function (i) { obj.classList.add(i); });
+		else array.each(arg, function (i) {
 			if (i !== "*") obj.classList.remove(i);
 			else {
-				obj.classList.each(function (x) { this.remove(x); });
+				array.each(obj.classList, function (x) { this.remove(x); });
 				return false;
 			}
 		});
@@ -634,7 +633,7 @@ var element = {
 			if (check.test(obj.type)) {
 				if (obj.name.isEmpty()) throw Error(label.error.expectedProperty);
 				items = $("input[name='" + obj.name + "']");
-				items.each(function (i) {
+				array.each(items, function (i) {
 					if (output !== null) return;
 					if (i.checked) output = i.value;
 				});
@@ -648,7 +647,7 @@ var element = {
 			obj.fire("beforeValue");
 			if (check.test(obj.type)) {
 				items = $("input[name='" + obj.name + "']");
-				items.each(function (i) {
+				array.each(items, function (i) {
 					if (i.value === value) {
 						i.checked = true;
 						output    = i;
@@ -657,7 +656,7 @@ var element = {
 				});
 			}
 			else if (select.test(obj.type)) {
-				obj.find("> *").each(function (i) {
+				array.each(element.find(obj, "> *"), function (i) {
 					if (i.value === value) {
 						i.selected = true;
 						output     = i;

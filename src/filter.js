@@ -29,7 +29,9 @@ var filter = {
 
 			if (typeof fields !== "string" || String(fields).isEmpty()) throw Error($.label.error.invalidArguments);
 
-			fields.explode().each(function (v) { obj[v] = ""; });
+			array.each(fields.explode(), function (v) {
+				obj[v] = "";
+			});
 			this.filters = obj;
 			return this;
 		},

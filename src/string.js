@@ -75,7 +75,7 @@ var string = {
 		var s = string.trim(obj).toLowerCase().split(/\s|-/),
 		    r = [];
 
-		s.each(function (i, idx) {
+		array.each(s, function (i, idx) {
 			i = string.trim(i);
 			if (i.isEmpty()) return;
 			r.push(idx === 0 ? i : string.capitalize(i));

@@ -150,7 +150,7 @@ var xhr = function () {
 		var self = this;
 
 		if (typeof this["on" + event] === "function") this["on" + event]();
-		if (this._listeners.hasOwnProperty(event)) this._listeners[event].each(function (i) {
+		if (this._listeners.hasOwnProperty(event)) array.each(this._listeners[event], function (i) {
 			if (typeof i === "function") i.call(self);
 		});
 
