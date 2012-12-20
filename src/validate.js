@@ -45,7 +45,7 @@ var validate = {
 			selects = $("#" + args.id + " select");
 			if (inputs.length > 0)  c = c.concat(inputs);
 			if (selects.length > 0) c = c.concat(selects);
-			c.each(function (i) {
+			array.each(c, function (i) {
 				var z = {},
 				    p, v, r;
 

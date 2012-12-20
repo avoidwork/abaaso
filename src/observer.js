@@ -50,7 +50,7 @@ var observer = {
 		scope = scope || obj;
 		state = state || abaaso.state.current;
 
-		if (obj instanceof Array) return obj.each(function (i) { observer.add(i, event, fn, id, scope, state); });
+		if (obj instanceof Array) return array.each(obj, function (i) { observer.add(i, event, fn, id, scope, state); });
 
 		if (typeof event !== "undefined") event = event.explode();
 		if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
@@ -163,7 +163,7 @@ var observer = {
 
 		if (obj instanceof Array) {
 			a = [obj[i], event].concat(a);
-			return obj.each(function (i) { observer.fire.apply(observer, a); });
+			return array.each(obj, function (i) { observer.fire.apply(observer, a); });
 		}
 
 		o = observer.id(obj);
@@ -255,7 +255,7 @@ var observer = {
 
 		if (typeof obj === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		if (obj instanceof Array) return obj.each(function (i) { observer.once(i, event, fn, id, scope, state); });
+		if (obj instanceof Array) return array.each(obj, function (i) { observer.once(i, event, fn, id, scope, state); });
 
 		observer.add(obj, event, function () {
 			fn.apply(scope, arguments);

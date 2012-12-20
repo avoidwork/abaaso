@@ -114,11 +114,11 @@ var data = {
 
 			if (data.length === 0) completed(false);
 			else {
-				if (type === "set") data.chunk(chunk).each(function (a, adx) {
+				if (type === "set") array.each(data.chunk(chunk), function (a, adx) {
 						var offset = adx * chunk;
 
 						utility.defer(function () {
-							a.each(function (i, idx) {
+							array.each(a, function (i, idx) {
 								idx = (offset + idx).toString();
 								if (typeof i === "object") set(i, idx);
 								else if (i.indexOf("//") === -1) {
@@ -148,7 +148,7 @@ var data = {
 							});
 						});
 					});
-				else data.sort(array.sort).reverse().each(function (i) {
+				else array.each(data.sort(array.sort).reverse(), function (i) {
 					del(i);
 				});
 			}
@@ -260,12 +260,12 @@ var data = {
 					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 					
 					// Inheriting `ignored` collection
-					if (ignored) ignore.each(function (i) {
+					if (ignored) array.each(ignore, function (i) {
 						record.data[k].data.ignore.add(i);
 					});
 
 					// Inheriting `leafs` collection
-					self.leafs.each(function (i) {
+					array.each(self.leafs, function (i) {
 						record.data[k].data.leafs.add(i);
 					});
 
@@ -285,12 +285,12 @@ var data = {
 						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 						
 						// Inheriting `ignored` collection
-						if (ignored) ignore.each(function (i) {
+						if (ignored) array.each(ignore, function (i) {
 							record.data[k].data.ignore.add(i);
 						});
 
 						// Inheriting `leafs` collection
-						self.leafs.each(function (i) {
+						array.each(self.leafs, function (i) {
 							record.data[k].data.leafs.add(i);
 						});
 
@@ -525,7 +525,7 @@ var data = {
 						self.parentNode.fire("failedDataFormSubmit");
 						break;
 					case true:
-						nodes.each(function (i) {
+						array.each(nodes, function (i) {
 							if (typeof i.type !== "undefined" && /button|submit|reset/.test(i.type)) return;
 							utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 						});
@@ -552,7 +552,7 @@ var data = {
 				utility.iterate(record, function (v, k) {
 					if (v instanceof Array) {
 						x = 0;
-						v.each(function (o) {
+						array.each(v, function (o) {
 							structure(o, obj, name + "[" + k + "][" + (x++) + "]");
 						});
 					}
@@ -651,7 +651,7 @@ var data = {
 			if (type === "undefined" || String(record).length === 0) r = records;
 			else if (type === "string" && record.indexOf(",") > -1) {
 				r = [];
-				record.explode().each(function (i) {
+				array.each(record.explode(), function (i) {
 					if (!isNaN(i)) i = parseInt(i);
 					r.push(self.get(i));
 				});
@@ -970,7 +970,7 @@ var data = {
 				    order    = [],
 				    registry = {};
 
-				records.each(function (r) {
+				array.each(records, function (r) {
 					var val = pk ? r.key : r.data[prop],
 					    k   = val === null ? "null" : String(val);
 
@@ -1174,7 +1174,7 @@ var data = {
 				utility.clearTimers(id);
 
 				records = this.get();
-				records.each(function (i) {
+				array.each(records, function (i) {
 					cache.expire((uri + "/" + i.key), true);
 					observer.remove(uri + "/" + i.key);
 					utility.iterate(i.data, function (v, k) {

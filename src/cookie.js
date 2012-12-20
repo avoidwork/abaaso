@@ -42,7 +42,7 @@ var cookie = {
 
 		if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
 			items = document.cookie.explode(";");
-			items.each(function (i) {
+			array.each(items, function (i) {
 				item = i.explode("=");
 				result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
 			});
