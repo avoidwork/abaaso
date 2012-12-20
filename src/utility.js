@@ -1012,11 +1012,16 @@ var utility = {
 	 * @param  {Function} fn  Function to execute repeatedly
 	 * @param  {Number}   ms  Milliseconds to stagger the execution
 	 * @param  {String}   id  [Optional] Timeout ID
+	 * @param  {Boolean}  now Executes `fn` and then setup repetition, default is `true`
 	 * @return {String}       Timeout ID
 	 */
-	repeat : function (fn, ms, id) {
-		ms = ms || 10;
-		id = id || utility.guid(true);
+	repeat : function (fn, ms, id, now) {
+		ms  = ms || 10;
+		id  = id || utility.guid(true);
+		now = (now !== false);
+
+		// Could be valid to return false from initial execution
+		if (now) if (fn() === false) return;
 
 		utility.defer(function () {
 			var recursive = function (fn, ms, id) {

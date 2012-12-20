@@ -12,7 +12,7 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		init : function () {
-			this.element.on("keyup", this.update, "filter", this);
+			observer.add(this.element, "keyup", this.update, "filter", this);
 			return this;
 		},
 
@@ -42,7 +42,8 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		teardown : function () {
-			this.element.un("keyup", "filter");
+			observer.remove(this.element, "keyup", "filter");
+			observer.remove(this.element, "afterValue", "value");
 			return this;
 		},
 
@@ -84,7 +85,7 @@ var filter = {
 		instance.datalist = ref[0];
 		instance.element  = obj;
 		instance.set(filters);
-		instance.element.on("afterValue", instance.update, "value", instance);
+		observer.add(instance.element, "afterValue", instance.update, "value", instance);
 		return instance.init();
 	}
 };
