@@ -23,6 +23,8 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
+		utility.genId(obj);
+
 		if (regex.test(key) && typeof value === "undefined") return obj[key];
 		else if (regex.test(key) && typeof value !== "undefined") obj[key] = value;
 		else if (obj.nodeName === "SELECT" && key === "selected" && typeof value === "undefined") return $("#" + obj.id + " option[selected=\"selected\"]").first() || $("#" + obj.id + " option").first();
@@ -249,6 +251,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
+		utility.genId(obj);
 		array.each(arg.explode(), function (i) {
 			result = result.concat($("#" + obj.id + " " + i));
 		});
@@ -277,6 +280,9 @@ var element = {
 	 */
 	hasClass : function (obj, klass) {
 		obj = utility.object(obj);
+
+		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+
 		return obj.classList.contains(klass);
 	},
 
@@ -328,8 +334,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
-		utility.genId(obj);
-		return /^:/.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).contains(obj)) : new RegExp(arg, "i").test(obj.nodeName);
+		return /^:/.test(arg) ? (array.contains(element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg), obj)) : new RegExp(arg, "i").test(obj.nodeName);
 	},
 
 	/**
