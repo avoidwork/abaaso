@@ -190,10 +190,8 @@ var element = {
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		$.fire("beforeDestroy", obj);
-		obj.fire("beforeDestroy");
 		observer.remove(obj.id);
 		if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
-		obj.fire("afterDestroy");
 		$.fire("afterDestroy", obj.id);
 		return undefined;
 	},
