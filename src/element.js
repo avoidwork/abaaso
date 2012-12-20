@@ -334,8 +334,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
-		utility.genId(obj);
-		return /^:/.test(arg) ? (element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg).contains(obj)) : new RegExp(arg, "i").test(obj.nodeName);
+		return /^:/.test(arg) ? (array.contains(element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg), obj)) : new RegExp(arg, "i").test(obj.nodeName);
 	},
 
 	/**
