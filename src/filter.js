@@ -12,7 +12,8 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		init : function () {
-			observer.add(this.element, "keyup", this.update, "filter", this);
+			observer.add(this.element, "keyup",      this.update, "filter", this);
+			observer.add(this.element, "afterValue", this.update, "value",  this);
 			return this;
 		},
 
@@ -27,7 +28,7 @@ var filter = {
 		set : function (fields) {
 			var obj = {};
 
-			if (typeof fields !== "string" || String(fields).isEmpty()) throw Error($.label.error.invalidArguments);
+			if (typeof fields !== "string" || String(fields).isEmpty()) throw Error(label.error.invalidArguments);
 
 			array.each(fields.explode(), function (v) {
 				obj[v] = "";
@@ -42,7 +43,7 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		teardown : function () {
-			observer.remove(this.element, "keyup", "filter");
+			observer.remove(this.element, "keyup",      "filter");
 			observer.remove(this.element, "afterValue", "value");
 			return this;
 		},
@@ -56,7 +57,9 @@ var filter = {
 			var val = this.element.val();
 			
 			if (!val.isEmpty()) {
-				utility.iterate(this.filters, function (v, k) { this[k] = "^" + val.escape().replace("\\*", ".*"); });
+				utility.iterate(this.filters, function (v, k) {
+					this[k] = "^" + val.escape().replace("\\*", ".*");
+				});
 				this.datalist.filter = this.filters;
 			}
 			else this.datalist.filter = null;
@@ -85,7 +88,6 @@ var filter = {
 		instance.datalist = ref[0];
 		instance.element  = obj;
 		instance.set(filters);
-		observer.add(instance.element, "afterValue", instance.update, "value", instance);
 		return instance.init();
 	}
 };
