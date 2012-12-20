@@ -127,25 +127,6 @@ var observer = {
 	},
 
 	/**
-	 * Gets the Observer id of arg
-	 *
-	 * @method id
-	 * @param  {Mixed}  Object or String
-	 * @return {String} Observer id
-	 * @private
-	 */
-	id : function (arg) {
-		var id;
-
-		if (arg === abaaso) id = "abaaso";
-		else if (arg === global) id = "window";
-		else if (arg === !server && document) id = "document";
-		else if (arg === !server && document.body) id = "body";
-		else id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
-		return id;
-	},
-
-	/**
 	 * Fires an event
 	 *
 	 * @method fire
@@ -210,6 +191,28 @@ var observer = {
 		obj.once      = function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); };
 		obj.un        = function (event, id) { return observer.remove(this, event, id); };
 		return obj;
+	},
+
+	/**
+	 * Gets the Observer id of arg
+	 *
+	 * @method id
+	 * @param  {Mixed}  Object or String
+	 * @return {String} Observer id
+	 * @private
+	 */
+	id : function (arg) {
+		var id;
+
+		if (arg === abaaso) id = "abaaso";
+		else if (arg === global) id = "window";
+		else if (arg === !server && document) id = "document";
+		else if (arg === !server && document.body) id = "body";
+		else {
+			utility.genId(arg);
+			id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
+		}
+		return id;
 	},
 
 	/**
