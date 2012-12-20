@@ -881,7 +881,7 @@ var data = {
 					return false;
 				}
 				if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
-			}, expires, id);
+			}, expires, id, false);
 		},
 
 		/**

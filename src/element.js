@@ -45,9 +45,6 @@ var element = {
 	/**
 	 * Clears an object's innerHTML, or resets it's state
 	 *
-	 * Events: beforeClear  Fires before the Object is cleared
-	 *         afterClear   Fires after the Object is cleared
-	 *
 	 * @method clear
 	 * @param  {Mixed} obj Element or $ query
 	 * @return {Object}    Element
@@ -57,11 +54,9 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		obj.fire("beforeClear");
 		if (typeof obj.reset === "function") obj.reset();
 		else if (typeof obj.value !== "undefined") obj.update({innerHTML: "", value: ""});
 		else obj.update({innerHTML: ""});
-		obj.fire("afterClear");
 		return obj;
 	},
 
@@ -218,11 +213,7 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		if (typeof obj.disabled === "boolean" && !obj.disabled) {
-			obj.fire("beforeDisable");
-			obj.disabled = true;
-			obj.fire("afterDisable");
-		}
+		if (typeof obj.disabled === "boolean" && !obj.disabled) obj.disabled = true;
 		return obj;
 	},
 
@@ -241,11 +232,7 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		if (typeof obj.disabled === "boolean" && obj.disabled) {
-			obj.fire("beforeEnable");
-			obj.disabled = false;
-			obj.fire("afterEnable");
-		}
+		if (typeof obj.disabled === "boolean" && obj.disabled) obj.disabled = false;
 		return obj;
 	},
 
@@ -298,9 +285,6 @@ var element = {
 	/**
 	 * Hides an Element if it's visible
 	 *
-	 * Events: beforeHide  Fires before the object is hidden
-	 *         afterHide   Fires after the object is hidden
-	 *
 	 * @method hide
 	 * @param  {Mixed} obj Element or $ query
 	 * @return {Object}    Element
@@ -310,13 +294,11 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		obj.fire("beforeHide");
 		if (typeof obj.hidden === "boolean") obj.hidden = true;
 		else {
 			obj["data-display"] = obj.style.display;
 			obj.style.display = "none";
 		}
-		obj.fire("afterHide");
 		return obj;
 	},
 
@@ -355,9 +337,6 @@ var element = {
 	/**
 	 * Adds or removes a CSS class
 	 *
-	 * Events: beforeClassChange  Fires before the Object's class is changed
-	 *         afterClassChange   Fires after the Object's class is changed
-	 *
 	 * @method clear
 	 * @param  {Mixed}   obj Element or $ query
 	 * @param  {String}  arg Class to add or remove (can be a wildcard)
@@ -371,7 +350,6 @@ var element = {
 
 		if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
-		obj.fire("beforeClassChange");
 		add = (add !== false);
 		arg = arg.explode(" ");
 		if (add) array.each(arg, function (i) { obj.classList.add(i); });
@@ -382,7 +360,6 @@ var element = {
 				return false;
 			}
 		});
-		obj.fire("afterClassChange");
 		return obj;
 	},
 
@@ -482,9 +459,6 @@ var element = {
 	/**
 	 * Shows an Element if it's not visible
 	 *
-	 * Events: beforeEnable  Fires before the object is visible
-	 *         afterEnable   Fires after the object is visible
-	 *
 	 * @method show
 	 * @param  {Mixed} obj Element or $ query
 	 * @return {Object}    Element
@@ -494,10 +468,8 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		obj.fire("beforeShow");
 		if (typeof obj.hidden === "boolean") obj.hidden = false;
 		else obj.style.display = obj.getAttribute("data-display") !== null ? obj.getAttribute("data-display") : "inherit";
-		obj.fire("afterShow");
 		return obj;
 	},
 
@@ -572,9 +544,6 @@ var element = {
 	/**
 	 * Updates an Element
 	 *
-	 * Events: beforeUpdate  Fires before the update starts
-	 *         afterUpdate   Fires after the update ends
-	 *
 	 * @method update
 	 * @param  {Mixed}  obj  Element or $ query
 	 * @param  {Object} args Collection of properties
@@ -590,7 +559,6 @@ var element = {
 
 		regex = /innerHTML|innerText|textContent|type|src/;
 
-		obj.fire("beforeUpdate");
 		utility.iterate(args, function (v, k) {
 			if (regex.test(k)) obj[k] = v;
 			else if (k === "class") !v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
@@ -605,7 +573,6 @@ var element = {
 			}
 			else obj.attr(k, v);
 		});
-		obj.fire("afterUpdate");
 		return obj;
 	},
 
