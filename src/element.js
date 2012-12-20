@@ -280,6 +280,9 @@ var element = {
 	 */
 	hasClass : function (obj, klass) {
 		obj = utility.object(obj);
+
+		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+
 		return obj.classList.contains(klass);
 	},
 
