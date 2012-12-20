@@ -122,6 +122,7 @@ return {
 		obj = typeof obj === "object" ? obj : (this !== $ ? this : abaaso);
 		return observer.list(obj, event);
 	},
+	listenersTotal  : observer.sum,
 	log             : utility.log,
 	logging         : observer.log,
 	merge           : utility.merge,
