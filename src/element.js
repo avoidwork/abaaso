@@ -249,6 +249,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
+		utility.genId(obj);
 		array.each(arg.explode(), function (i) {
 			result = result.concat($("#" + obj.id + " " + i));
 		});
