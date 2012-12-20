@@ -1,7 +1,7 @@
 {
   "name": "abaaso",
   "description": "Enterprise class, light weight, RESTful JavaScript framework that provides a set of classes and object prototyping to ease the creation and maintenance of pure JavaScript applications.",
-  "version": "3.3.9",
+  "version": "3.3.10",
   "homepage": "http://abaaso.com",
   "author": {
     "name": "Jason Mulligan",
