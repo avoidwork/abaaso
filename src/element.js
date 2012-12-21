@@ -38,9 +38,9 @@ var element = {
 			target.selected = true;
 			target.setAttribute("selected", "selected");
 		}
-		else if (typeof value === "undefined") return obj.getAttribute(key);
+		else if (typeof value === "undefined") return typeof obj.getAttribute === "function" ? obj.getAttribute(key) : obj[key];
 		else if (value === null) obj.removeAttribute(key);
-		else obj.setAttribute(key, value);
+		else typeof obj.setAttribute === "function" ? obj.setAttribute(key, value) : obj[key] = value;
 		return obj;
 	},
 

@@ -855,7 +855,7 @@ var utility = {
 
 		utility.iterate(methods[type], function (v, k) {
 			// Allowing hooks to be overwritten for libs like d3 that require it
-			utility.property(obj.prototype, k, {value: v, configurable: true, writeable: true});
+			utility.property(obj.prototype, k, {value: v, configurable: true, writable: true});
 		});
 		return obj;
 	},
