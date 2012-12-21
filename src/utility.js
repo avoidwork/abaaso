@@ -345,16 +345,21 @@ var utility = {
 	 * Generates an ID value
 	 *
 	 * @method genId
-	 * @param  {Mixed} obj [Optional] Object to receive id
-	 * @return {Mixed}     Object or id
+	 * @param  {Mixed}   obj [Optional] Object to receive id
+	 * @param  {Boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
+	 * @return {Mixed}       Object or id
 	 */
-	genId : function (obj) {
+	genId : function (obj, dom) {
+		dom = (dom === true);
 		var id;
 
 		if (typeof obj !== "undefined" && ((typeof obj.id !== "undefined" && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
-		do id = utility.domId(utility.guid(true));
-		while (typeof $("#" + id) !== "undefined");
+		if (dom) {
+			do id = utility.domId(utility.guid(true));
+			while (typeof $("#" + id) !== "undefined");
+		}
+		else id = utility.domId(utility.guid(true));
 
 		if (typeof obj === "object") {
 			obj.id = id;

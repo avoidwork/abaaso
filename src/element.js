@@ -23,7 +23,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
-		utility.genId(obj);
+		utility.genId(obj, true);
 
 		if (regex.test(key) && typeof value === "undefined") return obj[key];
 		else if (regex.test(key) && typeof value !== "undefined") obj[key] = value;
@@ -93,7 +93,7 @@ var element = {
 		        && typeof args !== "string"
 		        && typeof args.childNodes === "undefined"
 		        && typeof args.id !== "undefined"
-		        && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId();
+		        && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId(undefined, true);
 
 		if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
@@ -251,7 +251,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
-		utility.genId(obj);
+		utility.genId(obj, true);
 		array.each(arg.explode(), function (i) {
 			result = result.concat($("#" + obj.id + " " + i));
 		});
