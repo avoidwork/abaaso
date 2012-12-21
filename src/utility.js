@@ -24,7 +24,7 @@ var utility = {
 		    obj, sel;
 
 		// Blocking node or DOM query of unique URIs via $.on()
-		if (server || String(arg).indexOf("?") > -1) return undefined;
+		if (server || typeof arg === "undefined" || String(arg).indexOf("?") > -1) return undefined;
 
 		arg      = arg.trim();
 		nodelist = (nodelist === true);
@@ -39,7 +39,7 @@ var utility = {
 
 		// Getting Element(s)
 		if (/\s|>/.test(arg)) {
-			sel = arg.split(" ").filter(function (i) { if (i.trim() !== "" && i !== ">") return true; }).last();
+			sel = array.last(arg.split(" ").filter(function (i) { if (string.trim(i) !== "" && i !== ">") return true; }));
 			obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
 		}
 		else if (arg.indexOf("#") === 0 && arg.indexOf(":") === -1) obj = isNaN(arg.charAt(1)) ? document.querySelector(arg) : document.getElementById(arg.substring(1));

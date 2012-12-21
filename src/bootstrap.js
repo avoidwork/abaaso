@@ -255,9 +255,6 @@ bootstrap = function () {
 	utility.proto(Number, "number");
 	utility.proto(String, "string");
 
-	// Creating a singleton
-	abaaso.constructor = abaaso;
-
 	// Creating error log
 	$.error.log = abaaso.error.log = [];
 
