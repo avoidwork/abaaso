@@ -97,7 +97,7 @@ var element = {
 
 		if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
-		$.fire("beforeCreate", uid);
+		observer.fire(abaaso, "beforeCreate", uid);
 		if (frag && target.parentNode !== null) target.parentNode.fire("beforeCreate", uid);
 
 		obj = !/svg/i.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -125,7 +125,7 @@ var element = {
 
 		if (!frag) target.fire("afterCreate", obj);
 		else if (frag && target.parentNode !== null) target.parentNode.fire("afterCreate", obj);
-		$.fire("afterCreate", obj);
+		observer.fire(abaaso, "afterCreate", obj);
 		
 		return obj;
 	},
@@ -191,10 +191,10 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		$.fire("beforeDestroy", obj);
+		observer.fire(abaaso, "beforeDestroy", obj);
 		observer.remove(obj.id);
 		if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
-		$.fire("afterDestroy", obj.id);
+		observer.fire(abaaso, "afterDestroy", obj.id);
 		return undefined;
 	},
 

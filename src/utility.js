@@ -310,7 +310,7 @@ var utility = {
 
 			utility.log(o.stack || o.message, !warning ? "error" : "warn");
 			$.error.log.push(o);
-			$.fire("error", o);
+			observer.fire(abaaso, "error", o);
 		}
 
 		return undefined;
