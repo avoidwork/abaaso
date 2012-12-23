@@ -491,8 +491,14 @@ var client = {
 					s = abaaso.state;
 					o = client.headers(xhr, uri, type);
 
-					if (type === "head") return uri.fire("afterHead", o.headers);
-					else if (type === "options") return uri.fire("afterOptions", o.headers);
+					if (type === "head") {
+						deferred.resolve(o.headers);
+						return uri.fire("afterHead", o.headers);
+					}
+					else if (type === "options") {
+						deferred.resolve(o.headers);
+						return uri.fire("afterOptions", o.headers);
+					}
 					else if (type !== "delete" && /200|201/.test(xhr.status)) {
 						t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
 						r = client.parse(xhr, t);

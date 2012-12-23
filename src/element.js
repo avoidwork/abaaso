@@ -23,7 +23,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
-		utility.genId(obj);
+		utility.genId(obj, true);
 
 		if (regex.test(key) && typeof value === "undefined") return obj[key];
 		else if (regex.test(key) && typeof value !== "undefined") obj[key] = value;
@@ -93,11 +93,11 @@ var element = {
 		        && typeof args !== "string"
 		        && typeof args.childNodes === "undefined"
 		        && typeof args.id !== "undefined"
-		        && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId();
+		        && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId(undefined, true);
 
 		if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
 
-		$.fire("beforeCreate", uid);
+		observer.fire(abaaso, "beforeCreate", uid);
 		if (frag && target.parentNode !== null) target.parentNode.fire("beforeCreate", uid);
 
 		obj = !/svg/i.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -125,7 +125,7 @@ var element = {
 
 		if (!frag) target.fire("afterCreate", obj);
 		else if (frag && target.parentNode !== null) target.parentNode.fire("afterCreate", obj);
-		$.fire("afterCreate", obj);
+		observer.fire(abaaso, "afterCreate", obj);
 		
 		return obj;
 	},
@@ -191,10 +191,10 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		$.fire("beforeDestroy", obj);
+		observer.fire(abaaso, "beforeDestroy", obj);
 		observer.remove(obj.id);
 		if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
-		$.fire("afterDestroy", obj.id);
+		observer.fire(abaaso, "afterDestroy", obj.id);
 		return undefined;
 	},
 
@@ -251,7 +251,7 @@ var element = {
 
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
-		utility.genId(obj);
+		utility.genId(obj, true);
 		array.each(arg.explode(), function (i) {
 			result = result.concat($("#" + obj.id + " " + i));
 		});

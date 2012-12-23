@@ -82,7 +82,7 @@ var filter = {
 		var instance = {},
 		    ref = [datalist];
 
-		if (!(obj instanceof Element) || (typeof datalist !== "undefined" && typeof datalist.store === "undefined") || (typeof filters !== "string" || String(filters).isEmpty())) throw Error($.label.error.invalidArguments);
+		if (!(obj instanceof Element) || (typeof datalist !== "undefined" && typeof datalist.store === "undefined") || (typeof filters !== "string" || String(filters).isEmpty())) throw Error(label.error.invalidArguments);
 
 		instance = utility.extend(filter.methods, {filters: {}});
 		instance.datalist = ref[0];

@@ -24,7 +24,7 @@ var utility = {
 		    obj, sel;
 
 		// Blocking node or DOM query of unique URIs via $.on()
-		if (server || String(arg).indexOf("?") > -1) return undefined;
+		if (server || typeof arg === "undefined" || String(arg).indexOf("?") > -1) return undefined;
 
 		arg      = arg.trim();
 		nodelist = (nodelist === true);
@@ -39,7 +39,7 @@ var utility = {
 
 		// Getting Element(s)
 		if (/\s|>/.test(arg)) {
-			sel = arg.split(" ").filter(function (i) { if (i.trim() !== "" && i !== ">") return true; }).last();
+			sel = array.last(arg.split(" ").filter(function (i) { if (string.trim(i) !== "" && i !== ">") return true; }));
 			obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
 		}
 		else if (arg.indexOf("#") === 0 && arg.indexOf(":") === -1) obj = isNaN(arg.charAt(1)) ? document.querySelector(arg) : document.getElementById(arg.substring(1));
@@ -310,7 +310,7 @@ var utility = {
 
 			utility.log(o.stack || o.message, !warning ? "error" : "warn");
 			$.error.log.push(o);
-			$.fire("error", o);
+			observer.fire(abaaso, "error", o);
 		}
 
 		return undefined;
@@ -345,16 +345,21 @@ var utility = {
 	 * Generates an ID value
 	 *
 	 * @method genId
-	 * @param  {Mixed} obj [Optional] Object to receive id
-	 * @return {Mixed}     Object or id
+	 * @param  {Mixed}   obj [Optional] Object to receive id
+	 * @param  {Boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
+	 * @return {Mixed}       Object or id
 	 */
-	genId : function (obj) {
+	genId : function (obj, dom) {
+		dom = (dom === true);
 		var id;
 
 		if (typeof obj !== "undefined" && ((typeof obj.id !== "undefined" && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
-		do id = utility.domId(utility.guid(true));
-		while (typeof $("#" + id) !== "undefined");
+		if (dom) {
+			do id = utility.domId(utility.guid(true));
+			while (typeof $("#" + id) !== "undefined");
+		}
+		else id = utility.domId(utility.guid(true));
 
 		if (typeof obj === "object") {
 			obj.id = id;
