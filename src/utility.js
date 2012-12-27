@@ -741,7 +741,7 @@ var utility = {
 			           has      : function (arg) { return element.has(this, arg); },
 			           hasClass : function (arg) { return element.hasClass(this, arg); },
 			           hide     : function () { return element.hide(this); },
-			           html     : function (arg) { return typeof arg === "undefined" ? this.innerHTML : this.update({innerHTML: arg}); },
+			           html     : function (arg) { return typeof arg === "undefined" ? string.trim(this.innerHTML) : this.update({innerHTML: arg}); },
 			           is       : function (arg) { return element.is(this, arg); },
 			           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : element.text(this)}).pass; },
 			           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : element.text(this)}).pass; },
