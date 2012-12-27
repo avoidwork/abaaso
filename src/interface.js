@@ -105,6 +105,7 @@ return {
 	genId           : utility.genId,
 	get             : function (uri, success, failure, headers, timeout) { return client.request(uri, "GET", success, failure, null, headers, timeout); },
 	guid            : utility.guid,
+	hash            : route.hash,
 	headers         : function (uri, success, failure, timeout) { return client.request(uri, "HEAD", success, failure, null, {}, timeout); },
 	hidden          : element.hidden,
 	hook            : observer.hook,
