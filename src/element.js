@@ -20,7 +20,7 @@ var element = {
 
 		obj = utility.object(obj);
 
-		if (!(obj instanceof Element) || typeof key == "undefined" || String(key).isEmpty()) throw Error(label.error.invalidArguments);
+		if (!(obj instanceof Element) || key == undefined || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
 		utility.genId(obj, true);
 
@@ -37,7 +37,7 @@ var element = {
 			target.selected = true;
 			target.setAttribute("selected", "selected");
 		}
-		else if (typeof value === "undefined") return obj.getAttribute(key);
+		else if (value === undefined) return obj.getAttribute(key);
 		else if (value === null) obj.removeAttribute(key);
 		else obj.setAttribute(key, value);
 
