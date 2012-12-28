@@ -19,38 +19,46 @@ var utility = {
 	 * @return {Mixed}            Element or Array of Elements
 	 */
 	$ : function (arg, nodelist) {
-		var result = [],
-		    tmp    = [],
-		    obj, sel;
+		if (server || arg === undefined) return undefined;
 
-		// Blocking node or DOM query of unique URIs via $.on()
-		if (server || typeof arg === "undefined" || String(arg).indexOf("?") > -1) return undefined;
+		var queries       = [],
+		    result        = [],
+		    tmp           = [],
+		    REGEX_HASH    = /\#/,
+		    REGEX_MANY    = /\:|\./,
+		    REGEX_COMPLEX = /\s|\>/;
 
-		arg      = arg.trim();
+		queries  = string.explode(string.trim(arg));
 		nodelist = (nodelist === true);
 
-		// Recursive processing, ends up below
-		if (arg.indexOf(",") > -1) arg = arg.explode();
-		if (arg instanceof Array) {
-			array.each(arg, function (i) { tmp.push($(i, nodelist)); });
-			array.each(tmp, function (i) { result = result.concat(i); });
-			return result;
-		}
+		array.each(queries, function (query) {
+			var obj, sel;
 
-		// Getting Element(s)
-		if (/\s|>/.test(arg)) {
-			sel = array.last(arg.split(" ").filter(function (i) { if (string.trim(i) !== "" && i !== ">") return true; }));
-			obj = document[sel.indexOf("#") > -1 && sel.indexOf(":") === -1 ? "querySelector" : "querySelectorAll"](arg);
-		}
-		else if (arg.indexOf("#") === 0 && arg.indexOf(":") === -1) obj = isNaN(arg.charAt(1)) ? document.querySelector(arg) : document.getElementById(arg.substring(1));
-		else if (arg.indexOf("#") > -1 && arg.indexOf(":") === -1) obj = document.querySelector(arg);
-		else obj = document.querySelectorAll(arg);
+			if (REGEX_COMPLEX.test(query)) {
+				sel = array.last(query.split(" ").filter(function (i) { if (!i.isEmpty() && i !== ">") return true; }));
+				if (REGEX_HASH.test(sel) && !REGEX_MANY.test(sel)) obj = document.querySelector(query);
+				else {
+					obj = document.querySelectorAll(query);
+					if (!nodelist) obj = array.cast(obj);
+				}
+			}
+			else if (REGEX_HASH.test(query) && !REGEX_MANY.test(query)) obj = document.querySelector(queries)
+			else {
+				obj = document.querySelectorAll(queries);
+				if (!nodelist) obj = array.cast(obj);
+			}
 
-		// Transforming obj if required
-		if (typeof obj !== "undefined" && obj !== null && !(obj instanceof Element) && !nodelist) obj = array.cast(obj);
-		if (obj === null) obj = undefined;
+			if (obj === null) obj = undefined;
+			tmp.push(obj);
+		});
 
-		return obj;
+		array.each(tmp, function (i) {
+			result = result.concat(i);
+		});
+
+		if (REGEX_HASH.test(arg) && !REGEX_MANY.test(arg) && !REGEX_COMPLEX.test(arg) && result.length === 1) result = result[0];
+
+		return result;
 	},
 
 	/**
