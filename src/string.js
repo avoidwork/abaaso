@@ -23,7 +23,7 @@ var string = {
 	 * @return {String}     Escaped string
 	 */
 	escape : function (obj) {
-		return obj.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+		return obj.replace(regex.escape, "\\$&");
 	},
 
 	/**
@@ -34,7 +34,7 @@ var string = {
 	 * @return {Array}      Array of the exploded String
 	 */
 	explode : function (obj, arg) {
-		if (typeof arg === "undefined" || arg.toString() === "") arg = ",";
+		if (arg === undefined || arg.toString() === "") arg = ",";
 		return string.trim(obj).split(new RegExp("\\s*" + arg + "\\s*"));
 	},
 
@@ -50,8 +50,8 @@ var string = {
 
 		camel = (camel === true);
 
-		result = string.trim(obj).replace(/\s+/g, "-");
-		if (camel) result = result.replace(/([A-Z])/g, "-\$1").toLowerCase();
+		result = string.trim(obj).replace(regex.spaces, "-");
+		if (camel) result = result.replace(regex.caps, "-\$1").toLowerCase();
 		return result;
 	},
 
@@ -62,7 +62,7 @@ var string = {
 	 * @return {String}     Transformed string
 	 */
 	singular : function (obj) {
-		return /s$/.test(obj) ? obj.slice(0, -1) : obj;
+		return regex.plural.test(obj) ? obj.slice(0, -1) : obj;
 	},
 
 	/**
@@ -72,7 +72,7 @@ var string = {
 	 * @return {String}     Camel case String
 	 */
 	toCamelCase : function (obj) {
-		var s = string.trim(obj).toLowerCase().split(/\s|-/),
+		var s = string.trim(obj).toLowerCase().split(regex.space_hyphen),
 		    r = [];
 
 		array.each(s, function (i, idx) {
@@ -90,7 +90,7 @@ var string = {
 	 * @return {String}     Trimmed String
 	 */
 	trim : function (obj) {
-		return obj.replace(/^\s+|\s+$/g, "");
+		return obj.replace(regex.whitespace, "");
 	},
 
 	/**

@@ -29,7 +29,7 @@ var data = {
 			sync    = (sync === true);
 			chunk   = chunk || 1000;
 
-			if (!/^(set|del|delete)$/.test(type) || (sync && /^del/.test(type)) || typeof data !== "object") throw Error(label.error.invalidArguments);
+			if (!regex.set_del.test(type) || (sync && regex.del.test(type)) || typeof data !== "object") throw Error(label.error.invalidArguments);
 
 			var obj      = this.parentNode,
 			    self     = this,
@@ -37,12 +37,11 @@ var data = {
 			    nth      = data.length,
 			    f        = false,
 			    guid     = utility.genId(true),
-			    root     = /^\/[^\/]/,
 			    deferred = promise.factory(),
 			    completed, failure, key, set, del, success, parsed;
 
 			deferred.then(function (arg) {
-				if (/^del/.test(type)) self.reindex();
+				if (regex.del.test(type)) self.reindex();
 				self.loaded = true;
 				obj.fire("afterDataBatch", arg);
 				if (future instanceof Promise) future.resolve(arg);
@@ -71,7 +70,7 @@ var data = {
 					if (!self.collections.contains(k)) rec[k] = utility.clone(v);
 				});
 
-				if (self.key !== null && typeof rec[self.key] !== "undefined") {
+				if (self.key !== null && rec[self.key] !== undefined) {
 					key = rec[self.key];
 					delete rec[self.key];
 				}
@@ -126,12 +125,12 @@ var data = {
 									if (i.charAt(0) !== "/") i = self.uri + "/" + i;
 
 									// Root path, relative to store, i.e. a domain
-									else if (self.uri !== null && root.test(i)) {
+									else if (self.uri !== null && regex.root.test(i)) {
 										parsed = utility.parse(self.uri);
 										i      = parsed.protocol + "//" + parsed.host + i;
 									}
 
-									idx = i.replace(/.*\//, "");
+									idx = i.replace(regex.not_endpoint, "");
 									if (idx.isEmpty()) return;
 
 									i.get(function (arg) {
@@ -139,7 +138,7 @@ var data = {
 									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
 								}
 								else {
-									idx = i.replace(/.*\//, "");
+									idx = i.replace(regex.not_endpoint, "");
 									if (idx.isEmpty()) return;
 									i.get(function (arg) {
 										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
@@ -322,13 +321,12 @@ var data = {
 		 * @return {Object}          Data store
 		 */
 		del : function (record, reindex, sync, future) {
-			if (typeof record === "undefined" || !/number|string/.test(typeof record)) throw Error(label.error.invalidArguments);
+			if (record === undefined || !regex.number_string.test(typeof record)) throw Error(label.error.invalidArguments);
 
 			reindex      = (reindex !== false);
 			sync         = (sync === true);
 			var obj      = this.parentNode,
 			    self     = this,
-			    r        = /true|undefined/,
 			    deferred = promise.factory(),
 			    key, args, uri, p;
 
@@ -342,7 +340,7 @@ var data = {
 				if (arg.reindex) self.reindex();
 				utility.iterate(record.data, function (v, k) {
 					if (v === null) return;
-					if (typeof v.data !== "undefined" && typeof v.data.teardown === "function") v.data.teardown();
+					if (v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
 				});
 				obj.fire("afterDataDelete", record);
 				if (future instanceof Promise) future.resolve(arg);
@@ -374,7 +372,7 @@ var data = {
 			obj.fire("beforeDataDelete", args);
 
 			if (sync || (this.callback !== null) || (this.uri === null)) deferred.resolve(args);
-			else if (r.test(p)) {
+			else if (regex.true_undefined.test(p)) {
 				uri.del(function (arg) {
 					deferred.resolve(args);
 				}, function (e) {
@@ -395,7 +393,7 @@ var data = {
 		 * @return {Array}            Array of results
 		 */
 		find : function (needle, haystack, modifiers) {
-			if (typeof needle === "undefined") throw Error(label.error.invalidArguments);
+			if (needle === undefined) throw Error(label.error.invalidArguments);
 
 			var result = [],
 			    keys   = [],
@@ -408,7 +406,7 @@ var data = {
 			// Preparing parameters
 			if (!fn) {
 				needle = typeof needle === "string" ? needle.explode() : [needle];
-				if (typeof modifiers === "undefined" || String(modifiers).isEmpty()) modifiers = "gi";
+				if (modifiers === undefined || String(modifiers).isEmpty()) modifiers = "gi";
 				else if (modifiers === null) modifiers = "";
 			}
 			haystack = typeof haystack === "string" ? haystack.explode() : null;
@@ -442,7 +440,7 @@ var data = {
 				array.each(this.records, function (r) {
 					array.each(haystack, function (h) {
 						if (keys.contains(r.key)) return false;
-						if (typeof r.data[h] === "undefined" || typeof r.data[h].data === "object") return;
+						if (r.data[h] === undefined || typeof r.data[h].data === "object") return;
 
 						if (!fn) {
 							array.each(needle, function (n) {
@@ -488,13 +486,13 @@ var data = {
 			if (empty) record = this.get(0);
 			else if (!(record instanceof Object)) record = this.get(record);
 
-			if (typeof record === "undefined") throw Error(label.error.invalidArguments);
+			if (record === undefined) throw Error(label.error.invalidArguments);
 			else if (this.uri !== null && !this.uri.allows("post")) throw Error(label.error.serverInvalidMethod);
 
 			key  = record.key;
 			data = record.data;
 
-			if (typeof target !== "undefined") target = utility.object(target);
+			if (target !== undefined) target = utility.object(target);
 			if (this.uri !== null) {
 				entity = this.uri.replace(/.*\//, "").replace(/\?.*/, "")
 				if (entity.isDomain()) entity = entity.replace(/\..*/g, "");
@@ -526,7 +524,7 @@ var data = {
 						break;
 					case true:
 						array.each(nodes, function (i) {
-							if (typeof i.type !== "undefined" && /button|submit|reset/.test(i.type)) return;
+							if (typeof i.type !== "undefined" && regex.input_button.test(i.type)) return;
 							utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 						});
 						guid = utility.genId(true);
@@ -608,7 +606,7 @@ var data = {
 			});
 
 			// Create stub or teardown existing data store
-			if (typeof this.keys[key] !== "undefined") {
+			if (this.keys[key] !== undefined) {
 				idx = this.keys[key];
 				if (typeof this.records[idx].data.teardown === "function") this.records[idx].data.teardown();
 			}
@@ -622,10 +620,10 @@ var data = {
 			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
 
 			// Constructing relational URI
-			if (this.uri !== null && typeof uri === "undefined" && !this.leafs.contains(key)) uri = this.uri + "/" + key;
+			if (this.uri !== null && uri === undefined && !this.leafs.contains(key)) uri = this.uri + "/" + key;
 			
 			// Conditionally making the store RESTful
-			if (typeof uri !== "undefined") this.records[idx].data.setUri(uri, deferred);
+			if (uri !== undefined) this.records[idx].data.setUri(uri, deferred);
 			else deferred.resolve(this.records[idx].data.get());
 
 			return this.records[idx].data;
@@ -722,21 +720,20 @@ var data = {
 			if (key === null) key = undefined;
 			sync    = (sync === true);
 
-			if (((typeof key === "undefined" || String(key).isEmpty()) && this.uri === null) || (typeof data === "undefined")) throw Error(label.error.invalidArguments);
+			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
 			else if (data instanceof Array) return this.generate(key).batch("set", data, true, future);
 			else if ((data instanceof Number) || (data instanceof String) || (typeof data !== "object")) throw Error(label.error.invalidArguments);
 
-			var record   = typeof key === "undefined" ? undefined : this.get(key),
+			var record   = key === undefined ? undefined : this.get(key),
 			    obj      = this.parentNode,
-			    method   = typeof key === "undefined" ? "post" : "put",
+			    method   = key === undefined ? "post" : "put",
 			    self     = this,
 			    args     = {data: {}, key: key, record: undefined},
 			    uri      = this.uri,
-			    r        = /true|undefined/,
 			    deferred = promise.factory(),
 			    p;
 
-			if (typeof record !== "undefined") {
+			if (record !== undefined) {
 				args.record = this.records[this.keys[record.key]];
 				utility.iterate(args.record.data, function (v, k) {
 					if (!self.collections.contains(k) && !self.ignore.contains(k)) args.data[k] = v;
@@ -841,7 +838,7 @@ var data = {
 			obj.fire("beforeDataSet", {key: key, data: data});
 
 			if (sync || this.callback !== null || this.uri === null) deferred.resolve(args);
-			else if (r.test(p)) {
+			else if (regex.true_undefined.test(p)) {
 				uri[method](function (arg) {
 					args["result"] = arg;
 					deferred.resolve(args);
@@ -924,16 +921,12 @@ var data = {
 		 * @return {Array}               View of data
 		 */
 		sort : function (query, create, sensitivity) {
-			if (typeof query === "undefined" || String(query).isEmpty()) throw Error(label.error.invalidArguments);
-			if (!/ci|cs|ms/.test(sensitivity)) sensitivity = "ci";
+			if (query === undefined || String(query).isEmpty()) throw Error(label.error.invalidArguments);
+			if (!regex.sensitivity_types.test(sensitivity)) sensitivity = "ci";
 
 			create       = (create === true);
-			var view     = (query.replace(/\s*asc/g, "").replace(/,/g, " ").toCamelCase()) + sensitivity.toUpperCase(),
+			var view     = (query.replace(regex.asc, "").replace(",", " ").toCamelCase()) + sensitivity.toUpperCase(),
 			    queries  = query.explode(),
-			    needle   = /:::(.*)$/,
-			    asc      = /\s*asc$/i,
-			    desc     = /\s*desc$/i,
-			    nil      = /^null/,
 			    key      = this.key,
 			    result   = [],
 			    bucket, sort, crawl;
@@ -952,7 +945,7 @@ var data = {
 				    result  = [];
 
 				queries.remove(0);
-				sorted = bucket(query, data, desc.test(query));
+				sorted = bucket(query, data, regex.desc.test(query));
 				array.each(sorted.order, function (i) {
 					if (sorted.registry[i].length < 2) return;
 					if (queries.length > 0) sorted.registry[i] = crawl(queries, sorted.registry[i]);
@@ -964,8 +957,8 @@ var data = {
 			}
 
 			bucket = function (query, records, reverse) {
-				query        = query.replace(asc, "");
-				var prop     = query.replace(desc, ""),
+				query        = query.replace(regex.asc, "");
+				var prop     = query.replace(regex.desc, ""),
 				    pk       = (key === prop),
 				    order    = [],
 				    registry = {};
@@ -1011,8 +1004,8 @@ var data = {
 				array.each(data, function (i, idx) {
 					var v  = pk ? i.key : i.data[prop];
 
-					v = String(v).trim() + ":::" + idx;
-					tmp.push(v.replace(nil, "\"\""));
+					v = string.trim(v) + ":::" + idx;
+					tmp.push(v.replace(regex.nil, "\"\""));
 				});
 
 				if (tmp.length > 1) {
@@ -1021,7 +1014,7 @@ var data = {
 				}
 
 				array.each(tmp, function (v) {
-					sorted.push(data[needle.exec(v)[1]]);
+					sorted.push(data[regex.sort_needle.exec(v)[1]]);
 				});
 				return sorted;
 			};
@@ -1043,12 +1036,11 @@ var data = {
 			var record  = false,
 			    self    = this,
 			    session = (type === "session" && typeof sessionStorage !== "undefined"),
-			    ns      = /number|string/,
 			    result, key, data;
 
 			if (!/number|object|string/.test(typeof obj) || !/get|remove|set/.test(op)) throw Error(label.error.invalidArguments);
 
-			record = (ns.test(obj) || (obj.hasOwnProperty("key") && !obj.hasOwnProperty("parentNode")));
+			record = (regex.number_string.test(obj) || (obj.hasOwnProperty("key") && !obj.hasOwnProperty("parentNode")));
 			if (record && !(obj instanceof Object)) obj = this.get(obj);
 			key    = record ? obj.key : obj.parentNode.id;
 
@@ -1119,7 +1111,7 @@ var data = {
 					}
 				});
 
-				if (typeof data === "undefined") data = [arg];
+				if (data === undefined) data = [arg];
 
 				deferred.then(function (arg) {
 					var data = [];

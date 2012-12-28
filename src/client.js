@@ -5,21 +5,21 @@
  * @namespace abaaso
  */
 var client = {
-	android : (function () { return !server && /android/i.test(navigator.userAgent); })(),
-	blackberry : (function () { return !server && /blackberry/i.test(navigator.userAgent); })(),
-	chrome  : (function () { return !server && /chrome/i.test(navigator.userAgent); })(),
-	firefox : (function () { return !server && /firefox/i.test(navigator.userAgent); })(),
-	ie      : (function () { return !server && /msie/i.test(navigator.userAgent); })(),
-	ios     : (function () { return !server && /ipad|iphone/i.test(navigator.userAgent); })(),
-	linux   : (function () { return !server && /linux|bsd|unix/i.test(navigator.userAgent); })(),
-	mobile  : (function () { abaaso.client.mobile = this.mobile = !server && (/blackberry|iphone|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.height < 720 || abaaso.client.size.width < 720))); }),
-	playbook: (function () { return !server && /playbook/i.test(navigator.userAgent); })(),
-	opera   : (function () { return !server && /opera/i.test(navigator.userAgent); })(),
-	osx     : (function () { return !server && /macintosh/i.test(navigator.userAgent); })(),
-	safari  : (function () { return !server && /safari/i.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-	tablet  : (function () { abaaso.client.tablet = this.tablet = !server && (/ipad|playbook|webos/i.test(navigator.userAgent) || (/android/i.test(navigator.userAgent) && (abaaso.client.size.width >= 720 || abaaso.client.size.width >= 720))); }),
-	webos   : (function () { return !server && /webos/i.test(navigator.userAgent); })(),
-	windows : (function () { return !server && /windows/i.test(navigator.userAgent); })(),
+	android : (function () { return !server && regex.android.test(navigator.userAgent); })(),
+	blackberry : (function () { return !server && regex.blackberry.test(navigator.userAgent); })(),
+	chrome  : (function () { return !server && regex.chrome.test(navigator.userAgent); })(),
+	firefox : (function () { return !server && regex.firefox.test(navigator.userAgent); })(),
+	ie      : (function () { return !server && regex.ie.test(navigator.userAgent); })(),
+	ios     : (function () { return !server && regex.ios.test(navigator.userAgent); })(),
+	linux   : (function () { return !server && regex.linux.test(navigator.userAgent); })(),
+	mobile  : (function () { abaaso.client.mobile = this.mobile = !server && (/blackberry|iphone|webos/i.test(navigator.userAgent) || (regex.android.test(navigator.userAgent) && (abaaso.client.size.height < 720 || abaaso.client.size.width < 720))); }),
+	playbook: (function () { return !server && regex.playbook.test(navigator.userAgent); })(),
+	opera   : (function () { return !server && regex.opera.test(navigator.userAgent); })(),
+	osx     : (function () { return !server && regex.osx.test(navigator.userAgent); })(),
+	safari  : (function () { return !server && regex.safari.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
+	tablet  : (function () { abaaso.client.tablet = this.tablet = !server && (/ipad|playbook|webos/i.test(navigator.userAgent) || (regex.android.test(navigator.userAgent) && (abaaso.client.size.width >= 720 || abaaso.client.size.width >= 720))); }),
+	webos   : (function () { return !server && regex.webos.test(navigator.userAgent); })(),
+	windows : (function () { return !server && regex.windows.test(navigator.userAgent); })(),
 	version : (function () {
 		var version = 0;
 		switch (true) {
@@ -40,7 +40,7 @@ var client = {
 				version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "");
 				break;
 			default:
-				version = (typeof navigator !== "undefined") ? navigator.appVersion : 0;
+				version = (navigator !== undefined) ? navigator.appVersion : 0;
 		}
 		version = !isNaN(parseInt(version)) ? parseInt(version) : 0;
 		abaaso.client.version = this.version = version;
@@ -63,9 +63,9 @@ var client = {
 		var result = false,
 		    bit    = 0;
 
-		if (command === "delete")                      bit = 1;
-		else if (/^(head|get|options)$/.test(command)) bit = 4;
-		else if (/^(post|put)$/.test(command))         bit = 2;
+		if (regex.del.test(command))              bit = 1;
+		else if (regex.get_headers.test(command)) bit = 4;
+		else if (regex.put_post.test(command))    bit = 2;
 
 		result = !((client.permissions(uri, command).bit & bit) === 0);
 		return result;
@@ -131,7 +131,7 @@ var client = {
 	 * @private
 	 */
 	headers : function (xhr, uri, type) {
-		var headers = String(xhr.getAllResponseHeaders()).trim().split("\n"),
+		var headers = string.trim(xhr.getAllResponseHeaders()).split("\n"),
 		    items   = {},
 		    o       = {},
 		    allow   = null,
@@ -168,13 +168,13 @@ var client = {
 		});
 
 		switch (true) {
-			case typeof items["Cache-Control"] !== "undefined" && /no/.test(items["Cache-Control"]):
-			case typeof items["Pragma"] !== "undefined" && /no/.test(items["Pragma"]):
+			case items["Cache-Control"] !== undefined && regex.no.test(items["Cache-Control"]):
+			case items["Pragma"] !== undefined        && regex.no.test(items["Pragma"]):
 				break;
-			case typeof items["Cache-Control"] !== "undefined" && /\d/.test(items["Cache-Control"]):
-				expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
+			case items["Cache-Control"] !== undefined && regex.number_present.test(items["Cache-Control"]):
+				expires = expires.setSeconds(expires.getSeconds() + parseInt(regex.number_present.exec(items["Cache-Control"])[0]));
 				break;
-			case typeof items["Expires"] !== "undefined":
+			case items["Expires"] !== undefined:
 				expires = new Date(items["Expires"]);
 				break;
 			default:
@@ -206,13 +206,13 @@ var client = {
 		var result, obj;
 
 		switch (true) {
-			case (/json|plain|javascript/.test(type) || type.isEmpty()) && Boolean(obj = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText), true)):
+			case (regex.json_maybe.test(type) || type.isEmpty()) && Boolean(obj = json.decode(regex.json_wrap.exec(xhr.responseText), true)):
 				result = obj;
 				break;
-			case (/xml/.test(type) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
-				result = xml.decode(typeof xhr.responseXML.xml !== "undefined" ? xhr.responseXML.xml : xhr.responseXML);
+			case (regex.xml.test(type) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
+				result = xml.decode(xhr.responseXML.xml !== undefined ? xhr.responseXML.xml : xhr.responseXML);
 				break;
-			case (/<[^>]+>[^<]*]+>/.test(xhr.responseText)):
+			case regex.is_xml.test(xhr.responseText):
 				result = xml.decode(xhr.responseText);
 				break;
 			default:
@@ -259,19 +259,19 @@ var client = {
 		    callback, cbid, s;
 
 		// Utilizing the sugar if namespace is not global
-		if (typeof external === "undefined") {
-			if (typeof global.abaaso === "undefined") utility.define("abaaso.callback", {}, global);
+		if (external === undefined) {
+			if (global.abaaso === undefined) utility.define("abaaso.callback", {}, global);
 			external = "abaaso";
 		}
 
 		switch (true) {
-			case typeof args === "undefined":
+			case args === undefined:
 			case args === null:
-			case args instanceof Object && (args.callback === null || typeof args.callback === "undefined"):
+			case args instanceof Object && (args.callback === null || args.callback === undefined):
 			case typeof args === "string" && args.isEmpty():
 				callback = "callback";
 				break;
-			case args instanceof Object && typeof args.callback !== "undefined":
+			case args instanceof Object && args.callback !== undefined:
 				callback = args.callback;
 				break;
 			default:
@@ -287,7 +287,7 @@ var client = {
 		});
 
 		do cbid = utility.genId().slice(0, 10);
-		while (typeof global.abaaso.callback[cbid] !== "undefined");
+		while (global.abaaso.callback[cbid] !== undefined);
 
 		uri = uri.replace(callback + "=?", callback + "=" + external + ".callback." + cbid);
 
@@ -295,19 +295,14 @@ var client = {
 			clearTimeout(utility.timer[cbid]);
 			delete utility.timer[cbid];
 			delete global.abaaso.callback[cbid];
-			deferred.resolve(arg);
+			if (!deferred.resolved()) deferred.resolve(arg);
 			s.destroy();
 		};
 
 		s = $("head")[0].create("script", {src: uri, type: "text/javascript"});
 		
 		utility.defer(function () {
-			try {
-				deferred.reject(undefined);
-			}
-			catch (e) {
-				error(e, arguments, this);
-			}
+			if (!deferred.resolved()) deferred.reject(undefined);
 		}, 30000, cbid);
 
 		return uri;
@@ -338,13 +333,13 @@ var client = {
 		timeout = timeout || 30000;
 		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob, deferred;
 
-		if (/^(post|put)$/i.test(type) && typeof args === "undefined") throw Error(label.error.invalidArguments);
+		if (regex.put_post.test(type) && args === undefined) throw Error(label.error.invalidArguments);
 
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
 		cors         = client.cors(uri);
 		xhr          = (client.ie && client.version < 10 && cors) ? new XDomainRequest() : new XMLHttpRequest();
-		payload      = /^(post|put)$/i.test(type) && typeof args !== "undefined" ? args : null;
+		payload      = regex.put_post.test(type) && args !== undefined ? args : null;
 		cached       = type === "get" ? cache.get(uri) : false;
 		typed        = type.capitalize();
 		contentType  = null;
@@ -365,9 +360,9 @@ var client = {
 
 		uri.fire("before" + typed);
 
-		if (!/^(head|options)$/.test(type) && uri.allows(type) === false) {
+		if (!regex.get_headers.test(type) && uri.allows(type) === false) {
 			xhr.status = 405;
-			deferred.reject(null);
+			if (!deferred.resolved()) deferred.reject(null);
 			return uri.fire("failed" + typed, null, xhr);
 		}
 
@@ -378,7 +373,7 @@ var client = {
 				xhr.status      = 200;
 				xhr._resheaders = cached.headers;
 			}
-			deferred.resolve(cached.response);
+			if (!deferred.resolved()) deferred.resolve(cached.response);
 			uri.fire("afterGet", cached.response, xhr);
 			xhr = null;
 		}
@@ -388,14 +383,14 @@ var client = {
 			};
 
 			// Setting timeout
-			try { if (typeof xhr.timeout !== "undefined") xhr.timeout = timeout; }
+			try { if (xhr.timeout !== undefined) xhr.timeout = timeout; }
 			catch (e) { void 0; }
 
 			// Setting events
-			if (typeof xhr.onerror    !== "undefined") xhr.onerror    = function (e) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); };
-			if (typeof xhr.ontimeout  !== "undefined") xhr.ontimeout  = function (e) { deferred.reject(e); uri.fire("timeout" + typed, e, xhr); };
-			if (typeof xhr.onprogress !== "undefined") xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
-			if (typeof xhr.upload     !== "undefined" && typeof xhr.upload.onprogress !== "undefined") xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
+			if (xhr.onerror    !== undefined) xhr.onerror    = function (e) { if (!deferred.resolved()) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); }};
+			if (xhr.ontimeout  !== undefined) xhr.ontimeout  = function (e) { if (!deferred.resolved()) { deferred.reject(e); uri.fire("timeout" + typed, e, xhr); }};
+			if (xhr.onprogress !== undefined) xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
+			if (xhr.upload     !== undefined && xhr.upload.onprogress !== undefined) xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
 
 			try {
 				xhr.open(type.toUpperCase(), uri, true);
@@ -408,7 +403,7 @@ var client = {
 				if (payload !== null) {
 					if (payload.hasOwnProperty("xml")) payload = payload.xml;
 					if (doc && payload instanceof Document) payload = xml.decode(payload);
-					if (typeof payload === "string" && /<[^>]+>[^<]*]+>/.test(payload)) contentType = "application/xml";
+					if (typeof payload === "string" && regex.is_xml.test(payload)) contentType = "application/xml";
 					if (!(ab && payload instanceof ArrayBuffer) && !(blob && payload instanceof Blob) && payload instanceof Object) {
 						contentType = "application/json";
 						payload = json.encode(payload);
@@ -418,7 +413,7 @@ var client = {
 				}
 
 				// Setting headers
-				if (typeof xhr.setRequestHeader !== "undefined") {
+				if (xhr.setRequestHeader !== undefined) {
 					if (typeof cached === "object" && cached.headers.hasOwnProperty("ETag")) xhr.setRequestHeader("ETag", cached.headers.ETag);
 					if (headers === null) headers = {};
 					if (contentType !== null) headers["Content-Type"] = contentType;
@@ -436,7 +431,7 @@ var client = {
 			}
 			catch (e) {
 				error(e, arguments, this, true);
-				deferred.reject(e);
+				if (!deferred.resolved()) deferred.reject(e);
 				uri.fire("failed" + typed, client.parse(xhr), xhr);
 			}
 		}
@@ -469,12 +464,12 @@ var client = {
 		var typed = type.toLowerCase().capitalize(),
 		    l     = location,
 		    state = null,
-		    xdr   = client.ie && typeof xhr.readyState === "undefined",
+		    xdr   = client.ie && xhr.readyState === undefined,
 		    exception, s, o, r, t, x;
 
 		// server-side exception handling
 		exception = function (e, xhr) {
-			future.reject(e);
+			if (!future.resolved()) future.reject(e);
 			error(e, arguments, this, true);
 			uri.fire("failed" + typed, client.parse(xhr), xhr);
 		};
@@ -494,21 +489,21 @@ var client = {
 					o = client.headers(xhr, uri, type);
 
 					if (type === "head") {
-						future.resolve(o.headers);
+						if (!future.resolved()) future.resolve(o.headers);
 						xhr.onreadystatechange = null;
 						xhr = null;
 						return uri.fire("afterHead", o.headers);
 					}
 					else if (type === "options") {
-						future.resolve(o.headers);
+						if (!future.resolved()) future.resolve(o.headers);
 						xhr.onreadystatechange = null;
 						xhr = null;
 						return uri.fire("afterOptions", o.headers);
 					}
 					else if (type !== "delete" && /200|201/.test(xhr.status)) {
-						t = typeof o.headers["Content-Type"] !== "undefined" ? o.headers["Content-Type"] : "";
+						t = o.headers["Content-Type"] || "";
 						r = client.parse(xhr, t);
-						if (typeof r === "undefined") throw Error(label.error.serverError);
+						if (r === undefined) throw Error(label.error.serverError);
 						cache.set(uri, "response", (o.response = utility.clone(r)));
 					}
 
@@ -520,22 +515,22 @@ var client = {
 					switch (xhr.status) {
 						case 200:
 						case 201:
-							future.resolve(r);
+							if (!future.resolved()) future.resolve(r);
 							uri.fire("after" + typed, r, xhr);
 							break;
 						case 202:
 						case 203:
 						case 204:
 						case 206:
-							future.resolve(null);
+							if (!future.resolved()) future.resolve(null);
 							uri.fire("after" + typed, null, xhr);
 							break;
 						case 205:
-							future.resolve(null);
+							if (!future.resolved()) future.resolve(null);
 							uri.fire("reset", null, xhr);
 							break;
 						case 301:
-							future.resolve(r);
+							if (!future.resolved()) future.resolve(r);
 							uri.fire("moved", r, xhr);
 							break;
 					}
@@ -558,12 +553,12 @@ var client = {
 			xhr = null;
 		}
 		else if (xdr) {
-			if (Boolean(x = json.decode(/[\{\[].*[\}\]]/.exec(xhr.responseText)))) r = x;
-			else if (/<[^>]+>[^<]*]+>/.test(xhr.responseText)) r = xml.decode(xhr.responseText);
+			if (Boolean(x = json.decode(regex.json_wrap.exec(xhr.responseText)))) r = x;
+			else if (regex.is_xml.test(xhr.responseText)) r = xml.decode(xhr.responseText);
 			else r = xhr.responseText;
 			cache.set(uri, "permission", client.bit(["get"]));
 			cache.set(uri, "response", r);
-			future.resolve(r);
+			if (!future.resolved()) future.resolve(r);
 			uri.fire("afterGet", r, xhr);
 			xhr.onload = null;
 			xhr = null;
@@ -580,7 +575,7 @@ var client = {
 	 * @return {Object} Describes the View {x: ?, y: ?}
 	 */
 	size : function () {
-		var view = !server ? (typeof document.documentElement !== "undefined" ? document.documentElement : document.body) : {clientHeight: 0, clientWidth: 0};
+		var view = !server ? (document.documentElement !== undefined ? document.documentElement : document.body) : {clientHeight: 0, clientWidth: 0};
 
 		return {height: view.clientHeight, width: view.clientWidth};
 	}

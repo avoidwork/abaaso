@@ -18,6 +18,7 @@ module.exports = function (grunt) {
 				src : [
 					"<banner>",
 					"src/intro.js",
+					"src/regex.js",
 					"src/array.js",
 					"src/cache.js",
 					"src/client.js",

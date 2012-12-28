@@ -41,26 +41,26 @@ var xml = {
 	 */
 	encode : function (arg, wrap) {
 		try {
-			if (typeof arg === "undefined") throw Error(label.error.invalidArguments);
+			if (arg === undefined) throw Error(label.error.invalidArguments);
 
 			wrap    = !(wrap === false);
 			var x   = wrap ? "<xml>" : "",
 			    top = !(arguments[2] === false),
 			    node, i;
 
-			if (arg !== null && typeof arg.xml !== "undefined") arg = arg.xml;
+			if (arg !== null && arg.xml !== undefined) arg = arg.xml;
 			if (arg instanceof Document) arg = (new XMLSerializer()).serializeToString(arg);
 
 			node = function (name, value) {
 				var output = "<n>v</n>";
-				if (/\&|\<|\>|\"|\'|\t|\r|\n|\@|\$/g.test(value)) output = output.replace(/v/, "<![CDATA[v]]>");
-				return output.replace(/n/g, name).replace(/v/, value);
+				if (regex.cdata_value.test(value)) output = output.replace("v", "<![CDATA[v]]>");
+				return output.replace("n", name).replace("v", value);
 			}
 
-			if (/boolean|number|string/.test(typeof arg)) x += node("item", arg);
+			if (regex.boolean_number_string.test(typeof arg)) x += node("item", arg);
 			else if (typeof arg === "object") {
 				utility.iterate(arg, function (v, k) {
-					x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item");
+					x += xml.encode(v, (typeof v === "object"), false).replace(regex.item_xml, isNaN(k) ? k : "item");
 				});
 			}
 

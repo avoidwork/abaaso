@@ -7,10 +7,7 @@
  * @namespace abaaso
  */
 var route = {
-	bang    : /\#|\!\//g,
-	nget    : /^(head|options)$/i,
-	methods : /^(all|delete|get|put|post|head|options)$/i,
-	regex   : new RegExp(),
+	reg : new RegExp(),
 
 	// Routing listeners
 	routes : {
@@ -41,7 +38,7 @@ var route = {
 	 * @return {[type]}     HTTP method to utilize
 	 */
 	method : function (arg) {
-		return route.methods.test(arg) ? arg.toLowerCase() : "all";
+		return regex.route_methods.test(arg) ? arg.toLowerCase() : "all";
 	},
 
 	/**
@@ -53,7 +50,7 @@ var route = {
 	 * @return {Mixed}        True or undefined
 	 */
 	del : function (name, verb, host) {
-		if (typeof host === "undefined") host = "all";
+		host      = host || "all";
 		verb      = route.method(verb);
 		var error = (name === "error");
 
@@ -75,9 +72,9 @@ var route = {
 		var output = "";
 
 		if (!server) {
-			if (typeof arg === "undefined") output = document.location.hash.replace(route.bang, "");
+			if (arg === undefined) output = document.location.hash.replace(regex.route_bang, "");
 			else {
-				output = arg.replace(route.bang, "");
+				output = arg.replace(regex.route_bang, "");
 				document.location.hash = "!/" + output;
 			}
 		}
@@ -114,7 +111,7 @@ var route = {
 		var val = document.location.hash;
 
 		val.isEmpty() ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all.all, true).remove("error").first()) : route.load(val);
-		return val.replace(route.bang, "");
+		return val.replace(regex.route_bang, "");
 	},
 
 	/**
@@ -125,12 +122,11 @@ var route = {
 	 * @return {Mixed}       Hash of routes if not specified, else an Array of routes for a method
 	 */
 	list : function (verb, host) {
-		if (typeof host === "undefined") host = "all";
-
+		host = host || "all";
 		var result;
 
 		if (!server) result = array.cast(route.routes.all.all, true);
-		else if (typeof verb !== "undefined" && route.routes.hasOwnProperty(host)) result = array.cast(route.routes[host][route.method(verb)], true);
+		else if (verb !== undefined && route.routes.hasOwnProperty(host)) result = array.cast(route.routes[host][route.method(verb)], true);
 		else {
 			result = [];
 			if (route.routes.hasOwnProperty(host)) {
@@ -145,7 +141,7 @@ var route = {
 
 		if (!server && host !== "all") {
 			utility.iterate(route.routes.all, function (v, k) {
-				if (typeof result[k] === "undefined") result[k] = [];
+				if (result[k] === undefined) result[k] = [];
 				utility.iterate(v, function (fn, r) {
 					result[k].push(r);
 				});
@@ -166,9 +162,8 @@ var route = {
 	 * @return {Mixed}        True or undefined
 	 */
 	load : function (name, res, req, host) {
-		if (typeof req === "undefined")  req  = "all";
-		if (typeof host === "undefined") host = "all";
-
+		req        = req  || "all";
+		host       = host || "all";
 		var active = "",
 		    path   = "",
 		    result = true,
@@ -176,17 +171,17 @@ var route = {
 		    crawl, find;
 
 		// Not a GET, but assuming the route is smart enough to strip the entity body
-		if (route.nget.test(verb)) verb = "get";
+		if (regex.route_nget.test(verb)) verb = "get";
 
-		name = name.replace(route.bang, "");
+		name = name.replace(regex.route_bang, "");
 
 		// Crawls the hostnames
 		crawl = function (host, verb, name) {
-			if (typeof route.routes[host][verb][name] !== "undefined") {
+			if (route.routes[host][verb][name] !== undefined) {
 				active = name;
 				path   = verb;
 			}
-			else if (verb !== "all" && typeof route.routes[host].all[name] !== "undefined") {
+			else if (verb !== "all" && route.routes[host].all[name] !== undefined) {
 				active = name;
 				path   = "all";
 			}
@@ -204,7 +199,7 @@ var route = {
 
 		// Finds a match
 		find = function (pattern, method, arg) {
-			if (utility.compile(route.regex, "^" + pattern + "$", "i") && route.regex.test(arg)) {
+			if (utility.compile(route.reg, "^" + pattern + "$", "i") && route.reg.test(arg)) {
 				active = pattern;
 				path   = method;
 				return false;
@@ -251,7 +246,7 @@ var route = {
 		// Request handler
 		handler = function (req, res) {
 			var parsed   = url.parse(req.url),
-			    hostname = req.headers.host.replace(/:.*/, "");
+			    hostname = req.headers.host.replace(regex.header_value, "");
 
 			route.load(parsed.pathname, res, req, hostname);
 		};

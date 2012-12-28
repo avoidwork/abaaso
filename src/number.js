@@ -45,8 +45,8 @@ var number = {
 		delimiter = delimiter || ",";
 		every     = every     || 3;
 
-		var d = arg.indexOf(".") > -1 ? "." + arg.replace(/.*\./, "") : "",
-		    a = arg.replace(/\..*/, "").split("").reverse(),
+		var d = arg.indexOf(".") > -1 ? "." + arg.replace(regex.number_format_1, "") : "",
+		    a = arg.replace(regex.number_format_2, "").split("").reverse(),
 		    p = Math.floor(a.length / every),
 		    i = 1, n, b;
 
@@ -69,7 +69,7 @@ var number = {
 	 * @return {Mixed}    Boolean if b is passed, Number if b is undefined
 	 */
 	half : function (a, b) {
-		return typeof b !== "undefined" ? ((a / b) === .5) : (a / 2);
+		return b !== undefined ? ((a / b) === .5) : (a / 2);
 	},
 
 	/**
@@ -114,7 +114,7 @@ var number = {
 	 * @return {Number}           Rounded interger
 	 */
 	round : function (arg, direction) {
-		if (!/down|up/.test(direction)) direction = "down";
+		if (!regex.down_up.test(direction)) direction = "down";
 		return Math[direction === "down" ? "floor" : "ceil"](arg);
 	}
 };
