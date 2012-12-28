@@ -171,8 +171,8 @@ var client = {
 			case items["Cache-Control"] !== undefined && regex.no.test(items["Cache-Control"]):
 			case items["Pragma"] !== undefined        && regex.no.test(items["Pragma"]):
 				break;
-			case items["Cache-Control"] !== undefined && regex.number.test(items["Cache-Control"]):
-				expires = expires.setSeconds(expires.getSeconds() + parseInt(/\d{1,}/.exec(items["Cache-Control"])[0]));
+			case items["Cache-Control"] !== undefined && regex.number_present.test(items["Cache-Control"]):
+				expires = expires.setSeconds(expires.getSeconds() + parseInt(regex.number_present.exec(items["Cache-Control"])[0]));
 				break;
 			case items["Expires"] !== undefined:
 				expires = new Date(items["Expires"]);

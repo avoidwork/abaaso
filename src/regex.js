@@ -50,6 +50,7 @@ var regex = {
 	number                  : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)|number/,
 	number_format_1         : /.*\./,
 	number_format_2         : /\..*/,
+	number_present          : /\d{1,}/,
 	number_string           : /number|string/i,
 	null_undefined          : /null|undefined/,
 	observer_allowed        : /click|error|key|mousedown|mouseup|submit/i,
