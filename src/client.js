@@ -295,19 +295,14 @@ var client = {
 			clearTimeout(utility.timer[cbid]);
 			delete utility.timer[cbid];
 			delete global.abaaso.callback[cbid];
-			deferred.resolve(arg);
+			if (!deferred.resolved()) deferred.resolve(arg);
 			s.destroy();
 		};
 
 		s = $("head")[0].create("script", {src: uri, type: "text/javascript"});
 		
 		utility.defer(function () {
-			try {
-				deferred.reject(undefined);
-			}
-			catch (e) {
-				error(e, arguments, this);
-			}
+			if (!deferred.resolved()) deferred.reject(undefined);
 		}, 30000, cbid);
 
 		return uri;
@@ -367,7 +362,7 @@ var client = {
 
 		if (!regex.get_headers.test(type) && uri.allows(type) === false) {
 			xhr.status = 405;
-			deferred.reject(null);
+			if (!deferred.resolved()) deferred.reject(null);
 			return uri.fire("failed" + typed, null, xhr);
 		}
 
@@ -378,7 +373,7 @@ var client = {
 				xhr.status      = 200;
 				xhr._resheaders = cached.headers;
 			}
-			deferred.resolve(cached.response);
+			if (!deferred.resolved()) deferred.resolve(cached.response);
 			uri.fire("afterGet", cached.response, xhr);
 			xhr = null;
 		}
@@ -392,8 +387,8 @@ var client = {
 			catch (e) { void 0; }
 
 			// Setting events
-			if (xhr.onerror    !== undefined) xhr.onerror    = function (e) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); };
-			if (xhr.ontimeout  !== undefined) xhr.ontimeout  = function (e) { deferred.reject(e); uri.fire("timeout" + typed, e, xhr); };
+			if (xhr.onerror    !== undefined) xhr.onerror    = function (e) { if (!deferred.resolved()) { deferred.reject(e); uri.fire("failed"  + typed, e, xhr); }};
+			if (xhr.ontimeout  !== undefined) xhr.ontimeout  = function (e) { if (!deferred.resolved()) { deferred.reject(e); uri.fire("timeout" + typed, e, xhr); }};
 			if (xhr.onprogress !== undefined) xhr.onprogress = function (e) { uri.fire("progress" + typed, e, xhr); };
 			if (xhr.upload     !== undefined && xhr.upload.onprogress !== undefined) xhr.upload.onprogress = function (e) { uri.fire("progressUpload" + typed, e, xhr); };
 
@@ -436,7 +431,7 @@ var client = {
 			}
 			catch (e) {
 				error(e, arguments, this, true);
-				deferred.reject(e);
+				if (!deferred.resolved()) deferred.reject(e);
 				uri.fire("failed" + typed, client.parse(xhr), xhr);
 			}
 		}
@@ -474,7 +469,7 @@ var client = {
 
 		// server-side exception handling
 		exception = function (e, xhr) {
-			future.reject(e);
+			if (!future.resolved()) future.reject(e);
 			error(e, arguments, this, true);
 			uri.fire("failed" + typed, client.parse(xhr), xhr);
 		};
@@ -494,13 +489,13 @@ var client = {
 					o = client.headers(xhr, uri, type);
 
 					if (type === "head") {
-						future.resolve(o.headers);
+						if (!future.resolved()) future.resolve(o.headers);
 						xhr.onreadystatechange = null;
 						xhr = null;
 						return uri.fire("afterHead", o.headers);
 					}
 					else if (type === "options") {
-						future.resolve(o.headers);
+						if (!future.resolved()) future.resolve(o.headers);
 						xhr.onreadystatechange = null;
 						xhr = null;
 						return uri.fire("afterOptions", o.headers);
@@ -520,22 +515,22 @@ var client = {
 					switch (xhr.status) {
 						case 200:
 						case 201:
-							future.resolve(r);
+							if (!future.resolved()) future.resolve(r);
 							uri.fire("after" + typed, r, xhr);
 							break;
 						case 202:
 						case 203:
 						case 204:
 						case 206:
-							future.resolve(null);
+							if (!future.resolved()) future.resolve(null);
 							uri.fire("after" + typed, null, xhr);
 							break;
 						case 205:
-							future.resolve(null);
+							if (!future.resolved()) future.resolve(null);
 							uri.fire("reset", null, xhr);
 							break;
 						case 301:
-							future.resolve(r);
+							if (!future.resolved()) future.resolve(r);
 							uri.fire("moved", r, xhr);
 							break;
 					}
@@ -563,7 +558,7 @@ var client = {
 			else r = xhr.responseText;
 			cache.set(uri, "permission", client.bit(["get"]));
 			cache.set(uri, "response", r);
-			future.resolve(r);
+			if (!future.resolved()) future.resolve(r);
 			uri.fire("afterGet", r, xhr);
 			xhr.onload = null;
 			xhr = null;
