@@ -120,11 +120,10 @@ var array = {
 	 * @return {Array}        Compacted copy of `obj`, or null (if `diff` is passed & no diff is found)
 	 */
 	compact : function (obj, diff) {
-		var valid  = /null|undefined/,
-		    result = [];
+		var result = [];
 
 		result = obj.filter(function (i) {
-			if (!valid.test(i)) return true;
+			if (!regex.null_undefined.test(i)) return true;
 		});
 
 		return !diff ? result : (result.length < obj.length ? result : null);
@@ -344,7 +343,7 @@ var array = {
 		    nth    = start + offset;
 
 		while (++i < nth) {
-			if (typeof obj[i] !== "undefined") result.push(obj[i]);
+			if (obj[i] !== undefined) result.push(obj[i]);
 		}
 
 		return result;

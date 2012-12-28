@@ -8,8 +8,6 @@
  * @namespace abaaso
  */
 var datalist = {
-	position : /top|bottom/,
-
 	// Inherited by datalists
 	methods : {
 		/**
@@ -44,10 +42,12 @@ var datalist = {
 			    i     = 0,
 			    diff, li, anchor;
 
-			if (!datalist.position.test(pos)) throw Error(label.error.invalidArguments);
+			if (!regex.top_bottom.test(pos)) throw Error(label.error.invalidArguments);
 
 			// Removing the existing controls
-			array.each(list, function (i) { if (typeof i !== "undefined") i.destroy(); });
+			array.each(list, function (i) {
+				if (i !== undefined) i.destroy();
+			});
 			
 			// Halting because there's 1 page, or nothing
 			if (this.total === 0 || total === 1) return this;
@@ -91,7 +91,9 @@ var datalist = {
 				             : list.create("li").create("span", {"class": "last page"}).html("&gt;&gt;");
 
 				// Scroll to top the top
-				list.find("a").on("click", function (e) { window.scrollTo(0, 0); });
+				list.find("a.page").on("click", function (e) {
+					window.scrollTo(0, 0);
+				});
 			});
 
 			return this;
@@ -110,13 +112,12 @@ var datalist = {
 			redraw       = (redraw !== false);
 			var element  = this.element,
 			    template = (typeof this.template === "object"),
-			    key      = (!template && String(this.template).replace(/\{\{|\}\}/g, "") === this.store.key),
+			    key      = (!template && String(this.template).replace(regex.placeholder_bars, "") === this.store.key),
 			    consumed = [],
 			    items    = [],
 			    self     = this,
 			    callback = (typeof this.callback === "function"),
-			    cleanup  = /\{\{.*\}\}/g,
-			    regex    = new RegExp(),
+			    reg      = new RegExp(),
 			    registry = [], // keeps track of records in the list (for filtering)
 			    limit    = [],
 			    fn, obj, ceiling;
@@ -138,20 +139,20 @@ var datalist = {
 
 				html = html.replace("{{" + self.store.key + "}}", i.key)
 				utility.iterate(i.data, function (v, k) {
-					regex.compile("{{" + k + "}}", "g");
-					html = html.replace(regex, v);
+					reg.compile("{{" + k + "}}", "g");
+					html = html.replace(reg, v);
 				});
-				return {li: html.replace(cleanup, self.placeholder)};
+				return {li: html.replace(regex.placeholders, self.placeholder)};
 			}
 			else fn = function (i) {
 				var obj = json.encode(self.template);
 
 				obj = obj.replace("{{" + self.store.key + "}}", i.key)
 				json.iterate(i.data, function (v, k) {
-					regex.compile("{{" + k + "}}", "g");
-					obj = obj.replace(regex, json.encode(v).replace(/(^")|("$)/g, "")); // stripping first and last " to concat to valid JSON
+					reg.compile("{{" + k + "}}", "g");
+					obj = obj.replace(reg, json.encode(v).replace(regex.quotes, "")); // stripping first and last " to concat to valid JSON
 				});
-				obj = json.decode(obj.replace(cleanup, self.placeholder));
+				obj = json.decode(obj.replace(regex.placeholders, self.placeholder));
 				return {li: obj};
 			};
 
@@ -169,12 +170,12 @@ var datalist = {
 						    regex = new RegExp(),
 						    nth;
 
-						v   = String(v).explode();
+						v   = string.explode(v);
 						nth = v.length;
 
 						for (x = 0; x < nth; x++) {
 							regex.compile(v[x], "i");
-							if ((k === self.store.key && regex.test(i.key)) || (typeof i.data[k] !== "undefined" && regex.test(i.data[k]))) {
+							if ((k === self.store.key && regex.test(i.key)) || (i.data[k] !== undefined && regex.test(i.data[k]))) {
 								registry.push(i.key);
 								items.push({key: i.key, template: fn(i)});
 								return;
@@ -216,10 +217,10 @@ var datalist = {
 			}
 
 			// Rendering pagination elements
-			if (datalist.position.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
+			if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
 			else {
 				$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
-				if (typeof obj !== "undefined") obj.destroy();
+				if (obj !== undefined) obj.destroy();
 			}
 
 			this.refreshing = false;
@@ -280,7 +281,7 @@ var datalist = {
 		    params   = {},
 		    element, fn;
 
-		if (!(target instanceof Element) || typeof store !== "object" || !/string|object/.test(typeof template)) throw Error(label.error.invalidArguments);
+		if (!(target instanceof Element) || typeof store !== "object" || !regex.string_object.test(typeof template)) throw Error(label.error.invalidArguments);
 
 		// Preparing
 		element  = target.fire("beforeDataList").create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
@@ -306,7 +307,7 @@ var datalist = {
 		instance.store   = ref[0];
 
 		// Applying customization
-		if (options instanceof Object) utility.iterate(options, function (v, k) { instance[k] = v; });
+		if (options instanceof Object) utility.merge(instance, options);
 
 		// Cleaning up orphaned element(s)
 		instance.store.parentNode.on("afterDataDelete", function (r) {
@@ -350,7 +351,7 @@ var datalist = {
 	garbage : function (obj, element, event, id) {
 		var result = false;
 
-		if (typeof $("#" + element) === "undefined") {
+		if ($("#" + element) === undefined) {
 			obj.un(event, id);
 			result = true;
 		}

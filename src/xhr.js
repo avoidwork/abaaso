@@ -44,7 +44,7 @@ var xhr = function () {
 		this.status      = res.statusCode;
 		this._resheaders = res.headers;
 
-		if (typeof this._resheaders["set-cookie"] !== "undefined" && this._resheaders["set-cookie"] instanceof Array) this._resheaders["set-cookie"] = this._resheaders["set-cookie"].join(";");
+		if (this._resheaders["set-cookie"] !== undefined && this._resheaders["set-cookie"] instanceof Array) this._resheaders["set-cookie"] = this._resheaders["set-cookie"].join(";");
 
 		res.on("data", function (arg) {
 			res.setEncoding("utf8");
@@ -199,7 +199,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
 		var self = this;
 
-		if (typeof async !== "undefined" && async !== true) throw Error("Synchronous XMLHttpRequest requests are not supported");
+		if (async !== undefined && async !== true) throw Error("Synchronous XMLHttpRequest requests are not supported");
 
 		this.abort();
 		this._error  = false;
@@ -262,9 +262,9 @@ var xhr = function () {
 		if (this._params.user !== null && this._params.password !== null) parsed.auth = this._params.user + ":" + this._params.password;
 
 		// Specifying Content-Length accordingly
-		if (/post|put/i.test(this._params.method)) this._headers["Content-Length"] = data !== null ? Buffer.byteLength(data) : 0;
+		if (regex.put_post.test(this._params.method)) this._headers["Content-Length"] = data !== null ? Buffer.byteLength(data) : 0;
 
-		this._headers["Host"] = parsed.hostname + (!/80|443/.test(parsed.port) ? ":" + parsed.port : "");
+		this._headers["Host"] = parsed.hostname + (!regex.http_ports.test(parsed.port) ? ":" + parsed.port : "");
 
 		options = {
 			hostname : parsed.hostname,
@@ -274,7 +274,7 @@ var xhr = function () {
 			headers  : this._headers
 		}
 
-		if (typeof parsed.auth !== "undefined") options.auth = parsed.auth;
+		if (parsed.auth !== undefined) options.auth = parsed.auth;
 
 		self._send = true;
 		self.dispatchEvent("readystatechange");

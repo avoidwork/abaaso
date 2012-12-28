@@ -15,7 +15,7 @@ var cookie = {
 	 * @return {String}        Name of the expired cookie
 	 */
 	expire : function (name, domain, secure) {
-		if (typeof cookie.get(name) !== "undefined") cookie.set(name, "", "-1s", domain, secure);
+		if (cookie.get(name) !== undefined) cookie.set(name, "", "-1s", domain, secure);
 		return name;
 	},
 
@@ -40,7 +40,7 @@ var cookie = {
 		var result = {},
 		    item, items;
 
-		if (typeof document.cookie !== "undefined" && !document.cookie.isEmpty()) {
+		if (document.cookie !== undefined && !document.cookie.isEmpty()) {
 			items = document.cookie.explode(";");
 			array.each(items, function (i) {
 				item = i.explode("=");
@@ -64,10 +64,9 @@ var cookie = {
 	 * @return {Object}        The new cookie
 	 */
 	set : function (name, value, offset, domain, secure) {
-		if (typeof value === "undefined") value = "";
-		value     += ";";
-		if (typeof offset === "undefined") offset = "";
-		domain     = (typeof domain === "string") ? (" domain=" + domain + ";") : "";
+		value      = (value || "") + ";"
+		offset     = offset || "";
+		domain     = typeof domain === "string" ? (" domain=" + domain + ";") : "";
 		secure     = (secure === true) ? "; secure" : "";
 		var expire = "",
 		    span   = null,

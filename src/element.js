@@ -25,22 +25,23 @@ var element = {
 
 		utility.genId(obj, true);
 
-		if (regex.test(key) && typeof value === "undefined") return obj[key];
-		else if (regex.test(key) && typeof value !== "undefined") obj[key] = value;
-		else if (obj.nodeName === "SELECT" && key === "selected" && typeof value === "undefined") return $("#" + obj.id + " option[selected=\"selected\"]").first() || $("#" + obj.id + " option").first();
-		else if (obj.nodeName === "SELECT" && key === "selected" && typeof value !== "undefined") {
-			target = $("#" + obj.id + " option[selected=\"selected\"]").first();
-			if (typeof target !== "undefined") {
+		if (regex.checked_disabled.test(key) && value === undefined) return obj[key];
+		else if (regex.checked_disabled.test(key) && value !== undefined) obj[key] = value;
+		else if (obj.nodeName === "SELECT" && key === "selected" && value === undefined) return $("#" + obj.id + " option[selected=\"selected\"]")[0] || $("#" + obj.id + " option")[0];
+		else if (obj.nodeName === "SELECT" && key === "selected" && value !== undefined) {
+			target = $("#" + obj.id + " option[selected=\"selected\"]")[0];
+			if (target !== undefined) {
 				target.selected = false;
 				target.removeAttribute("selected");
 			}
-			target = $("#" + obj.id + " option[value=\"" + value + "\"]").first();
+			target = $("#" + obj.id + " option[value=\"" + value + "\"]")[0];
 			target.selected = true;
 			target.setAttribute("selected", "selected");
 		}
 		else if (typeof value === "undefined") return obj.getAttribute(key);
 		else if (value === null) obj.removeAttribute(key);
 		else obj.setAttribute(key, value);
+
 		return obj;
 	},
 
@@ -57,7 +58,7 @@ var element = {
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		if (typeof obj.reset === "function") obj.reset();
-		else if (typeof obj.value !== "undefined") obj.update({innerHTML: "", value: ""});
+		else if (obj.value !== undefined) obj.update({innerHTML: "", value: ""});
 		else obj.update({innerHTML: ""});
 		return obj;
 	},
@@ -78,34 +79,35 @@ var element = {
 	 * @return {Object}        Element that was created or undefined
 	 */
 	create : function (type, args, target, pos) {
-		if (typeof type === "undefined" || String(type).isEmpty()) throw Error(label.error.invalidArguments);
+		if (type === undefined || String(type).isEmpty()) throw Error(label.error.invalidArguments);
 
 		var obj, uid, frag;
 
-		if (typeof target !== "undefined") target = utility.object(target);
-		else if (typeof args !== "undefined" && (typeof args === "string" || typeof args.childNodes !== "undefined")) target = utility.object(args);
+		if (target !== undefined) target = utility.object(target);
+		else if (args !== undefined && (typeof args === "string" || args.childNodes !== undefined)) target = utility.object(args);
 		else target = document.body;
 
-		if (typeof target === "undefined") throw Error(label.error.invalidArguments);
+		if (target === undefined) throw Error(label.error.invalidArguments);
 		
 		frag = !(target instanceof Element);
-		uid  = typeof args !== "undefined"
-		        && typeof args !== "string"
-		        && typeof args.childNodes === "undefined"
-		        && typeof args.id !== "undefined"
-		        && typeof $("#" + args.id) === "undefined" ? args.id : utility.genId(undefined, true);
+		uid  = args                 !== undefined
+		        && typeof args      !== "string"
+		        && args.childNodes  === undefined
+		        && args.id          !== undefined
+		        && $("#" + args.id) === undefined ? args.id : utility.genId(undefined, true);
 
-		if (typeof args !== "undefined" && typeof args.id !== "undefined") delete args.id;
+		if (args !== undefined && args.id !== undefined) delete args.id;
 
 		observer.fire(abaaso, "beforeCreate", uid);
+
 		if (frag && target.parentNode !== null) target.parentNode.fire("beforeCreate", uid);
 
-		obj = !/svg/i.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		obj = !regex.svg.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		obj.id = uid;
 
-		if (typeof args === "object" && typeof args.childNodes === "undefined") obj.update(args);
+		if (typeof args === "object" && args.childNodes === undefined) element.update(obj, args);
 
-		if (typeof pos === "undefined" || pos === "last") target.appendChild(obj);
+		if (pos === undefined || pos === "last") target.appendChild(obj);
 		else if (pos === "first") target.prependChild(obj);
 		else if (pos === "after") {
 			pos = {};
@@ -113,18 +115,19 @@ var element = {
 			target    = target.parentNode;
 			target.insertBefore(obj, pos.after.nextSibling);
 		}
-		else if (typeof pos.after !== "undefined") target.insertBefore(obj, pos.after.nextSibling);
+		else if (pos.after !== undefined) target.insertBefore(obj, pos.after.nextSibling);
 		else if (pos === "before") {
 			pos = {};
 			pos.before = target;
 			target     = target.parentNode;
 			target.insertBefore(obj, pos.before);
 		}
-		else if (typeof pos.before !== "undefined") target.insertBefore(obj, pos.before);
+		else if (pos.before !== undefined) target.insertBefore(obj, pos.before);
 		else target.appendChild(obj);
 
 		if (!frag) target.fire("afterCreate", obj);
 		else if (frag && target.parentNode !== null) target.parentNode.fire("afterCreate", obj);
+
 		observer.fire(abaaso, "afterCreate", obj);
 		
 		return obj;
@@ -145,7 +148,7 @@ var element = {
 
 		var i, result;
 
-		if (typeof value !== "undefined") {
+		if (value !== undefined) {
 			obj.style[key] = value;
 			result = obj;
 		}
@@ -168,7 +171,7 @@ var element = {
 
 		obj = utility.object(obj);
 
-		if (typeof value !== "undefined") {
+		if (value !== undefined) {
 			typeof obj.dataset === "object" ? obj.dataset[key] = value : element.attr(obj, "data-" + key, value);
 			result = obj;
 		}
@@ -268,6 +271,7 @@ var element = {
 	 */
 	has : function (obj, arg) {
 		var result = element.find(obj, arg);
+
 		return (!isNaN(result.length) && result.length > 0);
 	},
 
@@ -303,6 +307,7 @@ var element = {
 			obj["data-display"] = obj.style.display;
 			obj.style.display = "none";
 		}
+
 		return obj;
 	},
 
@@ -355,7 +360,12 @@ var element = {
 
 		add = (add !== false);
 		arg = arg.explode(" ");
-		if (add) array.each(arg, function (i) { obj.classList.add(i); });
+
+		if (add) {
+			array.each(arg, function (i) {
+				obj.classList.add(i);
+			});
+		}
 		else array.each(arg, function (i) {
 			if (i !== "*") obj.classList.remove(i);
 			else {
@@ -363,6 +373,7 @@ var element = {
 				return false;
 			}
 		});
+
 		return obj;
 	},
 
@@ -516,7 +527,9 @@ var element = {
 	text : function (obj, arg) {
 		obj = utility.object(obj);
 
-		var key     = typeof obj.textContent !== "undefined" ? "textContent" : "innerText",
+		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
+
+		var key     = obj.textContent !== undefined ? "textContent" : "innerText",
 		    payload = {},
 		    set     = false;
 
@@ -553,23 +566,19 @@ var element = {
 	 * @return {Object}      Element
 	 */
 	update : function (obj, args) {
-		var regex;
-
 		obj  = utility.object(obj);
 		args = args || {};
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		regex = /innerHTML|innerText|textContent|type|src/;
-
 		utility.iterate(args, function (v, k) {
-			if (regex.test(k)) obj[k] = v;
+			if (regex.element_update.test(k)) obj[k] = v;
 			else if (k === "class") !v.isEmpty() ? obj.addClass(v) : obj.removeClass("*");
 			else if (k.indexOf("data-") === 0) element.data(obj, k.replace("data-", ""), v);
 			else if (k === "id") {
 				var o = observer.listeners;
 
-				if (typeof o[obj.id] !== "undefined") {
+				if (o[obj.id] !== undefined) {
 					o[k] = utility.clone(o[obj.id]);
 					delete o[obj.id];
 				}
@@ -591,16 +600,14 @@ var element = {
 	 */
 	val : function (obj, value) {
 		var output = null,
-		    select = /^select$/i,
-		    check  = /^(radio|checkbox)$/i,
 		    items;
 
 		obj = utility.object(obj);
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		if (typeof value === "undefined") {
-			if (check.test(obj.type)) {
+		if (value === undefined) {
+			if (regex.radio_checkbox.test(obj.type)) {
 				if (obj.name.isEmpty()) throw Error(label.error.expectedProperty);
 				items = $("input[name='" + obj.name + "']");
 				array.each(items, function (i) {
@@ -608,14 +615,16 @@ var element = {
 					if (i.checked) output = i.value;
 				});
 			}
-			else if (select.test(obj.type)) output = obj.options[obj.selectedIndex].value;
+			else if (regex.select.test(obj.type)) output = obj.options[obj.selectedIndex].value;
 			else output = typeof obj.value !== "undefined" ? obj.value : element.text(obj);
+
 			if (typeof output === "string") output = output.trim();
 		}
 		else {
 			value = String(value);
 			obj.fire("beforeValue");
-			if (check.test(obj.type)) {
+
+			if (regex.radio_checkbox.test(obj.type)) {
 				items = $("input[name='" + obj.name + "']");
 				array.each(items, function (i) {
 					if (i.value === value) {
@@ -625,7 +634,7 @@ var element = {
 					}
 				});
 			}
-			else if (select.test(obj.type)) {
+			else if (regex.select.test(obj.type)) {
 				array.each(element.find(obj, "> *"), function (i) {
 					if (i.value === value) {
 						i.selected = true;
@@ -634,7 +643,8 @@ var element = {
 					}
 				});
 			}
-			else typeof obj.value !== "undefined" ? obj.value = value : element.text(obj, value);
+			else obj.value !== undefined ? obj.value = value : element.text(obj, value);
+
 			obj.fire("afterValue");
 			output = obj;
 		}

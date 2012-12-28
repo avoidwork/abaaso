@@ -43,6 +43,7 @@ return {
 	message         : message,
 	mouse           : mouse,
 	number          : number,
+	regex           : regex,
 	repeating       : {},
 	route           : {
 		enabled : false,

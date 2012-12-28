@@ -29,10 +29,6 @@ var observer = {
 	// If `true`, events are ignored
 	ignore : false,
 
-	// Common regex patterns
-	regex_globals : /body|document|window/i,
-	regex_allowed : /click|error|key|mousedown|mouseup|submit/i,
-
 	/**
 	 * Adds a handler to an event
 	 *
@@ -52,24 +48,24 @@ var observer = {
 
 		if (obj instanceof Array) return array.each(obj, function (i) { observer.add(i, event, fn, id, scope, state); });
 
-		if (typeof event !== "undefined") event = event.explode();
-		if (typeof id === "undefined" || !/\w/.test(id)) id = utility.guid(true);
+		if (event !== undefined) event = event.explode();
+		if (id === undefined || !String(id).isEmpty()) id = utility.guid(true);
 
 		var instance = null,
 		    l        = observer.listeners,
 		    a        = observer.alisteners,
 		    ev       = observer.elisteners,
 		    cl       = observer.clisteners,
-		    gr       = observer.regex_globals,
-		    ar       = observer.regex_allowed,
+		    gr       = regex.observer_globals,
+		    ar       = regex.observer_allowed,
 		    o        = observer.id(obj),
 		    n        = false,
 		    c        = abaaso.state.current,
 		    add, reg;
 
-		if (typeof o === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
+		if (o === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		if (typeof l[o] === "undefined") {
+		if (l[o] === undefined) {
 			l[o]  = {};
 			a[o]  = {};
 			cl[o] = {};
@@ -78,21 +74,21 @@ var observer = {
 		array.each(event, function (i) {
 			var eid = o + "_" + i;
 
-			if (typeof l[o][i] === "undefined") {
+			if (l[o][i] === undefined) {
 				l[o][i]  = {};
 				a[o][i]  = {};
 				cl[o][i] = 0;
 			}
 
-			if (typeof l[o][i][state] === "undefined") {
+			if (l[o][i][state] === undefined) {
 				l[o][i][state] = {};
 				a[o][i][state] = [];
 			}
 
-			instance = (gr.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
+			instance = (gr.test(o) || (!regex.slash_forward.test(o) && o !== "abaaso")) ? obj : null;
 
 			// Setting up event listener if valid
-			if (instance !== null && typeof instance !== "undefined" && i.toLowerCase() !== "afterjsonp" && typeof ev[eid] === "undefined" && (gr.test(o) || typeof instance.listeners === "function")) {
+			if (instance !== null && instance !== undefined && i.toLowerCase() !== "afterjsonp" && ev[eid] === undefined && (gr.test(o) || typeof instance.listeners === "function")) {
 				add = (typeof instance.addEventListener === "function");
 				reg = (typeof instance.attachEvent === "object" || add);
 				if (reg) {
@@ -148,7 +144,7 @@ var observer = {
 		}
 
 		o = observer.id(obj);
-		if (typeof o === "undefined" || typeof event === "undefined") throw Error(label.error.invalidArguments);
+		if (o === undefined || event === undefined) throw Error(label.error.invalidArguments);
 
 		if (observer.silent) observer.queue.push({obj: obj, event: event});
 		else {
@@ -158,7 +154,7 @@ var observer = {
 			array.each(event.explode(), function (e) {
 				if (log) utility.log(o + " firing " + e);
 				list = observer.list(obj, e, observer.alisteners);
-				if (typeof list.all !== "undefined") {
+				if (list.all !== undefined) {
 					array.each(list.all, function (i) {
 						var result = i.fn.apply(i.scope, a);
 
@@ -168,7 +164,7 @@ var observer = {
 						}
 					});
 				}
-				if (!quit && s !== "all" && typeof list[s] !== "undefined") {
+				if (!quit && s !== "all" && list[s] !== undefined) {
 					array.each(list[s], function (i) {
 						return i.fn.apply(i.scope, a);
 					});
@@ -210,7 +206,7 @@ var observer = {
 		else if (arg === !server && document.body) id = "body";
 		else {
 			utility.genId(arg);
-			id = typeof arg.id !== "undefined" ? arg.id : (typeof arg.toString === "function" ? arg.toString() : arg);
+			id = arg.id || (typeof arg.toString === "function" ? arg.toString() : arg);
 		}
 		return id;
 	},
@@ -230,9 +226,9 @@ var observer = {
 		    o = observer.id(obj),
 		    r;
 
-		if (typeof l[o] === "undefined" && typeof event === "undefined") r = {};
-		else if (typeof l[o] !== "undefined" && (typeof event === "undefined" || String(event).isEmpty())) r = l[o];
-		else if (typeof l[o] !== "undefined" && typeof l[o][event] !== "undefined") r = l[o][event];
+		if (l[o] === undefined && event === undefined) r = {};
+		else if (l[o] !== undefined && (event === undefined || String(event).isEmpty())) r = l[o];
+		else if (l[o] !== undefined && l[o][event] !== undefined) r = l[o][event];
 		else r = {};
 		return r;
 	},
@@ -256,7 +252,7 @@ var observer = {
 		scope = scope || obj;
 		state = state || abaaso.state.current;
 
-		if (typeof obj === "undefined" || event === null || typeof event === "undefined" || typeof fn !== "function") throw Error(label.error.invalidArguments);
+		if (obj === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 		if (obj instanceof Array) return array.each(obj, function (i) { observer.once(i, event, fn, id, scope, state); });
 
@@ -332,26 +328,26 @@ var observer = {
 			}
 		}
 
-		if (typeof o === "undefined" || typeof l[o] === "undefined") return obj;
+		if (o === undefined || l[o] === undefined) return obj;
 
-		if (typeof event === "undefined" || event === null) {
+		if (event === undefined || event === null) {
 			delete l[o];
 			delete a[o];
 			delete c[o];
-			if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn(null);
+			if (regex.observer_globals.test(o) || typeof o.listeners === "function") fn(null);
 		}
 		else {
 			array.each(event.explode(), function (e) {
 				var sync = false;
 
-				if (typeof l[o][e] === "undefined") return obj;
+				if (l[o][e] === undefined) return obj;
 
-				if (typeof id === "undefined") {
-					if (observer.regex_globals.test(o) || typeof o.listeners === "function") fn(e, array.keys(l[o][e][state]).length);
+				if (id === undefined) {
+					if (regex.observer_globals.test(o) || typeof o.listeners === "function") fn(e, array.keys(l[o][e][state]).length);
 					l[o][e][state] = {};
 					sync = true;
 				}
-				else if (typeof l[o][e][state][id] !== "undefined") {
+				else if (l[o][e][state][id] !== undefined) {
 					fn(e, 1);
 					delete l[o][e][state][id];
 					sync = true;
@@ -373,7 +369,7 @@ var observer = {
 		var result = {},
 		    o;
 
-		if (typeof obj !== "undefined") {
+		if (obj !== undefined) {
 			obj    = utility.object(obj);
 			o      = observer.id(obj);
 			result = utility.clone(observer.clisteners[o]);

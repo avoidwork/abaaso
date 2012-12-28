@@ -18,6 +18,7 @@ module.exports = function (grunt) {
 				src : [
 					"<banner>",
 					"src/intro.js",
+					"src/regex.js",
 					"src/array.js",
 					"src/cache.js",
 					"src/client.js",
@@ -33,7 +34,6 @@ module.exports = function (grunt) {
 					"src/number.js",
 					"src/observer.js",
 					"src/promise.js",
-					"src/regex.js",
 					"src/route.js",
 					"src/string.js",
 					"src/utility.js",

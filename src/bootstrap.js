@@ -23,13 +23,13 @@ bootstrap = function () {
 	};
 
 	fn = function (e) {
-		if (/complete|loaded/.test(document.readyState)) {
+		if (regex.complete_loaded.test(document.readyState)) {
 			if (typeof abaaso.init === "function") abaaso.init();
 			return false;
 		}
 	};
 
-	if (typeof Array.prototype.filter === "undefined") {
+	if (Array.prototype.filter === undefined) {
 		Array.prototype.filter = function (fn) {
 			if (this === void 0 || this === null || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
@@ -51,7 +51,7 @@ bootstrap = function () {
 		};
 	}
 
-	if (typeof Array.prototype.forEach === "undefined") {
+	if (Array.prototype.forEach === undefined) {
 		Array.prototype.forEach = function (callback, thisArg) {
 			if (this === null || typeof callback !== "function") throw Error(label.error.invalidArguments);
 
@@ -73,7 +73,7 @@ bootstrap = function () {
 		};
 	}
 
-	if (typeof Array.prototype.indexOf === "undefined") {
+	if (Array.prototype.indexOf === undefined) {
 		Array.prototype.indexOf = function(obj, start) {
 			for (var i = (start || 0), j = this.length; i < j; i++) {
 				if (this[i] === obj) return i;
@@ -83,7 +83,7 @@ bootstrap = function () {
 		}
 	}
 
-	if (typeof Array.prototype.map === "undefined") {
+	if (Array.prototype.map === undefined) {
 		Array.prototype.map = function (callback, thisArg) {
 			var T, A, k;
 
@@ -112,7 +112,7 @@ bootstrap = function () {
 		}
 	}
 
-	if (typeof Array.prototype.reduce === "undefined") {
+	if (Array.prototype.reduce === undefined) {
 		Array.prototype.reduce = function (accumulator) {
 			if (this === null || this === undefined) throw new TypeError("Object is null or undefined");
 
@@ -136,7 +136,7 @@ bootstrap = function () {
 		};
 	}
 
-	if (!server && typeof document.documentElement.classList === "undefined") {
+	if (!server && document.documentElement.classList === undefined) {
 		(function (view) {
 			var ClassList, getter, proto, target, descriptor;
 
@@ -194,7 +194,7 @@ bootstrap = function () {
 		})(global);
 	}
 
-	if (typeof Function.prototype.bind === "undefined") {
+	if (Function.prototype.bind === undefined) {
 		Function.prototype.bind = function (arg) {
 			var fn    = this,
 			    slice = Array.prototype.slice,
@@ -267,7 +267,7 @@ bootstrap = function () {
 		$.on(global, "DOMNodeInserted", function (e) {
 			var obj = e.target;
 			
-			if (typeof obj.id !== "undefined" && obj.id.isEmpty()) {
+			if (obj.id !== undefined && obj.id.isEmpty()) {
 				utility.genId(obj);
 				if (obj.parentNode instanceof Element) obj.parentNode.fire("afterCreate", obj);
 				$.fire("afterCreate", obj);
@@ -310,9 +310,9 @@ bootstrap = function () {
 			abaaso.init();
 			break;
 		case typeof global.define === "function":
-			global.define("abaaso", function () { return abaaso.init(); });
+			global.define(function () { return abaaso.init(); });
 			break;
-		case (/complete|loaded/.test(document.readyState)):
+		case (regex.complete_loaded.test(document.readyState)):
 			abaaso.init();
 			break;
 		case typeof document.addEventListener === "function":

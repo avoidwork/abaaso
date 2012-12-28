@@ -12,7 +12,7 @@ var message = {
 	 * @return {Object} abaaso
 	 */
 	clear : function (state) {
-		if (typeof state === "undefined") state = "all";
+		state = state || "all";
 		return observer.remove(global, "message", "message", state);
 	},
 
@@ -42,7 +42,7 @@ var message = {
 	 * @return {Object}      abaaso
 	 */
 	recv : function (fn, state) {
-		if (typeof state === "undefined") state = "all";
+		state = state || "all";
 		return observer.add(global, "message", fn, "message", global, state);
 	}
 };

@@ -42,7 +42,7 @@ exports["batch"] = {
 	}*/
 };
 
-exports["delimited"] = {
+/*exports["delimited"] = {
 	setUp: function (done) {
 		this.id    = "test";
 		this.store = {};
@@ -112,7 +112,7 @@ exports["sort"] = {
 		test.equal(localStorage.getItem(this.store.id), null, "Should match");
 		test.done();
 	}
-};*/
+};
 
 exports["teardown"] = {
 	setUp: function (done) {
@@ -131,3 +131,4 @@ exports["teardown"] = {
 		test.equal(this.store.data.batch("set", sample), this.store.data, "Should match");
 	}
 };
+*/
