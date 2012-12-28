@@ -14,10 +14,9 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	attr : function (obj, key, value) {
-		if (typeof value === "string") value = value.trim();
+		if (typeof value === "string") value = string.trim(value);
 
-		var regex = /checked|disabled/,
-		    target;
+		var target;
 
 		obj = utility.object(obj);
 
