@@ -21,28 +21,27 @@ var utility = {
 	$ : function (arg, nodelist) {
 		if (server || arg === undefined) return undefined;
 
-		var queries       = [],
-		    result        = [],
-		    tmp           = [],
-		    REGEX_HASH    = /\#/,
-		    REGEX_MANY    = /\:|\./,
-		    REGEX_COMPLEX = /\s|\>/;
+		var queries = [],
+		    result  = [],
+		    tmp     = [];
 
-		queries  = string.explode(string.trim(arg));
-		nodelist = (nodelist === true);
+		queries     = string.explode(string.trim(arg));
+		nodelist    = (nodelist === true);
 
 		array.each(queries, function (query) {
 			var obj, sel;
 
-			if (REGEX_COMPLEX.test(query)) {
-				sel = array.last(query.split(" ").filter(function (i) { if (!i.isEmpty() && i !== ">") return true; }));
-				if (REGEX_HASH.test(sel) && !REGEX_MANY.test(sel)) obj = document.querySelector(query);
+			if (regex.selector_complex.test(query)) {
+				sel = array.last(query.split(" ").filter(function (i) {
+					if (!i.isEmpty() && i !== ">") return true;
+				}));
+				if (regex.hash.test(sel) && !regex.selector_many.test(sel)) obj = document.querySelector(query);
 				else {
 					obj = document.querySelectorAll(query);
 					if (!nodelist) obj = array.cast(obj);
 				}
 			}
-			else if (REGEX_HASH.test(query) && !REGEX_MANY.test(query)) obj = document.querySelector(queries)
+			else if (regex.hash.test(query) && !regex.selector_many.test(query)) obj = document.querySelector(queries)
 			else {
 				obj = document.querySelectorAll(queries);
 				if (!nodelist) obj = array.cast(obj);
@@ -56,7 +55,7 @@ var utility = {
 			result = result.concat(i);
 		});
 
-		if (REGEX_HASH.test(arg) && !REGEX_MANY.test(arg) && !REGEX_COMPLEX.test(arg) && result.length === 1) result = result[0];
+		if (regex.hash.test(arg) && !regex.selector_many.test(arg) && !regex.selector_complex.test(arg) && result.length === 1) result = result[0];
 
 		return result;
 	},
@@ -78,12 +77,18 @@ var utility = {
 
 			if (!(v instanceof RegExp) && typeof v === "function") o[k] = v.bind(o[k]);
 			else if (!(v instanceof RegExp) && !(v instanceof Array) && v instanceof Object) {
-				if (typeof o[k] === "undefined") o[k] = {};
+				if (o[k] === undefined) o[k] = {};
 				utility.alias(o[k], s[k]);
 			}
 			else {
-				getter = function () { return s[k]; },
-				setter = function (arg) { s[k] = arg; };
+				getter = function () {
+					return s[k];
+				};
+
+				setter = function (arg) {
+					s[k] = arg;
+				};
+
 				utility.property(o, k, {enumerable: true, get: getter, set: setter, value: s[k]});
 			}
 		});
@@ -97,16 +102,16 @@ var utility = {
 	 * @return {Undefined} undefined
 	 */
 	clearTimers : function (id) {
-		if (typeof id === "undefined" || String(id).isEmpty()) throw Error(label.error.invalidArguments);
+		if (id === undefined || String(id).isEmpty()) throw Error(label.error.invalidArguments);
 
 		// deferred
-		if (typeof utility.timer[id] !== "undefined") {
+		if (utility.timer[id] !== undefined) {
 			clearTimeout(utility.timer[id]);
 			delete utility.timer[id];
 		}
 
 		// repeating
-		if (typeof $.repeating[id] !== "undefined") {
+		if ($.repeating[id] !== undefined) {
 			clearTimeout($.repeating[id]);
 			delete $.repeating[id];
 		}
@@ -130,10 +135,7 @@ var utility = {
 		else if (!client.ie && !server && obj instanceof Document) return xml.decode(xml.encode(obj));
 		else if (obj instanceof Object) {
 			clone = json.decode(json.encode(obj));
-			if (typeof clone !== "undefined") {
-				if (obj.hasOwnProperty("constructor")) clone.constructor = obj.constructor;
-				if (obj.hasOwnProperty("prototype"))   clone.prototype   = obj.prototype;
-			}
+			if (clone !== undefined && obj.hasOwnProperty("prototype")) clone.prototype = obj.prototype;
 			return clone;
 		}
 		else return obj;
@@ -149,11 +151,11 @@ var utility = {
 		var result = utility.clone(value),
 		    tmp;
 
-		if (/^\d$/.test(result)) result = number.parse(result);
-		else if (/^(true|false)$/i.test(result)) result = /true/i.test(result);
+		if (!isNaN(number.parse(result))) result = number.parse(result);
+		else if (regex.string_boolean.test(result)) result = regex.string_true.test(result);
 		else if (result === "undefined") result = undefined;
 		else if (result === "null") result = null;
-		else if ((tmp = json.decode(result, true)) && typeof tmp !== "undefined") result = tmp;
+		else if ((tmp = json.decode(result, true)) && tmp !== undefined) result = tmp;
 		return result;
 	},
 
@@ -229,9 +231,8 @@ var utility = {
 		var p   = obj,
 		    nth = args.length;
 
-		if (typeof obj   === "undefined") obj   = this;
-		if (typeof value === "undefined") value = null;
-		if (obj === $) obj = abaaso;
+		if (obj   === undefined) obj   = this === $ ? abaaso : this;
+		if (value === undefined) value = null;
 
 		array.each(args, function (i, idx) {
 			var num = idx + 1 < nth && !isNaN(parseInt(args[idx + 1])),
@@ -240,7 +241,7 @@ var utility = {
 			if (!isNaN(parseInt(i))) i = parseInt(i);
 			
 			// Creating or casting
-			if (typeof p[i] === "undefined") p[i] = num ? [] : {};
+			if (p[i] === undefined) p[i] = num ? [] : {};
 			else if (p[i] instanceof Object && num) p[i] = array.cast(p[i]);
 			else if (p[i] instanceof Object) void 0;
 			else if (p[i] instanceof Array && !num) p[i] = p[i].toObject();
@@ -261,7 +262,7 @@ var utility = {
 	 * @param  {Function} fn Function to defer execution of
 	 * @param  {Number}   ms Milliseconds to defer execution
 	 * @param  {Number}   id [Optional] ID of the deferred function
-	 * @return {Object}      undefined
+	 * @return {String}      id of the timer
 	 */
 	defer : function (fn, ms, id) {
 		var op;
@@ -276,7 +277,7 @@ var utility = {
 		};
 
 		utility.timer[id] = setTimeout(op, ms);
-		return undefined;
+		return id;
 	},
 
 	/**
@@ -304,22 +305,20 @@ var utility = {
 	error : function (e, args, scope, warning) {
 		var o;
 
-		if (typeof e !== "undefined") {
-			warning = (warning === true);
-			o = {
-				arguments : args,
-				message   : typeof e.message !== "undefined" ? e.message : e,
-				number    : typeof e.number !== "undefined" ? (e.number & 0xFFFF) : undefined,
-				scope     : scope,
-				stack     : typeof e.stack === "string" ? e.stack : undefined,
-				timestamp : new Date().toUTCString(),
-				type      : typeof e.type !== "undefined" ? e.type : "TypeError"
-			};
+		warning = (warning === true);
+		o = {
+			arguments : args,
+			message   : e.message || e,
+			number    : e.number !== undefined ? (e.number & 0xFFFF) : undefined,
+			scope     : scope,
+			stack     : e.stack   || undefined,
+			timestamp : new Date().toUTCString(),
+			type      : e.type    || "TypeError"
+		};
 
-			utility.log(o.stack || o.message, !warning ? "error" : "warn");
-			$.error.log.push(o);
-			observer.fire(abaaso, "error", o);
-		}
+		utility.log(o.stack || o.message, !warning ? "error" : "warn");
+		$.error.log.push(o);
+		observer.fire(abaaso, "error", o);
 
 		return undefined;
 	},
@@ -335,8 +334,8 @@ var utility = {
 	extend : function (obj, arg) {
 		var o, f;
 
-		if (typeof obj === "undefined") throw Error(label.error.invalidArguments);
-		if (typeof arg === "undefined") arg = {};
+		if (obj === undefined) throw Error(label.error.invalidArguments);
+		if (arg === undefined) arg = {};
 
 		if (typeof Object.create === "function") o = Object.create(obj);
 		else {
@@ -361,11 +360,11 @@ var utility = {
 		dom = (dom === true);
 		var id;
 
-		if (typeof obj !== "undefined" && ((typeof obj.id !== "undefined" && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
+		if (obj !== undefined && ((obj.id !== undefined && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
 		if (dom) {
 			do id = utility.domId(utility.guid(true));
-			while (typeof $("#" + id) !== "undefined");
+			while ($("#" + id) !== undefined);
 		}
 		else id = utility.domId(utility.guid(true));
 
@@ -391,7 +390,7 @@ var utility = {
 		safe  = (safe === true);
 
 		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s()).toLowerCase();
-		if (safe) o = o.replace(/-/gi, "");
+		if (safe) o = o.replace(regex.hyphen, "");
 		return o;
 	},
 
@@ -436,10 +435,10 @@ var utility = {
 
 		if (l.url === null) throw Error(label.error.elementNotFound);
 
-		if (typeof obj === "undefined") throw Error(label.error.invalidArguments);
+		if (obj === undefined) throw Error(label.error.invalidArguments);
 
 		// Setting loading image
-		if (typeof l.image === "undefined") {
+		if (l.image === undefined) {
 			l.image     = new Image();
 			l.image.src = l.url;
 		}
@@ -466,7 +465,7 @@ var utility = {
 		target =  target || "log";
 		var ts = !server || typeof arg !== "object";
 
-		if (typeof console !== "undefined") console[target]((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
+		if (console !== undefined) console[target]((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
 		return undefined;
 	},
 
@@ -496,7 +495,7 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function (arg, obj) {
-		if (typeof $[arg] !== "undefined" || typeof abaaso[arg] !== "undefined" || !obj instanceof Object) throw Error(label.error.invalidArguments);
+		if ($[arg] !== undefined || abaaso[arg] !== undefined || !obj instanceof Object) throw Error(label.error.invalidArguments);
 		
 		abaaso[arg] = obj;
 		if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? abaaso[arg].bind($[arg]) : abaaso[arg];
@@ -572,7 +571,7 @@ var utility = {
 		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
 		define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
-		if (define && typeof descriptor.value !== "undefined" && typeof descriptor.get !== "undefined") delete descriptor.value;
+		if (define && descriptor.value !== undefined && descriptor.get !== undefined) delete descriptor.value;
 		define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
 		return obj;
 	},
@@ -617,12 +616,13 @@ var utility = {
 			           fire     : function () { var args = arguments; return array.each(this, function (i) { observer.fire.apply(observer, args); }); },
 			           first    : function () { return array.first(this); },
 			           flat     : function () { return array.flat(this); },
+			           genId    : function () { return array.each(this, function (i) { i.genId(); }); },
 			           get      : function (uri, headers) { array.each(this, function (i) { i.get(uri, headers); }); return []; },
 			           has      : function (arg) { var a = []; array.each(this, function (i) { a.push(i.has(arg)); }); return a; },
 			           hasClass : function (arg) { var a = []; array.each(this, function (i) { a.push(i.hasClass(arg)); }); return a; },
 			           hide     : function () { return array.each(this, function (i){ i.hide(); }); },
 			           html     : function (arg) {
-			           		if (typeof arg !== "undefined") return array.each(this, function (i){ i.html(arg); });
+			           		if (arg !== undefined) return array.each(this, function (i){ i.html(arg); });
 			           		else {
 			           			var a = []; array.each(this, function (i) { a.push(i.html()); }); return a;
 			           		}
@@ -656,8 +656,8 @@ var utility = {
 			           median   : function () { return array.median(this); },
 			           min      : function () { return array.min(this); },
 			           mode     : function () { return array.mode(this); },
-			           on       : function (event, listener, id, scope, state) { return array.each(this, function (i) { i.on(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
-			           once     : function (event, listener, id, scope, state) { return array.each(this, function (i) { i.once(event, listener, id, typeof scope !== "undefined" ? scope : i, state); }); },
+			           on       : function (event, listener, id, scope, state) { return array.each(this, function (i) { i.on(  event, listener, id, scope || i, state); }); },
+			           once     : function (event, listener, id, scope, state) { return array.each(this, function (i) { i.once(event, listener, id, scope || i, state); }); },
 			           position : function () { var a = []; array.each(this, function (i) { a.push(i.position()); }); return a; },
 			           prepend  : function (type, args) { var a = []; array.each(this, function (i) { a.push(i.prepend(type, args)); }); return a; },
 			           range    : function () { return array.range(this); },
@@ -749,22 +749,22 @@ var utility = {
 			           has      : function (arg) { return element.has(this, arg); },
 			           hasClass : function (arg) { return element.hasClass(this, arg); },
 			           hide     : function () { return element.hide(this); },
-			           html     : function (arg) { return typeof arg === "undefined" ? string.trim(this.innerHTML) : this.update({innerHTML: arg}); },
+			           html     : function (arg) { return arg === undefined ? string.trim(this.innerHTML) : this.update({innerHTML: arg}); },
 			           is       : function (arg) { return element.is(this, arg); },
-			           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: typeof this.value !== "undefined" ? this.value : element.text(this)}).pass; },
-			           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": typeof this.value !== "undefined" ? this.value : element.text(this)}).pass; },
+			           isAlphaNum: function () { return this.nodeName === "FORM" ? false : validate.test({alphanum: this.value !== undefined ? this.value : element.text(this)}).pass; },
+			           isBoolean: function () { return this.nodeName === "FORM" ? false : validate.test({"boolean": this.value !== undefined ? this.value : element.text(this)}).pass; },
 			           isChecked: function () { return this.nodeName !== "INPUT" ? false : this.attr("checked"); },
-			           isDate   : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDate()   : element.text(this).isDate(); },
+			           isDate   : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isDate()   : element.text(this).isDate(); },
 			           isDisabled: function () { return this.nodeName !== "INPUT" ? false : this.attr("disabled"); },
-			           isDomain : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isDomain() : element.text(this).isDomain(); },
-			           isEmail  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmail()  : element.text(this).isEmail(); },
-			           isEmpty  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isEmpty()  : element.text(this).isEmpty(); },
+			           isDomain : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isDomain() : element.text(this).isDomain(); },
+			           isEmail  : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isEmail()  : element.text(this).isEmail(); },
+			           isEmpty  : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isEmpty()  : element.text(this).isEmpty(); },
 			           isHidden : function (arg) { return element.hidden(this); },
-			           isIP     : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isIP()     : element.text(this).isIP(); },
-			           isInt    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isInt()    : element.text(this).isInt(); },
-			           isNumber : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isNumber() : element.text(this).isNumber(); },
-			           isPhone  : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isPhone()  : element.text(this).isPhone(); },
-			           isUrl    : function () { return this.nodeName === "FORM" ? false : typeof this.value !== "undefined" ? this.value.isUrl()    : element.text(this).isUrl(); },
+			           isIP     : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isIP()     : element.text(this).isIP(); },
+			           isInt    : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isInt()    : element.text(this).isInt(); },
+			           isNumber : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isNumber() : element.text(this).isNumber(); },
+			           isPhone  : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isPhone()  : element.text(this).isPhone(); },
+			           isUrl    : function () { return this.nodeName === "FORM" ? false : this.value !== undefined ? this.value.isUrl()    : element.text(this).isUrl(); },
 			           jsonp    : function (uri, property, callback) {
 			           		var target = this,
 			           		    arg    = property, fn;
@@ -776,11 +776,11 @@ var utility = {
 			           			    i, nth, result;
 
 			           			try {
-			           				if (typeof prop !== "undefined") {
-			           					prop = prop.replace(/]|'|"/g, "").replace(/\./g, "[").split("[");
+			           				if (prop !== undefined) {
+			           					prop = prop.replace(regex.jsonp_1, "").replace(regex.jsonp_2, "[").split("[");
 			           					prop.each(function (i) {
 			           						node = node[!!isNaN(i) ? i : parseInt(i)];
-			           						if (typeof node === "undefined") throw Error(label.error.propertyNotFound);
+			           						if (node === undefined) throw Error(label.error.propertyNotFound);
 			           					});
 			           					result = node;
 			           				}
@@ -798,8 +798,8 @@ var utility = {
 			           },
 			           listeners: function (event) { return observer.list(this, event); },
 			           loading  : function () { return utility.loading(this); },
-			           on       : function (event, listener, id, scope, state) { return observer.add(this, event, listener, id, scope, state); },
-			           once     : function (event, listener, id, scope, state) { return observer.once(this, event, listener, id, scope, state); },
+			           on       : function (event, listener, id, scope, state) { return observer.add( this, event, listener, id, scope || this, state); },
+			           once     : function (event, listener, id, scope, state) { return observer.once(this, event, listener, id, scope || this, state); },
 			           prepend  : function (type, args) { return element.create(type, args, this, "first"); },
 			           prependChild: function (child) { return element.prependChild(this, child); },
 			           position : function () { return element.position(this); },
@@ -813,7 +813,7 @@ var utility = {
 			           un       : function (event, id, state) { return observer.remove(this, event, id, state); },
 			           update   : function (args) { return element.update(this, args); },
 			           val      : function (arg) { return element.val(this, arg); },
-			           validate : function () { return this.nodeName === "FORM" ? validate.test(this) : typeof this.value !== "undefined" ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
+			           validate : function () { return this.nodeName === "FORM" ? validate.test(this) : this.value !== undefined ? !this.value.isEmpty() : !element.text(this).isEmpty(); }},
 			"function": {reflect: function () { return utility.reflect(this); },
 			           debounce : function (ms) { return utility.debounce(this, ms); }},
 			number  : {diff     : function (arg) { return number.diff (this, arg); },
@@ -823,7 +823,7 @@ var utility = {
 			           isEven   : function () { return number.even(this); },
 			           isOdd    : function () { return number.odd(this); },
 			           listeners: function (event) { return observer.list(this.toString(), event); },
-			           on       : function (event, listener, id, scope, state) { observer.add(this.toString(), event, listener, id, scope || this, state); return this; },
+			           on       : function (event, listener, id, scope, state) { observer.add( this.toString(), event, listener, id, scope || this, state); return this; },
 			           once     : function (event, listener, id, scope, state) { observer.once(this.toString(), event, listener, id, scope || this, state); return this; },
 			           random   : function () { return number.random(this); },
 			           roundDown: function () { return number.round(this, "down"); },
@@ -894,11 +894,11 @@ var utility = {
 
 				if (item[0].isEmpty()) return;
 
-				if (typeof item[1] === "undefined" || item[1].isEmpty()) item[1] = "";
+				if (item[1] === undefined || item[1].isEmpty()) item[1] = "";
 				else if (item[1].isNumber()) item[1] = Number(item[1]);
 				else if (item[1].isBoolean()) item[1] = (item[1] === "true");
 
-				if (typeof obj[item[0]] === "undefined") obj[item[0]] = item[1];
+				if (obj[item[0]] === undefined) obj[item[0]] = item[1];
 				else if (!(obj[item[0]] instanceof Array)) {
 					obj[item[0]] = [obj[item[0]]];
 					obj[item[0]].push(item[1]);
@@ -917,9 +917,8 @@ var utility = {
 	 * @return {Array}        Array of parameters
 	 */
 	reflect : function (arg) {
-		if (typeof arg === "undefined") arg = this;
-		if (typeof arg === "undefined") arg = $;
-		arg = arg.toString().match(/function\s+\w*\s*\((.*?)\)/)[1];
+		if (arg === undefined) arg = this || $;
+		arg = arg.toString().match(regex.reflect)[1];
 		return arg !== "" ? arg.explode() : [];
 	},
 
@@ -994,9 +993,9 @@ var utility = {
 	 * @return {Object}   Event
 	 */
 	stop : function (e) {
-		if (typeof e.cancelBubble    !== "undefined") e.cancelBubble = true;
-		if (typeof e.preventDefault  === "function")  e.preventDefault();
-		if (typeof e.stopPropagation === "function")  e.stopPropagation();
+		if (e.cancelBubble           !== undefined)  e.cancelBubble = true;
+		if (typeof e.preventDefault  === "function") e.preventDefault();
+		if (typeof e.stopPropagation === "function") e.stopPropagation();
 
 		// Assumed to always be valid, even if it's not decorated on `e` (I'm looking at you IE8)
 		e.returnValue = false;
@@ -1015,11 +1014,12 @@ var utility = {
 	tpl : function (arg, target) {
 		var frag;
 
-		if (typeof arg !== "object" || (!(/object|undefined/.test(typeof target)) && typeof (target = target.charAt(0) === "#" ? $(target) : $(target)[0]) === "undefined")) throw Error(label.error.invalidArguments);
+		if (typeof arg !== "object" || (!(regex.object_undefined.test(typeof target)) && (target = target.charAt(0) === "#" ? $(target) : $(target)[0]) === undefined)) throw Error(label.error.invalidArguments);
 
-		if (typeof target === "undefined") target = $("body")[0];
+		if (target === undefined) target = $("body")[0];
 
 		frag  = document.createDocumentFragment();
+
 		if (arg instanceof Array) {
 			array.each(arg, function (i, idx) {
 				element.create(array.cast(i, true)[0], frag).html(array.cast(i)[0]);
@@ -1031,6 +1031,7 @@ var utility = {
 				else if ((i instanceof Array) || (i instanceof Object)) utility.tpl(i, element.create(k, frag));
 			});
 		}
+
 		target.appendChild(frag);
 		return array.last(target.childNodes);
 	},
@@ -1044,7 +1045,7 @@ var utility = {
 	 * @return {Mixed}       arg
 	 */
 	walk : function (obj, arg) {
-		array.each(arg.replace(/\]$/, "").replace(/\]/g, ".").split(/\.|\[/), function (i) {
+		array.each(arg.replace(regex.walk_1, "").replace(regex.walk_2, ".").split(regex.walk_3), function (i) {
 			obj = obj[i];
 		});
 		return obj;
