@@ -41,21 +41,20 @@ var utility = {
 					if (!nodelist) obj = array.cast(obj);
 				}
 			}
-			else if (regex.hash.test(query) && !regex.selector_many.test(query)) obj = document.querySelector(queries)
+			else if (regex.hash.test(query) && !regex.selector_many.test(query)) obj = document.querySelector(query)
 			else {
-				obj = document.querySelectorAll(queries);
+				obj = document.querySelectorAll(query);
 				if (!nodelist) obj = array.cast(obj);
 			}
 
-			if (obj === null) obj = undefined;
-			tmp.push(obj);
+			if (obj !== null) tmp.push(obj);
 		});
 
 		array.each(tmp, function (i) {
 			result = result.concat(i);
 		});
 
-		if (regex.hash.test(arg) && !regex.selector_many.test(arg) && !regex.selector_complex.test(arg) && result.length === 1) result = result[0];
+		if (regex.hash.test(arg) && !regex.selector_many.test(arg) && !regex.selector_complex.test(arg)) result = result[0];
 
 		return result;
 	},
