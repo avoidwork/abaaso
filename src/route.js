@@ -246,7 +246,7 @@ var route = {
 		// Request handler
 		handler = function (req, res) {
 			var parsed   = url.parse(req.url),
-			    hostname = req.headers.host.replace(regex.header_value, "");
+			    hostname = req.headers.host.replace(regex.header_replace, "");
 
 			route.load(parsed.pathname, res, req, hostname);
 		};

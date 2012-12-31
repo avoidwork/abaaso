@@ -137,39 +137,35 @@ var client = {
 		    allow   = null,
 		    expires = new Date(),
 		    cors    = client.cors(uri),
-		    rvalue  = /.*:\s+/,
-		    rheader = /:.*/,
-		    rallow  = /^allow$/i,
-		    rcallow = /^access-control-allow-methods$/i,
 		    caps;
 
 		// Capitalizes hyphenated headers
 		caps = function (header) {
 			var x = [];
 
-			array.each(header.explode("-"), function (i) {
-				x.push(i.capitalize())
+			array.each(header.split("-"), function (i) {
+				x.push(string.capitalize(i));
 			});
 			return x.join("-");
 		};
 
-		array.each(headers, function (h) {
+		array.each(headers, function (i, idx) {
 			var header, value;
 
-			value         = h.replace(rvalue, "");
-			header        = h.replace(rheader, "");
-			header        = header.indexOf("-") === -1 ? header.capitalize() : caps(header);
+			value         = i.replace(regex.header_value_replace, "");
+			header        = i.replace(regex.header_replace, "");
+			header        = header.indexOf("-") === -1 ? string.capitalize(header) : caps(header);
 			items[header] = value;
 
-			if ((cors && rcallow.test(header)) || rallow.test(header)) {
-				allow = value;
-				return false;
+			if (allow === null) {
+				if (!cors && regex.allow.test(header))          allow = value;
+				else if (cors && regex.allow_cors.test(header)) allow = value;
 			}
 		});
 
 		switch (true) {
-			case items["Cache-Control"] !== undefined && regex.no.test(items["Cache-Control"]):
-			case items["Pragma"] !== undefined        && regex.no.test(items["Pragma"]):
+			case regex.no.test(items["Cache-Control"]):
+			case regex.no.test(items["Pragma"]):
 				break;
 			case items["Cache-Control"] !== undefined && regex.number_present.test(items["Cache-Control"]):
 				expires = expires.setSeconds(expires.getSeconds() + parseInt(regex.number_present.exec(items["Cache-Control"])[0]));
@@ -206,10 +202,10 @@ var client = {
 		var result, obj;
 
 		switch (true) {
-			case (regex.json_maybe.test(type) || type.isEmpty()) && Boolean(obj = json.decode(regex.json_wrap.exec(xhr.responseText), true)):
+			case (regex.json_maybe.test(type) || type.isEmpty()) && (obj = regex.jsonp_wrap.exec(xhr.responseText)) && Boolean(obj !== null && obj = json.decode(obj[2], true)):
 				result = obj;
 				break;
-			case (regex.xml.test(type) && String(xhr.responseText).isEmpty() && xhr.responseXML !== null):
+			case (regex.xml.test(type) && String(xhr.responseText).isEmpty() && xhr.responseXML !== undefined && xhr.responseXML !== null):
 				result = xml.decode(xhr.responseXML.xml !== undefined ? xhr.responseXML.xml : xhr.responseXML);
 				break;
 			case regex.is_xml.test(xhr.responseText):
@@ -553,9 +549,7 @@ var client = {
 			xhr = null;
 		}
 		else if (xdr) {
-			if (Boolean(x = json.decode(regex.json_wrap.exec(xhr.responseText)))) r = x;
-			else if (regex.is_xml.test(xhr.responseText)) r = xml.decode(xhr.responseText);
-			else r = xhr.responseText;
+			r = client.parse(xhr);
 			cache.set(uri, "permission", client.bit(["get"]));
 			cache.set(uri, "response", r);
 			if (!future.resolved()) future.resolve(r);
