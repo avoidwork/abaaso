@@ -8,6 +8,8 @@
  */
 var regex = {
 	android                 : /android/i,
+	allow                   : /^allow$/i,
+	allow_cors              : /^access-control-allow-methods$/i,
 	alphanum                : /^[a-zA-Z0-9]+$/,
 	asc                     : /\s*asc/ig,
 	blackberry              : /blackberry/i,
@@ -28,7 +30,8 @@ var regex = {
 	firefox                 : /firefox/i,
 	get_headers             : /^(head|get|options)$/,
 	hash                    : /\#/,
-	header_value            : /:.*/,
+	header_replace          : /:.*/,
+	header_value_replace    : /.*:\s+/,
 	http_ports              : /80|443/,
 	hyphen                  : /-/g,
 	ie                      : /msie|ie/i,
@@ -39,7 +42,7 @@ var regex = {
 	item_xml                : /item|xml/g,
 	ios                     : /ipad|iphone/i,
 	json_maybe              : /json|plain|javascript/,
-	json_wrap               : /[\{\[].*[\}\]]/,
+	jsonp_wrap              : /([a-zA-Z0-9\.]+\()(.*)(\))$/,
 	jsonp_1                 : /]|'|"/g,
 	jsonp_2                 : /\./g,
 	linux                   : /linux|bsd|unix/i,
