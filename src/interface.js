@@ -61,7 +61,6 @@ return {
 		previous    : null
 	},
 	string          : string,
-	validate        : validate,
 	xml             : xml,
 
 	// Methods & Properties
@@ -192,6 +191,7 @@ return {
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,
+	validate        : validate.test,
 	version         : "{{VERSION}}",
 	walk            : utility.walk
 };
