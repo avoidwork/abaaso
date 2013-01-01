@@ -414,6 +414,7 @@ var utility = {
 				result = fn.call(obj, obj[i], i);
 				if (result === false) break;
 			}
+			else break;
 		}
 		return obj;
 	},
