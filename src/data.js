@@ -1002,9 +1002,9 @@ var data = {
 				    sorted = [];
 
 				array.each(data, function (i, idx) {
-					var v  = pk ? i.key : i.data[prop].toString();
+					var v  = pk ? i.key : i.data[prop];
 
-					v = string.trim(v) + ":::" + idx;
+					v = string.trim(v.toString()) + ":::" + idx;
 					tmp.push(v.replace(regex.nil, "\"\""));
 				});
 
