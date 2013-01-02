@@ -42,6 +42,7 @@ var regex = {
 	item_xml                : /item|xml/g,
 	ios                     : /ipad|iphone/i,
 	json_maybe              : /json|plain|javascript/,
+	json_wrap               : /[\{\[].*[\}\]]/,
 	jsonp_wrap              : /([a-zA-Z0-9\.]+\()(.*)(\))$/,
 	jsonp_1                 : /]|'|"/g,
 	jsonp_2                 : /\./g,
