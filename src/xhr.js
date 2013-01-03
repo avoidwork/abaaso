@@ -9,7 +9,7 @@ var xhr = function () {
 	    HEADERS_RECEIVED = 2,
 	    LOADING          = 3,
 	    DONE             = 4,
-	    regex            = RegExp(HEADERS_RECEIVED + "|" + LOADING),
+	    ready            = RegExp(HEADERS_RECEIVED + "|" + LOADING),
 	    XMLHttpRequest, headers, handler, handlerError, state;
 
 	headers = {
@@ -117,7 +117,7 @@ var xhr = function () {
 		this._error       = true;
 		this._headers     = {};
 
-		if (this._send === true || regex.test(this.readyState)) {
+		if (this._send === true || ready.test(this.readyState)) {
 			this._send = false;
 			state.call(this, DONE)
 		}
