@@ -7,6 +7,10 @@
  * @namespace abaaso
  */
 var route = {
+	// Current route (Client only)
+	current : "",
+
+	// Reused regex object
 	reg : new RegExp(),
 
 	// Routing listeners
@@ -172,7 +176,9 @@ var route = {
 		// Not a GET, but assuming the route is smart enough to strip the entity body
 		if (regex.route_nget.test(verb)) verb = "get";
 
+		// Public, private, local scope
 		name = name.replace(regex.route_bang, "");
+		if (!server) abaaso.route.current = name;
 
 		// Crawls the hostnames
 		crawl = function (host, verb, name) {

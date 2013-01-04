@@ -1145,7 +1145,7 @@ var data = {
 
 			obj.fire("beforeDataSync");
 			this.callback !== null ? client.jsonp(this.uri, success, failure, {callback: this.callback})
-			                       : client.request(this.uri, "GET", success, failure, utility.merge({withCredentials: this.credentials}, this.headers));
+			                       : client.request(this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers));
 			return this;
 		},
 

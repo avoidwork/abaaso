@@ -47,6 +47,7 @@ return {
 	repeating       : {},
 	route           : {
 		enabled : false,
+		current : route.current,
 		del     : route.del,
 		hash    : route.hash,
 		init    : route.init,

@@ -261,7 +261,15 @@ bootstrap = function () {
 	// Setting events & garbage collection
 	$.on(global, "error", function (e) { $.fire("error", e); }, "error", global, "all");
 	if (!server) {
-		$.on(global, "hashchange", function ()  { $.fire("beforeHash, hash, afterHash", location.hash); }, "hash", global, "all");
+		$.on(global, "hashchange", function ()  {
+			var hash = location.hash.replace(regex.route_bang, "");
+
+			if ($.route.current !== hash || abaaso.route.current !== hash) {
+				abaaso.route.current = hash;
+				if ($.route.current !== abaaso.route.current) $.route.current = abaaso.route.current; // IE8 specific
+				$.fire("beforeHash, hash, afterHash", location.hash);
+			}
+		}, "hash", global, "all");
 		$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
 		$.on(global, "load",       function ()  { $.fire("render").un("render").un(this, "load"); });
 		$.on(global, "DOMNodeInserted", function (e) {
