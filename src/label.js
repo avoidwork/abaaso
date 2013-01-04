@@ -66,7 +66,8 @@ var label = {
 		serverError           : "Server error has occurred",
 		serverForbidden       : "Forbidden to access URI",
 		serverInvalidMethod   : "Method not allowed",
-		serverUnauthorized    : "Authorization required to access URI"
+		serverUnauthorized    : "Authorization required to access URI",
+		upgrade               : "Your browser is too old to use abaaso, please upgrade"
 	},
 
 	// Months of the Year

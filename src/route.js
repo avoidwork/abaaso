@@ -105,13 +105,12 @@ var route = {
 	 * Initializes the routing by loading the initial OR the first route registered
 	 * 
 	 * @method init
-	 * @return {String} Route being loaded
+	 * @return {Undefined} undefined
 	 */
 	init : function () {
 		var val = document.location.hash;
 
-		val.isEmpty() ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all.all, true).remove("error").first()) : route.load(val);
-		return val.replace(regex.route_bang, "");
+		val.isEmpty() ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all.all, true).remove("error")[0]) : route.load(val);
 	},
 
 	/**

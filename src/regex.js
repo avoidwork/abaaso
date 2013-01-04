@@ -72,7 +72,7 @@ var regex = {
 	radio_checkbox          : /^(radio|checkbox)$/i,
 	reflect                 : /function\s+\w*\s*\((.*?)\)/,
 	root                    : /^\/[^\/]/,
-	route_bang              : /\#|\!\//g,
+	route_bang              : /\#|\!\/|\?.*/g,
 	route_nget              : /^(head|options)$/i,
 	route_methods           : /^(all|delete|get|put|post|head|options)$/i,
 	safari                  : /safari/i,

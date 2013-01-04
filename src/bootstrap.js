@@ -12,7 +12,7 @@ bootstrap = function () {
 	client.tablet();
 
 	// IE7 and older is not supported
-	if (client.ie && client.version < 8) return;
+	if (client.ie && client.version < 8) throw Error(label.error.upgrade);
 	
 	cleanup = function (obj) {
 		var nodes = [];
