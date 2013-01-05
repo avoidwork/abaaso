@@ -53,6 +53,7 @@ return {
 		init    : route.init,
 		list    : route.list,
 		load    : route.load,
+		reset   : route.reset,
 		server  : route.server,
 		set     : route.set
 	},
