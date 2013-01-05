@@ -465,7 +465,7 @@ var utility = {
 		target =  target || "log";
 		var ts = !server || typeof arg !== "object";
 
-		if (console !== undefined) console[target]((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
+		if (typeof console !== "undefined") console[target]((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
 		return undefined;
 	},
 
@@ -596,7 +596,7 @@ var utility = {
 			           attr     : function (key, value) { var a = []; array.each(this, function (i) { a.push(i.attr(key, value)); }); return a; },
 			           before   : function (type, args) { var a = []; array.each(this, function (i) { a.push(i.before(type, args)); }); return a; },
 			           chunk    : function (size) { return array.chunk(this, size); },
-			           clear    : function () { return !server && this[0] instanceof Element ? array.each(this, function (i) { i.clear(); }) : array.clear(this); },
+			           clear    : function () { return !server && (this[0] instanceof Element) ? array.each(this, function (i) { i.clear(); }) : array.clear(this); },
 			           clone    : function () { return utility.clone(this); },
 			           collect  : function (arg) { return array.collect(this, arg); },
 			           compact  : function () { return array.compact(this); },
