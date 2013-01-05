@@ -123,7 +123,7 @@ var array = {
 		var result = [];
 
 		result = obj.filter(function (i) {
-			if (!regex.null_undefined.test(i)) return true;
+			return !regex.null_undefined.test(i);
 		});
 
 		return !diff ? result : (result.length < obj.length ? result : null);
