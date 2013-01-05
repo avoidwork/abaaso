@@ -14,26 +14,7 @@ var route = {
 	reg : new RegExp(),
 
 	// Routing listeners
-	routes : {
-		all : {
-			all : {
-				error : function () {
-					if (!server) {
-						if (route.hash() === "") return history.go(-1);
-						else {
-							utility.error(label.error.invalidRoute);
-							if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
-						}
-					}
-					else throw Error(label.error.invalidRoute);
-				}
-			},
-			"delete" : {},
-			get      : {},
-			put      : {},
-			post     : {}
-		}
-	},
+	routes : {},
 
 	/**
 	 * Determines which HTTP method to use
@@ -229,6 +210,34 @@ var route = {
 
 		route.routes[host][path][active](res || active, req);
 		return result;
+	},
+
+	/**
+	 * Resets the routes
+	 * 
+	 * @return {Undefined} undefined
+	 */
+	reset : function () {
+		route.routes = {
+			all : {
+				all : {
+					error : function () {
+						if (!server) {
+							if (route.hash() === "") return history.go(-1);
+							else {
+								utility.error(label.error.invalidRoute);
+								if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
+							}
+						}
+						else throw Error(label.error.invalidRoute);
+					}
+				},
+				"delete" : {},
+				get      : {},
+				put      : {},
+				post     : {}
+			}
+		}
 	},
 
 	/**

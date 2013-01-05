@@ -221,6 +221,9 @@ bootstrap = function () {
 	delete $.init;
 	delete $.loading;
 
+	// Setting default routes
+	route.reset();
+
 	// Creating route.initial after alias() so it's not assumed
 	abaaso.route.initial = null;
 
