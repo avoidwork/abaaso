@@ -83,7 +83,7 @@ return {
 	css             : utility.css,
 	data            : data.factory,
 	datalist        : datalist.factory,
-	discard         : function (arg) { return observer.discard((arg !== false)); },
+	discard         : function (arg) { return observer.discard(arg); },
 	debounce        : utility.debounce,
 	decode          : json.decode,
 	defer           : utility.defer,

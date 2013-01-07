@@ -114,12 +114,15 @@ var observer = {
 	/**
 	 * Discard observer events
 	 *
-	 * @param {Boolean} arg Boolean indicating if events will be ignored
+	 * @param {Boolean} arg [Optional] Boolean indicating if events will be ignored
 	 * @return              Current setting
 	 */
 	discard : function (arg) {
-		observer.ignore = arg;
-		return arg;
+		if (arg === undefined) return observer.ignore;
+		else {
+			observer.ignore = (arg === true);
+			return arg;
+		}
 	},
 
 	/**
