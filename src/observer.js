@@ -118,11 +118,7 @@ var observer = {
 	 * @return              Current setting
 	 */
 	discard : function (arg) {
-		if (arg === undefined) return observer.ignore;
-		else {
-			observer.ignore = (arg === true);
-			return arg;
-		}
+		return arg === undefined ? observer.ignore : (observer.ignore = (arg === true));
 	},
 
 	/**
