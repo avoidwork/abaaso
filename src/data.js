@@ -214,27 +214,26 @@ var data = {
 		 *         failedDataRetrieve Fires if an exception occurs
 		 * 
 		 * @method crawl
-		 * @param  {Mixed}  arg     Record key or index
-		 * @param  {Array}  ignore  [Optional] Fields to ignore
-		 * @param  {String} key     [Optional] data.key property to set on new stores, defaults to record.key
+		 * @param  {Mixed}  arg     Record, key or index
 		 * @param  {Object} future  [Optional] Promise
 		 * @return {Object}         Record
 		 */
-		crawl : function (arg, ignore, key, future) {
-			var ignored = (ignore instanceof Array),
-			    self    = this,
-			    record;
+		crawl : function (arg, future) {
+			var self   = this,
+			    record = (arg instanceof Object) ? arg : this.get(arg);
 
-			if (typeof arg !== "number" && typeof arg !== "string") throw Error(label.error.invalidArguments);
+			if (record === undefined) throw Error(label.error.invalidArguments);
 
 			this.crawled = true;
 			this.loaded  = false;
-			record       = this.get(arg);
-			record       = this.records[this.keys[record.key]];
 			key          = key || this.key;
 
 			utility.iterate(record.data, function (v, k) {
-				var deferred = promise.factory();
+				var deferred;
+
+				if (self.ignore.contains(k) || (!(v instanceof Array) && typeof v !== "string")) return;
+
+				deferred = promise.factory();
 
 				deferred.then(function (arg) {
 					this.fire("afterDataRetrieve", arg);
@@ -246,48 +245,19 @@ var data = {
 					return arg;
 				});
 
-				if ((ignored && ignore.contains(k)) || (!(v instanceof Array) && typeof v !== "string")) return;
-				if (v instanceof Array) {
-					// Possibly a subset of the collection, so it relies on valid URI paths
-					if (!self.collections.contains(k)) self.collections.push(k);
-					record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					
-					// Inheriting `ignored` collection
-					if (ignored) record.data[k].data.ignore = utility.clone(ignore);
+				// Possibly a subset of the collection, so it relies on valid URI paths
+				if (!self.collections.contains(k)) self.collections.push(k);
+				record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs)});
+				record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
 
-					// Inheriting `leafs` collection
-					record.data[k].data.leafs = utility.clone(self.leafs);
-
-					if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
-						record.data[k].data.recursive = true;
-						record.data[k].data.retrieve  = true;
-					}
-
-					if (v.length > 0) record.data[k].data.batch("set", v, true, deferred);
+				if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
+					record.data[k].data.recursive = true;
+					record.data[k].data.retrieve  = true;
 				}
-				else {
-					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
-					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
-						// Possibly a subset of the collection, so it relies on valid URI paths
-						if (!self.collections.contains(k)) self.collections.push(k);
-						record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-						
-						// Inheriting `ignored` collection
-						if (ignored) record.data[k].data = utility.clone(ignore);
 
-						// Inheriting `leafs` collection
-						record.data[k].data.leafs = utility.clone(self.leafs);
-
-						if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
-							record.data[k].data.recursive = true;
-							record.data[k].data.retrieve  = true;
-						}
-
-						record.data[k].data.setUri(v, deferred);
-					}
-				}
+				if ((v instanceof Array) && v.length > 0) record.data[k].data.batch("set", v, true, 1000, deferred);
+				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
+				else if (v.charAt(0) === "/" || v.indexOf("//") > -1) record.data[k].data.setUri(v, deferred);
 			});
 			return this.get(arg);
 		},
@@ -735,7 +705,7 @@ var data = {
 				    record, uri;
 
 				deferred.then(function (arg) {
-					if (self.retrieve) self.crawl(record.key, self.ignore, self.key);
+					if (self.retrieve) self.crawl(arg);
 					self.parentNode.fire("afterDataSet", arg);
 					if (future instanceof Promise) future.resolve(arg);
 					return arg;
@@ -793,10 +763,6 @@ var data = {
 							if (self.source !== null) args = utility.walk(args, self.source);
 							if (args[self.key] !== undefined) delete args[self.key];
 							utility.merge(record.data, args);
-							if (self.retrieve) {
-								self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
-								self.loaded = true;
-							}
 							deferred.resolve(record);
 						}, function (e) {
 							deferred.reject(e);
