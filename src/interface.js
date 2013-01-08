@@ -172,7 +172,7 @@ return {
 	promise         : promise.factory,
 	property        : utility.property,
 	put             : function (uri, success, failure, args, headers, timeout) { return client.request(uri, "PUT", success, failure, args, headers, timeout); },
-	queryString     : utility.queryString,
+	queryString     : function (key, string) { return utility.queryString(key, string); },
 	random          : number.random,
 	ready           : false,
 	reflect         : utility.reflect,
