@@ -133,8 +133,9 @@ var utility = {
 		else if (typeof obj === "string") return String(obj);
 		else if (!client.ie && !server && obj instanceof Document) return xml.decode(xml.encode(obj));
 		else if (obj instanceof Object) {
-			clone = json.decode(json.encode(obj));
-			if (clone !== undefined && obj.hasOwnProperty("prototype")) clone.prototype = obj.prototype;
+			// If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration
+			clone = json.encode(obj, true);
+			clone = clone !== undefined ? json.decode(clone) : obj;
 			return clone;
 		}
 		else return obj;

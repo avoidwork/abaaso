@@ -1219,7 +1219,7 @@ var data = {
 		 * @return {Object}      Instance of `record`
 		 */
 		factory : function (key, args) {
-			return utility.extend(data.record.methods, {key: key, data: args});
+			return utility.extend(data.record.methods, {key: key, data: args, parentNode: this});
 		}
 	},
 
