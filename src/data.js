@@ -810,9 +810,9 @@ var data = {
 								self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
 								self.loaded = true;
 							}
-							deferred.resolve(record);
+							self.parentNode.fire("afterDataSet", record);
 						}, function (e) {
-							deferred.reject(e);
+							error(e, this, arguments);
 						}, self.headers);
 					}
 				}

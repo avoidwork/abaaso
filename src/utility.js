@@ -874,18 +874,17 @@ var utility = {
 	},
 
 	/**
-	 * Returns an Object containing 1 or all key:value pairs from the querystring
+	 * Parses a query string & coerces values
 	 *
 	 * @method queryString
-	 * @param  {String} arg [Optional] Key to find in the querystring
-	 * @return {Object}     Object of 1 or all key:value pairs in the querystring
+	 * @param  {String} arg    [Optional] Key to find in the querystring
+	 * @param  {String} string [Optional] Query string to parse
+	 * @return {Mixed}         Value or Object of key:value pairs
 	 */
-	queryString : function (arg) {
+	queryString : function (arg, string) {
 		var obj    = {},
-		    result = location.search.isEmpty() ? null : location.search.replace("?", ""),
+		    result = string !== undefined ? string.replace("?", "") : (location.search.isEmpty() ? null : location.search.replace("?", "")),
 		    item;
-
-		arg = arg || ".*";
 
 		if (result !== null) {
 			result = result.split("&");
@@ -895,7 +894,7 @@ var utility = {
 				if (item[0].isEmpty()) return;
 
 				if (item[1] === undefined || item[1].isEmpty()) item[1] = "";
-				else if (item[1].isNumber()) item[1] = Number(item[1]);
+				else if (item[1].isNumber()) item[1]  = Number(item[1]);
 				else if (item[1].isBoolean()) item[1] = (item[1] === "true");
 
 				if (obj[item[0]] === undefined) obj[item[0]] = item[1];
@@ -906,6 +905,9 @@ var utility = {
 				else obj[item[0]].push(item[1]);
 			});
 		}
+
+		if (arg !== null && arg !== undefined) obj = obj[arg];
+
 		return obj;
 	},
 
