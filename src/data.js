@@ -1206,7 +1206,10 @@ var data = {
 			 * @return {Object}        Record
 			 */
 			set : function (key, value, future) {
-				this.parentNode.set(this.key, {key: value}, false, future);
+				var obj = {};
+
+				obj[key] = value;
+				this.parentNode.set(this.key, obj, false, future);
 				return this;
 			}
 		},
