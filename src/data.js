@@ -787,7 +787,7 @@ var data = {
 					}
 
 					self.keys[data.key] = index;
-					self.records[index] = self.record(data.key, {});
+					self.records[index] = {key: data.key, data: {}};
 					record              = self.records[index];
 
 					if (self.pointer === null || data.data[self.pointer] === undefined) {
@@ -1182,59 +1182,6 @@ var data = {
 			this.clear(true);
 			this.parentNode.fire("afterDataTeardown");
 			return this;
-		}
-	},
-
-	// DataStore record sub class
-	record : {
-		methods : {
-			/**
-			 * Deletes the record from it's store
-			 * 
-			 * @param  {Object} future [Optional] Promise
-			 * @return {Object}        Data Store
-			 */
-			del : function (future) {
-				return this.parentNode.del(this.key, true, false, future);
-			},
-
-			/**
-			 * Crawls a record
-			 * 
-			 * @param  {Object} future [Optional] Promise
-			 * @return {Object}        Record
-			 */
-			crawl : function (future) {
-				this.parentNode.crawl(this, future);
-				return this;
-			},
-
-			/**
-			 * Sets a data property of the record
-			 * 
-			 * @param  {String} key    Property to set
-			 * @param  {Mixed}  value  Value to set
-			 * @param  {Object} future [Optional] Promise
-			 * @return {Object}        Record
-			 */
-			set : function (key, value, future) {
-				var obj = {};
-
-				obj[key] = value;
-				this.parentNode.set(this.key, obj, false, future);
-				return this;
-			}
-		},
-
-		/**
-		 * DataStore Record factory
-		 * 
-		 * @param  {String} key  Record key
-		 * @param  {Object} data Record data
-		 * @return {Object}      Instance of `record`
-		 */
-		factory : function (key, args) {
-			return utility.extend(data.record.methods, {key: key, data: args, parentNode: this});
 		}
 	},
 
