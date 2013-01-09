@@ -65,7 +65,7 @@ var data = {
 				    guid     = utility.genId(),
 				    rec      = {};
 
-				if (typeof rec.batch !== "function") rec = utility.clone(data)
+				if (typeof data.batch !== "function") rec = utility.clone(data)
 				else utility.iterate(data, function (v, k) {
 					if (!self.collections.contains(k)) rec[k] = utility.clone(v);
 				});
@@ -113,7 +113,7 @@ var data = {
 
 			if (data.length === 0) completed(false);
 			else {
-				if (type === "set") array.each(data.chunk(chunk), function (a, adx) {
+				if (type === "set") array.each(array.chunk(data, chunk), function (a, adx) {
 						var offset = adx * chunk;
 
 						utility.defer(function () {
@@ -214,94 +214,98 @@ var data = {
 		 *         failedDataRetrieve Fires if an exception occurs
 		 * 
 		 * @method crawl
-		 * @param  {Mixed}   arg     Record key or index
-		 * @param  {String}  ignore  [Optional] Comma delimited fields to ignore
-		 * @param  {String}  key     [Optional] data.key property to set on new stores, defaults to record.key
-		 * @param  {Object}  future  [Optional] Promise
-		 * @return {Object}          Record
+		 * @param  {Mixed}  arg     Record, key or index
+		 * @param  {Object} future  [Optional] Promise
+		 * @return {Object}         Record
 		 */
-		crawl : function (arg, ignore, key, future) {
-			var ignored = false,
-			    self    = this,
-			    record;
+		crawl : function (arg, future) {
+			var self   = this,
+			    record = (arg instanceof Object) ? arg : this.get(arg),
+			    uri    = this.uri === null ? "" : this.uri,
+			    build, setup;
 
-			if (typeof arg !== "number" && typeof arg !== "string") throw Error(label.error.invalidArguments);
+			if (record === undefined) throw Error(label.error.invalidArguments);
 
 			this.crawled = true;
-			this.loaded  = false;
-			record       = this.get(arg);
-			record       = this.records[this.keys[record.key]];
-			key          = key || this.key;
 
-			if (typeof ignore === "string") {
-				ignored = true;
-				ignore  = ignore.explode();
+			/**
+			 * Sets up a data store
+			 *
+			 * Possibly a subset of the collection, so it relies on valid URI paths
+			 * 
+			 * @param  {String} key Record key
+			 * @return {Object}     Data store
+			 */
+			setup = function (key, self) {
+				var obj = {};
+
+				if (!self.collections.contains(key)) self.collections.push(key);
+
+				obj = data.factory({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs)});
+				obj.data.headers = utility.merge(obj.data.headers, self.headers);
+
+				if (!self.leafs.contains(key) && self.recursive && self.retrieve) {
+					obj.data.recursive = true;
+					obj.data.retrieve  = true;
+				}
+
+				return obj;
+			};
+
+			/**
+			 * Concats URIs together
+			 * 
+			 * @param  {String} entity Entity URI
+			 * @param  {String} store  Data store URI
+			 * @return {String}        URI
+			 */
+			build = function (entity, store) {
+				var result = "",
+				    parsed;
+
+				if (/\/\//.test(entity)) result = entity;
+				else if (entity.charAt(0) === "/" && store.charAt(0) !== "/") {
+					parsed = utility.parse(store);
+					result = parsed.protocol + "//" + parsed.host + entity;
+				}
+				else result = entity;
+
+				return result;
 			}
 
 			utility.iterate(record.data, function (v, k) {
-				var deferred = promise.factory();
+				var deferred, store, parsed;
 
+				if (self.ignore.contains(k) || self.leafs.contains(k) || (!(v instanceof Array) && typeof v !== "string")) return;
+
+				deferred = promise.factory();
 				deferred.then(function (arg) {
-					this.fire("afterDataRetrieve", arg);
-					if (future instanceof Promise) future.resolve(arg);
+					record.data[k].fire("afterDataRetrieve", arg);
 					return arg;
-				}, function (arg) {
-					this.fire("failedDataRetrieve", arg);
-					if (future instanceof Promise) future.reject(arg);
+				}, function (e) {
+					record.data[k].fire("failedDataRetrieve", e);
 					return arg;
 				});
 
-				if ((ignored && ignore.contains(k)) || (!(v instanceof Array) && typeof v !== "string")) return;
-				if (v instanceof Array) {
-					// Possibly a subset of the collection, so it relies on valid URI paths
-					if (!self.collections.contains(k)) self.collections.push(k);
-					record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-					record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-					
-					// Inheriting `ignored` collection
-					if (ignored) array.each(ignore, function (i) {
-						record.data[k].data.ignore.add(i);
-					});
-
-					// Inheriting `leafs` collection
-					array.each(self.leafs, function (i) {
-						record.data[k].data.leafs.add(i);
-					});
-
-					if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
-						record.data[k].data.recursive = true;
-						record.data[k].data.retrieve  = true;
+				if ((v instanceof Array) && v.length > 0) {
+					record.data[k] = setup(k, self);
+					if (typeof v[0] === "string") {
+						array.each(v, function (i, idx) {
+							v[idx] = build(i, uri);
+						});
 					}
-
-					if (v.length > 0) record.data[k].data.batch("set", v, true, deferred);
+					record.data[k].data.batch("set", v, true, undefined, deferred);
 				}
-				else {
-					// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
-					if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
-						// Possibly a subset of the collection, so it relies on valid URI paths
-						if (!self.collections.contains(k)) self.collections.push(k);
-						record.data[k] = data.factory({id: record.key + "-" + k}, null, {key: key, pointer: self.pointer, source: self.source});
-						record.data[k].data.headers = utility.merge(record.data[k].data.headers, self.headers);
-						
-						// Inheriting `ignored` collection
-						if (ignored) array.each(ignore, function (i) {
-							record.data[k].data.ignore.add(i);
-						});
-
-						// Inheriting `leafs` collection
-						array.each(self.leafs, function (i) {
-							record.data[k].data.leafs.add(i);
-						});
-
-						if (!self.leafs.contains(k) && self.recursive && self.retrieve) {
-							record.data[k].data.recursive = true;
-							record.data[k].data.retrieve  = true;
-						}
-
-						record.data[k].data.setUri(v, deferred);
-					}
+				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
+				else if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
+					record.data[k] = setup(k, self);
+					v = build(v, uri);
+					record.data[k].data.setUri(v, deferred);
 				}
 			});
+
+			if (future instanceof Promise && !future.resolved()) future.resolve(record);
+
 			return this.get(arg);
 		},
 
@@ -354,11 +358,11 @@ var data = {
 			if (typeof record === "string") {
 				key    = record;
 				record = this.keys[key];
-				if (typeof record === "undefined") throw Error(label.error.invalidArguments);
+				if (record === undefined) throw Error(label.error.invalidArguments);
 			}
 			else {
 				key = this.records[record];
-				if (typeof key === "undefined") throw Error(label.error.invalidArguments);
+				if (key === undefined) throw Error(label.error.invalidArguments);
 				key = key.key;
 			}
 
@@ -654,9 +658,9 @@ var data = {
 					r.push(self.get(i));
 				});
 			}
-			else if (type === "string" && typeof this.keys[record] !== "undefined") r = records[this.keys[record]];
-			else if (type === "number" && typeof offset === "undefined")            r = records[parseInt(record)];
-			else if (type === "number" && typeof offset === "number")               r = records.limit(parseInt(record), parseInt(offset));
+			else if (type === "string" && this.keys[record] !== undefined) r = records[this.keys[record]];
+			else if (type === "number" && offset === undefined)            r = records[parseInt(record)];
+			else if (type === "number" && typeof offset === "number")      r = records.limit(parseInt(record), parseInt(offset));
 			else r = undefined;
 			return r;
 		},
@@ -721,7 +725,7 @@ var data = {
 			sync    = (sync === true);
 
 			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
-			else if (data instanceof Array) return this.generate(key).batch("set", data, true, future);
+			else if (data instanceof Array) return this.generate(key).batch("set", data, true, undefined, future);
 			else if ((data instanceof Number) || (data instanceof String) || (typeof data !== "object")) throw Error(label.error.invalidArguments);
 
 			var record   = key === undefined ? undefined : this.get(key),
@@ -744,27 +748,27 @@ var data = {
 
 			deferred.then(function (arg) {
 				var data     = typeof arg.record === "undefined" ? utility.clone(arg) : arg,
-				    fire     = true,
 				    deferred = promise.factory(),
 				    record, uri;
 
 				deferred.then(function (arg) {
-					if (fire) self.parentNode.fire("afterDataSet", arg);
+					if (self.retrieve) self.crawl(arg);
+					self.parentNode.fire("afterDataSet", arg);
 					if (future instanceof Promise) future.resolve(arg);
 					return arg;
-				}, function (arg) {
-					self.fire("failedDataSet");
-					if (future instanceof Promise) future.reject(arg);
-					throw Error(arg);
+				}, function (e) {
+					self.parentNode.fire("failedDataSet");
+					if (future instanceof Promise) future.reject(e);
+					return e;
 				});
 
 				self.views = {};
 
-				if (typeof data.record === "undefined") {
+				if (data.record === undefined) {
 					var index = self.total++;
 
-					if (typeof data.key === "undefined") {
-						if (typeof data.result === "undefined") {
+					if (data.key === undefined) {
+						if (data.result === undefined) {
 							self.total--;
 							deferred.reject(label.error.expectedObject);
 						}
@@ -786,15 +790,15 @@ var data = {
 					self.records[index] = self.record(data.key, {});
 					record              = self.records[index];
 
-					if (self.pointer === null || typeof data.data[self.pointer] === "undefined") {
+					if (self.pointer === null || data.data[self.pointer] === undefined) {
 						record.data = data.data;
-						if (self.key !== null && self.records[index].data.hasOwnProperty(self.key)) delete self.records[index].data[self.key];
+						if (self.key !== null && record.data.hasOwnProperty(self.key)) delete record.data[self.key];
+						deferred.resolve(record);
 					}
 					else {
-						fire = false;
 						uri  = data.data[self.pointer];
 
-						if (typeof uri === "undefined" || uri === null) {
+						if (uri === undefined || uri === null) {
 							delete self.records[index];
 							delete self.keys[data.key];
 							deferred.reject(label.error.expectedObject);
@@ -804,25 +808,20 @@ var data = {
 
 						uri.get(function (args) {
 							if (self.source !== null) args = utility.walk(args, self.source);
-							if (typeof args[self.key] !== "undefined") delete args[self.key];
+							if (args[self.key] !== undefined) delete args[self.key];
 							utility.merge(record.data, args);
-							if (self.retrieve) {
-								self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
-								self.loaded = true;
-							}
-							self.parentNode.fire("afterDataSet", record);
+							deferred.resolve(record);
 						}, function (e) {
-							error(e, this, arguments);
+							deferred.reject(e);
 						}, self.headers);
 					}
 				}
 				else {
 					record = self.records[self.keys[data.record.key]];
 					utility.merge(record.data, data.data);
+					deferred.resolve(record);
 				}
 
-				if (self.retrieve) self.crawl(record.key, self.ignore.length > 0 ? self.ignore.join(",") : undefined, self.key);
-				deferred.resolve(record);
 				return arg;
 			}, function (arg) {
 				obj.fire("failedDataSet", arg);
@@ -831,7 +830,7 @@ var data = {
 			});
 
 			if (!sync && this.callback === null && uri !== null) {
-				if (typeof record !== "undefined") uri += "/" + record.key;
+				if (record !== undefined) uri += "/" + record.key;
 				p = uri.allows(method);
 			}
 
@@ -842,8 +841,10 @@ var data = {
 				uri[method](function (arg) {
 					args["result"] = arg;
 					deferred.resolve(args);
+					return args;
 				}, function (e) {
 					deferred.reject(e);
+					return e;
 				}, data, utility.merge({withCredentials: this.credentials}, this.headers));
 			}
 			else deferred.reject(args);
@@ -1038,7 +1039,7 @@ var data = {
 			    session = (type === "session" && typeof sessionStorage !== "undefined"),
 			    result, key, data;
 
-			if (!/number|object|string/.test(typeof obj) || !/get|remove|set/.test(op)) throw Error(label.error.invalidArguments);
+			if (!regex.number_string_object.test(typeof obj) || !regex.get_remove_set.test(op)) throw Error(label.error.invalidArguments);
 
 			record = (regex.number_string.test(obj) || (obj.hasOwnProperty("key") && !obj.hasOwnProperty("parentNode")));
 			if (record && !(obj instanceof Object)) obj = this.get(obj);
@@ -1127,7 +1128,7 @@ var data = {
 					return arg;
 				});
 
-				self.batch("set", data, true, 1000, deferred);
+				self.batch("set", data, true, undefined, deferred);
 				return arg;
 			}, function (arg) {
 				obj.fire("failedDataSync", arg);
@@ -1195,6 +1196,17 @@ var data = {
 			 */
 			del : function (future) {
 				return this.parentNode.del(this.key, true, false, future);
+			},
+
+			/**
+			 * Crawls a record
+			 * 
+			 * @param  {Object} future [Optional] Promise
+			 * @return {Object}        Record
+			 */
+			crawl : function (future) {
+				this.parentNode.crawl(this, future);
+				return this;
 			},
 
 			/**
