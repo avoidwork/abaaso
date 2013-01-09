@@ -379,15 +379,15 @@ var utility = {
 	 * Generates a GUID
 	 *
 	 * @method guid
-	 * @param {Boolean} safe [Optional] Strips - from GUID
-	 * @return {String}      GUID
+	 * @param  {Boolean} safe [Optional] Strips - from GUID
+	 * @return {String}       GUID
 	 */
 	guid : function (safe) {
 		var s = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); },
 		    r = [8, 9, "a", "b"],
 		    o;
 
-		safe  = (safe === true);
+		safe = (safe === true);
 
 		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s()).toLowerCase();
 		if (safe) o = o.replace(regex.hyphen, "");
