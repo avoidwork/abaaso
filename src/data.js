@@ -113,7 +113,7 @@ var data = {
 
 			if (data.length === 0) completed(false);
 			else {
-				if (type === "set") array.each(data.chunk(chunk), function (a, adx) {
+				if (type === "set") array.each(array.chunk(data, chunk), function (a, adx) {
 						var offset = adx * chunk;
 
 						utility.defer(function () {
@@ -294,7 +294,7 @@ var data = {
 							v[idx] = build(i, uri);
 						});
 					}
-					record.data[k].data.batch("set", v, true, 1000, deferred);
+					record.data[k].data.batch("set", v, true, undefined, deferred);
 				}
 				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
 				else if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
@@ -725,7 +725,7 @@ var data = {
 			sync    = (sync === true);
 
 			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
-			else if (data instanceof Array) return this.generate(key).batch("set", data, true, future);
+			else if (data instanceof Array) return this.generate(key).batch("set", data, true, undefined, future);
 			else if ((data instanceof Number) || (data instanceof String) || (typeof data !== "object")) throw Error(label.error.invalidArguments);
 
 			var record   = key === undefined ? undefined : this.get(key),
@@ -1128,7 +1128,7 @@ var data = {
 					return arg;
 				});
 
-				self.batch("set", data, true, 1000, deferred);
+				self.batch("set", data, true, undefined, deferred);
 				return arg;
 			}, function (arg) {
 				obj.fire("failedDataSync", arg);
