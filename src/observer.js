@@ -46,10 +46,14 @@ var observer = {
 		scope = scope || obj;
 		state = state || abaaso.state.current;
 
-		if (obj instanceof Array) return array.each(obj, function (i) { observer.add(i, event, fn, id, scope, state); });
+		if (obj instanceof Array) {
+			return array.each(obj, function (i) {
+				observer.add(i, event, fn, id, scope, state);
+			});
+		}
 
 		if (event !== undefined) event = event.explode();
-		if (id === undefined || !String(id).isEmpty()) id = utility.guid(true);
+		if (id === undefined || String(id).isEmpty()) id = utility.guid(true);
 
 		var instance = null,
 		    l        = observer.listeners,
