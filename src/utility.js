@@ -389,8 +389,8 @@ var utility = {
 
 		safe = (safe === true);
 
-		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s()).toLowerCase();
-		if (safe) o = o.replace(regex.hyphen, "");
+		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s()).toUpperCase();
+		if (safe) o = o.replace(/-/g, "");
 		return o;
 	},
 
@@ -778,7 +778,7 @@ var utility = {
 
 			           			try {
 			           				if (prop !== undefined) {
-			           					prop = prop.replace(regex.jsonp_1, "").replace(regex.jsonp_2, "[").split("[");
+			           					prop = prop.replace(/\]|'|"/g, "").replace(/\./g, "[").split("[");
 			           					prop.each(function (i) {
 			           						node = node[!!isNaN(i) ? i : parseInt(i)];
 			           						if (node === undefined) throw Error(label.error.propertyNotFound);
@@ -1048,7 +1048,7 @@ var utility = {
 	 * @return {Mixed}       arg
 	 */
 	walk : function (obj, arg) {
-		array.each(arg.replace(regex.walk_1, "").replace(regex.walk_2, ".").split(regex.walk_3), function (i) {
+		array.each(arg.replace(/\]$/, "").replace(/\]/g, ".").split(/\.|\[/), function (i) {
 			obj = obj[i];
 		});
 		return obj;

@@ -23,7 +23,7 @@ var string = {
 	 * @return {String}     Escaped string
 	 */
 	escape : function (obj) {
-		return obj.replace(regex.escape, "\\$&");
+		return obj.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 	},
 
 	/**
@@ -50,8 +50,8 @@ var string = {
 
 		camel = (camel === true);
 
-		result = string.trim(obj).replace(regex.spaces, "-");
-		if (camel) result = result.replace(regex.caps, "-\$1").toLowerCase();
+		result = string.trim(obj).replace(/\s+/g, "-");
+		if (camel) result = result.replace(/([A-Z])/g, "-\$1").toLowerCase();
 		return result;
 	},
 
@@ -90,7 +90,7 @@ var string = {
 	 * @return {String}     Trimmed String
 	 */
 	trim : function (obj) {
-		return obj.replace(regex.whitespace, "");
+		return obj.replace(/^\s+|\s+$/g, "");
 	},
 
 	/**

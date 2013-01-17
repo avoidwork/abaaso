@@ -935,7 +935,7 @@ var data = {
 			if (!regex.sensitivity_types.test(sensitivity)) sensitivity = "ci";
 
 			create       = (create === true);
-			var view     = (query.replace(regex.asc, "").replace(",", " ").toCamelCase()) + sensitivity.toUpperCase(),
+			var view     = (query.replace(/\s*asc/ig, "").replace(",", " ").toCamelCase()) + sensitivity.toUpperCase(),
 			    queries  = query.explode(),
 			    key      = this.key,
 			    result   = [],
@@ -967,7 +967,7 @@ var data = {
 			}
 
 			bucket = function (query, records, reverse) {
-				query        = query.replace(regex.asc, "");
+				query        = query.replace(/\s*asc/ig, "");
 				var prop     = query.replace(regex.desc, ""),
 				    pk       = (key === prop),
 				    order    = [],

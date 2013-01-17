@@ -53,14 +53,14 @@ var xml = {
 
 			node = function (name, value) {
 				var output = "<n>v</n>";
-				if (regex.cdata_value.test(value)) output = output.replace("v", "<![CDATA[v]]>");
+				if (/\&|\<|\>|\"|\'|\t|\r|\n|\@|\$/g.test(value)) output = output.replace("v", "<![CDATA[v]]>");
 				return output.replace("n", name).replace("v", value);
 			}
 
 			if (regex.boolean_number_string.test(typeof arg)) x += node("item", arg);
 			else if (typeof arg === "object") {
 				utility.iterate(arg, function (v, k) {
-					x += xml.encode(v, (typeof v === "object"), false).replace(regex.item_xml, isNaN(k) ? k : "item");
+					x += xml.encode(v, (typeof v === "object"), false).replace(/item|xml/g, isNaN(k) ? k : "item");
 				});
 			}
 

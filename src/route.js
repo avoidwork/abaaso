@@ -54,12 +54,13 @@ var route = {
 	 * @return {String}     Current route
 	 */
 	hash : function (arg) {
-		var output = "";
+		var output = "",
+		    regex  = /\#|\!\/|\?.*/g;
 
 		if (!server) {
-			if (arg === undefined) output = document.location.hash.replace(regex.route_bang, "");
+			if (arg === undefined) output = document.location.hash.replace(regex, "");
 			else {
-				output = arg.replace(regex.route_bang, "");
+				output = arg.replace(regex, "");
 				document.location.hash = "!/" + output;
 			}
 		}
@@ -158,7 +159,7 @@ var route = {
 		if (regex.route_nget.test(verb)) verb = "get";
 
 		// Public, private, local scope
-		name = name.replace(regex.route_bang, "");
+		name = name.replace(/\#|\!\/|\?.*/g, "");
 		if (!server) abaaso.route.current = name;
 
 		// Crawls the hostnames
