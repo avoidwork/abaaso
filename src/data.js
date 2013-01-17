@@ -33,6 +33,7 @@ var data = {
 
 			var obj      = this.parentNode,
 			    self     = this,
+			    events   = (this.events === true),
 			    r        = 0,
 			    nth      = data.length,
 			    f        = false,
@@ -43,11 +44,11 @@ var data = {
 			deferred.then(function (arg) {
 				if (regex.del.test(type)) self.reindex();
 				self.loaded = true;
-				obj.fire("afterDataBatch", arg);
+				if (events) obj.fire("afterDataBatch", arg);
 				if (future instanceof Promise) future.resolve(arg);
 				return arg;
 			}, function (arg) {
-				obj.fire("failedDataBatch", arg);
+				if (events) obj.fire("failedDataBatch", arg);
 				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
@@ -107,49 +108,51 @@ var data = {
 				self.del(i, false, sync, deferred);
 			};
 
-			obj.fire("beforeDataBatch", data);
+			if (events) obj.fire("beforeDataBatch", data);
 
 			if (sync) this.clear(sync);
 
 			if (data.length === 0) completed(false);
 			else {
-				if (type === "set") array.each(array.chunk(data, chunk), function (a, adx) {
+				if (type === "set") {
+					array.each(array.chunk(data, chunk), function (a, adx) {
 						var offset = adx * chunk;
 
-						utility.defer(function () {
-							array.each(a, function (i, idx) {
-								idx = (offset + idx).toString();
-								if (typeof i === "object") set(i, idx);
-								else if (i.indexOf("//") === -1) {
-									// Relative path to store, i.e. a child
-									if (i.charAt(0) !== "/") i = self.uri + "/" + i;
+						array.each(a, function (i, idx) {
+							idx = (offset + idx).toString();
+							if (typeof i === "object") set(i, idx);
+							else if (i.indexOf("//") === -1) {
+								// Relative path to store, i.e. a child
+								if (i.charAt(0) !== "/") i = self.uri + "/" + i;
 
-									// Root path, relative to store, i.e. a domain
-									else if (self.uri !== null && regex.root.test(i)) {
-										parsed = utility.parse(self.uri);
-										i      = parsed.protocol + "//" + parsed.host + i;
-									}
-
-									idx = i.replace(regex.not_endpoint, "");
-									if (idx.isEmpty()) return;
-
-									i.get(function (arg) {
-										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
-									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+								// Root path, relative to store, i.e. a domain
+								else if (self.uri !== null && regex.root.test(i)) {
+									parsed = utility.parse(self.uri);
+									i      = parsed.protocol + "//" + parsed.host + i;
 								}
-								else {
-									idx = i.replace(regex.not_endpoint, "");
-									if (idx.isEmpty()) return;
-									i.get(function (arg) {
-										set(self.source === null ? arg : utility.walk(arg, self.source), idx);
-									}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
-								}
-							});
+
+								idx = i.replace(regex.not_endpoint, "");
+								if (idx.isEmpty()) return;
+
+								i.get(function (arg) {
+									set(self.source === null ? arg : utility.walk(arg, self.source), idx);
+								}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+							}
+							else {
+								idx = i.replace(regex.not_endpoint, "");
+								if (idx.isEmpty()) return;
+								i.get(function (arg) {
+									set(self.source === null ? arg : utility.walk(arg, self.source), idx);
+								}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+							}
 						});
 					});
-				else array.each(data.sort(array.sort).reverse(), function (i) {
-					del(i);
-				});
+				}
+				else {
+					array.each(data.sort(array.sort).reverse(), function (i) {
+						del(i);
+					});
+				}
 			}
 
 			return this;
@@ -167,15 +170,17 @@ var data = {
 		 * @return {Object}          Data store
 		 */
 		clear : function (sync, future) {
-			sync    = (sync === true);
-			var obj = this.parentNode;
+			sync       = (sync === true);
+			var obj    = this.parentNode,
+			    events = (this.events === true);
 
 			if (!sync) {
-				obj.fire("beforeDataClear");
+				if (events) obj.fire("beforeDataClear");
 				this.callback    = null;
 				this.collections = [];
 				this.crawled     = false;
 				this.credentials = null;
+				this.events      = true;
 				this.expires     = null;
 				this.headers     = {Accept: "application/json"};
 				this.ignore      = [];
@@ -191,7 +196,7 @@ var data = {
 				this.total       = 0;
 				this.views       = {};
 				this.uri         = null;
-				obj.fire("afterDataClear");
+				if (events) obj.fire("afterDataClear");
 			}
 			else {
 				this.collections = [];
@@ -220,6 +225,7 @@ var data = {
 		 */
 		crawl : function (arg, future) {
 			var self   = this,
+			    events = (this.events === true),
 			    record = (arg instanceof Object) ? arg : this.get(arg),
 			    uri    = this.uri === null ? "" : this.uri,
 			    build, setup;
@@ -280,10 +286,10 @@ var data = {
 
 				deferred = promise.factory();
 				deferred.then(function (arg) {
-					record.data[k].fire("afterDataRetrieve", arg);
+					if (events) record.data[k].fire("afterDataRetrieve", arg);
 					return arg;
 				}, function (e) {
-					record.data[k].fire("failedDataRetrieve", e);
+					if (events) record.data[k].fire("failedDataRetrieve", e);
 					return arg;
 				});
 
@@ -331,6 +337,7 @@ var data = {
 			sync         = (sync === true);
 			var obj      = this.parentNode,
 			    self     = this,
+			    events   = (this.events === true),
 			    deferred = promise.factory(),
 			    key, args, uri, p;
 
@@ -346,11 +353,11 @@ var data = {
 					if (v === null) return;
 					if (v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
 				});
-				obj.fire("afterDataDelete", record);
+				if (events) obj.fire("afterDataDelete", record);
 				if (future instanceof Promise) future.resolve(arg);
 				return arg;
 			}, function (arg) {
-				obj.fire("failedDataDelete", args);
+				if (events) obj.fire("failedDataDelete", args);
 				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
@@ -373,7 +380,7 @@ var data = {
 				p   = uri.allows("delete");
 			}
 
-			obj.fire("beforeDataDelete", args);
+			if (events) obj.fire("beforeDataDelete", args);
 
 			if (sync || (this.callback !== null) || (this.uri === null)) deferred.resolve(args);
 			else if (regex.true_undefined.test(p)) {
@@ -482,9 +489,10 @@ var data = {
 		 * @return {Object}         Generated HTML form
 		 */
 		form : function (record, target, test) {
-			test      = (test !== false);
-			var empty = (record === null),
-			    self  = this,
+			test       = (test !== false);
+			var empty  = (record === null),
+			    self   = this,
+			    events = (this.events === true),
 			    entity, obj, handler, structure, key, data;
 
 			if (empty) record = this.get(0);
@@ -518,13 +526,13 @@ var data = {
 				    newData = {},
 				    guid;
 
-				self.parentNode.fire("beforeDataFormSubmit");
+				if (events) self.parentNode.fire("beforeDataFormSubmit");
 
 				if (test) result = form.validate();
 
 				switch (result) {
 					case false:
-						self.parentNode.fire("failedDataFormSubmit");
+						if (events) self.parentNode.fire("failedDataFormSubmit");
 						break;
 					case true:
 						array.each(nodes, function (i) {
@@ -537,7 +545,7 @@ var data = {
 						break;
 				}
 
-				self.parentNode.fire("afterDataFormSubmit", key);
+				if (events) self.parentNode.fire("afterDataFormSubmit", key);
 			};
 
 			/**
@@ -567,13 +575,13 @@ var data = {
 				});
 			};
 
-			this.parentNode.fire("beforeDataForm");
+			if (events) this.parentNode.fire("beforeDataForm");
 			obj = element.create("form", {style: "display:none;"}, target);
 			structure(data, obj, entity);
 			obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
 			obj.create("input", {type: "reset", value: label.common.reset});
 			obj.css("display", "inherit");
-			this.parentNode.fire("afterDataForm", obj);
+			if (events) this.parentNode.fire("afterDataForm", obj);
 			return obj;  
 		},
 
@@ -722,7 +730,7 @@ var data = {
 		 */
 		set : function (key, data, sync, future) {
 			if (key === null) key = undefined;
-			sync    = (sync === true);
+			sync = (sync === true);
 
 			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
 			else if (data instanceof Array) return this.generate(key).batch("set", data, true, undefined, future);
@@ -732,6 +740,7 @@ var data = {
 			    obj      = this.parentNode,
 			    method   = key === undefined ? "post" : "put",
 			    self     = this,
+			    events   = (this.events === true),
 			    args     = {data: {}, key: key, record: undefined},
 			    uri      = this.uri,
 			    deferred = promise.factory(),
@@ -753,11 +762,11 @@ var data = {
 
 				deferred.then(function (arg) {
 					if (self.retrieve) self.crawl(arg);
-					self.parentNode.fire("afterDataSet", arg);
+					if (events) self.parentNode.fire("afterDataSet", arg);
 					if (future instanceof Promise) future.resolve(arg);
 					return arg;
 				}, function (e) {
-					self.parentNode.fire("failedDataSet");
+					if (events) self.parentNode.fire("failedDataSet");
 					if (future instanceof Promise) future.reject(e);
 					return e;
 				});
@@ -824,7 +833,7 @@ var data = {
 
 				return arg;
 			}, function (arg) {
-				obj.fire("failedDataSet", arg);
+				if (events) obj.fire("failedDataSet", arg);
 				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
@@ -834,7 +843,7 @@ var data = {
 				p = uri.allows(method);
 			}
 
-			obj.fire("beforeDataSet", {key: key, data: data});
+			if (events) obj.fire("beforeDataSet", {key: key, data: data});
 
 			if (sync || this.callback !== null || this.uri === null) deferred.resolve(args);
 			else if (regex.true_undefined.test(p)) {
@@ -1090,6 +1099,7 @@ var data = {
 
 			reindex      = (reindex === true);
 			var self     = this,
+			    events   = (this.events === true),
 			    obj      = self.parentNode,
 			    guid     = utility.guid(true),
 			    deferred = promise.factory(),
@@ -1118,12 +1128,12 @@ var data = {
 					var data = [];
 
 					if (reindex) self.reindex();
-					obj.fire("afterDataSync", arg);
+					if (events) obj.fire("afterDataSync", arg);
 					if (future instanceof Promise) future.resolve(arg);
 					return data;
 				}, function (arg) {
 					self.clear(true);
-					obj.fire("failedDataSync", arg);
+					if (events) obj.fire("failedDataSync", arg);
 					if (future instanceof Promise) future.reject(arg);
 					return arg;
 				});
@@ -1131,7 +1141,7 @@ var data = {
 				self.batch("set", data, true, undefined, deferred);
 				return arg;
 			}, function (arg) {
-				obj.fire("failedDataSync", arg);
+				if (events) obj.fire("failedDataSync", arg);
 				if (future instanceof Promise) future.reject(arg);
 				return arg;
 			});
@@ -1144,7 +1154,7 @@ var data = {
 				deferred.reject(e);
 			};
 
-			obj.fire("beforeDataSync");
+			if (events) obj.fire("beforeDataSync");
 			this.callback !== null ? client.jsonp(this.uri, success, failure, {callback: this.callback})
 			                       : client.request(this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers));
 			return this;
@@ -1202,9 +1212,7 @@ var data = {
 		utility.genId(obj);
 
 		// Hooking observer if not present in prototype chain
-		if (typeof obj.fire === "undefined") observer.hook(obj);
-
-		obj.fire("beforeDataStore");
+		if (typeof obj.fire !== "function") observer.hook(obj);
 
 		// Creating store
 		obj.data = utility.extend(data.methods);
@@ -1215,9 +1223,8 @@ var data = {
 		if (args instanceof Object) utility.merge(obj.data, args);
 
 		// Setting records
-		if (typeof recs === "object" && recs !== null) obj.data.batch("set", recs);
-		
-		obj.fire("afterDataStore");
+		if (recs !== null && typeof recs === "object") obj.data.batch("set", recs);
+
 		return obj;
 	}
 };
