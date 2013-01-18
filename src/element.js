@@ -16,7 +16,7 @@ var element = {
 	attr : function (obj, key, value) {
 		if (typeof value === "string") value = string.trim(value);
 
-		var target;
+		var target, result;
 
 		obj = utility.object(obj);
 
@@ -37,7 +37,11 @@ var element = {
 			target.selected = true;
 			target.setAttribute("selected", "selected");
 		}
-		else if (value === undefined) return obj.getAttribute(key);
+		else if (value === undefined) {
+			result = obj.getAttribute(key);
+			if (result === null) result = undefined;
+			return result;
+		}
 		else if (value === null) obj.removeAttribute(key);
 		else obj.setAttribute(key, value);
 

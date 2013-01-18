@@ -89,7 +89,7 @@ var observer = {
 				a[o][i][state] = [];
 			}
 
-			instance = (gr.test(o) || (!regex.slash_forward.test(o) && o !== "abaaso")) ? obj : null;
+			instance = (gr.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
 
 			// Setting up event listener if valid
 			if (instance !== null && instance !== undefined && i.toLowerCase() !== "afterjsonp" && ev[eid] === undefined && (gr.test(o) || typeof instance.listeners === "function")) {

@@ -112,7 +112,7 @@ var datalist = {
 			redraw       = (redraw !== false);
 			var element  = this.element,
 			    template = (typeof this.template === "object"),
-			    key      = (!template && String(this.template).replace(regex.placeholder_bars, "") === this.store.key),
+			    key      = (!template && String(this.template).replace(/\{\{|\}\}/g, "") === this.store.key),
 			    consumed = [],
 			    items    = [],
 			    self     = this,
@@ -142,7 +142,7 @@ var datalist = {
 					reg.compile("{{" + k + "}}", "g");
 					html = html.replace(reg, v);
 				});
-				return {li: html.replace(regex.placeholders, self.placeholder)};
+				return {li: html.replace(/\{\{.*\}\}/g, self.placeholder)};
 			}
 			else fn = function (i) {
 				var obj = json.encode(self.template);
@@ -150,9 +150,9 @@ var datalist = {
 				obj = obj.replace("{{" + self.store.key + "}}", i.key)
 				json.iterate(i.data, function (v, k) {
 					reg.compile("{{" + k + "}}", "g");
-					obj = obj.replace(reg, json.encode(v).replace(regex.quotes, "")); // stripping first and last " to concat to valid JSON
+					obj = obj.replace(reg, json.encode(v).replace(/(^")|("$)/g, "")); // stripping first and last " to concat to valid JSON
 				});
-				obj = json.decode(obj.replace(regex.placeholders, self.placeholder));
+				obj = json.decode(obj.replace(/\{\{.*\}\}/g, self.placeholder));
 				return {li: obj};
 			};
 
