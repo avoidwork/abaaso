@@ -68,7 +68,7 @@ var data = {
 
 				if (typeof data.batch !== "function") rec = utility.clone(data)
 				else utility.iterate(data, function (v, k) {
-					if (!self.collections.contains(k)) rec[k] = utility.clone(v);
+					if (!array.contains(self.collections, k)) rec[k] = utility.clone(v);
 				});
 
 				if (self.key !== null && rec[self.key] !== undefined) {
@@ -247,12 +247,12 @@ var data = {
 			setup = function (key, self) {
 				var obj = {};
 
-				if (!self.collections.contains(key)) self.collections.push(key);
+				if (!array.contains(self.collections, key)) self.collections.push(key);
 
 				obj = data.factory({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs)});
 				obj.data.headers = utility.merge(obj.data.headers, self.headers);
 
-				if (!self.leafs.contains(key) && self.recursive && self.retrieve) {
+				if (!array.contains(self.leafs, key) && self.recursive && self.retrieve) {
 					obj.data.recursive = true;
 					obj.data.retrieve  = true;
 				}
@@ -284,7 +284,7 @@ var data = {
 			utility.iterate(record.data, function (v, k) {
 				var deferred, store, parsed;
 
-				if (self.ignore.contains(k) || self.leafs.contains(k) || (!(v instanceof Array) && typeof v !== "string")) return;
+				if (array.contains(self.ignore, k) || array.contains(self.leafs, k) || (!(v instanceof Array) && typeof v !== "string")) return;
 
 				deferred = promise.factory();
 				deferred.then(function (arg) {
@@ -429,7 +429,7 @@ var data = {
 				array.each(this.records, function (r) {
 					if (!fn) {
 						utility.iterate(r.data, function (v, k) {
-							if (keys.contains(r.key)) return false;
+							if (array.contains(keys, r.key)) return false;
 							if (v === null || typeof v.data === "object") return;
 
 							array.each(needle, function (n) {
@@ -452,7 +452,7 @@ var data = {
 			else {
 				array.each(this.records, function (r) {
 					array.each(haystack, function (h) {
-						if (keys.contains(r.key)) return false;
+						if (array.contains(keys, r.key)) return false;
 						if (r.data[h] === undefined || typeof r.data[h].data === "object") return;
 
 						if (!fn) {
@@ -634,7 +634,7 @@ var data = {
 			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
 
 			// Constructing relational URI
-			if (this.uri !== null && uri === undefined && !this.leafs.contains(key)) uri = this.uri + "/" + key;
+			if (this.uri !== null && uri === undefined && !array.contains(this.leafs, key)) uri = this.uri + "/" + key;
 			
 			// Conditionally making the store RESTful
 			if (uri !== undefined) this.records[idx].data.setUri(uri, deferred);
@@ -751,7 +751,7 @@ var data = {
 			if (record !== undefined) {
 				args.record = this.records[this.keys[record.key]];
 				utility.iterate(args.record.data, function (v, k) {
-					if (!self.collections.contains(k) && !self.ignore.contains(k)) args.data[k] = v;
+					if (!array.contains(self.collections, k) && !array.contains(self.ignore, k)) args.data[k] = v;
 				});
 				utility.merge(args.data, data);
 			}

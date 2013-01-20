@@ -65,35 +65,38 @@ var datalist = {
 			}
 
 			array.each(pos.explode(), function (i) {
+				var current = false,
+				    more    = page > 1,
+				    next    = (page + 1) <= total,
+				    last    = page < total;
+
 				// Setting up the list
 				list = obj[i === "bottom" ? "after" : "before"]("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i});
 
 				// First page
-				page > 1 ? list.create("li").create("a", {"class": "first page", "data-page": 1}).html("&lt;&lt;").on("click", function () { self.page(this.data("page")); }, "click")
-				         : list.create("li").create("span", {"class": "first page"}).html("&lt;&lt;");
+				list.create("li").create(more ? "a" : "span", {"class": "first page", "data-page": 1}).html("&lt;&lt;");
 
 				// Previous page
-				page > 1 ? list.create("li").create("a", {"class": "prev page", "data-page": (page - 1)}).html("&lt;").on("click", function () { self.page(this.data("page")); }, "click")
-				         : list.create("li").create("span", {"class": "prev page"}).html("&lt;");
+				list.create("li").create(more ? "a" : "span", {"class": "prev page", "data-page": (page - 1)}).html("&lt;");
 
 				// Rendering the page range
 				for (i = start; i <= end; i++) {
-					i !== page ? list.create("li").create("a", {"class": i === page ? "current page" : "page", "data-page": i}).html(i).on("click", function (e) { self.page(this.data("page")); }, "click")
-					           : list.create("li").create("span", {"class": "page"}).html(i);
+					current = (i === page);
+					list.create("li").create(current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i}).html(i);
 				}
 
 				// Next page
-				((page + 1) <= total) ? list.create("li").create("a", {"class": "next page", "data-page": (page + 1)}).html("&gt;").on("click", function () { self.page(this.data("page")); }, "click")
-				                      : list.create("li").create("span", {"class": "next page"}).html("&gt;");
+				list.create("li").create(next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null}).html("&gt;");
 
 				// Last page
-				page < total ? list.create("li").create("a", {"class": "last page", "data-page": total}).html("&gt;&gt;").on("click", function () { self.page(this.data("page")); }, "click")
-				             : list.create("li").create("span", {"class": "last page"}).html("&gt;&gt;");
+				list.create("li").create(last ? "span" : "a", {"class": "last page", "data-page": last ? null : total}).html("&gt;&gt;");
 
 				// Scroll to top the top
 				list.find("a.page").on("click", function (e) {
+					$.stop(e);
+					self.page(this.data("page"));
 					window.scrollTo(0, 0);
-				});
+				}, "pagination");
 			});
 
 			return this;

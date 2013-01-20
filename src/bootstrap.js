@@ -262,9 +262,12 @@ bootstrap = function () {
 	$.error.log = abaaso.error.log = [];
 
 	// Setting events & garbage collection
-	$.on(global, "error", function (e) { $.fire("error", e); }, "error", global, "all");
+	$.on(global, "error", function (e) {
+		$.fire("error", e);
+	}, "error", global, "all");
+
 	if (!server) {
-		$.on(global, "hashchange", function ()  {
+		$.on(global, "hashchange", function (e)  {
 			var hash = location.hash.replace(regex.route_bang, "");
 
 			if ($.route.current !== hash || abaaso.route.current !== hash) {
@@ -273,10 +276,18 @@ bootstrap = function () {
 				$.fire("beforeHash, hash, afterHash", location.hash);
 			}
 		}, "hash", global, "all");
-		$.on(global, "resize",     function ()  { $.client.size = abaaso.client.size = client.size(); $.fire("resize", abaaso.client.size); }, "resize", global, "all");
-		$.on(global, "load",       function ()  { $.fire("render").un("render").un(this, "load"); });
+		
+		$.on(global, "resize", function (e)  {
+			$.client.size = abaaso.client.size = client.size();
+			$.fire("resize", abaaso.client.size);
+		}, "resize", global, "all");
+		
+		$.on(global, "load", function (e)  {
+			$.fire("render").un("render").un(this, "load");
+		});
+		
 		$.on(global, "DOMNodeInserted", function (e) {
-			var obj = e.target;
+			var obj = utility.target(e);
 			
 			if (obj.id !== undefined && obj.id.isEmpty()) {
 				utility.genId(obj);
@@ -284,12 +295,19 @@ bootstrap = function () {
 				$.fire("afterCreate", obj);
 			}
 
-			if (typeof Object.observe === "function") Object.observe(obj, function (arg) { obj.fire("change", arg); });
+			if (typeof Object.observe === "function") Object.observe(obj, function (arg) {
+				obj.fire("change", arg);
+			});
 		}, "mutation", global, "all");
-		$.on(global, "DOMNodeRemoved", function (e) { cleanup(e.target); }, "mutation", global, "all");
+
+		$.on(global, "DOMNodeRemoved", function (e) {
+			cleanup(utility.target(e));
+		}, "mutation", global, "all");
 
 		// Routing listener
-		$.on("hash", function (arg) { if ($.route.enabled || abaaso.route.enabled) route.load(arg); }, "route", abaaso.route, "all");
+		$.on("hash", function (arg) {
+			if ($.route.enabled || abaaso.route.enabled) route.load(arg);
+		}, "route", abaaso.route, "all");
 	}
 
 	// abaaso.state.current getter/setter
