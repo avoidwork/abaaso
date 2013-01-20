@@ -42,14 +42,22 @@ var data = {
 			    completed, failure, key, set, del, success, parsed;
 
 			deferred.then(function (arg) {
-				if (regex.del.test(type)) self.reindex();
 				self.loaded = true;
+
+				if (regex.del.test(type)) self.reindex();
+
+				array.each(self.datalists, function (i) {
+					if (!i.ready) i.display();
+				});
+
 				if (events) obj.fire("afterDataBatch", arg);
 				if (future instanceof Promise) future.resolve(arg);
+
 				return arg;
 			}, function (arg) {
 				if (events) obj.fire("failedDataBatch", arg);
 				if (future instanceof Promise) future.reject(arg);
+
 				return arg;
 			});
 
@@ -110,7 +118,12 @@ var data = {
 
 			if (events) obj.fire("beforeDataBatch", data);
 
-			if (sync) this.clear(sync);
+			if (sync) {
+				this.clear(sync);
+				array.each(this.datalists, function (i) {
+					i.ready = false;
+				});
+			}
 
 			if (data.length === 0) completed(false);
 			else {
@@ -180,6 +193,7 @@ var data = {
 				this.collections = [];
 				this.crawled     = false;
 				this.credentials = null;
+				this.datalists   = [];
 				this.events      = true;
 				this.expires     = null;
 				this.headers     = {Accept: "application/json"};
@@ -348,17 +362,28 @@ var data = {
 				delete self.keys[arg.key];
 				self.total--;
 				self.views = {};
-				if (arg.reindex) self.reindex();
+
 				utility.iterate(record.data, function (v, k) {
 					if (v === null) return;
 					if (v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
 				});
+
+				if (arg.reindex) self.reindex();
+
+				if (!sync) {
+					array.each(self.datalists, function (i) {
+						if (i.ready) i.del();
+					});
+				}
+
 				if (events) obj.fire("afterDataDelete", record);
 				if (future instanceof Promise) future.resolve(arg);
+
 				return arg;
 			}, function (arg) {
 				if (events) obj.fire("failedDataDelete", args);
 				if (future instanceof Promise) future.reject(arg);
+
 				return arg;
 			});
 
@@ -768,12 +793,21 @@ var data = {
 
 				deferred.then(function (arg) {
 					if (self.retrieve) self.crawl(arg);
+
+					if (!sync) {
+						array.each(self.datalists, function (i) {
+							if (i.ready) i.set();
+						});
+					}
+
 					if (events) self.parentNode.fire("afterDataSet", arg);
 					if (future instanceof Promise) future.resolve(arg);
+
 					return arg;
 				}, function (e) {
 					if (events) self.parentNode.fire("failedDataSet");
 					if (future instanceof Promise) future.reject(e);
+
 					return e;
 				});
 
@@ -1178,9 +1212,13 @@ var data = {
 			if (uri !== null) {
 				cache.expire(uri, true);
 				observer.remove(uri);
-				id = this.parentNode.id + "DataExpire";
 
+				id = this.parentNode.id + "DataExpire";
 				utility.clearTimers(id);
+
+				array.each(this.datalists, function (i) {
+					i.teardown();
+				});
 
 				records = this.get();
 				array.each(records, function (i) {

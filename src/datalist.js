@@ -11,8 +11,36 @@ var datalist = {
 	// Inherited by datalists
 	methods : {
 		/**
+		 * Delete sync handler
+		 * 
+		 * @method del
+		 * @param  {Object} rec Record
+		 * @return {Undefined}  undefined
+		 */
+		del : function (rec) {
+			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.refresh();
+			else {
+				this.element.fire("beforeDataListRefresh");
+				this.element.find("> li[data-key='" + rec.key + "']").destroy();
+				this.element.fire("afterDataListRefresh");
+			}
+		},
+
+		/**
+		 * Displays the data list (unpause)
+		 * 
+		 * @method display
+		 * @return {Undefined} undefined
+		 */
+		display : function () {
+			this.ready = true;
+			this.refresh();
+		},
+
+		/**
 		 * Changes the page index of the DataList
 		 * 
+		 * @method page
 		 * @return {Object}  DataList instance
 		 */
 		page : function (arg) {
@@ -26,6 +54,7 @@ var datalist = {
 		/**
 		 * Adds pagination Elements to the View
 		 * 
+		 * @method pages
 		 * @return {Object}  DataList instance
 		 */
 		pages : function () {
@@ -68,7 +97,7 @@ var datalist = {
 				var current = false,
 				    more    = page > 1,
 				    next    = (page + 1) <= total,
-				    last    = page < total;
+				    last    = !(page < total);
 
 				// Setting up the list
 				list = obj[i === "bottom" ? "after" : "before"]("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i});
@@ -93,7 +122,7 @@ var datalist = {
 
 				// Scroll to top the top
 				list.find("a.page").on("click", function (e) {
-					$.stop(e);
+					utility.stop(e);
 					self.page(this.data("page"));
 					window.scrollTo(0, 0);
 				}, "pagination");
@@ -108,6 +137,7 @@ var datalist = {
 		 * Events: beforeDataListRefresh  Fires from the element containing the DataList
 		 *         afterDataListRefresh   Fires from the element containing the DataList
 		 * 
+		 * @method refresh
 		 * @param {Boolean} redraw [Optional] Boolean to force clearing the DataList (default), false toggles "hidden" class of items
 		 * @return {Object}        DataList instance
 		 */
@@ -124,14 +154,6 @@ var datalist = {
 			    registry = [], // keeps track of records in the list (for filtering)
 			    limit    = [],
 			    fn, obj, ceiling;
-
-			if (!this.ready) {
-				this.ready = true;
-				this.store.parentNode.on("afterDataSet", function (r)  {
-					if (datalist.garbage(this.store.parentNode, element.id, "afterDataSet", "set-" + element.id)) return;
-					if (!this.refreshing) this.refresh();
-				}, "set-" + element.id, this);
-			}
 
 			this.element.fire("beforeDataListRefresh");
 			this.refreshing = true;
@@ -151,7 +173,7 @@ var datalist = {
 				var obj = json.encode(self.template);
 
 				obj = obj.replace("{{" + self.store.key + "}}", i.key)
-				json.iterate(i.data, function (v, k) {
+				utility.iterate(i.data, function (v, k) {
 					reg.compile("{{" + k + "}}", "g");
 					obj = obj.replace(reg, json.encode(v).replace(/(^")|("$)/g, "")); // stripping first and last " to concat to valid JSON
 				});
@@ -195,7 +217,7 @@ var datalist = {
 			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
 				ceiling = datalist.pages.call(this);
 				// Passed the end, so putting you on the end
-				if (this.pageIndex > ceiling) return this.page(ceiling);
+				if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
 				// Paginating the items
 				else {
 					limit = datalist.range.call(this);
@@ -232,6 +254,16 @@ var datalist = {
 		},
 
 		/**
+		 * Set sync handler
+		 *
+		 * @method set
+		 * @return {Undefined} undefined
+		 */
+		set : function () {
+			if (!this.refreshing) this.refresh();
+		},
+
+		/**
 		 * Sorts data list & refreshes element
 		 * 
 		 * Events: beforeDataListSort     Fires before the DataList sorts
@@ -239,6 +271,7 @@ var datalist = {
 		 *         beforeDataListRefresh  Fires before the DataList refreshes
 		 *         afterDataListRefresh   Fires after the DataList refreshes
 		 * 
+		 * @method sort
 		 * @param  {String} order       SQL "order by" statement
 		 * @param  {String} sensitivity [Optional] Defaults to "ci" ("ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive)
 		 * @return {Object}              DataList instance
@@ -254,14 +287,22 @@ var datalist = {
 		},
 
 		/**
-		 * Tears down references to the DataList in the Observer
+		 * Tears down references to the DataList
 		 * 
+		 * @method teardown
 		 * @return {Object}  DataList instance
 		 */
 		teardown : function () {
-			var id = this.element.id;
+			var self = this;
 
-			this.store.parentNode.un("afterDataDelete", "delete-" + id, "afterDataRetrieve, afterDataSync", "refresh-" + id);
+			observer.un(this.element);
+			array.each(this.store.datalists, function (i, idx) {
+				if (i.id === self.id) {
+					this.remove(idx);
+					return false;
+				}
+			});
+
 			return this;
 		}
 	},
@@ -272,6 +313,7 @@ var datalist = {
 	 * Events: beforeDataList  Fires before target receives the DataList
 	 *         afterDataList   Fires after DataList is setup in target
 	 *           
+	 * @method factory
 	 * @param  {Object} target   Element to receive the DataList
 	 * @param  {Object} store    Data store to feed the DataList
 	 * @param  {Mixed}  template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
@@ -282,15 +324,16 @@ var datalist = {
 		var ref      = [store],
 		    instance = {},
 		    params   = {},
-		    element, fn;
+		    element;
 
 		if (!(target instanceof Element) || typeof store !== "object" || !regex.string_object.test(typeof template)) throw Error(label.error.invalidArguments);
 
 		// Preparing
-		element  = target.fire("beforeDataList").create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
-		params   = {
+		element = target.fire("beforeDataList").create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
+		params  = {
 			callback    : null,
 			filter      : null,
+			id          : utility.genId(),
 			pageIndex   : 1,
 			pageSize    : null,
 			pageRange   : 5,
@@ -312,30 +355,10 @@ var datalist = {
 		// Applying customization
 		if (options instanceof Object) utility.merge(instance, options);
 
-		// Cleaning up orphaned element(s)
-		instance.store.parentNode.on("afterDataDelete", function (r) {
-			if (datalist.garbage(this.store.parentNode, element.id, "afterDataDelete", "delete-" + element.id)) return;
-			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.refresh();
-			else {
-				this.element.fire("beforeDataListRefresh");
-				this.element.find("> li[data-key='" + r.key + "']").destroy();
-				this.element.fire("afterDataListRefresh");
-			}
-		}, "delete-" + element.id, instance);
+		// Setting reference of instance on store
+		instance.store.datalists.push(instance);
 
-		fn = function () {
-			var ev = this.store.retrieve ? "afterDataRetrieve" : "afterDataSync";
-
-			this.store.parentNode.once(ev, function () {
-				if (datalist.garbage(this.store.parentNode, element.id, ev, "refresh-" + element.id)) return;
-				if (!this.refreshing && (ev === "afterDataRetrieve" || this.store.loaded)) this.refresh();
-				fn.call(this);
-			}, "refresh-" + element.id, this);
-
-			if (datalist.now.call(instance)) instance.refresh();
-		}
-
-		datalist.now.call(instance) ? fn.call(instance) : instance.store.parentNode.once(instance.store.parentNode.retrieve ? "afterDataRetrieve" : "afterDataSync", fn, "initialize-" + element.id, instance);
+		if (instance.store.uri === null || instance.store.loaded) instance.display();
 
 		target.fire("afterDataList", element);
 
@@ -343,37 +366,9 @@ var datalist = {
 	},
 
 	/**
-	 * Garbage collector which removes invalid events from the observer
-	 * 
-	 * @param  {Object} obj     Data store parentNode
-	 * @param  {Object} element DataList Element id
-	 * @param  {String} event   Event
-	 * @param  {String} id      Observerable event id
-	 * @return {Boolean}        True if invalid & removed from the observer
-	 */
-	garbage : function (obj, element, event, id) {
-		var result = false;
-
-		if ($("#" + element) === undefined) {
-			obj.un(event, id);
-			result = true;
-		}
-
-		return result;
-	},
-
-	/**
-	 * Determines if a store is ready to refresh
-	 * 
-	 * @return {Boolean} True to refresh
-	 */
-	now : function () {
-		return (this.store.uri === null || this.store.loaded);
-	},
-
-	/**
 	 * Calculates the total pages
 	 * 
+	 * @method pages
 	 * @return {Number} Total pages
 	 */
 	pages : function () {
@@ -384,6 +379,7 @@ var datalist = {
 	/**
 	 * Calculates the page size as an Array of start & finish
 	 * 
+	 * @method range
 	 * @return {Array}  Array of start & end numbers
 	 */
 	range : function () {

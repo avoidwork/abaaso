@@ -363,10 +363,10 @@ var utility = {
 		if (obj !== undefined && ((obj.id !== undefined && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
 		if (dom) {
-			do id = utility.domId(utility.guid(true));
+			do id = utility.domId(utility.guid(true).toLowerCase());
 			while ($("#" + id) !== undefined);
 		}
-		else id = utility.domId(utility.guid(true));
+		else id = utility.domId(utility.guid(true).toLowerCase());
 
 		if (typeof obj === "object") {
 			obj.id = id;
