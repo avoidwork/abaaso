@@ -520,13 +520,15 @@ var data = {
 			 * @param  {Object} event Window event
 			 * @return {Undefined}    undefined
 			 */
-			handler = function (event) {
-				var form    = event.srcElement.parentNode,
+			handler = function (e) {
+				var form    = utility.target(e).parentNode,
 				    nodes   = $("#" + form.id + " input"),
 				    entity  = nodes[0].name.match(/(.*)\[/)[1],
 				    result  = true,
 				    newData = {},
 				    guid;
+
+				utility.stop(e);
 
 				if (events) self.parentNode.fire("beforeDataFormSubmit");
 
@@ -542,7 +544,9 @@ var data = {
 							utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 						});
 						guid = utility.genId(true);
-						self.parentNode.once("afterDataSet", function () { form.destroy(); });
+						self.parentNode.once("afterDataSet", function () {
+							form.destroy();
+						});
 						self.set(key, newData[entity]);
 						break;
 				}
@@ -580,7 +584,9 @@ var data = {
 			if (events) this.parentNode.fire("beforeDataForm");
 			obj = element.create("form", {style: "display:none;"}, target);
 			structure(data, obj, entity);
-			obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
+			obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) {
+				handler(e);
+			});
 			obj.create("input", {type: "reset", value: label.common.reset});
 			obj.css("display", "inherit");
 			if (events) this.parentNode.fire("afterDataForm", obj);
