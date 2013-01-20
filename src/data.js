@@ -118,12 +118,11 @@ var data = {
 
 			if (events) obj.fire("beforeDataBatch", data);
 
-			if (sync) {
-				this.clear(sync);
-				array.each(this.datalists, function (i) {
-					i.ready = false;
-				});
-			}
+			if (sync) this.clear(sync);
+
+			array.each(this.datalists, function (i) {
+				i.ready = false;
+			});
 
 			if (data.length === 0) completed(false);
 			else {
@@ -372,7 +371,7 @@ var data = {
 
 				if (!sync) {
 					array.each(self.datalists, function (i) {
-						if (i.ready) i.del();
+						if (i.ready) i.del(record);
 					});
 				}
 
