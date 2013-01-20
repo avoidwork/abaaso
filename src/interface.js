@@ -181,6 +181,7 @@ return {
 	script          : utility.script,
 	stop            : utility.stop,
 	store           : data.factory,
+	target          : utility.target,
 	tpl             : utility.tpl,
 	un              : function (obj, event, id, state) {
 		var all = typeof obj === "object",

@@ -165,7 +165,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		var result = "";
 
-		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error("INVALID_STATE_ERR: Headers have not been received");
+		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error(label.error.invalidStateNoHeaders);
 		utility.iterate(this._resheaders, function (v, k) {
 			result += k + ": " + v + "\n";
 		});
@@ -181,7 +181,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.getResponseHeader = function (header) {
 		var result;
 
-		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error("INVALID_STATE_ERR: Headers have not been received");
+		if (this.readyState < HEADERS_RECEIVED || this._error) throw Error(label.error.invalidStateNoHeaders);
 		result = this._resheaders[header] || this._resheaders[header.toLowerCase()];
 		return result;
 	};
@@ -199,7 +199,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
 		var self = this;
 
-		if (async !== undefined && async !== true) throw Error("Synchronous XMLHttpRequest requests are not supported");
+		if (async !== undefined && async !== true) throw Error(label.error.invalidStateNoSync);
 
 		this.abort();
 		this._error  = false;
@@ -254,8 +254,8 @@ var xhr = function () {
 		var self = this,
 		    options, parsed, request, obj;
 
-		if (this.readyState < OPENED) throw Error("INVALID_STATE_ERR: Object is not open");
-		else if (this._send) throw Error("INVALID_STATE_ERR: Object is sending");
+		if (this.readyState < OPENED) throw Error(label.error.invalidStateNotOpen);
+		else if (this._send) throw Error(label.error.invalidStateNotSending);
 
 		parsed      = url.parse(this._params.url);
 		parsed.port = parsed.port || (parsed.protocol === "https:" ? 443 : 80);
@@ -280,7 +280,11 @@ var xhr = function () {
 		self.dispatchEvent("readystatechange");
 
 		obj           = parsed.protocol === "http:" ? http : https;
-		request       = obj.request(options, function (arg) { handler.call(self, arg); }).on("error", function (e) { handlerError.call(self, e); });
+		request       = obj.request(options, function (arg) {
+		                	handler.call(self, arg);
+		                }).on("error", function (e) {
+		                	handlerError.call(self, e);
+		                });
 		data === null ? request.setSocketKeepAlive(true, 10000) : request.write(data, "utf8");
 		this._request = request;
 		request.end();
@@ -298,8 +302,8 @@ var xhr = function () {
 	 * @return {Object}       XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function (header, value) {
-		if (this.readyState !== OPENED) throw Error("INVALID_STATE_ERR: Object is not usable");
-		else if (this._send) throw Error("INVALID_STATE_ERR: Object is sending");
+		if (this.readyState !== OPENED) throw Error(label.error.invalidStateNotUsable);
+		else if (this._send) throw Error(label.error.invalidStateNotSending);
 		this._headers[header] = value;
 		return this;
 	};

@@ -363,10 +363,10 @@ var utility = {
 		if (obj !== undefined && ((obj.id !== undefined && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
 		if (dom) {
-			do id = utility.domId(utility.guid(true));
+			do id = utility.domId(utility.guid(true).toLowerCase());
 			while ($("#" + id) !== undefined);
 		}
-		else id = utility.domId(utility.guid(true));
+		else id = utility.domId(utility.guid(true).toLowerCase());
 
 		if (typeof obj === "object") {
 			obj.id = id;
@@ -613,7 +613,7 @@ var utility = {
 			           enable   : function () { return array.each(this, function (i) { i.enable(); }); },
 			           equal    : function (arg) { return array.equal(this, arg); },
 			           fill     : function (arg, start, offset) { return array.fill(this, arg, start, offset); },
-			           find     : function (arg) { var a = []; array.each(this, function (i) { i.find(arg).each(function (r) { if (!a.contains(r)) a.push(r); }); }); return a; },
+			           find     : function (arg) { var a = []; array.each(this, function (i) { i.find(arg).each(function (r) { if (!array.contains(a, r)) a.push(r); }); }); return a; },
 			           fire     : function () { var args = arguments; return array.each(this, function (i) { observer.fire.apply(observer, args); }); },
 			           first    : function () { return array.first(this); },
 			           flat     : function () { return array.flat(this); },
@@ -1004,6 +1004,16 @@ var utility = {
 		e.returnValue = false;
 
 		return e;
+	},
+
+	/**
+	 * Returns the Event target
+	 * 
+	 * @param  {Object} e Event
+	 * @return {Object}   Event target
+	 */
+	target : function (e) {
+		return e.target || e.srcElement;
 	},
 
 	/**

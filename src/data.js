@@ -42,14 +42,22 @@ var data = {
 			    completed, failure, key, set, del, success, parsed;
 
 			deferred.then(function (arg) {
-				if (regex.del.test(type)) self.reindex();
 				self.loaded = true;
+
+				if (regex.del.test(type)) self.reindex();
+
+				array.each(self.datalists, function (i) {
+					if (!i.ready) i.display();
+				});
+
 				if (events) obj.fire("afterDataBatch", arg);
 				if (future instanceof Promise) future.resolve(arg);
+
 				return arg;
 			}, function (arg) {
 				if (events) obj.fire("failedDataBatch", arg);
 				if (future instanceof Promise) future.reject(arg);
+
 				return arg;
 			});
 
@@ -68,7 +76,7 @@ var data = {
 
 				if (typeof data.batch !== "function") rec = utility.clone(data)
 				else utility.iterate(data, function (v, k) {
-					if (!self.collections.contains(k)) rec[k] = utility.clone(v);
+					if (!array.contains(self.collections, k)) rec[k] = utility.clone(v);
 				});
 
 				if (self.key !== null && rec[self.key] !== undefined) {
@@ -111,6 +119,10 @@ var data = {
 			if (events) obj.fire("beforeDataBatch", data);
 
 			if (sync) this.clear(sync);
+
+			array.each(this.datalists, function (i) {
+				i.ready = false;
+			});
 
 			if (data.length === 0) completed(false);
 			else {
@@ -180,6 +192,7 @@ var data = {
 				this.collections = [];
 				this.crawled     = false;
 				this.credentials = null;
+				this.datalists   = [];
 				this.events      = true;
 				this.expires     = null;
 				this.headers     = {Accept: "application/json"};
@@ -245,12 +258,12 @@ var data = {
 			setup = function (key, self) {
 				var obj = {};
 
-				if (!self.collections.contains(key)) self.collections.push(key);
+				if (!array.contains(self.collections, key)) self.collections.push(key);
 
 				obj = data.factory({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs)});
 				obj.data.headers = utility.merge(obj.data.headers, self.headers);
 
-				if (!self.leafs.contains(key) && self.recursive && self.retrieve) {
+				if (!array.contains(self.leafs, key) && self.recursive && self.retrieve) {
 					obj.data.recursive = true;
 					obj.data.retrieve  = true;
 				}
@@ -282,7 +295,7 @@ var data = {
 			utility.iterate(record.data, function (v, k) {
 				var deferred, store, parsed;
 
-				if (self.ignore.contains(k) || self.leafs.contains(k) || (!(v instanceof Array) && typeof v !== "string")) return;
+				if (array.contains(self.ignore, k) || array.contains(self.leafs, k) || (!(v instanceof Array) && typeof v !== "string")) return;
 
 				deferred = promise.factory();
 				deferred.then(function (arg) {
@@ -348,17 +361,28 @@ var data = {
 				delete self.keys[arg.key];
 				self.total--;
 				self.views = {};
-				if (arg.reindex) self.reindex();
+
 				utility.iterate(record.data, function (v, k) {
 					if (v === null) return;
 					if (v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
 				});
+
+				if (arg.reindex) self.reindex();
+
+				if (!sync) {
+					array.each(self.datalists, function (i) {
+						if (i.ready) i.del(record);
+					});
+				}
+
 				if (events) obj.fire("afterDataDelete", record);
 				if (future instanceof Promise) future.resolve(arg);
+
 				return arg;
 			}, function (arg) {
 				if (events) obj.fire("failedDataDelete", args);
 				if (future instanceof Promise) future.reject(arg);
+
 				return arg;
 			});
 
@@ -427,7 +451,7 @@ var data = {
 				array.each(this.records, function (r) {
 					if (!fn) {
 						utility.iterate(r.data, function (v, k) {
-							if (keys.contains(r.key)) return false;
+							if (array.contains(keys, r.key)) return false;
 							if (v === null || typeof v.data === "object") return;
 
 							array.each(needle, function (n) {
@@ -450,7 +474,7 @@ var data = {
 			else {
 				array.each(this.records, function (r) {
 					array.each(haystack, function (h) {
-						if (keys.contains(r.key)) return false;
+						if (array.contains(keys, r.key)) return false;
 						if (r.data[h] === undefined || typeof r.data[h].data === "object") return;
 
 						if (!fn) {
@@ -518,13 +542,15 @@ var data = {
 			 * @param  {Object} event Window event
 			 * @return {Undefined}    undefined
 			 */
-			handler = function (event) {
-				var form    = event.srcElement.parentNode,
+			handler = function (e) {
+				var form    = utility.target(e).parentNode,
 				    nodes   = $("#" + form.id + " input"),
 				    entity  = nodes[0].name.match(/(.*)\[/)[1],
 				    result  = true,
 				    newData = {},
 				    guid;
+
+				utility.stop(e);
 
 				if (events) self.parentNode.fire("beforeDataFormSubmit");
 
@@ -540,7 +566,9 @@ var data = {
 							utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 						});
 						guid = utility.genId(true);
-						self.parentNode.once("afterDataSet", function () { form.destroy(); });
+						self.parentNode.once("afterDataSet", function () {
+							form.destroy();
+						});
 						self.set(key, newData[entity]);
 						break;
 				}
@@ -578,7 +606,9 @@ var data = {
 			if (events) this.parentNode.fire("beforeDataForm");
 			obj = element.create("form", {style: "display:none;"}, target);
 			structure(data, obj, entity);
-			obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) { handler(e); });
+			obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) {
+				handler(e);
+			});
 			obj.create("input", {type: "reset", value: label.common.reset});
 			obj.css("display", "inherit");
 			if (events) this.parentNode.fire("afterDataForm", obj);
@@ -632,7 +662,7 @@ var data = {
 			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
 
 			// Constructing relational URI
-			if (this.uri !== null && uri === undefined && !this.leafs.contains(key)) uri = this.uri + "/" + key;
+			if (this.uri !== null && uri === undefined && !array.contains(this.leafs, key)) uri = this.uri + "/" + key;
 			
 			// Conditionally making the store RESTful
 			if (uri !== undefined) this.records[idx].data.setUri(uri, deferred);
@@ -749,7 +779,7 @@ var data = {
 			if (record !== undefined) {
 				args.record = this.records[this.keys[record.key]];
 				utility.iterate(args.record.data, function (v, k) {
-					if (!self.collections.contains(k) && !self.ignore.contains(k)) args.data[k] = v;
+					if (!array.contains(self.collections, k) && !array.contains(self.ignore, k)) args.data[k] = v;
 				});
 				utility.merge(args.data, data);
 			}
@@ -762,12 +792,21 @@ var data = {
 
 				deferred.then(function (arg) {
 					if (self.retrieve) self.crawl(arg);
+
+					if (!sync) {
+						array.each(self.datalists, function (i) {
+							if (i.ready) i.set();
+						});
+					}
+
 					if (events) self.parentNode.fire("afterDataSet", arg);
 					if (future instanceof Promise) future.resolve(arg);
+
 					return arg;
 				}, function (e) {
 					if (events) self.parentNode.fire("failedDataSet");
 					if (future instanceof Promise) future.reject(e);
+
 					return e;
 				});
 
@@ -1172,9 +1211,13 @@ var data = {
 			if (uri !== null) {
 				cache.expire(uri, true);
 				observer.remove(uri);
-				id = this.parentNode.id + "DataExpire";
 
+				id = this.parentNode.id + "DataExpire";
 				utility.clearTimers(id);
+
+				array.each(this.datalists, function (i) {
+					i.teardown();
+				});
 
 				records = this.get();
 				array.each(records, function (i) {
