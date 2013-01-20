@@ -183,7 +183,6 @@ var data = {
 				this.events      = true;
 				this.expires     = null;
 				this.headers     = {Accept: "application/json"};
-				this.indexes     = {};
 				this.ignore      = [];
 				this.key         = null;
 				this.keys        = {};
@@ -202,7 +201,6 @@ var data = {
 			else {
 				this.collections = [];
 				this.crawled     = false;
-				this.indexes     = {};
 				this.keys        = {};
 				this.loaded      = false;
 				this.records     = [];
