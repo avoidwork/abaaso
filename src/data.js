@@ -96,7 +96,7 @@ var data = {
 				});
 
 				if (rec instanceof Array && self.uri !== null) self.generate(key, undefined, deferred);
-				else self.set(key, rec, sync, deferred);
+				else self.set(key, rec, true, deferred);
 			};
 
 			del = function (i) {
@@ -113,7 +113,7 @@ var data = {
 					return arg;
 				});
 
-				self.del(i, false, sync, deferred);
+				self.del(i, false, true, deferred);
 			};
 
 			if (events) obj.fire("beforeDataBatch", data);
@@ -333,21 +333,20 @@ var data = {
 		 *
 		 * Events: beforeDataDelete  Fires before the record is deleted
 		 *         afterDataDelete   Fires after the record is deleted
-		 *         syncDataDelete    Fires when the local store is updated
 		 *         failedDataDelete  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method del
 		 * @param  {Mixed}   record  Record key or index
 		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
-		 * @param  {Boolean} sync    [Optional] True if called by data.sync
+		 * @param  {Boolean} batch   [Optional] True if called by data.batch
 		 * @param  {Object}  future  [Optional] Promise
 		 * @return {Object}          Data store
 		 */
-		del : function (record, reindex, sync, future) {
+		del : function (record, reindex, batch, future) {
 			if (record === undefined || !regex.number_string.test(typeof record)) throw Error(label.error.invalidArguments);
 
 			reindex      = (reindex !== false);
-			sync         = (sync === true);
+			batch        = (batch === true);
 			var obj      = this.parentNode,
 			    self     = this,
 			    events   = (this.events === true),
@@ -369,7 +368,7 @@ var data = {
 
 				if (arg.reindex) self.reindex();
 
-				if (!sync) {
+				if (!batch) {
 					array.each(self.datalists, function (i) {
 						if (i.ready) i.del(record);
 					});
@@ -399,14 +398,14 @@ var data = {
 
 			args   = {key: key, record: record, reindex: reindex};
 
-			if (!sync && this.callback === null && this.uri !== null) {
+			if (!batch && this.callback === null && this.uri !== null) {
 				uri = this.uri + "/" + key;
 				p   = uri.allows("delete");
 			}
 
 			if (events) obj.fire("beforeDataDelete", args);
 
-			if (sync || (this.callback !== null) || (this.uri === null)) deferred.resolve(args);
+			if (batch || this.callback !== null || this.uri === null) deferred.resolve(args);
 			else if (regex.true_undefined.test(p)) {
 				uri.del(function (arg) {
 					deferred.resolve(args);
@@ -748,19 +747,18 @@ var data = {
 		 *
 		 * Events: beforeDataSet  Fires before the record is set
 		 *         afterDataSet   Fires after the record is set, the record is the argument for listeners
-		 *         syncDataSet    Fires when the local store is updated
 		 *         failedDataSet  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method set
 		 * @param  {Mixed}   key     Integer or String to use as a Primary Key
 		 * @param  {Object}  data    Key:Value pairs to set as field values
-		 * @param  {Boolean} sync    [Optional] True if called by data.sync
+		 * @param  {Boolean} batch   [Optional] True if called by data.batch
 		 * @param  {Object}  future  [Optional] Promise
 		 * @return {Object}          Data store
 		 */
-		set : function (key, data, sync, future) {
+		set : function (key, data, batch, future) {
 			if (key === null) key = undefined;
-			sync = (sync === true);
+			batch = (batch === true);
 
 			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
 			else if (data instanceof Array) return this.generate(key).batch("set", data, true, undefined, future);
@@ -793,7 +791,7 @@ var data = {
 				deferred.then(function (arg) {
 					if (self.retrieve) self.crawl(arg);
 
-					if (!sync) {
+					if (!batch) {
 						array.each(self.datalists, function (i) {
 							if (i.ready) i.set();
 						});
@@ -877,14 +875,14 @@ var data = {
 				return arg;
 			});
 
-			if (!sync && this.callback === null && uri !== null) {
+			if (!batch && this.callback === null && uri !== null) {
 				if (record !== undefined) uri += "/" + record.key;
 				p = uri.allows(method);
 			}
 
 			if (events) obj.fire("beforeDataSet", {key: key, data: data});
 
-			if (sync || this.callback !== null || this.uri === null) deferred.resolve(args);
+			if (batch || this.callback !== null || this.uri === null) deferred.resolve(args);
 			else if (regex.true_undefined.test(p)) {
 				uri[method](function (arg) {
 					args["result"] = arg;
