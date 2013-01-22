@@ -268,7 +268,7 @@ bootstrap = function () {
 
 	if (!server) {
 		$.on(global, "hashchange", function (e)  {
-			var hash = location.hash.replace(regex.route_bang, "");
+			var hash = location.hash.replace(/\#|\!\/|\?.*/g, "");
 
 			if ($.route.current !== hash || abaaso.route.current !== hash) {
 				abaaso.route.current = hash;
