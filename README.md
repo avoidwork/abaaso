@@ -32,7 +32,7 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 
 ## License
 
-abaaso is licensed under BSD-3 https://github.com/avoidwork/abaaso/blob/master/LICENSE
+abaaso is licensed under BSD-3 https://raw.github.com/avoidwork/abaaso/master/LICENSE
 
 ### Copyright
 
