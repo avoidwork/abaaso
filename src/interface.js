@@ -76,6 +76,7 @@ return {
 	},
 	bootstrap       : bootstrap,
 	clear           : element.clear,
+	clearTimer      : utility.clearTimers,
 	clone           : utility.clone,
 	coerce          : utility.coerce,
 	compile         : utility.compile,
