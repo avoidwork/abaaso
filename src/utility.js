@@ -271,11 +271,11 @@ var utility = {
 		id = id || utility.guid(true);
 
 		op = function () {
-			clearTimeout(utility.timer[id]);
-			delete utility.timer[id];
+			utility.clearTimers(id);
 			fn();
 		};
 
+		utility.clearTimers(id);
 		utility.timer[id] = setTimeout(op, ms);
 		return id;
 	},
