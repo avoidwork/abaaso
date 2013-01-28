@@ -884,10 +884,10 @@ var utility = {
 	 */
 	queryString : function (arg, string) {
 		var obj    = {},
-		    result = string !== undefined ? string.replace("?", "") : (location.search.isEmpty() ? null : location.search.replace("?", "")),
+		    result = string !== undefined ? (string.indexOf("?") > -1 ? string.replace(/.*\?/, "") : null) : (server || location.search.isEmpty() ? null : location.search.replace("?", "")),
 		    item;
 
-		if (result !== null) {
+		if (result !== null && !result.isEmpty()) {
 			result = result.split("&");
 			array.each(result, function (prop) {
 				item = prop.split("=");
