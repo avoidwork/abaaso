@@ -101,10 +101,6 @@ var element = {
 
 		if (args !== undefined && args.id !== undefined) delete args.id;
 
-		observer.fire(abaaso, "beforeCreate", uid);
-
-		if (frag && target.parentNode !== null) target.parentNode.fire("beforeCreate", uid);
-
 		obj = !regex.svg.test(type) ? document.createElement(type) : document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		obj.id = uid;
 
@@ -127,11 +123,6 @@ var element = {
 		}
 		else if (pos.before !== undefined) target.insertBefore(obj, pos.before);
 		else target.appendChild(obj);
-
-		if (!frag) target.fire("afterCreate", obj);
-		else if (frag && target.parentNode !== null) target.parentNode.fire("afterCreate", obj);
-
-		observer.fire(abaaso, "afterCreate", obj);
 		
 		return obj;
 	},
