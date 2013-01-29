@@ -286,19 +286,15 @@ bootstrap = function () {
 			$.fire("render").un("render").un(this, "load");
 		});
 		
-		$.on(global, "DOMNodeInserted", function (e) {
-			var obj = utility.target(e);
-			
-			if (obj.id !== undefined && obj.id.isEmpty()) {
-				utility.genId(obj);
-				if (obj.parentNode instanceof Element) obj.parentNode.fire("afterCreate", obj);
-				$.fire("afterCreate", obj);
-			}
+		if (typeof Object.observe === "function") {
+			$.on(global, "DOMNodeInserted", function (e) {
+				var obj = utility.target(e);
 
-			if (typeof Object.observe === "function") Object.observe(obj, function (arg) {
-				obj.fire("change", arg);
-			});
-		}, "mutation", global, "all");
+				Object.observe(obj, function (arg) {
+					obj.fire("change", arg);
+				});
+			}, "mutation", global, "all");
+		}
 
 		$.on(global, "DOMNodeRemoved", function (e) {
 			cleanup(utility.target(e));
