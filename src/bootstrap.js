@@ -14,12 +14,12 @@ bootstrap = function () {
 	// IE7 and older is not supported
 	if (client.ie && client.version < 8) throw Error(label.error.upgrade);
 	
+	// Removes references to deleted DOM elements, avoiding memory leaks
 	cleanup = function (obj) {
-		var nodes = [];
-
 		observer.remove(obj);
-		if (obj.childNodes.length > 0) nodes = array.cast(obj.childNodes);
-		if (nodes.length > 0) nodes.each(function (i) { cleanup(i); });
+		array.each(array.cast(obj.childNodes), function (i) {
+			cleanup(i);
+		});
 	};
 
 	fn = function (e) {
@@ -297,7 +297,9 @@ bootstrap = function () {
 		}
 
 		$.on(global, "DOMNodeRemoved", function (e) {
-			cleanup(utility.target(e));
+			var obj = utility.target(e);
+
+			if (obj.id !== undefined && !obj.id.isEmpty()) cleanup(obj);
 		}, "mutation", global, "all");
 
 		// Routing listener
