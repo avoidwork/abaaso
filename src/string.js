@@ -90,7 +90,7 @@ var string = {
 	 * @return {String}     Trimmed String
 	 */
 	trim : function (obj) {
-		return obj.replace(/^\s+|\s+$/g, "");
+		return obj.replace(/^(\s+|\t+)|(\s+|\t+)$/g, "");
 	},
 
 	/**
