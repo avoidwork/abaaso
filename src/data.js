@@ -1019,10 +1019,10 @@ var data = {
 							k = k.toCamelCase();
 							break;
 						case "cs":
-							k = k.trim();
+							k = string.trim(k);
 							break;
 						case "ms":
-							k = k.trim().slice(0, 1).toLowerCase();
+							k = string.trim(k).slice(0, 1).toLowerCase();
 							break;
 					}
 
