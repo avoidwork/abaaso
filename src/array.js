@@ -160,12 +160,10 @@ var array = {
 	 */
 	each : function (obj, fn) {
 		var nth = obj.length,
-		    i   = -1,
-		    r;
+		    i   = -1;
 
 		while (++i < nth) {
-			r = fn.call(obj, obj[i], i);
-			if (r === false) break;
+			if (fn.call(obj, obj[i], i) === false) break;
 		}
 		return obj;
 	},
@@ -351,10 +349,13 @@ var array = {
 	limit : function (obj, start, offset) {
 		var result = [],
 		    i      = start - 1,
-		    nth    = start + offset;
+		    nth    = start + offset,
+		    max    = obj.length;
 
-		while (++i < nth) {
-			if (obj[i] !== undefined) result.push(obj[i]);
+		if (max > 0) {
+			while (++i < nth && i < max) {
+				result.push(obj[i]);
+			}
 		}
 
 		return result;
