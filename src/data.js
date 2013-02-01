@@ -131,6 +131,12 @@ var data = {
 						var offset = adx * chunk;
 
 						array.each(a, function (i, idx) {
+							if (self.leafs.contains(i)) {
+								idx = i;
+								i   = {};
+							}
+							else idx = (offset + idx).toString();
+
 							idx = (offset + idx).toString();
 							if (typeof i === "object") set(i, idx);
 							else if (i.indexOf("//") === -1) {
@@ -639,10 +645,10 @@ var data = {
 			};
 
 			deferred.then(function (arg) {
-				if (future instanceof Promise) future.resolve(arg);
+				if (future instanceof Promise && !future.resolved()) future.resolve(arg);
 				return arg;
 			}, function (arg) {
-				if (future instanceof Promise) future.reject(arg);
+				if (future instanceof Promise && !future.resolved()) future.reject(arg);
 				return arg;
 			});
 
@@ -658,7 +664,7 @@ var data = {
 			}
 
 			// Creating new child data store
-			this.records[idx] = data.factory({id: this.parentNode.id + "-" + key}, null, params);
+			this.records[idx] = data.factory({id: key}, null, params);
 
 			// Constructing relational URI
 			if (this.uri !== null && uri === undefined && !array.contains(this.leafs, key)) uri = this.uri + "/" + key;
