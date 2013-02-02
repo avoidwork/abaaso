@@ -308,10 +308,10 @@ var data = {
 
 				if (!array.contains(self.collections, key)) self.collections.push(key);
 
-				obj = data.factory({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs)});
+				obj = data.factory({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs), depth: self.depth + 1, maxDepth: self.maxDepth});
 				obj.data.headers = utility.merge(obj.data.headers, self.headers);
 
-				if (!array.contains(self.leafs, key) && self.recursive && self.retrieve) {
+				if (!array.contains(self.leafs, key) && self.recursive && self.retrieve && (obj.data.maxDepth === 0 || obj.data.depth < obj.data.maxDepth)) {
 					obj.data.recursive = true;
 					obj.data.retrieve  = true;
 				}
@@ -323,7 +323,7 @@ var data = {
 			utility.iterate(record.data, function (v, k) {
 				var deferred, store, parsed;
 
-				if (array.contains(self.ignore, k) || array.contains(self.leafs, k) || (!(v instanceof Array) && typeof v !== "string")) return;
+				if (array.contains(self.ignore, k) || array.contains(self.leafs, k) || self.depth >= self.maxDepth || (!(v instanceof Array) && typeof v !== "string")) return;
 
 				nth      = array.cast(record.data).length;
 				deferred = promise.factory();
@@ -660,10 +660,12 @@ var data = {
 			    fn, idx;
 			
 			params = {
+				depth     : this.depth + 1,
 				headers   : this.headers,
 				ignore    : array.clone(this.ignore),
 				leafs     : array.clone(this.leafs),
 				key       : this.key,
+				maxDepth  : this.maxDepth,
 				pointer   : this.pointer,
 				recursive : this.recursive,
 				retrieve  : this.retrieve,
@@ -681,16 +683,18 @@ var data = {
 			fn = function () {
 				// Creating new child data store
 				if (typeof arg === "object") recs = arg;
-				self.records[idx] = data.factory({id: key}, recs, params);
+				if (params.maxDepth === 0 || params.depth <= params.maxDepth) {
+					self.records[idx] = data.factory({id: key}, recs, params);
 
-				// Not batching in a data set
-				if (recs === null) {
-					// Constructing relational URI
-					if (self.uri !== null && arg === undefined && !array.contains(self.leafs, key)) arg = self.uri + "/" + key;
-					
-					// Conditionally making the store RESTful
-					if (arg !== undefined) self.records[idx].data.setUri(arg, deferred);
-					else deferred.resolve(self.records[idx].data.get());
+					// Not batching in a data set
+					if (recs === null) {
+						// Constructing relational URI
+						if (self.uri !== null && arg === undefined && !array.contains(self.leafs, key)) arg = self.uri + "/" + key;
+						
+						// Conditionally making the store RESTful
+						if (arg !== undefined) self.records[idx].data.setUri(arg, deferred);
+						else deferred.resolve(self.records[idx].data.get());
+					}
 				}
 			}
 
