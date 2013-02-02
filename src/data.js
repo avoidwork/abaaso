@@ -22,7 +22,7 @@ var data = {
 		 * @param  {Boolean} sync    [Optional] Syncs store with data, if true everything is erased
 		 * @param  {Number}  chunk   [Optional] Size to chunk Array to batch set or delete
 		 * @param  {Object}  future  [Optional] Promise
-		 * @return {Object}          Data store
+		 * @return {Object}          Promise
 		 */
 		batch : function (type, data, sync, chunk, future) {
 			type    = type.toString().toLowerCase();
@@ -51,12 +51,12 @@ var data = {
 				});
 
 				if (events) obj.fire("afterDataBatch", arg);
-				if (future instanceof Promise) future.resolve(arg);
+				if (future instanceof Promise && !future.resolved()) future.resolve(arg);
 
 				return arg;
 			}, function (arg) {
 				if (events) obj.fire("failedDataBatch", arg);
-				if (future instanceof Promise) future.reject(arg);
+				if (future instanceof Promise && !future.resolved()) future.reject(arg);
 
 				return arg;
 			});
@@ -137,7 +137,6 @@ var data = {
 							}
 							else idx = (offset + idx).toString();
 
-							idx = (offset + idx).toString();
 							if (typeof i === "object") set(i, idx);
 							else if (i.indexOf("//") === -1) {
 								// Relative path to store, i.e. a child
@@ -173,7 +172,7 @@ var data = {
 				}
 			}
 
-			return this;
+			return deferred;
 		},
 
 		/**
@@ -199,6 +198,7 @@ var data = {
 				this.crawled     = false;
 				this.credentials = null;
 				this.datalists   = [];
+				this.depth       = 0;
 				this.events      = true;
 				this.expires     = null;
 				this.headers     = {Accept: "application/json"};
@@ -207,6 +207,7 @@ var data = {
 				this.keys        = {};
 				this.leafs       = [];
 				this.loaded      = false;
+				this.maxDepth    = 0;
 				this.pointer     = null;
 				this.records     = [];
 				this.recursive   = false;
@@ -227,7 +228,7 @@ var data = {
 				this.views       = {};
 			}
 
-			if (future instanceof Promise) future.resolve(true);
+			if (future instanceof Promise && !future.resolved()) future.resolve(true);
 			return this;
 		},
 
@@ -240,24 +241,65 @@ var data = {
 		 * @method crawl
 		 * @param  {Mixed}  arg     Record, key or index
 		 * @param  {Object} future  [Optional] Promise
-		 * @return {Object}         Record
+		 * @return {Object}         Promise
 		 */
 		crawl : function (arg, future) {
-			var self   = this,
-			    events = (this.events === true),
-			    record = (arg instanceof Object) ? arg : this.get(arg),
-			    uri    = this.uri === null ? "" : this.uri,
-			    build, setup;
+			var self     = this,
+			    events   = (this.events === true),
+			    record   = (arg instanceof Object) ? arg : this.get(arg),
+			    uri      = this.uri === null ? "" : this.uri,
+			    deferred = promise.factory(),
+			    i        = 0,
+			    nth      = 0,
+			    build, complete, setup;
 
 			if (record === undefined) throw Error(label.error.invalidArguments);
 
 			this.crawled = true;
+
+			deferred.then(function (arg) {
+				if (future instanceof Promise && !future.resolved()) future.resolve(arg);
+				return arg;
+			});
+
+			/**
+			 * Concats URIs together
+			 * 
+			 * @method build
+			 * @param  {String} entity Entity URI
+			 * @param  {String} store  Data store URI
+			 * @return {String}        URI
+			 */
+			build = function (entity, store) {
+				var result = "",
+				    parsed;
+
+				if (/\/\//.test(entity)) result = entity;
+				else if (entity.charAt(0) === "/" && store.charAt(0) !== "/") {
+					parsed = utility.parse(store);
+					result = parsed.protocol + "//" + parsed.host + entity;
+				}
+				else result = entity;
+
+				return result;
+			};
+
+			/**
+			 * Crawl complete handler
+			 * 
+			 * @method complete
+			 * @return {Undefined} undefined
+			 */
+			complete = function () {
+				if (++i === nth && !deferred.resolved()) deferred.resolve(nth);
+			};
 
 			/**
 			 * Sets up a data store
 			 *
 			 * Possibly a subset of the collection, so it relies on valid URI paths
 			 * 
+			 * @method setup
 			 * @param  {String} key Record key
 			 * @return {Object}     Data store
 			 */
@@ -277,38 +319,21 @@ var data = {
 				return obj;
 			};
 
-			/**
-			 * Concats URIs together
-			 * 
-			 * @param  {String} entity Entity URI
-			 * @param  {String} store  Data store URI
-			 * @return {String}        URI
-			 */
-			build = function (entity, store) {
-				var result = "",
-				    parsed;
-
-				if (/\/\//.test(entity)) result = entity;
-				else if (entity.charAt(0) === "/" && store.charAt(0) !== "/") {
-					parsed = utility.parse(store);
-					result = parsed.protocol + "//" + parsed.host + entity;
-				}
-				else result = entity;
-
-				return result;
-			}
-
+			// Depth of recursion is controled by `maxDepth`
 			utility.iterate(record.data, function (v, k) {
 				var deferred, store, parsed;
 
 				if (array.contains(self.ignore, k) || array.contains(self.leafs, k) || (!(v instanceof Array) && typeof v !== "string")) return;
 
+				nth      = array.cast(record.data).length;
 				deferred = promise.factory();
 				deferred.then(function (arg) {
 					if (events) record.data[k].fire("afterDataRetrieve", arg);
+					complete();
 					return arg;
 				}, function (e) {
 					if (events) record.data[k].fire("failedDataRetrieve", e);
+					complete();
 					return arg;
 				});
 
@@ -329,9 +354,7 @@ var data = {
 				}
 			});
 
-			if (future instanceof Promise && !future.resolved()) future.resolve(record);
-
-			return this.get(arg);
+			return deferred;
 		},
 
 		/**
@@ -346,7 +369,7 @@ var data = {
 		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
 		 * @param  {Boolean} batch   [Optional] True if called by data.batch
 		 * @param  {Object}  future  [Optional] Promise
-		 * @return {Object}          Data store
+		 * @return {Object}          Promise
 		 */
 		del : function (record, reindex, batch, future) {
 			if (record === undefined || !regex.number_string.test(typeof record)) throw Error(label.error.invalidArguments);
@@ -420,7 +443,8 @@ var data = {
 				}, utility.merge({withCredentials: this.credentials}, this.headers));
 			}
 			else deferred.reject(args);
-			return this;
+
+			return deferred;
 		},
 
 		/**
@@ -624,14 +648,16 @@ var data = {
 		 * Generates a RESTful store (replacing a record) when consuming an API end point
 		 *
 		 * @param  {Object}  key     Record key
-		 * @param  {String}  uri     [Optional] Related URI
+		 * @param  {Mixed}   arg     [Optional] Array or URI String
 		 * @param  {Object}  future  [Optional] Promise
-		 * @return {Object}          Data store
+		 * @return {Object}          Promise
 		 */
-		generate : function (key, uri, future) {
-			var deferred = promise.factory(),
+		generate : function (key, arg, future) {
+			var self     = this,
+			    deferred = promise.factory(),
 			    params   = {},
-			    idx;
+			    recs     = null,
+			    fn, idx;
 			
 			params = {
 				headers   : this.headers,
@@ -652,28 +678,38 @@ var data = {
 				return arg;
 			});
 
+			fn = function () {
+				// Creating new child data store
+				if (typeof arg === "object") recs = arg;
+				self.records[idx] = data.factory({id: key}, recs, params);
+
+				// Not batching in a data set
+				if (recs === null) {
+					// Constructing relational URI
+					if (self.uri !== null && arg === undefined && !array.contains(self.leafs, key)) arg = self.uri + "/" + key;
+					
+					// Conditionally making the store RESTful
+					if (arg !== undefined) self.records[idx].data.setUri(arg, deferred);
+					else deferred.resolve(self.records[idx].data.get());
+				}
+			}
+
 			// Create stub or teardown existing data store
 			if (this.keys[key] !== undefined) {
 				idx = this.keys[key];
 				if (typeof this.records[idx].data.teardown === "function") this.records[idx].data.teardown();
+				fn();
 			}
 			else {
-				this.set(key, {}, true);
-				idx = this.keys[key];
-				this.collections.add(key);
+				this.set(key, {}, true).then(function (arg) {
+					idx = self.keys[arg.key];
+					self.collections.add(arg.key);
+					fn();
+					return arg;
+				});
 			}
 
-			// Creating new child data store
-			this.records[idx] = data.factory({id: key}, null, params);
-
-			// Constructing relational URI
-			if (this.uri !== null && uri === undefined && !array.contains(this.leafs, key)) uri = this.uri + "/" + key;
-			
-			// Conditionally making the store RESTful
-			if (uri !== undefined) this.records[idx].data.setUri(uri, deferred);
-			else deferred.resolve(this.records[idx].data.get());
-
-			return this.records[idx].data;
+			return deferred;
 		},
 
 		/**
@@ -709,18 +745,6 @@ var data = {
 		},
 
 		/**
-		 * Record factory
-		 * 
-		 * @method record
-		 * @param  {Mixed}  key  Index or key
-		 * @param  {Object} data Record properties
-		 * @return {Object}      Record
-		 */
-		record : function (key, args) {
-			return data.record.factory.call(this, key, args);
-		},
-
-		/**
 		 * Reindexes the data store
 		 *
 		 * @method reindex
@@ -733,6 +757,7 @@ var data = {
 			    i   = -1;
 
 			this.views = {};
+
 			if (nth > 0) {
 				while (++i < nth) {
 					if (!key && this.records[i].key.isNumber()) {
@@ -742,6 +767,7 @@ var data = {
 					this.keys[this.records[i].key] = i;
 				}
 			}
+
 			return this;
 		},
 
@@ -763,22 +789,24 @@ var data = {
 		 * @return {Object}          Data store
 		 */
 		set : function (key, data, batch, future) {
+			var self = this,
+			    record, obj, method, events, args, uri, deferred, p;
+
 			if (key === null) key = undefined;
 			batch = (batch === true);
 
 			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
-			else if (data instanceof Array) return this.generate(key).batch("set", data, true, undefined, future);
+			else if (data instanceof Array) return this.generate(key).then(function () { self.get(key).data.batch("set", data, true, undefined, future); });
 			else if ((data instanceof Number) || (data instanceof String) || (typeof data !== "object")) throw Error(label.error.invalidArguments);
 
-			var record   = key === undefined ? undefined : this.get(key),
-			    obj      = this.parentNode,
-			    method   = key === undefined ? "post" : "put",
-			    self     = this,
-			    events   = (this.events === true),
-			    args     = {data: {}, key: key, record: undefined},
-			    uri      = this.uri,
-			    deferred = promise.factory(),
-			    p;
+			record   = key === undefined ? undefined : this.get(key);
+			obj      = this.parentNode;
+			method   = key === undefined ? "post" : "put";
+			self     = this;
+			events   = (this.events === true);
+			args     = {data: {}, key: key, record: undefined};
+			uri      = this.uri;
+			deferred = promise.factory();
 
 			if (record !== undefined) {
 				args.record = this.records[this.keys[record.key]];
@@ -790,7 +818,7 @@ var data = {
 			else args.data = data;
 
 			deferred.then(function (arg) {
-				var data     = typeof arg.record === "undefined" ? utility.clone(arg) : arg,
+				var data     = arg.record === undefined ? utility.clone(arg) : arg,
 				    deferred = promise.factory(),
 				    record, uri;
 
@@ -804,12 +832,12 @@ var data = {
 					}
 
 					if (events) self.parentNode.fire("afterDataSet", arg);
-					if (future instanceof Promise) future.resolve(arg);
+					if (future instanceof Promise && !future.resolved()) future.resolve(arg);
 
 					return arg;
 				}, function (e) {
 					if (events) self.parentNode.fire("failedDataSet");
-					if (future instanceof Promise) future.reject(e);
+					if (future instanceof Promise && !future.resolved()) future.reject(e);
 
 					return e;
 				});
@@ -877,7 +905,7 @@ var data = {
 				return arg;
 			}, function (arg) {
 				if (events) obj.fire("failedDataSet", arg);
-				if (future instanceof Promise) future.reject(arg);
+				if (future instanceof Promise && !future.resolved()) future.reject(arg);
 				return arg;
 			});
 
@@ -900,7 +928,8 @@ var data = {
 				}, data, utility.merge({withCredentials: this.credentials}, this.headers));
 			}
 			else deferred.reject(args);
-			return this;
+
+			return deferred;
 		},
 
 		/**
@@ -1135,7 +1164,7 @@ var data = {
 		 * @method sync
 		 * @param  {Boolean} reindex [Optional] True will reindex the data store
 		 * @param  {Object}  future  [Optional] Promise
-		 * @return {Object}          Data store
+		 * @return {Object}          Promise
 		 */
 		sync : function (reindex, future) {
 			if (this.uri === null || this.uri.isEmpty()) throw Error(label.error.invalidArguments);
@@ -1200,7 +1229,7 @@ var data = {
 			if (events) obj.fire("beforeDataSync");
 			this.callback !== null ? client.jsonp(this.uri, success, failure, {callback: this.callback})
 			                       : client.request(this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers));
-			return this;
+			return deferred;
 		},
 
 		/**

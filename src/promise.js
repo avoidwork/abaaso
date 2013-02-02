@@ -18,20 +18,32 @@ var promise = {
 		/**
 		 * Breaks a Promise
 		 * 
-		 * @return {String} arg Status of promise
+		 * @return {Object} Promise
 		 */
 		reject : function (arg) {
-			return promise.resolve.call(this, promise.state.broken, arg);
+			var self = this;
+
+			utility.defer(function () {
+				promise.resolve.call(self, promise.state.broken, arg);
+			});
+
+			return this;
 		},
 
 		/**
 		 * Promise is resolved
 		 * 
 		 * @param  {Mixed} arg Promise outcome
-		 * @return {Object}    Promise instance
+		 * @return {Object}    Promise
 		 */
 		resolve : function (arg) {
-			return promise.resolve.call(this, promise.state.resolved, arg);
+			var self = this;
+
+			utility.defer(function () {
+				promise.resolve.call(self, promise.state.resolved, arg);
+			});
+
+			return this;
 		},
 
 		/**
