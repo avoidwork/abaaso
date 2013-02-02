@@ -82,7 +82,7 @@ var filter = {
 	 * DataList filter factory
 	 * 
 	 * @param  {Object} obj      Element to receive the filter
-	 * @param  {Object} datalist List Module linked to the data store required
+	 * @param  {Object} datalist Data list linked to the data store
 	 * @param  {String} filters  Comma delimited string of fields to filter by
 	 * @param  {Number} debounce [Optional] Milliseconds to debounce
 	 * @return {Object}          Filter instance

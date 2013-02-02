@@ -612,7 +612,7 @@ var element = {
 			else if (regex.select.test(obj.type)) output = obj.options[obj.selectedIndex].value;
 			else output = typeof obj.value !== "undefined" ? obj.value : element.text(obj);
 
-			if (typeof output === "string") output = output.trim();
+			if (typeof output === "string") output = string.trim(output);
 		}
 		else {
 			value = String(value);

@@ -249,7 +249,7 @@ var client = {
 	 * @param  {Function} success A handler function to execute when an appropriate response been received
 	 * @param  {Function} failure [Optional] A handler function to execute on error
 	 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request (CORS)
-	 * @return {String}           URI to query
+	 * @return {Object}           Promise
 	 */
 	jsonp : function (uri, success, failure, args) {
 		var deferred = promise.factory(),
@@ -302,7 +302,7 @@ var client = {
 			if (!deferred.resolved()) deferred.reject(undefined);
 		}, 30000, cbid);
 
-		return uri;
+		return deferred;
 	},
 
 	/**
@@ -323,7 +323,7 @@ var client = {
 	 * @param  {Mixed}    args    [Optional] Data to send with the request
 	 * @param  {Object}   headers [Optional] Custom request headers (can be used to set withCredentials)
 	 * @param  {Number}   timeout [Optional] Timeout in milliseconds, default is 30000
-	 * @return {String}           URI to query
+	 * @return {Object}           Promise
 	 * @private
 	 */
 	request : function (uri, type, success, failure, args, headers, timeout) {
@@ -432,7 +432,8 @@ var client = {
 				uri.fire("failed" + typed, client.parse(xhr), xhr);
 			}
 		}
-		return uri;
+
+		return deferred;
 	},
 
 	/**

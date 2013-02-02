@@ -44,7 +44,7 @@ var cookie = {
 			items = document.cookie.explode(";");
 			array.each(items, function (i) {
 				item = i.explode("=");
-				result[decodeURIComponent(item[0].toString().trim())] = decodeURIComponent(item[1].toString().trim());
+				result[decodeURIComponent(string.trim(item[0].toString()))] = decodeURIComponent(string.trim(item[1].toString()));
 			});
 		}
 		return result;
@@ -104,7 +104,7 @@ var cookie = {
 			}
 		}
 		if (expire instanceof Date) expire = " expires=" + expire.toUTCString() + ";";
-		document.cookie = (name.toString().trim() + "=" + value + expire + domain + " path=/" + secure);
+		document.cookie = (string.trim(name.toString()) + "=" + value + expire + domain + " path=/" + secure);
 		return cookie.get(name);
 	}
 };
