@@ -818,7 +818,7 @@ var data = {
 		 *         failedDataSet  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method set
-		 * @param  {Mixed}   key   Integer or String to use as a Primary Key
+		 * @param  {Mixed}   key   [Optional] Integer or String to use as a Primary Key
 		 * @param  {Object}  data  Key:Value pairs to set as field values
 		 * @param  {Boolean} batch [Optional] True if called by data.batch
 		 * @return {Object}        Promise
@@ -917,14 +917,23 @@ var data = {
 				throw arg;
 			});
 
-			if (key === null) key = undefined;
+			if (key instanceof Object) {
+				batch = data;
+				data  = key;
+				key   = null;
+			}
+
+			if (key === null && this.uri === null) key = utility.guid();
+			else if (key === null) key = undefined;
+			else key = key.toString();
+
 			batch = (batch === true);
 
-			if (((key === undefined || String(key).isEmpty()) && this.uri === null) || (data === undefined)) throw Error(label.error.invalidArguments);
+			if (!(data instanceof Object)) throw Error(label.error.invalidArguments);
 			else if (data instanceof Array) {
 				return this.generate(key)
 				           .then(function () {
-				           		self.get(key).data.batch("set", data, true, undefined)
+				           		self.get(key).data.batch("set", data)
 				           		                  .then(function (arg) {
 				           		                  		if (!deferred.resolved()) deferred.resolve(arg);
 				           		                  		return arg;
@@ -934,12 +943,10 @@ var data = {
 				           		                   });
 				           });
 			}
-			else if ((data instanceof Number) || (data instanceof String) || (typeof data !== "object")) throw Error(label.error.invalidArguments);
 
 			record   = key === undefined ? undefined : this.get(key);
 			obj      = this.parentNode;
 			method   = key === undefined ? "post" : "put";
-			self     = this;
 			events   = (this.events === true);
 			args     = {data: {}, key: key, record: undefined};
 			uri      = this.uri;
