@@ -372,7 +372,7 @@ var client = {
 			}
 			if (!deferred.resolved()) deferred.resolve(cached.response);
 			uri.fire("afterGet", cached.response, xhr);
-			xhr = null;
+			if (!server) xhr = null;
 		}
 		else {
 			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) {
@@ -489,13 +489,13 @@ var client = {
 					if (type === "head") {
 						if (!future.resolved()) future.resolve(o.headers);
 						xhr.onreadystatechange = null;
-						xhr = null;
+						if (!server) xhr = null;
 						return uri.fire("afterHead", o.headers);
 					}
 					else if (type === "options") {
 						if (!future.resolved()) future.resolve(o.headers);
 						xhr.onreadystatechange = null;
-						xhr = null;
+						if (!server) xhr = null;
 						return uri.fire("afterOptions", o.headers);
 					}
 					else if (type !== "delete" && /200|201/.test(xhr.status)) {
@@ -548,7 +548,7 @@ var client = {
 					exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
 			}
 			xhr.onreadystatechange = null;
-			xhr = null;
+			if (!server) xhr = null;
 		}
 		else if (xdr) {
 			r = client.parse(xhr);
@@ -557,7 +557,7 @@ var client = {
 			if (!future.resolved()) future.resolve(r);
 			uri.fire("afterGet", r, xhr);
 			xhr.onload = null;
-			xhr = null;
+			if (!server) xhr = null;
 		}
 
 		return uri;
