@@ -151,3 +151,22 @@ exports["uncapitalize"] = {
 		test.done();
 	}
 };
+
+exports["unhyphenate"] = {
+	setUp: function (done) {
+		this.val = "hello-world";
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(string.unhyphenate(this.val), "hello world", "Should be 'hello world'");
+		test.equal(string.unhyphenate(this.val, true), "Hello World", "Should be 'Hello World'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.unhyphenate(), "hello world", "Should be 'hello world'");
+		test.equal(this.val.unhyphenate(true), "Hello World", "Should be 'Hello World'");
+		test.done();
+	}
+};

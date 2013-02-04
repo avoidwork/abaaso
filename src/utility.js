@@ -864,7 +864,8 @@ var utility = {
 			           toNumber : function (base) { return number.parse(this, base); },
 			           trim     : function () { return string.trim(this); },
 			           un       : function (event, id, state) { return observer.remove(this, event, id, state); },
-			           uncapitalize: function () { return string.uncapitalize(this); }}
+			           uncapitalize: function () { return string.uncapitalize(this); },
+			           unhyphenate: function (arg) { return string.unhyphenate(this, arg); }}
 		};
 
 		utility.iterate(methods[type], function (v, k) {

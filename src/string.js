@@ -102,5 +102,26 @@ var string = {
 	uncapitalize : function (obj) {
 		obj = string.trim(obj);
 		return obj.charAt(0).toLowerCase() + obj.slice(1);
+	},
+
+	/**
+	 * Replaces all hyphens with spaces
+	 * 
+	 * @param  {String}  obj  String to unhypenate
+	 * @param  {Boolean} caps [Optional] True to capitalize each word
+	 * @return {String}       Unhyphenated String
+	 */
+	unhyphenate : function (obj, caps) {
+		caps       = (caps === true);
+		var result = "";
+
+		if (obj.indexOf("-") > -1) {
+			array.each(string.trim(obj).split("-"), function (i) {
+				result += (caps ? i.capitalize() : i) + " ";
+			});
+		}
+		else result = caps ? string.capitalize(obj) : obj;
+
+		return string.trim(result);
 	}
 };
