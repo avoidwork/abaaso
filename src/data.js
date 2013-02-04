@@ -94,20 +94,20 @@ var data = {
 				if (rec instanceof Array && self.uri !== null) {
 					self.generate(key, undefined)
 					    .then(function (arg) {
-					    	if (!deferred.resolved()) deferred.resolve(arg);
+					    	deferred.resolve(arg);
 					    	return arg;
-					    }, function (e) {
-					    	if (!deferred.resolved()) deferred.reject(e);
+					     }, function (e) {
+					    	deferred.reject(e);
 					    	throw e;
-					    });
+					     });
 				}
 				else {
 					self.set(key, rec, true)
 					    .then(function (arg) {
-					    	if (!deferred.resolved()) deferred.resolve(arg);
+					    	deferred.resolve(arg);
 					    	return arg;
 					     }, function (e) {
-					    	if (!deferred.resolved()) deferred.reject(e);
+					    	deferred.reject(e);
 					    	throw e;
 					     });
 				}
@@ -129,12 +129,12 @@ var data = {
 
 				self.del(i, false, true)
 				    .then(function (arg) {
-				    	if (!deferred.resolved()) deferred.resolve(arg);
+				    	deferred.resolve(arg);
 				    	return arg;
-				    }, function (e) {
-				    	if (!deferred.resolved()) deferred.reject(e);
+				     }, function (e) {
+				    	deferred.reject(e);
 				    	throw e;
-				    });
+				     });
 			};
 
 			if (events) obj.fire("beforeDataBatch", data);
@@ -363,10 +363,10 @@ var data = {
 					}
 					record.data[k].data.batch("set", v, true, undefined)
 					                   .then(function (arg) {
-					                   		if (!deferred.resolved()) deferred.resolve(arg);
+					                   		deferred.resolve(arg);
 					                   		return arg;
 					                   	}, function (e) {
-					                   		if (!deferred.resolved()) deferred.reject(e);
+					                   		deferred.reject(e);
 					                   		throw e;
 					                   	});
 				}
@@ -376,10 +376,10 @@ var data = {
 					v = build(v, uri);
 					record.data[k].data.setUri(v)
 					                   .then(function (arg) {
-					                   		if (!deferred.resolved()) deferred.resolve(arg);
+					                   		deferred.resolve(arg);
 					                   		return arg;
 					                   	}, function (e) {
-					                   		if (!deferred.resolved()) deferred.reject(e);
+					                   		deferred.reject(e);
 					                   		throw e;
 					                   	});
 				}
@@ -718,10 +718,10 @@ var data = {
 						if (arg !== undefined) {
 							self.records[idx].data.setUri(arg)
 							                      .then(function (arg) {
-							                      		if (!deferred.resolved()) deferred.resolve(arg);
+							                      		deferred.resolve(arg);
 							                      		return arg;
 							                       }, function (e) {
-							                      		if (!deferred.resolved()) deferred.reject(e);
+							                      		deferred.reject(e);
 							                      		throw e;
 							                       });
 						}
@@ -843,11 +843,9 @@ var data = {
 					}
 
 					if (events) self.parentNode.fire("afterDataSet", arg);
-					success(arg);
 					return arg;
 				}, function (e) {
 					if (events) self.parentNode.fire("failedDataSet");
-					failure(e);
 					throw e;
 				});
 
@@ -935,10 +933,10 @@ var data = {
 				           .then(function () {
 				           		self.get(key).data.batch("set", data)
 				           		                  .then(function (arg) {
-				           		                  		if (!deferred.resolved()) deferred.resolve(arg);
+				           		                  		deferred.resolve(arg);
 				           		                  		return arg;
 				           		                   }, function (e) {
-				           		                   		if (!deferred.resolved()) deferred.reject(e);
+				           		                   		deferred.reject(e);
 				           		                  		throw e;
 				           		                   });
 				           });
@@ -959,14 +957,6 @@ var data = {
 				utility.merge(args.data, data);
 			}
 			else args.data = data;
-
-			success = function (arg) {
-				if (!deferred.resolved()) deferred.resolve(arg);
-			};
-
-			failure = function (e) {
-				if (!deferred.resolved()) deferred.reject(e);
-			};
 
 			if (!batch && this.callback === null && uri !== null) {
 				if (record !== undefined) uri += "/" + record.key;
@@ -1047,10 +1037,12 @@ var data = {
 					cache.expire(result, true);
 					this.sync(true)
 					    .then(function (arg) {
-					    	if (!deferred.resolved()) deferred.resolve(arg);
-					    }, function (e) {
-					    	if (!deferred.resolved()) deferred.reject(arg);
-					    });
+					    	deferred.resolve(arg);
+					    	return arg;
+					     }, function (e) {
+					    	deferred.reject(e);
+					    	throw e;
+					     });
 				}
 			}
 
