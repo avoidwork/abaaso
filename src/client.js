@@ -349,10 +349,12 @@ var client = {
 		deferred.then(function (arg) {
 			if (type === "delete") cache.expire(uri);
 			if (typeof success === "function") success.call(uri, arg, xhr);
+			xhr = null;
 			return arg;
-		}, function (arg) {
-			if (typeof failure === "function") failure.call(uri, arg, xhr);
-			return arg;
+		}, function (e) {
+			if (typeof failure === "function") failure.call(uri, e, xhr);
+			xhr = null;
+			throw e;
 		});
 
 		uri.fire("before" + typed);
@@ -372,7 +374,6 @@ var client = {
 			}
 			deferred.resolve(cached.response);
 			uri.fire("afterGet", cached.response, xhr);
-			if (!server) xhr = null;
 		}
 		else {
 			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function (e) {
@@ -450,14 +451,14 @@ var client = {
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
 	 * @method response
-	 * @param  {Object} xhr    XMLHttpRequest Object
-	 * @param  {String} uri    URI to query
-	 * @param  {String} type   Type of request
-	 * @param  {Object} future Promise to reconcile the response
-	 * @return {Object}        Promise
+	 * @param  {Object} xhr      XMLHttpRequest Object
+	 * @param  {String} uri      URI to query
+	 * @param  {String} type     Type of request
+	 * @param  {Object} deferred Promise to reconcile with the response
+	 * @return {Object}          Promise
 	 * @private
 	 */
-	response : function (xhr, uri, type, future) {
+	response : function (xhr, uri, type, deferred) {
 		var typed = type.toLowerCase().capitalize(),
 		    l     = location,
 		    state = null,
@@ -466,7 +467,7 @@ var client = {
 
 		// server-side exception handling
 		exception = function (e, xhr) {
-			future.reject(e);
+			deferred.reject(e);
 			error(e, arguments, this, true);
 			uri.fire("failed" + typed, client.parse(xhr), xhr);
 		};
@@ -486,15 +487,11 @@ var client = {
 					o = client.headers(xhr, uri, type);
 
 					if (type === "head") {
-						future.resolve(o.headers);
-						xhr.onreadystatechange = null;
-						if (!server) xhr = null;
+						deferred.resolve(o.headers);
 						return uri.fire("afterHead", o.headers);
 					}
 					else if (type === "options") {
-						future.resolve(o.headers);
-						xhr.onreadystatechange = null;
-						if (!server) xhr = null;
+						deferred.resolve(o.headers);
 						return uri.fire("afterOptions", o.headers);
 					}
 					else if (type !== "delete" && /200|201/.test(xhr.status)) {
@@ -512,22 +509,22 @@ var client = {
 					switch (xhr.status) {
 						case 200:
 						case 201:
-							future.resolve(r);
+							deferred.resolve(r);
 							uri.fire("after" + typed, r, xhr);
 							break;
 						case 202:
 						case 203:
 						case 204:
 						case 206:
-							future.resolve(null);
+							deferred.resolve(null);
 							uri.fire("after" + typed, null, xhr);
 							break;
 						case 205:
-							future.resolve(null);
+							deferred.resolve(null);
 							uri.fire("reset", null, xhr);
 							break;
 						case 301:
-							future.resolve(r);
+							deferred.resolve(r);
 							uri.fire("moved", r, xhr);
 							break;
 					}
@@ -547,18 +544,16 @@ var client = {
 					exception(!server ? Error(label.error.serverError) : label.error.serverError, xhr);
 			}
 			xhr.onreadystatechange = null;
-			if (!server) xhr = null;
 		}
 		else if (xdr) {
 			r = client.parse(xhr);
 			cache.set(uri, "permission", client.bit(["get"]));
 			cache.set(uri, "response", r);
-			future.resolve(r);
+			deferred.resolve(r);
 			uri.fire("afterGet", r, xhr);
-			xhr = null;
 		}
 
-		return future;
+		return deferred;
 	},
 
 
