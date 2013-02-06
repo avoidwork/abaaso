@@ -851,6 +851,9 @@ var data = {
 
 				self.views = {};
 
+				// Getting the record again due to scheduling via promises, via data.batch()
+				if (data.key !== undefined) data.record = self.get(data.key);
+
 				if (data.record === undefined) {
 					var index = self.total++;
 
