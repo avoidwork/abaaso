@@ -38,7 +38,7 @@ var data = {
 			    f        = false,
 			    guid     = utility.genId(true),
 			    deferred = promise.factory(),
-			    completed, failure, key, set, del, success, parsed;
+			    complete, failure, key, set, del, success, parsed;
 
 			deferred.then(function (arg) {
 				self.loaded = true;
@@ -57,8 +57,9 @@ var data = {
 				throw arg;
 			});
 
-			completed = function (arg) {
+			complete = function (arg) {
 				deferred.resolve(arg);
+				return arg;
 			};
 
 			failure = function (arg) {
@@ -81,14 +82,13 @@ var data = {
 				}
 
 				deferred.then(function (arg) {
-					if (++r === nth) completed(self.get());
-					return arg;
-				}, function (arg) {
+					return ++r === nth ? complete(self.get()) : arg;
+				}, function (e) {
 					if (!f) {
 						f = true;
-						failure(arg);
+						failure(e);
 					}
-					return arg;
+					throw e;
 				});
 
 				if (rec instanceof Array && self.uri !== null) {
@@ -117,7 +117,7 @@ var data = {
 				var deferred = promise.factory();
 
 				deferred.then(function (arg) {
-					if (++r === nth) completed(arg);
+					if (++r === nth) complete(arg);
 					return arg;
 				}, function (arg) {
 					if (!f) {
@@ -145,7 +145,7 @@ var data = {
 				i.ready = false;
 			});
 
-			if (data.length === 0) completed(false);
+			if (data.length === 0) complete([]);
 			else {
 				if (type === "set") {
 					array.each(array.chunk(data, chunk), function (a, adx) {
@@ -850,6 +850,9 @@ var data = {
 				});
 
 				self.views = {};
+
+				// Getting the record again due to scheduling via promises, via data.batch()
+				if (data.key !== undefined) data.record = self.get(data.key);
 
 				if (data.record === undefined) {
 					var index = self.total++;
