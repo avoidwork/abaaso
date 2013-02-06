@@ -59,6 +59,7 @@ var data = {
 
 			complete = function (arg) {
 				deferred.resolve(arg);
+				return arg;
 			};
 
 			failure = function (arg) {
@@ -81,14 +82,13 @@ var data = {
 				}
 
 				deferred.then(function (arg) {
-					if (++r === nth) complete(self.get());
-					return arg;
-				}, function (arg) {
+					return ++r === nth ? complete(self.get()) : arg;
+				}, function (e) {
 					if (!f) {
 						f = true;
-						failure(arg);
+						failure(e);
 					}
-					return arg;
+					throw e;
 				});
 
 				if (rec instanceof Array && self.uri !== null) {
