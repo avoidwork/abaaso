@@ -781,6 +781,16 @@ var data = {
 		},
 
 		/**
+		 * Purges data store or record from localStorage
+		 * 
+		 * @param  {Mixed} arg  [Optional] String or Number for record
+		 * @return {Object}     Record or store
+		 */
+		purge : function (arg) {
+			return this.storage(arg || this, "remove");
+		},
+
+		/**
 		 * Reindexes the data store
 		 *
 		 * @method reindex
@@ -805,6 +815,26 @@ var data = {
 			}
 
 			return this;
+		},
+
+		/**
+		 * Restores data store or record frome localStorage
+		 * 
+		 * @param  {Mixed} arg  [Optional] String or Number for record
+		 * @return {Object}     Record or store
+		 */
+		restore : function (arg) {
+			return this.storage(arg || this, "get");
+		},
+
+		/**
+		 * Saves data store or record to localStorage
+		 * 
+		 * @param  {Mixed} arg  [Optional] String or Number for record
+		 * @return {Object}     Record or store
+		 */
+		save : function (arg) {
+			return this.storage(arg || this, "set");
 		},
 
 		/**
