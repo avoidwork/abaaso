@@ -8,7 +8,41 @@
  * @namespace abaaso
  */
 var datalist = {
-	// Inherited by datalists
+	/**
+	 * Creates an instance of datalist
+	 *
+	 * Events: beforeDataList  Fires before target receives the DataList
+	 *         afterDataList   Fires after DataList is setup in target
+	 *           
+	 * @method factory
+	 * @param  {Object} target   Element to receive the DataList
+	 * @param  {Object} store    Data store to feed the DataList
+	 * @param  {Mixed}  template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+	 * @param  {Object} options  Optional parameters to set on the DataList
+	 * @return {Object}          DataList instance
+	 */
+	factory : function (target, store, template, options) {
+		var ref = [store],
+		    element, instance;
+
+		if (!(target instanceof Element) || typeof store !== "object" || !regex.string_object.test(typeof template)) throw Error(label.error.invalidArguments);
+
+		element = target.fire("beforeDataList")
+		                .create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
+
+		// Creating instance
+		instance = new DataList(element, ref[0], template);
+		if (options instanceof Object) utility.merge(instance, options);
+		instance.store.datalists.push(instance);
+
+		// Rendering if not tied to an API or data is ready
+		if (instance.store.uri === null || instance.store.loaded) instance.display();
+
+		target.fire("afterDataList", element);
+		return instance;
+	},
+
+	// Inherited by DataLists
 	methods : {
 		/**
 		 * Delete sync handler
@@ -314,64 +348,6 @@ var datalist = {
 	},
 
 	/**
-	 * Creates an instance of datalist
-	 *
-	 * Events: beforeDataList  Fires before target receives the DataList
-	 *         afterDataList   Fires after DataList is setup in target
-	 *           
-	 * @method factory
-	 * @param  {Object} target   Element to receive the DataList
-	 * @param  {Object} store    Data store to feed the DataList
-	 * @param  {Mixed}  template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
-	 * @param  {Object} options  Optional parameters to set on the DataList
-	 * @return {Object}          DataList instance
-	 */
-	factory : function (target, store, template, options) {
-		var ref      = [store],
-		    instance = {},
-		    params   = {},
-		    element;
-
-		if (!(target instanceof Element) || typeof store !== "object" || !regex.string_object.test(typeof template)) throw Error(label.error.invalidArguments);
-
-		// Preparing
-		element = target.fire("beforeDataList").create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
-		params  = {
-			callback    : null,
-			filter      : null,
-			id          : utility.genId(),
-			pageIndex   : 1,
-			pageSize    : null,
-			pageRange   : 5,
-			pagination  : "bottom", // "top" or "bottom|top" are also valid
-			placeholder : "",
-			order       : "",
-			ready       : false,
-			refreshing  : false,
-			template    : template,
-			total       : 0,
-			sensitivity : "ci"
-		};
-
-		// Creating instance
-		instance         = utility.extend(datalist.methods, params);
-		instance.element = element;
-		instance.store   = ref[0];
-
-		// Applying customization
-		if (options instanceof Object) utility.merge(instance, options);
-
-		// Setting reference of instance on store
-		instance.store.datalists.push(instance);
-
-		if (instance.store.uri === null || instance.store.loaded) instance.display();
-
-		target.fire("afterDataList", element);
-
-		return instance;
-	},
-
-	/**
 	 * Calculates the total pages
 	 * 
 	 * @method pages
@@ -395,3 +371,36 @@ var datalist = {
 		return [start, end];
 	}
 };
+
+/**
+ * DataList factory
+ *
+ * @class DataList
+ * @namespace abaaso
+ * @param  {Object} element  DataList element
+ * @param  {Object} store    Data store to feed the DataList
+ * @param  {Mixed}  template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+ * @return {Object}          Instance of DataList
+ */
+function DataList (element, store, template) {
+	this.callback    = null;
+	this.element     = element;
+	this.filter      = null;
+	this.id          = utility.genId();
+	this.pageIndex   = 1;
+	this.pageSize    = null;
+	this.pageRange   = 5;
+	this.pagination  = "bottom"; // "top" or "bottom|top" are also valid
+	this.placeholder = "";
+	this.order       = "";
+	this.ready       = false;
+	this.refreshing  = false;
+	this.template    = template;
+	this.total       = 0;
+	this.sensitivity = "ci";
+	this.store       = store;
+};
+
+// Setting prototype & constructor loop
+DataList.prototype = datalist.methods;
+DataList.prototype.constructor = DataList;
