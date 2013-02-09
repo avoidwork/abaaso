@@ -210,3 +210,4 @@ function Promise () {
 };
 
 Promise.prototype = promise.methods;
+Promise.prototype.constructor = Promise;
