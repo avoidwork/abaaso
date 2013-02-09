@@ -116,6 +116,21 @@ var observer = {
 	},
 
 	/**
+	 * Decorates `obj` with `observer` methods
+	 * 
+	 * @param  {Object} obj Object to receive hooks
+	 * @return {Object}     Object that received hooks
+	 */
+	decorate : function (obj) {
+		obj.fire      = function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); },
+		obj.listeners = function (event) { return observer.list(this, event); };
+		obj.on        = function (event, listener, id, scope, standby) { return observer.add(this, event, listener, id, scope, standby); };
+		obj.once      = function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); };
+		obj.un        = function (event, id) { return observer.remove(this, event, id); };
+		return obj;
+	},
+
+	/**
 	 * Discard observer events
 	 *
 	 * @param {Boolean} arg [Optional] Boolean indicating if events will be ignored
@@ -174,21 +189,6 @@ var observer = {
 				}
 			});
 		}
-		return obj;
-	},
-
-	/**
-	 * Provides observer hooks on obj
-	 * 
-	 * @param  {Object} obj Object to receive hooks
-	 * @return {Object}     Object that received hooks
-	 */
-	hook : function (obj) {
-		obj.fire      = function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); },
-		obj.listeners = function (event) { return observer.list(this, event); };
-		obj.on        = function (event, listener, id, scope, standby) { return observer.add(this, event, listener, id, scope, standby); };
-		obj.once      = function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); };
-		obj.un        = function (event, id) { return observer.remove(this, event, id); };
 		return obj;
 	},
 

@@ -82,7 +82,7 @@ return {
 	compile         : utility.compile,
 	create          : element.create,
 	css             : utility.css,
-	data            : data.factory,
+	data            : data.decorator,
 	datalist        : datalist.factory,
 	discard         : function (arg) { return observer.discard(arg); },
 	debounce        : utility.debounce,
@@ -111,7 +111,7 @@ return {
 	hash            : route.hash,
 	headers         : function (uri, success, failure, timeout) { return client.request(uri, "HEAD", success, failure, null, {}, timeout); },
 	hidden          : element.hidden,
-	hook            : observer.hook,
+	hook            : observer.decorate,
 	id              : "abaaso",
 	init            : function () {
 		// Stopping multiple executions
@@ -132,6 +132,7 @@ return {
 	merge           : utility.merge,
 	module          : utility.module,
 	object          : utility.object,
+	observerable    : observer.decorate,
 	on              : function (obj, event, listener, id, scope, state) {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
@@ -181,7 +182,7 @@ return {
 	stylesheet      : utility.stylesheet,
 	script          : utility.script,
 	stop            : utility.stop,
-	store           : data.factory,
+	store           : data.decorator,
 	target          : utility.target,
 	tpl             : utility.tpl,
 	un              : function (obj, event, id, state) {

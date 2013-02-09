@@ -7,6 +7,33 @@
  * @namespace abaaso
  */
 var data = {
+	/**
+	 * Registers a data store on an Object
+	 *
+	 * Events: beforeDataStore  Fires before registering the data store
+	 *         afterDataStore   Fires after registering the data store
+	 *
+	 * @method factory
+	 * @param  {Object} obj  Object to register with
+	 * @param  {Mixed}  data [Optional] Data to set with this.batch
+	 * @param  {Object} args [Optional] Arguments to set on the store
+	 * @return {Object}      Object registered with
+	 */
+	decorator : function (obj, recs, args) {
+		obj = utility.object(obj);
+		utility.genId(obj);
+
+		// Decorating observer if not present in prototype chain
+		if (typeof obj.fire !== "function") observer.decorate(obj);
+
+		// Creating store
+		obj.data = new DataStore(obj);
+		if (args instanceof Object) utility.merge(obj.data, args);
+		if (recs !== null && typeof recs === "object") obj.data.batch("set", recs);
+
+		return obj;
+	},
+
 	// Inherited by data stores
 	methods : {
 		/**
@@ -325,7 +352,7 @@ var data = {
 
 				if (!array.contains(self.collections, key)) self.collections.push(key);
 
-				obj = data.factory({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs), depth: self.depth + 1, maxDepth: self.maxDepth});
+				obj = data.decorator({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs), depth: self.depth + 1, maxDepth: self.maxDepth});
 				obj.data.headers = utility.merge(obj.data.headers, self.headers);
 
 				if (!array.contains(self.leafs, key) && self.recursive && self.retrieve && (obj.data.maxDepth === 0 || obj.data.depth < obj.data.maxDepth)) {
@@ -707,7 +734,7 @@ var data = {
 				// Creating new child data store
 				if (typeof arg === "object") recs = arg;
 				if (params.maxDepth === 0 || params.depth <= params.maxDepth) {
-					self.records[idx] = data.factory({id: key}, recs, params);
+					self.records[idx] = data.decorator({id: key}, recs, params);
 
 					// Not batching in a data set
 					if (recs === null) {
@@ -1353,38 +1380,22 @@ var data = {
 			this.parentNode.fire("afterDataTeardown");
 			return this;
 		}
-	},
-
-	/**
-	 * Registers a data store on an Object
-	 *
-	 * Events: beforeDataStore  Fires before registering the data store
-	 *         afterDataStore   Fires after registering the data store
-	 *
-	 * @method register
-	 * @param  {Object} obj  Object to register with
-	 * @param  {Mixed}  data [Optional] Data to set with this.batch
-	 * @param  {Object} args [Optional] Arguments to set on the store
-	 * @return {Object}      Object registered with
-	 */
-	factory : function (obj, recs, args) {
-		obj = utility.object(obj);
-		utility.genId(obj);
-
-		// Hooking observer if not present in prototype chain
-		if (typeof obj.fire !== "function") observer.hook(obj);
-
-		// Creating store
-		obj.data = utility.extend(data.methods);
-		obj.data.parentNode = obj;
-		obj.data.clear();
-
-		// Customizing store
-		if (args instanceof Object) utility.merge(obj.data, args);
-
-		// Setting records
-		if (recs !== null && typeof recs === "object") obj.data.batch("set", recs);
-
-		return obj;
 	}
 };
+
+/**
+ * DataStore factory
+ * 
+ * @class DataStore
+ * @namespace abaaso
+ * @param  {Object} obj Object being decorated with a DataStore
+ * @return {Object}     Instance of DataStore
+ */
+function DataStore (obj) {
+	this.parentNode = obj;
+	this.clear.call(this);
+};
+
+// Setting prototype & constructor loop
+DataStore.prototype = data.methods;
+DataStore.prototype.constructor = DataStore;

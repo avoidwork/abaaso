@@ -5,12 +5,14 @@
  * @namespace abaaso
  */
 var promise = {
-	// States of a promise
-	state : {
-		broken   : "failed",
-		initial  : "unfulfilled",
-		pending  : "pending",
-		resolved : "fulfilled"
+	/**
+	 * Promise factory
+	 * 
+	 * @method factory
+	 * @return {Object} Instance of promise
+	 */
+	factory : function () {
+		return new Promise();
 	},
 
 	// Inherited by promises
@@ -18,6 +20,8 @@ var promise = {
 		/**
 		 * Breaks a Promise
 		 * 
+		 * @method reject
+		 * @param  {Mixed} arg Promise outcome
 		 * @return {Object} Promise
 		 */
 		reject : function (arg) {
@@ -33,6 +37,7 @@ var promise = {
 		/**
 		 * Promise is resolved
 		 * 
+		 * @method resolve
 		 * @param  {Mixed} arg Promise outcome
 		 * @return {Object}    Promise
 		 */
@@ -49,6 +54,7 @@ var promise = {
 		/**
 		 * Returns a boolean indicating state of the Promise
 		 * 
+		 * @method resolved
 		 * @return {Boolean} `true` if resolved
 		 */
 		resolved : function () {
@@ -58,6 +64,7 @@ var promise = {
 		/**
 		 * Registers handler(s) for a Promise
 		 * 
+		 * @method then
 		 * @param  {Function} success Executed when/if promise is resolved
 		 * @param  {Function} failure [Optional] Executed when/if promise is broken
 		 * @return {Object}           New Promise instance
@@ -122,17 +129,9 @@ var promise = {
 	},
 
 	/**
-	 * Promise factory
-	 * 
-	 * @return {Object} Instance of promise
-	 */
-	factory : function () {
-		return new Promise();
-	},
-
-	/**
 	 * Resolves a Promise (fulfilled or failed)
 	 * 
+	 * @method resolve
 	 * @param  {String} state State to resolve
 	 * @param  {String} val   Value to set
 	 * @return {Object}       Promise instance
@@ -178,9 +177,18 @@ var promise = {
 		else return result;
 	},
 
+	// States of a promise
+	state : {
+		broken   : "failed",
+		initial  : "unfulfilled",
+		pending  : "pending",
+		resolved : "fulfilled"
+	},
+
 	/**
 	 * Vouches for a state
 	 * 
+	 * @method vouch
 	 * @param  {String}   state Promise descriptor
 	 * @param  {Function} fn    Function to execute
 	 * @return {Object}         Promise instance
@@ -200,6 +208,7 @@ var promise = {
  *
  * @class Promise
  * @namespace abaaso
+ * @return {Object} Instance of Promise
  */
 function Promise () {
 	this.error      = [];
@@ -209,5 +218,6 @@ function Promise () {
 	this.state      = promise.state.initial;
 };
 
+// Setting prototype & constructor loop
 Promise.prototype = promise.methods;
 Promise.prototype.constructor = Promise;
