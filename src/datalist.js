@@ -27,24 +27,18 @@ var datalist = {
 
 		if (!(target instanceof Element) || typeof store !== "object" || !regex.string_object.test(typeof template)) throw Error(label.error.invalidArguments);
 
-		// Preparing
-		element = target.fire("beforeDataList").create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
+		element = target.fire("beforeDataList")
+		                .create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
 
 		// Creating instance
-		instance         = new DataList(template);
-		instance.element = element;
-		instance.store   = ref[0];
-
-		// Applying customization
+		instance = new DataList(element, ref[0], template);
 		if (options instanceof Object) utility.merge(instance, options);
-
-		// Setting reference of instance on store
 		instance.store.datalists.push(instance);
 
+		// Rendering if not tied to an API or data is ready
 		if (instance.store.uri === null || instance.store.loaded) instance.display();
 
 		target.fire("afterDataList", element);
-
 		return instance;
 	},
 
@@ -383,12 +377,14 @@ var datalist = {
  *
  * @class DataList
  * @namespace abaaso
- * @param  {Mixed} template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
- * @return {Object}         Instance of DataList
+ * @param  {Object} element  DataList element
+ * @param  {Object} store    Data store to feed the DataList
+ * @param  {Mixed}  template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+ * @return {Object}          Instance of DataList
  */
-function DataList (template) {
+function DataList (element, store, template) {
 	this.callback    = null;
-	this.element     = null;
+	this.element     = element;
 	this.filter      = null;
 	this.id          = utility.genId();
 	this.pageIndex   = 1;
@@ -402,7 +398,7 @@ function DataList (template) {
 	this.template    = template;
 	this.total       = 0;
 	this.sensitivity = "ci";
-	this.store       = null;
+	this.store       = store;
 };
 
 // Setting prototype & constructor loop
