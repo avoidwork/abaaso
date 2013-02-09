@@ -31,7 +31,7 @@ var datalist = {
 		element = target.fire("beforeDataList").create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
 
 		// Creating instance
-		instance         = new DataList();
+		instance         = new DataList(template);
 		instance.element = element;
 		instance.store   = ref[0];
 
@@ -383,9 +383,10 @@ var datalist = {
  *
  * @class DataList
  * @namespace abaaso
- * @return {Object} Instance of DataList
+ * @param  {Mixed} template Record field, template ($.tpl), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+ * @return {Object}         Instance of DataList
  */
-function DataList () {
+function DataList (template) {
 	this.callback    = null;
 	this.element     = null;
 	this.filter      = null;
