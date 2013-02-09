@@ -8,7 +8,7 @@
  */
 var data = {
 	/**
-	 * Registers a data store on an Object
+	 * Decorates a data store on an Object
 	 *
 	 * Events: beforeDataStore  Fires before registering the data store
 	 *         afterDataStore   Fires after registering the data store
