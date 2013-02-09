@@ -1220,13 +1220,7 @@ var data = {
 					result = session ? sessionStorage.getItem(key) : localStorage.getItem(key);
 					if (result === null) throw Error(label.error.invalidArguments);
 					result = json.decode(result);
-					if (record) this.set(key, result, true);
-					else {
-						utility.merge(this, result);
-						array.each(self.records, function (i, idx) {
-							self.records[idx] = self.record(i.key, i.data);
-						});
-					}
+					record ? this.set(key, result, true) : utility.merge(this, result);
 					result = record ? obj : this;
 					break;
 				case "remove":
