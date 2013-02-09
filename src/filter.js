@@ -1,13 +1,12 @@
 /**
- * DataFilter
+ * DataListFilter
  * 
  * @class filter
  * @namespace abaaso
- * @todo  implement pattern from promise.js
  */
 var filter = {
 	/**
-	 * DataFilter factory
+	 * DataListFilter factory
 	 * 
 	 * @param  {Object} obj      Element to receive the filter
 	 * @param  {Object} datalist Data list linked to the data store
@@ -22,11 +21,11 @@ var filter = {
 
 		if (!(obj instanceof Element) || (datalist !== undefined && datalist.store === undefined) || (typeof filters !== "string" || String(filters).isEmpty())) throw Error(label.error.invalidArguments);
 
-		instance = new DataFilter(obj, ref[0], filters, debounce);
+		instance = new DataListFilter(obj, ref[0], filters, debounce);
 		return instance;
 	},
 
-	// Inherited by DataFilters
+	// Inherited by DataListFilters
 	methods : {
 		/**
 		 * Initiate all event listeners
@@ -103,14 +102,14 @@ var filter = {
 };
 
 /**
- * DataFilter factory
+ * DataListFilter factory
  *
- * @class DataFilter
+ * @class DataListFilter
  * @namespace abaaso
  * @param  {String} filters DataStore fields to filter DataList by
- * @return {Object}         Instance of DataFilter
+ * @return {Object}         Instance of DataListFilter
  */
-function DataFilter (element, datalist, filters, debounce) {
+function DataListFilter (element, datalist, filters, debounce) {
 	this.element  = element;
 	this.datalist = datalist;
 	this.debounce = debounce;
@@ -119,5 +118,5 @@ function DataFilter (element, datalist, filters, debounce) {
 };
 
 // Setting prototype & constructor loop
-DataFilter.prototype = filter.methods;
-DataFilter.prototype.constructor = DataFilter;
+DataListFilter.prototype = filter.methods;
+DataListFilter.prototype.constructor = DataListFilter;
