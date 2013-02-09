@@ -1,10 +1,32 @@
 /**
- * DataList Filter
+ * DataFilter
  * 
  * @class filter
  * @namespace abaaso
+ * @todo  implement pattern from promise.js
  */
 var filter = {
+	/**
+	 * DataFilter factory
+	 * 
+	 * @param  {Object} obj      Element to receive the filter
+	 * @param  {Object} datalist Data list linked to the data store
+	 * @param  {String} filters  Comma delimited string of fields to filter by
+	 * @param  {Number} debounce [Optional] Milliseconds to debounce
+	 * @return {Object}          Filter instance
+	 */
+	factory : function (obj, datalist, filters, debounce) {
+		debounce = debounce || 250;
+		var ref  = [datalist],
+		    instance;
+
+		if (!(obj instanceof Element) || (datalist !== undefined && datalist.store === undefined) || (typeof filters !== "string" || String(filters).isEmpty())) throw Error(label.error.invalidArguments);
+
+		instance = new DataFilter(obj, ref[0], filters, debounce);
+		return instance;
+	},
+
+	// Inherited by DataFilters
 	methods : {
 		/**
 		 * Initiate all event listeners
@@ -33,6 +55,7 @@ var filter = {
 			array.each(fields.explode(), function (v) {
 				obj[v] = "";
 			});
+
 			this.filters = obj;
 			return this;
 		},
@@ -76,29 +99,25 @@ var filter = {
 			}, this.debounce, this.element.id + "Debounce");
 			return this;
 		}
-	},
-
-	/**
-	 * DataList filter factory
-	 * 
-	 * @param  {Object} obj      Element to receive the filter
-	 * @param  {Object} datalist Data list linked to the data store
-	 * @param  {String} filters  Comma delimited string of fields to filter by
-	 * @param  {Number} debounce [Optional] Milliseconds to debounce
-	 * @return {Object}          Filter instance
-	 */
-	factory : function (obj, datalist, filters, debounce) {
-		debounce     = debounce || 250;
-		var instance = {},
-		    ref      = [datalist];
-
-		if (!(obj instanceof Element) || (datalist !== undefined && datalist.store === undefined) || (typeof filters !== "string" || String(filters).isEmpty())) throw Error(label.error.invalidArguments);
-
-		instance = utility.extend(filter.methods, {filters: {}});
-		instance.datalist = ref[0];
-		instance.debounce = debounce;
-		instance.element  = obj;
-		instance.set(filters);
-		return instance.init();
 	}
 };
+
+/**
+ * DataFilter factory
+ *
+ * @class DataFilter
+ * @namespace abaaso
+ * @param  {String} filters DataStore fields to filter DataList by
+ * @return {Object}         Instance of DataFilter
+ */
+function DataFilter (element, datalist, filters, debounce) {
+	this.element  = element;
+	this.datalist = datalist;
+	this.debounce = debounce;
+	this.set(filters);
+	this.init();
+};
+
+// Setting prototype & constructor loop
+DataFilter.prototype = filter.methods;
+DataFilter.prototype.constructor = DataFilter;
