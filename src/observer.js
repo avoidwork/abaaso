@@ -118,15 +118,22 @@ var observer = {
 	/**
 	 * Decorates `obj` with `observer` methods
 	 * 
-	 * @param  {Object} obj Object to receive hooks
-	 * @return {Object}     Object that received hooks
+	 * @param  {Object} obj Object to decorate
+	 * @return {Object}     Object to decorate
 	 */
 	decorate : function (obj) {
-		obj.fire      = function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); },
-		obj.listeners = function (event) { return observer.list(this, event); };
-		obj.on        = function (event, listener, id, scope, standby) { return observer.add(this, event, listener, id, scope, standby); };
-		obj.once      = function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); };
-		obj.un        = function (event, id) { return observer.remove(this, event, id); };
+		var methods = [
+			["fire",      function () { return observer.fire.apply(observer, [this].concat(array.cast(arguments))); }],
+			["listeners", function (event) { return observer.list(this, event); }],
+			["on",        function (event, listener, id, scope, standby) { return observer.add(this, event, listener, id, scope, standby); }],
+			["once",      function (event, listener, id, scope, standby) { return observer.once(this, event, listener, id, scope, standby); }],
+			["un",        function (event, id) { return observer.remove(this, event, id); }]
+		];
+
+		array.each(methods, function (i) {
+			utility.property(obj, i[0], {value: i[1], configurable: true, enumerable: true, writable: true});
+		});
+
 		return obj;
 	},
 
