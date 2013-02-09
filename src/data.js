@@ -13,11 +13,11 @@ var data = {
 	 * Events: beforeDataStore  Fires before registering the data store
 	 *         afterDataStore   Fires after registering the data store
 	 *
-	 * @method factory
-	 * @param  {Object} obj  Object to register with
-	 * @param  {Mixed}  data [Optional] Data to set with this.batch
+	 * @method decorator
+	 * @param  {Object} obj  Object to decorate
+	 * @param  {Mixed}  recs [Optional] Data to set with this.batch
 	 * @param  {Object} args [Optional] Arguments to set on the store
-	 * @return {Object}      Object registered with
+	 * @return {Object}      Object to decorate
 	 */
 	decorator : function (obj, recs, args) {
 		obj = utility.object(obj);
