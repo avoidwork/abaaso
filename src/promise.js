@@ -15,6 +15,9 @@ var promise = {
 		return new Promise();
 	},
 
+	// Caching if this function is available
+	freeze : (function () { return (typeof Object.freeze === "function"); })(),
+
 	// Inherited by promises
 	methods : {
 		/**
@@ -76,31 +79,23 @@ var promise = {
 
 			fn = function (yay) {
 				var handler = yay ? success : failure,
-				    result, outcome;
+				    error   = yay ? false   : true,
+				    result;
 
 				try {
-					if (typeof handler !== "function") throw self.outcome;
 					result = handler(self.outcome);
-					if (!(result instanceof Promise) && !yay && instance.state === promise.state.initial && instance.fulfill.length > 0) self.state = promise.state.resolved
+					error  = false;
 				}
 				catch (e) {
-					result     = e.message || e;
-					self.state = promise.state.broken;
+					result = e.message || e;
+					error  = true;
 				}
 				finally {
-					// Not a Promise, passing result
+					// Not a Promise, passing result & chaining if applicable
 					if (!(result instanceof Promise)) {
-						outcome = result;
-
-						// Determining what the result will be and chaining events
-						if (instance.fulfill.length === 0 && instance.error.length === 0)              result = self;
-						else if (self.state === promise.state.resolved && instance.fulfill.length > 0) result = instance.resolve(outcome);
-						else if (self.state === promise.state.broken && instance.error.length > 0)     result = instance.reject(outcome);
-
-						self.state   = result.state;
-						self.outcome = result.outcome;
-						
-						return self.outcome;
+						if (instance.fulfill.length === 0 && instance.error.length === 0) void 0;
+						else if (!error && instance.fulfill.length > 0)                   instance.resolve(result);
+						else if (error && instance.error.length > 0)                      instance.reject(result);
 					}
 					// Assuming a `pending` state until `result` is resolved
 					else {
@@ -108,14 +103,13 @@ var promise = {
 						self.outcome      = null;
 						result.parentNode = self;
 						result.then(function (arg) {
-							self.state = promise.state.initial;
 							self.resolve(arg);
 						}, function (arg) {
-							self.state = promise.state.initial;
 							self.reject(arg);
 						});
-						return result;
 					}
+
+					return result;
 				}
 			};
 
@@ -124,6 +118,7 @@ var promise = {
 
 			// Setting reference to `self`
 			instance.parentNode = self;
+
 			return instance;
 		}
 	},
@@ -140,21 +135,22 @@ var promise = {
 		var handler = state === promise.state.broken ? "error" : "fulfill",
 		    self    = this,
 		    pending = false,
-		    result;
+		    purge   = [],
+		    i, result;
 
-		if (this.state === promise.state.pending) throw Error(label.error.promisePending);
-		if (this.state !== promise.state.initial) throw Error(label.error.promiseResolved.replace("{{outcome}}", this.outcome));
+		if (this.state !== promise.state.pending) throw Error(label.error.promiseResolved.replace("{{outcome}}", this.outcome));
 
-		this.state     = state;
-		this.outcome   = val;
+		this.state   = state;
+		this.outcome = val;
 
 		// The state & outcome can mutate here
-		array.each(this[handler], function (fn) {
-			result = fn.call(this, val);
+		array.each(this[handler], function (fn, idx) {
+			result = fn.call(self, val);
+			purge.push(idx);
 			if (result instanceof Promise) {
 				pending      = true;
-				self.state   = promise.state.initial
 				self.outcome = null;
+				self.state   = promise.state.pending
 				return false;
 			}
 		});
@@ -164,23 +160,27 @@ var promise = {
 			this.fulfill = [];
 
 			// Reverse chaining
-			if (this.parentNode !== null && this.parentNode.state === promise.state.initial) {
-				result = this.parentNode[state === promise.state.resolved ? "resolve" : "reject"](this.outcome);
-				if (result instanceof Promise) return result;
-			}
+			if (this.parentNode !== null && this.parentNode.state === promise.state.pending) this.parentNode[state === promise.state.resolved ? "resolve" : "reject"](this.outcome);
 
 			// Freezing promise
-			if (typeof Object.freeze === "function") Object.freeze(this);
+			if (promise.freeze) Object.freeze(this);
 
 			return this;
 		}
-		else return result;
+		else {
+			// Removing handlers that have run
+			i = purge.length;
+			while (i--) {
+				array.remove(self[handler], purge[i]);
+			}
+
+			return result;
+		}
 	},
 
 	// States of a promise
 	state : {
-		broken   : "failed",
-		initial  : "unfulfilled",
+		broken   : "rejected",
 		pending  : "pending",
 		resolved : "fulfilled"
 	},
@@ -196,7 +196,7 @@ var promise = {
 	vouch : function (state, fn) {
 		if (String(state).isEmpty()) throw Error(label.error.invalidArguments);
 
-		if (this.state === promise.state.initial) this[state === promise.state.resolved ? "fulfill" : "error"].push(fn);
+		if (this.state === promise.state.pending) this[state === promise.state.resolved ? "fulfill" : "error"].push(fn);
 		else if (this.state === state) fn(this.outcome);
 
 		return this;
@@ -215,7 +215,7 @@ function Promise () {
 	this.fulfill    = [];
 	this.parentNode = null;
 	this.outcome    = null;
-	this.state      = promise.state.initial;
+	this.state      = promise.state.pending;
 };
 
 // Setting prototype & constructor loop
