@@ -136,25 +136,14 @@ var client = {
 		    o       = {},
 		    allow   = null,
 		    expires = new Date(),
-		    cors    = client.cors(uri),
-		    caps;
-
-		// Capitalizes hyphenated headers
-		caps = function (header) {
-			var x = [];
-
-			array.each(header.split("-"), function (i) {
-				x.push(string.capitalize(i));
-			});
-			return x.join("-");
-		};
+		    cors    = client.cors(uri);
 
 		array.each(headers, function (i, idx) {
 			var header, value;
 
 			value         = i.replace(regex.header_value_replace, "");
 			header        = i.replace(regex.header_replace, "");
-			header        = header.indexOf("-") === -1 ? string.capitalize(header) : caps(header);
+			header        = string.unhyphenate(header, true).replace(/\s+/g, "-");
 			items[header] = value;
 
 			if (allow === null) {
