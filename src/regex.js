@@ -37,7 +37,7 @@ var regex = {
 	is_xml                  : /<[^>]+>[^<]*]+>/,
 	ios                     : /ipad|iphone/i,
 	json_maybe              : /json|plain|javascript/,
-	json_wrap               : /[\{\[].*[\}\]]/,
+	json_wrap               : /^[\[\{]/,
 	jsonp_wrap              : /([a-zA-Z0-9\.]+\()(.*)(\))$/,
 	linux                   : /linux|bsd|unix/i,
 	nil                     : /^null/i,
