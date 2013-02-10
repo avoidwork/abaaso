@@ -138,8 +138,7 @@ var element = {
 	 */
 	css : function (obj, key, value) {
 		obj = utility.object(obj);
-		key = key.indexOf("-") > -1 ? string.toCamelCase(key, true) : key;
-
+		key = string.toCamelCase(key);
 		var i, result;
 
 		if (value !== undefined) {
