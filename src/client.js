@@ -317,7 +317,7 @@ var client = {
 	 */
 	request : function (uri, type, success, failure, args, headers, timeout) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob, deferred;
+		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob, deferred, deferred2;
 
 		if (regex.put_post.test(type) && args === undefined) throw Error(label.error.invalidArguments);
 
@@ -335,7 +335,7 @@ var client = {
 		deferred     = promise.factory();
 
 		// Using a promise to resolve request
-		deferred.then(function (arg) {
+		deferred2 = deferred.then(function (arg) {
 			if (type === "delete") cache.expire(uri);
 			if (typeof success === "function") success.call(uri, arg, xhr);
 			xhr = null;
@@ -422,7 +422,7 @@ var client = {
 			}
 		}
 
-		return deferred;
+		return deferred2;
 	},
 
 	/**
@@ -444,7 +444,7 @@ var client = {
 	 * @param  {String} uri      URI to query
 	 * @param  {String} type     Type of request
 	 * @param  {Object} deferred Promise to reconcile with the response
-	 * @return {Object}          Promise
+	 * @return {Undefined}       undefined
 	 * @private
 	 */
 	response : function (xhr, uri, type, deferred) {
@@ -541,8 +541,6 @@ var client = {
 			deferred.resolve(r);
 			uri.fire("afterGet", r, xhr);
 		}
-
-		return deferred;
 	},
 
 
