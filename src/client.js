@@ -266,10 +266,9 @@ var client = {
 
 		deferred.then(function (arg) {
 			if (typeof success === "function") success(arg);
-			return arg;
-		}, function (arg) {
-			if (typeof failure === "function") failure(arg);
-			return arg;
+		}, function (e) {
+			if (typeof failure === "function") failure(e);
+			throw e;
 		});
 
 		do cbid = utility.genId().slice(0, 10);
@@ -339,7 +338,6 @@ var client = {
 			if (type === "delete") cache.expire(uri);
 			if (typeof success === "function") success.call(uri, arg, xhr);
 			xhr = null;
-			return arg;
 		}, function (e) {
 			if (typeof failure === "function") failure.call(uri, e, xhr);
 			xhr = null;

@@ -62,9 +62,9 @@ var data = {
 			    f        = false,
 			    guid     = utility.genId(true),
 			    deferred = promise.factory(),
-			    complete, failure, key, set, del, success, parsed;
+			    complete, deferred2, failure, key, set, del, success, parsed;
 
-			deferred.then(function (arg) {
+			deferred2 = deferred.then(function (arg) {
 				self.loaded = true;
 
 				if (regex.del.test(type)) self.reindex();
@@ -74,16 +74,13 @@ var data = {
 				});
 
 				if (events) obj.fire("afterDataBatch", arg);
-
-				return arg;
-			}, function (arg) {
-				if (events) obj.fire("failedDataBatch", arg);
-				throw arg;
+			}, function (e) {
+				if (events) obj.fire("failedDataBatch", e);
+				throw e;
 			});
 
 			complete = function (arg) {
 				deferred.resolve(arg);
-				return arg;
 			};
 
 			failure = function (arg) {
@@ -106,7 +103,7 @@ var data = {
 				}
 
 				deferred.then(function (arg) {
-					return ++r === nth ? complete(self.get()) : arg;
+					if (++r === nth) complete(self.get());
 				}, function (e) {
 					if (!f) {
 						f = true;
@@ -119,7 +116,6 @@ var data = {
 					self.generate(key, undefined)
 					    .then(function (arg) {
 					    	deferred.resolve(arg);
-					    	return arg;
 					     }, function (e) {
 					    	deferred.reject(e);
 					    	throw e;
@@ -129,7 +125,6 @@ var data = {
 					self.set(key, rec, true)
 					    .then(function (arg) {
 					    	deferred.resolve(arg);
-					    	return arg;
 					     }, function (e) {
 					    	deferred.reject(e);
 					    	throw e;
@@ -154,7 +149,6 @@ var data = {
 				self.del(i, false, true)
 				    .then(function (arg) {
 				    	deferred.resolve(arg);
-				    	return arg;
 				     }, function (e) {
 				    	deferred.reject(e);
 				    	throw e;
@@ -217,7 +211,7 @@ var data = {
 				}
 			}
 
-			return deferred;
+			return deferred2;
 		},
 
 		/**
@@ -293,13 +287,13 @@ var data = {
 			    deferred = promise.factory(),
 			    i        = 0,
 			    nth      = 0,
-			    build, complete, setup;
+			    build, complete, deferred2, setup;
 
 			if (record === undefined) throw Error(label.error.invalidArguments);
 
 			this.crawled = true;
 
-			deferred.then(function (arg) {
+			deferred2 = deferred.then(function (arg) {
 				return arg;
 			});
 
@@ -332,7 +326,7 @@ var data = {
 			 * @return {Undefined} undefined
 			 */
 			complete = function () {
-				if (++i === nth && !deferred.resolved()) deferred.resolve(nth);
+				if (++i === nth) deferred.resolve(nth);
 			};
 
 			/**
@@ -371,11 +365,10 @@ var data = {
 				deferred.then(function (arg) {
 					if (events) record.data[k].fire("afterDataRetrieve", arg);
 					complete();
-					return arg;
 				}, function (e) {
 					if (events) record.data[k].fire("failedDataRetrieve", e);
 					complete();
-					return arg;
+					throw e;
 				});
 
 				if ((v instanceof Array) && v.length > 0) {
@@ -388,7 +381,6 @@ var data = {
 					record.data[k].data.batch("set", v, true, undefined)
 					                   .then(function (arg) {
 					                   		deferred.resolve(arg);
-					                   		return arg;
 					                   	}, function (e) {
 					                   		deferred.reject(e);
 					                   		throw e;
@@ -401,7 +393,6 @@ var data = {
 					record.data[k].data.setUri(v)
 					                   .then(function (arg) {
 					                   		deferred.resolve(arg);
-					                   		return arg;
 					                   	}, function (e) {
 					                   		deferred.reject(e);
 					                   		throw e;
@@ -409,7 +400,7 @@ var data = {
 				}
 			});
 
-			return deferred;
+			return deferred2;
 		},
 
 		/**
@@ -434,9 +425,9 @@ var data = {
 			    self     = this,
 			    events   = (this.events === true),
 			    deferred = promise.factory(),
-			    key, args, uri, p;
+			    deferred2, key, args, uri, p;
 
-			deferred.then(function (arg) {
+			deferred2 = deferred.then(function (arg) {
 				var record = self.get(arg.record);
 
 				self.records.remove(self.keys[arg.key]);
@@ -458,10 +449,9 @@ var data = {
 				}
 
 				if (events) obj.fire("afterDataDelete", record);
-				return arg;
-			}, function (arg) {
-				if (events) obj.fire("failedDataDelete", args);
-				throw arg;
+			}, function (e) {
+				if (events) obj.fire("failedDataDelete", e);
+				throw e;
 			});
 
 			if (typeof record === "string") {
@@ -494,7 +484,7 @@ var data = {
 			}
 			else deferred.reject(args);
 
-			return deferred;
+			return deferred2;
 		},
 
 		/**
@@ -706,7 +696,7 @@ var data = {
 			    deferred = promise.factory(),
 			    params   = {},
 			    recs     = null,
-			    fn, idx;
+			    deferred2, fn, idx;
 			
 			params = {
 				depth     : this.depth + 1,
@@ -721,10 +711,10 @@ var data = {
 				source    : this.source
 			};
 
-			deferred.then(function (arg) {
+			deferred2 = deferred.then(function (arg) {
 				return arg;
-			}, function (arg) {
-				throw arg;
+			}, function (e) {
+				throw e;
 			});
 
 			fn = function () {
@@ -743,7 +733,6 @@ var data = {
 							self.records[idx].data.setUri(arg)
 							                      .then(function (arg) {
 							                      		deferred.resolve(arg);
-							                      		return arg;
 							                       }, function (e) {
 							                      		deferred.reject(e);
 							                      		throw e;
@@ -765,11 +754,10 @@ var data = {
 					idx = self.keys[arg.key];
 					self.collections.add(arg.key);
 					fn();
-					return arg;
 				});
 			}
 
-			return deferred;
+			return deferred2;
 		},
 
 		/**
@@ -880,9 +868,9 @@ var data = {
 		set : function (key, data, batch) {
 			var self     = this,
 			    deferred = promise.factory(),
-			    record, obj, method, events, args, uri, p, success, failure;
+			    deferred2, record, obj, method, events, args, uri, p, success, failure;
 
-			deferred.then(function (arg) {
+			deferred2 = deferred.then(function (arg) {
 				var data     = arg.record === undefined ? utility.clone(arg) : arg,
 				    deferred = promise.factory(),
 				    record, uri;
@@ -897,9 +885,8 @@ var data = {
 					}
 
 					if (events) self.parentNode.fire("afterDataSet", arg);
-					return arg;
 				}, function (e) {
-					if (events) self.parentNode.fire("failedDataSet");
+					if (events) self.parentNode.fire("failedDataSet", e);
 					throw e;
 				});
 
@@ -965,11 +952,9 @@ var data = {
 					utility.merge(record.data, data.data);
 					deferred.resolve(record);
 				}
-
-				return arg;
-			}, function (arg) {
-				if (events) obj.fire("failedDataSet", arg);
-				throw arg;
+			}, function (e) {
+				if (events) obj.fire("failedDataSet", e);
+				throw e;
 			});
 
 			if (key instanceof Object) {
@@ -991,7 +976,6 @@ var data = {
 				           		self.get(key).data.batch("set", data)
 				           		                  .then(function (arg) {
 				           		                  		deferred.resolve(arg);
-				           		                  		return arg;
 				           		                   }, function (e) {
 				           		                   		deferred.reject(e);
 				           		                  		throw e;
@@ -1035,7 +1019,7 @@ var data = {
 			}
 			else deferred.reject(args);
 
-			return deferred;
+			return deferred2;
 		},
 
 		/**
@@ -1095,7 +1079,6 @@ var data = {
 					this.sync(true)
 					    .then(function (arg) {
 					    	deferred.resolve(arg);
-					    	return arg;
 					     }, function (e) {
 					    	deferred.reject(e);
 					    	throw e;
@@ -1304,10 +1287,9 @@ var data = {
 
 				self.batch("set", data, true, undefined)
 				    .then(function (arg) {
-				    	if (!deferred2.resolved()) deferred2.resolve(arg);
-				    	return arg;
+				    	deferred2.resolve(arg);
 				    }, function (e) {
-				    	if (!deferred2.resolved()) deferred2.reject(arg);
+				    	deferred2.reject(arg);
 				    	throw e;
 				    });
 				return data;
@@ -1319,7 +1301,6 @@ var data = {
 			deferred2.then(function (arg) {
 				if (reindex) self.reindex();
 				if (events) obj.fire("afterDataSync", arg);
-				return arg;
 			}, function (e) {
 				self.clear(true);
 				if (events) obj.fire("failedDataSync", e);
@@ -1327,11 +1308,12 @@ var data = {
 			});
 
 			success = function (arg) {
-				if (!deferred1.resolved()) deferred1.resolve(arg);
+				deferred1.resolve(arg);
 			};
 
 			failure = function (e) {
-				if (!deferred1.resolved()) deferred1.reject(e);
+				deferred1.reject(e);
+				throw e;
 			};
 
 			if (events) obj.fire("beforeDataSync");
