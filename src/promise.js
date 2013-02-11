@@ -74,7 +74,7 @@ var promise = {
 		 */
 		then : function (success, failure) {
 			var self     = this,
-			    instance = promise.factory(),
+			    deferred = promise.factory(),
 			    fn;
 
 			fn = function (yay) {
@@ -87,15 +87,21 @@ var promise = {
 					error  = false;
 				}
 				catch (e) {
-					result = e.message || e;
+					result = e;
 					error  = true;
+					if (!(result instanceof Error)) {
+						// Encoding Array or Object as a JSON string for transmission
+						if (typeof result === "object") result = json.encode(result);
+
+						// Casting to an Error to fix context
+						result = Error(result);
+					}
 				}
 				finally {
 					// Not a Promise, passing result & chaining if applicable
 					if (!(result instanceof Promise)) {
-						if (instance.fulfill.length === 0 && instance.error.length === 0) void 0;
-						else if (!error && instance.fulfill.length > 0)                   instance.resolve(result);
-						else if (error && instance.error.length > 0)                      instance.reject(result);
+						if (!error && deferred.fulfill.length > 0)   deferred.resolve(result);
+						else if (error && deferred.error.length > 0) deferred.reject(result);
 					}
 					// Assuming a `pending` state until `result` is resolved
 					else {
@@ -117,9 +123,9 @@ var promise = {
 			if (typeof failure === "function") promise.vouch.call(this, promise.state.broken,   function () { return fn(false); });
 
 			// Setting reference to `self`
-			instance.parentNode = self;
+			deferred.parentNode = self;
 
-			return instance;
+			return deferred;
 		}
 	},
 
@@ -135,6 +141,7 @@ var promise = {
 		var handler = state === promise.state.broken ? "error" : "fulfill",
 		    self    = this,
 		    pending = false,
+		    error   = false,
 		    purge   = [],
 		    i, result;
 
@@ -153,11 +160,18 @@ var promise = {
 				self.state   = promise.state.pending
 				return false;
 			}
+			else if (result instanceof Error) {
+				state = promise.state.broken;
+				error = true;
+			}
 		});
 
 		if (!pending) {
 			this.error   = [];
 			this.fulfill = [];
+
+			// Possible jump to 'resolve' logic
+			if (!error) state = promise.state.resolved;
 
 			// Reverse chaining
 			if (this.parentNode !== null && this.parentNode.state === promise.state.pending) this.parentNode[state === promise.state.resolved ? "resolve" : "reject"](this.outcome);
