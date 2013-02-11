@@ -99,10 +99,7 @@ var promise = {
 				}
 				finally {
 					// Not a Promise, passing result & chaining if applicable
-					if (!(result instanceof Promise)) {
-						if (!error && deferred.fulfill.length > 0)   deferred.resolve(result);
-						else if (error && deferred.error.length > 0) deferred.reject(result);
-					}
+					if (!(result instanceof Promise)) !error ? deferred.resolve(result || self.outcome) : deferred.reject(result);
 					// Assuming a `pending` state until `result` is resolved
 					else {
 						self.state        = promise.state.pending;
@@ -143,7 +140,7 @@ var promise = {
 		    pending = false,
 		    error   = false,
 		    purge   = [],
-		    i, result;
+		    i, reason, result;
 
 		if (this.state !== promise.state.pending) throw Error(label.error.promiseResolved.replace("{{outcome}}", this.outcome));
 
@@ -161,8 +158,9 @@ var promise = {
 				return false;
 			}
 			else if (result instanceof Error) {
-				state = promise.state.broken;
-				error = true;
+				error  = true;
+				reason = result;
+				state  = promise.state.broken;
 			}
 		});
 
@@ -171,10 +169,13 @@ var promise = {
 			this.fulfill = [];
 
 			// Possible jump to 'resolve' logic
-			if (!error) state = promise.state.resolved;
+			if (!error) {
+				result = reason;
+				state  = promise.state.resolved;
+			}
 
 			// Reverse chaining
-			if (this.parentNode !== null && this.parentNode.state === promise.state.pending) this.parentNode[state === promise.state.resolved ? "resolve" : "reject"](this.outcome);
+			if (this.parentNode !== null && this.parentNode.state === promise.state.pending) this.parentNode[state === promise.state.resolved ? "resolve" : "reject"](result || this.outcome);
 
 			// Freezing promise
 			if (promise.freeze) Object.freeze(this);

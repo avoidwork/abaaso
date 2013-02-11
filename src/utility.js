@@ -729,12 +729,11 @@ var utility = {
 			           			element.update(self, {innerHTML: arg});
 			           			observer.fire(self, "afterGet");
 			           			if (typeof success === "function") success.call(self, arg);
-			           			return arg;
-			           		}, function (arg) {
+			           		}, function (e) {
 			           			element.update(self, {innerHTML: arg || label.error.serverError});
 			           			observer.fire(self, "failedGet");
 			           			if (typeof failure === "function") failure.call(self, arg);
-			           			return arg;
+			           			throw e;
 			           		});
 
 			           		observer.fire(this, "beforeGet");

@@ -266,10 +266,9 @@ var client = {
 
 		deferred.then(function (arg) {
 			if (typeof success === "function") success(arg);
-			return arg;
-		}, function (arg) {
-			if (typeof failure === "function") failure(arg);
-			return arg;
+		}, function (e) {
+			if (typeof failure === "function") failure(e);
+			throw e;
 		});
 
 		do cbid = utility.genId().slice(0, 10);
@@ -317,7 +316,7 @@ var client = {
 	 */
 	request : function (uri, type, success, failure, args, headers, timeout) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, guid, contentType, doc, ab, blob, deferred, deferred2;
+		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2;
 
 		if (regex.put_post.test(type) && args === undefined) throw Error(label.error.invalidArguments);
 
@@ -339,7 +338,6 @@ var client = {
 			if (type === "delete") cache.expire(uri);
 			if (typeof success === "function") success.call(uri, arg, xhr);
 			xhr = null;
-			return arg;
 		}, function (e) {
 			if (typeof failure === "function") failure.call(uri, e, xhr);
 			xhr = null;
