@@ -89,7 +89,7 @@ var promise = {
 				catch (e) {
 					result = e;
 					error  = true;
-					if (!(result instanceof Error)) {
+					if (result !== undefined && !(result instanceof Error)) {
 						// Encoding Array or Object as a JSON string for transmission
 						if (typeof result === "object") result = json.encode(result);
 
@@ -99,7 +99,11 @@ var promise = {
 				}
 				finally {
 					// Not a Promise, passing result & chaining if applicable
-					if (!(result instanceof Promise)) !error ? deferred.resolve(result || self.outcome) : deferred.reject(result);
+					if (!(result instanceof Promise)) {
+						// This is clearly a mistake on the dev's part
+						if (error && result === undefined) throw Error(label.error.invalidArguments);
+						else deferred[!error ? "resolve" : "reject"](result || self.outcome);
+					}
 					// Assuming a `pending` state until `result` is resolved
 					else {
 						self.state        = promise.state.pending;
