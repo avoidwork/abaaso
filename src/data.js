@@ -525,7 +525,7 @@ var data = {
 
 							array.each(needle, function (n) {
 								utility.compile(regex, n, modifiers);
-								if (regex.test(String(v).escape())) {
+								if (regex.test(v)) {
 									keys.push(r.key);
 									result.add(r);
 									return false;
@@ -549,7 +549,7 @@ var data = {
 						if (!fn) {
 							array.each(needle, function (n) {
 								utility.compile(regex, n, modifiers);
-								if (regex.test(String(r.data[h]).escape())) {
+								if (regex.test(r.data[h])) {
 									keys.push(r.key);
 									result.add(r);
 									return false;
