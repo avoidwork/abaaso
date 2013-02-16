@@ -109,7 +109,6 @@ var data = {
 						f = true;
 						failure(e);
 					}
-					throw e;
 				});
 
 				if (rec instanceof Array && self.uri !== null) {
@@ -118,7 +117,6 @@ var data = {
 					    	deferred.resolve(arg);
 					     }, function (e) {
 					    	deferred.reject(e);
-					    	throw e;
 					     });
 				}
 				else {
@@ -127,7 +125,6 @@ var data = {
 					    	deferred.resolve(arg);
 					     }, function (e) {
 					    	deferred.reject(e);
-					    	throw e;
 					     });
 				}
 			};
@@ -151,7 +148,6 @@ var data = {
 				    	deferred.resolve(arg);
 				     }, function (e) {
 				    	deferred.reject(e);
-				    	throw e;
 				     });
 			};
 
@@ -368,7 +364,6 @@ var data = {
 				}, function (e) {
 					if (events) record.data[k].fire("failedDataRetrieve", e);
 					complete();
-					throw e;
 				});
 
 				if ((v instanceof Array) && v.length > 0) {
@@ -383,7 +378,6 @@ var data = {
 					                   		deferred.resolve(arg);
 					                   	}, function (e) {
 					                   		deferred.reject(e);
-					                   		throw e;
 					                   	});
 				}
 				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
@@ -395,7 +389,6 @@ var data = {
 					                   		deferred.resolve(arg);
 					                   	}, function (e) {
 					                   		deferred.reject(e);
-					                   		throw e;
 					                   	});
 				}
 			});
@@ -735,7 +728,6 @@ var data = {
 							                      		deferred.resolve(arg);
 							                       }, function (e) {
 							                      		deferred.reject(e);
-							                      		throw e;
 							                       });
 						}
 						else deferred.resolve(self.records[idx].data.get());
@@ -892,7 +884,6 @@ var data = {
 					if (events) self.parentNode.fire("afterDataSet", arg);
 				}, function (e) {
 					if (events) self.parentNode.fire("failedDataSet", e);
-					throw e;
 				});
 
 				self.views = {};
@@ -982,7 +973,6 @@ var data = {
 				           		                  		deferred.resolve(arg);
 				           		                   }, function (e) {
 				           		                   		deferred.reject(e);
-				           		                  		throw e;
 				           		                   });
 				           });
 			}
@@ -1085,7 +1075,6 @@ var data = {
 					    	deferred.resolve(arg);
 					     }, function (e) {
 					    	deferred.reject(e);
-					    	throw e;
 					     });
 				}
 			}
@@ -1294,12 +1283,10 @@ var data = {
 				    	deferred2.resolve(arg);
 				    }, function (e) {
 				    	deferred2.reject(arg);
-				    	throw e;
 				    });
 				return data;
 			}, function (e) {
 				if (events) obj.fire("failedDataSync", e);
-				throw e;
 			});
 
 			deferred2.then(function (arg) {
@@ -1317,7 +1304,6 @@ var data = {
 
 			failure = function (e) {
 				deferred1.reject(e);
-				throw e;
 			};
 
 			if (events) obj.fire("beforeDataSync");
@@ -1403,7 +1389,7 @@ var data = {
  */
 function DataStore (obj) {
 	this.parentNode = obj;
-	this.clear.call(this);
+	this.clear();
 };
 
 // Setting prototype & constructor loop
