@@ -871,17 +871,14 @@ var data = {
 			    deferred2, record, obj, method, events, args, uri, p, success, failure;
 
 			deferred2 = deferred.then(function (arg) {
-				var decorate = (arg.record === undefined),
-				    data     = decorate ? utility.clone(arg) : arg,
+				var data     = utility.clone(arg),
 				    deferred = promise.factory(),
 				    record, uri;
 
-				if (decorate) {
-					// Decorating Functions that were lost with JSON encode/decode of `utility.clone()`
-					utility.iterate(arg.data, function (v, k) {
-						if (typeof v === "function") data.data[k] = v;
-					});
-				}
+				// Decorating Functions that were lost with JSON encode/decode of `utility.clone()`
+				utility.iterate(arg.data, function (v, k) {
+					if (typeof v === "function") data.data[k] = v;
+				});
 
 				deferred.then(function (arg) {
 					if (self.retrieve) self.crawl(arg);
@@ -948,7 +945,7 @@ var data = {
 						uri.get(function (args) {
 							if (self.source !== null) args = utility.walk(args, self.source);
 							if (args[self.key] !== undefined) delete args[self.key];
-							utility.merge(record.data, args);
+							record.data = args;
 							deferred.resolve(record);
 						}, function (e) {
 							deferred.reject(e);
@@ -957,7 +954,7 @@ var data = {
 				}
 				else {
 					record = self.records[self.keys[data.record.key]];
-					utility.merge(record.data, data.data);
+					record.data = data.data;
 					deferred.resolve(record);
 				}
 			}, function (e) {
@@ -1002,7 +999,7 @@ var data = {
 				utility.iterate(args.record.data, function (v, k) {
 					if (!array.contains(self.collections, k) && !array.contains(self.ignore, k)) args.data[k] = v;
 				});
-				utility.merge(args.data, data);
+				args.data = data;
 			}
 			else args.data = data;
 
@@ -1365,6 +1362,33 @@ var data = {
 			this.clear(true);
 			this.parentNode.fire("afterDataTeardown");
 			return this;
+		},
+
+		/**
+		 * Updates an existing Record
+		 * 
+		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
+		 * @param  {Object} data Key:Value pairs to set as field values
+		 * @return {Object}      Promise
+		 */
+		update : function (key, data) {
+			var record = this.get(key),
+			    self   = this,
+			    args, deferred;
+
+			if (record === undefined) throw Error(label.error.invalidArguments);
+
+			args     = utility.merge(record.data, data);
+			deferred = promise.factory();
+
+			this.set(key, args).then(function (arg) {
+				deferred.resolve(arg);
+			}, function (e) {
+				error(e, arguments, self);
+			});
+
+			return deferred;
+
 		}
 	}
 };
