@@ -871,9 +871,17 @@ var data = {
 			    deferred2, record, obj, method, events, args, uri, p, success, failure;
 
 			deferred2 = deferred.then(function (arg) {
-				var data     = arg.record === undefined ? utility.clone(arg) : arg,
+				var decorate = (arg.record === undefined),
+				    data     = decorate ? utility.clone(arg) : arg,
 				    deferred = promise.factory(),
 				    record, uri;
+
+				if (decorate) {
+					// Decorating Functions that were lost with JSON encode/decode of `utility.clone()`
+					utility.iterate(arg.data, function (v, k) {
+						if (typeof v === "function") data.data[k] = v;
+					});
+				}
 
 				deferred.then(function (arg) {
 					if (self.retrieve) self.crawl(arg);
@@ -965,7 +973,6 @@ var data = {
 
 			if (key === null && this.uri === null) key = utility.guid();
 			else if (key === null) key = undefined;
-			else key = key.toString();
 
 			batch = (batch === true);
 
