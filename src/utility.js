@@ -135,7 +135,14 @@ var utility = {
 		else if (obj instanceof Object) {
 			// If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration
 			clone = json.encode(obj, true);
-			clone = clone !== undefined ? json.decode(clone) : obj;
+			if (clone !== undefined) {
+				clone = json.decode(clone);
+				// Decorating Functions that would be lost with JSON encoding/decoding
+				utility.iterate(obj, function (v, k) {
+					if (typeof v === "function") clone[k] = v;
+				});
+			}
+			else clone = obj;
 			return clone;
 		}
 		else return obj;
