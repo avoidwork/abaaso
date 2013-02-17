@@ -1258,7 +1258,7 @@ var data = {
 			    guid      = utility.guid(true),
 			    deferred1 = promise.factory(),
 			    deferred2 = promise.factory(),
-			    success, failure;
+			    deferred3, success, failure;
 
 			deferred1.then(function (arg) {
 				if (typeof arg !== "object") throw Error(label.error.expectedObject);
@@ -1282,18 +1282,17 @@ var data = {
 				    .then(function (arg) {
 				    	deferred2.resolve(arg);
 				    }, function (e) {
-				    	deferred2.reject(arg);
+				    	deferred2.reject(e);
 				    });
 				return data;
 			}, function (e) {
-				if (events) obj.fire("failedDataSync", e);
+				deferred2.reject(e);
 			});
 
-			deferred2.then(function (arg) {
+			deferred3 = deferred2.then(function (arg) {
 				if (reindex) self.reindex();
 				if (events) obj.fire("afterDataSync", arg);
 			}, function (e) {
-				self.clear(true);
 				if (events) obj.fire("failedDataSync", e);
 				throw e;
 			});
@@ -1307,9 +1306,11 @@ var data = {
 			};
 
 			if (events) obj.fire("beforeDataSync");
+
 			this.callback !== null ? client.jsonp(this.uri, success, failure, {callback: this.callback})
 			                       : client.request(this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers));
-			return deferred2;
+
+			return deferred3;
 		},
 
 		/**
