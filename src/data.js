@@ -92,16 +92,9 @@ var data = {
 				    guid     = utility.genId(),
 				    rec      = {};
 
-				if (typeof data.batch !== "function") {
-					rec = utility.clone(data)
-					utility.iterate(data, function (v, k) {
-						if (typeof v === "function") rec[k] = v;
-					});
-				}
+				if (typeof data.batch !== "function") rec = data;
 				else utility.iterate(data, function (v, k) {
-					if (!array.contains(self.collections, k)) {
-						rec[k] = typeof v === "function" ? v : utility.clone(v);
-					}
+					if (!array.contains(self.collections, k)) rec[k] = v;
 				});
 
 				if (self.key !== null && rec[self.key] !== undefined) {
