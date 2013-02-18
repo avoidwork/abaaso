@@ -194,24 +194,47 @@ var datalist = {
 
 			// Creating templates for the html rep
 			if (!template) fn = function (i) {
-				var html = String(self.template);
+				var html  = self.template,
+				    items = array.unique(html.match(/\{\{[\w\.]+\}\}/g));
 
-				html = html.replace("{{" + self.store.key + "}}", i.key)
-				utility.iterate(i.data, function (v, k) {
-					reg.compile("{{" + k + "}}", "g");
-					html = html.replace(reg, v);
+				// Replacing record key
+				html = html.replace("{{" + self.store.key + "}}", i.key);
+				
+				// Replacing dot notation properties
+				array.each(items, function (attr) {
+					var key   = attr.replace(/\{\{|\}\}/g, ""),
+					    value = utility.walk(i.data, key);
+
+					reg.compile(attr, "g");
+					html = html.replace(reg, value);
 				});
-				return {li: html.replace(/\{\{.*\}\}/g, self.placeholder)};
+
+				// Filling in placeholder value
+				html = html.replace(/\{\{.*\}\}/g, self.placeholder);
+
+				return {li: html};
 			}
 			else fn = function (i) {
-				var obj = json.encode(self.template);
+				var obj   = json.encode(self.template),
+				    items = array.unique(obj.match(/\{\{[\w\.]+\}\}/g));
 
-				obj = obj.replace("{{" + self.store.key + "}}", i.key)
-				utility.iterate(i.data, function (v, k) {
-					reg.compile("{{" + k + "}}", "g");
-					obj = obj.replace(reg, json.encode(v).replace(/(^")|("$)/g, "")); // stripping first and last " to concat to valid JSON
+				// Replacing record key
+				obj = obj.replace("{{" + self.store.key + "}}", i.key);
+				
+				// Replacing dot notation properties
+				array.each(items, function (attr) {
+					var key   = attr.replace(/\{\{|\}\}/g, ""),
+					    value = utility.walk(i.data, key);
+
+					reg.compile(attr, "g");
+
+					// Stripping first and last " to concat to valid JSON
+					obj = obj.replace(reg, json.encode(value).replace(/(^")|("$)/g, ""));
 				});
+
+				// Filling in placeholder value
 				obj = json.decode(obj.replace(/\{\{.*\}\}/g, self.placeholder));
+
 				return {li: obj};
 			};
 
