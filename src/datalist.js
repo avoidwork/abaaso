@@ -68,7 +68,7 @@ var datalist = {
 		 */
 		display : function () {
 			this.ready = true;
-			this.refresh();
+			this.refresh(true);
 		},
 
 		/**
@@ -270,39 +270,42 @@ var datalist = {
 			// Total count of items in the list
 			this.total = items.length;
 
-			// Pagination (supports filtering)
-			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
-				ceiling = datalist.pages.call(this);
-				// Passed the end, so putting you on the end
-				if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
-				// Paginating the items
-				else {
-					limit = datalist.range.call(this);
-					items = items.limit(limit[0], limit[1]);
+			// Only do these ops if there's something to render
+			if (this.total > 0) {
+				// Pagination (supports filtering)
+				if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
+					ceiling = datalist.pages.call(this);
+					// Passed the end, so putting you on the end
+					if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
+					// Paginating the items
+					else {
+						limit = datalist.range.call(this);
+						items = items.limit(limit[0], limit[1]);
+					}
 				}
-			}
 
-			// Preparing the target element
-			if (redraw) {
-				element.clear();
-				array.each(items, function (i) {
-					var obj = element.tpl(i.template);
-					obj.data("key", i.key);
-					if (callback) self.callback(obj);
-				});
-			}
-			else {
-				element.find("> li").addClass("hidden");
-				array.each(items, function (i) {
-					element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
-				});
-			}
+				// Preparing the target element
+				if (redraw) {
+					element.clear();
+					array.each(items, function (i) {
+						var obj = element.tpl(i.template);
+						obj.data("key", i.key);
+						if (callback) self.callback(obj);
+					});
+				}
+				else {
+					element.find("> li").addClass("hidden");
+					array.each(items, function (i) {
+						element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
+					});
+				}
 
-			// Rendering pagination elements
-			if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
-			else {
-				$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
-				if (obj !== undefined) obj.destroy();
+				// Rendering pagination elements
+				if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
+				else {
+					$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
+					if (obj !== undefined) obj.destroy();
+				}
 			}
 
 			this.refreshing = false;
@@ -347,16 +350,18 @@ var datalist = {
 		 * Tears down references to the DataList
 		 * 
 		 * @method teardown
+		 * @param  {Boolean} destroy [Optional] `true` will remove the DataList from the DOM
 		 * @return {Object}  DataList instance
 		 */
-		teardown : function () {
+		teardown : function (destroy) {
+			destroy  = (destroy === true);
 			var self = this,
 			    id   = this.element.id;
 
-			observer.un(id);
+			observer.remove(id);
 
 			array.each($("#" + id + "-pages-top, #" + id + "-pages-bottom"), function (i) {
-				observer.un(i);
+				observer.remove(i);
 			});
 
 			array.each(this.store.datalists, function (i, idx) {
@@ -365,6 +370,8 @@ var datalist = {
 					return false;
 				}
 			});
+
+			if (destroy) element.destroy(this.element);
 
 			return this;
 		}

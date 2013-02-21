@@ -69,7 +69,7 @@ var data = {
 				if (regex.del.test(type)) self.reindex();
 
 				array.each(self.datalists, function (i) {
-					if (!i.ready) i.display();
+					i.display();
 				});
 
 				if (events) obj.fire("afterDataBatch", arg);
