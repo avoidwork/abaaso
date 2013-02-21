@@ -275,7 +275,7 @@ var utility = {
 		var op;
 
 		ms = ms || 0;
-		id = id || utility.guid(true);
+		id = id || utility.uuid(true);
 
 		op = function () {
 			utility.clearTimers(id);
@@ -288,10 +288,10 @@ var utility = {
 	},
 
 	/**
-	 * Encodes a GUID to a DOM friendly ID
+	 * Encodes a UUID to a DOM friendly ID
 	 *
 	 * @method domId
-	 * @param  {String} GUID
+	 * @param  {String} UUID
 	 * @return {String} DOM friendly ID
 	 * @private
 	 */
@@ -370,35 +370,16 @@ var utility = {
 		if (obj !== undefined && ((obj.id !== undefined && obj.id !== "") || (obj instanceof Array) || (obj instanceof String || typeof obj === "string"))) return obj;
 
 		if (dom) {
-			do id = utility.domId(utility.guid(true).toLowerCase());
+			do id = utility.domId(utility.uuid(true));
 			while ($("#" + id) !== undefined);
 		}
-		else id = utility.domId(utility.guid(true).toLowerCase());
+		else id = utility.domId(utility.uuid(true));
 
 		if (typeof obj === "object") {
 			obj.id = id;
 			return obj;
 		}
 		else return id;
-	},
-
-	/**
-	 * Generates a GUID
-	 *
-	 * @method guid
-	 * @param  {Boolean} safe [Optional] Strips - from GUID
-	 * @return {String}       GUID
-	 */
-	guid : function (safe) {
-		var s = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); },
-		    r = [8, 9, "a", "b"],
-		    o;
-
-		safe = (safe === true);
-
-		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s()).toUpperCase();
-		if (safe) o = o.replace(/-/g, "");
-		return o;
 	},
 
 	/**
@@ -946,7 +927,7 @@ var utility = {
 	 */
 	repeat : function (fn, ms, id, now) {
 		ms  = ms || 10;
-		id  = id || utility.guid(true);
+		id  = id || utility.uuid(true);
 		now = (now !== false);
 
 		// Could be valid to return false from initial execution
@@ -1054,6 +1035,25 @@ var utility = {
 
 		target.appendChild(frag);
 		return array.last(target.childNodes);
+	},
+
+	/**
+	 * Generates UUID Version 4
+	 *
+	 * @method uuid
+	 * @param  {Boolean} safe [Optional] Strips - from UUID
+	 * @return {String}       UUID
+	 */
+	uuid : function (safe) {
+		var s = function () { return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1); },
+		    r = [8, 9, "a", "b"],
+		    o;
+
+		safe = (safe === true);
+
+		o = (s() + s() + "-" + s() + "-4" + s().substr(0, 3) + "-" + r[Math.floor(Math.random() * r.length)] + s().substr(0, 3) + "-" + s() + s() + s());
+		if (safe) o = o.replace(/-/g, "");
+		return o;
 	},
 
 	/**

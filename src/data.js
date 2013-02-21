@@ -60,7 +60,6 @@ var data = {
 			    r        = 0,
 			    nth      = data.length,
 			    f        = false,
-			    guid     = utility.genId(true),
 			    deferred = promise.factory(),
 			    complete, deferred2, failure, key, set, del, success, parsed;
 
@@ -89,7 +88,6 @@ var data = {
 
 			set = function (data, key) {
 				var deferred = promise.factory(),
-				    guid     = utility.genId(),
 				    rec      = {};
 
 				if (typeof data.batch !== "function") rec = data;
@@ -609,8 +607,7 @@ var data = {
 				    nodes   = $("#" + form.id + " input"),
 				    entity  = nodes[0].name.match(/(.*)\[/)[1],
 				    result  = true,
-				    newData = {},
-				    guid;
+				    newData = {};
 
 				utility.stop(e);
 
@@ -627,7 +624,6 @@ var data = {
 							if (typeof i.type !== "undefined" && regex.input_button.test(i.type)) return;
 							utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
 						});
-						guid = utility.genId(true);
 						self.parentNode.once("afterDataSet", function () {
 							form.destroy();
 						});
@@ -957,7 +953,7 @@ var data = {
 				key   = null;
 			}
 
-			if (key === null && this.uri === null) key = utility.guid();
+			if (key === null && this.uri === null) key = utility.uuid();
 			else if (key === null) key = undefined;
 
 			batch = (batch === true);
@@ -1253,7 +1249,6 @@ var data = {
 			var self      = this,
 			    events    = (this.events === true),
 			    obj       = self.parentNode,
-			    guid      = utility.guid(true),
 			    deferred1 = promise.factory(),
 			    deferred2 = promise.factory(),
 			    deferred3, success, failure;

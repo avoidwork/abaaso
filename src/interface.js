@@ -107,7 +107,7 @@ return {
 	},
 	genId           : utility.genId,
 	get             : function (uri, success, failure, headers, timeout) { return client.request(uri, "GET", success, failure, null, headers, timeout); },
-	guid            : utility.guid,
+	guid            : function () { return utility.uuid().toUpperCase(); },
 	hash            : route.hash,
 	headers         : function (uri, success, failure, timeout) { return client.request(uri, "HEAD", success, failure, null, {}, timeout); },
 	hidden          : element.hidden,
@@ -196,6 +196,7 @@ return {
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,
+	uuid            : utility.uuid,
 	validate        : validate.test,
 	version         : "{{VERSION}}",
 	walk            : utility.walk
