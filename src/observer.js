@@ -53,7 +53,7 @@ var observer = {
 		}
 
 		if (event !== undefined) event = event.explode();
-		if (id === undefined || String(id).isEmpty()) id = utility.guid(true);
+		if (id === undefined || String(id).isEmpty()) id = utility.uuid(true);
 
 		var instance = null,
 		    l        = observer.listeners,
@@ -256,7 +256,7 @@ var observer = {
 	 * @return {Mixed}          Entity, Array of Entities or undefined
 	 */
 	once : function (obj, event, fn, id, scope, state) {
-		var guid = id || utility.genId();
+		var uuid = id || utility.genId();
 
 		obj   = utility.object(obj);
 		scope = scope || obj;
@@ -268,8 +268,8 @@ var observer = {
 
 		observer.add(obj, event, function () {
 			fn.apply(scope, arguments);
-			observer.remove(obj, event, guid, state);
-		}, guid, scope, state);
+			observer.remove(obj, event, uuid, state);
+		}, uuid, scope, state);
 
 		return obj;
 	},
