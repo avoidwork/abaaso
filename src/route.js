@@ -152,6 +152,7 @@ var route = {
 		var active = "",
 		    path   = "",
 		    result = true,
+		    found  = false,
 		    verb   = route.method(req.method || req),
 		    crawl, find;
 
@@ -193,7 +194,18 @@ var route = {
 			}
 		};
 
-		if (host !== "all" && !route.routes.hasOwnProperty(host)) host = "all";
+		if (host !== "all" && !route.routes.hasOwnProperty(host)) {
+			array.each(array.cast(route.routes, true), function (i) {
+				var regex = new RegExp(i.replace(/^\*/, ".*"));
+
+				if (regex.test(host)) {
+					host  = i;
+					found = true;
+					return false;
+				}
+			});
+			if (!found) host = "all";
+		}
 
 		crawl(host, verb, name);
 
