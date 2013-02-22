@@ -451,11 +451,13 @@ var utility = {
 	 * @return {Undefined}     undefined
 	 */
 	log : function (arg, target) {
-		target =  target || "log";
-		var ts = !server || typeof arg !== "object";
+		var ts, msg;
 
-		if (typeof console !== "undefined") console[target]((ts ? "[" + new Date().toLocaleTimeString() + "] " : "") + arg);
-		return undefined;
+		if (typeof console !== "undefined") {
+			ts  = typeof arg !== "object";
+			msg = ts ? "[" + new Date().toLocaleTimeString() + "] " + arg : arg;
+			console[target || "log"](msg);
+		}
 	},
 
 	/**
