@@ -1115,9 +1115,10 @@ var data = {
 		 * @param  {String} query       SQL (style) order by
 		 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
 		 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" (insensitive = "ci", sensitive = "cs", mixed = "ms")
-		 * @return {Array}               View of data
+		 * @param  {Object} where       Object describing the WHERE clause
+		 * @return {Array}              View of data
 		 */
-		sort : function (query, create, sensitivity) {
+		sort : function (query, create, sensitivity, where) {
 			if (query === undefined || String(query).isEmpty()) throw Error(label.error.invalidArguments);
 			if (!regex.sensitivity_types.test(sensitivity)) sensitivity = "ci";
 
@@ -1216,7 +1217,7 @@ var data = {
 				return sorted;
 			};
 
-			result           = crawl(queries, this.records);
+			result           = crawl(queries, where === undefined ? this.records : this.select(where));
 			this.views[view] = result;
 			return result;
 		},
