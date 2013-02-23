@@ -839,6 +839,30 @@ var data = {
 		},
 
 		/**
+		 * Selects records based on an explcit description
+		 * 
+		 * @param  {Object} where  Object describing the WHERE clause
+		 * @return {Array}         Array of records
+		 */
+		select : function (where) {
+			var result;
+
+			if (!(where instanceof Object)) throw Error(label.error.invalidArguments);
+
+			result = this.get().filter(function (rec) {
+				var match = true;
+
+				utility.iterate(where, function (v, k) {
+					if (rec.data[k] !== v) return (match = false);
+				});
+
+				return match;
+			});
+
+			return result;
+		},
+
+		/**
 		 * Creates or updates an existing record
 		 *
 		 * If a POST is issued and the data.key property is not set, the
@@ -1091,9 +1115,10 @@ var data = {
 		 * @param  {String} query       SQL (style) order by
 		 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
 		 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" (insensitive = "ci", sensitive = "cs", mixed = "ms")
-		 * @return {Array}               View of data
+		 * @param  {Object} where       Object describing the WHERE clause
+		 * @return {Array}              View of data
 		 */
-		sort : function (query, create, sensitivity) {
+		sort : function (query, create, sensitivity, where) {
 			if (query === undefined || String(query).isEmpty()) throw Error(label.error.invalidArguments);
 			if (!regex.sensitivity_types.test(sensitivity)) sensitivity = "ci";
 
@@ -1192,7 +1217,7 @@ var data = {
 				return sorted;
 			};
 
-			result           = crawl(queries, this.records);
+			result           = crawl(queries, where === undefined ? this.records : this.select(where));
 			this.views[view] = result;
 			return result;
 		},

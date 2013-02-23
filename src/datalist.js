@@ -239,7 +239,8 @@ var datalist = {
 			};
 
 			// Consuming records based on sort
-			consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, false, this.sensitivity);
+			if (this.where === null) consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, false, this.sensitivity);
+			else consumed = this.order.isEmpty() ? this.store.select(this.where) : this.store.sort(this.order, false, this.sensitivity, this.where);
 
 			// Processing (filtering) records & generating templates
 			array.each(consumed, function (i) {
@@ -432,6 +433,7 @@ function DataList (element, store, template) {
 	this.total       = 0;
 	this.sensitivity = "ci";
 	this.store       = store;
+	this.where       = null;
 };
 
 // Setting prototype & constructor loop
