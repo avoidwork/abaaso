@@ -371,7 +371,10 @@ var datalist = {
 				}
 			});
 
-			if (destroy) element.destroy(this.element);
+			if (destroy) {
+				element.destroy(this.element);
+				this.element = null;
+			}
 
 			return this;
 		}
