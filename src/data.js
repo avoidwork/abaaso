@@ -839,6 +839,30 @@ var data = {
 		},
 
 		/**
+		 * Selects records based on an explcit description
+		 * 
+		 * @param  {Object} where  Object describing the WHERE clause
+		 * @return {Array}         Array of records
+		 */
+		select : function (where) {
+			var result;
+
+			if (!(where instanceof Object)) throw Error(label.error.invalidArguments);
+
+			result = this.get().filter(function (rec) {
+				var match = true;
+
+				utility.iterate(where, function (v, k) {
+					if (rec.data[k] !== v) return (match = false);
+				});
+
+				return match;
+			});
+
+			return result;
+		},
+
+		/**
 		 * Creates or updates an existing record
 		 *
 		 * If a POST is issued and the data.key property is not set, the
