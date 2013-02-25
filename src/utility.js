@@ -645,6 +645,7 @@ var utility = {
 			           max      : function () { return array.max(this); },
 			           mean     : function () { return array.mean(this); },
 			           median   : function () { return array.median(this); },
+			           merge    : function (arg) { return array.merge(this, arg); },
 			           min      : function () { return array.min(this); },
 			           mode     : function () { return array.mode(this); },
 			           on       : function (event, listener, id, scope, state) { return array.each(this, function (i) { i.on(  event, listener, id, scope || i, state); }); },
