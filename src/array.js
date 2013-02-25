@@ -399,6 +399,20 @@ var array = {
 	},
 
 	/**
+	 * Merges `arg` into `obj`
+	 * 
+	 * @param  {Array} obj Array to receive indices
+	 * @param  {Array} arg Array to merge
+	 * @return {Array}     obj
+	 */
+	merge : function (obj, arg) {
+		array.each(arg, function (i) {
+			obj.push(i);
+		});
+		return obj;
+	},
+
+	/**
 	 * Finds the minimum value in an Array
 	 * 
 	 * @method min

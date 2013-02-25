@@ -447,6 +447,30 @@ exports["median"] = {
 	}
 };
 
+exports["merge"] = {
+	setUp: function (done) {
+		this.a = [];
+		this.b = [];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		this.a = [1];
+		this.b = [2, 3, 4, 5];
+		test.equal(array.merge(this.a, this.b), this.a, "Should be 'this.a'");
+		test.equal(this.a.length, 5, "Should be '5'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		this.a = [1];
+		this.b = [2, 3, 4, 5];
+		test.equal(this.a.merge(this.b), this.a, "Should be 'this.a'");
+		test.equal(this.a.length, 5, "Should be '5'");
+		test.done();
+	}
+};
+
 exports["mix"] = {
 	setUp: function (done) {
 		this.val = [1, 3, 7, 2, 10];
