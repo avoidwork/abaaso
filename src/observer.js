@@ -314,7 +314,9 @@ var observer = {
 		    e        = observer.elisteners,
 		    c        = observer.clisteners,
 		    o        = observer.id(obj),
-		    add, fn, reg;
+		    add      = (typeof obj.addEventListener === "function"),
+		    reg      = (typeof obj.attachEvent === "object" || add),
+		    fn;
 
 		/**
 		 * Removes DOM event hook
@@ -325,9 +327,6 @@ var observer = {
 		 */
 		fn = function (event, i) {
 			var unhook = false;
-
-			add = (typeof obj.addEventListener === "function");
-			reg = (typeof obj.attachEvent === "object" || add);
 
 			if (event === null) unhook = true;
 			else if (typeof i === "number" && (c[o][event] = (c[o][event] - i)) === 0) unhook = true;
@@ -341,10 +340,15 @@ var observer = {
 		if (o === undefined || l[o] === undefined) return obj;
 
 		if (event === undefined || event === null) {
+			if (regex.observer_globals.test(o) || typeof o.listeners === "function") {
+				utility.iterate(e, function (v, k) {
+					if (k.indexOf(o + "_") === 0) fn(k.replace(/.*_/, ""), 1);
+				});
+			}
+
 			delete l[o];
 			delete a[o];
 			delete c[o];
-			if (regex.observer_globals.test(o) || typeof o.listeners === "function") fn(null);
 		}
 		else {
 			array.each(event.explode(), function (e) {
