@@ -187,7 +187,7 @@ var route = {
 
 		// Finds a match
 		find = function (pattern, method, arg) {
-			if (utility.compile(route.reg, "^" + pattern + "$", "i") && route.reg.test(arg)) {
+			if (utility.compile(route.reg, "^" + pattern + "$") && route.reg.test(arg)) {
 				active = pattern;
 				path   = method;
 				return false;
