@@ -51,7 +51,7 @@ var filter = {
 
 			if (typeof fields !== "string" || String(fields).isEmpty()) throw Error(label.error.invalidArguments);
 
-			array.each(fields.explode(), function (v) {
+			array.each(string.explode(fields), function (v) {
 				obj[v] = "";
 			});
 

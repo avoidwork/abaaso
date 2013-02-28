@@ -52,8 +52,8 @@ var observer = {
 			});
 		}
 
-		if (event !== undefined) event = event.explode();
-		if (id === undefined || String(id).isEmpty()) id = utility.uuid(true);
+		if (event !== undefined) event = string.explode(event);
+		id = id || utility.genId();
 
 		var instance = null,
 		    l        = observer.listeners,
@@ -164,8 +164,12 @@ var observer = {
 		if (observer.ignore) return obj;
 
 		if (obj instanceof Array) {
-			a = [obj[i], event].concat(a);
-			return array.each(obj, function (i) { observer.fire.apply(observer, a); });
+			array.each(obj, function (i) {
+				a = [i, event].concat(a);
+				observer.fire.apply(observer, a);
+			});
+
+			return obj;
 		}
 
 		o = observer.id(obj);
@@ -176,7 +180,7 @@ var observer = {
 			s   = abaaso.state.current;
 			log = ($.logging || abaaso.logging);
 
-			array.each(event.explode(), function (e) {
+			array.each(string.explode(event), function (e) {
 				if (log) utility.log(o + " firing " + e);
 				list = observer.list(obj, e, observer.alisteners);
 				if (list.all !== undefined) {
@@ -264,7 +268,13 @@ var observer = {
 
 		if (obj === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		if (obj instanceof Array) return array.each(obj, function (i) { observer.once(i, event, fn, id, scope, state); });
+		if (obj instanceof Array) {
+			array.each(obj, function (i) {
+				observer.once(i, event, fn, id, scope, state);
+			});
+
+			return obj;
+		}
 
 		observer.add(obj, event, function () {
 			fn.apply(scope, arguments);
@@ -326,10 +336,7 @@ var observer = {
 		 * @return {Undefined}    undefined
 		 */
 		fn = function (event, i) {
-			var unhook = false;
-
-			if (event === null) unhook = true;
-			else if (typeof i === "number" && (c[o][event] = (c[o][event] - i)) === 0) unhook = true;
+			var unhook = (typeof i === "number" && (c[o][event] = (c[o][event] - i)) === 0);
 
 			if (unhook && reg) {
 				obj[add ? "removeEventListener" : "detachEvent"]((add ? "" : "on") + event, e[o + "_" + event], false);
@@ -351,7 +358,7 @@ var observer = {
 			delete c[o];
 		}
 		else {
-			array.each(event.explode(), function (e) {
+			array.each(string.explode(event), function (e) {
 				var sync = false;
 
 				if (l[o][e] === undefined) return obj;
@@ -389,6 +396,7 @@ var observer = {
 			result = utility.clone(observer.clisteners[o]);
 		}
 		else result = utility.clone(observer.clisteners);
+
 		return result;
 	},
 

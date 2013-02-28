@@ -248,7 +248,7 @@ var element = {
 		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
 
 		utility.genId(obj, true);
-		array.each(arg.explode(), function (i) {
+		array.each(string.explode(arg), function (i) {
 			result = result.concat($("#" + obj.id + " " + i));
 		});
 		return result;
@@ -352,7 +352,7 @@ var element = {
 		if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
 		add = (add !== false);
-		arg = arg.explode(" ");
+		arg = string.explode(arg, " ");
 
 		if (add) {
 			array.each(arg, function (i) {
@@ -362,7 +362,9 @@ var element = {
 		else array.each(arg, function (i) {
 			if (i !== "*") obj.classList.remove(i);
 			else {
-				array.each(obj.classList, function (x) { this.remove(x); });
+				array.each(obj.classList, function (x) {
+					this.remove(x);
+				});
 				return false;
 			}
 		});

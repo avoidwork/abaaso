@@ -127,7 +127,7 @@ var datalist = {
 				if (start < 1) start = 1;
 			}
 
-			array.each(pos.explode(), function (i) {
+			array.each(string.explode(pos), function (i) {
 				var current = false,
 				    more    = page > 1,
 				    next    = (page + 1) <= total,

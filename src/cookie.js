@@ -41,10 +41,10 @@ var cookie = {
 		    item, items;
 
 		if (document.cookie !== undefined && !document.cookie.isEmpty()) {
-			items = document.cookie.explode(";");
+			items = string.explode(document.cookie, ";");
 			array.each(items, function (i) {
-				item = i.explode("=");
-				result[decodeURIComponent(string.trim(item[0].toString()))] = decodeURIComponent(string.trim(item[1].toString()));
+				item = string.explode(i, "=");
+				result[decodeURIComponent(item[0])] = decodeURIComponent(item[1]);
 			});
 		}
 		return result;
