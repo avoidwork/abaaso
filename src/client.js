@@ -168,7 +168,7 @@ var client = {
 
 		o.expires    = expires;
 		o.headers    = items;
-		o.permission = client.bit(allow !== null ? allow.explode() : [type]);
+		o.permission = client.bit(allow !== null ? string.explode(allow) : [type]);
 
 		if (type !== "head") {
 			cache.set(uri, "expires",    o.expires);

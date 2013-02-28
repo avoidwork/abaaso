@@ -501,11 +501,11 @@ var data = {
 
 			// Preparing parameters
 			if (!fn) {
-				needle = typeof needle === "string" ? needle.explode() : [needle];
+				needle = typeof needle === "string" ? string.explode(needle) : [needle];
 				if (modifiers === undefined || String(modifiers).isEmpty()) modifiers = "gi";
 				else if (modifiers === null) modifiers = "";
 			}
-			haystack = typeof haystack === "string" ? haystack.explode() : null;
+			haystack = typeof haystack === "string" ? string.explode(haystack) : null;
 
 			// No haystack, testing everything
 			if (haystack === null) {
@@ -769,7 +769,7 @@ var data = {
 			if (type === "undefined" || String(record).length === 0) r = records;
 			else if (type === "string" && record.indexOf(",") > -1) {
 				r = [];
-				array.each(record.explode(), function (i) {
+				array.each(string.explode(record), function (i) {
 					if (!isNaN(i)) i = parseInt(i);
 					r.push(self.get(i));
 				});
@@ -1124,7 +1124,7 @@ var data = {
 
 			create       = (create === true);
 			var view     = (query.replace(/\s*asc/ig, "").replace(",", " ").toCamelCase()) + sensitivity.toUpperCase(),
-			    queries  = query.explode(),
+			    queries  = string.explode(query),
 			    key      = this.key,
 			    result   = [],
 			    bucket, sort, crawl;

@@ -25,7 +25,7 @@ var utility = {
 		    result  = [],
 		    tmp     = [];
 
-		queries     = string.explode(string.trim(arg));
+		queries     = string.explode(arg);
 		nodelist    = (nodelist === true);
 
 		array.each(queries, function (query) {
@@ -913,7 +913,7 @@ var utility = {
 	reflect : function (arg) {
 		if (arg === undefined) arg = this || $;
 		arg = arg.toString().match(regex.reflect)[1];
-		return arg !== "" ? arg.explode() : [];
+		return arg !== "" ? string.explode(arg) : [];
 	},
 
 	/**
