@@ -32,6 +32,9 @@ bootstrap = function () {
 		// IE7 and older is not supported
 		if (client.ie && client.version < 8) throw Error(label.error.upgrade);
 
+		// Curried based on client.version
+		this.array.cast = array.cast();
+
 		if (Array.prototype.filter === undefined) {
 			Array.prototype.filter = function (fn) {
 				if (this === void 0 || this === null || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -212,6 +215,9 @@ bootstrap = function () {
 	else {
 		// Cookie class is not relevant for server environment
 		delete this.cookie;
+
+		// Curried
+		this.array.cast = array.cast();
 
 		// XHR shim
 		XMLHttpRequest = xhr();

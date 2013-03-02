@@ -27,19 +27,37 @@ var array = {
 	 * @return {Array}       Object as an Array
 	 */
 	cast : function (obj, key) {
-		key   = (key === true);
-		var o = [];
+		if (server || (!client.ie || client.version > 8)) {
+			return function (obj, key) {
+				key = (key === true);
+				var o = [];
 
-		if (!isNaN(obj.length)) {
-			if (!client.ie || client.version > 8) o = Array.prototype.slice.call(obj);
-			else {
-				try { o = Array.prototype.slice.call(obj); }
-				catch (e) { utility.iterate(obj, function (i, idx) { if (idx !== "length") o.push(i); }); }
-			}
+				if (!isNaN(obj.length)) o = Array.prototype.slice.call(obj);
+				else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
+
+				return o;
+			};
 		}
-		else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
+		else {
+			return function (obj, key) {
+				key   = (key === true);
+				var o = [];
 
-		return o;
+				if (!isNaN(obj.length)) {
+					try {
+						o = Array.prototype.slice.call(obj);
+					}
+					catch (e) {
+						utility.iterate(obj, function (i, idx) {
+							if (idx !== "length") o.push(i);
+						});
+					}
+				}
+				else key ? o = array.keys(obj) : utility.iterate(obj, function (i) { o.push(i); });
+
+				return o;
+			};
+		}
 	},
 
 	/**
