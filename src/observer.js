@@ -216,8 +216,8 @@ var observer = {
 
 		if (arg === abaaso) id = "abaaso";
 		else if (arg === global) id = "window";
-		else if (arg === !server && document) id = "document";
-		else if (arg === !server && document.body) id = "body";
+		else if (!server && arg === document) id = "document";
+		else if (!server && arg === document.body) id = "body";
 		else {
 			utility.genId(arg);
 			id = arg.id || (typeof arg.toString === "function" ? arg.toString() : arg);
