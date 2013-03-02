@@ -1,5 +1,5 @@
 /**
- * abaaso application state
+ * application state
  * 
  * @class state
  * @namespace abaaso
