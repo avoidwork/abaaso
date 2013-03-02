@@ -307,10 +307,10 @@ var array = {
 	},
 
 	/**
-	 * Returns the keys in an Associative Array
+	 * Returns the keys in an "Associative Array"
 	 *
 	 * @method keys
-	 * @param  {Array} obj Array to extract keys from
+	 * @param  {Mixed} obj Array or Object to extract keys from
 	 * @return {Array}     Array of the keys
 	 */
 	keys : function () {
