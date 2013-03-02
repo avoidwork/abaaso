@@ -313,15 +313,22 @@ var array = {
 	 * @param  {Array} obj Array to extract keys from
 	 * @return {Array}     Array of the keys
 	 */
-	keys : function (obj) {
-		var keys = [];
+	keys : function () {
+		if (typeof Object.keys === "function") {
+			return function (obj) {
+				return Object.keys(obj);
+			};
+		}
+		else {
+			return function (obj) {
+				var keys = [];
 
-		if (typeof Object.keys === "function") keys = Object.keys(obj)
-		else utility.iterate(obj, function (v, k) {
-			keys.push(k);
-		});
-		return keys;
-	},
+				utility.iterate(obj, function (v, k) {
+					keys.push(k);
+				});
+			};
+		}
+	}(),
 
 	/**
 	 * Returns the last index of the Array

@@ -390,21 +390,36 @@ var utility = {
 	 * @param  {Function} fn  Function to execute against properties
 	 * @return {Object}       Object
 	 */
-	iterate : function (obj, fn) {
-		var has = Object.prototype.hasOwnProperty,
-		    i, result;
+	iterate : function () {
+		if (typeof Object.keys === "function") {
+			return function (obj, fn) {
+				if (typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+				array.each(array.keys(obj), function (i) {
+					return fn.call(obj, obj[i], i);
+				});
 
-		for (i in obj) {
-			if (has.call(obj, i)) {
-				result = fn.call(obj, obj[i], i);
-				if (result === false) break;
-			}
-			else break;
+				return obj;
+			};
 		}
-		return obj;
-	},
+		else {
+			return function (obj, fn) {
+				var has = Object.prototype.hasOwnProperty,
+				    i, result;
+
+				if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+				for (i in obj) {
+					if (has.call(obj, i)) {
+						result = fn.call(obj, obj[i], i);
+						if (result === false) break;
+					}
+					else break;
+				}
+				return obj;
+			};
+		}
+	}(),
 
 	/**
 	 * Renders a loading icon in a target element,
@@ -420,9 +435,7 @@ var utility = {
 		obj = utility.object(obj);
 		if (obj instanceof Array) return array.each(obj, function (i) { utility.loading(i); });
 
-		if (l.url === null) throw Error(label.error.elementNotFound);
-
-		if (obj === undefined) throw Error(label.error.invalidArguments);
+		if (l.url === null || obj === undefined) throw Error(label.error.invalidArguments);
 
 		// Setting loading image
 		if (l.image === undefined) {

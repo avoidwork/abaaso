@@ -4,6 +4,9 @@ bootstrap = function () {
 	var self = this,
 	    cleanup, fn;
 
+	// Blocking multiple executions
+	delete abaaso.bootstrap;
+
 	// Removes references to deleted DOM elements, avoiding memory leaks
 	cleanup = function (obj) {
 		observer.remove(obj);
