@@ -567,15 +567,23 @@ var utility = {
 	 * @param  {Object} descriptor Descriptor of the property
 	 * @return {Object}            Object receiving the property
 	 */
-	property : function (obj, prop, descriptor) {
-		var define;
+	property : function () {
+		if ((server || (!client.ie || client.version > 8)) && typeof Object.defineProperty === "function") {
+			return function (obj, prop, descriptor) {
+				if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
-		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
+				if (descriptor.value !== undefined && descriptor.get !== undefined) delete descriptor.value;
+				Object.defineProperty(obj, prop, descriptor);
+			};
+		}
+		else {
+			return function (obj, prop, descriptor) {
+				if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
-		define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
-		if (define && descriptor.value !== undefined && descriptor.get !== undefined) delete descriptor.value;
-		define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
-		return obj;
+				obj[prop] = descriptor.value;
+				return obj;
+			};
+		}
 	},
 
 	/**

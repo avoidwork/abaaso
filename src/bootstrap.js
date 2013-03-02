@@ -32,8 +32,9 @@ bootstrap = function () {
 		// IE7 and older is not supported
 		if (client.ie && client.version < 8) throw Error(label.error.upgrade);
 
-		// Curried based on client.version
+		// Curried
 		this.array.cast = array.cast();
+		this.property   = utility.property = utility.property();
 
 		if (Array.prototype.filter === undefined) {
 			Array.prototype.filter = function (fn) {
@@ -142,7 +143,7 @@ bootstrap = function () {
 			};
 		}
 
-		if (!server && document.documentElement.classList === undefined) {
+		if (document.documentElement.classList === undefined) {
 			(function (view) {
 				var ClassList, getter, proto, target, descriptor;
 
@@ -218,6 +219,7 @@ bootstrap = function () {
 
 		// Curried
 		this.array.cast = array.cast();
+		this.property   = utility.property = utility.property();
 
 		// XHR shim
 		XMLHttpRequest = xhr();
