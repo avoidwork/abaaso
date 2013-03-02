@@ -226,9 +226,6 @@ bootstrap = function () {
 	// Setting default routes
 	route.reset();
 
-	// Creating route.initial after alias() so it's not assumed
-	this.route.initial = null;
-
 	// Shortcut to loading.create
 	$.loading   = this.loading.create.bind($.loading);
 
@@ -258,11 +255,6 @@ bootstrap = function () {
 
 	// Creating error log
 	$.error.log = this.error.log = [];
-
-	// Node, AMD & window supported
-	if (typeof exports !== "undefined") module.exports = this;
-	else if (typeof define === "function") define("abaaso", function () { return self; });
-	else global.abaaso = this;
 
 	// Setting events & garbage collection
 	if (!server) {

@@ -2,7 +2,7 @@
 
 var global = this,
     server = typeof exports !== "undefined",
-    http, https, document, location, navigator, url;
+    abaaso, http, https, document, location, navigator, url;
 
 if (global.abaaso !== undefined) return;
 
@@ -20,7 +20,7 @@ else {
 	navigator = global.navigator;
 }
 
-(function () {
+abaaso = function () {
 "use strict";
 
 var $, bootstrap, error, external;

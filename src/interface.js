@@ -116,7 +116,7 @@ return {
 	iterate         : utility.iterate,
 	jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 	listeners       : function (obj, event) {
-		obj = typeof obj === "object" ? obj : (this !== $ ? this : global.abaaso);
+		obj = typeof obj === "object" ? obj : (this !== $ ? this : abaaso);
 		return observer.list(obj, event);
 	},
 	listenersTotal  : observer.sum,
@@ -139,7 +139,7 @@ return {
 			st = state;
 		}
 		else {
-			o  = (this !== $ ? this : global.abaaso);
+			o  = (this !== $ ? this : abaaso);
 			e  = obj;
 			l  = event;
 			i  = listener;
@@ -164,7 +164,7 @@ return {
 			st = state;
 		}
 		else {
-			o  = (this !== $ ? this : global.abaaso);
+			o  = (this !== $ ? this : abaaso);
 			e  = obj;
 			l  = event;
 			i  = listener;
@@ -211,7 +211,7 @@ return {
 			s = state;
 		}
 		else {
-			o = (this !== $ ? this : global.abaaso);
+			o = (this !== $ ? this : abaaso);
 			e = obj;
 			i = event;
 			s = id;
