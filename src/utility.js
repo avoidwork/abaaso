@@ -25,8 +25,8 @@ var utility = {
 		    result  = [],
 		    tmp     = [];
 
-		queries     = string.explode(arg);
-		nodelist    = (nodelist === true);
+		queries  = string.explode(arg);
+		nodelist = (nodelist === true);
 
 		array.each(queries, function (query) {
 			var obj, sel;
@@ -395,7 +395,7 @@ var utility = {
 			return function (obj, fn) {
 				if (typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-				array.each(array.keys(obj), function (i) {
+				array.each(Object.keys(obj), function (i) {
 					return fn.call(obj, obj[i], i);
 				});
 
