@@ -21,10 +21,10 @@ var mouse = {
 	 *
 	 * @method track
 	 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
-	 * @return {Object}  abaaso.mouse
+	 * @return {Object}  mouse
 	 */
 	track : function (e) {
-		var m = abaaso.mouse,
+		var m = mouse,
 		    e = "mousemove",
 		    n = "tracking";
 
@@ -48,10 +48,11 @@ var mouse = {
 				if (c && m.log) utility.log(m.pos.x + " [" + m.diff.x + "], " + m.pos.y + " [" + m.diff.y + "]");
 			}
 			else if (typeof e === "boolean") {
-				e ? observer.add(document, e, abaaso.mouse.track, n) : observer.remove(document, e, n);
+				e ? observer.add(document, e, mouse.track, n) : observer.remove(document, e, n);
 				$.mouse.enabled = m.enabled = e;
 			}
 		}
+
 		return m;
 	}
 };

@@ -10,6 +10,9 @@ var route = {
 	// Current route (Client only)
 	current : "",
 
+	// Initial / default route
+	initial : null,
+
 	// Reused regex object
 	reg : new RegExp(),
 
@@ -40,7 +43,7 @@ var route = {
 		var error = (name === "error");
 
 		if ((error && verb !== "all") || (!error && route.routes[host][verb].hasOwnProperty(name))) {
-			if (abaaso.route.initial === name) abaaso.route.initial = null;
+			if (route.initial === name) route.initial = null;
 			return (delete route.routes[host][verb][name]);
 		}
 		else throw Error(label.error.invalidArguments);
@@ -96,7 +99,7 @@ var route = {
 	init : function () {
 		var val = document.location.hash;
 
-		val.isEmpty() ? route.hash(abaaso.route.initial !== null ? abaaso.route.initial : array.cast(route.routes.all.all, true).remove("error")[0]) : route.load(val);
+		val.isEmpty() ? route.hash(route.initial !== null ? route.initial : array.cast(route.routes.all.all, true).remove("error")[0]) : route.load(val);
 	},
 
 	/**
@@ -161,7 +164,7 @@ var route = {
 
 		// Public, private, local scope
 		name = name.replace(/\#|\!\/|\?.*/g, "");
-		if (!server) abaaso.route.current = name;
+		if (!server) route.current = name;
 
 		// Crawls the hostnames
 		crawl = function (host, verb, name) {
@@ -239,7 +242,7 @@ var route = {
 							if (route.hash() === "") return history.go(-1);
 							else {
 								utility.error(label.error.invalidRoute);
-								if (abaaso.route.initial !== null) route.hash(abaaso.route.initial);
+								if (route.initial !== null) route.hash(route.initial);
 							}
 						}
 						else throw Error(label.error.invalidRoute);
@@ -287,7 +290,7 @@ var route = {
 		if (!server) throw Error(label.error.notSupported);
 
 		// Enabling routing, in case it's not explicitly enabled prior to route.server()
-		$.route.enabled = abaaso.route.enabled = true;
+		route.enabled = true;
 
 		// Server parameters
 		args.host = args.host           || undefined;

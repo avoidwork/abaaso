@@ -238,7 +238,7 @@ var utility = {
 		var p   = obj,
 		    nth = args.length;
 
-		if (obj   === undefined) obj   = this === $ ? abaaso : this;
+		if (obj   === undefined) obj   = this;
 		if (value === undefined) value = null;
 
 		array.each(args, function (i, idx) {
@@ -310,10 +310,8 @@ var utility = {
 	 * @return {Undefined}       undefined
 	 */
 	error : function (e, args, scope, warning) {
-		var o;
-
 		warning = (warning === true);
-		o = {
+		var o   = {
 			arguments : args,
 			message   : e.message || e,
 			number    : e.number !== undefined ? (e.number & 0xFFFF) : undefined,
@@ -325,7 +323,7 @@ var utility = {
 
 		utility.log(o.stack || o.message, !warning ? "error" : "warn");
 		$.error.log.push(o);
-		observer.fire(abaaso, "error", o);
+		$.fire("error", o);
 
 		return undefined;
 	},
@@ -417,7 +415,7 @@ var utility = {
 	 * @return {Mixed}     Entity, Array of Entities or undefined
 	 */
 	loading : function (obj) {
-		var l = abaaso.loading;
+		var l = this.loading;
 
 		obj = utility.object(obj);
 		if (obj instanceof Array) return array.each(obj, function (i) { utility.loading(i); });
@@ -486,13 +484,13 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function (arg, obj) {
-		if ($[arg] !== undefined || abaaso[arg] !== undefined || !obj instanceof Object) throw Error(label.error.invalidArguments);
+		if ($[arg] !== undefined || this[arg] !== undefined || !obj instanceof Object) throw Error(label.error.invalidArguments);
 		
-		abaaso[arg] = obj;
-		if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? abaaso[arg].bind($[arg]) : abaaso[arg];
+		this[arg] = obj;
+		if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? this[arg].bind($[arg]) : this[arg];
 		else {
 			$[arg] = {};
-			utility.alias($[arg], abaaso[arg]);
+			utility.alias($[arg], this[arg]);
 		}
 		return $[arg];
 	},

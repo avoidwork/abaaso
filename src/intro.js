@@ -1,10 +1,10 @@
-(function (global) {
+(function () {
 
-var document  = global.document,
-    location  = global.location,
-    navigator = global.navigator,
-    server    = typeof document === "undefined",
-    abaaso, http, https, url;
+var global = this,
+    server = typeof exports !== "undefined",
+    http, https, document, location, navigator, url;
+
+if (global.abaaso !== undefined) return;
 
 if (server) {
 	url   = require("url");
@@ -14,8 +14,13 @@ if (server) {
 	if (typeof Storage === "undefined")        localStorage   = require("localStorage");
 	if (typeof XMLHttpRequest === "undefined") XMLHttpRequest = null;
 }
+else {
+	document  = global.document;
+	location  = global.location;
+	navigator = global.navigator;
+}
 
-abaaso = global.abaaso || (function () {
+(function () {
 "use strict";
 
 var $, bootstrap, error, external;

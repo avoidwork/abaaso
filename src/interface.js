@@ -51,17 +51,14 @@ return {
 		del     : route.del,
 		hash    : route.hash,
 		init    : route.init,
+		initial : route.initial,
 		list    : route.list,
 		load    : route.load,
 		reset   : route.reset,
 		server  : route.server,
 		set     : route.set
 	},
-	state           : {
-		_current    : null,
-		header      : null,
-		previous    : null
-	},
+	state           : state,
 	string          : string,
 	xml             : xml,
 
@@ -99,7 +96,7 @@ return {
 	filter          : filter.factory,
 	fire            : function (obj, event) {
 		var all  = typeof obj === "object",
-		    o    = all ? obj   : (this !== $ ? this : abaaso),
+		    o    = all ? obj   : (this !== $ ? this : global.abaaso),
 		    e    = all ? event : obj,
 		    args = [o, e].concat(array.cast(arguments).remove(0, !all ? 0 : 1));
 
@@ -114,16 +111,12 @@ return {
 	hook            : observer.decorate,
 	id              : "abaaso",
 	init            : function () {
-		// Stopping multiple executions
-		delete abaaso.init;
-
-		// Firing events to setup
-		return $.fire("init, ready").un("init, ready");
+		return observer.fire(this, "init, ready").un(this, "init, ready");
 	},
 	iterate         : utility.iterate,
 	jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
 	listeners       : function (obj, event) {
-		obj = typeof obj === "object" ? obj : (this !== $ ? this : abaaso);
+		obj = typeof obj === "object" ? obj : (this !== $ ? this : global.abaaso);
 		return observer.list(obj, event);
 	},
 	listenersTotal  : observer.sum,
@@ -137,28 +130,50 @@ return {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : (this !== $ ? this : abaaso);
-		e  = all ? event    : obj;
-		l  = all ? listener : event;
-		i  = all ? id       : listener;
-		s  = all ? scope    : id;
-		st = all ? state    : scope;
+		if (all) {
+			o  = obj;
+			e  = event;
+			l  = listener;
+			i  = id;
+			s  = scope;
+			st = state;
+		}
+		else {
+			o  = (this !== $ ? this : global.abaaso);
+			e  = obj;
+			l  = event;
+			i  = listener;
+			s  = id;
+			st = scope;
+		}
 
 		if (typeof s === "undefined") s = o;
+
 		return observer.add(o, e, l, i, s, st);
 	},
 	once            : function (obj, event, listener, id, scope, state) {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : (this !== $ ? this : abaaso);
-		e  = all ? event    : obj;
-		l  = all ? listener : event;
-		i  = all ? id       : listener;
-		s  = all ? scope    : id;
-		st = all ? state    : scope;
+		if (all) {
+			o  = obj;
+			e  = event;
+			l  = listener;
+			i  = id;
+			s  = scope;
+			st = state;
+		}
+		else {
+			o  = (this !== $ ? this : global.abaaso);
+			e  = obj;
+			l  = event;
+			i  = listener;
+			s  = id;
+			st = scope;
+		}
 
 		if (typeof s === "undefined") s = o;
+
 		return observer.once(o, e, l, i, s, st);
 	},
 	options         : function (uri, success, failure, timeout) { return client.request(uri, "OPTIONS", success, failure, null, null, timeout); },
@@ -189,10 +204,19 @@ return {
 		var all = typeof obj === "object",
 		    o, e, i, s;
 
-		o = all ? obj   : (this !== $ ? this : abaaso);
-		e = all ? event : obj;
-		i = all ? id    : event;
-		s = all ? state : id;
+		if (all) {
+			o = obj;
+			e = event;
+			i = id;
+			s = state;
+		}
+		else {
+			o = (this !== $ ? this : global.abaaso);
+			e = obj;
+			i = event;
+			s = id;
+		}
+
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,

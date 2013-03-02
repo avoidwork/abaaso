@@ -187,10 +187,10 @@ var element = {
 
 		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
-		observer.fire(abaaso, "beforeDestroy", obj);
+		observer.fire(global.abaaso, "beforeDestroy", obj);
 		observer.remove(obj.id);
 		if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
-		observer.fire(abaaso, "afterDestroy", obj.id);
+		observer.fire(global.abaaso, "afterDestroy", obj.id);
 		return undefined;
 	},
 
