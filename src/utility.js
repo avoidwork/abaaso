@@ -238,7 +238,7 @@ var utility = {
 		var p   = obj,
 		    nth = args.length;
 
-		if (obj   === undefined) obj   = this === $ ? abaaso : this;
+		if (obj   === undefined) obj   = this;
 		if (value === undefined) value = null;
 
 		array.each(args, function (i, idx) {
@@ -310,10 +310,8 @@ var utility = {
 	 * @return {Undefined}       undefined
 	 */
 	error : function (e, args, scope, warning) {
-		var o;
-
 		warning = (warning === true);
-		o = {
+		var o   = {
 			arguments : args,
 			message   : e.message || e,
 			number    : e.number !== undefined ? (e.number & 0xFFFF) : undefined,
@@ -392,21 +390,36 @@ var utility = {
 	 * @param  {Function} fn  Function to execute against properties
 	 * @return {Object}       Object
 	 */
-	iterate : function (obj, fn) {
-		var has = Object.prototype.hasOwnProperty,
-		    i, result;
+	iterate : function () {
+		if (typeof Object.keys === "function") {
+			return function (obj, fn) {
+				if (typeof fn !== "function") throw Error(label.error.invalidArguments);
 
-		if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+				array.each(array.keys(obj), function (i) {
+					return fn.call(obj, obj[i], i);
+				});
 
-		for (i in obj) {
-			if (has.call(obj, i)) {
-				result = fn.call(obj, obj[i], i);
-				if (result === false) break;
-			}
-			else break;
+				return obj;
+			};
 		}
-		return obj;
-	},
+		else {
+			return function (obj, fn) {
+				var has = Object.prototype.hasOwnProperty,
+				    i, result;
+
+				if (typeof fn !== "function") throw Error(label.error.invalidArguments);
+
+				for (i in obj) {
+					if (has.call(obj, i)) {
+						result = fn.call(obj, obj[i], i);
+						if (result === false) break;
+					}
+					else break;
+				}
+				return obj;
+			};
+		}
+	}(),
 
 	/**
 	 * Renders a loading icon in a target element,
@@ -422,9 +435,7 @@ var utility = {
 		obj = utility.object(obj);
 		if (obj instanceof Array) return array.each(obj, function (i) { utility.loading(i); });
 
-		if (l.url === null) throw Error(label.error.elementNotFound);
-
-		if (obj === undefined) throw Error(label.error.invalidArguments);
+		if (l.url === null || obj === undefined) throw Error(label.error.invalidArguments);
 
 		// Setting loading image
 		if (l.image === undefined) {
@@ -486,13 +497,13 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function (arg, obj) {
-		if ($[arg] !== undefined || abaaso[arg] !== undefined || !obj instanceof Object) throw Error(label.error.invalidArguments);
+		if ($[arg] !== undefined || this[arg] !== undefined || !obj instanceof Object) throw Error(label.error.invalidArguments);
 		
-		abaaso[arg] = obj;
-		if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? abaaso[arg].bind($[arg]) : abaaso[arg];
+		this[arg] = obj;
+		if (typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? this[arg].bind($[arg]) : this[arg];
 		else {
 			$[arg] = {};
-			utility.alias($[arg], abaaso[arg]);
+			utility.alias($[arg], this[arg]);
 		}
 		return $[arg];
 	},
@@ -556,15 +567,23 @@ var utility = {
 	 * @param  {Object} descriptor Descriptor of the property
 	 * @return {Object}            Object receiving the property
 	 */
-	property : function (obj, prop, descriptor) {
-		var define;
+	property : function () {
+		if ((server || (!client.ie || client.version > 8)) && typeof Object.defineProperty === "function") {
+			return function (obj, prop, descriptor) {
+				if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
-		if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
+				if (descriptor.value !== undefined && descriptor.get !== undefined) delete descriptor.value;
+				Object.defineProperty(obj, prop, descriptor);
+			};
+		}
+		else {
+			return function (obj, prop, descriptor) {
+				if (!(descriptor instanceof Object)) throw Error(label.error.invalidArguments);
 
-		define = (!client.ie || client.version > 8) && typeof Object.defineProperty === "function";
-		if (define && descriptor.value !== undefined && descriptor.get !== undefined) delete descriptor.value;
-		define ? Object.defineProperty(obj, prop, descriptor) : obj[prop] = descriptor.value;
-		return obj;
+				obj[prop] = descriptor.value;
+				return obj;
+			};
+		}
 	},
 
 	/**

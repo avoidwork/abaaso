@@ -51,17 +51,14 @@ return {
 		del     : route.del,
 		hash    : route.hash,
 		init    : route.init,
+		initial : route.initial,
 		list    : route.list,
 		load    : route.load,
 		reset   : route.reset,
 		server  : route.server,
 		set     : route.set
 	},
-	state           : {
-		_current    : null,
-		header      : null,
-		previous    : null
-	},
+	state           : {},
 	string          : string,
 	xml             : xml,
 
@@ -118,7 +115,7 @@ return {
 		delete abaaso.init;
 
 		// Firing events to setup
-		return $.fire("init, ready").un("init, ready");
+		return observer.fire(this, "init, ready").un(this, "init, ready");
 	},
 	iterate         : utility.iterate,
 	jsonp           : function (uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback); },
@@ -137,28 +134,50 @@ return {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : (this !== $ ? this : abaaso);
-		e  = all ? event    : obj;
-		l  = all ? listener : event;
-		i  = all ? id       : listener;
-		s  = all ? scope    : id;
-		st = all ? state    : scope;
+		if (all) {
+			o  = obj;
+			e  = event;
+			l  = listener;
+			i  = id;
+			s  = scope;
+			st = state;
+		}
+		else {
+			o  = (this !== $ ? this : abaaso);
+			e  = obj;
+			l  = event;
+			i  = listener;
+			s  = id;
+			st = scope;
+		}
 
 		if (typeof s === "undefined") s = o;
+
 		return observer.add(o, e, l, i, s, st);
 	},
 	once            : function (obj, event, listener, id, scope, state) {
 		var all = typeof obj === "object",
 		    o, e, l, i, s, st;
 
-		o  = all ? obj      : (this !== $ ? this : abaaso);
-		e  = all ? event    : obj;
-		l  = all ? listener : event;
-		i  = all ? id       : listener;
-		s  = all ? scope    : id;
-		st = all ? state    : scope;
+		if (all) {
+			o  = obj;
+			e  = event;
+			l  = listener;
+			i  = id;
+			s  = scope;
+			st = state;
+		}
+		else {
+			o  = (this !== $ ? this : abaaso);
+			e  = obj;
+			l  = event;
+			i  = listener;
+			s  = id;
+			st = scope;
+		}
 
 		if (typeof s === "undefined") s = o;
+
 		return observer.once(o, e, l, i, s, st);
 	},
 	options         : function (uri, success, failure, timeout) { return client.request(uri, "OPTIONS", success, failure, null, null, timeout); },
@@ -189,10 +208,19 @@ return {
 		var all = typeof obj === "object",
 		    o, e, i, s;
 
-		o = all ? obj   : (this !== $ ? this : abaaso);
-		e = all ? event : obj;
-		i = all ? id    : event;
-		s = all ? state : id;
+		if (all) {
+			o = obj;
+			e = event;
+			i = id;
+			s = state;
+		}
+		else {
+			o = (this !== $ ? this : abaaso);
+			e = obj;
+			i = event;
+			s = id;
+		}
+
 		return observer.remove(o, e, i, s);
 	},
 	update          : element.update,

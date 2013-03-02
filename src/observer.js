@@ -38,17 +38,17 @@ var observer = {
 	 * @param  {Function} fn    Event handler
 	 * @param  {String}   id    [Optional / Recommended] The id for the listener
 	 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
-	 * @param  {String}   state [Optional] The state the listener is for
+	 * @param  {String}   st    [Optional] Application state, default is current
 	 * @return {Mixed}          Entity, Array of Entities or undefined
 	 */
-	add : function (obj, event, fn, id, scope, state) {
+	add : function (obj, event, fn, id, scope, st) {
 		obj   = utility.object(obj);
 		scope = scope || obj;
-		state = state || abaaso.state.current;
+		st    = st    || state.getCurrent();
 
 		if (obj instanceof Array) {
 			return array.each(obj, function (i) {
-				observer.add(i, event, fn, id, scope, state);
+				observer.add(i, event, fn, id, scope, st);
 			});
 		}
 
@@ -64,7 +64,7 @@ var observer = {
 		    ar       = regex.observer_allowed,
 		    o        = observer.id(obj),
 		    n        = false,
-		    c        = abaaso.state.current,
+		    c        = state.getCurrent(),
 		    add, reg;
 
 		if (o === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -84,9 +84,9 @@ var observer = {
 				cl[o][i] = 0;
 			}
 
-			if (l[o][i][state] === undefined) {
-				l[o][i][state] = {};
-				a[o][i][state] = [];
+			if (l[o][i][st] === undefined) {
+				l[o][i][st] = {};
+				a[o][i][st] = [];
 			}
 
 			instance = (gr.test(o) || (!/\//g.test(o) && o !== "abaaso")) ? obj : null;
@@ -107,8 +107,8 @@ var observer = {
 				}
 			}
 
-			l[o][i][state][id] = {fn: fn, scope: scope};
-			observer.sync(o, i, state);
+			l[o][i][st][id] = {fn: fn, scope: scope};
+			observer.sync(o, i, st);
 			cl[o][i]++;
 		});
 
@@ -177,8 +177,8 @@ var observer = {
 
 		if (observer.silent) observer.queue.push({obj: obj, event: event});
 		else {
-			s   = abaaso.state.current;
-			log = ($.logging || abaaso.logging);
+			s   = state.getCurrent();
+			log = $.logging;
 
 			array.each(string.explode(event), function (e) {
 				if (log) utility.log(o + " firing " + e);
@@ -256,21 +256,21 @@ var observer = {
 	 * @param  {Function} fn    Event handler
 	 * @param  {String}   id    [Optional / Recommended] The id for the listener
 	 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
-	 * @param  {String}   state [Optional] The state the listener is for
+	 * @param  {String}   st    [Optional] Application state, default is current
 	 * @return {Mixed}          Entity, Array of Entities or undefined
 	 */
-	once : function (obj, event, fn, id, scope, state) {
+	once : function (obj, event, fn, id, scope, st) {
 		var uuid = id || utility.genId();
 
 		obj   = utility.object(obj);
 		scope = scope || obj;
-		state = state || abaaso.state.current;
+		st    = st    || state.getCurrent();
 
 		if (obj === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
 		if (obj instanceof Array) {
 			array.each(obj, function (i) {
-				observer.once(i, event, fn, id, scope, state);
+				observer.once(i, event, fn, id, scope, st);
 			});
 
 			return obj;
@@ -278,8 +278,8 @@ var observer = {
 
 		observer.add(obj, event, function () {
 			fn.apply(scope, arguments);
-			observer.remove(obj, event, uuid, state);
-		}, uuid, scope, state);
+			observer.remove(obj, event, uuid, st);
+		}, uuid, scope, st);
 
 		return obj;
 	},
@@ -309,14 +309,14 @@ var observer = {
 	 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
 	 * @param  {String} event [Optional] Event, or Events being fired (comma delimited supported)
 	 * @param  {String} id    [Optional] Listener id
-	 * @param  {String} state [Optional] The state the listener is for
+	 * @param  {String} st    [Optional] Application state, default is current
 	 * @return {Mixed}        Entity, Array of Entities or undefined
 	 */
-	remove : function (obj, event, id, state) {
-		obj   = utility.object(obj);
-		state = state || abaaso.state.current;
+	remove : function (obj, event, id, st) {
+		obj = utility.object(obj);
+		st  = st || state.getCurrent()
 
-		if (obj instanceof Array) return array.each(obj, function (i) { observer.remove(i, event, id, state); });
+		if (obj instanceof Array) return array.each(obj, function (i) { observer.remove(i, event, id, st); });
 
 		var instance = null,
 		    l        = observer.listeners,
@@ -364,17 +364,17 @@ var observer = {
 				if (l[o][e] === undefined) return obj;
 
 				if (id === undefined) {
-					if (regex.observer_globals.test(o) || typeof o.listeners === "function") fn(e, array.keys(l[o][e][state]).length);
-					l[o][e][state] = {};
+					if (regex.observer_globals.test(o) || typeof o.listeners === "function") fn(e, array.keys(l[o][e][st]).length);
+					l[o][e][st] = {};
 					sync = true;
 				}
-				else if (l[o][e][state][id] !== undefined) {
+				else if (l[o][e][st][id] !== undefined) {
 					fn(e, 1);
-					delete l[o][e][state][id];
+					delete l[o][e][st][id];
 					sync = true;
 				}
 
-				if (sync) observer.sync(o, e, state);
+				if (sync) observer.sync(o, e, st);
 			});
 		}
 		return obj;
@@ -405,10 +405,10 @@ var observer = {
 	 * 
 	 * @param  {String} obj   Object ID 
 	 * @param  {String} event Event
-	 * @param  {String} state Application state
+	 * @param  {String} st    Application state
 	 * @return {Undefined}    undefined
 	 */
-	sync : function (obj, event, state) {
-		observer.alisteners[obj][event][state] = array.cast(observer.listeners[obj][event][state]);
+	sync : function (obj, event, st) {
+		observer.alisteners[obj][event][st] = array.cast(observer.listeners[obj][event][st]);
 	}
 };

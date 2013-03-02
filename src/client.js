@@ -12,16 +12,17 @@ var client = {
 	ie      : (function () { return !server && regex.ie.test(navigator.userAgent); })(),
 	ios     : (function () { return !server && regex.ios.test(navigator.userAgent); })(),
 	linux   : (function () { return !server && regex.linux.test(navigator.userAgent); })(),
-	mobile  : (function () { abaaso.client.mobile = this.mobile = !server && (/blackberry|iphone|webos/i.test(navigator.userAgent) || (regex.android.test(navigator.userAgent) && (abaaso.client.size.height < 720 || abaaso.client.size.width < 720))); }),
+	mobile  : (function () { return !server && (/blackberry|iphone|webos/i.test(navigator.userAgent) || (regex.android.test(navigator.userAgent) && (this.client.size.height < 720 || this.client.size.width < 720))); }),
 	playbook: (function () { return !server && regex.playbook.test(navigator.userAgent); })(),
 	opera   : (function () { return !server && regex.opera.test(navigator.userAgent); })(),
 	osx     : (function () { return !server && regex.osx.test(navigator.userAgent); })(),
 	safari  : (function () { return !server && regex.safari.test(navigator.userAgent.replace(/chrome.*/i, "")); })(),
-	tablet  : (function () { abaaso.client.tablet = this.tablet = !server && (/ipad|playbook|webos/i.test(navigator.userAgent) || (regex.android.test(navigator.userAgent) && (abaaso.client.size.width >= 720 || abaaso.client.size.width >= 720))); }),
+	tablet  : (function () { return !server && (/ipad|playbook|webos/i.test(navigator.userAgent) || (regex.android.test(navigator.userAgent) && (this.client.size.width >= 720 || this.client.size.width >= 720))); }),
 	webos   : (function () { return !server && regex.webos.test(navigator.userAgent); })(),
 	windows : (function () { return !server && regex.windows.test(navigator.userAgent); })(),
 	version : (function () {
 		var version = 0;
+
 		switch (true) {
 			case this.chrome:
 				version = navigator.userAgent.replace(/(.*chrome\/|safari.*)/gi, "");
@@ -34,7 +35,7 @@ var client = {
 				if (document.documentMode < version) version = document.documentMode;
 				break;
 			case this.opera:
-				version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "");
+				version = navigator.userAgent.replace(/(.*version\/|\(.*)/gi, "");
 				break;
 			case this.safari:
 				version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "");
@@ -42,8 +43,10 @@ var client = {
 			default:
 				version = (navigator !== undefined) ? navigator.appVersion : 0;
 		}
-		version = !isNaN(parseInt(version)) ? parseInt(version) : 0;
-		abaaso.client.version = this.version = version;
+
+		version = !isNaN(number.parse(version)) ? number.parse(version) : parseInt(version);
+		if (isNaN(version)) version = 0;
+
 		return version;
 	}),
 
@@ -446,11 +449,11 @@ var client = {
 	 * @private
 	 */
 	response : function (xhr, uri, type, deferred) {
-		var typed = type.toLowerCase().capitalize(),
-		    l     = location,
-		    state = null,
-		    xdr   = client.ie && xhr.readyState === undefined,
-		    exception, s, o, r, t, x;
+		var typed    = type.toLowerCase().capitalize(),
+		    l        = location,
+		    xhrState = null,
+		    xdr      = client.ie && xhr.readyState === undefined,
+		    exception, o, r, t, x;
 
 		// server-side exception handling
 		exception = function (e, xhr) {
@@ -470,8 +473,9 @@ var client = {
 				case 205:
 				case 206:
 				case 301:
-					s = abaaso.state;
+					// Caching headers
 					o = client.headers(xhr, uri, type);
+					uri.fire("headers", o.headers, xhr);
 
 					if (type === "head") {
 						deferred.resolve(o.headers);
@@ -489,9 +493,7 @@ var client = {
 					}
 
 					// Application state change triggered by hypermedia (HATEOAS)
-					if (s.header !== null && Boolean(state = o.headers[s.header]) && s.current !== state) typeof s.change === "function" ? s.change(state) : s.current = state;
-
-					uri.fire("headers", o.headers, xhr);
+					if (state.getHeader() !== null && Boolean(xhrState = o.headers[state.getHeader()]) && state.current !== xhrState) typeof state.change === "function" ? state.change(xhrState) : state.setCurrent(state);
 
 					switch (xhr.status) {
 						case 200:
