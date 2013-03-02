@@ -35,7 +35,7 @@ var client = {
 				if (document.documentMode < version) version = document.documentMode;
 				break;
 			case this.opera:
-				version = navigator.userAgent.replace(/(.*opera\/|\(.*)/gi, "");
+				version = navigator.userAgent.replace(/(.*version\/|\(.*)/gi, "");
 				break;
 			case this.safari:
 				version = navigator.userAgent.replace(/(.*version\/|safari.*)/gi, "");
@@ -44,8 +44,8 @@ var client = {
 				version = (navigator !== undefined) ? navigator.appVersion : 0;
 		}
 
-		version = !isNaN(parseInt(version)) ? parseInt(version) : 0;
-		return version;
+		version = number.parse(version);
+		return !isNaN(version) ? version : 0;
 	}),
 
 	/**
