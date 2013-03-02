@@ -72,6 +72,7 @@ var label = {
 		serverForbidden       : "Forbidden to access URI",
 		serverInvalidMethod   : "Method not allowed",
 		serverUnauthorized    : "Authorization required to access URI",
+		readOnly              : "Property is read only",
 		upgrade               : "Your browser is too old to use abaaso, please upgrade"
 	},
 

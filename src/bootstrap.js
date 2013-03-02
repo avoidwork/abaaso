@@ -303,15 +303,20 @@ bootstrap = function () {
 		}, "route", this.route, "all");
 	}
 
-	if (!server && (!client.ie || client.version > 8)) {
-		utility.property(this.state, "current", {enumerable: true, get: state.getter, set: state.setter});
-		utility.property($.state,    "current", {enumerable: true, get: state.getter, set: state.setter});
+	// Creating a public facade for `state`
+	if (!client.ie || client.version > 8) {
+		utility.property(this.state, "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent});
+		utility.property(this.state, "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious});
+		utility.property(this.state, "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader});
+		utility.property($.state,    "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent});
+		utility.property($.state,    "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious});
+		utility.property($.state,    "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader});
 	}
-	// Pure hackery, only exists when needed
 	else {
-		$.state.change = this.state.change = function (arg) {
-			return self.state.current = state.setter(arg);
-		};
+		// Pure hackery, only exists when needed
+		$.state.current   = self.state.current   = self.state._current;
+		$.state.change    = this.state.change    = function (arg) { return self.state.current = state.setCurrent(arg); };
+		$.state.setHeader = this.state.setHeader = function (arg) { return self.state.header  = state.setHeader(arg); };
 	}
 
 	$.ready = true;

@@ -471,7 +471,9 @@ var client = {
 				case 205:
 				case 206:
 				case 301:
+					// Caching headers
 					o = client.headers(xhr, uri, type);
+					uri.fire("headers", o.headers, xhr);
 
 					if (type === "head") {
 						deferred.resolve(o.headers);
@@ -489,9 +491,7 @@ var client = {
 					}
 
 					// Application state change triggered by hypermedia (HATEOAS)
-					if (state.header !== null && Boolean(xhrState = o.headers[state.header]) && state.current !== xhrState) typeof state.change === "function" ? state.change(xhrState) : state.setter(state);
-
-					uri.fire("headers", o.headers, xhr);
+					if (state.getHeader() !== null && Boolean(xhrState = o.headers[state.getHeader()]) && state.current !== xhrState) typeof state.change === "function" ? state.change(xhrState) : state.setCurrent(state);
 
 					switch (xhr.status) {
 						case 200:

@@ -44,7 +44,7 @@ var observer = {
 	add : function (obj, event, fn, id, scope, st) {
 		obj   = utility.object(obj);
 		scope = scope || obj;
-		st    = st    || state.getter();
+		st    = st    || state.getCurrent();
 
 		if (obj instanceof Array) {
 			return array.each(obj, function (i) {
@@ -64,7 +64,7 @@ var observer = {
 		    ar       = regex.observer_allowed,
 		    o        = observer.id(obj),
 		    n        = false,
-		    c        = state.getter(),
+		    c        = state.getCurrent(),
 		    add, reg;
 
 		if (o === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
@@ -177,7 +177,7 @@ var observer = {
 
 		if (observer.silent) observer.queue.push({obj: obj, event: event});
 		else {
-			s   = state.getter();
+			s   = state.getCurrent();
 			log = $.logging;
 
 			array.each(string.explode(event), function (e) {
@@ -264,7 +264,7 @@ var observer = {
 
 		obj   = utility.object(obj);
 		scope = scope || obj;
-		st    = st    || state.getter();
+		st    = st    || state.getCurrent();
 
 		if (obj === undefined || event === null || event === undefined || typeof fn !== "function") throw Error(label.error.invalidArguments);
 
@@ -314,7 +314,7 @@ var observer = {
 	 */
 	remove : function (obj, event, id, st) {
 		obj = utility.object(obj);
-		st  = st || state.getter()
+		st  = st || state.getCurrent()
 
 		if (obj instanceof Array) return array.each(obj, function (i) { observer.remove(i, event, id, st); });
 

@@ -58,7 +58,7 @@ return {
 		server  : route.server,
 		set     : route.set
 	},
-	state           : state,
+	state           : {},
 	string          : string,
 	xml             : xml,
 
