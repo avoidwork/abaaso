@@ -34,6 +34,7 @@ bootstrap = function () {
 
 		// Curried
 		this.array.cast = array.cast();
+		this.mouse.view = mouse.view       = mouse.view();
 		this.property   = utility.property = utility.property();
 
 		if (Array.prototype.filter === undefined) {
