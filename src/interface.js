@@ -111,6 +111,10 @@ return {
 	hook            : observer.decorate,
 	id              : "abaaso",
 	init            : function () {
+		// Stopping multiple executions
+		delete abaaso.init;
+
+		// Firing events to setup
 		return observer.fire(this, "init, ready").un(this, "init, ready");
 	},
 	iterate         : utility.iterate,
