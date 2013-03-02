@@ -44,8 +44,10 @@ var client = {
 				version = (navigator !== undefined) ? navigator.appVersion : 0;
 		}
 
-		version = number.parse(version);
-		return !isNaN(version) ? version : 0;
+		version = !isNaN(number.parse(version)) ? number.parse(version) : parseInt(version);
+		if (isNaN(version)) version = 0;
+
+		return version;
 	}),
 
 	/**
