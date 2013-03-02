@@ -96,7 +96,7 @@ return {
 	filter          : filter.factory,
 	fire            : function (obj, event) {
 		var all  = typeof obj === "object",
-		    o    = all ? obj   : (this !== $ ? this : global.abaaso),
+		    o    = all ? obj   : (this !== $ ? this : abaaso),
 		    e    = all ? event : obj,
 		    args = [o, e].concat(array.cast(arguments).remove(0, !all ? 0 : 1));
 
