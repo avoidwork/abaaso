@@ -83,6 +83,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 
+	grunt.registerTask("test", ["nodeunit"]);
+
 	grunt.registerTask("version", function () {
 		var cfg = grunt.config("pkg"),
 		    ver = cfg.version,
@@ -93,5 +95,5 @@ module.exports = function (grunt) {
 		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
 	});
 
-	grunt.registerTask("default", ["concat", "version", "uglify", "nodeunit"]);
+	grunt.registerTask("default", ["concat", "version", "uglify", "test"]);
 };
