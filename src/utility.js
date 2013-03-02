@@ -323,7 +323,7 @@ var utility = {
 
 		utility.log(o.stack || o.message, !warning ? "error" : "warn");
 		$.error.log.push(o);
-		$.fire("error", o);
+		observer.fire(abaaso, "error", o);
 
 		return undefined;
 	},
@@ -415,7 +415,7 @@ var utility = {
 	 * @return {Mixed}     Entity, Array of Entities or undefined
 	 */
 	loading : function (obj) {
-		var l = this.loading;
+		var l = abaaso.loading;
 
 		obj = utility.object(obj);
 		if (obj instanceof Array) return array.each(obj, function (i) { utility.loading(i); });
