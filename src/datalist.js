@@ -271,42 +271,39 @@ var datalist = {
 			// Total count of items in the list
 			this.total = items.length;
 
-			// Only do these ops if there's something to render
-			if (this.total > 0) {
-				// Pagination (supports filtering)
-				if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
-					ceiling = datalist.pages.call(this);
-					// Passed the end, so putting you on the end
-					if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
-					// Paginating the items
-					else {
-						limit = datalist.range.call(this);
-						items = items.limit(limit[0], limit[1]);
-					}
-				}
-
-				// Preparing the target element
-				if (redraw) {
-					element.clear();
-					array.each(items, function (i) {
-						var obj = element.tpl(i.template);
-						obj.data("key", i.key);
-						if (callback) self.callback(obj);
-					});
-				}
+			// Pagination (supports filtering)
+			if (typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
+				ceiling = datalist.pages.call(this);
+				// Passed the end, so putting you on the end
+				if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
+				// Paginating the items
 				else {
-					element.find("> li").addClass("hidden");
-					array.each(items, function (i) {
-						element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
-					});
+					limit = datalist.range.call(this);
+					items = items.limit(limit[0], limit[1]);
 				}
+			}
 
-				// Rendering pagination elements
-				if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
-				else {
-					$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
-					if (obj !== undefined) obj.destroy();
-				}
+			// Preparing the target element
+			if (redraw) {
+				element.clear();
+				array.each(items, function (i) {
+					var obj = element.tpl(i.template);
+					obj.data("key", i.key);
+					if (callback) self.callback(obj);
+				});
+			}
+			else {
+				element.find("> li").addClass("hidden");
+				array.each(items, function (i) {
+					element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
+				});
+			}
+
+			// Rendering pagination elements
+			if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
+			else {
+				$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
+				if (obj !== undefined) obj.destroy();
 			}
 
 			this.refreshing = false;
