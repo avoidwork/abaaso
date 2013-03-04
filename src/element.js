@@ -175,7 +175,7 @@ var element = {
 	 */
 	destroy : function (obj) {
 		observer.fire(abaaso, "beforeDestroy", obj);
-		observer.remove(obj.id);
+		observer.remove(obj);
 		if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
 		observer.fire(abaaso, "afterDestroy", obj.id);
 		return undefined;

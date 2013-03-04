@@ -93,7 +93,6 @@ var datalist = {
 		 */
 		pages : function () {
 			var obj   = this.element,
-			    list  = $("#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom"),
 			    page  = this.pageIndex,
 			    pos   = this.pagination,
 			    range = this.pageRange,
@@ -108,7 +107,7 @@ var datalist = {
 			if (!regex.top_bottom.test(pos)) throw Error(label.error.invalidArguments);
 
 			// Removing the existing controls
-			array.each(list, function (i) {
+			array.each($("#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom"), function (i) {
 				if (i !== undefined) element.destroy(i);
 			});
 			
@@ -131,35 +130,40 @@ var datalist = {
 				var current = false,
 				    more    = page > 1,
 				    next    = (page + 1) <= total,
-				    last    = !(page < total);
+				    last    = !(page < total),
+				    el;
 
 				// Setting up the list
-				list = element.create("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before");
+				el = element.create("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before");
 
 				// First page
-				element.create(more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create("li", {}, list));
+				element.create(more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create("li", {}, el));
 
 				// Previous page
-				element.create(more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create("li", {}, list));
+				element.create(more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create("li", {}, el));
 
 				// Rendering the page range
 				for (i = start; i <= end; i++) {
 					current = (i === page);
-					element.create(current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i, innerHTML: i}, element.create("li", {}, list));
+					element.create(current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i, innerHTML: i}, element.create("li", {}, el));
 				}
 
 				// Next page
-				element.create(next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null, innerHTML: "&gt;"}, element.create("li", {}, list));
+				element.create(next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null, innerHTML: "&gt;"}, element.create("li", {}, el));
 
 				// Last page
-				element.create(last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create("li", {}, list));
+				element.create(last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create("li", {}, el));
 
-				// Scroll to top the top
-				observer.add(list, "click", function (e) {
+				// Removing (potentially) existing click handler
+				observer.remove(el, "click");
+
+				// Click handler scrolls to top the top of page
+				observer.add(el, "click", function (e) {
+					var target = utility.target(e);
+
 					utility.stop(e);
-					if (utility.target(e).nodeName !== "A") return;
-					else {
-						self.page(element.data(this, "page"));
+					if (target.nodeName === "A") {
+						self.page(element.data(target, "page"));
 						window.scrollTo(0, 0);
 					}
 				}, "pagination");

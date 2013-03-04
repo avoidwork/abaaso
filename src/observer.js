@@ -321,8 +321,8 @@ var observer = {
 		var instance = null,
 		    l        = observer.listeners,
 		    a        = observer.alisteners,
-		    e        = observer.elisteners,
-		    c        = observer.clisteners,
+		    ev       = observer.elisteners,
+		    cl       = observer.clisteners,
 		    o        = observer.id(obj),
 		    add      = (typeof obj.addEventListener === "function"),
 		    reg      = (typeof obj.attachEvent === "object" || add),
@@ -336,32 +336,32 @@ var observer = {
 		 * @return {Undefined}    undefined
 		 */
 		fn = function (event, i) {
-			var unhook = (typeof i === "number" && (c[o][event] = (c[o][event] - i)) === 0);
+			var unhook = (typeof i === "number" && (cl[o][event] = (cl[o][event] - i)) === 0);
 
 			if (unhook && reg) {
-				obj[add ? "removeEventListener" : "detachEvent"]((add ? "" : "on") + event, e[o + "_" + event], false);
-				delete e[o + "_" + event];
+				obj[add ? "removeEventListener" : "detachEvent"]((add ? "" : "on") + event, ev[o + "_" + event], false);
+				delete ev[o + "_" + event];
 			}
 		}
 
-		if (o === undefined || l[o] === undefined) return obj;
+		if (l[o] === undefined) return obj;
 
 		if (event === undefined || event === null) {
 			if (regex.observer_globals.test(o) || typeof o.listeners === "function") {
-				utility.iterate(e, function (v, k) {
+				utility.iterate(ev, function (v, k) {
 					if (k.indexOf(o + "_") === 0) fn(k.replace(/.*_/, ""), 1);
 				});
 			}
 
 			delete l[o];
 			delete a[o];
-			delete c[o];
+			delete cl[o];
 		}
 		else {
 			array.each(string.explode(event), function (e) {
 				var sync = false;
 
-				if (l[o][e] === undefined) return obj;
+				if (l[o][e] === undefined) return;
 
 				if (id === undefined) {
 					if (regex.observer_globals.test(o) || typeof o.listeners === "function") fn(e, array.keys(l[o][e][st]).length);
