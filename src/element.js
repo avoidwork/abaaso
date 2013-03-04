@@ -8,7 +8,7 @@ var element = {
 	/**
 	 * Gets or sets attributes of Element
 	 * 
-	 * @param  {Mixed}  obj   Element or $ query
+	 * @param  {Mixed}  obj   Element
 	 * @param  {String} name  Attribute name
 	 * @param  {Mixed}  value Attribute value
 	 * @return {Object}       Element
@@ -17,10 +17,6 @@ var element = {
 		if (typeof value === "string") value = string.trim(value);
 
 		var target, result;
-
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element) || key == undefined || String(key).isEmpty()) throw Error(label.error.invalidArguments);
 
 		utility.genId(obj, true);
 
@@ -52,17 +48,13 @@ var element = {
 	 * Clears an object's innerHTML, or resets it's state
 	 *
 	 * @method clear
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
 	clear : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		if (typeof obj.reset === "function") obj.reset();
-		else if (obj.value !== undefined) obj.update({innerHTML: "", value: ""});
-		else obj.update({innerHTML: ""});
+		else if (obj.value !== undefined) element.update(obj, {innerHTML: "", value: ""});
+		else element.update(obj, {innerHTML: ""});
 		return obj;
 	},
 
@@ -82,9 +74,9 @@ var element = {
 	 * @return {Object}        Element that was created or undefined
 	 */
 	create : function (type, args, target, pos) {
-		if (type === undefined || String(type).isEmpty()) throw Error(label.error.invalidArguments);
-
 		var obj, uid, frag;
+
+		if (type === undefined || String(type).isEmpty()) throw Error(label.error.invalidArguments);
 
 		if (target !== undefined) target = utility.object(target);
 		else if (args !== undefined && (typeof args === "string" || args.childNodes !== undefined)) target = utility.object(args);
@@ -107,7 +99,7 @@ var element = {
 		if (typeof args === "object" && args.childNodes === undefined) element.update(obj, args);
 
 		if (pos === undefined || pos === "last") target.appendChild(obj);
-		else if (pos === "first") target.prependChild(obj);
+		else if (pos === "first") element.prependChild(target, obj);
 		else if (pos === "after") {
 			pos = {};
 			pos.after = target;
@@ -131,7 +123,7 @@ var element = {
 	 * Gets or sets a CSS style attribute on an Element
 	 *
 	 * @method css
-	 * @param  {Mixed}  obj   Element or $ query
+	 * @param  {Mixed}  obj   Element
 	 * @param  {String} key   CSS to put in a style tag
 	 * @param  {String} value [Optional] Value to set
 	 * @return {Object}       Element
@@ -154,7 +146,7 @@ var element = {
 	 * Data attribute facade acting as a getter (with coercion) & setter
 	 *
 	 * @method data
-	 * @param  {Mixed}  obj   Element or $ query
+	 * @param  {Mixed}  obj   Element
 	 * @param  {String} key   Data key
 	 * @param  {Mixed}  value Boolean, Number or String to set
 	 * @return {Mixed}        undefined, Element or value
@@ -162,13 +154,12 @@ var element = {
 	data : function (obj, key, value) {
 		var result;
 
-		obj = utility.object(obj);
-
 		if (value !== undefined) {
 			typeof obj.dataset === "object" ? obj.dataset[key] = value : element.attr(obj, "data-" + key, value);
 			result = obj;
 		}
 		else result = utility.coerce(typeof obj.dataset === "object" ? obj.dataset[key] : element.attr(obj, "data-" + key));
+
 		return result;
 	},
 
@@ -179,18 +170,14 @@ var element = {
 	 *         afterDestroy   Fires after the destroy ends
 	 *
 	 * @method destroy
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Undefined} undefined
 	 */
 	destroy : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
-		observer.fire(global.abaaso, "beforeDestroy", obj);
-		observer.remove(obj.id);
+		observer.fire(abaaso, "beforeDestroy", obj);
+		observer.remove(obj);
 		if (obj.parentNode !== null) obj.parentNode.removeChild(obj);
-		observer.fire(global.abaaso, "afterDestroy", obj.id);
+		observer.fire(abaaso, "afterDestroy", obj.id);
 		return undefined;
 	},
 
@@ -201,14 +188,10 @@ var element = {
 	 *         afterDisable   Fires after the disable ends
 	 *
 	 * @method disable
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
 	disable : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		if (typeof obj.disabled === "boolean" && !obj.disabled) obj.disabled = true;
 		return obj;
 	},
@@ -220,14 +203,10 @@ var element = {
 	 *         afterEnable   Fires after the enable ends
 	 *
 	 * @method enable
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
 	enable : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		if (typeof obj.disabled === "boolean" && obj.disabled) obj.disabled = false;
 		return obj;
 	},
@@ -243,14 +222,11 @@ var element = {
 	find : function (obj, arg) {
 		var result = [];
 
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
-
 		utility.genId(obj, true);
 		array.each(string.explode(arg), function (i) {
 			result = result.concat($("#" + obj.id + " " + i));
 		});
+
 		return result;
 	},
 
@@ -272,14 +248,10 @@ var element = {
 	 * Determines if obj has a specific CSS class
 	 * 
 	 * @method hasClass
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Mixed}     Element, Array of Elements or undefined
 	 */
 	hasClass : function (obj, klass) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		return obj.classList.contains(klass);
 	},
 
@@ -287,14 +259,10 @@ var element = {
 	 * Hides an Element if it's visible
 	 *
 	 * @method hide
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
 	hide : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		if (typeof obj.hidden === "boolean") obj.hidden = true;
 		else {
 			obj["data-display"] = obj.style.display;
@@ -308,14 +276,10 @@ var element = {
 	 * Returns a Boolean indidcating if the Object is hidden
 	 *
 	 * @method hidden
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Boolean}   True if hidden
 	 */
 	hidden : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		return obj.style.display === "none" || (typeof obj.hidden === "boolean" && obj.hidden);
 	},
 
@@ -323,15 +287,11 @@ var element = {
 	 * Determines if Element is equal to arg, supports nodeNames & CSS2+ selectors
 	 *
 	 * @method is
-	 * @param  {Mixed}   obj Element or $ query
+	 * @param  {Mixed}   obj Element
 	 * @param  {String}  arg Property to query
 	 * @return {Boolean}     True if a match
 	 */
 	is : function (obj, arg) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element) || typeof arg !== "string") throw Error(label.error.invalidArguments);
-
 		return /^:/.test(arg) ? (array.contains(element.find(obj.parentNode, obj.nodeName.toLowerCase() + arg), obj)) : new RegExp(arg, "i").test(obj.nodeName);
 	},
 
@@ -339,17 +299,13 @@ var element = {
 	 * Adds or removes a CSS class
 	 *
 	 * @method clear
-	 * @param  {Mixed}   obj Element or $ query
+	 * @param  {Mixed}   obj Element
 	 * @param  {String}  arg Class to add or remove (can be a wildcard)
 	 * @param  {Boolean} add Boolean to add or remove, defaults to true
 	 * @return {Object}      Element
 	 */
 	klass : function (obj, arg, add) {
 		var classes;
-
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element) || String(arg).isEmpty()) throw Error(label.error.invalidArguments);
 
 		add = (add !== false);
 		arg = string.explode(arg, " ");
@@ -376,14 +332,10 @@ var element = {
 	 * Finds the position of an element
 	 *
 	 * @method position
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Object {top: n, right: n, bottom: n, left: n}
 	 */
 	position : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		var left, top, height, width;
 
 		left   = top = 0;
@@ -412,15 +364,11 @@ var element = {
 	 * Prepends an Element to an Element
 	 * 
 	 * @method prependChild
-	 * @param  {Object} obj   Element or $ query
+	 * @param  {Object} obj   Element
 	 * @param  {Object} child Child Element
 	 * @return {Object}       Element
 	 */
 	prependChild : function (obj, child) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element) || !(child instanceof Element)) throw Error(label.error.invalidArguments);
-		
 		return obj.childNodes.length === 0 ? obj.appendChild(child) : obj.insertBefore(child, obj.childNodes[0]);
 	},
 
@@ -445,11 +393,11 @@ var element = {
 				children.push(utility.object(i));
 			});
 		}
-		else children = obj.nodeName === "FORM" ? (typeof obj.elements !== "undefined" ? array.cast(obj.elements) : obj.find("button, input, select, textarea")) : [obj];
+		else children = obj.nodeName === "FORM" ? (obj.elements !== undefined ? array.cast(obj.elements) : obj.find("button, input, select, textarea")) : [obj];
 
 		array.each(children, function (i) {
 			if (i.nodeName === "FORM") utility.merge(registry, json.decode(element.serialize(i)))
-			else if (typeof registry[i.name] === "undefined") registry[i.name] = element.val(i);
+			else if (registry[i.name] === undefined) registry[i.name] = element.val(i);
 		});
 
 		if (!string) result = json.encode(registry);
@@ -469,14 +417,10 @@ var element = {
 	 * Shows an Element if it's not visible
 	 *
 	 * @method show
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
 	show : function (obj) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		if (typeof obj.hidden === "boolean") obj.hidden = false;
 		else obj.style.display = obj.getAttribute("data-display") !== null ? obj.getAttribute("data-display") : "inherit";
 		return obj;
@@ -486,15 +430,11 @@ var element = {
 	 * Returns the size of the Object
 	 *
 	 * @method size
-	 * @param  {Mixed} obj Element or $ query
+	 * @param  {Mixed} obj Element
 	 * @return {Object}    Size {height: n, width:n}
 	 */
 	size : function (obj) {
-		obj = utility.object(obj);
-
 		var num, height, width;
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		/**
 		 * Casts n to a number or returns zero
@@ -515,15 +455,11 @@ var element = {
 	/**
 	 * Getter / setter for an Element's text
 	 * 
-	 * @param  {Object} obj Element or $ query
+	 * @param  {Object} obj Element
 	 * @param  {String} arg [Optional] Value to set
 	 * @return {Object}     Element
 	 */
 	text : function (obj, arg) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		var key     = obj.textContent !== undefined ? "textContent" : "innerText",
 		    payload = {},
 		    set     = false;
@@ -544,10 +480,6 @@ var element = {
 	 * @return {Object}     Element
 	 */
 	toggleClass : function (obj, arg) {
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
-
 		obj.classList.toggle(arg);
 		return obj;
 	},
@@ -556,15 +488,12 @@ var element = {
 	 * Updates an Element
 	 *
 	 * @method update
-	 * @param  {Mixed}  obj  Element or $ query
+	 * @param  {Mixed}  obj  Element
 	 * @param  {Object} args Collection of properties
 	 * @return {Object}      Element
 	 */
 	update : function (obj, args) {
-		obj  = utility.object(obj);
 		args = args || {};
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		utility.iterate(args, function (v, k) {
 			if (regex.element_update.test(k)) obj[k] = v;
@@ -589,17 +518,13 @@ var element = {
 	 * Events: beforeValue  Fires before the object receives a new value
 	 *         afterValue   Fires after the object receives a new value
 	 * 
-	 * @param  {Mixed}  obj   Element or $ query
+	 * @param  {Mixed}  obj   Element
 	 * @param  {Mixed}  value [Optional] Value to set
 	 * @return {Object}       Element
 	 */
 	val : function (obj, value) {
 		var output = null,
 		    items;
-
-		obj = utility.object(obj);
-
-		if (!(obj instanceof Element)) throw Error(label.error.invalidArguments);
 
 		if (value === undefined) {
 			if (regex.radio_checkbox.test(obj.type)) {

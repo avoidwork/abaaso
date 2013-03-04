@@ -23,22 +23,22 @@ var datalist = {
 	 */
 	factory : function (target, store, template, options) {
 		var ref = [store],
-		    element, instance;
+		    obj, instance;
 
 		if (!(target instanceof Element) || typeof store !== "object" || !regex.string_object.test(typeof template)) throw Error(label.error.invalidArguments);
 
-		element = target.fire("beforeDataList")
-		                .create("ul", {"class": "list", id: store.parentNode.id + "-datalist"});
+		observer.fire(target, "beforeDataList");
+		obj = element.create("ul", {"class": "list", id: store.parentNode.id + "-datalist"}, target);
 
 		// Creating instance
-		instance = new DataList(element, ref[0], template);
+		instance = new DataList(obj, ref[0], template);
 		if (options instanceof Object) utility.merge(instance, options);
 		instance.store.datalists.push(instance);
 
 		// Rendering if not tied to an API or data is ready
 		if (instance.store.uri === null || instance.store.loaded) instance.display();
 
-		target.fire("afterDataList", element);
+		observer.fire(target, "afterDataList", element);
 		return instance;
 	},
 
@@ -93,7 +93,6 @@ var datalist = {
 		 */
 		pages : function () {
 			var obj   = this.element,
-			    list  = $("#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom"),
 			    page  = this.pageIndex,
 			    pos   = this.pagination,
 			    range = this.pageRange,
@@ -108,8 +107,8 @@ var datalist = {
 			if (!regex.top_bottom.test(pos)) throw Error(label.error.invalidArguments);
 
 			// Removing the existing controls
-			array.each(list, function (i) {
-				if (i !== undefined) i.destroy();
+			array.each($("#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom"), function (i) {
+				if (i !== undefined) element.destroy(i);
 			});
 			
 			// Halting because there's 1 page, or nothing
@@ -117,7 +116,7 @@ var datalist = {
 
 			// Getting the range to display
 			if (start < 1) {
-				diff  = start.diff(1);
+				diff  = number.diff(start, 1);
 				start = start + diff;
 				end   = end   + diff;
 			}
@@ -131,34 +130,42 @@ var datalist = {
 				var current = false,
 				    more    = page > 1,
 				    next    = (page + 1) <= total,
-				    last    = !(page < total);
+				    last    = !(page < total),
+				    el;
 
 				// Setting up the list
-				list = obj[i === "bottom" ? "after" : "before"]("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i});
+				el = element.create("ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before");
 
 				// First page
-				list.create("li").create(more ? "a" : "span", {"class": "first page", "data-page": 1}).html("&lt;&lt;");
+				element.create(more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create("li", {}, el));
 
 				// Previous page
-				list.create("li").create(more ? "a" : "span", {"class": "prev page", "data-page": (page - 1)}).html("&lt;");
+				element.create(more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create("li", {}, el));
 
 				// Rendering the page range
 				for (i = start; i <= end; i++) {
 					current = (i === page);
-					list.create("li").create(current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i}).html(i);
+					element.create(current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i, innerHTML: i}, element.create("li", {}, el));
 				}
 
 				// Next page
-				list.create("li").create(next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null}).html("&gt;");
+				element.create(next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null, innerHTML: "&gt;"}, element.create("li", {}, el));
 
 				// Last page
-				list.create("li").create(last ? "span" : "a", {"class": "last page", "data-page": last ? null : total}).html("&gt;&gt;");
+				element.create(last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create("li", {}, el));
 
-				// Scroll to top the top
-				list.find("a.page").on("click", function (e) {
+				// Removing (potentially) existing click handler
+				observer.remove(el, "click");
+
+				// Click handler scrolls to top the top of page
+				observer.add(el, "click", function (e) {
+					var target = utility.target(e);
+
 					utility.stop(e);
-					self.page(this.data("page"));
-					window.scrollTo(0, 0);
+					if (target.nodeName === "A") {
+						self.page(element.data(target, "page"));
+						window.scrollTo(0, 0);
+					}
 				}, "pagination");
 			});
 
@@ -177,7 +184,7 @@ var datalist = {
 		 */
 		refresh : function (redraw) {
 			redraw       = (redraw !== false);
-			var element  = this.element,
+			var el       = this.element,
 			    template = (typeof this.template === "object"),
 			    key      = (!template && String(this.template).replace(/\{\{|\}\}/g, "") === this.store.key),
 			    consumed = [],
@@ -189,7 +196,7 @@ var datalist = {
 			    limit    = [],
 			    fn, obj, ceiling;
 
-			this.element.fire("beforeDataListRefresh");
+			observer.fire(el, "beforeDataListRefresh");
 			this.refreshing = true;
 
 			// Creating templates for the html rep
@@ -285,29 +292,37 @@ var datalist = {
 
 			// Preparing the target element
 			if (redraw) {
-				element.clear();
+				element.clear(el);
 				array.each(items, function (i) {
-					var obj = element.tpl(i.template);
-					obj.data("key", i.key);
+					var obj = utility.tpl(i.template, el);
+
+					element.data(obj, "key", i.key);
 					if (callback) self.callback(obj);
 				});
 			}
 			else {
-				element.find("> li").addClass("hidden");
+				array.each(element.find(el, "> li"), function (i) {
+					element.addClass(i, "hidden");
+				});
+
 				array.each(items, function (i) {
-					element.find("> li[data-key='" + i.key + "']").removeClass("hidden");
+					array.each(element.find(el, "> li[data-key='" + i.key + "']"), function (o) {
+						element.removeClass(o, "hidden");
+					});
 				});
 			}
 
 			// Rendering pagination elements
 			if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
 			else {
-				$("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom");
-				if (obj !== undefined) obj.destroy();
+				array.each($("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom"), function (i) {
+					observer.remove(i);
+					element.destroy(i);
+				});
 			}
 
 			this.refreshing = false;
-			this.element.fire("afterDataListRefresh", element);
+			el.fire("afterDataListRefresh", element);
 			return this;
 		},
 
