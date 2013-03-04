@@ -44,7 +44,7 @@ module.exports = function (grunt) {
 					"src/interface.js",
 					"src/outro.js"
 				],
-				dest : "lib/abaaso.js"
+				dest : "lib/<%= pkg.name %>.js"
 			}
 		},
 		nodeunit: {
