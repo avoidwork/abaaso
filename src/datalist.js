@@ -36,7 +36,7 @@ var datalist = {
 		instance.store.datalists.push(instance);
 
 		// Rendering if not tied to an API or data is ready
-		if (instance.store.uri === null || instance.store.loaded) instance.display();
+		if (instance.store.uri === null || instance.store.loaded) instance.refresh(true);
 
 		observer.fire(target, "afterDataList", element);
 		return instance;
@@ -58,17 +58,6 @@ var datalist = {
 				this.element.find("> li[data-key='" + rec.key + "']").destroy();
 				this.element.fire("afterDataListRefresh");
 			}
-		},
-
-		/**
-		 * Displays the data list (unpause)
-		 * 
-		 * @method display
-		 * @return {Undefined} undefined
-		 */
-		display : function () {
-			this.ready = true;
-			this.refresh(true);
 		},
 
 		/**
@@ -197,7 +186,6 @@ var datalist = {
 			    fn, obj, ceiling;
 
 			observer.fire(el, "beforeDataListRefresh");
-			this.refreshing = true;
 
 			// Creating templates for the html rep
 			if (!template) fn = function (i) {
@@ -316,24 +304,12 @@ var datalist = {
 			if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
 			else {
 				array.each($("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom"), function (i) {
-					observer.remove(i);
 					element.destroy(i);
 				});
 			}
 
-			this.refreshing = false;
 			el.fire("afterDataListRefresh", element);
 			return this;
-		},
-
-		/**
-		 * Set sync handler
-		 *
-		 * @method set
-		 * @return {Undefined} undefined
-		 */
-		set : function () {
-			if (!this.refreshing) this.refresh();
 		},
 
 		/**
@@ -439,8 +415,6 @@ function DataList (element, store, template) {
 	this.pagination  = "bottom"; // "top" or "bottom|top" are also valid
 	this.placeholder = "";
 	this.order       = "";
-	this.ready       = false;
-	this.refreshing  = false;
 	this.template    = template;
 	this.total       = 0;
 	this.sensitivity = "ci";

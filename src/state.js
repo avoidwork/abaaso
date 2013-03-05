@@ -1,11 +1,11 @@
 /**
- * application state
+ * Application state
  * 
  * @class state
  * @namespace abaaso
  */
 var state = (function () {
-	var prop = ["active", null, null], // current, previous, header
+	var prop = {current: "active", previous: null, header: null},
 	    getCurrent, setCurrent, getHeader, setHeader, getPrevious, setPrevious;
 
 	/**
@@ -15,7 +15,7 @@ var state = (function () {
 	 * @return {String} Application state
 	 */
 	getCurrent = function () {
-		return utility.clone(prop[0]);
+		return prop.current;
 	};
 
 	/**
@@ -28,8 +28,8 @@ var state = (function () {
 	setCurrent = function (arg) {
 		if (arg === null || typeof arg !== "string" || prop[0] === arg || arg.isEmpty()) throw Error(label.error.invalidArguments);
 
-		prop[1] = utility.clone(prop[0]);
-		prop[0] = arg;
+		prop.previous = prop.current
+		prop.current  = arg;
 		observer.fire(abaaso, "state", arg);
 		return arg;
 	};
@@ -41,7 +41,7 @@ var state = (function () {
 	 * @return {String} Application state header
 	 */
 	getHeader = function () {
-		return utility.clone(prop[2]);
+		return prop.header;
 	};
 
 	/**
@@ -52,9 +52,9 @@ var state = (function () {
 	 * @return {String}     Application state header
 	 */
 	setHeader = function (arg) {
-		if (arg !== null && (typeof arg !== "string" || prop[2] === arg || arg.isEmpty())) throw Error(label.error.invalidArguments);
+		if (arg !== null && (typeof arg !== "string" || prop.header === arg || arg.isEmpty())) throw Error(label.error.invalidArguments);
 
-		prop[2] = arg;
+		prop.header = arg;
 		return arg;
 	};
 
@@ -65,7 +65,7 @@ var state = (function () {
 	 * @return {String} Previous application state
 	 */
 	getPrevious = function () {
-		return utility.clone(prop[1]);
+		return prop.previous;
 	};
 
 	/**
