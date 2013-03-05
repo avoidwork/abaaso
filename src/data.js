@@ -69,7 +69,7 @@ var data = {
 				if (regex.del.test(type)) self.reindex();
 
 				array.each(self.datalists, function (i) {
-					i.display();
+					i.refresh(true);
 				});
 
 				if (events) obj.fire("afterDataBatch", arg);
@@ -896,7 +896,7 @@ var data = {
 
 					if (!batch) {
 						array.each(self.datalists, function (i) {
-							if (i.ready) i.set();
+							if (i.ready) i.refresh();
 						});
 					}
 
