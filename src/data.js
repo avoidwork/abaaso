@@ -853,7 +853,10 @@ var data = {
 				var match = true;
 
 				utility.iterate(where, function (v, k) {
-					if (rec.data[k] !== v) return (match = false);
+					var type = typeof v;
+
+					if (type !== "function" && rec.data[k] !== v)    return (match = false);
+					else if (type === "function" && !v(rec.data[k])) return (match = false);
 				});
 
 				return match;

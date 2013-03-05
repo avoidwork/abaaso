@@ -19,10 +19,11 @@ exports["previous"] = {
 		done();
 	},
 	test: function (test) {
-		test.expect(3);
+		test.expect(4);
 		test.equal(state.previous, empty, "Should be '" + empty + "'");
 		test.equal(state.current = this.val, this.val, "Should be '" + this.val + "'");
 		test.equal(state.previous, initial, "Should be '" + initial + "'");
+		test.throws(function () { state.previous = "invalid" }, Error, "Property is read only");
 		test.done();
 	}
 };
