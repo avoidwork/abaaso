@@ -242,23 +242,22 @@ var datalist = {
 				if (self.filter === null || !(self.filter instanceof Object)) items.push({key: i.key, template: fn(i)});
 				else {
 					utility.iterate(self.filter, function (v, k) {
-						if (registry.index(i.key) > -1) return;
+						var reg, key;
 
-						var x     = 0,
-						    regex = new RegExp(),
-						    nth;
-
+						if (array.contains(registry, i.key)) return;
+						
 						v   = string.explode(v);
-						nth = v.length;
+						reg = new RegExp(),
+						key = (k === self.store.key);
 
-						for (x = 0; x < nth; x++) {
-							regex.compile(v[x], "i");
-							if ((k === self.store.key && regex.test(i.key)) || (i.data[k] !== undefined && regex.test(i.data[k]))) {
+						array.each(v, function (query) {
+							utility.compile(reg, query, "i");
+							if ((key && reg.test(i.key)) || (i.data[k] !== undefined && reg.test(i.data[k]))) {
 								registry.push(i.key);
 								items.push({key: i.key, template: fn(i)});
-								return;
+								return false;
 							}
-						}
+						});
 					});
 				}
 			});
@@ -272,7 +271,7 @@ var datalist = {
 				// Passed the end, so putting you on the end
 				if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
 				// Paginating the items
-				else {
+				else if (this.total > 0) {
 					limit = datalist.range.call(this);
 					items = items.limit(limit[0], limit[1]);
 				}
@@ -303,12 +302,12 @@ var datalist = {
 			// Rendering pagination elements
 			if (regex.top_bottom.test(this.pagination) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
 			else {
-				array.each($("#" + this.element.id + "-pages-top, #" + this.element.id + "-pages-bottom"), function (i) {
+				array.each($("#" + el.id + "-pages-top, #" + el.id + "-pages-bottom"), function (i) {
 					element.destroy(i);
 				});
 			}
 
-			el.fire("afterDataListRefresh", element);
+			observer.fire(el, "afterDataListRefresh");
 			return this;
 		},
 
