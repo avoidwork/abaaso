@@ -168,11 +168,13 @@ var datalist = {
 		 *         afterDataListRefresh   Fires from the element containing the DataList
 		 * 
 		 * @method refresh
-		 * @param {Boolean} redraw [Optional] Boolean to force clearing the DataList (default), false toggles "hidden" class of items
-		 * @return {Object}        DataList instance
+		 * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList (default), false toggles "hidden" class of items
+		 * @param  {Boolean} create [Optional] Recreates cached View of data
+		 * @return {Object}         DataList instance
 		 */
-		refresh : function (redraw) {
+		refresh : function (redraw, create) {
 			redraw       = (redraw !== false);
+			create       = (create === true);
 			var el       = this.element,
 			    template = (typeof this.template === "object"),
 			    key      = (!template && String(this.template).replace(/\{\{|\}\}/g, "") === this.store.key),
@@ -234,8 +236,8 @@ var datalist = {
 			};
 
 			// Consuming records based on sort
-			if (this.where === null) consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, false, this.sensitivity);
-			else consumed = this.order.isEmpty() ? this.store.select(this.where) : this.store.sort(this.order, false, this.sensitivity, this.where);
+			if (this.where === null) consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, clear, this.sensitivity);
+			else consumed = this.order.isEmpty() ? this.store.select(this.where) : this.store.sort(this.order, clear, this.sensitivity, this.where);
 
 			// Processing (filtering) records & generating templates
 			array.each(consumed, function (i) {
@@ -320,16 +322,17 @@ var datalist = {
 		 *         afterDataListRefresh   Fires after the DataList refreshes
 		 * 
 		 * @method sort
-		 * @param  {String} order       SQL "order by" statement
-		 * @param  {String} sensitivity [Optional] Defaults to "ci" ("ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive)
+		 * @param  {String}  order       SQL "order by" statement
+		 * @param  {String}  sensitivity [Optional] Defaults to "ci" ("ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive)
+		 * @param  {Boolean} create      [Optional] Recreates cached View of data store
 		 * @return {Object}              DataList instance
 		 */
-		sort : function (order, sensitivity) {
+		sort : function (order, sensitivity, create) {
 			if (typeof order !== "string") throw Error(label.error.invalidArguments);
 			this.element.fire("beforeDataListSort");
 			this.order       = order;
 			this.sensitivity = sensitivity || "ci";
-			this.refresh();
+			this.refresh(true, create);
 			this.element.fire("afterDataListSort");
 			return this;
 		},
