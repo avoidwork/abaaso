@@ -1126,7 +1126,7 @@ var data = {
 			if (!regex.sensitivity_types.test(sensitivity)) sensitivity = "ci";
 
 			create       = (create === true);
-			var view     = (query.replace(/\s*asc/ig, "").replace(",", " ").toCamelCase()) + sensitivity.toUpperCase(),
+			var view     = (query.replace(/\s*asc/ig, "").explode().join(" ").toCamelCase()) + sensitivity.toUpperCase(),
 			    queries  = string.explode(query),
 			    key      = this.key,
 			    result   = [],

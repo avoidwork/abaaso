@@ -244,14 +244,17 @@ var datalist = {
 					utility.iterate(self.filter, function (v, k) {
 						if (registry.index(i.key) > -1) return;
 
-						var x     = 0,
+						v         = string.explode(v);
+						var x     = -1,
 						    regex = new RegExp(),
-						    nth;
+						    nth   = v.length;
 
-						v   = string.explode(v);
-						nth = v.length;
+						// Adding constraint of start of string for delimited queries
+						array.each(v, function (query, idx) {
+							if (query.charAt(0) !== "^") v[idx] = "^" + query;
+						});
 
-						for (x = 0; x < nth; x++) {
+						while (++x < nth) {
 							regex.compile(v[x], "i");
 							if ((k === self.store.key && regex.test(i.key)) || (i.data[k] !== undefined && regex.test(i.data[k]))) {
 								registry.push(i.key);
@@ -272,7 +275,7 @@ var datalist = {
 				// Passed the end, so putting you on the end
 				if (ceiling > 0 && this.pageIndex > ceiling) return this.page(ceiling);
 				// Paginating the items
-				else {
+				else if (this.total > 0) {
 					limit = datalist.range.call(this);
 					items = items.limit(limit[0], limit[1]);
 				}
