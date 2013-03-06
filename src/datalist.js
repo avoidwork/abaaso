@@ -250,13 +250,12 @@ var datalist = {
 						reg = new RegExp(),
 						key = (k === self.store.key);
 
-						// Adding constraint of start of string for delimited queries
 						array.each(v, function (query) {
 							utility.compile(reg, query, "i");
 							if ((key && reg.test(i.key)) || (i.data[k] !== undefined && reg.test(i.data[k]))) {
 								registry.push(i.key);
 								items.push({key: i.key, template: fn(i)});
-								return;
+								return false;
 							}
 						});
 					});
