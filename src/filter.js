@@ -87,7 +87,19 @@ var filter = {
 				
 				if (!val.isEmpty()) {
 					utility.iterate(self.filters, function (v, k) {
-						this[k] = "^" + val.escape().replace("\\*", ".*");
+						var queries = val.explode();
+
+						// Ignoring trailing commas
+						queries = queries.filter(function (i) {
+							return !(i.toString().isEmpty());
+						});
+
+						// Shaping valid pattern & ignoring trailing commas
+						array.each(queries, function (i, idx) {
+							this[idx] = "^" + i.escape().replace("\\*", ".*");
+						});
+
+						this[k] = queries.join(",");
 					});
 					self.datalist.filter = self.filters;
 				}

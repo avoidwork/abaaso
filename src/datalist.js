@@ -242,26 +242,23 @@ var datalist = {
 				if (self.filter === null || !(self.filter instanceof Object)) items.push({key: i.key, template: fn(i)});
 				else {
 					utility.iterate(self.filter, function (v, k) {
-						if (registry.index(i.key) > -1) return;
+						var reg, key;
 
-						v         = string.explode(v);
-						var x     = -1,
-						    regex = new RegExp(),
-						    nth   = v.length;
+						if (array.contains(registry, i.key)) return;
+						
+						v   = string.explode(v);
+						reg = new RegExp(),
+						key = (k === self.store.key);
 
 						// Adding constraint of start of string for delimited queries
-						array.each(v, function (query, idx) {
-							if (query.charAt(0) !== "^") v[idx] = "^" + query;
-						});
-
-						while (++x < nth) {
-							regex.compile(v[x], "i");
-							if ((k === self.store.key && regex.test(i.key)) || (i.data[k] !== undefined && regex.test(i.data[k]))) {
+						array.each(v, function (query) {
+							utility.compile(reg, query, "i");
+							if ((key && reg.test(i.key)) || (i.data[k] !== undefined && reg.test(i.data[k]))) {
 								registry.push(i.key);
 								items.push({key: i.key, template: fn(i)});
 								return;
 							}
-						}
+						});
 					});
 				}
 			});

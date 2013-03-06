@@ -176,8 +176,8 @@ var utility = {
 	 * @param  {String} modifiers Modifiers to apply to the pattern
 	 * @return {Boolean}          true
 	 */
-	compile : function (regex, pattern, modifiers) {
-		regex.compile(pattern, modifiers);
+	compile : function (reg, pattern, modifiers) {
+		reg.compile(pattern, modifiers);
 		return true;
 	},
 
