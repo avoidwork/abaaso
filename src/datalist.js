@@ -236,8 +236,8 @@ var datalist = {
 			};
 
 			// Consuming records based on sort
-			if (this.where === null) consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, clear, this.sensitivity);
-			else consumed = this.order.isEmpty() ? this.store.select(this.where) : this.store.sort(this.order, clear, this.sensitivity, this.where);
+			if (this.where === null) consumed = this.order.isEmpty() ? this.store.get() : this.store.sort(this.order, create, this.sensitivity);
+			else consumed = this.order.isEmpty() ? this.store.select(this.where) : this.store.sort(this.order, create, this.sensitivity, this.where);
 
 			// Processing (filtering) records & generating templates
 			array.each(consumed, function (i) {
