@@ -94,7 +94,7 @@ var filter = {
 							return !(i.toString().isEmpty());
 						});
 
-						// Shaping valid pattern & ignoring trailing commas
+						// Shaping valid pattern
 						array.each(queries, function (i, idx) {
 							this[idx] = "^" + i.escape().replace("\\*", ".*");
 						});
