@@ -87,7 +87,7 @@ var filter = {
 				
 				if (!val.isEmpty()) {
 					utility.iterate(self.filters, function (v, k) {
-						var queries = val.explode();
+						var queries = string.explode(val);
 
 						// Ignoring trailing commas
 						queries = queries.filter(function (i) {
