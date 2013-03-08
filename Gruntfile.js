@@ -50,6 +50,29 @@ module.exports = function (grunt) {
 		nodeunit: {
 			all : ["test/*.js"]
 		},
+		shell: {
+			make : {
+				command : "mkdir lib/tmp"
+			},
+			copy : {
+				command : "cp lib/*.js lib/tmp"
+			},
+			production : {
+				command : "gzip -9 lib/tmp/<%= pkg.name %>.min.js"
+			},
+			debug : {
+				command : "gzip -9 lib/tmp/<%= pkg.name %>.js"
+			},
+			sourcemap : {
+				command : "gzip -9 lib/tmp/<%= pkg.name %>.source-map.js"
+			},
+			move : {
+				command : "mv lib/tmp/*.gz lib/"
+			},
+			cleanup : {
+				command : "rm -rf lib/tmp"
+			}
+		},
 		uglify: {
 			options: {
 				banner : "/**\n" + 
@@ -79,6 +102,7 @@ module.exports = function (grunt) {
 		}
 	});
 
+	grunt.loadNpmTasks("grunt-shell");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
@@ -95,5 +119,5 @@ module.exports = function (grunt) {
 		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
 	});
 
-	grunt.registerTask("default", ["concat", "version", "uglify", "test"]);
+	grunt.registerTask("default", ["concat", "version", "uglify", "test", "shell"]);
 };
