@@ -169,9 +169,8 @@ var data = {
 								idx = i;
 								i   = {};
 							}
-							else idx = (offset + idx).toString();
 
-							if (typeof i === "object") set(i, idx);
+							if (typeof i === "object") set(i, utility.uuid());
 							else if (i.indexOf("//") === -1) {
 								// Relative path to store, i.e. a child
 								if (i.charAt(0) !== "/") i = self.uri + "/" + i;
