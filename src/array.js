@@ -344,6 +344,8 @@ var array = {
 				utility.iterate(obj, function (v, k) {
 					keys.push(k);
 				});
+
+				return keys;
 			};
 		}
 	}(),
