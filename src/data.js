@@ -905,6 +905,7 @@ var data = {
 					if (events) self.parentNode.fire("afterDataSet", arg);
 				}, function (e) {
 					if (events) self.parentNode.fire("failedDataSet", e);
+					throw e;
 				});
 
 				self.views = {};
