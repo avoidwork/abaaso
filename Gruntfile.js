@@ -97,6 +97,10 @@ module.exports = function (grunt) {
 
 	grunt.registerTask("test", ["nodeunit"]);
 
+	grunt.registerTask("compress", function () {
+		process.platform !== "win32" ? grunt.task.run("shell") : console.log("Couldn't compress files on your OS")
+	});
+
 	grunt.registerTask("version", function () {
 		var cfg = grunt.config("pkg"),
 		    ver = cfg.version,
@@ -107,5 +111,5 @@ module.exports = function (grunt) {
 		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
 	});
 
-	grunt.registerTask("default", ["concat", "version", "uglify", "test", "shell"]);
+	grunt.registerTask("default", ["concat", "version", "uglify", "test", "compress"]);
 };
