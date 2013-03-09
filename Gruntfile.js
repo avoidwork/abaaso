@@ -51,26 +51,14 @@ module.exports = function (grunt) {
 			all : ["test/*.js"]
 		},
 		shell: {
-			make : {
-				command : "mkdir lib/tmp"
+			cleanup : {
+				command : "rm -rf lib/compressed/*"
 			},
 			copy : {
-				command : "cp lib/*.js lib/tmp"
+				command : "cp lib/*.js lib/compressed"
 			},
-			production : {
-				command : "gzip -9 lib/tmp/<%= pkg.name %>.min.js"
-			},
-			debug : {
-				command : "gzip -9 lib/tmp/<%= pkg.name %>.js"
-			},
-			sourcemap : {
-				command : "gzip -9 lib/tmp/<%= pkg.name %>.source-map.js"
-			},
-			move : {
-				command : "mv lib/tmp/*.gz lib/"
-			},
-			cleanup : {
-				command : "rm -rf lib/tmp"
+			compress : {
+				command : "gzip -9 lib/compressed/*"
 			}
 		},
 		uglify: {
