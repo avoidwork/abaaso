@@ -14,8 +14,9 @@ var cookie = {
 	 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
 	 * @return {String}        Name of the expired cookie
 	 */
-	expire : function (name, domain, secure) {
-		if (cookie.get(name) !== undefined) cookie.set(name, "", "-1s", domain, secure);
+	expire : function ( name, domain, secure ) {
+		if ( cookie.get( name ) !== undefined ) cookie.set( name, "", "-1s", domain, secure );
+
 		return name;
 	},
 
@@ -26,8 +27,8 @@ var cookie = {
 	 * @param  {String} name Name of the cookie to get
 	 * @return {Mixed}       Cookie or undefined
 	 */
-	get : function (name) {
-		return utility.coerce(cookie.list()[name]);
+	get : function ( name ) {
+		return utility.coerce( cookie.list()[name] );
 	},
 
 	/**
@@ -37,16 +38,16 @@ var cookie = {
 	 * @return {Object} Collection of cookies
 	 */
 	list : function () {
-		var result = {},
-		    item, items;
+		var result = {};
 
-		if (document.cookie !== undefined && !document.cookie.isEmpty()) {
-			items = string.explode(document.cookie, ";");
-			array.each(items, function (i) {
-				item = string.explode(i, "=");
-				result[decodeURIComponent(item[0])] = decodeURIComponent(item[1]);
+		if ( document.cookie !== undefined && !string.isEmpty( document.cookie ) ) {
+			array.each( string.explode( document.cookie, ";" ), function ( i ) {
+				var item = string.explode( i, "=" );
+
+				result[decodeURIComponent( item[0] )] = decodeURIComponent( item[1] );
 			});
 		}
+
 		return result;
 	},
 
@@ -63,11 +64,11 @@ var cookie = {
 	 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
 	 * @return {Object}        The new cookie
 	 */
-	set : function (name, value, offset, domain, secure) {
-		value      = (value || "") + ";"
+	set : function ( name, value, offset, domain, secure ) {
+		value      = ( value || "" ) + ";"
 		offset     = offset || "";
-		domain     = typeof domain === "string" ? (" domain=" + domain + ";") : "";
-		secure     = (secure === true) ? "; secure" : "";
+		domain     = typeof domain === "string" ? ( " domain=" + domain + ";" ) : "";
+		secure     = ( secure === true ) ? "; secure" : "";
 		var expire = "",
 		    span   = null,
 		    type   = null,
@@ -75,36 +76,40 @@ var cookie = {
 		    regex  = new RegExp(),
 		    i      = types.length;
 
-		if (!offset.isEmpty()) {
-			while (i--) {
-				utility.compile(regex, types[i]);
-				if (regex.test(offset)) {
+		if ( !string.isEmpty( offset ) ) {
+			while ( i-- ) {
+				utility.compile( regex, types[i] );
+
+				if ( regex.test( offset ) ) {
 					type = types[i];
-					span = parseInt(offset);
+					span = number.parse( offset, 10 );
 					break;
 				}
 			}
 
-			if (isNaN(span)) throw Error(label.error.invalidArguments);
+			if ( isNaN( span ) ) throw Error( label.error.invalidArguments );
 
 			expire = new Date();
-			switch (type) {
+			switch ( type ) {
 				case "d":
-					expire.setDate(expire.getDate() + span);
+					expire.setDate( expire.getDate() + span );
 					break;
 				case "h":
-					expire.setHours(expire.getHours() + span);
+					expire.setHours( expire.getHours() + span );
 					break;
 				case "m":
-					expire.setMinutes(expire.getMinutes() + span);
+					expire.setMinutes( expire.getMinutes() + span );
 					break;
 				case "s":
-					expire.setSeconds(expire.getSeconds() + span);
+					expire.setSeconds( expire.getSeconds() + span );
 					break;
 			}
 		}
-		if (expire instanceof Date) expire = " expires=" + expire.toUTCString() + ";";
-		document.cookie = (string.trim(name.toString()) + "=" + value + expire + domain + " path=/" + secure);
-		return cookie.get(name);
+
+		if ( expire instanceof Date) expire = " expires=" + expire.toUTCString() + ";";
+
+		document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
+
+		return cookie.get( name );
 	}
 };

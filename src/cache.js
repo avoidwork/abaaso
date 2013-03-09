@@ -16,8 +16,10 @@ var cache = {
 	 * @return {Undefined} undefined
 	 */
 	clean : function () {
-		return utility.iterate(cache.items, function (v, k) {
-			if (cache.expired(k)) cache.expire(k);
+		return utility.iterate( cache.items, function ( v, k ) {
+			if ( cache.expired( k ) ) {
+				cache.expire( k );
+			}
 		});
 	},
 
@@ -31,14 +33,20 @@ var cache = {
 	 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 	 * @return {Undefined}      undefined
 	 */
-	expire : function (uri, silent) {
-		silent = (silent === true);
-		if (cache.items[uri] !== undefined) {
+	expire : function ( uri, silent ) {
+		silent = ( silent === true );
+		if ( cache.items[uri] !== undefined ) {
 			delete cache.items[uri];
-			if (!silent) uri.fire("beforeExpire, expire, afterExpire");
+
+			if ( !silent ) {
+				observer.fire( uri, "beforeExpire, expire, afterExpire" );
+			}
+
 			return true;
 		}
-		else return false;
+		else {
+			return false;
+		}
 	},
 
 	/**
@@ -48,8 +56,9 @@ var cache = {
 	 * @param  {Object} uri Cached URI object
 	 * @return {Boolean}    True if the URI has expired
 	 */
-	expired : function (uri) {
+	expired : function ( uri ) {
 		var item = cache.items[uri];
+
 		return item !== undefined && item.expires !== undefined && item.expires < new Date();
 	},
 
@@ -62,14 +71,20 @@ var cache = {
 	 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 	 * @return {Mixed}          URI Object {headers, response} or False
 	 */
-	get : function (uri, expire) {
-		expire = (expire !== false);
-		if (cache.items[uri] === undefined) return false;
-		if (expire && cache.expired(uri)) {
-			cache.expire(uri);
+	get : function ( uri, expire ) {
+		expire = ( expire !== false );
+
+		if ( cache.items[uri] === undefined ) {
 			return false;
 		}
-		return utility.clone(cache.items[uri]);
+
+		if ( expire && cache.expired( uri ) ) {
+			cache.expire( uri );
+
+			return false;
+		}
+
+		return utility.clone( cache.items[uri] );
 	},
 
 	/**
@@ -81,14 +96,16 @@ var cache = {
 	 * @param  {Mixed} value     Value to set
 	 * @return {Mixed}           URI Object {headers, response} or undefined
 	 */
-	set : function (uri, property, value) {
-		if (cache.items[uri] === undefined) {
+	set : function ( uri, property, value ) {
+		if ( cache.items[uri] === undefined ) {
 			cache.items[uri] = {};
 			cache.items[uri].permission = 0;
 		}
+
 		property === "permission" ? cache.items[uri].permission |= value
 		                          : (property === "!permission" ? cache.items[uri].permission &= ~value
 		                                                        : cache.items[uri][property]   =  value);
+
 		return cache.items[uri];
 	}
 };

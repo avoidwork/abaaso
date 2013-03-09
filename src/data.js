@@ -16,17 +16,19 @@ var data = {
 	 * @param  {Object} args [Optional] Arguments to set on the store
 	 * @return {Object}      Object to decorate
 	 */
-	decorator : function (obj, recs, args) {
-		obj = utility.object(obj);
-		utility.genId(obj);
+	decorator : function ( obj, recs, args ) {
+		obj = utility.object( obj );
+		utility.genId( obj );
 
 		// Decorating observer if not present in prototype chain
-		if (typeof obj.fire !== "function") observer.decorate(obj);
+		if ( typeof obj.fire !== "function" ) observer.decorate( obj );
 
 		// Creating store
-		obj.data = new DataStore(obj);
-		if (args instanceof Object) utility.merge(obj.data, args);
-		if (recs !== null && typeof recs === "object") obj.data.batch("set", recs);
+		obj.data = new DataStore( obj );
+
+		if ( args instanceof Object ) utility.merge( obj.data, args );
+
+		if ( recs !== null && typeof recs === "object" ) obj.data.batch( "set", recs );
 
 		return obj;
 	},
@@ -41,166 +43,166 @@ var data = {
 		 *         failedDataBatch  Fires when an exception occurs
 		 *
 		 * @method batch
-		 * @param  {String}  type    Type of action to perform (set/del/delete)
+		 * @param  {String}  type    Type of action to perform ( set/del/delete )
 		 * @param  {Mixed}   data    Array of keys or indices to delete, or Object containing multiple records to set
 		 * @param  {Boolean} sync    [Optional] Syncs store with data, if true everything is erased
 		 * @param  {Number}  chunk   [Optional] Size to chunk Array to batch set or delete
 		 * @return {Object}          Promise
 		 */
-		batch : function (type, data, sync, chunk) {
+		batch : function ( type, data, sync, chunk ) {
 			type    = type.toString().toLowerCase();
-			sync    = (sync === true);
+			sync    = ( sync === true );
 			chunk   = chunk || 1000;
 
-			if (!regex.set_del.test(type) || (sync && regex.del.test(type)) || typeof data !== "object") throw Error(label.error.invalidArguments);
+			if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) throw Error( label.error.invalidArguments );
 
 			var obj      = this.parentNode,
 			    self     = this,
-			    events   = (this.events === true),
+			    events   = ( this.events === true ),
 			    r        = 0,
 			    nth      = data.length,
 			    f        = false,
 			    deferred = promise.factory(),
 			    complete, deferred2, failure, key, set, del, success, parsed;
 
-			deferred2 = deferred.then(function (arg) {
+			deferred2 = deferred.then( function ( arg ) {
 				self.loaded = true;
 
-				if (regex.del.test(type)) self.reindex();
+				if ( regex.del.test( type ) ) self.reindex();
 
-				array.each(self.datalists, function (i) {
-					i.refresh(true);
+				array.each( self.datalists, function ( i ) {
+					i.refresh( true );
 				});
 
-				if (events) obj.fire("afterDataBatch", arg);
-			}, function (e) {
-				if (events) obj.fire("failedDataBatch", e);
+				if ( events ) observer.fire( obj, "afterDataBatch", arg );
+			}, function ( e ) {
+				if ( events ) observer.fire( obj, "failedDataBatch", e );
+
 				throw e;
 			});
 
-			complete = function (arg) {
-				deferred.resolve(arg);
+			complete = function ( arg ) {
+				deferred.resolve( arg );
 			};
 
-			failure = function (arg) {
-				deferred.reject(arg);
+			failure = function ( arg ) {
+				deferred.reject( arg );
 			};
 
-			set = function (arg, key) {
-				var data     = utility.clone(arg),
+			set = function ( arg, key ) {
+				var data     = utility.clone( arg ),
 				    deferred = promise.factory(),
 				    rec      = {};
 
-				if (typeof data.batch !== "function") rec = data;
-				else utility.iterate(data, function (v, k) {
-					if (!array.contains(self.collections, k)) rec[k] = v;
+				if ( typeof data.batch !== "function" ) rec = data;
+				else utility.iterate( data, function ( v, k ) {
+					if ( !array.contains( self.collections, k ) ) rec[k] = v;
 				});
 
-				if (self.key !== null && rec[self.key] !== undefined) {
+				if ( self.key !== null && rec[self.key] !== undefined ) {
 					key = rec[self.key];
 					delete rec[self.key];
 				}
 
-				deferred.then(function (arg) {
-					if (++r === nth) complete(self.get());
-				}, function (e) {
-					if (!f) {
+				deferred.then( function ( arg ) {
+					if ( ++r === nth ) complete( self.records );
+				}, function ( e ) {
+					if ( !f ) {
 						f = true;
-						failure(e);
+						failure( e );
 					}
 				});
 
-				if (rec instanceof Array && self.uri !== null) {
-					self.generate(key, undefined)
-					    .then(function (arg) {
-					    	deferred.resolve(arg);
-					     }, function (e) {
-					    	deferred.reject(e);
+				if ( rec instanceof Array && self.uri !== null ) {
+					self.generate( key, undefined )
+					    .then( function ( arg ) {
+					    	deferred.resolve( arg );
+					     }, function ( e ) {
+					    	deferred.reject( e );
 					     });
 				}
 				else {
-					self.set(key, rec, true)
-					    .then(function (arg) {
-					    	deferred.resolve(arg);
-					     }, function (e) {
-					    	deferred.reject(e);
+					self.set( key, rec, true )
+					    .then( function ( arg ) {
+					    	deferred.resolve( arg );
+					     }, function ( e ) {
+					    	deferred.reject( e );
 					     });
 				}
 			};
 
-			del = function (i) {
+			del = function ( i ) {
 				var deferred = promise.factory();
 
-				deferred.then(function (arg) {
-					if (++r === nth) complete(arg);
+				deferred.then( function ( arg ) {
+					if ( ++r === nth ) complete( arg );
 					return arg;
-				}, function (arg) {
-					if (!f) {
+				}, function ( arg ) {
+					if ( !f ) {
 						f = true;
-						failure(arg);
+						failure( arg );
 					}
 					return arg;
 				});
 
-				self.del(i, false, true)
-				    .then(function (arg) {
-				    	deferred.resolve(arg);
-				     }, function (e) {
-				    	deferred.reject(e);
+				self.del( i, false, true )
+				    .then( function ( arg ) {
+				    	deferred.resolve( arg );
+				     }, function ( e ) {
+				    	deferred.reject( e );
 				     });
 			};
 
-			if (events) obj.fire("beforeDataBatch", data);
+			if ( events ) observer.fire( obj, "beforeDataBatch", data );
 
-			if (sync) this.clear(sync);
+			if ( sync ) this.clear( sync );
 
-			array.each(this.datalists, function (i) {
-				i.ready = false;
-			});
-
-			if (data.length === 0) complete([]);
+			if ( data.length === 0 ) complete( [] );
 			else {
-				if (type === "set") {
-					array.each(array.chunk(data, chunk), function (a, adx) {
+				if ( type === "set" ) {
+					array.each( array.chunk( data, chunk ), function ( a, adx ) {
 						var offset = adx * chunk;
 
-						array.each(a, function (i, idx) {
-							if (self.leafs.contains(i)) {
+						array.each( a, function ( i, idx ) {
+							if ( array.contains ( self.leafs, i ) ) {
 								idx = i;
 								i   = {};
 							}
 
-							if (typeof i === "object") set(i, utility.uuid());
-							else if (i.indexOf("//") === -1) {
+							if ( typeof i === "object" ) set( i, utility.uuid() );
+							else if ( i.indexOf( "//" ) === -1 ) {
 								// Relative path to store, i.e. a child
-								if (i.charAt(0) !== "/") i = self.uri + "/" + i;
+								if ( i.charAt( 0 ) !== "/" ) i = self.uri + "/" + i;
 
 								// Root path, relative to store, i.e. a domain
-								else if (self.uri !== null && regex.root.test(i)) {
-									parsed = utility.parse(self.uri);
+								else if ( self.uri !== null && regex.root.test( i ) ) {
+									parsed = utility.parse( self.uri );
 									i      = parsed.protocol + "//" + parsed.host + i;
 								}
 
-								idx = i.replace(regex.not_endpoint, "");
-								if (idx.isEmpty()) return;
+								idx = i.replace( regex.not_endpoint, "" );
 
-								i.get(function (arg) {
-									set(self.source === null ? arg : utility.walk(arg, self.source), idx);
-								}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+								if ( string.isEmpty( idx ) ) return;
+
+								client.request( i, "GET", function ( arg ) {
+									set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
+								}, failure, utility.merge( {withCredentials: self.credentials}, self.headers ) );
 							}
 							else {
-								idx = i.replace(regex.not_endpoint, "");
-								if (idx.isEmpty()) return;
-								i.get(function (arg) {
-									set(self.source === null ? arg : utility.walk(arg, self.source), idx);
-								}, failure, utility.merge({withCredentials: self.credentials}, self.headers));
+								idx = i.replace( regex.not_endpoint, "" );
+
+								if ( string.isEmpty( idx ) ) return;
+
+								client.request( i, "GET", function (arg ) {
+									set( self.source === null ? arg : utility.walk(arg, self.source), idx );
+								}, failure, utility.merge( {withCredentials: self.credentials}, self.headers) );
 							}
 						});
 					});
 				}
 				else {
-					array.each(data.sort(array.sort).reverse(), function (i) {
-						del(i);
+					array.each( data.sort(array.sort).reverse(), function (i ) {
+						del( i );
 					});
 				}
 			}
@@ -218,13 +220,13 @@ var data = {
 		 * @param  {Boolean} sync    [Optional] Boolean to limit clearing of properties
 		 * @return {Object}          Data store
 		 */
-		clear : function (sync) {
-			sync       = (sync === true);
+		clear : function ( sync ) {
+			sync       = ( sync === true );
 			var obj    = this.parentNode,
-			    events = (this.events === true);
+			    events = ( this.events === true );
 
-			if (!sync) {
-				if (events) obj.fire("beforeDataClear");
+			if ( !sync ) {
+				if ( events ) observer.fire( obj, "beforeDataClear" );
 				this.callback    = null;
 				this.collections = [];
 				this.crawled     = false;
@@ -248,7 +250,7 @@ var data = {
 				this.total       = 0;
 				this.views       = {};
 				this.uri         = null;
-				if (events) obj.fire("afterDataClear");
+				if ( events ) observer.fire( obj, "afterDataClear" );
 			}
 			else {
 				this.collections = [];
@@ -273,21 +275,21 @@ var data = {
 		 * @param  {Mixed}  arg Record, key or index
 		 * @return {Object}     Promise
 		 */
-		crawl : function (arg) {
+		crawl : function ( arg ) {
 			var self     = this,
-			    events   = (this.events === true),
-			    record   = (arg instanceof Object) ? arg : this.get(arg),
+			    events   = ( this.events === true ),
+			    record   = ( arg instanceof Object ) ? arg : this.get( arg ),
 			    uri      = this.uri === null ? "" : this.uri,
 			    deferred = promise.factory(),
 			    i        = 0,
 			    nth      = 0,
 			    build, complete, deferred2, setup;
 
-			if (record === undefined) throw Error(label.error.invalidArguments);
+			if ( record === undefined ) throw Error( label.error.invalidArguments );
 
 			this.crawled = true;
 
-			deferred2 = deferred.then(function (arg) {
+			deferred2 = deferred.then( function ( arg ) {
 				return arg;
 			});
 
@@ -299,13 +301,13 @@ var data = {
 			 * @param  {String} store  Data store URI
 			 * @return {String}        URI
 			 */
-			build = function (entity, store) {
+			build = function ( entity, store ) {
 				var result = "",
 				    parsed;
 
-				if (/\/\//.test(entity)) result = entity;
-				else if (entity.charAt(0) === "/" && store.charAt(0) !== "/") {
-					parsed = utility.parse(store);
+				if ( /\/\//.test( entity ) ) result = entity;
+				else if ( entity.charAt( 0 ) === "/" && store.charAt( 0 ) !== "/" ) {
+					parsed = utility.parse( store );
 					result = parsed.protocol + "//" + parsed.host + entity;
 				}
 				else result = entity;
@@ -320,7 +322,7 @@ var data = {
 			 * @return {Undefined} undefined
 			 */
 			complete = function () {
-				if (++i === nth) deferred.resolve(nth);
+				if ( ++i === nth ) deferred.resolve( nth );
 			};
 
 			/**
@@ -332,15 +334,15 @@ var data = {
 			 * @param  {String} key Record key
 			 * @return {Object}     Data store
 			 */
-			setup = function (key, self) {
+			setup = function ( key, self ) {
 				var obj = {};
 
-				if (!array.contains(self.collections, key)) self.collections.push(key);
+				if ( !array.contains( self.collections, key ) ) self.collections.push( key );
 
-				obj = data.decorator({id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone(self.ignore), leafs: utility.clone(self.leafs), depth: self.depth + 1, maxDepth: self.maxDepth});
-				obj.data.headers = utility.merge(obj.data.headers, self.headers);
+				obj = data.decorator( {id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone( self.ignore ), leafs: utility.clone( self.leafs ), depth: self.depth + 1, maxDepth: self.maxDepth} );
+				obj.data.headers = utility.merge( obj.data.headers, self.headers );
 
-				if (!array.contains(self.leafs, key) && self.recursive && self.retrieve && (obj.data.maxDepth === 0 || obj.data.depth < obj.data.maxDepth)) {
+				if ( !array.contains( self.leafs, key ) && self.recursive && self.retrieve && ( obj.data.maxDepth === 0 || obj.data.depth < obj.data.maxDepth ) ) {
 					obj.data.recursive = true;
 					obj.data.retrieve  = true;
 				}
@@ -349,44 +351,48 @@ var data = {
 			};
 
 			// Depth of recursion is controled by `maxDepth`
-			utility.iterate(record.data, function (v, k) {
+			utility.iterate( record.data, function ( v, k ) {
 				var deferred, store, parsed;
 
-				if (array.contains(self.ignore, k) || array.contains(self.leafs, k) || self.depth >= self.maxDepth || (!(v instanceof Array) && typeof v !== "string")) return;
+				if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) ) return;
 
-				nth      = array.cast(record.data).length;
+				nth      = array.cast( record.data ).length;
 				deferred = promise.factory();
-				deferred.then(function (arg) {
-					if (events) record.data[k].fire("afterDataRetrieve", arg);
+				deferred.then( function ( arg ) {
+					if ( events ) observer.fire( record.data[k], "afterDataRetrieve", arg );
+
 					complete();
-				}, function (e) {
-					if (events) record.data[k].fire("failedDataRetrieve", e);
+				}, function ( e ) {
+					if ( events) observer.fire( record.data[k], "failedDataRetrieve", e );
+
 					complete();
 				});
 
-				if ((v instanceof Array) && v.length > 0) {
-					record.data[k] = setup(k, self);
-					if (typeof v[0] === "string") {
-						array.each(v, function (i, idx) {
-							v[idx] = build(i, uri);
+				if ( ( v instanceof Array ) && v.length > 0 ) {
+					record.data[k] = setup( k, self );
+
+					if ( typeof v[0] === "string" ) {
+						array.each( v, function ( i, idx ) {
+							v[idx] = build( i, uri );
 						});
 					}
-					record.data[k].data.batch("set", v, true, undefined)
-					                   .then(function (arg) {
-					                   		deferred.resolve(arg);
-					                   	}, function (e) {
-					                   		deferred.reject(e);
+
+					record.data[k].data.batch( "set", v, true, undefined )
+					                   .then( function ( arg ) {
+					                   		deferred.resolve( arg );
+					                   	}, function ( e ) {
+					                   		deferred.reject( e );
 					                   	});
 				}
 				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
-				else if (v.charAt(0) === "/" || v.indexOf("//") > -1) {
-					record.data[k] = setup(k, self);
-					v = build(v, uri);
-					record.data[k].data.setUri(v)
-					                   .then(function (arg) {
-					                   		deferred.resolve(arg);
-					                   	}, function (e) {
-					                   		deferred.reject(e);
+				else if ( v.charAt( 0 ) === "/" || v.indexOf( "//" ) > -1 ) {
+					record.data[k] = setup( k, self );
+					v = build( v, uri );
+					record.data[k].data.setUri( v )
+					                   .then( function ( arg ) {
+					                   		deferred.resolve( arg );
+					                   	}, function ( e ) {
+					                   		deferred.reject( e );
 					                   	});
 				}
 			});
@@ -407,73 +413,74 @@ var data = {
 		 * @param  {Boolean} batch   [Optional] True if called by data.batch
 		 * @return {Object}          Promise
 		 */
-		del : function (record, reindex, batch) {
-			if (record === undefined || !regex.number_string.test(typeof record)) throw Error(label.error.invalidArguments);
+		del : function ( record, reindex, batch ) {
+			if ( record === undefined || !regex.number_string.test( typeof record ) ) throw Error( label.error.invalidArguments );
 
-			reindex      = (reindex !== false);
-			batch        = (batch === true);
+			reindex      = ( reindex !== false );
+			batch        = ( batch === true );
 			var obj      = this.parentNode,
 			    self     = this,
-			    events   = (this.events === true),
+			    events   = ( this.events === true ),
 			    deferred = promise.factory(),
 			    deferred2, key, args, uri, p;
 
-			deferred2 = deferred.then(function (arg) {
-				var record = self.get(arg.record);
+			deferred2 = deferred.then( function ( arg ) {
+				var record = self.get( arg.record );
 
-				self.records.remove(self.keys[arg.key]);
+				self.records.remove( self.keys[arg.key] );
 				delete self.keys[arg.key];
 				self.total--;
 				self.views = {};
 
-				utility.iterate(record.data, function (v, k) {
-					if (v === null) return;
-					if (v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
+				utility.iterate( record.data, function ( v, k ) {
+					if ( v === null ) return;
+					if ( v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
 				});
 
-				if (arg.reindex) self.reindex();
+				if ( arg.reindex ) self.reindex();
 
-				if (!batch) {
-					array.each(self.datalists, function (i) {
-						if (i.ready) i.del(record);
+				if ( !batch ) {
+					array.each( self.datalists, function ( i ) {
+						i.del( record );
 					});
 				}
 
-				if (events) obj.fire("afterDataDelete", record);
-			}, function (e) {
-				if (events) obj.fire("failedDataDelete", e);
+				if ( events ) observer.fire( obj, "afterDataDelete", record );
+			}, function ( e ) {
+				if ( events ) observer.fire( obj, "failedDataDelete", e );
+
 				throw e;
 			});
 
-			if (typeof record === "string") {
+			if ( typeof record === "string" ) {
 				key    = record;
 				record = this.keys[key];
-				if (record === undefined) throw Error(label.error.invalidArguments);
+				if ( record === undefined ) throw Error( label.error.invalidArguments );
 			}
 			else {
 				key = this.records[record];
-				if (key === undefined) throw Error(label.error.invalidArguments);
+				if ( key === undefined ) throw Error( label.error.invalidArguments );
 				key = key.key;
 			}
 
 			args   = {key: key, record: record, reindex: reindex};
 
-			if (!batch && this.callback === null && this.uri !== null) {
+			if ( !batch && this.callback === null && this.uri !== null ) {
 				uri = this.uri + "/" + key;
-				p   = uri.allows("delete");
+				p   = uri.allows( "delete" );
 			}
 
-			if (events) obj.fire("beforeDataDelete", args);
+			if ( events ) observer.fire( obj, "beforeDataDelete", args );
 
-			if (batch || this.callback !== null || this.uri === null) deferred.resolve(args);
-			else if (regex.true_undefined.test(p)) {
-				uri.del(function (arg) {
-					deferred.resolve(args);
-				}, function (e) {
-					deferred.reject(args);
-				}, utility.merge({withCredentials: this.credentials}, this.headers));
+			if ( batch || this.callback !== null || this.uri === null ) deferred.resolve( args );
+			else if ( regex.true_undefined.test( p ) ) {
+				client.request(uri, "DELETE", function ( arg ) {
+					deferred.resolve( args );
+				}, function ( e ) {
+					deferred.reject( e );
+				}, utility.merge( {withCredentials: this.credentials}, this.headers) );
 			}
-			else deferred.reject(args);
+			else deferred.reject( args );
 
 			return deferred2;
 		},
@@ -483,12 +490,12 @@ var data = {
 		 *
 		 * @method find
 		 * @param  {Mixed}  needle    String, Number, RegExp Pattern or Function
-		 * @param  {String} haystack  [Optional] Commma delimited string of the field(s) to search
+		 * @param  {String} haystack  [Optional] Commma delimited string of the field( s ) to search
 		 * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
 		 * @return {Array}            Array of results
 		 */
-		find : function (needle, haystack, modifiers) {
-			if (needle === undefined) throw Error(label.error.invalidArguments);
+		find : function ( needle, haystack, modifiers ) {
+			if ( needle === undefined ) throw Error( label.error.invalidArguments );
 
 			var result = [],
 			    keys   = [],
@@ -496,60 +503,68 @@ var data = {
 			    fn     = typeof needle === "function";
 
 			// Blocking unnecessary ops
-			if (this.total === 0) return result;
+			if ( this.total === 0 ) return result;
 
 			// Preparing parameters
-			if (!fn) {
-				needle = typeof needle === "string" ? string.explode(needle) : [needle];
-				if (modifiers === undefined || String(modifiers).isEmpty()) modifiers = "gi";
-				else if (modifiers === null) modifiers = "";
+			if ( !fn ) {
+				needle = typeof needle === "string" ? string.explode( needle ) : [needle];
+				if ( modifiers === undefined || string.isEmpty( modifiers ) ) modifiers = "gi";
+				else if ( modifiers === null ) modifiers = "";
 			}
-			haystack = typeof haystack === "string" ? string.explode(haystack) : null;
+
+			haystack = typeof haystack === "string" ? string.explode( haystack ) : null;
 
 			// No haystack, testing everything
-			if (haystack === null) {
-				array.each(this.records, function (r) {
-					if (!fn) {
-						utility.iterate(r.data, function (v, k) {
-							if (array.contains(keys, r.key)) return false;
-							if (v === null || typeof v.data === "object") return;
+			if ( haystack === null ) {
+				array.each( this.records, function ( r ) {
+					if ( !fn ) {
+						utility.iterate( r.data, function ( v, k ) {
+							if ( array.contains( keys, r.key ) ) return false;
 
-							array.each(needle, function (n) {
-								utility.compile(regex, n, modifiers);
-								if (regex.test(v)) {
-									keys.push(r.key);
-									result.add(r);
+							if ( v === null || typeof v.data === "object" ) return;
+
+							array.each( needle, function ( n ) {
+								utility.compile( regex, n, modifiers );
+
+								if ( regex.test( v ) ) {
+									keys.push( r.key );
+									result.push( r );
+
 									return false;
 								}
 							});
 						});
 					}
-					else if (needle(r) === true) {
-						keys.push(r.key);
-						result.add(r);
+					else if ( needle( r ) === true ) {
+						keys.push( r.key );
+						result.push( r );
 					}
 				});
 			}
 			// Looking through the haystack
 			else {
-				array.each(this.records, function (r) {
-					array.each(haystack, function (h) {
-						if (array.contains(keys, r.key)) return false;
-						if (r.data[h] === undefined || typeof r.data[h].data === "object") return;
+				array.each( this.records, function ( r ) {
+					array.each( haystack, function ( h ) {
+						if ( array.contains( keys, r.key ) ) return false;
 
-						if (!fn) {
-							array.each(needle, function (n) {
-								utility.compile(regex, n, modifiers);
-								if (regex.test(r.data[h])) {
-									keys.push(r.key);
-									result.add(r);
+						if ( r.data[h] === undefined || typeof r.data[h].data === "object" ) return;
+
+						if ( !fn ) {
+							array.each( needle, function ( n ) {
+								utility.compile( regex, n, modifiers );
+
+								if ( regex.test( r.data[h] ) ) {
+									keys.push( r.key );
+									result.push( r );
+
 									return false;
 								}
 							});
 						}
-						else if (needle(r.data[h]) === true) {
-							keys.push(r.key);
-							result.add(r);
+						else if ( needle( r.data[h] ) === true ) {
+							keys.push( r.key );
+							result.push( r );
+
 							return false;
 						}
 					});
@@ -572,26 +587,26 @@ var data = {
 		 * @param  {Boolean} test   [Optional] Test form before setting values
 		 * @return {Object}         Generated HTML form
 		 */
-		form : function (record, target, test) {
-			test       = (test !== false);
-			var empty  = (record === null),
+		form : function ( record, target, test ) {
+			test       = ( test !== false );
+			var empty  = ( record === null ),
 			    self   = this,
-			    events = (this.events === true),
+			    events = ( this.events === true ),
 			    entity, obj, handler, structure, key, data;
 
-			if (empty) record = this.get(0);
-			else if (!(record instanceof Object)) record = this.get(record);
+			if ( empty ) record = this.get( 0 );
+			else if ( !( record instanceof Object ) ) record = this.get( record );
 
-			if (record === undefined) throw Error(label.error.invalidArguments);
-			else if (this.uri !== null && !this.uri.allows("post")) throw Error(label.error.serverInvalidMethod);
+			if ( record === undefined ) throw Error( label.error.invalidArguments );
+			else if ( this.uri !== null && !client.allows( this.uri, "post" ) ) throw Error( label.error.serverInvalidMethod );
 
 			key  = record.key;
 			data = record.data;
 
-			if (target !== undefined) target = utility.object(target);
-			if (this.uri !== null) {
-				entity = this.uri.replace(/.*\//, "").replace(/\?.*/, "")
-				if (entity.isDomain()) entity = entity.replace(/\..*/g, "");
+			if ( target !== undefined ) target = utility.object( target );
+			if ( this.uri !== null ) {
+				entity = this.uri.replace( /.*\//, "" ).replace( /\?.*/, "" )
+				if ( string.isDomain( entity ) ) entity = entity.replace( /\..*/g, "" );
 			}
 			else entity = "record";
 
@@ -602,36 +617,32 @@ var data = {
 			 * @param  {Object} event Window event
 			 * @return {Undefined}    undefined
 			 */
-			handler = function (e) {
-				var form    = utility.target(e).parentNode,
-				    nodes   = $("#" + form.id + " input"),
-				    entity  = nodes[0].name.match(/(.*)\[/)[1],
+			handler = function ( e ) {
+				var form    = utility.target( e ).parentNode,
+				    nodes   = $( "#" + form.id + " input" ),
+				    entity  = nodes[0].name.match( /(.*)\[/ )[1],
 				    result  = true,
 				    newData = {};
 
-				utility.stop(e);
+				utility.stop( e );
 
-				if (events) self.parentNode.fire("beforeDataFormSubmit");
+				if ( test ) result = element.validate( form );
 
-				if (test) result = form.validate();
-
-				switch (result) {
-					case false:
-						if (events) self.parentNode.fire("failedDataFormSubmit");
-						break;
+				switch ( result ) {
 					case true:
-						array.each(nodes, function (i) {
-							if (typeof i.type !== "undefined" && regex.input_button.test(i.type)) return;
-							utility.define(i.name.replace("[", ".").replace("]", ""), i.value, newData);
+						array.each( nodes, function ( i ) {
+							if ( i.type !== undefined && regex.input_button.test( i.type ) ) return;
+
+							utility.define( i.name.replace( "[", "." ).replace( "]", "" ), i.value, newData );
 						});
-						self.parentNode.once("afterDataSet", function () {
-							form.destroy();
+
+						self.set( key, newData[entity] ).then(function (arg) {
+							element.destroy( form );
+						}, function (e) {
+							element.destroy ( form );
 						});
-						self.set(key, newData[entity]);
 						break;
 				}
-
-				if (events) self.parentNode.fire("afterDataFormSubmit", key);
 			};
 
 			/**
@@ -639,48 +650,48 @@ var data = {
 			 * 
 			 * @method structure
 			 * @param  {Object} record Data store record
-			 * @param  {Object} obj    [description]
-			 * @param  {String} name   [description]
+			 * @param  {Object} obj    Element
+			 * @param  {String} name   Property
 			 * @return {Undefined}     undefined
 			 */
-			structure = function (record, obj, name) {
+			structure = function ( record, obj, name ) {
 				var x, id;
-				utility.iterate(record, function (v, k) {
-					if (v instanceof Array) {
+
+				utility.iterate( record, function ( v, k ) {
+					if ( v instanceof Array ) {
 						x = 0;
-						array.each(v, function (o) {
-							structure(o, obj, name + "[" + k + "][" + (x++) + "]");
+						array.each( v, function ( o ) {
+							structure( o, obj, name + "[" + k + "][" + ( x++ ) + "]" );
 						});
 					}
-					else if (v instanceof Object) structure(v, obj, name + "[" + k + "]");
+					else if ( v instanceof Object ) structure( v, obj, name + "[" + k + "]" );
 					else {
-						id = (name + "[" + k + "]").replace(/\[|\]/g, "");
-						obj.create("label", {"for": id}).html(k.capitalize());
-						obj.create("input", {id: id, name: name + "[" + k + "]", type: "text", value: empty ? "" : v});
+						id = ( name + "[" + k + "]" ).replace( /\[|\]/g, "" );
+						obj.create( "label", {"for": id, innerHTML: string.capitalize( k )} );
+						obj.create( "input", {id: id, name: name + "[" + k + "]", type: "text", value: empty ? "" : v} );
 					}
 				});
 			};
 
-			if (events) this.parentNode.fire("beforeDataForm");
-			obj = element.create("form", {style: "display:none;"}, target);
-			structure(data, obj, entity);
-			obj.create("input", {type: "button", value: label.common.submit}).on("click", function(e) {
-				handler(e);
+			obj = element.create( "form", { style: "display:none;"}, target );
+			structure( data, obj, entity );
+			observer.add( element.create( "input", {type: "button", value: label.common.submit}, obj ), "click", function ( e ) {
+				handler( e );
 			});
-			obj.create("input", {type: "reset", value: label.common.reset});
-			obj.css("display", "inherit");
-			if (events) this.parentNode.fire("afterDataForm", obj);
+			element.create( "input", {type: "reset", value: label.common.reset}, obj );
+			element.css( obj, "display", "inherit" );
+
 			return obj;  
 		},
 
 		/**
-		 * Generates a RESTful store (replacing a record) when consuming an API end point
+		 * Generates a RESTful store ( replacing a record ) when consuming an API end point
 		 *
 		 * @param  {Object} key Record key
 		 * @param  {Mixed}  arg [Optional] Array or URI String
 		 * @return {Object}     Promise
 		 */
-		generate : function (key, arg) {
+		generate : function ( key, arg ) {
 			var self     = this,
 			    deferred = promise.factory(),
 			    params   = {},
@@ -690,8 +701,8 @@ var data = {
 			params = {
 				depth     : this.depth + 1,
 				headers   : this.headers,
-				ignore    : array.clone(this.ignore),
-				leafs     : array.clone(this.leafs),
+				ignore    : array.clone( this.ignore ),
+				leafs     : array.clone( this.leafs ),
 				key       : this.key,
 				maxDepth  : this.maxDepth,
 				pointer   : this.pointer,
@@ -700,47 +711,49 @@ var data = {
 				source    : this.source
 			};
 
-			deferred2 = deferred.then(function (arg) {
+			deferred2 = deferred.then( function (arg ) {
 				return arg;
-			}, function (e) {
+			}, function ( e ) {
 				throw e;
 			});
 
 			fn = function () {
 				// Creating new child data store
-				if (typeof arg === "object") recs = arg;
-				if (params.maxDepth === 0 || params.depth <= params.maxDepth) {
-					self.records[idx] = data.decorator({id: key}, recs, params);
+				if ( typeof arg === "object" ) recs = arg;
+				if ( params.maxDepth === 0 || params.depth <= params.maxDepth ) {
+					self.records[idx] = data.decorator( {id: key}, recs, params );
 
 					// Not batching in a data set
-					if (recs === null) {
+					if ( recs === null ) {
 						// Constructing relational URI
-						if (self.uri !== null && arg === undefined && !array.contains(self.leafs, key)) arg = self.uri + "/" + key;
+						if ( self.uri !== null && arg === undefined && !array.contains( self.leafs, key ) ) arg = self.uri + "/" + key;
 						
 						// Conditionally making the store RESTful
-						if (arg !== undefined) {
-							self.records[idx].data.setUri(arg)
-							                      .then(function (arg) {
-							                      		deferred.resolve(arg);
-							                       }, function (e) {
-							                      		deferred.reject(e);
+						if ( arg !== undefined ) {
+							self.records[idx].data.setUri( arg )
+							                      .then( function (arg ) {
+							                      		deferred.resolve( arg );
+							                       }, function ( e ) {
+							                      		deferred.reject( e );
 							                       });
 						}
-						else deferred.resolve(self.records[idx].data.get());
+						else deferred.resolve( self.records[idx].data.records );
 					}
 				}
 			}
 
 			// Create stub or teardown existing data store
-			if (this.keys[key] !== undefined) {
+			if ( this.keys[key] !== undefined ) {
 				idx = this.keys[key];
-				if (typeof this.records[idx].data.teardown === "function") this.records[idx].data.teardown();
+
+				if ( typeof this.records[idx].data.teardown === "function" ) this.records[idx].data.teardown();
+
 				fn();
 			}
 			else {
-				this.set(key, {}, true).then(function (arg) {
+				this.set( key, {}, true).then( function ( arg ) {
 					idx = self.keys[arg.key];
-					self.collections.add(arg.key);
+					self.collections.add( arg.key );
 					fn();
 				});
 			}
@@ -758,25 +771,26 @@ var data = {
 		 * @param  {Number} offset [Optional] Offset from `record` for pagination
 		 * @return {Mixed}         Individual record, or Array of records
 		 */
-		get : function (record, offset) {
+		get : function ( record, offset ) {
 			var records = this.records,
 			    obj     = this.parentNode,
 			    type    = typeof record,
 			    self    = this,
 			    r;
 
-			if (type === "undefined" || String(record).length === 0) r = records;
-			else if (type === "string" && record.indexOf(",") > -1) {
+			if ( type === "undefined" || record.toString().length === 0 ) r = records;
+			else if ( type === "string" && record.indexOf( "," ) > -1 ) {
 				r = [];
-				array.each(string.explode(record), function (i) {
-					if (!isNaN(i)) i = parseInt(i);
-					r.push(self.get(i));
+				array.each( string.explode( record ), function ( i ) {
+					if ( !isNaN( i )) i = number.parse( i, 10 );
+					r.push( self.get( i ) );
 				});
 			}
-			else if (type === "string" && this.keys[record] !== undefined) r = records[this.keys[record]];
-			else if (type === "number" && offset === undefined)            r = records[parseInt(record)];
-			else if (type === "number" && typeof offset === "number")      r = records.limit(parseInt(record), parseInt(offset));
+			else if ( type === "string" && this.keys[record] !== undefined ) r = records[this.keys[record]];
+			else if ( type === "number" && offset === undefined)             r = records[number.parse( record, 10 )];
+			else if ( type === "number" && typeof offset === "number")       r = records.limit( number.parse( record, 10 ), number.parse( offset, 10 ) );
 			else r = undefined;
+
 			return r;
 		},
 
@@ -786,8 +800,8 @@ var data = {
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
-		purge : function (arg) {
-			return this.storage(arg || this, "remove");
+		purge : function ( arg ) {
+			return this.storage( arg || this, "remove" );
 		},
 
 		/**
@@ -799,17 +813,12 @@ var data = {
 		reindex : function () {
 			var nth = this.total,
 			    obj = this.parentNode,
-			    key = (this.key !== null),
 			    i   = -1;
 
 			this.views = {};
 
-			if (nth > 0) {
-				while (++i < nth) {
-					if (!key && this.records[i].key.isNumber()) {
-						delete this.keys[this.records[i].key];
-						this.records[i].key = i.toString();
-					}
+			if ( nth > 0 ) {
+				while ( ++i < nth ) {
 					this.keys[this.records[i].key] = i;
 				}
 			}
@@ -823,8 +832,8 @@ var data = {
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
-		restore : function (arg) {
-			return this.storage(arg || this, "get");
+		restore : function ( arg ) {
+			return this.storage( arg || this, "get" );
 		},
 
 		/**
@@ -833,8 +842,8 @@ var data = {
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
-		save : function (arg) {
-			return this.storage(arg || this, "set");
+		save : function ( arg ) {
+			return this.storage( arg || this, "set" );
 		},
 
 		/**
@@ -843,19 +852,19 @@ var data = {
 		 * @param  {Object} where  Object describing the WHERE clause
 		 * @return {Array}         Array of records
 		 */
-		select : function (where) {
+		select : function ( where ) {
 			var result;
 
-			if (!(where instanceof Object)) throw Error(label.error.invalidArguments);
+			if ( !( where instanceof Object ) ) throw Error( label.error.invalidArguments );
 
-			result = this.get().filter(function (rec) {
+			result = this.records.filter( function ( rec ) {
 				var match = true;
 
-				utility.iterate(where, function (v, k) {
+				utility.iterate( where, function ( v, k ) {
 					var type = typeof v;
 
-					if (type !== "function" && rec.data[k] !== v)    return (match = false);
-					else if (type === "function" && !v(rec.data[k])) return (match = false);
+					if ( type !== "function" && rec.data[k] !== v )      return ( match = false );
+					else if ( type === "function" && !v( rec.data[k] ) ) return ( match = false );
 				});
 
 				return match;
@@ -880,57 +889,58 @@ var data = {
 		 * @param  {Boolean} batch [Optional] True if called by data.batch
 		 * @return {Object}        Promise
 		 */
-		set : function (key, arg, batch) {
+		set : function ( key, arg, batch ) {
 			var self     = this,
 			    deferred = promise.factory(),
 			    data, deferred2, record, obj, method, events, args, uri, p, success, failure;
 
-			deferred2 = deferred.then(function (arg) {
+			deferred2 = deferred.then( function ( arg ) {
 				var data     = {data: null, key: arg.key, record: arg.record},
 				    deferred = promise.factory(),
 				    record, uri;
 
 				// Making sure nothing is by reference
-				data.data = utility.clone(arg.data);
+				data.data = utility.clone( arg.data );
 
-				deferred.then(function (arg) {
-					if (self.retrieve) self.crawl(arg);
+				deferred.then( function ( arg ) {
+					if ( self.retrieve ) self.crawl( arg );
 
-					if (!batch) {
-						array.each(self.datalists, function (i) {
-							if (i.ready) i.refresh();
+					if ( !batch ) {
+						array.each( self.datalists, function ( i ) {
+							i.refresh();
 						});
 					}
 
-					if (events) self.parentNode.fire("afterDataSet", arg);
-				}, function (e) {
-					if (events) self.parentNode.fire("failedDataSet", e);
+					if ( events ) observer.fire( self.parentNode, "afterDataSet", arg );
+				}, function ( e ) {
+					if ( events ) observer.fire( self.parentNode, "failedDataSet", e );
+
 					throw e;
 				});
 
 				self.views = {};
 
 				// Getting the record again due to scheduling via promises, via data.batch()
-				if (data.key !== undefined) data.record = self.get(data.key);
+				if ( data.key !== undefined ) data.record = self.get( data.key );
 
-				if (data.record === undefined) {
+				if ( data.record === undefined ) {
 					var index = self.total++;
 
-					if (data.key === undefined) {
-						if (data.result === undefined) {
+					if ( data.key === undefined ) {
+						if ( data.result === undefined ) {
 							self.total--;
-							deferred.reject(label.error.expectedObject);
+							deferred.reject( label.error.expectedObject );
 						}
 					
-						if (self.source !== null) data.result = utility.walk(data.result, self.source);
+						if ( self.source !== null ) data.result = utility.walk( data.result, self.source );
 					
-						if (self.key === null) data.key = array.cast(data.result).first();
+						if ( self.key === null ) data.key = array.cast( data.result )[0];
 						else {
 							data.key = data.result[self.key];
 							delete data.result[self.key];
 						}
 					
-						if (typeof data.key !== "string") data.key = data.key.toString();
+						if ( typeof data.key !== "string" ) data.key = data.key.toString();
 
 						data.data = data.result;
 					}
@@ -939,108 +949,113 @@ var data = {
 					self.records[index] = {key: data.key, data: {}};
 					record              = self.records[index];
 
-					if (self.pointer === null || data.data[self.pointer] === undefined) {
+					if ( self.pointer === null || data.data[self.pointer] === undefined ) {
 						record.data = data.data;
-						if (self.key !== null && record.data.hasOwnProperty(self.key)) delete record.data[self.key];
-						deferred.resolve(record);
+
+						if ( self.key !== null && record.data.hasOwnProperty( self.key ) ) delete record.data[self.key];
+
+						deferred.resolve( record );
 					}
 					else {
 						uri  = data.data[self.pointer];
 
-						if (uri === undefined || uri === null) {
+						if ( uri === undefined || uri === null ) {
 							delete self.records[index];
 							delete self.keys[data.key];
-							deferred.reject(label.error.expectedObject);
+							deferred.reject( label.error.expectedObject );
 						}
 
 						record.data = {};
 
-						uri.get(function (args) {
-							if (self.source !== null) args = utility.walk(args, self.source);
-							if (args[self.key] !== undefined) delete args[self.key];
+						client.request(uri, "GET", function ( args ) {
+							if ( self.source !== null) args = utility.walk( args, self.source );
+
+							if ( args[self.key] !== undefined ) delete args[self.key];
+
 							record.data = args;
-							deferred.resolve(record);
-						}, function (e) {
-							deferred.reject(e);
-						}, self.headers);
+							deferred.resolve( record );
+						}, function ( e ) {
+							deferred.reject( e );
+						}, self.headers );
 					}
 				}
 				else {
 					record = self.records[self.keys[data.record.key]];
 					record.data = data.data;
-					deferred.resolve(record);
+					deferred.resolve( record );
 				}
-			}, function (e) {
-				if (events) obj.fire("failedDataSet", e);
+			}, function ( e ) {
+				if ( events) observer.fire( obj, "failedDataSet", e );
+
 				throw e;
 			});
 
-			if (key instanceof Object) {
+			if ( key instanceof Object ) {
 				batch = arg;
 				arg   = key;
 				key   = null;
 			}
 
-			batch = (batch === true);
-			data  = utility.clone(arg);
+			batch = ( batch === true );
+			data  = utility.clone( arg );
 
-			if (key === null && this.uri === null) {
-				if (this.key === null || data[this.key] === undefined) key = utility.uuid();
+			if ( key === null && this.uri === null ) {
+				if ( this.key === null || data[this.key] === undefined ) key = utility.uuid();
 				else {
 					key = data[this.key];
 					delete data[this.key];
 				}
 			}
-			else if (key === null) key = undefined;
+			else if ( key === null ) key = undefined;
 
-			if (!(data instanceof Object)) throw Error(label.error.invalidArguments);
-			else if (data instanceof Array) {
-				return this.generate(key)
-				           .then(function () {
-				           		self.get(key).data.batch("set", data)
-				           		                  .then(function (arg) {
-				           		                  		deferred.resolve(arg);
-				           		                   }, function (e) {
-				           		                   		deferred.reject(e);
-				           		                   });
-				           });
+			if ( !( data instanceof Object ) ) throw Error( label.error.invalidArguments );
+			else if ( data instanceof Array ) {
+				return this.generate( key )
+				           .then( function () {
+				           		self.get( key ).data.batch( "set", data )
+				           		                    .then( function ( arg ) {
+				           		                    	deferred.resolve( arg );
+				           		                     }, function ( e ) {
+				           		                     	deferred.reject( e );
+				           		                     });
+				            });
 			}
 
-			record   = key === undefined ? undefined : this.get(key);
+			record   = key === undefined ? undefined : this.get( key );
 			obj      = this.parentNode;
 			method   = key === undefined ? "post" : "put";
-			events   = (this.events === true);
+			events   = ( this.events === true );
 			args     = {data: {}, key: key, record: undefined};
 			uri      = this.uri;
 
-			if (record !== undefined) {
+			if ( record !== undefined ) {
 				args.record = this.records[this.keys[record.key]];
-				utility.iterate(args.record.data, function (v, k) {
-					if (!array.contains(self.collections, k) && !array.contains(self.ignore, k)) args.data[k] = v;
+
+				utility.iterate( args.record.data, function ( v, k ) {
+					if ( !array.contains( self.collections, k ) && !array.contains( self.ignore, k ) ) args.data[k] = v;
 				});
+
 				args.data = data;
 			}
 			else args.data = data;
 
-			if (!batch && this.callback === null && uri !== null) {
-				if (record !== undefined) uri += "/" + record.key;
-				p = uri.allows(method);
+			if ( !batch && this.callback === null && uri !== null ) {
+				if ( record !== undefined ) uri += "/" + record.key;
+				p = client.allows( uri, method );
 			}
 
-			if (events) obj.fire("beforeDataSet", {key: key, data: data});
+			if ( events ) observer.fire( obj, "beforeDataSet", {key: key, data: data} );
 
-			if (batch || this.callback !== null || this.uri === null) deferred.resolve(args);
-			else if (regex.true_undefined.test(p)) {
-				uri[method](function (arg) {
+			if ( batch || this.callback !== null || this.uri === null ) deferred.resolve( args );
+			else if ( regex.true_undefined.test( p ) ) {
+				client.request( uri, method.toUpperCase(), function ( arg ) {
 					args["result"] = arg;
-					deferred.resolve(args);
-					return args;
-				}, function (e) {
-					deferred.reject(e);
-					return e;
-				}, data, utility.merge({withCredentials: this.credentials}, this.headers));
+					deferred.resolve( args );
+				}, function ( e ) {
+					deferred.reject( e );
+				}, data, utility.merge( {withCredentials: this.credentials}, this.headers ) );
 			}
-			else deferred.reject(args);
+			else deferred.reject( args );
 
 			return deferred2;
 		},
@@ -1052,27 +1067,27 @@ var data = {
 		 * @param  {Number} arg  Milliseconds until data is stale
 		 * @return {Object}      Data store
 		 */
-		setExpires : function (arg) {
+		setExpires : function ( arg ) {
 			// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
-			if ((arg !== null && this.uri === null) || (arg !== null && (isNaN(arg) || arg < 1000))) throw Error(label.error.invalidArguments);
+			if ( ( arg !== null && this.uri === null ) || ( arg !== null && ( isNaN( arg ) || arg < 1000 ) ) ) throw Error( label.error.invalidArguments );
 
-			if (this.expires === arg) return;
+			if ( this.expires === arg ) return;
 			this.expires = arg;
 
 			var id      = this.parentNode.id + "DataExpire",
 			    expires = arg,
 			    self    = this;
 
-			utility.clearTimers(id);
+			utility.clearTimers( id );
 
-			if (arg === null) return;
+			if ( arg === null ) return;
 
-			utility.repeat(function () {
-				if (self.uri === null) {
-					self.setExpires(null);
+			utility.repeat( function () {
+				if ( self.uri === null ) {
+					self.setExpires( null );
 					return false;
 				}
-				if (!cache.expire(self.uri)) self.uri.fire("beforeExpire, expire, afterExpire");
+				if ( !cache.expire( self.uri ) ) observer.fire( self.uri, "beforeExpire, expire, afterExpire" );
 			}, expires, id, false);
 		},
 
@@ -1083,27 +1098,30 @@ var data = {
 		 * @param  {String} arg [Optional] API collection end point
 		 * @return {Object}     Promise
 		 */
-		setUri : function (arg) {
+		setUri : function ( arg ) {
 			var deferred = promise.factory(),
 			    result;
 
-			if (arg !== null && arg.isEmpty()) throw Error(label.error.invalidArguments);
+			if ( arg !== null && string.isEmpty( arg ) ) throw Error( label.error.invalidArguments );
 
-			if (this.uri === arg) result = this.uri;
+			if ( this.uri === arg ) result = this.uri;
 			else {
-				if (this.uri !== null) this.uri.un();
+				if ( this.uri !== null) observer.remove( this.uri );
+
 				result = this.uri = arg;
 
-				if (result !== null) {
-					result.on("expire", function () {
-						this.sync(true);
+				if ( result !== null ) {
+					observer.add( result, "expire", function () {
+						this.sync( true );
 					}, "dataSync", this);
-					cache.expire(result, true);
-					this.sync(true)
-					    .then(function (arg) {
-					    	deferred.resolve(arg);
-					     }, function (e) {
-					    	deferred.reject(e);
+
+					cache.expire( result, true );
+
+					this.sync( true )
+					    .then( function (arg ) {
+					    	deferred.resolve( arg );
+					     }, function ( e ) {
+					    	deferred.reject( e );
 					     });
 				}
 			}
@@ -1115,151 +1133,165 @@ var data = {
 		 * Returns a view, or creates a view and returns it
 		 *
 		 * @method sort
-		 * @param  {String} query       SQL (style) order by
+		 * @param  {String} query       SQL ( style ) order by
 		 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
-		 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" (insensitive = "ci", sensitive = "cs", mixed = "ms")
+		 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" ( insensitive = "ci", sensitive = "cs", mixed = "ms" )
 		 * @param  {Object} where       Object describing the WHERE clause
 		 * @return {Array}              View of data
 		 */
-		sort : function (query, create, sensitivity, where) {
-			if (query === undefined || String(query).isEmpty()) throw Error(label.error.invalidArguments);
-			if (!regex.sensitivity_types.test(sensitivity)) sensitivity = "ci";
+		sort : function ( query, create, sensitivity, where ) {
+			if ( query === undefined || string.isEmpty( query ) ) throw Error( label.error.invalidArguments );
 
-			create       = (create === true);
-			var view     = (query.replace(/\s*asc/ig, "").explode().join(" ").toCamelCase()) + sensitivity.toUpperCase(),
-			    queries  = string.explode(query),
+			if ( !regex.sensitivity_types.test( sensitivity ) ) sensitivity = "ci";
+
+			create       = ( create === true );
+			var view     = ( query.replace( /\s*asc/ig, "" ).explode().join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
+			    queries  = string.explode( query ),
 			    key      = this.key,
 			    result   = [],
 			    bucket, sort, crawl;
 
-			array.each(queries, function (query) {
-				if (String(query).isEmpty()) throw Error(label.error.invalidArguments);
+			array.each( queries, function ( query ) {
+				if ( string.isEmpty( query ) ) throw Error( label.error.invalidArguments );
 			});
 
-			if (!create && this.views[view] instanceof Array) return this.views[view];
-			if (this.total === 0) return [];
+			if ( !create && this.views[view] instanceof Array ) return this.views[view];
+			if ( this.total === 0 ) return [];
 
-			crawl = function (q, data) {
-				var queries = q.clone(),
-				    query   = q.first(),
+			crawl = function ( q, data ) {
+				var queries = utility.clone( q ),
+				    query   = q[0],
 				    sorted  = {},
 				    result  = [];
 
-				queries.remove(0);
-				sorted = bucket(query, data, regex.desc.test(query));
-				array.each(sorted.order, function (i) {
-					if (sorted.registry[i].length < 2) return;
-					if (queries.length > 0) sorted.registry[i] = crawl(queries, sorted.registry[i]);
+				array.remove( queries, 0 );
+
+				sorted = bucket( query, data, regex.desc.test( query ) );
+
+				array.each( sorted.order, function ( i ) {
+					if ( sorted.registry[i].length < 2 ) return;
+					if ( queries.length > 0) sorted.registry[i] = crawl( queries, sorted.registry[i] );
 				});
-				array.each(sorted.order, function (i) {
-					result = result.concat(sorted.registry[i]);
+
+				array.each( sorted.order, function ( i ) {
+					result = result.concat( sorted.registry[i] );
 				});
+
 				return result;
 			}
 
-			bucket = function (query, records, reverse) {
-				query        = query.replace(/\s*asc/ig, "");
-				var prop     = query.replace(regex.desc, ""),
-				    pk       = (key === prop),
+			bucket = function ( query, records, reverse ) {
+				query        = query.replace( /\s*asc/ig, "" );
+				var prop     = query.replace( regex.desc, "" ),
+				    pk       = ( key === prop ),
 				    order    = [],
 				    registry = {};
 
-				array.each(records, function (r) {
+				array.each( records, function ( r ) {
 					var val = pk ? r.key : r.data[prop],
-					    k   = val === null ? "null" : String(val);
+					    k   = val === null ? "null" : val.toString();
 
-					switch (sensitivity) {
+					switch ( sensitivity ) {
 						case "ci":
-							k = k.toCamelCase();
+							k = string.toCamelCase( k );
 							break;
 						case "cs":
-							k = string.trim(k);
+							k = string.trim( k );
 							break;
 						case "ms":
-							k = string.trim(k).slice(0, 1).toLowerCase();
+							k = string.trim( k ).slice(0, 1).toLowerCase();
 							break;
 					}
 
-					if (!(registry[k] instanceof Array)) {
+					if ( !(registry[k] instanceof Array) ) {
 						registry[k] = [];
-						order.push(k);
+						order.push( k );
 					}
-					registry[k].push(r);
+
+					registry[k].push( r );
 				});
 
-				order.sort(array.sort);
-				if (reverse) order.reverse();
+				order.sort( array.sort );
+
+				if ( reverse) order.reverse();
 				
-				array.each(order, function (k) {
-					if (registry[k].length === 1) return;
-					registry[k] = sort(registry[k], query, prop, reverse, pk);
+				array.each( order, function ( k ) {
+					if ( registry[k].length === 1 ) return;
+
+					registry[k] = sort( registry[k], query, prop, reverse, pk );
 				});
 
 				return {order: order, registry: registry};
 			};
 
-			sort = function (data, query, prop, reverse, pk) {
+			sort = function ( data, query, prop, reverse, pk ) {
 				var tmp    = [],
 				    sorted = [];
 
-				array.each(data, function (i, idx) {
+				array.each( data, function ( i, idx ) {
 					var v  = pk ? i.key : i.data[prop];
 
-					v = string.trim(v.toString()) + ":::" + idx;
-					tmp.push(v.replace(regex.nil, "\"\""));
+					v = string.trim( v.toString() ) + ":::" + idx;
+					tmp.push( v.replace(regex.nil, "\"\"") );
 				});
 
-				if (tmp.length > 1) {
-					tmp.sort(array.sort);
-					if (reverse) tmp.reverse();
+				if ( tmp.length > 1 ) {
+					tmp.sort( array.sort );
+					if ( reverse) tmp.reverse();
 				}
 
-				array.each(tmp, function (v) {
-					sorted.push(data[regex.sort_needle.exec(v)[1]]);
+				array.each( tmp, function ( i ) {
+					sorted.push( data[regex.sort_needle.exec( i )[1]] );
 				});
+
 				return sorted;
 			};
 
-			result           = crawl(queries, where === undefined ? this.records : this.select(where));
+			result           = crawl( queries, where === undefined ? this.records : this.select( where ) );
 			this.views[view] = result;
+
 			return result;
 		},
 
 		/**
 		 * Storage interface
 		 * 
-		 * @param  {Mixed}  obj  Record (Object, key or index) or store
-		 * @param  {Object} op   Operation to perform (get, remove or set)
-		 * @param  {String} type [Optional] Type of Storage to use (local or session, default is local)
+		 * @param  {Mixed}  obj  Record ( Object, key or index ) or store
+		 * @param  {Object} op   Operation to perform ( get, remove or set )
+		 * @param  {String} type [Optional] Type of Storage to use ( local or session, default is local )
 		 * @return {Object}      Record or store
 		 */
-		storage : function (obj, op, type) {
+		storage : function ( obj, op, type ) {
 			var record  = false,
 			    self    = this,
-			    session = (type === "session" && typeof sessionStorage !== "undefined"),
+			    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
 			    result, key, data;
 
-			if (!regex.number_string_object.test(typeof obj) || !regex.get_remove_set.test(op)) throw Error(label.error.invalidArguments);
+			if ( !regex.number_string_object.test( typeof obj ) || !regex.get_remove_set.test( op ) ) throw Error( label.error.invalidArguments );
 
-			record = (regex.number_string.test(obj) || (obj.hasOwnProperty("key") && !obj.hasOwnProperty("parentNode")));
-			if (record && !(obj instanceof Object)) obj = this.get(obj);
+			record = ( regex.number_string.test( obj ) || ( obj.hasOwnProperty( "key" ) && !obj.hasOwnProperty( "parentNode" ) ) );
+
+			if ( record && !( obj instanceof Object ) ) obj = this.get( obj );
+
 			key    = record ? obj.key : obj.parentNode.id;
 
-			switch (op) {
+			switch ( op ) {
 				case "get":
-					result = session ? sessionStorage.getItem(key) : localStorage.getItem(key);
-					if (result === null) throw Error(label.error.invalidArguments);
-					result = json.decode(result);
-					record ? this.set(key, result, true) : utility.merge(this, result);
+					result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
+
+					if ( result === null ) throw Error( label.error.invalidArguments );
+
+					result = json.decode( result );
+					record ? this.set( key, result, true ) : utility.merge( this, result );
 					result = record ? obj : this;
 					break;
 				case "remove":
-					session ? sessionStorage.removeItem(key) : localStorage.removeItem(key);
+					session ? sessionStorage.removeItem( key ) : localStorage.removeItem( key );
 					result = this;
 					break;
 				case "set":
-					data = json.encode(record ? obj.data : {total: this.total, keys: this.keys, records: this.records});
-					session ? sessionStorage.setItem(key, data) : localStorage.setItem(key, data);
+					data = json.encode( record ? obj.data : {total: this.total, keys: this.keys, records: this.records} );
+					session ? sessionStorage.setItem( key, data ) : localStorage.setItem( key, data );
 					result = this;
 					break;
 			}
@@ -1278,66 +1310,68 @@ var data = {
 		 * @param  {Boolean} reindex [Optional] True will reindex the data store
 		 * @return {Object}          Promise
 		 */
-		sync : function (reindex) {
-			if (this.uri === null || this.uri.isEmpty()) throw Error(label.error.invalidArguments);
+		sync : function ( reindex ) {
+			if ( this.uri === null || string.isEmpty( this.uri ) ) throw Error( label.error.invalidArguments );
 
-			reindex       = (reindex === true);
+			reindex       = ( reindex === true );
 			var self      = this,
-			    events    = (this.events === true),
+			    events    = ( this.events === true ),
 			    obj       = self.parentNode,
 			    deferred1 = promise.factory(),
 			    deferred2 = promise.factory(),
 			    deferred3, success, failure;
 
-			deferred1.then(function (arg) {
-				if (typeof arg !== "object") throw Error(label.error.expectedObject);
+			deferred1.then( function ( arg ) {
+				if ( typeof arg !== "object" ) throw Error( label.error.expectedObject );
 
 				var found = false,
 				    data;
 
-				if (self.source !== null) arg = utility.walk(arg, self.source);
+				if ( self.source !== null ) arg = utility.walk( arg, self.source );
 
-				if (arg instanceof Array) data = arg;
-				else utility.iterate(arg, function (i) {
-					if (!found && i instanceof Array) {
+				if ( arg instanceof Array ) data = arg;
+				else utility.iterate( arg, function ( i ) {
+					if ( !found && i instanceof Array ) {
 						found = true;
 						data  = i;
 					}
 				});
 
-				if (data === undefined) data = [arg];
+				if ( data === undefined ) data = [arg];
 
-				self.batch("set", data, true, undefined)
-				    .then(function (arg) {
-				    	deferred2.resolve(arg);
-				    }, function (e) {
-				    	deferred2.reject(e);
-				    });
+				self.batch( "set", data, true, undefined )
+				    .then( function ( arg ) {
+				    	deferred2.resolve( arg );
+				     }, function ( e ) {
+				    	deferred2.reject( e );
+				     });
+
 				return data;
-			}, function (e) {
-				deferred2.reject(e);
+			}, function ( e ) {
+				deferred2.reject( e );
 			});
 
-			deferred3 = deferred2.then(function (arg) {
-				if (reindex) self.reindex();
-				if (events) obj.fire("afterDataSync", arg);
-			}, function (e) {
-				if (events) obj.fire("failedDataSync", e);
+			deferred3 = deferred2.then( function ( arg ) {
+				if ( reindex ) self.reindex();
+				if ( events ) observer.fire( obj, "afterDataSync", arg );
+			}, function ( e ) {
+				if ( events ) observer.fire( obj, "failedDataSync", e );
+
 				throw e;
 			});
 
-			success = function (arg) {
-				deferred1.resolve(arg);
+			success = function ( arg ) {
+				deferred1.resolve( arg );
 			};
 
-			failure = function (e) {
-				deferred1.reject(e);
+			failure = function ( e ) {
+				deferred1.reject( e );
 			};
 
-			if (events) obj.fire("beforeDataSync");
+			if ( events) observer.fire( obj, "beforeDataSync" );
 
-			this.callback !== null ? client.jsonp(this.uri, success, failure, {callback: this.callback})
-			                       : client.request(this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers));
+			this.callback !== null ? client.jsonp( this.uri, success, failure, {callback: this.callback} )
+			                       : client.request( this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers) );
 
 			return deferred3;
 		},
@@ -1349,34 +1383,36 @@ var data = {
 		 */
 		teardown : function () {
 			var uri = this.uri,
-			    records, id;
+			    id;
 
-			if (uri !== null) {
-				cache.expire(uri, true);
-				observer.remove(uri);
+			if ( uri !== null ) {
+				cache.expire( uri, true );
+				observer.remove( uri );
 
 				id = this.parentNode.id + "DataExpire";
-				utility.clearTimers(id);
+				utility.clearTimers( id );
 
-				array.each(this.datalists, function (i) {
+				array.each( this.datalists, function (i ) {
 					i.teardown();
 				});
 
-				records = this.get();
-				array.each(records, function (i) {
-					cache.expire((uri + "/" + i.key), true);
-					observer.remove(uri + "/" + i.key);
-					utility.iterate(i.data, function (v, k) {
-						if (v === null) return;
-						if (v.hasOwnProperty("data") && typeof v.data.teardown === "function") {
-							observer.remove(v.id);
+				array.each( this.records, function ( i ) {
+					cache.expire( (uri + "/" + i.key), true );
+					observer.remove( uri + "/" + i.key );
+					utility.iterate( i.data, function ( v, k ) {
+						if ( v === null ) return;
+
+						if ( v.hasOwnProperty("data") && typeof v.data.teardown === "function" ) {
+							observer.remove( v.id );
 							v.data.teardown();
 						}
 					});
 				});
 			}
-			this.clear(true);
-			this.parentNode.fire("afterDataTeardown");
+
+			this.clear( true );
+			observer.fire( this.parentNode, "afterDataTeardown" );
+
 			return this;
 		},
 
@@ -1387,20 +1423,20 @@ var data = {
 		 * @param  {Object} data Key:Value pairs to set as field values
 		 * @return {Object}      Promise
 		 */
-		update : function (key, data) {
-			var record = this.get(key),
+		update : function ( key, data ) {
+			var record = this.get( key ),
 			    self   = this,
 			    args, deferred;
 
-			if (record === undefined) throw Error(label.error.invalidArguments);
+			if ( record === undefined ) throw Error( label.error.invalidArguments );
 
-			args     = utility.merge(record.data, data);
+			args     = utility.merge( record.data, data );
 			deferred = promise.factory();
 
-			this.set(key, args).then(function (arg) {
-				deferred.resolve(arg);
-			}, function (e) {
-				error(e, arguments, self);
+			this.set( key, args ).then( function ( arg ) {
+				deferred.resolve( arg );
+			}, function ( e ) {
+				error( e, arguments, self );
 			});
 
 			return deferred;
@@ -1417,7 +1453,7 @@ var data = {
  * @param  {Object} obj Object being decorated with a DataStore
  * @return {Object}     Instance of DataStore
  */
-function DataStore (obj) {
+function DataStore ( obj ) {
 	this.parentNode = obj;
 	this.clear();
 };

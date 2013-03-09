@@ -51,7 +51,7 @@ module.exports = function (grunt) {
 			all : ["test/*.js"]
 		},
 		shell: {
-			cleanup : {
+			prepare : {
 				command : "rm -rf lib/compressed/*"
 			},
 			copy : {
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
 					except: ["abaaso", "DataList", "DataListFilter", "DataStore", "Promise"]
 				}
 			},
-			target: {
+			dist: {
 				options : {
 					sourceMap : "lib/<%= pkg.name %>.source-map.js",
 					sourceMappingURL : "<%= pkg.name %>.source-map.js",

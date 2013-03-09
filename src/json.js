@@ -13,12 +13,12 @@ var json = {
 	 * @param  {Boolean} silent [Optional] Silently fail
 	 * @return {Mixed}          Entity resulting from parsing JSON, or undefined
 	 */
-	decode : function (arg, silent) {
+	decode : function ( arg, silent ) {
 		try {
-			return JSON.parse(arg);
+			return JSON.parse( arg );
 		}
-		catch (e) {
-			if (silent !== true) error(e, arguments, this);
+		catch ( e ) {
+			if ( silent !== true ) error( e, arguments, this );
 			return undefined;
 		}
 	},
@@ -31,12 +31,12 @@ var json = {
 	 * @param  {Boolean} silent [Optional] Silently fail
 	 * @return {String}         JSON, or undefined
 	 */
-	encode : function (arg, silent) {
+	encode : function ( arg, silent ) {
 		try {
-			return JSON.stringify(arg);
+			return JSON.stringify( arg );
 		}
-		catch (e) {
-			if (silent !== true) error(e, arguments, this);
+		catch ( e ) {
+			if ( silent !== true) error( e, arguments, this );
 			return undefined;
 		}
 	}
