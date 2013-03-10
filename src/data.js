@@ -1711,8 +1711,30 @@ var data = {
  * @return {Object}     Instance of DataStore
  */
 function DataStore ( obj ) {
-	this.parentNode = obj;
-	this.clear();
+	this.parentNode  = obj;
+	this.callback    = null;
+	this.collections = [];
+	this.crawled     = false;
+	this.credentials = null;
+	this.datalists   = [];
+	this.depth       = 0;
+	this.events      = true;
+	this.expires     = null;
+	this.headers     = {Accept: "application/json"};
+	this.ignore      = [];
+	this.key         = null;
+	this.keys        = {};
+	this.leafs       = [];
+	this.loaded      = false;
+	this.maxDepth    = 0;
+	this.pointer     = null;
+	this.records     = [];
+	this.recursive   = false;
+	this.retrieve    = false;
+	this.source      = null;
+	this.total       = 0;
+	this.views       = {};
+	this.uri         = null;
 };
 
 // Setting prototype & constructor loop
