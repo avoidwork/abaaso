@@ -1,6 +1,7 @@
-( function ( global ) {
+( function () {
 
-var document  = global.document,
+var global    = this,
+    document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof exports !== "undefined",
@@ -24,7 +25,7 @@ if ( server ) {
 	}
 }
 
-abaaso = function () {
+abaaso = function namespace () {
 "use strict";
 
 var $, bootstrap, error, external;

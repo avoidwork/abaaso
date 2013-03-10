@@ -206,8 +206,8 @@ var utility = {
 		var result = utility.clone( value ),
 		    tmp;
 
-		if ( !isNaN( number.parse( result ) ) ) {
-			result = number.parse( result );
+		if ( !isNaN( Number( result ) ) ) {
+			result = Number( result );
 		}
 		else if ( regex.string_boolean.test( result ) ) {
 			result = regex.string_true.test( result );

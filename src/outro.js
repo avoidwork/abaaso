@@ -15,4 +15,4 @@ else if ( typeof define === "function") {
 else {
 	global.abaaso = abaaso;
 }
-})( this );
+})();
