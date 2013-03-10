@@ -16,7 +16,7 @@ var xml = {
 		try {
 			var x;
 
-			if ( typeof arg !== "string" || arg.isEmpty() ) throw Error( label.error.invalidArguments );
+			if ( typeof arg !== "string" || string.isEmpty( arg ) ) throw Error( label.error.invalidArguments );
 
 			if ( client.ie ) {
 				x = new ActiveXObject( "Microsoft.XMLDOM" );

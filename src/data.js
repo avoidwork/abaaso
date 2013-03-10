@@ -21,14 +21,20 @@ var data = {
 		utility.genId( obj );
 
 		// Decorating observer if not present in prototype chain
-		if ( typeof obj.fire !== "function" ) observer.decorate( obj );
+		if ( typeof obj.fire !== "function" ) {
+			observer.decorate( obj );
+		}
 
 		// Creating store
 		obj.data = new DataStore( obj );
 
-		if ( args instanceof Object ) utility.merge( obj.data, args );
+		if ( args instanceof Object ) {
+			utility.merge( obj.data, args );
+		}
 
-		if ( recs !== null && typeof recs === "object" ) obj.data.batch( "set", recs );
+		if ( recs !== null && typeof recs === "object" ) {
+			obj.data.batch( "set", recs );
+		}
 
 		return obj;
 	},
@@ -54,7 +60,9 @@ var data = {
 			sync    = ( sync === true );
 			chunk   = chunk || 1000;
 
-			if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) throw Error( label.error.invalidArguments );
+			if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			var obj      = this.parentNode,
 			    self     = this,
@@ -68,15 +76,21 @@ var data = {
 			deferred2 = deferred.then( function ( arg ) {
 				self.loaded = true;
 
-				if ( regex.del.test( type ) ) self.reindex();
+				if ( regex.del.test( type ) ) {
+					self.reindex();
+				}
 
 				array.each( self.datalists, function ( i ) {
 					i.refresh( true );
 				});
 
-				if ( events ) observer.fire( obj, "afterDataBatch", arg );
+				if ( events ) {
+					observer.fire( obj, "afterDataBatch", arg );
+				}
 			}, function ( e ) {
-				if ( events ) observer.fire( obj, "failedDataBatch", e );
+				if ( events ) {
+					observer.fire( obj, "failedDataBatch", e );
+				}
 
 				throw e;
 			});
@@ -94,10 +108,14 @@ var data = {
 				    deferred = promise.factory(),
 				    rec      = {};
 
-				if ( typeof data.batch !== "function" ) rec = data;
-				else utility.iterate( data, function ( v, k ) {
-					if ( !array.contains( self.collections, k ) ) rec[k] = v;
-				});
+				if ( typeof data.batch !== "function" ) {
+					rec = data;
+				}
+				else {
+					utility.iterate( data, function ( v, k ) {
+						if ( !array.contains( self.collections, k ) ) rec[k] = v;
+					});
+				}
 
 				if ( self.key !== null && rec[self.key] !== undefined ) {
 					key = rec[self.key];
@@ -135,13 +153,17 @@ var data = {
 				var deferred = promise.factory();
 
 				deferred.then( function ( arg ) {
-					if ( ++r === nth ) complete( arg );
+					if ( ++r === nth ) {
+						complete( arg );
+					}
+
 					return arg;
 				}, function ( arg ) {
 					if ( !f ) {
 						f = true;
 						failure( arg );
 					}
+
 					return arg;
 				});
 
@@ -153,11 +175,17 @@ var data = {
 				     });
 			};
 
-			if ( events ) observer.fire( obj, "beforeDataBatch", data );
+			if ( events ) {
+				observer.fire( obj, "beforeDataBatch", data );
+			}
 
-			if ( sync ) this.clear( sync );
+			if ( sync ) {
+				this.clear( sync );
+			}
 
-			if ( data.length === 0 ) complete( [] );
+			if ( data.length === 0 ) {
+				complete( [] );
+			}
 			else {
 				if ( type === "set" ) {
 					array.each( array.chunk( data, chunk ), function ( a, adx ) {
@@ -169,10 +197,14 @@ var data = {
 								i   = {};
 							}
 
-							if ( typeof i === "object" ) set( i, utility.uuid() );
+							if ( typeof i === "object" ) {
+								set( i, utility.uuid() );
+							}
 							else if ( i.indexOf( "//" ) === -1 ) {
 								// Relative path to store, i.e. a child
-								if ( i.charAt( 0 ) !== "/" ) i = self.uri + "/" + i;
+								if ( i.charAt( 0 ) !== "/" ) {
+									i = self.uri + "/" + i;
+								}
 
 								// Root path, relative to store, i.e. a domain
 								else if ( self.uri !== null && regex.root.test( i ) ) {
@@ -182,7 +214,9 @@ var data = {
 
 								idx = i.replace( regex.not_endpoint, "" );
 
-								if ( string.isEmpty( idx ) ) return;
+								if ( string.isEmpty( idx ) ) {
+									return;
+								}
 
 								client.request( i, "GET", function ( arg ) {
 									set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
@@ -191,17 +225,19 @@ var data = {
 							else {
 								idx = i.replace( regex.not_endpoint, "" );
 
-								if ( string.isEmpty( idx ) ) return;
+								if ( string.isEmpty( idx ) ) {
+									return;
+								}
 
-								client.request( i, "GET", function (arg ) {
-									set( self.source === null ? arg : utility.walk(arg, self.source), idx );
+								client.request( i, "GET", function ( arg ) {
+									set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
 								}, failure, utility.merge( {withCredentials: self.credentials}, self.headers) );
 							}
 						});
 					});
 				}
 				else {
-					array.each( data.sort(array.sort).reverse(), function (i ) {
+					array.each( data.sort( array.sort ).reverse(), function ( i ) {
 						del( i );
 					});
 				}
@@ -226,7 +262,10 @@ var data = {
 			    events = ( this.events === true );
 
 			if ( !sync ) {
-				if ( events ) observer.fire( obj, "beforeDataClear" );
+				if ( events ) {
+					observer.fire( obj, "beforeDataClear" );
+				}
+
 				this.callback    = null;
 				this.collections = [];
 				this.crawled     = false;
@@ -250,7 +289,10 @@ var data = {
 				this.total       = 0;
 				this.views       = {};
 				this.uri         = null;
-				if ( events ) observer.fire( obj, "afterDataClear" );
+
+				if ( events ) {
+					observer.fire( obj, "afterDataClear" );
+				}
 			}
 			else {
 				this.collections = [];
@@ -285,7 +327,9 @@ var data = {
 			    nth      = 0,
 			    build, complete, deferred2, setup;
 
-			if ( record === undefined ) throw Error( label.error.invalidArguments );
+			if ( record === undefined ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			this.crawled = true;
 
@@ -305,7 +349,9 @@ var data = {
 				var result = "",
 				    parsed;
 
-				if ( /\/\//.test( entity ) ) result = entity;
+				if ( /\/\//.test( entity ) ) {
+					result = entity;
+				}
 				else if ( entity.charAt( 0 ) === "/" && store.charAt( 0 ) !== "/" ) {
 					parsed = utility.parse( store );
 					result = parsed.protocol + "//" + parsed.host + entity;
@@ -322,7 +368,9 @@ var data = {
 			 * @return {Undefined} undefined
 			 */
 			complete = function () {
-				if ( ++i === nth ) deferred.resolve( nth );
+				if ( ++i === nth ) {
+					deferred.resolve( nth );
+				}
 			};
 
 			/**
@@ -337,7 +385,9 @@ var data = {
 			setup = function ( key, self ) {
 				var obj = {};
 
-				if ( !array.contains( self.collections, key ) ) self.collections.push( key );
+				if ( !array.contains( self.collections, key ) ) {
+					self.collections.push( key );
+				}
 
 				obj = data.decorator( {id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone( self.ignore ), leafs: utility.clone( self.leafs ), depth: self.depth + 1, maxDepth: self.maxDepth} );
 				obj.data.headers = utility.merge( obj.data.headers, self.headers );
@@ -354,16 +404,22 @@ var data = {
 			utility.iterate( record.data, function ( v, k ) {
 				var deferred, store, parsed;
 
-				if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) ) return;
+				if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) ) {
+					return;
+				}
 
 				nth      = array.cast( record.data ).length;
 				deferred = promise.factory();
 				deferred.then( function ( arg ) {
-					if ( events ) observer.fire( record.data[k], "afterDataRetrieve", arg );
+					if ( events ) {
+						observer.fire( record.data[k], "afterDataRetrieve", arg );
+					}
 
 					complete();
 				}, function ( e ) {
-					if ( events) observer.fire( record.data[k], "failedDataRetrieve", e );
+					if ( events) {
+						observer.fire( record.data[k], "failedDataRetrieve", e );
+					}
 
 					complete();
 				});
@@ -414,7 +470,9 @@ var data = {
 		 * @return {Object}          Promise
 		 */
 		del : function ( record, reindex, batch ) {
-			if ( record === undefined || !regex.number_string.test( typeof record ) ) throw Error( label.error.invalidArguments );
+			if ( record === undefined || !regex.number_string.test( typeof record ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			reindex      = ( reindex !== false );
 			batch        = ( batch === true );
@@ -433,11 +491,18 @@ var data = {
 				self.views = {};
 
 				utility.iterate( record.data, function ( v, k ) {
-					if ( v === null ) return;
-					if ( v.data !== undefined && typeof v.data.teardown === "function") v.data.teardown();
+					if ( v === null ) {
+						return;
+					}
+
+					if ( v.data !== undefined && typeof v.data.teardown === "function") {
+						v.data.teardown();
+					}
 				});
 
-				if ( arg.reindex ) self.reindex();
+				if ( arg.reindex ) {
+					self.reindex();
+				}
 
 				if ( !batch ) {
 					array.each( self.datalists, function ( i ) {
@@ -445,9 +510,13 @@ var data = {
 					});
 				}
 
-				if ( events ) observer.fire( obj, "afterDataDelete", record );
+				if ( events ) {
+					observer.fire( obj, "afterDataDelete", record );
+				}
 			}, function ( e ) {
-				if ( events ) observer.fire( obj, "failedDataDelete", e );
+				if ( events ) {
+					observer.fire( obj, "failedDataDelete", e );
+				}
 
 				throw e;
 			});
@@ -455,11 +524,18 @@ var data = {
 			if ( typeof record === "string" ) {
 				key    = record;
 				record = this.keys[key];
-				if ( record === undefined ) throw Error( label.error.invalidArguments );
+
+				if ( record === undefined ) {
+					throw Error( label.error.invalidArguments );
+				}
 			}
 			else {
 				key = this.records[record];
-				if ( key === undefined ) throw Error( label.error.invalidArguments );
+
+				if ( key === undefined ) {
+					throw Error( label.error.invalidArguments );
+				}
+
 				key = key.key;
 			}
 
@@ -470,9 +546,13 @@ var data = {
 				p   = uri.allows( "delete" );
 			}
 
-			if ( events ) observer.fire( obj, "beforeDataDelete", args );
+			if ( events ) {
+				observer.fire( obj, "beforeDataDelete", args );
+			}
 
-			if ( batch || this.callback !== null || this.uri === null ) deferred.resolve( args );
+			if ( batch || this.callback !== null || this.uri === null ) {
+				deferred.resolve( args );
+			}
 			else if ( regex.true_undefined.test( p ) ) {
 				client.request(uri, "DELETE", function ( arg ) {
 					deferred.resolve( args );
@@ -480,7 +560,9 @@ var data = {
 					deferred.reject( e );
 				}, utility.merge( {withCredentials: this.credentials}, this.headers) );
 			}
-			else deferred.reject( args );
+			else {
+				deferred.reject( args );
+			}
 
 			return deferred2;
 		},
@@ -495,7 +577,9 @@ var data = {
 		 * @return {Array}            Array of results
 		 */
 		find : function ( needle, haystack, modifiers ) {
-			if ( needle === undefined ) throw Error( label.error.invalidArguments );
+			if ( needle === undefined ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			var result = [],
 			    keys   = [],
@@ -503,13 +587,20 @@ var data = {
 			    fn     = typeof needle === "function";
 
 			// Blocking unnecessary ops
-			if ( this.total === 0 ) return result;
+			if ( this.total === 0 ) {
+				return result;
+			}
 
 			// Preparing parameters
 			if ( !fn ) {
 				needle = typeof needle === "string" ? string.explode( needle ) : [needle];
-				if ( modifiers === undefined || string.isEmpty( modifiers ) ) modifiers = "gi";
-				else if ( modifiers === null ) modifiers = "";
+
+				if ( modifiers === undefined || string.isEmpty( modifiers ) ) {
+					modifiers = "gi";
+				}
+				else if ( modifiers === null ) {
+					modifiers = "";
+				}
 			}
 
 			haystack = typeof haystack === "string" ? string.explode( haystack ) : null;
@@ -519,9 +610,13 @@ var data = {
 				array.each( this.records, function ( r ) {
 					if ( !fn ) {
 						utility.iterate( r.data, function ( v, k ) {
-							if ( array.contains( keys, r.key ) ) return false;
+							if ( array.contains( keys, r.key ) ) {
+								return false;
+							}
 
-							if ( v === null || typeof v.data === "object" ) return;
+							if ( v === null || typeof v.data === "object" ) {
+								return;
+							}
 
 							array.each( needle, function ( n ) {
 								utility.compile( regex, n, modifiers );
@@ -545,9 +640,13 @@ var data = {
 			else {
 				array.each( this.records, function ( r ) {
 					array.each( haystack, function ( h ) {
-						if ( array.contains( keys, r.key ) ) return false;
+						if ( array.contains( keys, r.key ) ) {
+							return false;
+						}
 
-						if ( r.data[h] === undefined || typeof r.data[h].data === "object" ) return;
+						if ( r.data[h] === undefined || typeof r.data[h].data === "object" ) {
+							return;
+						}
 
 						if ( !fn ) {
 							array.each( needle, function ( n ) {
@@ -594,21 +693,37 @@ var data = {
 			    events = ( this.events === true ),
 			    entity, obj, handler, structure, key, data;
 
-			if ( empty ) record = this.get( 0 );
-			else if ( !( record instanceof Object ) ) record = this.get( record );
+			if ( empty ) {
+				record = this.get( 0 );
+			}
+			else if ( !( record instanceof Object ) ) {
+				record = this.get( record );
+			}
 
-			if ( record === undefined ) throw Error( label.error.invalidArguments );
-			else if ( this.uri !== null && !client.allows( this.uri, "post" ) ) throw Error( label.error.serverInvalidMethod );
+			if ( record === undefined ) {
+				throw Error( label.error.invalidArguments );
+			}
+			else if ( this.uri !== null && !client.allows( this.uri, "post" ) ) {
+				throw Error( label.error.serverInvalidMethod );
+			}
 
 			key  = record.key;
 			data = record.data;
 
-			if ( target !== undefined ) target = utility.object( target );
+			if ( target !== undefined ) {
+				target = utility.object( target );
+			}
+
 			if ( this.uri !== null ) {
 				entity = this.uri.replace( /.*\//, "" ).replace( /\?.*/, "" )
-				if ( string.isDomain( entity ) ) entity = entity.replace( /\..*/g, "" );
+
+				if ( string.isDomain( entity ) ) {
+					entity = entity.replace( /\..*/g, "" );
+				}
 			}
-			else entity = "record";
+			else {
+				entity = "record";
+			}
 
 			/**
 			 * Button handler
@@ -626,12 +741,16 @@ var data = {
 
 				utility.stop( e );
 
-				if ( test ) result = element.validate( form );
+				if ( test ) {
+					result = element.validate( form );
+				}
 
 				switch ( result ) {
 					case true:
 						array.each( nodes, function ( i ) {
-							if ( i.type !== undefined && regex.input_button.test( i.type ) ) return;
+							if ( i.type !== undefined && regex.input_button.test( i.type ) ) {
+								return;
+							}
 
 							utility.define( i.name.replace( "[", "." ).replace( "]", "" ), i.value, newData );
 						});
@@ -664,7 +783,9 @@ var data = {
 							structure( o, obj, name + "[" + k + "][" + ( x++ ) + "]" );
 						});
 					}
-					else if ( v instanceof Object ) structure( v, obj, name + "[" + k + "]" );
+					else if ( v instanceof Object ) {
+						structure( v, obj, name + "[" + k + "]" );
+					}
 					else {
 						id = ( name + "[" + k + "]" ).replace( /\[|\]/g, "" );
 						obj.create( "label", {"for": id, innerHTML: string.capitalize( k )} );
@@ -675,9 +796,11 @@ var data = {
 
 			obj = element.create( "form", { style: "display:none;"}, target );
 			structure( data, obj, entity );
+
 			observer.add( element.create( "input", {type: "button", value: label.common.submit}, obj ), "click", function ( e ) {
 				handler( e );
 			});
+
 			element.create( "input", {type: "reset", value: label.common.reset}, obj );
 			element.css( obj, "display", "inherit" );
 
@@ -719,14 +842,19 @@ var data = {
 
 			fn = function () {
 				// Creating new child data store
-				if ( typeof arg === "object" ) recs = arg;
+				if ( typeof arg === "object" ) {
+					recs = arg;
+				}
+
 				if ( params.maxDepth === 0 || params.depth <= params.maxDepth ) {
 					self.records[idx] = data.decorator( {id: key}, recs, params );
 
 					// Not batching in a data set
 					if ( recs === null ) {
 						// Constructing relational URI
-						if ( self.uri !== null && arg === undefined && !array.contains( self.leafs, key ) ) arg = self.uri + "/" + key;
+						if ( self.uri !== null && arg === undefined && !array.contains( self.leafs, key ) ) {
+							arg = self.uri + "/" + key;
+						}
 						
 						// Conditionally making the store RESTful
 						if ( arg !== undefined ) {
@@ -737,7 +865,9 @@ var data = {
 							                      		deferred.reject( e );
 							                       });
 						}
-						else deferred.resolve( self.records[idx].data.records );
+						else {
+							deferred.resolve( self.records[idx].data.records );
+						}
 					}
 				}
 			}
@@ -746,7 +876,9 @@ var data = {
 			if ( this.keys[key] !== undefined ) {
 				idx = this.keys[key];
 
-				if ( typeof this.records[idx].data.teardown === "function" ) this.records[idx].data.teardown();
+				if ( typeof this.records[idx].data.teardown === "function" ) {
+					this.records[idx].data.teardown();
+				}
 
 				fn();
 			}
@@ -778,18 +910,28 @@ var data = {
 			    self    = this,
 			    r;
 
-			if ( type === "undefined" || record.toString().length === 0 ) r = records;
+			if ( type === "undefined" || record.toString().length === 0 ) {
+				r = records;
+			}
 			else if ( type === "string" && record.indexOf( "," ) > -1 ) {
 				r = [];
 				array.each( string.explode( record ), function ( i ) {
-					if ( !isNaN( i )) i = number.parse( i, 10 );
+					if ( !isNaN( i )) {
+						i = number.parse( i, 10 );
+					}
+
 					r.push( self.get( i ) );
 				});
 			}
-			else if ( type === "string" && this.keys[record] !== undefined ) r = records[this.keys[record]];
-			else if ( type === "number" && offset === undefined)             r = records[number.parse( record, 10 )];
-			else if ( type === "number" && typeof offset === "number")       r = records.limit( number.parse( record, 10 ), number.parse( offset, 10 ) );
-			else r = undefined;
+			else if ( type === "string" && this.keys[record] !== undefined ) {
+				r = records[this.keys[record]];
+			}
+			else if ( type === "number" && offset === undefined) {
+				r = records[number.parse( record, 10 )];
+			}
+			else if ( type === "number" && typeof offset === "number") {
+				r = records.limit( number.parse( record, 10 ), number.parse( offset, 10 ) );
+			}
 
 			return r;
 		},
@@ -855,7 +997,9 @@ var data = {
 		select : function ( where ) {
 			var result;
 
-			if ( !( where instanceof Object ) ) throw Error( label.error.invalidArguments );
+			if ( !( where instanceof Object ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			result = this.records.filter( function ( rec ) {
 				var match = true;
@@ -863,8 +1007,12 @@ var data = {
 				utility.iterate( where, function ( v, k ) {
 					var type = typeof v;
 
-					if ( type !== "function" && rec.data[k] !== v )      return ( match = false );
-					else if ( type === "function" && !v( rec.data[k] ) ) return ( match = false );
+					if ( type !== "function" && rec.data[k] !== v ) {
+						return ( match = false );
+					}
+					else if ( type === "function" && !v( rec.data[k] ) ) {
+						return ( match = false );
+					}
 				});
 
 				return match;
@@ -903,7 +1051,9 @@ var data = {
 				data.data = utility.clone( arg.data );
 
 				deferred.then( function ( arg ) {
-					if ( self.retrieve ) self.crawl( arg );
+					if ( self.retrieve ) {
+						self.crawl( arg );
+					}
 
 					if ( !batch ) {
 						array.each( self.datalists, function ( i ) {
@@ -911,9 +1061,13 @@ var data = {
 						});
 					}
 
-					if ( events ) observer.fire( self.parentNode, "afterDataSet", arg );
+					if ( events ) {
+						observer.fire( self.parentNode, "afterDataSet", arg );
+					}
 				}, function ( e ) {
-					if ( events ) observer.fire( self.parentNode, "failedDataSet", e );
+					if ( events ) {
+						observer.fire( self.parentNode, "failedDataSet", e );
+					}
 
 					throw e;
 				});
@@ -921,7 +1075,9 @@ var data = {
 				self.views = {};
 
 				// Getting the record again due to scheduling via promises, via data.batch()
-				if ( data.key !== undefined ) data.record = self.get( data.key );
+				if ( data.key !== undefined ) {
+					data.record = self.get( data.key );
+				}
 
 				if ( data.record === undefined ) {
 					var index = self.total++;
@@ -932,15 +1088,21 @@ var data = {
 							deferred.reject( label.error.expectedObject );
 						}
 					
-						if ( self.source !== null ) data.result = utility.walk( data.result, self.source );
+						if ( self.source !== null ) {
+							data.result = utility.walk( data.result, self.source );
+						}
 					
-						if ( self.key === null ) data.key = array.cast( data.result )[0];
+						if ( self.key === null ) {
+							data.key = array.cast( data.result )[0];
+						}
 						else {
 							data.key = data.result[self.key];
 							delete data.result[self.key];
 						}
 					
-						if ( typeof data.key !== "string" ) data.key = data.key.toString();
+						if ( typeof data.key !== "string" ) {
+							data.key = data.key.toString();
+						}
 
 						data.data = data.result;
 					}
@@ -952,7 +1114,9 @@ var data = {
 					if ( self.pointer === null || data.data[self.pointer] === undefined ) {
 						record.data = data.data;
 
-						if ( self.key !== null && record.data.hasOwnProperty( self.key ) ) delete record.data[self.key];
+						if ( self.key !== null && record.data.hasOwnProperty( self.key ) ) {
+							delete record.data[self.key];
+						}
 
 						deferred.resolve( record );
 					}
@@ -968,9 +1132,13 @@ var data = {
 						record.data = {};
 
 						client.request(uri, "GET", function ( args ) {
-							if ( self.source !== null) args = utility.walk( args, self.source );
+							if ( self.source !== null) {
+								args = utility.walk( args, self.source );
+							}
 
-							if ( args[self.key] !== undefined ) delete args[self.key];
+							if ( args[self.key] !== undefined ) {
+								delete args[self.key];
+							}
 
 							record.data = args;
 							deferred.resolve( record );
@@ -985,7 +1153,9 @@ var data = {
 					deferred.resolve( record );
 				}
 			}, function ( e ) {
-				if ( events) observer.fire( obj, "failedDataSet", e );
+				if ( events) {
+					observer.fire( obj, "failedDataSet", e );
+				}
 
 				throw e;
 			});
@@ -1000,15 +1170,21 @@ var data = {
 			data  = utility.clone( arg );
 
 			if ( key === null && this.uri === null ) {
-				if ( this.key === null || data[this.key] === undefined ) key = utility.uuid();
+				if ( this.key === null || data[this.key] === undefined ) {
+					key = utility.uuid();
+				}
 				else {
 					key = data[this.key];
 					delete data[this.key];
 				}
 			}
-			else if ( key === null ) key = undefined;
+			else if ( key === null ) {
+				key = undefined;
+			}
 
-			if ( !( data instanceof Object ) ) throw Error( label.error.invalidArguments );
+			if ( !( data instanceof Object ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 			else if ( data instanceof Array ) {
 				return this.generate( key )
 				           .then( function () {
@@ -1032,21 +1208,32 @@ var data = {
 				args.record = this.records[this.keys[record.key]];
 
 				utility.iterate( args.record.data, function ( v, k ) {
-					if ( !array.contains( self.collections, k ) && !array.contains( self.ignore, k ) ) args.data[k] = v;
+					if ( !array.contains( self.collections, k ) && !array.contains( self.ignore, k ) ) {
+						args.data[k] = v;
+					}
 				});
 
 				args.data = data;
 			}
-			else args.data = data;
+			else {
+				args.data = data;
+			}
 
 			if ( !batch && this.callback === null && uri !== null ) {
-				if ( record !== undefined ) uri += "/" + record.key;
+				if ( record !== undefined ) {
+					uri += "/" + record.key;
+				}
+
 				p = client.allows( uri, method );
 			}
 
-			if ( events ) observer.fire( obj, "beforeDataSet", {key: key, data: data} );
+			if ( events ) {
+				observer.fire( obj, "beforeDataSet", {key: key, data: data} );
+			}
 
-			if ( batch || this.callback !== null || this.uri === null ) deferred.resolve( args );
+			if ( batch || this.callback !== null || this.uri === null ) {
+				deferred.resolve( args );
+			}
 			else if ( regex.true_undefined.test( p ) ) {
 				client.request( uri, method.toUpperCase(), function ( arg ) {
 					args["result"] = arg;
@@ -1055,7 +1242,9 @@ var data = {
 					deferred.reject( e );
 				}, data, utility.merge( {withCredentials: this.credentials}, this.headers ) );
 			}
-			else deferred.reject( args );
+			else {
+				deferred.reject( args );
+			}
 
 			return deferred2;
 		},
@@ -1069,9 +1258,14 @@ var data = {
 		 */
 		setExpires : function ( arg ) {
 			// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
-			if ( ( arg !== null && this.uri === null ) || ( arg !== null && ( isNaN( arg ) || arg < 1000 ) ) ) throw Error( label.error.invalidArguments );
+			if ( ( arg !== null && this.uri === null ) || ( arg !== null && ( isNaN( arg ) || arg < 1000 ) ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
-			if ( this.expires === arg ) return;
+			if ( this.expires === arg ) {
+				return;
+			}
+
 			this.expires = arg;
 
 			var id      = this.parentNode.id + "DataExpire",
@@ -1080,14 +1274,19 @@ var data = {
 
 			utility.clearTimers( id );
 
-			if ( arg === null ) return;
+			if ( arg === null ) {
+				return;
+			}
 
 			utility.repeat( function () {
 				if ( self.uri === null ) {
 					self.setExpires( null );
 					return false;
 				}
-				if ( !cache.expire( self.uri ) ) observer.fire( self.uri, "beforeExpire, expire, afterExpire" );
+
+				if ( !cache.expire( self.uri ) ) {
+					observer.fire( self.uri, "beforeExpire, expire, afterExpire" );
+				}
 			}, expires, id, false);
 		},
 
@@ -1102,11 +1301,17 @@ var data = {
 			var deferred = promise.factory(),
 			    result;
 
-			if ( arg !== null && string.isEmpty( arg ) ) throw Error( label.error.invalidArguments );
+			if ( arg !== null && string.isEmpty( arg ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
-			if ( this.uri === arg ) result = this.uri;
+			if ( this.uri === arg ) {
+				result = this.uri;
+			}
 			else {
-				if ( this.uri !== null) observer.remove( this.uri );
+				if ( this.uri !== null) {
+					observer.remove( this.uri );
+				}
 
 				result = this.uri = arg;
 
@@ -1140,9 +1345,13 @@ var data = {
 		 * @return {Array}              View of data
 		 */
 		sort : function ( query, create, sensitivity, where ) {
-			if ( query === undefined || string.isEmpty( query ) ) throw Error( label.error.invalidArguments );
+			if ( query === undefined || string.isEmpty( query ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
-			if ( !regex.sensitivity_types.test( sensitivity ) ) sensitivity = "ci";
+			if ( !regex.sensitivity_types.test( sensitivity ) ) {
+				sensitivity = "ci";
+			}
 
 			create       = ( create === true );
 			var view     = ( query.replace( /\s*asc/ig, "" ).explode().join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
@@ -1152,11 +1361,18 @@ var data = {
 			    bucket, sort, crawl;
 
 			array.each( queries, function ( query ) {
-				if ( string.isEmpty( query ) ) throw Error( label.error.invalidArguments );
+				if ( string.isEmpty( query ) ) {
+					throw Error( label.error.invalidArguments );
+				}
 			});
 
-			if ( !create && this.views[view] instanceof Array ) return this.views[view];
-			if ( this.total === 0 ) return [];
+			if ( !create && this.views[view] instanceof Array ) {
+				return this.views[view];
+			}
+
+			if ( this.total === 0 ) {
+				return [];
+			}
 
 			crawl = function ( q, data ) {
 				var queries = utility.clone( q ),
@@ -1169,8 +1385,13 @@ var data = {
 				sorted = bucket( query, data, regex.desc.test( query ) );
 
 				array.each( sorted.order, function ( i ) {
-					if ( sorted.registry[i].length < 2 ) return;
-					if ( queries.length > 0) sorted.registry[i] = crawl( queries, sorted.registry[i] );
+					if ( sorted.registry[i].length < 2 ) {
+						return;
+					}
+
+					if ( queries.length > 0) {
+						sorted.registry[i] = crawl( queries, sorted.registry[i] );
+					}
 				});
 
 				array.each( sorted.order, function ( i ) {
@@ -1203,7 +1424,7 @@ var data = {
 							break;
 					}
 
-					if ( !(registry[k] instanceof Array) ) {
+					if ( !( registry[k] instanceof Array ) ) {
 						registry[k] = [];
 						order.push( k );
 					}
@@ -1213,10 +1434,14 @@ var data = {
 
 				order.sort( array.sort );
 
-				if ( reverse) order.reverse();
+				if ( reverse) {
+					order.reverse();
+				}
 				
 				array.each( order, function ( k ) {
-					if ( registry[k].length === 1 ) return;
+					if ( registry[k].length === 1 ) {
+						return;
+					}
 
 					registry[k] = sort( registry[k], query, prop, reverse, pk );
 				});
@@ -1237,7 +1462,10 @@ var data = {
 
 				if ( tmp.length > 1 ) {
 					tmp.sort( array.sort );
-					if ( reverse) tmp.reverse();
+
+					if ( reverse) {
+						tmp.reverse();
+					}
 				}
 
 				array.each( tmp, function ( i ) {
@@ -1267,11 +1495,15 @@ var data = {
 			    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
 			    result, key, data;
 
-			if ( !regex.number_string_object.test( typeof obj ) || !regex.get_remove_set.test( op ) ) throw Error( label.error.invalidArguments );
+			if ( !regex.number_string_object.test( typeof obj ) || !regex.get_remove_set.test( op ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			record = ( regex.number_string.test( obj ) || ( obj.hasOwnProperty( "key" ) && !obj.hasOwnProperty( "parentNode" ) ) );
 
-			if ( record && !( obj instanceof Object ) ) obj = this.get( obj );
+			if ( record && !( obj instanceof Object ) ) {
+				obj = this.get( obj );
+			}
 
 			key    = record ? obj.key : obj.parentNode.id;
 
@@ -1279,7 +1511,9 @@ var data = {
 				case "get":
 					result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
 
-					if ( result === null ) throw Error( label.error.invalidArguments );
+					if ( result === null ) {
+						throw Error( label.error.invalidArguments );
+					}
 
 					result = json.decode( result );
 					record ? this.set( key, result, true ) : utility.merge( this, result );
@@ -1311,7 +1545,9 @@ var data = {
 		 * @return {Object}          Promise
 		 */
 		sync : function ( reindex ) {
-			if ( this.uri === null || string.isEmpty( this.uri ) ) throw Error( label.error.invalidArguments );
+			if ( this.uri === null || string.isEmpty( this.uri ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			reindex       = ( reindex === true );
 			var self      = this,
@@ -1322,14 +1558,20 @@ var data = {
 			    deferred3, success, failure;
 
 			deferred1.then( function ( arg ) {
-				if ( typeof arg !== "object" ) throw Error( label.error.expectedObject );
+				if ( typeof arg !== "object" ) {
+					throw Error( label.error.expectedObject );
+				}
 
 				var found = false,
 				    data;
 
-				if ( self.source !== null ) arg = utility.walk( arg, self.source );
+				if ( self.source !== null ) {
+					arg = utility.walk( arg, self.source );
+				}
 
-				if ( arg instanceof Array ) data = arg;
+				if ( arg instanceof Array ) {
+					data = arg;
+				}
 				else utility.iterate( arg, function ( i ) {
 					if ( !found && i instanceof Array ) {
 						found = true;
@@ -1337,7 +1579,9 @@ var data = {
 					}
 				});
 
-				if ( data === undefined ) data = [arg];
+				if ( data === undefined ) {
+					data = [arg];
+				}
 
 				self.batch( "set", data, true, undefined )
 				    .then( function ( arg ) {
@@ -1352,10 +1596,17 @@ var data = {
 			});
 
 			deferred3 = deferred2.then( function ( arg ) {
-				if ( reindex ) self.reindex();
-				if ( events ) observer.fire( obj, "afterDataSync", arg );
+				if ( reindex ) {
+					self.reindex();
+				}
+
+				if ( events ) {
+					observer.fire( obj, "afterDataSync", arg );
+				}
 			}, function ( e ) {
-				if ( events ) observer.fire( obj, "failedDataSync", e );
+				if ( events ) {
+					observer.fire( obj, "failedDataSync", e );
+				}
 
 				throw e;
 			});
@@ -1368,7 +1619,9 @@ var data = {
 				deferred1.reject( e );
 			};
 
-			if ( events) observer.fire( obj, "beforeDataSync" );
+			if ( events) {
+				observer.fire( obj, "beforeDataSync" );
+			}
 
 			this.callback !== null ? client.jsonp( this.uri, success, failure, {callback: this.callback} )
 			                       : client.request( this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers) );
@@ -1400,7 +1653,9 @@ var data = {
 					cache.expire( (uri + "/" + i.key), true );
 					observer.remove( uri + "/" + i.key );
 					utility.iterate( i.data, function ( v, k ) {
-						if ( v === null ) return;
+						if ( v === null ) {
+							return;
+						}
 
 						if ( v.hasOwnProperty("data") && typeof v.data.teardown === "function" ) {
 							observer.remove( v.id );
@@ -1428,7 +1683,9 @@ var data = {
 			    self   = this,
 			    args, deferred;
 
-			if ( record === undefined ) throw Error( label.error.invalidArguments );
+			if ( record === undefined ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			args     = utility.merge( record.data, data );
 			deferred = promise.factory();

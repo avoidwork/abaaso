@@ -19,9 +19,9 @@ var filter = {
 		var ref  = [datalist],
 		    instance;
 
-		if ( !( obj instanceof Element )
-			|| ( datalist !== undefined && datalist.store === undefined )
-			|| ( typeof filters !== "string" || string.isEmpty( filters ) ) ) throw Error( label.error.invalidArguments );
+		if ( !( obj instanceof Element ) || ( datalist !== undefined && datalist.store === undefined ) || ( typeof filters !== "string" || string.isEmpty( filters ) ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		instance = new DataListFilter( obj, ref[0], filters, debounce );
 
@@ -53,7 +53,9 @@ var filter = {
 		set : function ( fields ) {
 			var obj = {};
 
-			if ( typeof fields !== "string" || string.isEmpty( fields ) ) throw Error( label.error.invalidArguments );
+			if ( typeof fields !== "string" || string.isEmpty( fields ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			array.each( string.explode( fields ), function (v ) {
 				obj[v] = "";
@@ -110,7 +112,9 @@ var filter = {
 
 					self.datalist.filter = self.filters;
 				}
-				else self.datalist.filter = null;
+				else {
+					self.datalist.filter = null;
+				}
 
 				self.datalist.pageIndex = 1;
 				self.datalist.refresh();

@@ -20,6 +20,7 @@ var regex = {
 	del                     : /^del/,
 	desc                    : /\s*desc$/i,
 	domain                  : /^[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/,
+	down                    : /down/,
 	down_up                 : /down|up/,
 	email                   : /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
 	element_update          : /innerHTML|innerText|textContent|type|src/,

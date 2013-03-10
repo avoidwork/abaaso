@@ -14,15 +14,23 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	attr : function ( obj, key, value ) {
-		if ( typeof value === "string" ) value = string.trim( value );
+		if ( typeof value === "string" ) {
+			value = string.trim( value );
+		}
 
 		var target, result;
 
 		utility.genId( obj, true );
 
-		if ( regex.checked_disabled.test( key ) && value === undefined ) return obj[key];
-		else if ( regex.checked_disabled.test( key ) && value !== undefined ) obj[key] = value;
-		else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined) return $( "#" + obj.id + " option[selected=\"selected\"]" )[0] || $( "#" + obj.id + " option" )[0];
+		if ( regex.checked_disabled.test( key ) && value === undefined ) {
+			return obj[key];
+		}
+		else if ( regex.checked_disabled.test( key ) && value !== undefined ) {
+			obj[key] = value;
+		}
+		else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined) {
+			return $( "#" + obj.id + " option[selected=\"selected\"]" )[0] || $( "#" + obj.id + " option" )[0];
+		}
 		else if ( obj.nodeName === "SELECT" && key === "selected" && value !== undefined ) {
 			target = $( "#" + obj.id + " option[selected=\"selected\"]" )[0];
 
@@ -37,11 +45,19 @@ var element = {
 		}
 		else if ( value === undefined ) {
 			result = obj.getAttribute( key );
-			if ( result === null ) result = undefined;
+
+			if ( result === null ) {
+				result = undefined;
+			}
+
 			return result;
 		}
-		else if ( value === null ) obj.removeAttribute( key );
-		else obj.setAttribute( key, value );
+		else if ( value === null ) {
+			obj.removeAttribute( key );
+		}
+		else {
+			obj.setAttribute( key, value );
+		}
 
 		return obj;
 	},
@@ -54,9 +70,15 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	clear : function ( obj ) {
-		if ( typeof obj.reset === "function" ) obj.reset();
-		else if ( obj.value !== undefined ) element.update( obj, {innerHTML: "", value: ""} );
-		else element.update( obj, {innerHTML: ""} );
+		if ( typeof obj.reset === "function" ) {
+			obj.reset();
+		}
+		else if ( obj.value !== undefined ) {
+			element.update( obj, {innerHTML: "", value: ""} );
+		}
+		else {
+			element.update( obj, {innerHTML: ""} );
+		}
 
 		return obj;
 	},
@@ -76,45 +98,69 @@ var element = {
 	create : function ( type, args, target, pos ) {
 		var obj, uid, frag;
 
-		if ( type === undefined || string.isEmpty( type ) ) throw Error( label.error.invalidArguments );
+		if ( type === undefined || string.isEmpty( type ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
-		if ( target !== undefined ) target = utility.object( target );
-		else if ( args !== undefined && ( typeof args === "string" || args.childNodes !== undefined ) ) target = utility.object( args );
-		else target = document.body;
+		if ( target !== undefined ) {
+			target = utility.object( target );
+		}
+		else if ( args !== undefined && ( typeof args === "string" || args.childNodes !== undefined ) ) {
+			target = utility.object( args );
+		}
+		else {
+			target = document.body;
+		}
 
-		if ( target === undefined ) throw Error( label.error.invalidArguments );
+		if ( target === undefined ) {
+			throw Error( label.error.invalidArguments );
+		}
 		
 		frag = !( target instanceof Element );
-		uid  = args                 !== undefined
-		        && typeof args      !== "string"
-		        && args.childNodes  === undefined
-		        && args.id          !== undefined
-		        && $( "#" + args.id) === undefined ? args.id : utility.genId( undefined, true );
+		uid  = args                   !== undefined
+		        && typeof args        !== "string"
+		        && args.childNodes    === undefined
+		        && args.id            !== undefined
+		        && $( "#" + args.id ) === undefined ? args.id : utility.genId( undefined, true );
 
-		if ( args !== undefined && args.id !== undefined ) delete args.id;
+		if ( args !== undefined && args.id !== undefined ) {
+			delete args.id;
+		}
 
 		obj = !regex.svg.test( type ) ? document.createElement( type ) : document.createElementNS( "http://www.w3.org/2000/svg", "svg" );
 		obj.id = uid;
 
-		if ( typeof args === "object" && args.childNodes === undefined ) element.update( obj, args );
+		if ( typeof args === "object" && args.childNodes === undefined ) {
+			element.update( obj, args );
+		}
 
-		if ( pos === undefined || pos === "last" ) target.appendChild( obj );
-		else if ( pos === "first" ) element.prependChild( target, obj );
+		if ( pos === undefined || pos === "last" ) {
+			target.appendChild( obj );
+		}
+		else if ( pos === "first" ) {
+			element.prependChild( target, obj );
+		}
 		else if ( pos === "after" ) {
 			pos = {};
 			pos.after = target;
 			target    = target.parentNode;
 			target.insertBefore( obj, pos.after.nextSibling );
 		}
-		else if ( pos.after !== undefined ) target.insertBefore( obj, pos.after.nextSibling );
+		else if ( pos.after !== undefined ) {
+			target.insertBefore( obj, pos.after.nextSibling );
+		}
 		else if ( pos === "before" ) {
 			pos = {};
 			pos.before = target;
 			target     = target.parentNode;
 			target.insertBefore( obj, pos.before );
 		}
-		else if ( pos.before !== undefined ) target.insertBefore( obj, pos.before );
-		else target.appendChild( obj );
+		else if ( pos.before !== undefined ) {
+			target.insertBefore( obj, pos.before );
+		}
+		else {
+			target.appendChild( obj );
+		}
 		
 		return obj;
 	},
@@ -137,7 +183,9 @@ var element = {
 			obj.style[key] = value;
 			result = obj;
 		}
-		else result = obj.style[key];
+		else {
+			result = obj.style[key];
+		}
 
 		return result;
 	},
@@ -159,7 +207,9 @@ var element = {
 			dataset ? obj.dataset[key] = value : element.attr( obj, "data-" + key, value );
 			result = obj;
 		}
-		else result = utility.coerce( dataset ? obj.dataset[key] : element.attr( obj, "data-" + key ) );
+		else {
+			result = utility.coerce( dataset ? obj.dataset[key] : element.attr( obj, "data-" + key ) );
+		}
 
 		return result;
 	},
@@ -174,7 +224,9 @@ var element = {
 	destroy : function ( obj ) {
 		observer.remove( obj );
 
-		if ( obj.parentNode !== null ) obj.parentNode.removeChild( obj );
+		if ( obj.parentNode !== null ) {
+			obj.parentNode.removeChild( obj );
+		}
 
 		return undefined;
 	},
@@ -187,7 +239,9 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	disable : function ( obj ) {
-		if ( typeof obj.disabled === "boolean" && !obj.disabled ) obj.disabled = true;
+		if ( typeof obj.disabled === "boolean" && !obj.disabled ) {
+			obj.disabled = true;
+		}
 
 		return obj;
 	},
@@ -200,7 +254,9 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	enable : function ( obj ) {
-		if ( typeof obj.disabled === "boolean" && obj.disabled ) obj.disabled = false;
+		if ( typeof obj.disabled === "boolean" && obj.disabled ) {
+			obj.disabled = false;
+		}
 
 		return obj;
 	},
@@ -219,7 +275,7 @@ var element = {
 		utility.genId( obj, true );
 
 		array.each( string.explode( arg ), function ( i ) {
-			result = result.concat( $("#" + obj.id + " " + i) );
+			result = result.concat( $( "#" + obj.id + " " + i ) );
 		});
 
 		return result;
@@ -258,7 +314,9 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	hide : function ( obj ) {
-		if ( typeof obj.hidden === "boolean" ) obj.hidden = true;
+		if ( typeof obj.hidden === "boolean" ) {
+			obj.hidden = true;
+		}
 		else {
 			obj["data-display"] = obj.style.display;
 			obj.style.display = "none";
@@ -466,11 +524,14 @@ var element = {
 			});
 		}
 		else array.each( arg, function ( i ) {
-			if ( i !== "*" ) obj.classList.remove( i );
+			if ( i !== "*" ) {
+				obj.classList.remove( i );
+			}
 			else {
 				array.each( obj.classList, function ( x ) {
 					this.remove( x );
 				});
+
 				return false;
 			}
 		});
@@ -543,14 +604,22 @@ var element = {
 				children.push( utility.object( i ) );
 			});
 		}
-		else children = obj.nodeName === "FORM" ? ( obj.elements !== undefined ? array.cast( obj.elements ) : obj.find( "button, input, select, textarea" ) ) : [obj];
+		else {
+			children = obj.nodeName === "FORM" ? ( obj.elements !== undefined ? array.cast( obj.elements ) : obj.find( "button, input, select, textarea" ) ) : [obj];
+		}
 
 		array.each( children, function ( i ) {
-			if ( i.nodeName === "FORM" ) utility.merge( registry, json.decode( element.serialize( i ) ) )
-			else if ( registry[i.name] === undefined ) registry[i.name] = element.val( i );
+			if ( i.nodeName === "FORM" ) {
+				utility.merge( registry, json.decode( element.serialize( i ) ) )
+			}
+			else if ( registry[i.name] === undefined ) {
+				registry[i.name] = element.val( i );
+			}
 		});
 
-		if ( !string ) result = json.encode( registry );
+		if ( !string ) {
+			result = json.encode( registry );
+		}
 		else {
 			result = "";
 
@@ -572,8 +641,12 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	show : function ( obj ) {
-		if ( typeof obj.hidden === "boolean" ) obj.hidden = false;
-		else obj.style.display = element.data( obj, "display" ) || "inherit";
+		if ( typeof obj.hidden === "boolean" ) {
+			obj.hidden = false;
+		}
+		else {
+			obj.style.display = element.data( obj, "display" ) || "inherit";
+		}
 
 		return obj;
 	},
@@ -592,7 +665,7 @@ var element = {
 
 		return {
 			height : obj.offsetHeight + parse( obj.style.paddingTop  || 0 ) + parse( obj.style.paddingBottom || 0 ) + parse( obj.style.borderTop  || 0 ) + parse( obj.style.borderBottom || 0 ),
-			width  : obj.offsetWidth  + parse( obj.style.paddingLeft || 0 ) + parse( obj.style.paddingRight || 0 )  + parse( obj.style.borderLeft || 0 ) + parse( obj.style.borderRight  || 0 )
+			width  : obj.offsetWidth  + parse( obj.style.paddingLeft || 0 ) + parse( obj.style.paddingRight  || 0 ) + parse( obj.style.borderLeft || 0 ) + parse( obj.style.borderRight  || 0 )
 		};
 	},
 
@@ -641,9 +714,15 @@ var element = {
 		args = args || {};
 
 		utility.iterate( args, function ( v, k ) {
-			if ( regex.element_update.test( k ) ) obj[k] = v;
-			else if ( k === "class" ) !string.isEmpty( v ) ? element.klass( obj, v ) : element.klass( obj, "*", false );
-			else if ( k.indexOf( "data-" ) === 0) element.data( obj, k.replace( "data-", "" ), v );
+			if ( regex.element_update.test( k ) ) {
+				obj[k] = v;
+			}
+			else if ( k === "class" ) {
+				!string.isEmpty( v ) ? element.klass( obj, v ) : element.klass( obj, "*", false );
+			}
+			else if ( k.indexOf( "data-" ) === 0) {
+				element.data( obj, k.replace( "data-", "" ), v );
+			}
 			else if ( k === "id" ) {
 				var o = observer.listeners;
 
@@ -652,7 +731,9 @@ var element = {
 					delete o[obj.id];
 				}
 			}
-			else obj.attr( k, v );
+			else {
+				obj.attr( k, v );
+			}
 		});
 
 		return obj;
@@ -673,17 +754,30 @@ var element = {
 
 		if ( value === undefined ) {
 			if ( regex.radio_checkbox.test( obj.type ) ) {
-				if ( string.isEmpty( obj.name ) ) throw Error( label.error.expectedProperty );
+				if ( string.isEmpty( obj.name ) ) {
+					throw Error( label.error.expectedProperty );
+				}
 
 				array.each( $( "input[name='" + obj.name + "']" ), function ( i ) {
-					if ( output !== null ) return false;
-					if ( i.checked ) output = i.value;
+					if ( output !== null ) {
+						return false;
+					}
+
+					if ( i.checked ) {
+						output = i.value;
+					}
 				});
 			}
-			else if ( regex.select.test( obj.type ) ) output = obj.options[obj.selectedIndex].value;
-			else output = obj.value || element.text( obj );
+			else if ( regex.select.test( obj.type ) ) {
+				output = obj.options[obj.selectedIndex].value;
+			}
+			else {
+				output = obj.value || element.text( obj );
+			}
 
-			if ( typeof output === "string" ) output = string.trim( output );
+			if ( typeof output === "string" ) {
+				output = string.trim( output );
+			}
 		}
 		else {
 			value = value.toString();
@@ -708,7 +802,9 @@ var element = {
 					}
 				});
 			}
-			else obj.value !== undefined ? obj.value = value : element.text( obj, value );
+			else {
+				obj.value !== undefined ? obj.value = value : element.text( obj, value );
+			}
 
 			observer.fire( obj, "afterValue" );
 

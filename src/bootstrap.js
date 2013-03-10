@@ -76,7 +76,9 @@ bootstrap = function () {
 				    O   = Object( this ),
 				    len = O.length >>> 0;
 
-				if ( thisArg ) T = thisArg;
+				if ( thisArg ) {
+					T = thisArg;
+				}
 
 				while ( k < len ) {
 					var kValue;
@@ -93,7 +95,9 @@ bootstrap = function () {
 		if ( Array.prototype.indexOf === undefined ) {
 			Array.prototype.indexOf = function( obj, start ) {
 				for ( var i = (start || 0 ), j = this.length; i < j; i++ ) {
-					if ( this[i] === obj ) return i;
+					if ( this[i] === obj ) {
+						return i;
+					}
 				}
 
 				return -1;
@@ -104,13 +108,20 @@ bootstrap = function () {
 			Array.prototype.map = function ( callback, thisArg ) {
 				var T, A, k;
 
-				if ( this == null ) throw new TypeError( "this is null or not defined" );
+				if ( this == null ) {
+					throw new TypeError( "this is null or not defined" );
+				}
 
 				var O = Object( this );
 				var len = O.length >>> 0;
 
-				if ( {}.toString.call( callback ) != "[object Function]" ) throw new TypeError( callback + " is not a function" );
-				if ( thisArg ) T = thisArg;
+				if ( {}.toString.call( callback ) != "[object Function]" ) {
+					throw new TypeError( callback + " is not a function" );
+				}
+
+				if ( thisArg ) {
+					T = thisArg;
+				}
 
 				A = new Array( len );
 				k = 0;
@@ -132,21 +143,33 @@ bootstrap = function () {
 
 		if ( Array.prototype.reduce === undefined ) {
 			Array.prototype.reduce = function ( accumulator ) {
-				if ( this === null || this === undefined ) throw new TypeError( "Object is null or undefined" );
+				if ( this === null || this === undefined ) {
+					throw new TypeError( "Object is null or undefined" );
+				}
 
 				var i = 0, l = this.length >> 0, curr;
 
-				if ( typeof accumulator !== "function") throw new TypeError("First argument is not callable" );
+				if ( typeof accumulator !== "function") {
+					throw new TypeError("First argument is not callable" );
+				}
 
 				if ( arguments.length < 2 ) {
-					if ( l === 0) throw new TypeError( "Array length is 0 and no second argument" );
+					if ( l === 0) {
+						throw new TypeError( "Array length is 0 and no second argument" );
+					}
+
 					curr = this[0];
 					i = 1; // start accumulating at the second element
 				}
-				else curr = arguments[1];
+				else {
+					curr = arguments[1];
+				}
 
 				while ( i < l ) {
-					if ( i in this) curr = accumulator.call(undefined, curr, this[i], i, this );
+					if ( i in this) {
+						curr = accumulator.call(undefined, curr, this[i], i, this );
+					}
+
 					++i;
 				}
 
@@ -158,7 +181,9 @@ bootstrap = function () {
 			( function (view ) {
 				var ClassList, getter, proto, target, descriptor;
 
-				if ( !( "HTMLElement" in view ) && !( "Element" in view ) ) return;
+				if ( !( "HTMLElement" in view ) && !( "Element" in view ) ) {
+					return;
+				}
 
 				ClassList = function ( obj ) {
 					var classes = !string.isEmpty( obj.className ) ? obj.className.explode( " " ) : [],
@@ -212,8 +237,12 @@ bootstrap = function () {
 
 					Object.defineProperty( target, "classList", descriptor );
 				}
-				else if ( Object.prototype.__defineGetter__) target.__defineGetter__("classList", getter );
-				else throw Error( "Could not create classList shim" );
+				else if ( Object.prototype.__defineGetter__) {
+					target.__defineGetter__("classList", getter );
+				}
+				else {
+					throw Error( "Could not create classList shim" );
+				}
 			})( global );
 		}
 
@@ -265,7 +294,9 @@ bootstrap = function () {
 
 	// Setting sugar
 	if ( !server ) {
-		if ( typeof global.$ === "undefined" || global.$ === null ) global.$ = $;
+		if ( typeof global.$ === "undefined" || global.$ === null ) {
+			global.$ = $;
+		}
 		else {
 			global.a$    = $;
 			this.aliased = "a$";
@@ -274,8 +305,15 @@ bootstrap = function () {
 
 	// Hooking abaaso into native Objects
 	utility.proto( Array, "array" );
-	if ( typeof Element !== "undefined" ) utility.proto( Element, "element" );
-	if ( client.ie && client.version === 8 ) utility.proto( HTMLDocument, "element" );
+
+	if ( typeof Element !== "undefined" ) {
+		utility.proto( Element, "element" );
+	}
+
+	if ( client.ie && client.version === 8 ) {
+		utility.proto( HTMLDocument, "element" );
+	}
+
 	utility.proto( Function, "function" );
 	utility.proto( Number, "number" );
 	utility.proto( String, "string" );
@@ -335,7 +373,9 @@ bootstrap = function () {
 
 		// Routing listener
 		observer.add( abaaso, "hash", function (arg ) {
-			if ( $.route.enabled || self.route.enabled ) route.load( arg );
+			if ( $.route.enabled || self.route.enabled ) {
+				route.load( arg );
+			}
 		}, "route", this.route, "all");
 	}
 

@@ -13,7 +13,9 @@ var number = {
 	 * @return {Number}    The absolute difference
 	 */
 	diff : function ( num1, num2 ) {
-		if ( isNaN( num1 ) || isNaN( num2 ) ) throw Error( label.error.expectedNumber );
+		if ( isNaN( num1 ) || isNaN( num2 ) ) {
+			throw Error( label.error.expectedNumber );
+		}
 
 		return Math.abs( num1 - num2 );
 	},
@@ -39,7 +41,9 @@ var number = {
 	 * @return {String}           Number represented as a comma delimited String
 	 */
 	format : function ( arg, delimiter, every ) {
-		if ( isNaN( arg ) ) throw Error( label.error.expectedNumber );
+		if ( isNaN( arg ) ) {
+			throw Error( label.error.expectedNumber );
+		}
 
 		arg       = arg.toString();
 		delimiter = delimiter || ",";
@@ -58,7 +62,9 @@ var number = {
 
 		a = a.reverse().join( "" );
 
-		if ( a.charAt( 0 ) === delimiter ) a = a.substring( 1 );
+		if ( a.charAt( 0 ) === delimiter ) {
+			a = a.substring( 1 );
+		}
 
 		return a + d;
 	},
@@ -82,7 +88,7 @@ var number = {
 	 * @return {Boolean}   True if odd, or undefined
 	 */
 	odd : function ( arg ) {
-		return !( arg % 2 === 0 );
+		return !number.even( arg );
 	},
 
 	/**
@@ -93,8 +99,7 @@ var number = {
 	 * @return {Number}      Integer or float
 	 */
 	parse : function ( arg, base ) {
-		if ( base === null ) base = undefined;
-		return isNaN( base ) ? Number( arg ) : parseInt( arg, base );
+		return ( base === undefined ) ? parseFloat( arg ) : parseInt( arg, base );
 	},
 
 	/**
@@ -105,6 +110,7 @@ var number = {
 	 */
 	random : function ( arg ) {
 		arg = arg || 100;
+
 		return Math.floor( Math.random() * ( arg + 1 ) );
 	},
 
@@ -116,7 +122,8 @@ var number = {
 	 * @return {Number}           Rounded interger
 	 */
 	round : function ( arg, direction ) {
-		if ( !regex.down_up.test( direction ) ) direction = "down";
-		return Math[direction === "down" ? "floor" : "ceil"]( arg );
+		direction = !regex.down.test( direction || "down" ) ? "ceil" : "floor";
+
+		return Math[direction]( arg );
 	}
 };

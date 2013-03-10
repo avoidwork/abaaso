@@ -18,7 +18,10 @@ var json = {
 			return JSON.parse( arg );
 		}
 		catch ( e ) {
-			if ( silent !== true ) error( e, arguments, this );
+			if ( silent !== true ) {
+				error( e, arguments, this );
+			}
+
 			return undefined;
 		}
 	},
@@ -36,7 +39,10 @@ var json = {
 			return JSON.stringify( arg );
 		}
 		catch ( e ) {
-			if ( silent !== true) error( e, arguments, this );
+			if ( silent !== true) {
+				error( e, arguments, this );
+			}
+
 			return undefined;
 		}
 	}
