@@ -130,13 +130,14 @@ exports["round"] = {
 	},
 	direct: function (test) {
 		test.expect(3);
-		test.equal(number.round(this.val), 2, "Should be 2");
+		test.equal(number.round(this.val), 3, "Should be 3");
 		test.equal(number.round(this.val, "down"), 2, "Should be 2");
 		test.equal(number.round(this.val, "up"), 3, "Should be 3");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(2);
+		test.expect(3);
+		test.equal(this.val.round(), 3, "Should be 3");
 		test.equal(this.val.roundDown(), 2, "Should be 2");
 		test.equal(this.val.roundUp(), 3, "Should be 3");
 		test.done();

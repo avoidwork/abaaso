@@ -18,6 +18,7 @@ var regex = {
 	chrome                  : /chrome/i,
 	complete_loaded         : /^(complete|loaded)$/i,
 	del                     : /^del/,
+	decimal                 : /^\d+.(\d+)/,
 	desc                    : /\s*desc$/i,
 	domain                  : /^[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/,
 	down                    : /down/,

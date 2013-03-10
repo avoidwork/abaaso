@@ -1575,6 +1575,9 @@ var utility = {
 				random : function () {
 					return number.random( this );
 				},
+				round : function () {
+					return number.round( this );
+				},
 				roundDown : function () {
 					return number.round( this, "down" );
 				},

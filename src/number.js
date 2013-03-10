@@ -118,12 +118,17 @@ var number = {
 	 * Rounds a number up or down
 	 * 
 	 * @param  {Number} arg       Number to round
-	 * @param  {String} direction [Optional] "up" or "down", defaults to "down"
+	 * @param  {String} direction [Optional] "up" or "down"
 	 * @return {Number}           Rounded interger
 	 */
 	round : function ( arg, direction ) {
-		direction = !regex.down.test( direction || "down" ) ? "ceil" : "floor";
+		arg = number.parse( arg );
 
-		return Math[direction]( arg );
+		if ( direction === undefined || string.isEmpty ( direction ) ) {
+			return number.parse( arg.toFixed( 0 ) );
+		}
+		else {
+			return Math[!regex.down.test( direction ) ? "ceil" : "floor"]( arg );
+		}
 	}
 };
