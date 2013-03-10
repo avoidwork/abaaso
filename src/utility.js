@@ -427,10 +427,6 @@ var utility = {
 			throw Error( label.error.invalidArguments );
 		}
 
-		if ( arg === undefined ) {
-			arg = {};
-		}
-
 		if ( typeof Object.create === "function" ) {
 			o = Object.create( obj );
 		}
@@ -440,7 +436,9 @@ var utility = {
 			o = new f();
 		}
 
-		utility.merge( o, arg );
+		if ( arg instanceof Object ) {
+			utility.merge( o, arg );
+		}
 
 		return o;
 	},
