@@ -4,7 +4,7 @@
  * @class state
  * @namespace abaaso
  */
-var state = (function () {
+var state = ( function () {
 	var prop = {current: "active", previous: null, header: null},
 	    getCurrent, setCurrent, getHeader, setHeader, getPrevious, setPrevious;
 
@@ -25,12 +25,12 @@ var state = (function () {
 	 * @param  {String} arg New application state
 	 * @return {String}     Application state
 	 */
-	setCurrent = function (arg) {
-		if (arg === null || typeof arg !== "string" || prop[0] === arg || arg.isEmpty()) throw Error(label.error.invalidArguments);
+	setCurrent = function ( arg ) {
+		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) throw Error( label.error.invalidArguments );
 
 		prop.previous = prop.current
 		prop.current  = arg;
-		observer.fire(abaaso, "state", arg);
+		observer.fire( abaaso, "state", arg );
 		return arg;
 	};
 
@@ -51,8 +51,8 @@ var state = (function () {
 	 * @param  {String} arg New application state header
 	 * @return {String}     Application state header
 	 */
-	setHeader = function (arg) {
-		if (arg !== null && (typeof arg !== "string" || prop.header === arg || arg.isEmpty())) throw Error(label.error.invalidArguments);
+	setHeader = function ( arg ) {
+		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) throw Error( label.error.invalidArguments );
 
 		prop.header = arg;
 		return arg;
@@ -75,7 +75,7 @@ var state = (function () {
 	 * @return {Undefined} undefined
 	 */
 	setPrevious = function () {
-		throw Error(label.error.readOnly);
+		throw Error( label.error.readOnly );
 	};
 
 	// interface

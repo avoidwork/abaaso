@@ -11,9 +11,10 @@ var message = {
 	 * @method clear
 	 * @return {Object} abaaso
 	 */
-	clear : function (state) {
+	clear : function ( state ) {
 		state = state || "all";
-		return observer.remove(global, "message", "message", state);
+
+		return observer.remove( global, "message", "message", state );
 	},
 
 	/**
@@ -24,13 +25,14 @@ var message = {
 	 * @param  {Mixed}  arg    Entity to send as message
 	 * @return {Object}        target
 	 */
-	send : function (target, arg) {
+	send : function ( target, arg ) {
 		try {
-			target.postMessage(arg, "*");
+			target.postMessage( arg, "*" );
 		}
-		catch (e) {
-			error(e, arguments, this);
+		catch ( e ) {
+			error( e, arguments, this );
 		}
+
 		return target;
 	},
 
@@ -41,8 +43,9 @@ var message = {
 	 * @param  {Function} fn Callback function
 	 * @return {Object}      abaaso
 	 */
-	recv : function (fn, state) {
+	recv : function ( fn, state ) {
 		state = state || "all";
-		return observer.add(global, "message", fn, "message", global, state);
+
+		return observer.add( global, "message", fn, "message", global, state );
 	}
 };

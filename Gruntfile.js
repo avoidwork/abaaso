@@ -50,6 +50,17 @@ module.exports = function (grunt) {
 		nodeunit: {
 			all : ["test/*.js"]
 		},
+		shell: {
+			prepare : {
+				command : "rm -rf lib/compressed/*"
+			},
+			copy : {
+				command : "cp lib/*.js lib/compressed"
+			},
+			compress : {
+				command : "gzip -9 lib/compressed/*"
+			}
+		},
 		uglify: {
 			options: {
 				banner : "/**\n" + 
@@ -66,7 +77,7 @@ module.exports = function (grunt) {
 					except: ["abaaso", "DataList", "DataListFilter", "DataStore", "Promise"]
 				}
 			},
-			target: {
+			dist: {
 				options : {
 					sourceMap : "lib/<%= pkg.name %>.source-map.js",
 					sourceMappingURL : "<%= pkg.name %>.source-map.js",
@@ -79,11 +90,16 @@ module.exports = function (grunt) {
 		}
 	});
 
+	grunt.loadNpmTasks("grunt-shell");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 
 	grunt.registerTask("test", ["nodeunit"]);
+
+	grunt.registerTask("compress", function () {
+		process.platform !== "win32" ? grunt.task.run("shell") : console.log("Couldn't compress files on your OS")
+	});
 
 	grunt.registerTask("version", function () {
 		var cfg = grunt.config("pkg"),
@@ -95,5 +111,5 @@ module.exports = function (grunt) {
 		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
 	});
 
-	grunt.registerTask("default", ["concat", "version", "uglify", "test"]);
+	grunt.registerTask("default", ["concat", "version", "uglify", "test", "compress"]);
 };

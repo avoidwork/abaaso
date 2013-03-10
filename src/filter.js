@@ -14,14 +14,17 @@ var filter = {
 	 * @param  {Number} debounce [Optional] Milliseconds to debounce
 	 * @return {Object}          Filter instance
 	 */
-	factory : function (obj, datalist, filters, debounce) {
+	factory : function ( obj, datalist, filters, debounce ) {
 		debounce = debounce || 250;
 		var ref  = [datalist],
 		    instance;
 
-		if (!(obj instanceof Element) || (datalist !== undefined && datalist.store === undefined) || (typeof filters !== "string" || String(filters).isEmpty())) throw Error(label.error.invalidArguments);
+		if ( !( obj instanceof Element )
+			|| ( datalist !== undefined && datalist.store === undefined )
+			|| ( typeof filters !== "string" || string.isEmpty( filters ) ) ) throw Error( label.error.invalidArguments );
 
-		instance = new DataListFilter(obj, ref[0], filters, debounce);
+		instance = new DataListFilter( obj, ref[0], filters, debounce );
+
 		return instance;
 	},
 
@@ -33,8 +36,9 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		init : function () {
-			observer.add(this.element, "keyup",      this.update, "filter", this);
-			observer.add(this.element, "afterValue", this.update, "value",  this);
+			observer.add( this.element, "keyup",      this.update, "filter", this );
+			observer.add( this.element, "afterValue", this.update, "value",  this );
+
 			return this;
 		},
 
@@ -46,16 +50,17 @@ var filter = {
 		 * @param {String} fields Comma separated filters
 		 * @returns {Undefined} undefined
 		 */
-		set : function (fields) {
+		set : function ( fields ) {
 			var obj = {};
 
-			if (typeof fields !== "string" || String(fields).isEmpty()) throw Error(label.error.invalidArguments);
+			if ( typeof fields !== "string" || string.isEmpty( fields ) ) throw Error( label.error.invalidArguments );
 
-			array.each(string.explode(fields), function (v) {
+			array.each( string.explode( fields ), function (v ) {
 				obj[v] = "";
 			});
 
 			this.filters = obj;
+
 			return this;
 		},
 
@@ -65,8 +70,9 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		teardown : function () {
-			observer.remove(this.element, "keyup",      "filter");
-			observer.remove(this.element, "afterValue", "value");
+			observer.remove( this.element, "keyup",      "filter" );
+			observer.remove( this.element, "afterValue", "value" );
+
 			return this;
 		},
 
@@ -75,32 +81,33 @@ var filter = {
 		 *
 		 * @returns {Undefined} undefined
 		 */
-		update : function (e) {
+		update : function ( e ) {
 			var self = this;
 
 			// Clearing existing timer
-			utility.clearTimers(this.element.id + "Debounce");
+			utility.clearTimers( this.element.id + "Debounce" );
 			
 			// Deferring the refresh
-			utility.defer(function () {
-				var val = self.element.val();
+			utility.defer( function () {
+				var val = element.val( self.element );
 				
-				if (!val.isEmpty()) {
-					utility.iterate(self.filters, function (v, k) {
-						var queries = string.explode(val);
+				if ( !string.isEmpty( val ) ) {
+					utility.iterate( self.filters, function ( v, k ) {
+						var queries = string.explode( val );
 
 						// Ignoring trailing commas
-						queries = queries.filter(function (i) {
-							return !(i.toString().isEmpty());
+						queries = queries.filter( function ( i ) {
+							return !string.isEmpty( i );
 						});
 
 						// Shaping valid pattern
-						array.each(queries, function (i, idx) {
-							this[idx] = "^" + i.escape().replace("\\*", ".*");
+						array.each( queries, function ( i, idx ) {
+							this[idx] = "^" + string.escape( i ).replace( "\\*", ".*" );
 						});
 
-						this[k] = queries.join(",");
+						this[k] = queries.join( "," );
 					});
+
 					self.datalist.filter = self.filters;
 				}
 				else self.datalist.filter = null;
@@ -108,6 +115,7 @@ var filter = {
 				self.datalist.pageIndex = 1;
 				self.datalist.refresh();
 			}, this.debounce, this.element.id + "Debounce");
+
 			return this;
 		}
 	}
@@ -121,11 +129,11 @@ var filter = {
  * @param  {String} filters DataStore fields to filter DataList by
  * @return {Object}         Instance of DataListFilter
  */
-function DataListFilter (element, datalist, filters, debounce) {
+function DataListFilter ( element, datalist, filters, debounce ) {
 	this.element  = element;
 	this.datalist = datalist;
 	this.debounce = debounce;
-	this.set(filters);
+	this.set( filters );
 	this.init();
 };
 
