@@ -1657,7 +1657,7 @@ var data = {
 							return;
 						}
 
-						if ( v.hasOwnProperty("data") && typeof v.data.teardown === "function" ) {
+						if ( v.hasOwnProperty( "data" ) && typeof v.data.teardown === "function" ) {
 							observer.remove( v.id );
 							v.data.teardown();
 						}

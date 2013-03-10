@@ -1,7 +1,6 @@
-( function () {
+( function ( global ) {
 
-var global    = this,
-    document  = global.document,
+var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof exports !== "undefined",
