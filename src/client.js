@@ -483,7 +483,7 @@ var client = {
 
 			// Transforming payload
 			if ( payload !== null ) {
-				if ( payload.hasOwnProperty("xml") ) {
+				if ( payload.hasOwnProperty( "xml" ) ) {
 					payload = payload.xml;
 				}
 
@@ -523,7 +523,7 @@ var client = {
 					headers["Content-Type"] = contentType;
 				}
 
-				if ( headers.hasOwnProperty("callback") ) {
+				if ( headers.hasOwnProperty( "callback" ) ) {
 					delete headers.callback;
 				}
 
@@ -583,7 +583,7 @@ var client = {
 		};
 
 		if ( !xdr && xhr.readyState === 2) {
-			uri.fire("received" + typed, null, xhr );
+			uri.fire( "received" + typed, null, xhr );
 		}
 		else if ( !xdr && xhr.readyState === 4 ) {
 			switch ( xhr.status ) {
@@ -609,7 +609,7 @@ var client = {
 
 						return uri.fire( "afterOptions", o.headers );
 					}
-					else if ( type !== "delete" && /200|201/.test( xhr.status ) ) {
+					else if ( type !== "delete" && regex.http_success.test( xhr.status ) ) {
 						t = o.headers["Content-Type"] || "";
 						r = client.parse( xhr, t );
 

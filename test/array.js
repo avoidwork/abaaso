@@ -76,19 +76,26 @@ exports["clear"] = {
 
 exports["clone"] = {
 	setUp: function (done) {
-		this.val = [true, false];
+		this.val   = [true, false];
+		this.clone = undefined;
 		done();
 	},
 	direct: function (test) {
-		test.expect(2);
+		test.expect(5);
 		test.equal(array.clone(this.val)[0], true, "Should be true");
 		test.equal(array.clone(this.val)[1], false, "Should be false");
+		test.equal(this.clone = array.clone(this.val), this.clone, "Should be a clone");
+		test.equal(this.clone.push(true), 3, "Should be 3");
+		test.equal(this.val.length, 2, "Should be 2");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(2);
+		test.expect(5);
 		test.equal(this.val.clone()[0], true, "Should be true");
 		test.equal(this.val.clone()[1], false, "Should be false");
+		test.equal(this.clone = this.val.clone(), this.clone, "Should be a clone");
+		test.equal(this.clone.push(true), 3, "Should be 3");
+		test.equal(this.val.length, 2, "Should be 2");
 		test.done();
 	}
 };

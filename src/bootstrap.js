@@ -150,7 +150,7 @@ bootstrap = function () {
 				var i = 0, l = this.length >> 0, curr;
 
 				if ( typeof accumulator !== "function") {
-					throw new TypeError("First argument is not callable" );
+					throw new TypeError( "First argument is not callable" );
 				}
 
 				if ( arguments.length < 2 ) {
@@ -238,7 +238,7 @@ bootstrap = function () {
 					Object.defineProperty( target, "classList", descriptor );
 				}
 				else if ( Object.prototype.__defineGetter__) {
-					target.__defineGetter__("classList", getter );
+					target.__defineGetter__( "classList", getter );
 				}
 				else {
 					throw Error( "Could not create classList shim" );

@@ -25,7 +25,7 @@ if ( server ) {
 	}
 }
 
-abaaso = function () {
+abaaso = function namespace () {
 "use strict";
 
 var $, bootstrap, error, external;

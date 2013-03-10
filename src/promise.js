@@ -162,7 +162,7 @@ var promise = {
 		    i, reason, result;
 
 		if ( this.state !== promise.state.pending ) {
-			throw Error( label.error.promiseResolved.replace("{{outcome}}", this.outcome) );
+			throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.outcome ) );
 		}
 
 		this.state   = state;

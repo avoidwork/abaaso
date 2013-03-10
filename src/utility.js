@@ -154,7 +154,7 @@ var utility = {
 		var clone;
 
 		if ( obj instanceof Array ) {
-			return [].concat( obj );
+			return obj.concat();
 		}
 		else if ( typeof obj === "boolean" ) {
 			return Boolean( obj );
@@ -206,8 +206,8 @@ var utility = {
 		var result = utility.clone( value ),
 		    tmp;
 
-		if ( !isNaN( number.parse( result ) ) ) {
-			result = number.parse( result );
+		if ( !isNaN( Number( result ) ) ) {
+			result = Number( result );
 		}
 		else if ( regex.string_boolean.test( result ) ) {
 			result = regex.string_true.test( result );
@@ -427,10 +427,6 @@ var utility = {
 			throw Error( label.error.invalidArguments );
 		}
 
-		if ( arg === undefined ) {
-			arg = {};
-		}
-
 		if ( typeof Object.create === "function" ) {
 			o = Object.create( obj );
 		}
@@ -440,7 +436,9 @@ var utility = {
 			o = new f();
 		}
 
-		utility.merge( o, arg );
+		if ( arg instanceof Object ) {
+			utility.merge( o, arg );
+		}
 
 		return o;
 	},

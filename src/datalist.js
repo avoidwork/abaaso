@@ -147,22 +147,22 @@ var datalist = {
 				el = element.create( "ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before" );
 
 				// First page
-				element.create( more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create("li", {}, el) );
+				element.create( more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create( "li", {}, el) );
 
 				// Previous page
-				element.create( more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create("li", {}, el) );
+				element.create( more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create( "li", {}, el) );
 
 				// Rendering the page range
 				for ( i = start; i <= end; i++ ) {
 					current = ( i === page );
-					element.create( current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i, innerHTML: i}, element.create("li", {}, el) );
+					element.create( current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i, innerHTML: i}, element.create( "li", {}, el) );
 				}
 
 				// Next page
-				element.create( next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null, innerHTML: "&gt;"}, element.create("li", {}, el) );
+				element.create( next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null, innerHTML: "&gt;"}, element.create( "li", {}, el) );
 
 				// Last page
-				element.create( last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create("li", {}, el) );
+				element.create( last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create( "li", {}, el) );
 
 				// Removing ( potentially ) existing click handler
 				observer.remove( el, "click" );
@@ -174,7 +174,7 @@ var datalist = {
 					utility.stop( e );
 
 					if ( target.nodeName === "A" ) {
-						self.page( element.data(target, "page") );
+						self.page( element.data( target, "page") );
 						window.scrollTo( 0, 0 );
 					}
 				}, "pagination");
@@ -399,7 +399,7 @@ var datalist = {
 
 			observer.remove( id );
 
-			array.each( $("#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
+			array.each( $( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
 				observer.remove( i );
 			});
 
