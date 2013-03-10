@@ -15,7 +15,9 @@ var cookie = {
 	 * @return {String}        Name of the expired cookie
 	 */
 	expire : function ( name, domain, secure ) {
-		if ( cookie.get( name ) !== undefined ) cookie.set( name, "", "-1s", domain, secure );
+		if ( cookie.get( name ) !== undefined ) {
+			cookie.set( name, "", "-1s", domain, secure );
+		}
 
 		return name;
 	},
@@ -87,9 +89,12 @@ var cookie = {
 				}
 			}
 
-			if ( isNaN( span ) ) throw Error( label.error.invalidArguments );
+			if ( isNaN( span ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			expire = new Date();
+
 			switch ( type ) {
 				case "d":
 					expire.setDate( expire.getDate() + span );
@@ -106,7 +111,9 @@ var cookie = {
 			}
 		}
 
-		if ( expire instanceof Date) expire = " expires=" + expire.toUTCString() + ";";
+		if ( expire instanceof Date) {
+			expire = " expires=" + expire.toUTCString() + ";";
+		}
 
 		document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
 

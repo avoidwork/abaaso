@@ -43,11 +43,15 @@ var route = {
 		var error = ( name === "error" );
 
 		if ( ( error && verb !== "all" ) || ( !error && route.routes[host][verb].hasOwnProperty( name ) ) ) {
-			if ( route.initial === name ) route.initial = null;
+			if ( route.initial === name ) {
+				route.initial = null;
+			}
 
 			return ( delete route.routes[host][verb][name] );
 		}
-		else throw Error( label.error.invalidArguments );
+		else {
+			throw Error( label.error.invalidArguments );
+		}
 	},
 
 	/**
@@ -62,7 +66,9 @@ var route = {
 		    regex  = /\#|\!\/|\?.*/g;
 
 		if ( !server ) {
-			if ( arg === undefined ) output = document.location.hash.replace( regex, "" );
+			if ( arg === undefined ) {
+				output = document.location.hash.replace( regex, "" );
+			}
 			else {
 				output = arg.replace( regex, "" );
 				document.location.hash = "!/" + output;
@@ -115,8 +121,12 @@ var route = {
 		host = host || "all";
 		var result;
 
-		if ( !server ) result = array.cast( route.routes.all.all, true );
-		else if ( verb !== undefined && route.routes.hasOwnProperty( host ) ) result = array.cast( route.routes[host][route.method( verb )], true );
+		if ( !server ) {
+			result = array.cast( route.routes.all.all, true );
+		}
+		else if ( verb !== undefined && route.routes.hasOwnProperty( host ) ) {
+			result = array.cast( route.routes[host][route.method( verb )], true );
+		}
 		else {
 			result = [];
 
@@ -132,7 +142,9 @@ var route = {
 
 		if ( !server && host !== "all" ) {
 			utility.iterate( route.routes.all, function ( v, k ) {
-				if ( result[k] === undefined ) result[k] = [];
+				if ( result[k] === undefined ) {
+					result[k] = [];
+				}
 
 				utility.iterate( v, function ( fn, r ) {
 					result[k].push( r );
@@ -164,11 +176,16 @@ var route = {
 		    crawl, find;
 
 		// Not a GET, but assuming the route is smart enough to strip the entity body
-		if ( regex.route_nget.test( verb ) ) verb = "get";
+		if ( regex.route_nget.test( verb ) ) {
+			verb = "get";
+		}
 
 		// Public, private, local scope
 		name = name.replace( /\#|\!\/|\?.*/g, "" );
-		if ( !server ) route.current = name;
+
+		if ( !server ) {
+			route.current = name;
+		}
 
 		// Crawls the hostnames
 		crawl = function ( host, verb, name ) {
@@ -215,7 +232,9 @@ var route = {
 				}
 			});
 
-			if ( !found ) host = "all";
+			if ( !found ) {
+				host = "all";
+			}
 		}
 
 		crawl( host, verb, name );
@@ -225,6 +244,7 @@ var route = {
 				host = "all";
 				crawl( host, verb, name );
 			}
+
 			if ( string.isEmpty( active ) ) {
 				active = "error";
 				path   = "all";
@@ -248,13 +268,19 @@ var route = {
 				all : {
 					error : function () {
 						if ( !server ) {
-							if ( string.isEmpty( route.hash() ) ) return history.go( -1 );
+							if ( string.isEmpty( route.hash() ) ) {
+								return history.go( -1 );
+							}
 							else {
 								utility.error( label.error.invalidRoute );
-								if ( route.initial !== null ) route.hash( route.initial );
+								if ( route.initial !== null ) {
+									route.hash( route.initial );
+								}
 							}
 						}
-						else throw Error( label.error.invalidRoute );
+						else {
+							throw Error( label.error.invalidRoute );
+						}
 					}
 				},
 				"delete" : {},
@@ -277,7 +303,9 @@ var route = {
 	server : function ( args, fn, ssl ) {
 		var handler, err, obj;
 
-		if ( !server ) return null;
+		if ( !server ) {
+			throw Error( label.error.notSupported );
+		}
 
 		args = args || {};
 		ssl  = ( ssl === true || args.port === 443 );
@@ -293,17 +321,18 @@ var route = {
 		// Error handler
 		err = function ( e ) {
 			error( e, this, arguments );
-			if ( typeof fn === "function" ) fn( e );
-		};
 
-		if ( !server ) throw Error( label.error.notSupported );
+			if ( typeof fn === "function" ) {
+				fn( e );
+			}
+		};
 
 		// Enabling routing, in case it's not explicitly enabled prior to route.server()
 		route.enabled = true;
 
 		// Server parameters
-		args.host = args.host           || undefined;
-		args.port = parseInt( args.port ) || 8000;
+		args.host = args.host || undefined;
+		args.port = args.port || 8000;
 
 		// Creating server
 		obj = !ssl ? http.createServer( handler ).on( "error", err ).listen( args.port, args.host )
@@ -325,7 +354,9 @@ var route = {
 		host = server ? ( host || "all" )    : "all";
 		verb = server ? route.method( verb ) : "all";
 
-		if ( typeof name !== "string" || string.isEmpty( name ) || typeof fn !== "function") throw Error( label.error.invalidArguments );
+		if ( typeof name !== "string" || string.isEmpty( name ) || typeof fn !== "function") {
+			throw Error( label.error.invalidArguments );
+		}
 
 		route.hostname( host )[verb][name] = fn;
 

@@ -74,9 +74,9 @@ var client = {
 				version = ( navigator !== undefined ) ? navigator.appVersion : 0;
 		}
 
-		version = !isNaN( number.parse( version ) ) ? number.parse( version ) : parseInt( version, 10 );
+		version = number.parse( string.trim( version ) );
 
-		if ( isNaN(version) ) version = 0;
+		if ( isNaN( version ) ) version = 0;
 
 		return version;
 	},
@@ -90,17 +90,27 @@ var client = {
 	 * @return {Boolean}        True if the command is allowed
 	 */
 	allows : function ( uri, command ) {
-		if ( string.isEmpty( uri ) || string.isEmpty( command ) ) throw Error( label.error.invalidArguments );
+		if ( string.isEmpty( uri ) || string.isEmpty( command ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
-		if ( !cache.get( uri, false ) ) return undefined;
+		if ( !cache.get( uri, false ) ) {
+			return undefined;
+		}
 
 		command    = command.toLowerCase();
 		var result = false,
 		    bit    = 0;
 
-		if ( regex.del.test( command ) )              bit = 1;
-		else if ( regex.get_headers.test( command ) ) bit = 4;
-		else if ( regex.put_post.test( command ) )    bit = 2;
+		if ( regex.del.test( command ) ) {
+			bit = 1;
+		}
+		else if ( regex.get_headers.test( command ) ) {
+			bit = 4;
+		}
+		else if ( regex.put_post.test( command ) ) {
+			bit = 2;
+		}
 
 		result = !( ( client.permissions( uri, command ).bit & bit ) === 0 );
 
@@ -184,8 +194,9 @@ var client = {
 			items[header] = value;
 
 			if ( allow === null ) {
-				if ( !cors && regex.allow.test( header) )          allow = value;
-				else if ( cors && regex.allow_cors.test( header) ) allow = value;
+				if ( ( !cors && regex.allow.test( header) ) || ( cors && regex.allow_cors.test( header) ) ) {
+					allow = value;
+				}
 			}
 		});
 
@@ -194,7 +205,7 @@ var client = {
 			case regex.no.test( items["Pragma"] ):
 				break;
 			case items["Cache-Control"] !== undefined && regex.number_present.test( items["Cache-Control"] ):
-				expires = expires.setSeconds( expires.getSeconds() + parseInt( regex.number_present.exec( items["Cache-Control"] )[0], 10 ) );
+				expires = expires.setSeconds( expires.getSeconds() + number.parse( regex.number_present.exec( items["Cache-Control"] )[0], 10 ) );
 				break;
 			case items["Expires"] !== undefined:
 				expires = new Date( items["Expires"] );
@@ -257,14 +268,18 @@ var client = {
 		    bit    = !cached ? 0 : cached.permission,
 		    result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1}};
 
-		if ( bit & 1) result.allows.push( "DELETE" );
+		if ( bit & 1) {
+			result.allows.push( "DELETE" );
+		}
 
 		if ( bit & 2) {
 			result.allows.push( "POST" );
 			result.allows.push( "PUT" );
 		}
 
-		if ( bit & 4) result.allows.push( "GET" );
+		if ( bit & 4) {
+			result.allows.push( "GET" );
+		}
 
 		return result;
 	},
@@ -305,9 +320,13 @@ var client = {
 		}
 
 		deferred.then( function (arg ) {
-			if ( typeof success === "function") success( arg );
+			if ( typeof success === "function") {
+				success( arg );
+			}
 		}, function ( e ) {
-			if ( typeof failure === "function") failure( e );
+			if ( typeof failure === "function") {
+				failure( e );
+			}
 
 			throw e;
 		});
@@ -359,7 +378,9 @@ var client = {
 		timeout = timeout || 30000;
 		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2;
 
-		if ( regex.put_post.test( type ) && args === undefined ) throw Error( label.error.invalidArguments );
+		if ( regex.put_post.test( type ) && args === undefined ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
@@ -376,13 +397,19 @@ var client = {
 
 		// Using a promise to resolve request
 		deferred2 = deferred.then( function (arg ) {
-			if ( type === "delete") cache.expire( uri );
+			if ( type === "delete") {
+				cache.expire( uri );
+			}
 
-			if ( typeof success === "function" ) success.call( uri, arg, xhr );
+			if ( typeof success === "function" ) {
+				success.call( uri, arg, xhr );
+			}
 
 			xhr = null;
 		}, function ( e ) {
-			if ( typeof failure === "function" ) failure.call( uri, e, xhr );
+			if ( typeof failure === "function" ) {
+				failure.call( uri, e, xhr );
+			}
 
 			xhr = null;
 
@@ -415,8 +442,14 @@ var client = {
 			};
 
 			// Setting timeout
-			try { if ( xhr.timeout !== undefined ) xhr.timeout = timeout; }
-			catch ( e ) { void 0; }
+			try {
+				if ( xhr.timeout !== undefined ) {
+					xhr.timeout = timeout;
+				}
+			}
+			catch ( e ) {
+				void 0;
+			}
 
 			// Setting events
 			if ( xhr.ontimeout  !== undefined ) {
@@ -549,7 +582,9 @@ var client = {
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
 
-		if ( !xdr && xhr.readyState === 2) uri.fire("received" + typed, null, xhr );
+		if ( !xdr && xhr.readyState === 2) {
+			uri.fire("received" + typed, null, xhr );
+		}
 		else if ( !xdr && xhr.readyState === 4 ) {
 			switch ( xhr.status ) {
 				case 200:
@@ -586,7 +621,9 @@ var client = {
 					}
 
 					// Application state change triggered by hypermedia ( HATEOAS )
-					if ( state.getHeader() !== null && Boolean( xhrState = o.headers[state.getHeader()]) && state.current !== xhrState ) state.setCurrent( state );
+					if ( state.getHeader() !== null && Boolean( xhrState = o.headers[state.getHeader()]) && state.current !== xhrState ) {
+						state.setCurrent( state );
+					}
 
 					switch ( xhr.status ) {
 						case 200:

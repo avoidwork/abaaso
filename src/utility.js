@@ -19,7 +19,9 @@ var utility = {
 	 * @return {Mixed}            Element or Array of Elements
 	 */
 	$ : function ( arg, nodelist ) {
-		if ( server || arg === undefined ) return undefined;
+		if ( document === undefined || arg === undefined ) {
+			return undefined;
+		}
 
 		var queries = [],
 		    result  = [],
@@ -33,30 +35,45 @@ var utility = {
 
 			if ( regex.selector_complex.test( query) ) {
 				sel = array.last( query.split( " " ).filter( function ( i ) {
-					if ( !i.isEmpty() && i !== ">" ) return true;
+					if ( !string.isEmpty( i ) && i !== ">" ) {
+						return true;
+					}
 				}));
 
-				if ( regex.hash.test( sel ) && !regex.selector_many.test( sel ) ) obj = document.querySelector( query );
+				if ( regex.hash.test( sel ) && !regex.selector_many.test( sel ) ) {
+					obj = document.querySelector( query );
+				}
 				else {
 					obj = document.querySelectorAll( query );
-					if ( !nodelist ) obj = array.cast( obj );
+
+					if ( !nodelist ) {
+						obj = array.cast( obj );
+					}
 				}
 			}
-			else if ( regex.hash.test( query ) && !regex.selector_many.test( query ) ) obj = document.querySelector( query )
+			else if ( regex.hash.test( query ) && !regex.selector_many.test( query ) ) {
+				obj = document.querySelector( query )
+			}
 			else {
 				obj = document.querySelectorAll( query );
 
-				if ( !nodelist ) obj = array.cast( obj );
+				if ( !nodelist ) {
+					obj = array.cast( obj );
+				}
 			}
 
-			if ( obj !== null ) tmp.push( obj );
+			if ( obj !== null ) {
+				tmp.push( obj );
+			}
 		});
 
 		array.each( tmp, function ( i ) {
 			result = result.concat( i );
 		});
 
-		if ( regex.hash.test( arg ) && !regex.selector_many.test( arg ) && !regex.selector_complex.test( arg ) ) result = result[0];
+		if ( regex.hash.test( arg ) && !regex.selector_many.test( arg ) && !regex.selector_complex.test( arg ) ) {
+			result = result[0];
+		}
 
 		return result;
 	},
@@ -76,9 +93,14 @@ var utility = {
 		utility.iterate( s, function ( v, k ) {
 			var getter, setter;
 
-			if ( !( v instanceof RegExp ) && typeof v === "function" ) o[k] = v.bind( o[k] );
+			if ( !( v instanceof RegExp ) && typeof v === "function" ) {
+				o[k] = v.bind( o[k] );
+			}
 			else if ( !(v instanceof RegExp ) && !(v instanceof Array ) && v instanceof Object ) {
-				if ( o[k] === undefined ) o[k] = {};
+				if ( o[k] === undefined ) {
+					o[k] = {};
+				}
+
 				utility.alias( o[k], s[k] );
 			}
 			else {
@@ -104,7 +126,9 @@ var utility = {
 	 * @return {Undefined} undefined
 	 */
 	clearTimers : function ( id ) {
-		if ( id === undefined || id.isEmpty() ) throw Error( label.error.invalidArguments );
+		if ( id === undefined || id.isEmpty() ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		// deferred
 		if ( utility.timer[id] !== undefined ) {
@@ -129,12 +153,24 @@ var utility = {
 	clone : function ( obj ) {
 		var clone;
 
-		if ( obj instanceof Array ) return [].concat( obj );
-		else if ( typeof obj === "boolean" ) return Boolean( obj );
-		else if ( typeof obj === "function" ) return obj;
-		else if ( typeof obj === "number" ) return Number( obj );
-		else if ( typeof obj === "string" ) return String( obj );
-		else if ( !client.ie && !server && obj instanceof Document ) return xml.decode( xml.encode(obj) );
+		if ( obj instanceof Array ) {
+			return [].concat( obj );
+		}
+		else if ( typeof obj === "boolean" ) {
+			return Boolean( obj );
+		}
+		else if ( typeof obj === "function" ) {
+			return obj;
+		}
+		else if ( typeof obj === "number" ) {
+			return Number( obj );
+		}
+		else if ( typeof obj === "string" ) {
+			return String( obj );
+		}
+		else if ( !client.ie && !server && obj instanceof Document ) {
+			return xml.decode( xml.encode(obj) );
+		}
 		else if ( obj instanceof Object ) {
 			// If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration
 			clone = json.encode( obj, true );
@@ -144,14 +180,20 @@ var utility = {
 
 				// Decorating Functions that would be lost with JSON encoding/decoding
 				utility.iterate( obj, function ( v, k ) {
-					if ( typeof v === "function" ) clone[k] = v;
+					if ( typeof v === "function" ) {
+						clone[k] = v;
+					}
 				});
 			}
-			else clone = obj;
+			else {
+				clone = obj;
+			}
 
 			return clone;
 		}
-		else return obj;
+		else {
+			return obj;
+		}
 	},
 
 	/**
@@ -164,11 +206,21 @@ var utility = {
 		var result = utility.clone( value ),
 		    tmp;
 
-		if ( !isNaN( number.parse( result ) ) ) result = number.parse( result );
-		else if ( regex.string_boolean.test( result ) ) result = regex.string_true.test( result );
-		else if ( result === "undefined" ) result = undefined;
-		else if ( result === "null" ) result = null;
-		else if ( (tmp = json.decode( result, true ) ) && tmp !== undefined ) result = tmp;
+		if ( !isNaN( number.parse( result ) ) ) {
+			result = number.parse( result );
+		}
+		else if ( regex.string_boolean.test( result ) ) {
+			result = regex.string_true.test( result );
+		}
+		else if ( result === "undefined" ) {
+			result = undefined;
+		}
+		else if ( result === "null" ) {
+			result = null;
+		}
+		else if ( (tmp = json.decode( result, true ) ) && tmp !== undefined ) {
+			result = tmp;
+		}
 
 		return result;
 	},
@@ -200,9 +252,11 @@ var utility = {
 	css : function ( content, media ) {
 		var ss, css;
 
-		ss = $( "head" )[0].create( "style", {type: "text/css", media: media || "print, screen"} );
+		ss = element.create( "style", {type: "text/css", media: media || "print, screen"}, $( "head" )[0] );
 
-		if ( ss.styleSheet ) ss.styleSheet.cssText = content;
+		if ( ss.styleSheet ) {
+			ss.styleSheet.cssText = content;
+		}
 		else {
 			css = document.createTextNode( content );
 			ss.appendChild( css );
@@ -221,7 +275,9 @@ var utility = {
 	 * @return {Undefined}      undefined
 	 */
 	debounce : function ( fn, ms, scope ) {
-		if ( typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+		if ( typeof fn !== "function" ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		ms    = ms    || 1000;
 		scope = scope || global;
@@ -248,21 +304,38 @@ var utility = {
 		var p   = obj,
 		    nth = args.length;
 
-		if ( obj   === undefined ) obj   = this;
-		if ( value === undefined ) value = null;
+		if ( obj === undefined ) {
+			obj = this;
+		}
+
+		if ( value === undefined ) {
+			value = null;
+		}
 
 		array.each( args, function ( i, idx ) {
-			var num = idx + 1 < nth && !isNaN( parseInt( args[idx + 1] ) ),
+			var num = idx + 1 < nth && !isNaN( number.parse( args[idx + 1], 10 ) ),
 			    val = value;
 
-			if ( !isNaN( parseInt( i ) ) )  i = parseInt( i );
+			if ( !isNaN( number.parse( i, 10 ) ) )  {
+				i = number.parse( i, 10 );
+			}
 			
 			// Creating or casting
-			if ( p[i] === undefined ) p[i] = num ? [] : {};
-			else if ( p[i] instanceof Object && num ) p[i] = array.cast( p[i] );
-			else if ( p[i] instanceof Object ) void 0;
-			else if ( p[i] instanceof Array && !num ) p[i] = array.toObject( p[i] );
-			else p[i] = {};
+			if ( p[i] === undefined ) {
+				p[i] = num ? [] : {};
+			}
+			else if ( p[i] instanceof Object && num ) {
+				p[i] = array.cast( p[i] );
+			}
+			else if ( p[i] instanceof Object ) {
+				void 0;
+			}
+			else if ( p[i] instanceof Array && !num ) {
+				p[i] = array.toObject( p[i] );
+			}
+			else {
+				p[i] = {};
+			}
 
 			// Setting reference or value
 			idx + 1 === nth ? p[i] = val : p = p[i];
@@ -350,10 +423,17 @@ var utility = {
 	extend : function ( obj, arg ) {
 		var o, f;
 
-		if ( obj === undefined ) throw Error( label.error.invalidArguments );
-		if ( arg === undefined ) arg = {};
+		if ( obj === undefined ) {
+			throw Error( label.error.invalidArguments );
+		}
 
-		if ( typeof Object.create === "function" ) o = Object.create( obj );
+		if ( arg === undefined ) {
+			arg = {};
+		}
+
+		if ( typeof Object.create === "function" ) {
+			o = Object.create( obj );
+		}
 		else {
 			f = function () {};
 			f.prototype = obj;
@@ -377,20 +457,26 @@ var utility = {
 		dom = ( dom === true );
 		var id;
 
-		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj === "string" ) ) ) return obj;
+		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj === "string" ) ) ) {
+			return obj;
+		}
 
 		if ( dom ) {
 			do id = utility.domId( utility.uuid( true) );
 			while ( $( "#" + id ) !== undefined );
 		}
-		else id = utility.domId( utility.uuid( true) );
+		else {
+			id = utility.domId( utility.uuid( true) );
+		}
 
 		if ( typeof obj === "object" ) {
 			obj.id = id;
 
 			return obj;
 		}
-		else return id;
+		else {
+			return id;
+		}
 	},
 
 	/**
@@ -406,7 +492,9 @@ var utility = {
 	iterate : function () {
 		if ( typeof Object.keys === "function" ) {
 			return function ( obj, fn ) {
-				if ( typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+				if ( typeof fn !== "function" ) {
+					throw Error( label.error.invalidArguments );
+				}
 
 				array.each( Object.keys( obj ), function ( i ) {
 					return fn.call( obj, obj[i], i );
@@ -420,15 +508,21 @@ var utility = {
 				var has = Object.prototype.hasOwnProperty,
 				    i, result;
 
-				if ( typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+				if ( typeof fn !== "function" ) {
+					throw Error( label.error.invalidArguments );
+				}
 
 				for ( i in obj ) {
 					if ( has.call( obj, i ) ) {
 						result = fn.call( obj, obj[i], i );
 
-						if ( result === false ) break;
+						if ( result === false ) {
+							break;
+						}
 					}
-					else break;
+					else {
+						break;
+					}
 				}
 
 				return obj;
@@ -455,7 +549,9 @@ var utility = {
 			});
 		}
 
-		if ( l.url === null || obj === undefined ) throw Error( label.error.invalidArguments );
+		if ( l.url === null || obj === undefined ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		// Setting loading image
 		if ( l.image === undefined ) {
@@ -464,10 +560,10 @@ var utility = {
 		}
 
 		// Clearing target element
-		obj.clear();
+		element.clear( obj );
 
 		// Creating loading image in target element
-		obj.create( "div", {"class": "loading"} ).create( "img", {alt: label.common.loading, src: l.image.src} );
+		element.create( "img", {alt: label.common.loading, src: l.image.src}, element.create( "div", {"class": "loading"}, obj ) );
 
 		return obj;
 	},
@@ -518,11 +614,15 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function ( arg, obj ) {
-		if ( $[arg] !== undefined || this[arg] !== undefined || !obj instanceof Object ) throw Error( label.error.invalidArguments );
+		if ( $[arg] !== undefined || this[arg] !== undefined || !obj instanceof Object ) {
+			throw Error( label.error.invalidArguments );
+		}
 		
 		this[arg] = obj;
 
-		if ( typeof obj === "function") $[arg] = !client.ie || client.version > 8 ? this[arg].bind( $[arg] ) : this[arg];
+		if ( typeof obj === "function") {
+			$[arg] = !client.ie || client.version > 8 ? this[arg].bind( $[arg] ) : this[arg];
+		}
 		else {
 			$[arg] = {};
 			utility.alias( $[arg], this[arg] );
@@ -558,12 +658,14 @@ var utility = {
 			obj = document.createElement( "a" );
 			obj.href = uri;
 		}
-		else obj = url.parse( uri );
+		else {
+			obj = url.parse( uri );
+		}
 
 		parsed = {
 			protocol : obj.protocol,
 			hostname : obj.hostname,
-			port     : !String( obj.port).isEmpty() ? parseInt(obj.port ) : "",
+			port     : !string.isEmpty( obj.port ) ? number.parse( obj.port, 10 ) : "",
 			pathname : obj.pathname,
 			search   : obj.search,
 			hash     : obj.hash,
@@ -572,10 +674,21 @@ var utility = {
 
 		// 'cause IE is ... IE; required for data.batch()
 		if ( client.ie ) {
-			if ( parsed.protocol === ":" )             parsed.protocol = location.protocol;
-			if ( parsed.hostname.isEmpty() )           parsed.hostname = location.hostname;
-			if ( parsed.host.isEmpty() )               parsed.host     = location.host;
-			if ( parsed.pathname.charAt( 0 ) !== "/" ) parsed.pathname = "/" + parsed.pathname;
+			if ( parsed.protocol === ":" ) {
+				parsed.protocol = location.protocol;
+			}
+
+			if ( string.isEmpty( parsed.hostname ) ) {
+				parsed.hostname = location.hostname;
+			}
+
+			if ( string.isEmpty( parsed.host ) ) {
+				parsed.host = location.host;
+			}
+
+			if ( parsed.pathname.charAt( 0 ) !== "/" ) {
+				parsed.pathname = "/" + parsed.pathname;
+			}
 		}
 
 		return parsed;
@@ -593,18 +706,25 @@ var utility = {
 	property : function () {
 		if ( ( server || ( !client.ie || client.version > 8 ) ) && typeof Object.defineProperty === "function" ) {
 			return function ( obj, prop, descriptor ) {
-				if ( !( descriptor instanceof Object ) ) throw Error( label.error.invalidArguments );
+				if ( !( descriptor instanceof Object ) ) {
+					throw Error( label.error.invalidArguments );
+				}
 
-				if ( descriptor.value !== undefined && descriptor.get !== undefined ) delete descriptor.value;
+				if ( descriptor.value !== undefined && descriptor.get !== undefined ) {
+					delete descriptor.value;
+				}
 
 				Object.defineProperty( obj, prop, descriptor );
 			};
 		}
 		else {
 			return function ( obj, prop, descriptor ) {
-				if ( !( descriptor instanceof Object ) ) throw Error( label.error.invalidArguments );
+				if ( !( descriptor instanceof Object ) ) {
+					throw Error( label.error.invalidArguments );
+				}
 
 				obj[prop] = descriptor.value;
+
 				return obj;
 			};
 		}
@@ -1107,8 +1227,13 @@ var utility = {
 				},
 				text : function ( arg ) {
 					return array.each( this, function ( node ) {
-						if ( typeof node !== "object") node = utility.object( node );
-						if ( typeof node.text === "function") node.text( arg );
+						if ( typeof node !== "object") {
+							node = utility.object( node );
+						}
+
+						if ( typeof node.text === "function") {
+							node.text( arg );
+						}
 					});
 				},
 				tpl : function ( arg ) {
@@ -1146,11 +1271,15 @@ var utility = {
 					    same = true;
 
 					array.each( this, function ( i ) {
-						if ( type !== null ) same = ( type === i.type );
+						if ( type !== null ) {
+							same = ( type === i.type );
+						}
 
 						type = i.type;
 
-						if ( typeof i.val === "function" ) a.push( i.val( arg ) );
+						if ( typeof i.val === "function" ) {
+							a.push( i.val( arg ) );
+						}
 					});
 
 					return same ? a[0] : a;
@@ -1219,17 +1348,21 @@ var utility = {
 					    deferred = promise.factory(),
 					    deferred2;
 
-					deferred2 = deferred.then( function (arg ) {
+					deferred2 = deferred.then( function ( arg ) {
 						element.html( self, arg );
 						observer.fire( self, "afterGet" );
 
-						if ( typeof success === "function") success.call( self, arg );
+						if ( typeof success === "function") {
+							success.call( self, arg );
+						}
 
 					}, function ( e ) {
 						element.html( self, arg || label.error.serverError );
 						observer.fire( self, "failedGet" );
 
-						if ( typeof failure === "function") failure.call(self, arg );
+						if ( typeof failure === "function") {
+							failure.call( self, arg );
+						}
 
 						throw e;
 					});
@@ -1317,8 +1450,11 @@ var utility = {
 								prop = prop.replace( /\]|'|"/g , "" ).replace( /\./g, "[" ).split( "[" );
 
 								prop.each( function ( i ) {
-									node = node[!!isNaN( i ) ? i : parseInt( i )];
-									if ( node === undefined ) throw Error( label.error.propertyNotFound );
+									node = node[!!isNaN( i ) ? i : number.parse( i, 10 )];
+
+									if ( node === undefined ) {
+										throw Error( label.error.propertyNotFound );
+									}
 								});
 
 								result = node;
@@ -1427,13 +1563,20 @@ var utility = {
 					return observer.list( this.toString(), event );
 				},
 				on : function ( event, listener, id, scope, state ) {
-					observer.add(  this.toString(), event, listener, id, scope || this, state ); return this;
+					observer.add(  this.toString(), event, listener, id, scope || this, state );
+
+					return this;
 				},
 				once : function ( event, listener, id, scope, state ) {
-					observer.once( this.toString(), event, listener, id, scope || this, state ); return this;
+					observer.once( this.toString(), event, listener, id, scope || this, state );
+
+					return this;
 				},
 				random : function () {
 					return number.random( this );
+				},
+				round : function () {
+					return number.round( this );
 				},
 				roundDown : function () {
 					return number.round( this, "down" );
@@ -1442,7 +1585,9 @@ var utility = {
 					return number.round( this, "up" );
 				},
 				un : function ( event, id, state ) {
-					observer.remove( this.toString(), event, id, state ); return this;
+					observer.remove( this.toString(), event, id, state );
+
+					return this;
 				}
 			},
 			string : {
@@ -1583,22 +1728,36 @@ var utility = {
 			array.each( result, function (prop ) {
 				item = prop.split( "=" );
 
-				if ( string.isEmpty( item[0] ) ) return;
+				if ( string.isEmpty( item[0] ) ) {
+					return;
+				}
 
-				if ( item[1] === undefined || string.isEmpty( item[1] ) ) item[1] = "";
-				else if ( string.isNumber( item[1] )) item[1]  = Number(item[1] );
-				else if ( string.isBoolean( item[1] )) item[1] = (item[1] === "true" );
+				if ( item[1] === undefined || string.isEmpty( item[1] ) ) {
+					item[1] = "";
+				}
+				else if ( string.isNumber( item[1] )) {
+					item[1] = Number(item[1] );
+				}
+				else if ( string.isBoolean( item[1] )) {
+					item[1] = (item[1] === "true" );
+				}
 
-				if ( obj[item[0]] === undefined ) obj[item[0]] = item[1];
+				if ( obj[item[0]] === undefined ) {
+					obj[item[0]] = item[1];
+				}
 				else if ( !(obj[item[0]] instanceof Array) ) {
 					obj[item[0]] = [obj[item[0]]];
 					obj[item[0]].push( item[1] );
 				}
-				else obj[item[0]].push( item[1] );
+				else {
+					obj[item[0]].push( item[1] );
+				}
 			});
 		}
 
-		if ( arg !== null && arg !== undefined ) obj = obj[arg];
+		if ( arg !== null && arg !== undefined ) {
+			obj = obj[arg];
+		}
 
 		return obj;
 	},
@@ -1611,7 +1770,10 @@ var utility = {
 	 * @return {Array}        Array of parameters
 	 */
 	reflect : function ( arg ) {
-		if ( arg === undefined ) arg = this || $;
+		if ( arg === undefined ) {
+			arg = this || $;
+		}
+
 		arg = arg.toString().match( regex.reflect )[1];
 
 		return string.explode( arg );
@@ -1635,7 +1797,9 @@ var utility = {
 		now = ( now !== false );
 
 		// Could be valid to return false from initial execution
-		if ( now && fn() === false ) return;
+		if ( now && fn() === false ) {
+			return;
+		}
 
 		utility.defer( function () {
 			var recursive = function ( fn, ms, id ) {
@@ -1646,7 +1810,9 @@ var utility = {
 						recursive.call( recursive, fn, ms, id );
 					}, ms );
 				}
-				else delete $.repeating[id];
+				else {
+					delete $.repeating[id];
+				}
 			};
 
 			recursive.call( recursive, fn, ms, id );
@@ -1688,9 +1854,17 @@ var utility = {
 	 * @return {Object}   Event
 	 */
 	stop : function ( e ) {
-		if ( e.cancelBubble           !== undefined ) e.cancelBubble = true;
-		if ( typeof e.preventDefault  === "function") e.preventDefault();
-		if ( typeof e.stopPropagation === "function") e.stopPropagation();
+		if ( e.cancelBubble !== undefined ) {
+			e.cancelBubble = true;
+		}
+
+		if ( typeof e.preventDefault === "function" ) {
+			e.preventDefault();
+		}
+
+		if ( typeof e.stopPropagation === "function" ) {
+			e.stopPropagation();
+		}
 
 		// Assumed to always be valid, even if it's not decorated on `e` ( I'm looking at you IE8 )
 		e.returnValue = false;
@@ -1719,9 +1893,13 @@ var utility = {
 	tpl : function ( arg, target ) {
 		var frag;
 
-		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? $( target ) : $( target )[0] ) === undefined ) ) throw Error( label.error.invalidArguments );
+		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? $( target ) : $( target )[0] ) === undefined ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
-		if ( target === undefined ) target = $( "body" )[0];
+		if ( target === undefined ) {
+			target = $( "body" )[0];
+		}
 
 		frag  = document.createDocumentFragment();
 
@@ -1731,9 +1909,13 @@ var utility = {
 			});
 		}
 		else {
-			utility.iterate( arg, function (v, k ) {
-				if ( typeof v === "string" ) element.html( element.create( k, frag ), v );
-				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) utility.tpl( v, element.create( k, frag ) );
+			utility.iterate( arg, function ( v, k ) {
+				if ( typeof v === "string" ) {
+					element.html( element.create( k, frag ), v );
+				}
+				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) {
+					utility.tpl( v, element.create( k, frag ) );
+				}
 			});
 		}
 
@@ -1756,7 +1938,9 @@ var utility = {
 
 		o = ( s() + s() + "-" + s() + "-4" + s().substr( 0, 3 ) + "-" + r[Math.floor( Math.random() * r.length )] + s().substr( 0, 3 ) + "-" + s() + s() + s() );
 
-		if ( safe === true ) o = o.replace( /-/g, "" );
+		if ( safe === true ) {
+			o = o.replace( /-/g, "" );
+		}
 
 		return o;
 	},

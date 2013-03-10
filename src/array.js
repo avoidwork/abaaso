@@ -350,7 +350,9 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	keep_if : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+		if ( typeof fn !== "function" ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		var result = [],
 		    remove = [];
@@ -524,7 +526,9 @@ var array = {
 		// Determining the result
 		nth = mode.length;
 
-		if ( nth > 0 ) result = nth === 1 ? mode[0] : mode;
+		if ( nth > 0 ) {
+			result = nth === 1 ? mode[0] : mode;
+		}
 
 		return result;
 	},
@@ -605,7 +609,9 @@ var array = {
 			start = obj.index( start );
 			if ( start === -1 ) return obj;
 		}
-		else start = start || 0;
+		else {
+			start = start || 0;
+		}
 
 		var length    = obj.length,
 		    remaining = obj.slice( (end || start) + 1 || length );
@@ -625,7 +631,9 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	remove_if : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+		if ( typeof fn !== "function" ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		var remove = [];
 
@@ -646,7 +654,9 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	remove_while : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+		if ( typeof fn !== "function" ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		var remove = [];
 
@@ -673,7 +683,9 @@ var array = {
 	rest : function ( obj, arg ) {
 		arg = arg || 1;
 
-		if ( arg < 1 ) arg = 1;
+		if ( arg < 1 ) {
+			arg = 1;
+		}
 
 		return array.limit( obj, arg, obj.length );
 	},
@@ -690,7 +702,9 @@ var array = {
 		var result = -1;
 
 		array.each( obj, function ( i, idx ) {
-			if ( i === arg ) result = idx;
+			if ( i === arg ) {
+				result = idx;
+			}
 		});
 
 		return result;
@@ -708,7 +722,9 @@ var array = {
 		var result = [],
 		    nth    = obj.length;
 
-		if ( arg === 0 ) result = obj;
+		if ( arg === 0 ) {
+			result = obj;
+		}
 		else {
 			arg < 0 ? arg += nth : arg--;
 			result = array.limit( obj, arg, nth );
@@ -794,13 +810,19 @@ var array = {
 		var nums   = false,
 		    result = 0;
 
-		if ( !isNaN( a ) && !isNaN( b ) ) nums = true;
+		if ( !isNaN( a ) && !isNaN( b ) ) {
+			nums = true;
+		}
 
-		a = nums ? number.parse( a ) : String( a );
-		b = nums ? number.parse( b ) : String( b );
+		a = nums ? number.parse( a ) : a.toString();
+		b = nums ? number.parse( b ) : b.toString();
 
-		if ( a < b )      result = -1;
-		else if ( a > b ) result = 1;
+		if ( a < b ) {
+			result = -1;
+		}
+		else if ( a > b ) {
+			result = 1;
+		}
 
 		return result;
 	},
@@ -899,7 +921,9 @@ var array = {
 		}
 
 		array.each( args, function ( i, idx ) {
-			if ( !( i instanceof Array ) ) this[idx] = [i];
+			if ( !( i instanceof Array ) ) {
+				this[idx] = [i];
+			}
 		});
 
 		// Building result Array

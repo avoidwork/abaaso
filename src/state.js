@@ -26,11 +26,15 @@ var state = ( function () {
 	 * @return {String}     Application state
 	 */
 	setCurrent = function ( arg ) {
-		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) throw Error( label.error.invalidArguments );
+		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		prop.previous = prop.current
 		prop.current  = arg;
+
 		observer.fire( abaaso, "state", arg );
+
 		return arg;
 	};
 
@@ -52,9 +56,12 @@ var state = ( function () {
 	 * @return {String}     Application state header
 	 */
 	setHeader = function ( arg ) {
-		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) throw Error( label.error.invalidArguments );
+		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		prop.header = arg;
+
 		return arg;
 	};
 

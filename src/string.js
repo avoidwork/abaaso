@@ -35,7 +35,9 @@ var string = {
 	 * @return {Array}      Array of the exploded String
 	 */
 	explode : function ( obj, arg ) {
-		if ( arg === undefined || arg.toString() === "" ) arg = ",";
+		if ( arg === undefined || arg.toString() === "" ) {
+			arg = ",";
+		}
 
 		return string.trim( obj ).split( new RegExp( "\\s*" + arg + "\\s*" ) );
 	},
@@ -50,7 +52,9 @@ var string = {
 	hyphenate : function ( obj, camel ) {
 		var result = string.trim( obj ).replace( /\s+/g, "-" );
 
-		if ( camel === true ) result = result.replace( /([A-Z])/g, "-\$1" ).toLowerCase();
+		if ( camel === true ) {
+			result = result.replace( /([A-Z])/g, "-\$1" ).toLowerCase();
+		}
 
 		return result;
 	},
@@ -198,7 +202,11 @@ var string = {
 
 		array.each( s, function ( i, idx ) {
 			i = string.trim( i );
-			if ( string.isEmpty( i ) ) return;
+
+			if ( string.isEmpty( i ) ) {
+				return;
+			}
+
 			r.push( idx === 0 ? i : string.capitalize(i) );
 		});
 
@@ -243,7 +251,9 @@ var string = {
 				result += ( caps ? string.capitalize( i ) : i ) + " ";
 			});
 		}
-		else result = caps ? string.capitalize( obj ) : obj;
+		else {
+			result = caps ? string.capitalize( obj ) : obj;
+		}
 
 		return string.trim( result );
 	}

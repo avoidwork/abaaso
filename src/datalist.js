@@ -22,19 +22,25 @@ var datalist = {
 		var ref = [store],
 		    obj, instance;
 
-		if ( !( target instanceof Element ) || typeof store !== "object" || !regex.string_object.test( typeof template ) ) throw Error( label.error.invalidArguments );
+		if ( !( target instanceof Element ) || typeof store !== "object" || !regex.string_object.test( typeof template ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		obj = element.create( "ul", {"class": "list", id: store.parentNode.id + "-datalist"}, target );
 
 		// Creating instance
 		instance = new DataList( obj, ref[0], template );
 
-		if ( options instanceof Object) utility.merge( instance, options );
+		if ( options instanceof Object) {
+			utility.merge( instance, options );
+		}
 
 		instance.store.datalists.push( instance );
 
 		// Rendering if not tied to an API or data is ready
-		if ( instance.store.uri === null || instance.store.loaded ) instance.refresh( true );
+		if ( instance.store.uri === null || instance.store.loaded ) {
+			instance.refresh( true );
+		}
 
 		return instance;
 	},
@@ -49,7 +55,9 @@ var datalist = {
 		 * @return {Object}     DataList instance
 		 */
 		del : function ( rec ) {
-			if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) this.refresh();
+			if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
+				this.refresh();
+			}
 			else {
 				observer.fire( this.element, "beforeDataListRefresh" );
 				
@@ -70,7 +78,9 @@ var datalist = {
 		 * @return {Object}  DataList instance
 		 */
 		page : function ( arg ) {
-			if ( isNaN( arg ) ) throw Error( label.error.invalidArguments );
+			if ( isNaN( arg ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			this.pageIndex = arg;
 			this.refresh();
@@ -97,15 +107,21 @@ var datalist = {
 			    i     = 0,
 			    diff, li, anchor;
 
-			if ( !regex.top_bottom.test( pos ) ) throw Error( label.error.invalidArguments );
+			if ( !regex.top_bottom.test( pos ) ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			// Removing the existing controls
 			array.each( $( "#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom" ), function ( i ) {
-				if ( i !== undefined ) element.destroy( i );
+				if ( i !== undefined ) {
+					element.destroy( i );
+				}
 			});
 			
 			// Halting because there's 1 page, or nothing
-			if ( this.total === 0 || total === 1 ) return this;
+			if ( this.total === 0 || total === 1 ) {
+				return this;
+			}
 
 			// Getting the range to display
 			if ( start < 1 ) {
@@ -113,6 +129,7 @@ var datalist = {
 				start = start + diff;
 				end   = end   + diff;
 			}
+
 			if ( end > total ) {
 				end   = total;
 				start = ( end - range ) + 1;
@@ -241,17 +258,25 @@ var datalist = {
 			};
 
 			// Consuming records based on sort
-			if ( this.where === null ) consumed = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create, this.sensitivity );
-			else consumed = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.sensitivity, this.where );
+			if ( this.where === null ) {
+				consumed = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create, this.sensitivity );
+			}
+			else {
+				consumed = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.sensitivity, this.where );
+			}
 
 			// Processing ( filtering ) records & generating templates
 			array.each( consumed, function ( i ) {
-				if ( self.filter === null || !( self.filter instanceof Object ) ) items.push( {key: i.key, template: fn( i )} );
+				if ( self.filter === null || !( self.filter instanceof Object ) ) {
+					items.push( {key: i.key, template: fn( i )} );
+				}
 				else {
 					utility.iterate( self.filter, function ( v, k ) {
 						var reg, key;
 
-						if ( array.contains( registry, i.key ) ) return;
+						if ( array.contains( registry, i.key ) ) {
+							return;
+						}
 						
 						v   = string.explode( v );
 						reg = new RegExp(),
@@ -262,6 +287,7 @@ var datalist = {
 							if ( ( key && reg.test( i.key ) ) || ( i.data[k] !== undefined && reg.test( i.data[k] ) ) ) {
 								registry.push( i.key );
 								items.push( {key: i.key, template: fn( i )} );
+
 								return false;
 							}
 						});
@@ -277,7 +303,9 @@ var datalist = {
 				ceiling = datalist.pages.call( this );
 
 				// Passed the end, so putting you on the end
-				if ( ceiling > 0 && this.pageIndex > ceiling ) return this.page( ceiling );
+				if ( ceiling > 0 && this.pageIndex > ceiling ) {
+					return this.page( ceiling );
+				}
 
 				// Paginating the items
 				else if ( this.total > 0 ) {
@@ -294,7 +322,9 @@ var datalist = {
 
 					element.data( obj, "key", i.key );
 
-					if ( callback ) self.callback( obj );
+					if ( callback ) {
+						self.callback( obj );
+					}
 				});
 			}
 			else {
@@ -310,7 +340,9 @@ var datalist = {
 			}
 
 			// Rendering pagination elements
-			if ( regex.top_bottom.test( this.pagination ) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") this.pages();
+			if ( regex.top_bottom.test( this.pagination ) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
+				this.pages();
+			}
 			else {
 				array.each( $( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 					element.destroy( i );
@@ -337,7 +369,9 @@ var datalist = {
 		 * @return {Object}              DataList instance
 		 */
 		sort : function ( order, sensitivity, create ) {
-			if ( typeof order !== "string" ) throw Error( label.error.invalidArguments );
+			if ( typeof order !== "string" ) {
+				throw Error( label.error.invalidArguments );
+			}
 
 			this.element.fire( "beforeDataListSort" );
 
@@ -372,6 +406,7 @@ var datalist = {
 			array.each( this.store.datalists, function ( i, idx ) {
 				if ( i.id === self.id ) {
 					this.remove( idx );
+
 					return false;
 				}
 			});
@@ -392,7 +427,9 @@ var datalist = {
 	 * @return {Number} Total pages
 	 */
 	pages : function () {
-		if ( isNaN( this.pageSize ) ) throw Error( label.error.invalidArguments );
+		if ( isNaN( this.pageSize ) ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		return number.round( this.total / this.pageSize, "up" );
 	},

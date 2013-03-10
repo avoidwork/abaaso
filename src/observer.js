@@ -52,7 +52,10 @@ var observer = {
 			});
 		}
 
-		if ( event !== undefined ) event = string.explode( event );
+		if ( event !== undefined ) {
+			event = string.explode( event );
+		}
+
 		id = id || utility.genId();
 
 		var instance = null,
@@ -67,7 +70,9 @@ var observer = {
 		    c        = state.getCurrent(),
 		    add, reg;
 
-		if ( o === undefined || event === null || event === undefined || typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+		if ( o === undefined || event === null || event === undefined || typeof fn !== "function" ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		if ( l[o] === undefined ) {
 			l[o]  = {};
@@ -95,10 +100,14 @@ var observer = {
 			if ( instance !== null && instance !== undefined && i.toLowerCase() !== "afterjsonp" && ev[eid] === undefined && ( gr.test( o ) || typeof instance.listeners === "function" ) ) {
 				add = ( typeof instance.addEventListener === "function" );
 				reg = ( typeof instance.attachEvent === "object" || add );
+
 				if ( reg ) {
 					// Registering event listener
 					ev[eid] = function ( e ) {
-						if ( !ar.test( e.type ) ) utility.stop( e );
+						if ( !ar.test( e.type ) ) {
+							utility.stop( e );
+						}
+
 						observer.fire( obj, i, e );
 					};
 
@@ -161,7 +170,9 @@ var observer = {
 		    a    = array.cast( arguments).remove(0, 1 ),
 		    o, a, s, log, c, l, list;
 
-		if ( observer.ignore ) return obj;
+		if ( observer.ignore ) {
+			return obj;
+		}
 
 		if ( obj instanceof Array ) {
 			array.each( obj, function (i ) {
@@ -174,15 +185,21 @@ var observer = {
 
 		o = observer.id( obj );
 
-		if ( o === undefined || event === undefined ) throw Error( label.error.invalidArguments );
+		if ( o === undefined || event === undefined ) {
+			throw Error( label.error.invalidArguments );
+		}
 
-		if ( observer.silent ) observer.queue.push( {obj: obj, event: event} );
+		if ( observer.silent ) {
+			observer.queue.push( {obj: obj, event: event} );
+		}
 		else {
 			s   = state.getCurrent();
 			log = $.logging;
 
 			array.each( string.explode( event ), function ( e ) {
-				if ( log ) utility.log(o + " firing " + e );
+				if ( log ) {
+					utility.log(o + " firing " + e );
+				}
 
 				list = observer.list( obj, e, observer.alisteners );
 
@@ -192,10 +209,12 @@ var observer = {
 
 						if ( result === false ) {
 							quit = true;
+
 							return result;
 						}
 					});
 				}
+
 				if ( !quit && s !== "all" && list[s] !== undefined ) {
 					array.each( list[s], function ( i ) {
 						return i.fn.apply( i.scope, a );
@@ -218,14 +237,23 @@ var observer = {
 	id : function ( arg ) {
 		var id;
 
-		if ( arg === abaaso ) id = "abaaso";
-		else if ( arg === global ) id = "window";
-		else if ( !server && arg === document ) id = "document";
-		else if ( !server && arg === document.body ) id = "body";
+		if ( arg === abaaso ) {
+			id = "abaaso";
+		}
+		else if ( arg === global ) {
+			id = "window";
+		}
+		else if ( !server && arg === document ) {
+			id = "document";
+		}
+		else if ( !server && arg === document.body ) {
+			id = "body";
+		}
 		else {
 			utility.genId( arg );
 			id = arg.id || ( typeof arg.toString === "function" ? arg.toString() : arg );
 		}
+
 		return id;
 	},
 
@@ -244,10 +272,18 @@ var observer = {
 		    o = observer.id( obj ),
 		    r;
 
-		if ( l[o] === undefined && event === undefined ) r = {};
-		else if ( l[o] !== undefined && ( event === undefined || string.isEmpty( event ) ) ) r = l[o];
-		else if ( l[o] !== undefined && l[o][event] !== undefined ) r = l[o][event];
-		else r = {};
+		if ( l[o] === undefined && event === undefined ) {
+			r = {};
+		}
+		else if ( l[o] !== undefined && ( event === undefined || string.isEmpty( event ) ) ) {
+			r = l[o];
+		}
+		else if ( l[o] !== undefined && l[o][event] !== undefined ) {
+			r = l[o][event];
+		}
+		else {
+			r = {};
+		}
 
 		return r;
 	},
@@ -271,7 +307,9 @@ var observer = {
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
-		if ( obj === undefined || event === null || event === undefined || typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+		if ( obj === undefined || event === null || event === undefined || typeof fn !== "function" ) {
+			throw Error( label.error.invalidArguments );
+		}
 
 		if ( obj instanceof Array ) {
 			array.each( obj, function ( i ) {
@@ -296,7 +334,9 @@ var observer = {
 	 * @return {Boolean}     Current setting
 	 */
 	pause : function ( arg ) {
-		if ( arg === true ) observer.silent = arg;
+		if ( arg === true ) {
+			observer.silent = arg;
+		}
 		else if ( arg === false ) {
 			observer.silent = arg;
 
@@ -356,12 +396,16 @@ var observer = {
 			}
 		}
 
-		if ( l[o] === undefined ) return obj;
+		if ( l[o] === undefined ) {
+			return obj;
+		}
 
 		if ( event === undefined || event === null ) {
 			if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) {
 				utility.iterate( ev, function ( v, k ) {
-					if ( k.indexOf( o + "_" ) === 0) fn( k.replace( /.*_/, "" ), 1 );
+					if ( k.indexOf( o + "_" ) === 0) {
+						fn( k.replace( /.*_/, "" ), 1 );
+					}
 				});
 			}
 
@@ -373,10 +417,15 @@ var observer = {
 			array.each( string.explode( event ), function ( e ) {
 				var sync = false;
 
-				if ( l[o][e] === undefined ) return;
+				if ( l[o][e] === undefined ) {
+					return;
+				}
 
 				if ( id === undefined ) {
-					if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) fn( e, array.keys( l[o][e][st] ).length );
+					if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) {
+						fn( e, array.keys( l[o][e][st] ).length );
+					}
+
 					l[o][e][st] = {};
 					sync = true;
 				}
@@ -386,7 +435,9 @@ var observer = {
 					sync = true;
 				}
 
-				if ( sync ) observer.sync( o, e, st );
+				if ( sync ) {
+					observer.sync( o, e, st );
+				}
 			});
 		}
 
@@ -408,7 +459,9 @@ var observer = {
 			o      = observer.id( obj );
 			result = utility.clone( observer.clisteners[o] );
 		}
-		else result = utility.clone( observer.clisteners );
+		else {
+			result = utility.clone( observer.clisteners );
+		}
 
 		return result;
 	},

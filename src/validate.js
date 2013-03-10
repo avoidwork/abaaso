@@ -26,7 +26,9 @@ var validate = {
 		    i, p, o, x, nth;
 
 		if ( args.nodeName !== undefined && args.nodeName === "FORM" ) {
-			if ( args.id.isEmpty() ) args.genId();
+			if ( string.isEmpty( args.id ) ) {
+				utility.genId( args );
+			}
 
 			c = $( "#" + args.id + " input", "#" + args.id + " select" );
 
@@ -34,7 +36,7 @@ var validate = {
 				var z = {},
 				    p, v, r;
 
-				p = regex[i.nodeName.toLowerCase()] ? regex[i.nodeName.toLowerCase()] : ( ( !i.id.isEmpty() && regex[i.id.toLowerCase()] ) ? regex[i.id.toLowerCase()] : "notEmpty" );
+				p = regex[i.nodeName.toLowerCase()] ? regex[i.nodeName.toLowerCase()] : ( ( !string.isEmpty( i.id ) && regex[i.id.toLowerCase()] ) ? regex[i.id.toLowerCase()] : "notEmpty" );
 				v = i.val();
 
 				if ( v === null ) v = "";

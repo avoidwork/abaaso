@@ -82,7 +82,9 @@ return {
 	aliased         : "$",
 	allows          : client.allows,
 	append          : function ( type, args, obj ) {
-		if ( obj instanceof Element ) obj.genId();
+		if ( obj instanceof Element ) {
+			obj.genId();
+		}
 
 		return element.create( type, args, obj, "last" );
 	},
@@ -146,6 +148,7 @@ return {
 	jsonp           : function ( uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback ); },
 	listeners       : function ( obj, event ) {
 		obj = typeof obj === "object" ? obj : ( this !== $ ? this : abaaso );
+
 		return observer.list( obj, event );
 	},
 	listenersTotal  : observer.sum,
@@ -176,7 +179,7 @@ return {
 			st = scope;
 		}
 
-		if ( typeof s === "undefined" ) s = o;
+		if ( s === undefined ) s = o;
 
 		return observer.add( o, e, l, i, s, st );
 	},
@@ -201,7 +204,7 @@ return {
 			st = scope;
 		}
 
-		if ( typeof s === "undefined" ) s = o;
+		if ( s === undefined ) s = o;
 
 		return observer.once( o, e, l, i, s, st );
 	},
