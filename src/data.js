@@ -1672,6 +1672,22 @@ var data = {
 		},
 
 		/**
+		 * Returns Array of unique values of `key`
+		 * 
+		 * @param  {String} key Field to compare
+		 * @return {Array}      Array of values
+		 */
+		unique : function ( key ) {
+			var results = [];
+
+			array.each( this.records, function ( i ) {
+				array.add( results, i.data[key] );
+			});
+
+			return results;
+		},
+
+		/**
 		 * Updates an existing Record
 		 * 
 		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
