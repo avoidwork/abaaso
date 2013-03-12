@@ -418,7 +418,7 @@ var client = {
 
 		uri.fire( "before" + typed );
 
-		if ( !regex.get_headers.test( type ) && uri.allows( type ) === false ) {
+		if ( !cors && !regex.get_headers.test( type ) && uri.allows( type ) === false ) {
 			xhr.status = 405;
 			deferred.reject( null );
 
@@ -573,7 +573,7 @@ var client = {
 		    l        = location,
 		    xhrState = null,
 		    xdr      = client.ie && xhr.readyState === undefined,
-		    exception, o, r, t, x;
+		    exception, o, r, t, x, redirect;
 
 		// server-side exception handling
 		exception = function ( e, xhr ) {
@@ -627,10 +627,23 @@ var client = {
 
 					switch ( xhr.status ) {
 						case 200:
-						case 201:
 							deferred.resolve( r );
 							uri.fire( "after" + typed, r, xhr );
 							break;
+						case 201:
+							if ( ( o.headers.Location === undefined || string.isEmpty ( o.headers.Location ) ) && !string.isUrl ( r ) ) {
+								exception( Error( label.error.invalidArguments ), xhr );
+							}
+							else {
+								redirect = string.trim ( o.headers.Location || r );
+								client.request( redirect, "GET", function ( arg ) {
+									deferred.resolve ( arg )
+									uri.fire( "after" + typed, arg, xhr );
+								}, function ( e ) {
+									exception( e );
+								});
+								break;
+							}
 						case 202:
 						case 203:
 						case 204:

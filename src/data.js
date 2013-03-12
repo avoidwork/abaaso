@@ -543,7 +543,7 @@ var data = {
 
 			if ( !batch && this.callback === null && this.uri !== null ) {
 				uri = this.uri + "/" + key;
-				p   = uri.allows( "delete" );
+				p   = ( client.cors( uri ) || client.allows( uri, "delete" ) );
 			}
 
 			if ( events ) {
@@ -703,7 +703,7 @@ var data = {
 			if ( record === undefined ) {
 				throw Error( label.error.invalidArguments );
 			}
-			else if ( this.uri !== null && !client.allows( this.uri, "post" ) ) {
+			else if ( this.uri !== null && !client.cors ( this.uri ) && !client.allows( this.uri, "post" ) ) {
 				throw Error( label.error.serverInvalidMethod );
 			}
 
@@ -1043,7 +1043,7 @@ var data = {
 			    data, deferred2, record, obj, method, events, args, uri, p, success, failure;
 
 			deferred2 = deferred.then( function ( arg ) {
-				var data     = {data: null, key: arg.key, record: arg.record},
+				var data     = {data: null, key: arg.key, record: arg.record, result: arg.result},
 				    deferred = promise.factory(),
 				    record, uri;
 
@@ -1224,7 +1224,7 @@ var data = {
 					uri += "/" + record.key;
 				}
 
-				p = client.allows( uri, method );
+				p = ( client.cors ( uri ) || client.allows( uri, method ) );
 			}
 
 			if ( events ) {
@@ -1236,7 +1236,7 @@ var data = {
 			}
 			else if ( regex.true_undefined.test( p ) ) {
 				client.request( uri, method.toUpperCase(), function ( arg ) {
-					args["result"] = arg;
+					args.result = arg;
 					deferred.resolve( args );
 				}, function ( e ) {
 					deferred.reject( e );
