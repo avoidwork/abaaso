@@ -64,8 +64,7 @@ var data = {
 				throw Error( label.error.invalidArguments );
 			}
 
-			var obj      = this.parentNode,
-			    self     = this,
+			var self     = this,
 			    events   = ( this.events === true ),
 			    r        = 0,
 			    nth      = data.length,
@@ -85,11 +84,11 @@ var data = {
 				});
 
 				if ( events ) {
-					observer.fire( obj, "afterDataBatch", arg );
+					observer.fire( self.parentNode, "afterDataBatch", arg );
 				}
 			}, function ( e ) {
 				if ( events ) {
-					observer.fire( obj, "failedDataBatch", e );
+					observer.fire( self.parentNode, "failedDataBatch", e );
 				}
 
 				throw e;
@@ -176,7 +175,7 @@ var data = {
 			};
 
 			if ( events ) {
-				observer.fire( obj, "beforeDataBatch", data );
+				observer.fire( self.parentNode, "beforeDataBatch", data );
 			}
 
 			if ( sync ) {
@@ -258,12 +257,11 @@ var data = {
 		 */
 		clear : function ( sync ) {
 			sync       = ( sync === true );
-			var obj    = this.parentNode,
-			    events = ( this.events === true );
+			var events = ( this.events === true );
 
 			if ( !sync ) {
 				if ( events ) {
-					observer.fire( obj, "beforeDataClear" );
+					observer.fire( this.parentNode, "beforeDataClear" );
 				}
 
 				this.callback    = null;
@@ -291,7 +289,7 @@ var data = {
 				this.uri         = null;
 
 				if ( events ) {
-					observer.fire( obj, "afterDataClear" );
+					observer.fire( this.parentNode, "afterDataClear" );
 				}
 			}
 			else {
@@ -476,8 +474,7 @@ var data = {
 
 			reindex      = ( reindex !== false );
 			batch        = ( batch === true );
-			var obj      = this.parentNode,
-			    self     = this,
+			var self     = this,
 			    events   = ( this.events === true ),
 			    deferred = promise.factory(),
 			    deferred2, key, args, uri, p;
@@ -511,11 +508,11 @@ var data = {
 				}
 
 				if ( events ) {
-					observer.fire( obj, "afterDataDelete", record );
+					observer.fire( self.parentNode, "afterDataDelete", record );
 				}
 			}, function ( e ) {
 				if ( events ) {
-					observer.fire( obj, "failedDataDelete", e );
+					observer.fire( self.parentNode, "failedDataDelete", e );
 				}
 
 				throw e;
@@ -547,7 +544,7 @@ var data = {
 			}
 
 			if ( events ) {
-				observer.fire( obj, "beforeDataDelete", args );
+				observer.fire( self.parentNode, "beforeDataDelete", args );
 			}
 
 			if ( batch || this.callback !== null || this.uri === null ) {
@@ -905,7 +902,6 @@ var data = {
 		 */
 		get : function ( record, offset ) {
 			var records = this.records,
-			    obj     = this.parentNode,
 			    type    = typeof record,
 			    self    = this,
 			    r;
@@ -954,7 +950,6 @@ var data = {
 		 */
 		reindex : function () {
 			var nth = this.total,
-			    obj = this.parentNode,
 			    i   = -1;
 
 			this.views = {};
@@ -1040,7 +1035,7 @@ var data = {
 		set : function ( key, arg, batch ) {
 			var self     = this,
 			    deferred = promise.factory(),
-			    data, deferred2, record, obj, method, events, args, uri, p, success, failure;
+			    data, deferred2, record, method, events, args, uri, p, success, failure;
 
 			deferred2 = deferred.then( function ( arg ) {
 				var data     = {data: null, key: arg.key, record: arg.record, result: arg.result},
@@ -1154,7 +1149,7 @@ var data = {
 				}
 			}, function ( e ) {
 				if ( events) {
-					observer.fire( obj, "failedDataSet", e );
+					observer.fire( self.parentNode, "failedDataSet", e );
 				}
 
 				throw e;
@@ -1197,12 +1192,11 @@ var data = {
 				            });
 			}
 
-			record   = key === undefined ? undefined : this.get( key );
-			obj      = this.parentNode;
-			method   = key === undefined ? "post" : "put";
-			events   = ( this.events === true );
-			args     = {data: {}, key: key, record: undefined};
-			uri      = this.uri;
+			record = key === undefined ? undefined : this.get( key );
+			method = key === undefined ? "post" : "put";
+			events = ( this.events === true );
+			args   = {data: {}, key: key, record: undefined};
+			uri    = this.uri;
 
 			if ( record !== undefined ) {
 				args.record = this.records[this.keys[record.key]];
@@ -1228,7 +1222,7 @@ var data = {
 			}
 
 			if ( events ) {
-				observer.fire( obj, "beforeDataSet", {key: key, data: data} );
+				observer.fire( self.parentNode, "beforeDataSet", {key: key, data: data} );
 			}
 
 			if ( batch || this.callback !== null || this.uri === null ) {
@@ -1552,7 +1546,6 @@ var data = {
 			reindex       = ( reindex === true );
 			var self      = this,
 			    events    = ( this.events === true ),
-			    obj       = self.parentNode,
 			    deferred1 = promise.factory(),
 			    deferred2 = promise.factory(),
 			    deferred3, success, failure;
@@ -1601,11 +1594,11 @@ var data = {
 				}
 
 				if ( events ) {
-					observer.fire( obj, "afterDataSync", arg );
+					observer.fire( self.parentNode, "afterDataSync", arg );
 				}
 			}, function ( e ) {
 				if ( events ) {
-					observer.fire( obj, "failedDataSync", e );
+					observer.fire( self.parentNode, "failedDataSync", e );
 				}
 
 				throw e;
@@ -1620,7 +1613,7 @@ var data = {
 			};
 
 			if ( events) {
-				observer.fire( obj, "beforeDataSync" );
+				observer.fire( self.parentNode, "beforeDataSync" );
 			}
 
 			this.callback !== null ? client.jsonp( this.uri, success, failure, {callback: this.callback} )
