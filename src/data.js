@@ -1682,6 +1682,8 @@ var data = {
 
 		/**
 		 * Updates an existing Record
+		 *
+		 * Use `data.set()` if the record contains child data stores
 		 * 
 		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
 		 * @param  {Object} data Key:Value pairs to set as field values
@@ -1696,7 +1698,7 @@ var data = {
 				throw Error( label.error.invalidArguments );
 			}
 
-			args     = utility.merge( record.data, data );
+			args     = utility.merge( utility.clone ( record.data ) , data );
 			deferred = promise.factory();
 
 			this.set( key, args ).then( function ( arg ) {
