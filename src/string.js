@@ -39,7 +39,7 @@ var string = {
 			arg = ",";
 		}
 
-		return string.trim( obj ).split( new RegExp( "\\s*" + arg + "\\s*" ) );
+		return string.isEmpty( obj ) ? [] : string.trim( obj ).split( new RegExp( "\\s*" + arg + "\\s*" ) );
 	},
 
 	/**
