@@ -399,10 +399,6 @@ var client = {
 
 		// Using a promise to resolve request
 		deferred2 = deferred.then( function ( arg ) {
-			if ( type === "delete") {
-				cache.expire( uri );
-			}
-
 			if ( typeof success === "function" ) {
 				success.call( uri, arg, xhr );
 			}
@@ -625,11 +621,11 @@ var client = {
 							cache.set( uri, "response", ( o.response = utility.clone( r ) ) );
 						}
 						else {
-							cache.expire ( uri );
+							cache.expire( uri, true );
 						}
 					}
 					else if ( type === "delete" ) {
-						cache.expire ( uri );
+						cache.expire( uri, true );
 					}
 
 					// Application state change triggered by hypermedia ( HATEOAS )
