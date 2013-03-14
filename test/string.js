@@ -38,22 +38,25 @@ exports["explode"] = {
 	setUp: function (done) {
 		this.v1 = "123,456,789";
 		this.v2 = "123 456 789";
+		this.v3 = "";
 		done();
 	},
 	direct: function (test) {
-		test.expect(4);
+		test.expect(5);
 		test.equal(string.explode(this.v1) instanceof Array, true, "Should be true");
 		test.equal(string.explode(this.v1)[0] === "123", true, "Should be true");
 		test.equal(string.explode(this.v2, " ") instanceof Array, true, "Should be true");
 		test.equal(string.explode(this.v2, " ".escape())[0] === "123", true, "Should be true");
+		test.equal(string.explode(this.v3)[0] === undefined, true, "Should be true");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(4);
+		test.expect(5);
 		test.equal(this.v1.explode() instanceof Array, true, "Should be true");
 		test.equal(this.v1.explode()[0] === "123", true, "Should be true");
 		test.equal(this.v2.explode(" ") instanceof Array, true, "Should be true");
 		test.equal(this.v2.explode(" ")[0] === "123", true, "Should be true");
+		test.equal(this.v3.explode()[0] === undefined, true, "Should be true");
 		test.done();
 	}
 };

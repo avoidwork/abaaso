@@ -32,7 +32,6 @@ var regex = {
 	header_replace          : /:.*/,
 	header_value_replace    : /.*:\s+/,
 	http_ports              : /80|443/,
-	http_success            : /200|201/,
 	ie                      : /msie|ie/i,
 	input_button            : /button|submit|reset/,
 	integer                 : /(^-?\d\d*$)/,
