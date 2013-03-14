@@ -284,7 +284,6 @@ var xhr = function () {
 	 * 
 	 * @param  {Mixed} data [Optional] Payload to send with the request
 	 * @return {Object}     XMLHttpRequest
-	 * @todo  finish this method
 	 */
 	XMLHttpRequest.prototype.send = function ( data ) {
 		data     = data || null;
@@ -350,8 +349,12 @@ var xhr = function () {
 	 * @return {Object}       XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function ( header, value ) {
-		if ( this.readyState !== OPENED) throw Error(label.error.invalidStateNotUsable );
-		else if ( this._send) throw Error(label.error.invalidStateNotSending );
+		if ( this.readyState !== OPENED) {
+			throw Error(label.error.invalidStateNotUsable );
+		}
+		else if ( this._send) {
+			throw Error(label.error.invalidStateNotSending );
+		}
 
 		this._headers[header] = value;
 
