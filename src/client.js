@@ -376,12 +376,14 @@ var client = {
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2;
+		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2, parsed;
 
 		if ( regex.put_post.test( type ) && args === undefined ) {
 			throw Error( label.error.invalidArguments );
 		}
 
+		parsed       = utility.parse( uri );
+		uri          = parsed.protocol + "//" + parsed.host + parsed.pathname;
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
 		cors         = client.cors( uri );
@@ -396,7 +398,7 @@ var client = {
 		deferred     = promise.factory();
 
 		// Using a promise to resolve request
-		deferred2 = deferred.then( function (arg ) {
+		deferred2 = deferred.then( function ( arg ) {
 			if ( type === "delete") {
 				cache.expire( uri );
 			}
@@ -647,7 +649,7 @@ var client = {
 							else {
 								redirect = string.trim ( o.headers.Location || r );
 								client.request( redirect, "GET", function ( arg ) {
-									deferred.resolve ( arg )
+									deferred.resolve ( arg );
 									uri.fire( "after" + typed, arg, xhr );
 								}, function ( e ) {
 									exception( e );
