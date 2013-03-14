@@ -228,7 +228,7 @@ var xhr = function () {
 		var self = this;
 
 		if ( async !== undefined && async !== true) {
-			throw Error(label.error.invalidStateNoSync );
+			throw Error( label.error.invalidStateNoSync );
 		}
 
 		this.abort();
@@ -241,7 +241,7 @@ var xhr = function () {
 			password : password || null
 		}
 
-		utility.iterate( headers, function (v, k ) {
+		utility.iterate( headers, function ( v, k ) {
 			self._headers[k] = v;
 		});
 
@@ -332,7 +332,7 @@ var xhr = function () {
 		                }).on( "error", function ( e ) {
 		                	handlerError.call( self, e );
 		                });
-		data === null ? request.setSocketKeepAlive( true, 10000) : request.write(data, "utf8" );
+		data === null ? request.setSocketKeepAlive( true, 10000 ) : request.write( data, "utf8" );
 		this._request = request;
 		request.end();
 
@@ -349,11 +349,11 @@ var xhr = function () {
 	 * @return {Object}       XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function ( header, value ) {
-		if ( this.readyState !== OPENED) {
-			throw Error(label.error.invalidStateNotUsable );
+		if ( this.readyState !== OPENED ) {
+			throw Error( label.error.invalidStateNotUsable );
 		}
-		else if ( this._send) {
-			throw Error(label.error.invalidStateNotSending );
+		else if ( this._send ) {
+			throw Error( label.error.invalidStateNotSending );
 		}
 
 		this._headers[header] = value;
