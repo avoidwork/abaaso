@@ -366,15 +366,19 @@ exports["last"] = {
 		done();
 	},
 	direct: function (test) {
-		test.expect(2);
+		test.expect(4);
 		test.equal(array.last(this.val), "def", "Should be 'def'");
 		test.equal(array.last(this.val, 2)[0], "xyz", "Should be 'xyz'");
+		test.equal(array.last(this.val, 3)[0], "abc", "Should be 'abc'");
+		test.equal(array.last(this.val, 4)[0], "abc", "Should be 'abc'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(2);
+		test.expect(4);
 		test.equal(this.val.last(), "def", "Should be 'def'");
 		test.equal(this.val.last(2)[0], "xyz", "Should be 'xyz'");
+		test.equal(this.val.last(3)[0], "abc", "Should be 'abc'");
+		test.equal(this.val.last(4)[0], "abc", "Should be 'abc'");
 		test.done();
 	}
 };

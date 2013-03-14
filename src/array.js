@@ -404,7 +404,12 @@ var array = {
 	last : function ( obj, arg ) {
 		var n = obj.length - 1;
 
-		return isNaN( arg ) || arg === 1 ? obj[n] : array.limit( obj, n - --arg, n );
+		if ( arg >= ( n + 1 ) ) {
+			return obj;
+		}
+		else {
+			return isNaN( arg ) || arg === 1 ? obj[n] : array.limit( obj, n - --arg, n );
+		}
 	},
 
 	/**
