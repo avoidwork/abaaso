@@ -72,6 +72,9 @@ var cache = {
 	 * @return {Mixed}          URI Object {headers, response} or False
 	 */
 	get : function ( uri, expire ) {
+		var parsed = utility.parse(uri);
+
+		uri    = parsed.protocol + "//" + parsed.host + parsed.pathname;
 		expire = ( expire !== false );
 
 		if ( cache.items[uri] === undefined ) {
@@ -97,6 +100,10 @@ var cache = {
 	 * @return {Mixed}           URI Object {headers, response} or undefined
 	 */
 	set : function ( uri, property, value ) {
+		var parsed = utility.parse(uri);
+
+		uri = parsed.protocol + "//" + parsed.host + parsed.pathname;
+
 		if ( cache.items[uri] === undefined ) {
 			cache.items[uri] = {};
 			cache.items[uri].permission = 0;

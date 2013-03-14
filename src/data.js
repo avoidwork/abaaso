@@ -1293,11 +1293,14 @@ var data = {
 		 */
 		setUri : function ( arg ) {
 			var deferred = promise.factory(),
-			    result;
+			    parsed, result;
 
 			if ( arg !== null && string.isEmpty( arg ) ) {
 				throw Error( label.error.invalidArguments );
 			}
+
+			parsed = utility.parse( arg );
+			arg    = parsed.protocol + "//" + parsed.host + parsed.pathname;
 
 			if ( this.uri === arg ) {
 				result = this.uri;
