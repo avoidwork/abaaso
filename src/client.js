@@ -218,7 +218,7 @@ var client = {
 		o.headers    = items;
 		o.permission = client.bit( allow !== null ? string.explode( allow ) : [type] );
 
-		if ( type !== "head" ) {
+		if ( type === "get" ) {
 			cache.set( uri, "expires",    o.expires );
 			cache.set( uri, "headers",    o.headers );
 			cache.set( uri, "permission", o.permission );
@@ -609,15 +609,25 @@ var client = {
 
 						return uri.fire( "afterOptions", o.headers );
 					}
-					else if ( type !== "delete" && regex.http_success.test( xhr.status ) ) {
-						t = o.headers["Content-Type"] || "";
-						r = client.parse( xhr, t );
+					else if ( type !== "delete" ) {
+						if ( xhr.status === 200 ) {
+							t = o.headers["Content-Type"] || "";
+							r = client.parse( xhr, t );
 
-						if ( r === undefined ) {
-							throw Error( label.error.serverError );
+							if ( r === undefined ) {
+								throw Error( label.error.serverError );
+							}
 						}
 
-						cache.set( uri, "response", ( o.response = utility.clone( r ) ) );
+						if ( type === "get" ) {
+							cache.set( uri, "response", ( o.response = utility.clone( r ) ) );
+						}
+						else {
+							cache.expire ( uri );
+						}
+					}
+					else if ( type === "delete" ) {
+						cache.expire ( uri );
 					}
 
 					// Application state change triggered by hypermedia ( HATEOAS )
