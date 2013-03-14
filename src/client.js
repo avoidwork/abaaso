@@ -266,7 +266,7 @@ var client = {
 	permissions : function ( uri ) {
 		var cached = cache.get( uri, false ),
 		    bit    = !cached ? 0 : cached.permission,
-		    result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1}};
+		    result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1, unknown: 0}};
 
 		if ( bit & 1) {
 			result.allows.push( "DELETE" );
@@ -648,7 +648,7 @@ var client = {
 									deferred.resolve ( arg );
 									uri.fire( "after" + typed, arg, xhr );
 								}, function ( e ) {
-									exception( e );
+									exception( e, xhr );
 								});
 								break;
 							}
