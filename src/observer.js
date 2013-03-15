@@ -127,6 +127,7 @@ var observer = {
 	/**
 	 * Decorates `obj` with `observer` methods
 	 * 
+	 * @method decorate
 	 * @param  {Object} obj Object to decorate
 	 * @return {Object}     Object to decorate
 	 */
@@ -149,6 +150,7 @@ var observer = {
 	/**
 	 * Discard observer events
 	 *
+	 * @method discard
 	 * @param {Boolean} arg [Optional] Boolean indicating if events will be ignored
 	 * @return              Current setting
 	 */
@@ -383,6 +385,7 @@ var observer = {
 		/**
 		 * Removes DOM event hook
 		 * 
+		 * @method fn
 		 * @param  {Mixed}  event String or null
 		 * @param  {Number} i     Amount of listeners being removed
 		 * @return {Undefined}    undefined
@@ -447,6 +450,7 @@ var observer = {
 	/**
 	 * Returns the sum of active listeners for one or all Objects
 	 * 
+	 * @method sum
 	 * @param  {Mixed} obj [Optional] Entity
 	 * @return {Object}     Object with total listeners per event
 	 */
@@ -469,6 +473,7 @@ var observer = {
 	/**
 	 * Syncs `alisteners` with `listeners`
 	 * 
+	 * @method sync
 	 * @param  {String} obj   Object ID 
 	 * @param  {String} event Event
 	 * @param  {String} st    Application state
