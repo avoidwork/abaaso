@@ -1202,7 +1202,7 @@ var data = {
 				args.record = this.records[this.keys[record.key]];
 
 				utility.iterate( args.record.data, function ( v, k ) {
-					if ( !array.contains( self.collections, k ) && !array.contains( self.ignore, k ) ) {
+					if ( !array.contains( self.ignore, k ) ) {
 						args.data[k] = v;
 					}
 				});
