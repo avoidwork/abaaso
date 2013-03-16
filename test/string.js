@@ -124,11 +124,13 @@ exports["toCamelCase"] = {
 exports["trim"] = {
 	setUp: function (done) {
 		this.val = "    hello world     ";
+		this.num = new Date().getFullYear();
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(string.trim(this.val), "hello world", "Should be 'hello world'");
+		test.equal(string.trim(this.num), this.num, "Should be '" + this.num + "'");
 		test.done();
 	},
 	sugar: function (test) {
