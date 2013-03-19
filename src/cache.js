@@ -74,7 +74,7 @@ var cache = {
 	get : function ( uri, expire ) {
 		var parsed = utility.parse(uri);
 
-		uri    = parsed.protocol + "//" + parsed.host + parsed.pathname;
+		uri    = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
 		expire = ( expire !== false );
 
 		if ( cache.items[uri] === undefined ) {
@@ -102,7 +102,7 @@ var cache = {
 	set : function ( uri, property, value ) {
 		var parsed = utility.parse(uri);
 
-		uri = parsed.protocol + "//" + parsed.host + parsed.pathname;
+		uri = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
 
 		if ( cache.items[uri] === undefined ) {
 			cache.items[uri] = {};

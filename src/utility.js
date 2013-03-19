@@ -649,6 +649,7 @@ var utility = {
 	 * @return {Object}     Parsed URI
 	 */
 	parse : function ( uri ) {
+		uri        = uri || (!server ? location.href : "");
 		var obj    = {},
 		    parsed = {};
 
