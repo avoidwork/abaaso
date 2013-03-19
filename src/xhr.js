@@ -297,7 +297,7 @@ var xhr = function () {
 			throw Error( label.error.invalidStateNotSending );
 		}
 
-		parsed      = url.parse( this._params.url );
+		parsed      = utility.parse( this._params.url );
 		parsed.port = parsed.port || ( parsed.protocol === "https:" ? 443 : 80 );
 
 		if ( this._params.user !== null && this._params.password !== null ) {
@@ -326,12 +326,14 @@ var xhr = function () {
 		self._send = true;
 		self.dispatchEvent( "readystatechange" );
 
-		obj           = parsed.protocol === "http:" ? http : https;
-		request       = obj.request( options, function ( arg ) {
-		                	handler.call( self, arg );
-		                }).on( "error", function ( e ) {
-		                	handlerError.call( self, e );
-		                });
+		obj = parsed.protocol === "http:" ? http : https;
+
+		request = obj.request( options, function ( arg ) {
+			handler.call( self, arg );
+		}).on( "error", function ( e ) {
+			handlerError.call( self, e );
+		});
+
 		data === null ? request.setSocketKeepAlive( true, 10000 ) : request.write( data, "utf8" );
 		this._request = request;
 		request.end();

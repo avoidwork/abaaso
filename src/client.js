@@ -376,14 +376,13 @@ var client = {
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2, parsed;
+		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2;
 
 		if ( regex.put_post.test( type ) && args === undefined ) {
 			throw Error( label.error.invalidArguments );
 		}
 
-		parsed       = utility.parse( uri );
-		uri          = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
+		uri          = utility.parse( uri ).href;
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
 		cors         = client.cors( uri );
