@@ -72,7 +72,7 @@ var cache = {
 	 * @return {Mixed}          URI Object {headers, response} or False
 	 */
 	get : function ( uri, expire ) {
-		var parsed = utility.parse(uri);
+		var parsed = utility.parse( uri );
 
 		uri    = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
 		expire = ( expire !== false );
@@ -100,7 +100,7 @@ var cache = {
 	 * @return {Mixed}           URI Object {headers, response} or undefined
 	 */
 	set : function ( uri, property, value ) {
-		var parsed = utility.parse(uri);
+		var parsed = utility.parse( uri );
 
 		uri = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
 
