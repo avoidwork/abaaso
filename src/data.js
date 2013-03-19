@@ -1300,7 +1300,7 @@ var data = {
 			}
 
 			parsed = utility.parse( arg );
-			arg    = parsed.protocol + "//" + parsed.host + parsed.pathname;
+			arg    = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
 
 			if ( this.uri === arg ) {
 				result = this.uri;

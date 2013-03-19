@@ -383,7 +383,7 @@ var client = {
 		}
 
 		parsed       = utility.parse( uri );
-		uri          = parsed.protocol + "//" + parsed.host + parsed.pathname;
+		uri          = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
 		cors         = client.cors( uri );

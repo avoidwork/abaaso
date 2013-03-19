@@ -652,6 +652,10 @@ var utility = {
 		var obj    = {},
 		    parsed = {};
 
+		if ( uri === undefined ) {
+			uri = !server ? location.href : "";
+		}
+
 		if ( !server ) {
 			obj = document.createElement( "a" );
 			obj.href = uri;

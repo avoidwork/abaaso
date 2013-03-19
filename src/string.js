@@ -122,7 +122,7 @@ var string = {
 	 * @return {Boolean}     Result of test
 	 */
 	isEmpty : function ( obj ) {
-		return ( string.trim( obj ) === "" );
+		return obj !== undefined ? ( string.trim( obj ) === "" ) : true;
 	},
 
 	/**
