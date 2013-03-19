@@ -11,6 +11,7 @@ var regex = {
 	allow                   : /^allow$/i,
 	allow_cors              : /^access-control-allow-methods$/i,
 	alphanum                : /^[a-zA-Z0-9]+$/,
+	auth                    : /\/\/(.*)\@/,
 	blackberry              : /blackberry/i,
 	"boolean"               : /^(0|1|true|false)?$/,
 	boolean_number_string   : /boolean|number|string/,
