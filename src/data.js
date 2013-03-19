@@ -1294,14 +1294,13 @@ var data = {
 		 */
 		setUri : function ( arg ) {
 			var deferred = promise.factory(),
-			    parsed, result;
+			    result;
 
 			if ( arg !== null && string.isEmpty( arg ) ) {
 				throw Error( label.error.invalidArguments );
 			}
 
-			parsed = utility.parse( arg );
-			arg    = parsed.protocol + "//" + parsed.host + parsed.pathname + parsed.search;
+			arg = utility.parse( arg ).href;
 
 			if ( this.uri === arg ) {
 				result = this.uri;

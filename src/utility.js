@@ -697,6 +697,7 @@ var utility = {
 		parsed.auth  = obj.auth  || ( parsed.auth === null ? "" : parsed.auth[1] );
 		parsed.href  = obj.href  || ( parsed.protocol + "//" + ( string.isEmpty( parsed.auth ) ? "" : parsed.auth + "@" ) + parsed.host + parsed.pathname + parsed.search + parsed.hash );
 		parsed.query = obj.query || utility.queryString( null, parsed.search );
+		parsed.path  = obj.path  || parsed.pathname + parsed.search;
 
 		return parsed;
 	},
