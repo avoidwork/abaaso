@@ -188,16 +188,17 @@ var data = {
 			else {
 				if ( type === "set" ) {
 					array.each( array.chunk( data, chunk ), function ( a, adx ) {
-						var offset = adx * chunk;
+						var offset = adx * chunk,
+						    id;
 
 						array.each( a, function ( i, idx ) {
-							if ( array.contains ( self.leafs, i ) ) {
-								idx = i;
-								i   = {};
+							if ( array.contains ( self.ignore, i ) || array.contains ( self.leafs, i ) ) {
+								id = i;
+								i  = {};
 							}
 
 							if ( typeof i === "object" ) {
-								set( i, utility.uuid() );
+								set( i, id || utility.uuid() );
 							}
 							else if ( i.indexOf( "//" ) === -1 ) {
 								// Relative path to store, i.e. a child
