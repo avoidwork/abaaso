@@ -81,6 +81,30 @@ exports["hyphenate"] = {
 	}
 };
 
+exports["isEmpty"] = {
+	setUp: function (done) {
+		this.val1 = "hello world";
+		this.val2 = 1234;
+		this.val3 = undefined;
+		this.val4 = "";
+		done();
+	},
+	direct: function (test) {
+		test.expect(4);
+		test.equal(string.isEmpty(this.val1), false, "Should be 'false'");
+		test.equal(string.isEmpty(this.val2), false, "Should be 'false'");
+		test.equal(string.isEmpty(this.val3), true,  "Should be 'true'");
+		test.equal(string.isEmpty(this.val4), true,  "Should be 'true'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val1.isEmpty(), false, "Should be 'false'");
+		test.equal(this.val4.isEmpty(), true,  "Should be 'true'");
+		test.done();
+	}
+};
+
 exports["singular"] = {
 	setUp: function (done) {
 		this.v1 = "things";
