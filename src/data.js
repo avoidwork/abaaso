@@ -1034,10 +1034,17 @@ var data = {
 		 * @return {Object}        Promise
 		 */
 		set : function ( key, arg, batch ) {
+			batch        = ( batch === true );
 			var self     = this,
 			    deferred = promise.factory(),
+			    partial  = false,
 			    data, deferred2, record, method, events, args, uri, p, success, failure;
 
+			if ( !( arg instanceof Object ) ) {
+				throw Error( label.error.invalidArguments );
+			}
+
+			// Chaining a promise to return
 			deferred2 = deferred.then( function ( arg ) {
 				var data     = {data: null, key: arg.key, record: arg.record, result: arg.result},
 				    deferred = promise.factory(),
@@ -1162,9 +1169,10 @@ var data = {
 				key   = null;
 			}
 
-			batch = ( batch === true );
-			data  = utility.clone( arg );
+			// Cloning data to avoid `by reference` issues
+			data = utility.clone( arg );
 
+			// Finding or assigning the record key
 			if ( key === null && this.uri === null ) {
 				if ( this.key === null || data[this.key] === undefined ) {
 					key = utility.uuid();
@@ -1178,10 +1186,8 @@ var data = {
 				key = undefined;
 			}
 
-			if ( !( data instanceof Object ) ) {
-				throw Error( label.error.invalidArguments );
-			}
-			else if ( data instanceof Array ) {
+			// Generating a child store
+			if ( data instanceof Array ) {
 				return this.generate( key )
 				           .then( function () {
 				           		self.get( key ).data.batch( "set", data )
@@ -1193,35 +1199,49 @@ var data = {
 				            });
 			}
 
+			// Setting variables for ops
 			record = key === undefined ? undefined : this.get( key );
 			method = key === undefined ? "post" : "put";
 			events = ( this.events === true );
 			args   = {data: {}, key: key, record: undefined};
 			uri    = this.uri;
 
+			// Determining permissions
+			if ( !batch && this.callback === null && uri !== null ) {
+				if ( record !== undefined ) {
+					uri += "/" + record.key;
+				}
+
+				// Can we use a PATCH request?
+				if ( method === "put" && client.allows( uri, "patch" ) ) {
+					method  = "patch";
+					partial = true;
+				}
+
+				p = ( client.cors ( uri ) || client.allows( uri, method ) );
+			}
+
+			// Setting the data to pass to the promise
 			if ( record !== undefined ) {
 				args.record = this.records[this.keys[record.key]];
 
+				// Getting primitive values
 				utility.iterate( args.record.data, function ( v, k ) {
 					if ( !array.contains( self.ignore, k ) ) {
 						args.data[k] = v;
 					}
 				});
 
-				args.data = data;
+				// Merging the difference with the record data
+				utility.merge( args.data, data );
+
+				// PATCH is not supported, send the entire record
+				if ( !partial ) {
+					data = args.data;
+				}
 			}
 			else {
 				args.data = data;
-			}
-
-			if ( !batch && this.callback === null && uri !== null ) {
-				if ( record !== undefined ) {
-					uri += "/" + record.key;
-				}
-
-				// @todo see if PATCH can be supported here in lieu of PUT
-
-				p = ( client.cors ( uri ) || client.allows( uri, method ) );
 			}
 
 			if ( events ) {

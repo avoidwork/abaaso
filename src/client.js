@@ -82,51 +82,48 @@ var client = {
 	},
 
 	/**
-	 * Quick way to see if a URI allows a specific command
+	 * Quick way to see if a URI allows a specific verb
 	 *
 	 * @method allows
-	 * @param  {String} uri     URI to query
-	 * @param  {String} command Command to query for
-	 * @return {Boolean}        True if the command is allowed
+	 * @param  {String} uri  URI to query
+	 * @param  {String} verb HTTP verb
+	 * @return {Boolean}     `true` if the verb is allowed, undefined if unknown
 	 */
-	allows : function ( uri, command ) {
-		if ( string.isEmpty( uri ) || string.isEmpty( command ) ) {
+	allows : function ( uri, verb ) {
+		if ( string.isEmpty( uri ) || string.isEmpty( verb ) ) {
 			throw Error( label.error.invalidArguments );
 		}
 
-		if ( !cache.get( uri, false ) ) {
-			return undefined;
-		}
-
-		command    = command.toLowerCase();
+		uri        = utility.parse( uri ).href;
+		verb       = verb.toLowerCase();
 		var result = false,
 		    bit    = 0;
 
-		if ( regex.del.test( command ) ) {
-			bit = 1;
+		if ( !cache.get( uri, false ) ) {
+			result = undefined;
 		}
-		else if ( regex.get_headers.test( command ) ) {
-			bit = 4;
-		}
-		else if ( regex.put_post.test( command ) ) {
-			bit = 2;
-		}
+		else {
+			if ( regex.del.test( verb ) ) {
+				bit = 1;
+			}
+			else if ( regex.get_headers.test( verb ) ) {
+				bit = 4;
+			}
+			else if ( regex.put_post.test( verb ) ) {
+				bit = 2;
+			}
+			else if ( regex.patch.test( verb ) ) {
+				bit = 8;
+			}
 
-		result = !( ( client.permissions( uri, command ).bit & bit ) === 0 );
+			result = Boolean( client.permissions( uri, verb ).bit & bit );
+		}
 
 		return result;
 	},
 
 	/**
 	 * Gets bit value based on args
-	 *
-	 * 1 --d delete
-	 * 2 -w- write
-	 * 3 -wd write and delete
-	 * 4 r-- read
-	 * 5 r-d read and delete
-	 * 6 rw- read and write
-	 * 7 rwd read, write and delete
 	 *
 	 * @method bit
 	 * @param  {Array} args Array of commands the URI accepts
@@ -146,6 +143,9 @@ var client = {
 				case "post":
 				case "put":
 					result |= 2;
+					break;
+				case "patch":
+					result |= 8;
 					break;
 				case "delete":
 					result |= 1;
@@ -266,7 +266,7 @@ var client = {
 	permissions : function ( uri ) {
 		var cached = cache.get( uri, false ),
 		    bit    = !cached ? 0 : cached.permission,
-		    result = {allows: [], bit: bit, map: {read: 4, write: 2, "delete": 1, unknown: 0}};
+		    result = {allows: [], bit: bit, map: {partial: 8, read: 4, write: 2, "delete": 1, unknown: 0}};
 
 		if ( bit & 1) {
 			result.allows.push( "DELETE" );
@@ -279,6 +279,10 @@ var client = {
 
 		if ( bit & 4) {
 			result.allows.push( "GET" );
+		}
+
+		if ( bit & 8) {
+			result.allows.push( "PATCH" );
 		}
 
 		return result;
