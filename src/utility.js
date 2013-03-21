@@ -1668,6 +1668,9 @@ var utility = {
 				listeners : function ( event ) {
 					return observer.list( this, event );
 				},
+				patch : function ( success, failure, args, headers ) {
+					return client.request( this, "PATCH", success, failure, args, headers );
+				},
 				post : function ( success, failure, args, headers ) {
 					return client.request( this, "POST", success, failure, args, headers );
 				},
