@@ -386,7 +386,7 @@ var client = {
 		type         = type.toLowerCase();
 		headers      = headers instanceof Object ? headers : null;
 		cors         = client.cors( uri );
-		xhr          = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : new XMLHttpRequest();
+		xhr          = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : ( !client.ie || ( client.version > 8 || type !== "patch")  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" ) );
 		payload      = regex.put_post.test( type ) && args !== undefined ? args : null;
 		cached       = type === "get" ? cache.get( uri ) : false;
 		typed        = type.capitalize();
@@ -415,7 +415,7 @@ var client = {
 
 		uri.fire( "before" + typed );
 
-		if ( !cors && !regex.get_headers.test( type ) && uri.allows( type ) === false ) {
+		if ( !cors && !regex.get_headers.test( type ) && client.allows( uri, type ) === false ) {
 			xhr.status = 405;
 			deferred.reject( null );
 
@@ -663,6 +663,7 @@ var client = {
 							uri.fire( "reset", null, xhr );
 							break;
 						case 301:
+							// @todo this should probably follow 201
 							deferred.resolve( r );
 							uri.fire( "moved", r, xhr );
 							break;

@@ -1219,6 +1219,8 @@ var data = {
 					uri += "/" + record.key;
 				}
 
+				// @todo see if PATCH can be supported here in lieu of PUT
+
 				p = ( client.cors ( uri ) || client.allows( uri, method ) );
 			}
 
