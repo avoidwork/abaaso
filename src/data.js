@@ -1093,7 +1093,7 @@ var data = {
 						}
 					
 						if ( self.key === null ) {
-							data.key = array.cast( data.result )[0];
+							data.key = utility.uuid();
 						}
 						else {
 							data.key = data.result[self.key];
