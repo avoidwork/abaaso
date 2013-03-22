@@ -557,7 +557,6 @@ var client = {
 	 *
 	 * Events: after[type]  Fires after the XmlHttpRequest response is received, type specific
 	 *         reset        Fires if a 206 response is received
-	 *         moved        Fires if a 301 response is received
 	 *         failure      Fires if an exception is thrown
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
@@ -595,7 +594,6 @@ var client = {
 				case 204:
 				case 205:
 				case 206:
-				case 301:
 					// Caching headers
 					o = client.headers( xhr, uri, type );
 					uri.fire( "headers", o.headers, xhr );
@@ -665,11 +663,6 @@ var client = {
 						case 205:
 							deferred.resolve( null );
 							uri.fire( "reset", null, xhr );
-							break;
-						case 301:
-							// @todo this should probably follow 201
-							deferred.resolve( r );
-							uri.fire( "moved", r, xhr );
 							break;
 					}
 					break;
