@@ -4,6 +4,7 @@ return {
 	callback        : {},
 	client          : {
 		// Properties
+		activex : client.activex,
 		android : client.android,
 		blackberry : client.blackberry,
 		chrome  : client.chrome,
