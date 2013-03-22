@@ -5,6 +5,21 @@
  * @namespace abaaso
  */
 var client = {
+	activex : function () {
+		var result = false;
+
+		if ( typeof ActiveXObject !== "undefined" ) {
+			try {
+				new ActiveXObject( "Microsoft.XMLHTTP" );
+				result = true;
+			}
+			catch ( e ) {
+				void 0;
+			}
+		}
+
+		return result;
+	}(),
 	android : function () {
 		return !server && regex.android.test( navigator.userAgent );
 	}(),
@@ -438,7 +453,7 @@ var client = {
 			uri.fire( "afterGet", cached.response, xhr );
 		}
 		else {
-			xhr[xhr instanceof XMLHttpRequest ? "onreadystatechange" : "onload"] = function ( e ) {
+			xhr[typeof xhr.onreadystatechange !== "undefined" ? "onreadystatechange" : "onload"] = function ( e ) {
 				client.response( xhr, uri, type, deferred );
 			};
 
@@ -510,8 +525,8 @@ var client = {
 				}
 			}
 
-			// Setting headers
-			if ( xhr.setRequestHeader !== undefined ) {
+			// Setting headers (using typeof for PATCH support in IE8)
+			if ( typeof xhr.setRequestHeader !== "undefined" ) {
 				if ( typeof cached === "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
 					xhr.setRequestHeader( "ETag", cached.headers.ETag );
 				}
@@ -681,7 +696,12 @@ var client = {
 					exception( !server ? Error( label.error.serverError ) : label.error.serverError, xhr );
 			}
 
-			xhr.onreadystatechange = null;
+			try {
+				xhr.onreadystatechange = null;
+			}
+			catch ( e ) {
+				void 0;
+			}
 		}
 		else if ( xdr ) {
 			r = client.parse( xhr );

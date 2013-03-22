@@ -1210,7 +1210,7 @@ var data = {
 				}
 
 				// Can we use a PATCH request?
-				if ( method === "put" && client.allows( uri, "patch" ) ) {
+				if ( method === "put" && client.allows( uri, "patch" ) && ( !client.ie || ( client.version > 8 || client.activex ) ) ) {
 					method = "patch";
 					p = partial = true;
 				}
