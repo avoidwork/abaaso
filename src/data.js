@@ -713,7 +713,7 @@ var data = {
 			}
 
 			if ( this.uri !== null ) {
-				entity = this.uri.replace( /.*\//, "" ).replace( /\?.*/, "" )
+				entity = this.uri.replace( regex.not_endpoint, "" ).replace( /\?.*/, "" )
 
 				if ( string.isDomain( entity ) ) {
 					entity = entity.replace( /\..*/g, "" );
@@ -1205,7 +1205,7 @@ var data = {
 
 			// Determining permissions
 			if ( !batch && this.callback === null && uri !== null ) {
-				if ( record !== undefined ) {
+				if ( record !== undefined && uri.replace( regex.not_endpoint, "" ) !== record.key ) {
 					uri += "/" + record.key;
 				}
 
