@@ -28,7 +28,7 @@ bootstrap = function () {
 	// Describing the Client
 	if ( !server ) {
 		this.client.size    = client.size();
-		this.client.version = client.version();
+		this.client.version = client.version = client.version();
 		this.client.mobile  = client.mobile.call( this );
 		this.client.tablet  = client.tablet.call( this );
 

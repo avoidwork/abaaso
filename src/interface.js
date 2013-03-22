@@ -32,6 +32,9 @@ return {
 		headers : function ( uri, success, failure, timeout ) {
 			return client.request( uri, "HEAD", success, failure, null, null, timeout );
 		},
+		patch   : function ( uri, success, failure, args, headers, timeout ) {
+			return client.request( uri, "PATCH", success, failure, args, headers, timeout );
+		},
 		post    : function ( uri, success, failure, args, headers, timeout ) {
 			return client.request( uri, "POST", success, failure, args, headers, timeout );
 		},
@@ -212,6 +215,9 @@ return {
 		return client.request( uri, "OPTIONS", success, failure, null, null, timeout );
 	},
 	parse           : utility.parse,
+	patch           : function ( uri, success, failure, args, headers, timeout ) {
+		return client.request( uri, "PATCH", success, failure, args, headers, timeout );
+	},
 	pause           : function ( arg ) {
 		return observer.pause( ( arg !== false ) );
 	},
