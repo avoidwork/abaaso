@@ -666,13 +666,13 @@ var utility = {
 
 		parsed = {
 			auth     : server ? null : regex.auth.exec( uri ),
-			protocol : obj.protocol,
-			hostname : obj.hostname,
+			protocol : obj.protocol || "http:",
+			hostname : obj.hostname || "localhost",
 			port     : !string.isEmpty( obj.port ) ? number.parse( obj.port, 10 ) : "",
 			pathname : obj.pathname,
-			search   : obj.search || "",
-			hash     : obj.hash   || "",
-			host     : obj.host
+			search   : obj.search   || "",
+			hash     : obj.hash     || "",
+			host     : obj.host     || "localhost"
 		};
 
 		// 'cause IE is ... IE; required for data.batch()
@@ -696,8 +696,8 @@ var utility = {
 
 		parsed.auth  = obj.auth  || ( parsed.auth === null ? "" : parsed.auth[1] );
 		parsed.href  = obj.href  || ( parsed.protocol + "//" + ( string.isEmpty( parsed.auth ) ? "" : parsed.auth + "@" ) + parsed.host + parsed.pathname + parsed.search + parsed.hash );
-		parsed.query = obj.query || utility.queryString( null, parsed.search );
 		parsed.path  = obj.path  || parsed.pathname + parsed.search;
+		parsed.query = utility.queryString( null, parsed.search );
 
 		return parsed;
 	},
