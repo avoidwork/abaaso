@@ -168,8 +168,11 @@ var utility = {
 		else if ( typeof obj === "string" ) {
 			return String( obj );
 		}
-		else if ( !client.ie && !server && obj instanceof Document ) {
+		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode(obj) );
+		}
+		else if ( obj !== null && obj !== undefined && typeof obj.__proto__ !== "undefined" ) {
+			return utility.extend( obj.__proto__, obj );
 		}
 		else if ( obj instanceof Object ) {
 			// If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration
