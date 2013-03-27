@@ -413,35 +413,51 @@ var utility = {
 	},
 
 	/**
-	 * Creates a class extending obj, with optional decoration
+	 * Creates a "class" extending Object, with optional decoration
 	 *
 	 * @method extend
 	 * @param  {Object} obj Object to extend
 	 * @param  {Object} arg [Optional] Object for decoration
 	 * @return {Object}     Decorated obj
 	 */
-	extend : function ( obj, arg ) {
-		var o, f;
-
-		if ( obj === undefined ) {
-			throw Error( label.error.invalidArguments );
-		}
-
+	extend : function () {
 		if ( typeof Object.create === "function" ) {
-			o = Object.create( obj );
+			return function ( obj, arg ) {
+				var o;
+
+				if ( obj === undefined ) {
+					throw Error( label.error.invalidArguments );
+				}
+
+				o = Object.create( obj );
+
+				if ( arg instanceof Object ) {
+					utility.merge( o, arg );
+				}
+
+				return o;
+			};
 		}
 		else {
-			f = function () {};
-			f.prototype = obj;
-			o = new f();
-		}
+			return function ( obj, arg ) {
+				var o;
 
-		if ( arg instanceof Object ) {
-			utility.merge( o, arg );
-		}
+				if ( obj === undefined ) {
+					throw Error( label.error.invalidArguments );
+				}
 
-		return o;
-	},
+				f = function () {};
+				f.prototype = obj;
+				o = new f();
+
+				if ( arg instanceof Object ) {
+					utility.merge( o, arg );
+				}
+
+				return o;
+			};
+		}
+	}(),
 
 	/**
 	 * Generates an ID value
@@ -460,7 +476,9 @@ var utility = {
 		}
 
 		if ( dom ) {
-			do id = utility.domId( utility.uuid( true) );
+			do {
+				id = utility.domId( utility.uuid( true) );
+			}
 			while ( $( "#" + id ) !== undefined );
 		}
 		else {
