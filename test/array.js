@@ -482,7 +482,7 @@ exports["merge"] = {
 	}
 };
 
-exports["mix"] = {
+exports["min"] = {
 	setUp: function (done) {
 		this.val = [1, 3, 7, 2, 10];
 		done();
@@ -495,6 +495,24 @@ exports["mix"] = {
 	sugar: function (test) {
 		test.expect(1);
 		test.equal(this.val.min(), 1, "Should be '1'");
+		test.done();
+	}
+};
+
+exports["mingle"] = {
+	setUp: function (done) {
+		this.val    = [["a", "b", "c", "d"], [0, 1, 2, 3]];
+		this.result = [["a", 0], ["b", 1], ["c", 2], ["d", 3]];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.mingle(this.val[0], this.val[1])[0][0], this.result[0][0], "Should match '" + this.result[0][0] + "'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val[0].mingle(this.val[1])[0][0], this.result[0][0], "Should match '" + this.result[0][0] + "'");
 		test.done();
 	}
 };

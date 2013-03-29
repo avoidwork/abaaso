@@ -1159,6 +1159,9 @@ var utility = {
 				min : function () {
 					return array.min( this );
 				},
+				mingle : function ( arg ) {
+					return array.mingle( this, arg );
+				},
 				mode : function () {
 					return array.mode( this );
 				},

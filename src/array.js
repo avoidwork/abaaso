@@ -500,6 +500,24 @@ var array = {
 	},
 
 	/**
+	 * Mingles Arrays and returns a 2D Array
+	 *
+	 * @method mingle
+	 * @param  {Array} obj1 Array to mingle
+	 * @param  {Array} obj2 Array to mingle
+	 * @return {Array}      2D Array
+	 */
+	mingle : function ( obj1, obj2 ) {
+		var result;
+
+		result = obj1.map( function ( i, idx ) {
+			return [i, obj2[idx]];
+		});
+
+		return result;
+	},
+
+	/**
 	 * Finds the mode value of an Array
 	 * 
 	 * @method mode
