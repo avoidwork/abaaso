@@ -135,6 +135,25 @@ exports["compact"] = {
 	}
 };
 
+exports["count"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 1, 3, 3];
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.count(this.val, 1), 2, "Should be '2'");
+		test.equal(array.count(this.val, 3), 3, "Should be '3'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.count(1), 2, "Should be '2'");
+		test.equal(this.val.count(3), 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["diff"] = {
 	setUp: function (done) {
 		this.a1 = ["abc", "def"];

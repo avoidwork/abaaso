@@ -837,6 +837,9 @@ var utility = {
 				contains : function ( arg ) {
 					return array.contains( this, arg );
 				},
+				count : function ( arg ) {
+					return array.count( this, arg );
+				},
 				create : function ( type, args, position ) {
 					var result = [];
 

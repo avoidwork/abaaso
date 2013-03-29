@@ -170,6 +170,20 @@ var array = {
 	},
 
 	/**
+	 * Counts `value` in `obj`
+	 * 
+	 * @method count
+	 * @param  {Array} obj   Array to search
+	 * @param  {Mixed} value Value to compare
+	 * @return {Array}       Array of counts
+	 */
+	count : function ( obj, value ) {
+		return obj.filter( function ( i ) {
+			return ( i === value );
+		}).length;
+	},
+
+	/**
 	 * Finds the difference between array1 and array2
 	 *
 	 * @method diff
