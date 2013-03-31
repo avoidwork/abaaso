@@ -271,8 +271,8 @@ bootstrap = function () {
 	}
 
 	// Binding helper & namespace to $
-	$ = this.$.bind( $ );
-	utility.alias( $, this );
+	$ = utility.$;
+	utility.merge( $, this );
 	delete $.$;
 	delete $.bootstrap;
 	delete $.callback;
@@ -291,17 +291,6 @@ bootstrap = function () {
 	$.once      = this.once;
 	$.un        = this.un;
 	$.listeners = this.listeners;
-
-	// Setting sugar
-	if ( !server ) {
-		if ( typeof global.$ === "undefined" || global.$ === null ) {
-			global.$ = $;
-		}
-		else {
-			global.a$    = $;
-			this.aliased = "a$";
-		}
-	}
 
 	// Hooking abaaso into native Objects
 	utility.proto( Array, "array" );
@@ -334,7 +323,6 @@ bootstrap = function () {
 				self.route.current = hash;
 
 				if ( $.route.current !== self.route.current ) {
-					// IE8 specific
 					$.route.current = self.route.current;
 				}
 
@@ -399,13 +387,9 @@ bootstrap = function () {
 
 	// Preparing init()
 	switch ( true ) {
-		case server:
+		case typeof exports !== "undefined":
+		case typeof define === "function":
 			this.init();
-			break;
-		case typeof global.define === "function":
-			global.define( function () {
-				return self.init();
-			});
 			break;
 		case ( regex.complete_loaded.test( document.readyState ) ):
 			this.init();
@@ -421,4 +405,6 @@ bootstrap = function () {
 		default:
 			utility.repeat( fn );
 	}
+
+	return $;
 };

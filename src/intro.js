@@ -4,7 +4,7 @@ var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof exports !== "undefined",
-    abaaso, http, https, url;
+    $, abaaso, http, https, url;
 
 if ( global.abaaso !== undefined ) {
 	return;

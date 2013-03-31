@@ -168,6 +168,9 @@ var utility = {
 		else if ( typeof obj === "string" ) {
 			return String( obj );
 		}
+		else if ( obj instanceof RegExp ) {
+			return obj;
+		}
 		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode(obj) );
 		}
@@ -633,19 +636,11 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function ( arg, obj ) {
-		if ( $[arg] !== undefined || this[arg] !== undefined || !obj instanceof Object ) {
+		if ( $[arg] !== undefined || !obj instanceof Object ) {
 			throw Error( label.error.invalidArguments );
 		}
 		
-		this[arg] = obj;
-
-		if ( typeof obj === "function") {
-			$[arg] = !client.ie || client.version > 8 ? this[arg].bind( $[arg] ) : this[arg];
-		}
-		else {
-			$[arg] = {};
-			utility.alias( $[arg], this[arg] );
-		}
+		$[arg] = obj;
 
 		return $[arg];
 	},
@@ -2000,9 +1995,10 @@ var utility = {
 	},
 
 	/**
-	 * Accepts 1 or more promises as args or an Array, and returns a Promise which is reconciled
+	 * Accepts 1 or more Promises as args or an Array, and returns a Promise which is reconciled
 	 * after all input Promises have been reconciled
 	 * 
+	 * @method when
 	 * @return {Object} Promise
 	 */
 	when : function () {
