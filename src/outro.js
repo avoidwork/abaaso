@@ -13,14 +13,6 @@ else if ( typeof define === "function") {
 	});
 }
 else {
-	if ( !server ) {
-		if ( global.$ === undefined || global.$ === null ) {
-			global.$ = $;
-		}
-		else {
-			global.a$ = $;
-			$.aliased = "a$";
-		}
-	}
+	global.abaaso = $;
 }
 })( this );

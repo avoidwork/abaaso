@@ -633,19 +633,11 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function ( arg, obj ) {
-		if ( $[arg] !== undefined || this[arg] !== undefined || !obj instanceof Object ) {
+		if ( $[arg] !== undefined || !obj instanceof Object ) {
 			throw Error( label.error.invalidArguments );
 		}
 		
-		this[arg] = obj;
-
-		if ( typeof obj === "function") {
-			$[arg] = !client.ie || client.version > 8 ? this[arg].bind( $[arg] ) : this[arg];
-		}
-		else {
-			$[arg] = {};
-			utility.alias( $[arg], this[arg] );
-		}
+		$[arg] = obj;
 
 		return $[arg];
 	},

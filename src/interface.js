@@ -83,7 +83,7 @@ return {
 	// Methods & Properties
 	$               : utility.$,
 	alias           : utility.alias,
-	aliased         : "$",
+	aliased         : "abaaso",
 	allows          : client.allows,
 	append          : function ( type, args, obj ) {
 		if ( obj instanceof Element ) {

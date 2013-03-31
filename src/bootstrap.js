@@ -271,8 +271,8 @@ bootstrap = function () {
 	}
 
 	// Binding helper & namespace to $
-	$ = this.$.bind( $ );
-	utility.alias( $, this );
+	$ = utility.$;
+	utility.merge( $, this );
 	delete $.$;
 	delete $.bootstrap;
 	delete $.callback;
@@ -323,7 +323,6 @@ bootstrap = function () {
 				self.route.current = hash;
 
 				if ( $.route.current !== self.route.current ) {
-					// IE8 specific
 					$.route.current = self.route.current;
 				}
 
