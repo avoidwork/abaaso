@@ -168,6 +168,9 @@ var utility = {
 		else if ( typeof obj === "string" ) {
 			return String( obj );
 		}
+		else if ( obj instanceof RegExp ) {
+			return obj;
+		}
 		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode(obj) );
 		}
