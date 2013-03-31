@@ -272,5 +272,6 @@ return {
 	uuid            : utility.uuid,
 	validate        : validate.test,
 	version         : "{{VERSION}}",
-	walk            : utility.walk
+	walk            : utility.walk,
+	when            : utility.when
 };
