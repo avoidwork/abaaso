@@ -1,18 +1,26 @@
 })();
 
 // Bootstrapping the framework
-abaaso.bootstrap();
+$ = abaaso.bootstrap();
 
 // Node, AMD & window supported
 if ( typeof exports !== "undefined" ) {
-	module.exports = abaaso;
+	module.exports = $;
 }
 else if ( typeof define === "function") {
 	define( "abaaso", function () {
-		return abaaso;
+		return $;
 	});
 }
 else {
-	global.abaaso = abaaso;
+	if ( !server ) {
+		if ( global.$ === undefined || global.$ === null ) {
+			global.$ = $;
+		}
+		else {
+			global.a$ = $;
+			$.aliased = "a$";
+		}
+	}
 }
 })( this );

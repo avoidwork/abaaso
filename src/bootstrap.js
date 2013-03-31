@@ -292,17 +292,6 @@ bootstrap = function () {
 	$.un        = this.un;
 	$.listeners = this.listeners;
 
-	// Setting sugar
-	if ( !server ) {
-		if ( typeof global.$ === "undefined" || global.$ === null ) {
-			global.$ = $;
-		}
-		else {
-			global.a$    = $;
-			this.aliased = "a$";
-		}
-	}
-
 	// Hooking abaaso into native Objects
 	utility.proto( Array, "array" );
 
@@ -399,13 +388,9 @@ bootstrap = function () {
 
 	// Preparing init()
 	switch ( true ) {
-		case server:
+		case typeof exports !== "undefined":
+		case typeof define === "function":
 			this.init();
-			break;
-		case typeof global.define === "function":
-			global.define( function () {
-				return self.init();
-			});
 			break;
 		case ( regex.complete_loaded.test( document.readyState ) ):
 			this.init();
@@ -421,4 +406,6 @@ bootstrap = function () {
 		default:
 			utility.repeat( fn );
 	}
+
+	return $;
 };
