@@ -1997,5 +1997,51 @@ var utility = {
 		});
 
 		return obj;
+	},
+
+	/**
+	 * Accepts 1 or more promises as args or an Array, and returns a Promise which is reconciled
+	 * after all input Promises have been reconciled
+	 * 
+	 * @return {Object} Promise
+	 */
+	when : function () {
+		var i        = 0,
+		    deferred = promise.factory(),
+		    promises = array.cast( arguments ),
+		    nth;
+
+		// Did we receive an Array? if so it overrides any other arguments
+		if ( promises[0] instanceof Array ) {
+			promises = promises[0];
+		}
+
+		// How many promises to observe?
+		nth = promises.length;
+
+		// Zero, end on next tick
+		if ( nth === 0 ) {
+			deferred.resolve( null );
+		}
+		// Setup and wait
+		else {
+			array.each( promises, function ( p ) {
+				p.then( function ( arg) {
+					if ( ++i === nth && !deferred.resolved()) {
+						deferred.resolve( promises.map( function ( obj ) {
+							return obj.outcome;
+						}));
+					}
+				}, function ( e ) {
+					if ( !deferred.resolved() ) {
+						deferred.reject( promises.map( function ( obj ) {
+							return obj.outcome;
+						}));
+					}
+				});
+			});
+		}
+
+		return deferred;
 	}
 };
