@@ -2000,9 +2000,10 @@ var utility = {
 	},
 
 	/**
-	 * Accepts 1 or more promises as args or an Array, and returns a Promise which is reconciled
+	 * Accepts 1 or more Promises as args or an Array, and returns a Promise which is reconciled
 	 * after all input Promises have been reconciled
 	 * 
+	 * @method when
 	 * @return {Object} Promise
 	 */
 	when : function () {
