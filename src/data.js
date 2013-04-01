@@ -1152,6 +1152,8 @@ var data = {
 					record.data = data.data;
 					deferred.resolve( record );
 				}
+
+				return record;
 			}, function ( e ) {
 				if ( events) {
 					observer.fire( self.parentNode, "failedDataSet", e );
