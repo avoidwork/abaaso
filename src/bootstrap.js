@@ -275,7 +275,6 @@ bootstrap = function () {
 	utility.merge( $, this );
 	delete $.$;
 	delete $.bootstrap;
-	delete $.callback;
 	delete $.init;
 	delete $.loading;
 
