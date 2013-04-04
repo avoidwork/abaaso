@@ -301,7 +301,8 @@ var route = {
 	 * @return {Object}        Server
 	 */
 	server : function ( args, fn, ssl ) {
-		var handler, err, obj;
+		var maxConnections = 25,
+		    handler, err, obj;
 
 		if ( !server ) {
 			throw Error( label.error.notSupported );
@@ -335,9 +336,27 @@ var route = {
 		args.port = args.port || 8000;
 
 		// Creating server
-		obj = !ssl ? http.createServer( handler ).on( "error", err ).listen( args.port, args.host )
-		           : https.createServer( args, handler ).on( "error", err).listen( args.port );
+		if (!ssl) {
+			// For proxy behavior
+			http.globalAgent.maxConnections = args.maxConnections  || maxConnections;
 
+			obj = http.createServer( handler ).on( "error", err ).listen( args.port, args.host );
+
+			if (obj.maxConnections) {
+				obj.maxConnections = args.maxConnections || maxConnections;
+			}
+		}
+		else {
+			// For proxy behavior
+			https.globalAgent.maxConnections = args.maxConnections;
+
+			obj = https.createServer( args, handler ).on( "error", err).listen( args.port );
+
+			if (obj.maxConnections) {
+				obj.maxConnections = args.maxConnections || maxConnections;
+			}
+		}
+		
 		return obj;
 	},
 
