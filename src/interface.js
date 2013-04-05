@@ -62,7 +62,6 @@ return {
 	mouse           : mouse,
 	number          : number,
 	regex           : regex,
-	repeating       : {},
 	route           : {
 		enabled : false,
 		current : route.current,

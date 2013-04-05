@@ -8,6 +8,9 @@ var utility = {
 	// Collection of timers
 	timer : {},
 
+	// Collection of repeating functions
+	repeating: {},
+
 	/**
 	 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 	 * 
@@ -137,9 +140,9 @@ var utility = {
 		}
 
 		// repeating
-		if ( $.repeating[id] !== undefined ) {
-			clearTimeout( $.repeating[id] );
-			delete $.repeating[id];
+		if ( utility.repeating[id] !== undefined ) {
+			clearTimeout( utility.repeating[id] );
+			delete utility.repeating[id];
 		}
 	},
 
@@ -1839,12 +1842,12 @@ var utility = {
 				var recursive = this;
 
 				if ( fn() !== false ) {
-					$.repeating[id] = setTimeout( function () {
+					utility.repeating[id] = setTimeout( function () {
 						recursive.call( recursive, fn, ms, id );
 					}, ms );
 				}
 				else {
-					delete $.repeating[id];
+					delete utility.repeating[id];
 				}
 			};
 
