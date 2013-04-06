@@ -442,17 +442,20 @@ exports["max"] = {
 
 exports["mean"] = {
 	setUp: function (done) {
-		this.val = [1, 3, 5];
+		this.val     = [1, 3, 5];
+		this.invalid = [];
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(array.mean(this.val), 3, "Should be '3'");
+		test.equal(array.mean(this.invalid), undefined, "Should be 'undefined'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(this.val.mean(), 3, "Should be '3'");
+		test.equal(this.invalid.mean(), undefined, "Should be 'undefined'");
 		test.done();
 	}
 };

@@ -469,7 +469,7 @@ var array = {
 	 * @return {Number}    Mean of the Array ( float or integer )
 	 */
 	mean : function ( obj ) {
-		return ( array.sum( obj ) / obj.length );
+		return obj.length > 0 ? ( array.sum( obj ) / obj.length ) : undefined;
 	},
 
 	/**
