@@ -361,7 +361,7 @@ var utility = {
 	 * @param  {Function} fn Function to defer execution of
 	 * @param  {Number}   ms Milliseconds to defer execution
 	 * @param  {Number}   id [Optional] ID of the deferred function
-	 * @return {String}      id of the timer
+	 * @return {String}      ID of the timer
 	 */
 	defer : function ( fn, ms, id ) {
 		var op;

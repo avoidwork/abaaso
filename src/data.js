@@ -79,6 +79,10 @@ var data = {
 					self.reindex();
 				}
 
+				if ( self.autosave ) {
+					self.save();
+				}
+
 				array.each( self.datalists, function ( i ) {
 					i.refresh( true );
 				});
@@ -122,7 +126,9 @@ var data = {
 				}
 
 				deferred.then( function ( arg ) {
-					if ( ++r === nth ) complete( self.records );
+					if ( ++r === nth ) {
+						complete( self.records );
+					}
 				}, function ( e ) {
 					if ( !f ) {
 						f = true;
@@ -188,52 +194,54 @@ var data = {
 			else {
 				if ( type === "set" ) {
 					array.each( array.chunk( data, chunk ), function ( a, adx ) {
-						var offset = adx * chunk,
-						    id;
+						utility.defer(function () {
+							var offset = adx * chunk,
+							    id;
 
-						array.each( a, function ( i, idx ) {
-							if ( array.contains ( self.ignore, i ) || array.contains ( self.leafs, i ) ) {
-								id = i;
-								i  = {};
-							}
-
-							if ( typeof i === "object" ) {
-								set( i, id || utility.uuid() );
-							}
-							else if ( i.indexOf( "//" ) === -1 ) {
-								// Relative path to store, i.e. a child
-								if ( i.charAt( 0 ) !== "/" ) {
-									i = self.uri + "/" + i;
+							array.each( a, function ( i, idx ) {
+								if ( array.contains ( self.ignore, i ) || array.contains ( self.leafs, i ) ) {
+									id = i;
+									i  = {};
 								}
 
-								// Root path, relative to store, i.e. a domain
-								else if ( self.uri !== null && regex.root.test( i ) ) {
-									parsed = utility.parse( self.uri );
-									i      = parsed.protocol + "//" + parsed.host + i;
+								if ( typeof i === "object" ) {
+									set( i, id || utility.uuid() );
 								}
+								else if ( i.indexOf( "//" ) === -1 ) {
+									// Relative path to store, i.e. a child
+									if ( i.charAt( 0 ) !== "/" ) {
+										i = self.uri + "/" + i;
+									}
 
-								idx = i.replace( regex.not_endpoint, "" );
+									// Root path, relative to store, i.e. a domain
+									else if ( self.uri !== null && regex.root.test( i ) ) {
+										parsed = utility.parse( self.uri );
+										i      = parsed.protocol + "//" + parsed.host + i;
+									}
 
-								if ( string.isEmpty( idx ) ) {
-									return;
+									idx = i.replace( regex.not_endpoint, "" );
+
+									if ( string.isEmpty( idx ) ) {
+										return;
+									}
+
+									client.request( i, "GET", function ( arg ) {
+										set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
+									}, failure, utility.merge( {withCredentials: self.credentials}, self.headers ) );
 								}
+								else {
+									idx = i.replace( regex.not_endpoint, "" );
 
-								client.request( i, "GET", function ( arg ) {
-									set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
-								}, failure, utility.merge( {withCredentials: self.credentials}, self.headers ) );
-							}
-							else {
-								idx = i.replace( regex.not_endpoint, "" );
+									if ( string.isEmpty( idx ) ) {
+										return;
+									}
 
-								if ( string.isEmpty( idx ) ) {
-									return;
+									client.request( i, "GET", function ( arg ) {
+										set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
+									}, failure, utility.merge( {withCredentials: self.credentials}, self.headers) );
 								}
-
-								client.request( i, "GET", function ( arg ) {
-									set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
-								}, failure, utility.merge( {withCredentials: self.credentials}, self.headers) );
-							}
-						});
+							});
+						}, adx );
 					});
 				}
 				else {
@@ -265,6 +273,7 @@ var data = {
 					observer.fire( this.parentNode, "beforeDataClear" );
 				}
 
+				this.autosave    = false;
 				this.callback    = null;
 				this.collections = [];
 				this.crawled     = false;
@@ -503,6 +512,10 @@ var data = {
 				}
 
 				if ( !batch ) {
+					if ( self.autosave ) {
+						self.save();
+					}
+
 					array.each( self.datalists, function ( i ) {
 						i.del( record );
 					});
@@ -1056,6 +1069,10 @@ var data = {
 					}
 
 					if ( !batch ) {
+						if ( self.autosave ) {
+							self.save();
+						}
+
 						array.each( self.datalists, function ( i ) {
 							i.refresh();
 						});
@@ -1748,7 +1765,7 @@ var data = {
  * @return {Object}     Instance of DataStore
  */
 function DataStore ( obj ) {
-	this.parentNode  = obj;
+	this.autosave    = false;
 	this.callback    = null;
 	this.collections = [];
 	this.crawled     = false;
@@ -1764,6 +1781,7 @@ function DataStore ( obj ) {
 	this.leafs       = [];
 	this.loaded      = false;
 	this.maxDepth    = 0;
+	this.parentNode  = obj;
 	this.pointer     = null;
 	this.records     = [];
 	this.recursive   = false;
