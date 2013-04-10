@@ -651,6 +651,9 @@ var client = {
 
 					switch ( xhr.status ) {
 						case 200:
+						case 202:
+						case 203:
+						case 206:
 							deferred.resolve( r );
 							uri.fire( "after" + typed, r, xhr );
 							break;
@@ -668,10 +671,7 @@ var client = {
 								});
 								break;
 							}
-						case 202:
-						case 203:
 						case 204:
-						case 206:
 							deferred.resolve( null );
 							uri.fire( "after" + typed, null, xhr );
 							break;
