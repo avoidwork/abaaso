@@ -32,6 +32,7 @@ var regex = {
 	hash                    : /\#/,
 	header_replace          : /:.*/,
 	header_value_replace    : /.*:\s+/,
+	http_body               : /200|202|203|206/,
 	http_ports              : /80|443/,
 	ie                      : /msie|ie/i,
 	input_button            : /button|submit|reset/,

@@ -624,7 +624,7 @@ var client = {
 						return uri.fire( "afterOptions", o.headers );
 					}
 					else if ( type !== "delete" ) {
-						if ( xhr.status === 200 ) {
+						if ( regex.http_body.test( xhr.status ) ) {
 							t = o.headers["Content-Type"] || "";
 							r = client.parse( xhr, t );
 
