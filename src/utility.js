@@ -683,6 +683,12 @@ var utility = {
 			obj = url.parse( uri );
 		}
 
+		utility.iterate( obj, function ( v, k ) {
+			if ( v === null ) {
+				obj[k] = undefined;
+			}
+		});
+
 		parsed = {
 			auth     : server ? null : regex.auth.exec( uri ),
 			protocol : obj.protocol || "http:",
