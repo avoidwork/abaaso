@@ -77,7 +77,7 @@ var xhr = function () {
 	handlerError = function ( e ) {
 		this.status       = 503;
 		this.statusText   = e;
-		this.responseText = e.stack || e;
+		this.responseText = e !== undefined ? ( e.stack || e ) : e;
 		this._error       = true;
 		this.dispatchEvent( "error" );
 		state.call( this, DONE );
