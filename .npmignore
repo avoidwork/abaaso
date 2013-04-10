@@ -4,6 +4,7 @@
 /lib/compressed/
 /test/
 /src/
+.git
 .gitignore
 .jamignore
 .travis.yml
