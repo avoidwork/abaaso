@@ -683,11 +683,13 @@ var utility = {
 			obj = url.parse( uri );
 		}
 
-		utility.iterate( obj, function ( v, k ) {
-			if ( v === null ) {
-				obj[k] = undefined;
-			}
-		});
+		if ( server ) {
+			utility.iterate( obj, function ( v, k ) {
+				if ( v === null ) {
+					obj[k] = undefined;
+				}
+			});
+		}
 
 		parsed = {
 			auth     : server ? null : regex.auth.exec( uri ),
@@ -719,9 +721,9 @@ var utility = {
 			}
 		}
 
-		parsed.auth  = obj.auth  || ( parsed.auth === null ? "" : parsed.auth[1] );
-		parsed.href  = obj.href  || ( parsed.protocol + "//" + ( string.isEmpty( parsed.auth ) ? "" : parsed.auth + "@" ) + parsed.host + parsed.pathname + parsed.search + parsed.hash );
-		parsed.path  = obj.path  || parsed.pathname + parsed.search;
+		parsed.auth  = obj.auth || ( parsed.auth === null ? "" : parsed.auth[1] );
+		parsed.href  = obj.href || ( parsed.protocol + "//" + ( string.isEmpty( parsed.auth ) ? "" : parsed.auth + "@" ) + parsed.host + parsed.pathname + parsed.search + parsed.hash );
+		parsed.path  = obj.path || parsed.pathname + parsed.search;
 		parsed.query = utility.queryString( null, parsed.search );
 
 		return parsed;
