@@ -354,7 +354,11 @@ bootstrap = function () {
 			var obj = utility.target( e );
 
 			if ( obj.id !== undefined && !string.isEmpty( obj.id ) ) {
-				cleanup( obj );
+				utility.defer( function () {
+					if ( $( obj.id ) === undefined ) {
+						cleanup( obj );
+					}
+				}, 100);
 			}
 		}, "mutation", global, "all");
 
