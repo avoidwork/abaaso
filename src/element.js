@@ -290,6 +290,7 @@ var element = {
 				ev.detail        = data || {};
 				ev.eventName     = type;
 				ev.srcElement    = obj;
+				ev.target        = obj;
 
 				obj.dispatchEvent(ev);
 
