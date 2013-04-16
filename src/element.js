@@ -263,8 +263,8 @@ var element = {
 			return function ( obj, type, data, bubbles, cancelable ) {
 				var ev = new CustomEvent( type );
 
-				bubbles    = (bubbles !== false);
-				cancelable = (cancelable !== false);
+				bubbles    = ( bubbles    !== false );
+				cancelable = ( cancelable !== false );
 
 				ev.initCustomEvent( type, bubbles, cancelable, data || {} );
 
@@ -281,8 +281,8 @@ var element = {
 			return function ( obj, type, data, bubbles, cancelable ) {
 				var ev = document.createEvent( "HTMLEvents" );
 
-				bubbles    = (bubbles !== false);
-				cancelable = (cancelable !== false);
+				bubbles    = ( bubbles    !== false );
+				cancelable = ( cancelable !== false );
 
 				ev.initEvent( type, bubbles, cancelable );
 

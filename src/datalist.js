@@ -212,50 +212,54 @@ var datalist = {
 			observer.fire( el, "beforeDataListRefresh" );
 
 			// Creating templates for the html rep
-			if ( !template) fn = function (i ) {
-				var html  = self.template,
-				    items = array.unique( html.match( /\{\{[\w\.]+\}\}/g ) );
+			if ( !template ) {
+				fn = function ( i ) {
+					var html  = self.template,
+					    items = array.unique( html.match( /\{\{[\w\.]+\}\}/g ) );
 
-				// Replacing record key
-				html = html.replace( "{{" + self.store.key + "}}", i.key );
-				
-				// Replacing dot notation properties
-				array.each( items, function ( attr ) {
-					var key   = attr.replace( /\{\{|\}\}/g, "" ),
-					    value = utility.walk( i.data, key );
+					// Replacing record key
+					html = html.replace( "{{" + self.store.key + "}}", i.key );
+					
+					// Replacing dot notation properties
+					array.each( items, function ( attr ) {
+						var key   = attr.replace( /\{\{|\}\}/g, "" ),
+						    value = utility.walk( i.data, key );
 
-					reg.compile( attr, "g" );
-					html = html.replace( reg, value );
-				});
+						reg.compile( attr, "g" );
+						html = html.replace( reg, value );
+					});
 
-				// Filling in placeholder value
-				html = html.replace( /\{\{.*\}\}/g, self.placeholder );
+					// Filling in placeholder value
+					html = html.replace( /\{\{.*\}\}/g, self.placeholder );
 
-				return {li: html};
+					return {li: html};
+				};
 			}
-			else fn = function ( i ) {
-				var obj   = json.encode( self.template ),
-				    items = array.unique( obj.match( /\{\{[\w\.]+\}\}/g ) );
+			else {
+				fn = function ( i ) {
+					var obj   = json.encode( self.template ),
+					    items = array.unique( obj.match( /\{\{[\w\.]+\}\}/g ) );
 
-				// Replacing record key
-				obj = obj.replace( "{{" + self.store.key + "}}", i.key );
-				
-				// Replacing dot notation properties
-				array.each( items, function ( attr ) {
-					var key   = attr.replace( /\{\{|\}\}/g, "" ),
-					    value = utility.walk( i.data, key );
+					// Replacing record key
+					obj = obj.replace( "{{" + self.store.key + "}}", i.key );
+					
+					// Replacing dot notation properties
+					array.each( items, function ( attr ) {
+						var key   = attr.replace( /\{\{|\}\}/g, "" ),
+						    value = utility.walk( i.data, key );
 
-					reg.compile( attr, "g" );
+						reg.compile( attr, "g" );
 
-					// Stripping first and last " to concat to valid JSON
-					obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-				});
+						// Stripping first and last " to concat to valid JSON
+						obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
+					});
 
-				// Filling in placeholder value
-				obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
+					// Filling in placeholder value
+					obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
 
-				return {li: obj};
-			};
+					return {li: obj};
+				};
+			}
 
 			// Consuming records based on sort
 			if ( this.where === null ) {
@@ -317,6 +321,7 @@ var datalist = {
 			// Preparing the target element
 			if ( redraw ) {
 				element.clear( el );
+
 				array.each( items, function ( i ) {
 					var obj = utility.tpl( i.template, el );
 
@@ -461,6 +466,7 @@ var datalist = {
 function DataList ( element, store, template ) {
 	this.callback    = null;
 	this.element     = element;
+	this.emptyMsg    = "Nothing to display";
 	this.filter      = null;
 	this.id          = utility.genId();
 	this.pageIndex   = 1;
