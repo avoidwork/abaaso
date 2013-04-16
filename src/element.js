@@ -273,6 +273,8 @@ var element = {
 				ev.target        = obj;
 
 				obj.dispatchEvent(ev);
+
+				return obj;
 			};
 		}
 		else {
