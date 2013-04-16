@@ -877,6 +877,11 @@ var utility = {
 						element.disable( i );
 					});
 				},
+				dispatch : function ( event, data, bubbles, cancelable ) {
+					return array.each( this, function ( i ) {
+						element.dispatch( i, event, data, bubbles, cancelable );
+					});
+				},
 				destroy : function () {
 					array.each( this, function ( i ) {
 						element.destroy( i );
