@@ -169,7 +169,7 @@ var observer = {
 	fire : function ( obj, event ) {
 		obj      = utility.object( obj );
 		var quit = false,
-		    a    = array.cast( arguments).remove(0, 1 ),
+		    a    = array.cast( arguments ).remove( 0, 1 ),
 		    o, a, s, log, c, l, list;
 
 		if ( observer.ignore ) {

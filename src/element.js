@@ -247,6 +247,56 @@ var element = {
 	},
 
 	/**
+	 * Dispatches a DOM Event from an Element
+	 *
+	 * `data` will appear as `Event.detail`
+	 * 
+	 * @param  {Object}  obj        Element which dispatches the Event
+	 * @param  {String}  type       Type of Event to dispatch
+	 * @param  {Object}  data       Data to include with the Event
+	 * @param  {Boolean} bubbles    [Optional] Determines if the Event bubbles, defaults to `true`
+	 * @param  {Boolean} cancelable [Optional] Determines if the Event can be canceled, defaults to `true`
+	 * @return {Object}             Element which dispatches the Event
+	 */
+	dispatch : function () {
+		if (typeof CustomEvent === "function") {
+			return function ( obj, type, data, bubbles, cancelable ) {
+				var ev = new CustomEvent( type );
+
+				bubbles    = (bubbles !== false);
+				cancelable = (cancelable !== false);
+
+				ev.initCustomEvent( type, bubbles, cancelable, data || {} );
+
+				ev.currentTarget = obj;
+				ev.srcElement    = obj;
+				ev.target        = obj;
+
+				obj.dispatchEvent(ev);
+			};
+		}
+		else {
+			return function ( obj, type, data, bubbles, cancelable ) {
+				var ev = document.createEvent( "HTMLEvents" );
+
+				bubbles    = (bubbles !== false);
+				cancelable = (cancelable !== false);
+
+				ev.initEvent( type, bubbles, cancelable );
+
+				ev.currentTarget = obj;
+				ev.detail        = data || {};
+				ev.eventName     = type;
+				ev.srcElement    = obj;
+
+				obj.dispatchEvent(ev);
+
+				return obj;
+			};
+		}
+	}(),
+
+	/**
 	 * Enables an Element
 	 *
 	 * @method enable
