@@ -353,12 +353,8 @@ bootstrap = function () {
 		observer.add( global, "DOMNodeRemoved", function (e ) {
 			var obj = utility.target( e );
 
-			if ( obj.id !== undefined && !string.isEmpty( obj.id ) ) {
-				utility.defer( function () {
-					if ( $( obj.id ) === undefined ) {
-						cleanup( obj );
-					}
-				}, 100);
+			if ( obj.id !== undefined && !string.isEmpty( obj.id ) && ( e.relatedNode instanceof Element ) ) {
+				cleanup( obj );
 			}
 		}, "mutation", global, "all");
 
