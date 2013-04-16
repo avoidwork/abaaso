@@ -1372,6 +1372,9 @@ var utility = {
 				disable : function () {
 					return element.disable( this );
 				},
+				dispatch : function ( event, data, bubbles, cancelable ) {
+					return element.dispatch( this, event, data, bubbles, cancelable );
+				},
 				enable : function () {
 					return element.enable( this );
 				},
