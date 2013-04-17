@@ -36,8 +36,8 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		init : function () {
-			observer.add( this.element, "keyup",      this.update, "filter", this );
-			observer.add( this.element, "afterValue", this.update, "value",  this );
+			observer.add( this.element, "keyup", this.update, "filter", this );
+			observer.add( this.element, "input", this.update, "value",  this );
 
 			return this;
 		},
@@ -72,8 +72,8 @@ var filter = {
 		 * @returns {Undefined} undefined
 		 */
 		teardown : function () {
-			observer.remove( this.element, "keyup",      "filter" );
-			observer.remove( this.element, "afterValue", "value" );
+			observer.remove( this.element, "keyup", "filter" );
+			observer.remove( this.element, "input", "value" );
 
 			return this;
 		},
@@ -86,10 +86,6 @@ var filter = {
 		update : function ( e ) {
 			var self = this;
 
-			// Clearing existing timer
-			utility.clearTimers( this.element.id + "Debounce" );
-			
-			// Deferring the refresh
 			utility.defer( function () {
 				var val = element.val( self.element );
 				
