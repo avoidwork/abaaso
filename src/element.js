@@ -794,16 +794,14 @@ var element = {
 
 	/**
 	 * Gets or sets the value of Element
-	 *
-	 * Events: beforeValue  Fires before the object receives a new value
-	 *         afterValue   Fires after the object receives a new value
 	 * 
 	 * @param  {Mixed}  obj   Element
 	 * @param  {Mixed}  value [Optional] Value to set
 	 * @return {Object}       Element
 	 */
 	val : function ( obj, value ) {
-		var output = null;
+		var output = null,
+		    event  = "input";
 
 		if ( value === undefined ) {
 			if ( regex.radio_checkbox.test( obj.type ) ) {
@@ -835,9 +833,9 @@ var element = {
 		else {
 			value = value.toString();
 
-			observer.fire( obj, "beforeValue" );
-
 			if ( regex.radio_checkbox.test( obj.type ) ) {
+				event = "click";
+
 				array.each( $( "input[name='" + obj.name + "']" ), function ( i ) {
 					if ( i.value === value ) {
 						i.checked = true;
@@ -847,6 +845,8 @@ var element = {
 				});
 			}
 			else if ( regex.select.test( obj.type ) ) {
+				event = "change";
+
 				array.each( element.find( obj, "> *" ), function ( i ) {
 					if ( i.value === value ) {
 						i.selected = true;
@@ -859,7 +859,7 @@ var element = {
 				obj.value !== undefined ? obj.value = value : element.text( obj, value );
 			}
 
-			observer.fire( obj, "afterValue" );
+			element.dispatch( obj, event );
 
 			output = obj;
 		}
