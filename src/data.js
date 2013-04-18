@@ -970,6 +970,7 @@ var data = {
 
 			if ( nth > 0 ) {
 				while ( ++i < nth ) {
+					this.records[i].index = i;
 					this.keys[this.records[i].key] = i;
 				}
 			}
@@ -1125,7 +1126,7 @@ var data = {
 					}
 
 					self.keys[data.key] = index;
-					self.records[index] = {key: data.key, data: {}};
+					self.records[index] = {key: data.key, data: {}, index: index};
 					record              = self.records[index];
 
 					if ( self.pointer === null || data.data[self.pointer] === undefined ) {
