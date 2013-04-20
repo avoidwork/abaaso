@@ -14,10 +14,9 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	attr : function ( obj, key, value ) {
-		var ns = obj.namespaceURI.replace(/.*\//, ""),
-		    target, result;
+		var target, result;
 
-		if ( regex.svg.test( ns ) ) {
+		if ( regex.svg.test( obj.namespaceURI ) ) {
 			if ( value === null ) {
 				obj.removeAttributeNS( obj.namespaceURI, key );
 			}
@@ -107,7 +106,8 @@ var element = {
 	 * @return {Object}        Element that was created or undefined
 	 */
 	create : function ( type, args, target, pos ) {
-		var obj, uid, frag;
+		var svg = false,
+		    obj, uid, frag;
 
 		if ( type === undefined || string.isEmpty( type ) ) {
 			throw Error( label.error.invalidArguments );
@@ -115,9 +115,11 @@ var element = {
 
 		if ( target !== undefined ) {
 			target = utility.object( target );
+			svg    = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
 		}
 		else if ( args !== undefined && ( typeof args === "string" || args.childNodes !== undefined ) ) {
 			target = utility.object( args );
+			svg    = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
 		}
 		else {
 			target = document.body;
@@ -133,17 +135,17 @@ var element = {
 		        && typeof args        !== "string"
 		        && args.childNodes    === undefined
 		        && args.id            !== undefined
-		        && $( "#" + args.id ) === undefined ? args.id : ( !regex.svg_child.test( type ) ? utility.genId( undefined, true ) : undefined );
+		        && $( "#" + args.id ) === undefined ? args.id : ( !svg ? utility.genId( undefined, true ) : undefined );
 
 		if ( args !== undefined && args.id !== undefined ) {
 			delete args.id;
 		}
 
-		if ( !regex.svg.test( type ) ) {
+		if ( !svg && !regex.svg.test( type ) ) {
 			obj = document.createElement( type );
 		}
 		else {
-			obj = document.createElementNS( "http://www.w3.org/2000/svg", ( !regex.svg_child.test( type ) ? "svg" : type.replace( "svg:", "" ) ) );
+			obj = document.createElementNS( "http://www.w3.org/2000/svg", type );
 		}
 
 		if ( uid !== undefined ) {
