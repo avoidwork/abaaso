@@ -137,6 +137,7 @@ return {
 	headers         : function ( uri, success, failure, timeout ) {
 		return client.request( uri, "HEAD", success, failure, null, {}, timeout );
 	},
+	hex             : utility.hex,
 	hidden          : element.hidden,
 	hook            : observer.decorate,
 	id              : "abaaso",

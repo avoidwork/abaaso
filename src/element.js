@@ -290,10 +290,6 @@ var element = {
 
 				ev.initCustomEvent( type, bubbles, cancelable, data || {} );
 
-				ev.currentTarget = obj;
-				ev.srcElement    = obj;
-				ev.target        = obj;
-
 				obj.dispatchEvent(ev);
 
 				return obj;
@@ -308,11 +304,7 @@ var element = {
 
 				ev.initEvent( type, bubbles, cancelable );
 
-				ev.currentTarget = obj;
-				ev.detail        = data || {};
-				ev.eventName     = type;
-				ev.srcElement    = obj;
-				ev.target        = obj;
+				ev.detail = data || {};
 
 				obj.dispatchEvent(ev);
 
