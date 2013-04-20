@@ -14,49 +14,60 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	attr : function ( obj, key, value ) {
-		if ( typeof value === "string" ) {
-			value = string.trim( value );
-		}
+		var ns = obj.namespaceURI.replace(/.*\//, ""),
+		    target, result;
 
-		var target, result;
-
-		utility.genId( obj, true );
-
-		if ( regex.checked_disabled.test( key ) && value === undefined ) {
-			return obj[key];
-		}
-		else if ( regex.checked_disabled.test( key ) && value !== undefined ) {
-			obj[key] = value;
-		}
-		else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined) {
-			return $( "#" + obj.id + " option[selected=\"selected\"]" )[0] || $( "#" + obj.id + " option" )[0];
-		}
-		else if ( obj.nodeName === "SELECT" && key === "selected" && value !== undefined ) {
-			target = $( "#" + obj.id + " option[selected=\"selected\"]" )[0];
-
-			if ( target !== undefined ) {
-				target.selected = false;
-				target.removeAttribute( "selected" );
+		if ( regex.svg.test( ns ) ) {
+			if ( value === null ) {
+				obj.removeAttributeNS( obj.namespaceURI, key );
 			}
-
-			target = $( "#" + obj.id + " option[value=\"" + value + "\"]" )[0];
-			target.selected = true;
-			target.setAttribute( "selected", "selected" );
-		}
-		else if ( value === undefined ) {
-			result = obj.getAttribute( key );
-
-			if ( result === null ) {
-				result = undefined;
+			else {
+				obj.setAttributeNS( obj.namespaceURI, key, value );
 			}
-
-			return result;
-		}
-		else if ( value === null ) {
-			obj.removeAttribute( key );
 		}
 		else {
-			obj.setAttribute( key, value );
+			utility.genId( obj, true );
+
+			if ( typeof value === "string" ) {
+				value = string.trim( value );
+			}
+
+			if ( regex.checked_disabled.test( key ) && value === undefined ) {
+				return obj[key];
+			}
+			else if ( regex.checked_disabled.test( key ) && value !== undefined ) {
+				obj[key] = value;
+			}
+			else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined) {
+				return $( "#" + obj.id + " option[selected=\"selected\"]" )[0] || $( "#" + obj.id + " option" )[0];
+			}
+			else if ( obj.nodeName === "SELECT" && key === "selected" && value !== undefined ) {
+				target = $( "#" + obj.id + " option[selected=\"selected\"]" )[0];
+
+				if ( target !== undefined ) {
+					target.selected = false;
+					target.removeAttribute( "selected" );
+				}
+
+				target = $( "#" + obj.id + " option[value=\"" + value + "\"]" )[0];
+				target.selected = true;
+				target.setAttribute( "selected", "selected" );
+			}
+			else if ( value === undefined ) {
+				result = obj.getAttribute( key );
+
+				if ( result === null ) {
+					result = undefined;
+				}
+
+				return result;
+			}
+			else if ( value === null ) {
+				obj.removeAttribute( key );
+			}
+			else {
+				obj.setAttribute( key, value );
+			}
 		}
 
 		return obj;
@@ -117,18 +128,27 @@ var element = {
 		}
 		
 		frag = !( target instanceof Element );
+		
 		uid  = args                   !== undefined
 		        && typeof args        !== "string"
 		        && args.childNodes    === undefined
 		        && args.id            !== undefined
-		        && $( "#" + args.id ) === undefined ? args.id : utility.genId( undefined, true );
+		        && $( "#" + args.id ) === undefined ? args.id : ( !regex.svg_child.test( type ) ? utility.genId( undefined, true ) : undefined );
 
 		if ( args !== undefined && args.id !== undefined ) {
 			delete args.id;
 		}
 
-		obj = !regex.svg.test( type ) ? document.createElement( type ) : document.createElementNS( "http://www.w3.org/2000/svg", "svg" );
-		obj.id = uid;
+		if ( !regex.svg.test( type ) ) {
+			obj = document.createElement( type );
+		}
+		else {
+			obj = document.createElementNS( "http://www.w3.org/2000/svg", ( !regex.svg_child.test( type ) ? "svg" : type.replace( "svg:", "" ) ) );
+		}
+
+		if ( uid !== undefined ) {
+			obj.id = uid;
+		}
 
 		if ( typeof args === "object" && args.childNodes === undefined ) {
 			element.update( obj, args );
@@ -785,7 +805,7 @@ var element = {
 				}
 			}
 			else {
-				obj.attr( k, v );
+				element.attr ( obj, k, v );
 			}
 		});
 
