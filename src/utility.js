@@ -510,24 +510,24 @@ var utility = {
 	 * @param  {String} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
 	 * @return {String}       Color as HEX
 	 */
-	hex : function (color) {
+	hex : function ( color ) {
 		var digits, red, green, blue, result, i, nth;
 
-		if (color.charAt(0) === "#") {
+		if ( color.charAt( 0 ) === "#" ) {
 		    result = color;
 		}
 		else {
-			digits = color.replace( /.*\(|\)/g, "" ).explode();
+			digits = string.explode( color.replace( /.*\(|\)/g, "" ) );
 			red    = number.parse( digits[0] || 0 );
 			green  = number.parse( digits[1] || 0 );
 			blue   = number.parse( digits[2] || 0 );
 			result = ( blue | ( green << 8 ) | ( red << 16 ) ).toString( 16 );
 
 			if ( result.length < 6 ) {
-				nth = result.length.diff( 6 );
+				nth = number.diff( result.length, 6 );
 				i   = -1;
 
-				while (++i < nth) {
+				while ( ++i < nth ) {
 					result = "0" + result;
 				}
 			}
