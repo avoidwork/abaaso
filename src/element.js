@@ -6,7 +6,7 @@
  */
 var element = {
 	/**
-	 * Gets or sets attributes of Element
+	 * Gets or sets an Element attribute
 	 * 
 	 * @param  {Mixed}  obj   Element
 	 * @param  {String} name  Attribute name
@@ -17,22 +17,27 @@ var element = {
 		var target, result;
 
 		if ( regex.svg.test( obj.namespaceURI ) ) {
-			if ( value === null ) {
-				obj.removeAttributeNS( obj.namespaceURI, key );
+			if ( value === undefined ) {
+				result = obj.getAttributeNS( obj.namespaceURI, key );
+
+				if ( result === null || string.isEmpty( result ) ) {
+					result = undefined;
+				}
+				else {
+					result = utility.coerce( result );
+				}
 			}
 			else {
 				obj.setAttributeNS( obj.namespaceURI, key, value );
 			}
 		}
 		else {
-			utility.genId( obj, true );
-
 			if ( typeof value === "string" ) {
 				value = string.trim( value );
 			}
 
 			if ( regex.checked_disabled.test( key ) && value === undefined ) {
-				return obj[key];
+				return utility.coerce( obj[key] );
 			}
 			else if ( regex.checked_disabled.test( key ) && value !== undefined ) {
 				obj[key] = value;
@@ -55,14 +60,14 @@ var element = {
 			else if ( value === undefined ) {
 				result = obj.getAttribute( key );
 
-				if ( result === null ) {
+				if ( result === null || string.isEmpty( result ) ) {
 					result = undefined;
+				}
+				else {
+					result = utility.coerce( result );
 				}
 
 				return result;
-			}
-			else if ( value === null ) {
-				obj.removeAttribute( key );
 			}
 			else {
 				obj.setAttribute( key, value );
@@ -651,6 +656,36 @@ var element = {
 	},
 
 	/**
+	 * Removes an Element attribute
+	 * 
+	 * @param  {Mixed}  obj Element
+	 * @param  {String} key Attribute name
+	 * @return {Object}     Element
+	 */
+	removeAttr : function ( obj, key ) {
+		var target;
+
+		if ( regex.svg.test( obj.namespaceURI ) ) {
+			obj.removeAttributeNS( obj.namespaceURI, key );
+		}
+		else {
+			if ( obj.nodeName === "SELECT" && key === "selected") {
+				target = $( "#" + obj.id + " option[selected=\"selected\"]" )[0];
+
+				if ( target !== undefined ) {
+					target.selected = false;
+					target.removeAttribute( "selected" );
+				}
+			}
+			else {
+				obj.removeAttribute( key );
+			}
+		}
+
+		return obj;
+	},
+
+	/**
 	 * Serializes the elements of a Form, an Element, or Array of Elements or $ queries
 	 * 
 	 * @param  {Object}  obj    Form, individual Element, or $ query
@@ -814,8 +849,8 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	val : function ( obj, value ) {
-		var output = null,
-		    event  = "input";
+		var event = "input",
+		    output;
 
 		if ( value === undefined ) {
 			if ( regex.radio_checkbox.test( obj.type ) ) {
@@ -824,12 +859,9 @@ var element = {
 				}
 
 				array.each( $( "input[name='" + obj.name + "']" ), function ( i ) {
-					if ( output !== null ) {
-						return false;
-					}
-
 					if ( i.checked ) {
 						output = i.value;
+						return false;
 					}
 				});
 			}
@@ -838,6 +870,10 @@ var element = {
 			}
 			else {
 				output = obj.value || element.text( obj );
+			}
+
+			if (output !== undefined ) {
+				output = utility.coerce( output );
 			}
 
 			if ( typeof output === "string" ) {

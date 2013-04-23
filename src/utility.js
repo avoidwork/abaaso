@@ -215,10 +215,7 @@ var utility = {
 		var result = utility.clone( value ),
 		    tmp;
 
-		if ( !isNaN( Number( result ) ) ) {
-			result = Number( result );
-		}
-		else if ( regex.string_boolean.test( result ) ) {
+		if ( regex.string_boolean.test( result ) ) {
 			result = regex.string_true.test( result );
 		}
 		else if ( result === "undefined" ) {
@@ -229,6 +226,9 @@ var utility = {
 		}
 		else if ( (tmp = json.decode( result, true ) ) && tmp !== undefined ) {
 			result = tmp;
+		}
+		else if ( !isNaN( Number( result ) ) ) {
+			result = Number( result );
 		}
 
 		return result;
@@ -510,24 +510,24 @@ var utility = {
 	 * @param  {String} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
 	 * @return {String}       Color as HEX
 	 */
-	hex : function (color) {
+	hex : function ( color ) {
 		var digits, red, green, blue, result, i, nth;
 
-		if (color.charAt(0) === "#") {
+		if ( color.charAt( 0 ) === "#" ) {
 		    result = color;
 		}
 		else {
-			digits = color.replace( /.*\(|\)/g, "" ).explode();
+			digits = string.explode( color.replace( /.*\(|\)/g, "" ) );
 			red    = number.parse( digits[0] || 0 );
 			green  = number.parse( digits[1] || 0 );
 			blue   = number.parse( digits[2] || 0 );
 			result = ( blue | ( green << 8 ) | ( red << 16 ) ).toString( 16 );
 
 			if ( result.length < 6 ) {
-				nth = result.length.diff( 6 );
+				nth = number.diff( result.length, 6 );
 				i   = -1;
 
-				while (++i < nth) {
+				while ( ++i < nth ) {
 					result = "0" + result;
 				}
 			}
@@ -1259,6 +1259,13 @@ var utility = {
 				remove_while: function ( fn ) {
 					return array.remove_while( this, fn );
 				},
+				removeAttr : function ( key ) {
+					array.each( this, function ( i ) {
+						element.removeAttr( i, key );
+					});
+
+					return this;
+				},
 				removeClass: function ( arg ) {
 					return array.each( this, function ( i ) {
 						element.klass( i, arg, false );
@@ -1580,6 +1587,9 @@ var utility = {
 				},
 				position : function () {
 					return element.position( this );
+				},
+				removeAttr : function ( key ) {
+					return element.removeAttr( this, key );
 				},
 				removeClass : function ( arg ) {
 					return element.klass( this, arg, false );
