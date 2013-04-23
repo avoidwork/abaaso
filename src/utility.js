@@ -1261,7 +1261,7 @@ var utility = {
 				},
 				removeAttr : function ( key ) {
 					array.each( this, function ( i ) {
-						result.push( element.removeAttr( i, key ) );
+						element.removeAttr( i, key );
 					});
 
 					return this;
