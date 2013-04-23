@@ -215,10 +215,7 @@ var utility = {
 		var result = utility.clone( value ),
 		    tmp;
 
-		if ( !isNaN( Number( result ) ) ) {
-			result = Number( result );
-		}
-		else if ( regex.string_boolean.test( result ) ) {
+		if ( regex.string_boolean.test( result ) ) {
 			result = regex.string_true.test( result );
 		}
 		else if ( result === "undefined" ) {
@@ -229,6 +226,9 @@ var utility = {
 		}
 		else if ( (tmp = json.decode( result, true ) ) && tmp !== undefined ) {
 			result = tmp;
+		}
+		else if ( !isNaN( Number( result ) ) ) {
+			result = Number( result );
 		}
 
 		return result;
@@ -1259,6 +1259,13 @@ var utility = {
 				remove_while: function ( fn ) {
 					return array.remove_while( this, fn );
 				},
+				removeAttr : function ( key ) {
+					array.each( this, function ( i ) {
+						result.push( element.removeAttr( i, key ) );
+					});
+
+					return this;
+				},
 				removeClass: function ( arg ) {
 					return array.each( this, function ( i ) {
 						element.klass( i, arg, false );
@@ -1580,6 +1587,9 @@ var utility = {
 				},
 				position : function () {
 					return element.position( this );
+				},
+				removeAttr : function ( key ) {
+					return element.removeAttr( this, key );
 				},
 				removeClass : function ( arg ) {
 					return element.klass( this, arg, false );
