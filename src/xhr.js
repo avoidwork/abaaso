@@ -319,6 +319,11 @@ var xhr = function () {
 			headers  : this._headers
 		}
 
+		if ( parsed.protocol === "https:" ) {
+			options.rejectUnauthorized = false;
+			options.agent              = false;
+		}
+
 		if ( parsed.auth !== undefined ) {
 			options.auth = parsed.auth;
 		}
