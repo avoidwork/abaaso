@@ -230,6 +230,10 @@ var element = {
 		var dataset = typeof obj.dataset === "object",
 		    result;
 
+		if ( dataset ) {
+			key = string.toCamelCase( key );
+		}
+
 		if ( value !== undefined ) {
 			dataset ? obj.dataset[key] = value : element.attr( obj, "data-" + key, value );
 			result = obj;
