@@ -251,7 +251,7 @@ bootstrap = function () {
 				var fn    = this,
 				    slice = Array.prototype.slice,
 				    args  = slice.call( arguments, 1 );
-				
+
 				return function () {
 					return fn.apply( arg, args.concat( slice.call( arguments ) ) );
 				};
@@ -328,18 +328,18 @@ bootstrap = function () {
 				observer.fire( abaaso, "beforeHash, hash, afterHash", location.hash );
 			}
 		}, "hash", global, "all");
-		
+
 		observer.add( global, "resize", function ( e )  {
 			$.client.size = self.client.size = client.size();
 			observer.fire( abaaso, "resize", self.client.size );
 		}, "resize", global, "all");
-		
+
 		observer.add( global, "load", function ( e )  {
 			observer.fire( abaaso, "render" );
 			observer.remove( abaaso, "render" );
 			observer.remove( this, "load" );
 		});
-		
+
 		if ( typeof Object.observe === "function" ) {
 			observer.add( global, "DOMNodeInserted", function ( e ) {
 				var obj = utility.target( e );
