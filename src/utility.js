@@ -215,8 +215,8 @@ var utility = {
 		var result = utility.clone( value ),
 		    tmp;
 
-		if ( regex.string_boolean.test( result ) ) {
-			result = regex.string_true.test( result );
+		if ( string.isEmpty( result ) ) {
+			result = undefined;
 		}
 		else if ( result === "undefined" ) {
 			result = undefined;
@@ -224,10 +224,13 @@ var utility = {
 		else if ( result === "null" ) {
 			result = null;
 		}
+		else if ( regex.string_boolean.test( result ) ) {
+			result = regex.string_true.test( result );
+		}
 		else if ( (tmp = json.decode( result, true ) ) && tmp !== undefined ) {
 			result = tmp;
 		}
-		else if ( !isNaN( Number( result ) ) ) {
+		else if ( result !== null && result !== undefined && !isNaN( Number( result ) ) ) {
 			result = Number( result );
 		}
 
