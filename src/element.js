@@ -290,7 +290,7 @@ var element = {
 	 * @return {Object}             Element which dispatches the Event
 	 */
 	dispatch : function () {
-		if (typeof CustomEvent === "function") {
+		if ( typeof CustomEvent === "function" ) {
 			return function ( obj, type, data, bubbles, cancelable ) {
 				var ev = new CustomEvent( type );
 
@@ -304,7 +304,7 @@ var element = {
 				return obj;
 			};
 		}
-		else {
+		else if ( document !== undefined && typeof document.createEvent === "function" ) {
 			return function ( obj, type, data, bubbles, cancelable ) {
 				var ev = document.createEvent( "HTMLEvents" );
 
@@ -319,6 +319,21 @@ var element = {
 
 				return obj;
 			};
+		}
+		else if ( document !== undefined && typeof document.createEventObject === "object" ) {
+			return function ( obj, type, data, bubbles, cancelable ) {
+				var ev = document.createEventObject();
+
+				ev.cancelBubble = ( bubbles !== false );
+				ev.detail       = data || {};
+
+				obj.fireEvent( "on" + type, ev );
+			}
+		}
+		else {
+			return function () {
+				throw Error( label.error.notSupported );
+			}
 		}
 	}(),
 
