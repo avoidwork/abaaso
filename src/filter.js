@@ -113,7 +113,7 @@ var filter = {
 				}
 
 				self.datalist.pageIndex = 1;
-				self.datalist.refresh();
+				self.datalist.refresh( true, ( self.datalist.store.datalists.length > 1 ) );
 			}, this.debounce, this.element.id + "Debounce");
 
 			return this;
