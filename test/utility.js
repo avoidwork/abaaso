@@ -36,7 +36,7 @@ exports["coerce"] = {
 	setUp: function (done) {
 		this.number    = "1234";
 		this.boolean   = "true";
-		this.json      = "{'test': true}";
+		this.json      = "{\"test\": true}";
 		this.undefined = "undefined";
 		this.null      = "null";
 		done();
