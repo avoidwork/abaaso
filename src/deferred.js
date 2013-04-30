@@ -88,7 +88,7 @@ var deferred = {
 		/**
 		 * Determines if Deferred is resolved
 		 * 
-		 * @return {Boolean} `true` if rejected
+		 * @return {Boolean} `true` if resolved
 		 */
 		isResolved : function () {
 			return ( this.promise.state === promise.state.resolved );
