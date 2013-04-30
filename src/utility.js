@@ -2090,15 +2090,25 @@ var utility = {
 			array.each( promises, function ( p ) {
 				p.then( function ( arg) {
 					if ( ++i === nth && !deferred.resolved()) {
-						deferred.resolve( promises.map( function ( obj ) {
-							return obj.outcome;
-						}));
+						if ( promises.length > 1 ) {
+							deferred.resolve( promises.map( function ( obj ) {
+								return obj.outcome;
+							}));
+						}
+						else {
+							deferred.resolve( promises[0].outcome );
+						}
 					}
 				}, function ( e ) {
 					if ( !deferred.resolved() ) {
-						deferred.reject( promises.map( function ( obj ) {
-							return obj.outcome;
-						}));
+						if ( promises.length > 1 ) {
+							deferred.reject( promises.map( function ( obj ) {
+								return obj.outcome;
+							}));
+						}
+						else {
+							deferred.reject( promises[0].outcome );
+						}
 					}
 				});
 			});

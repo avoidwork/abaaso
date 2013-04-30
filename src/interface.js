@@ -106,11 +106,12 @@ return {
 	},
 	debounce        : utility.debounce,
 	decode          : json.decode,
-	defer           : utility.defer,
+	defer           : deferred.factory,
 	define          : utility.define,
 	del             : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "DELETE", success, failure, null, headers, timeout );
 	},
+	delay           : utility.defer,
 	destroy         : element.destroy,
 	encode          : json.encode,
 	error           : utility.error,
