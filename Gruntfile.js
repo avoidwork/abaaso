@@ -24,6 +24,7 @@ module.exports = function (grunt) {
 					"src/cookie.js",
 					"src/data.js",
 					"src/datalist.js",
+					"src/deferred.js",
 					"src/element.js",
 					"src/filter.js",
 					"src/json.js",
@@ -74,7 +75,7 @@ module.exports = function (grunt) {
 				         " * @version <%= pkg.version %>\n" +
 				         " */\n",
 				mangle: {
-					except: ["abaaso", "DataList", "DataListFilter", "DataStore", "Promise"]
+					except: ["abaaso", "DataList", "DataListFilter", "DataStore", "Deferred", "Promise"]
 				}
 			},
 			dist: {

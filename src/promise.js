@@ -118,9 +118,13 @@ var promise = {
 						self.outcome      = null;
 						result.parentNode = self;
 						result.then( function ( arg ) {
-							self.resolve( arg );
+							array.each( self.children, function ( i ) {
+								i.resolve( arg );
+							});
 						}, function ( arg ) {
-							self.reject( arg );
+							array.each( self.children, function ( i ) {
+								i.reject( arg );
+							});
 						});
 					}
 
@@ -138,8 +142,9 @@ var promise = {
 				return fn(false);
 			});
 
-			// Setting reference to `self`
+			// Setting references
 			deferred.parentNode = self;
+			self.children.push( deferred );
 
 			return deferred;
 		}
@@ -162,7 +167,13 @@ var promise = {
 		    i, reason, result;
 
 		if ( this.state !== promise.state.pending ) {
-			throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.outcome ) );
+			// Walking "forward" from a reverse chain or a fork, we've already been here...
+			if ( ( this.parentNode !== null && this.parentNode.state === promise.state.resolved ) || this.children.length > 0 ) {
+				return;
+			}
+			else {
+				throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.outcome ) );
+			}
 		}
 
 		this.state   = state;
@@ -259,6 +270,7 @@ var promise = {
  * @return {Object} Instance of Promise
  */
 function Promise () {
+	this.children   = [];
 	this.error      = [];
 	this.fulfill    = [];
 	this.parentNode = null;
