@@ -273,6 +273,10 @@ var data = {
 					observer.fire( this.parentNode, "beforeDataClear" );
 				}
 
+				array.each( this.datalists, function ( i ) {
+					i.teardown( true );
+				});
+
 				this.autosave    = false;
 				this.callback    = null;
 				this.collections = [];
@@ -310,6 +314,10 @@ var data = {
 				this.records     = [];
 				this.total       = 0;
 				this.views       = {};
+
+				array.each( this.datalists, function ( i ) {
+					i.refresh( true, true );
+				});
 			}
 
 			return this;
