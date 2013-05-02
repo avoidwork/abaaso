@@ -121,9 +121,9 @@ var promise = {
 							array.each( self.children, function ( i ) {
 								i.resolve( arg );
 							});
-						}, function ( arg ) {
+						}, function ( e ) {
 							array.each( self.children, function ( i ) {
-								i.reject( arg );
+								i.reject( e );
 							});
 						});
 					}
@@ -138,9 +138,11 @@ var promise = {
 				});
 			}
 
-			if ( typeof failure === "function" ) promise.vouch.call( this, promise.state.broken, function () {
-				return fn(false);
-			});
+			if ( typeof failure === "function" ) {
+				promise.vouch.call( this, promise.state.broken, function () {
+					return fn(false);
+				});
+			}
 
 			// Setting references
 			deferred.parentNode = self;

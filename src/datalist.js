@@ -322,15 +322,20 @@ var datalist = {
 			if ( redraw ) {
 				element.clear( el );
 
-				array.each( items, function ( i ) {
-					var obj = utility.tpl( i.template, el );
+				if ( this.total === 0 ) {
+					element.create( "li", {innerHTML: this.emptyMsg}, el );
+				}
+				else {
+					array.each( items, function ( i ) {
+						var obj = utility.tpl( i.template, el );
 
-					element.data( obj, "key", i.key );
+						element.data( obj, "key", i.key );
 
-					if ( callback ) {
-						self.callback( obj );
-					}
-				});
+						if ( callback ) {
+							self.callback( obj );
+						}
+					});
+				}
 			}
 			else {
 				array.each( element.find( el, "> li" ), function ( i ) {
