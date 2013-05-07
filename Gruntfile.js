@@ -52,41 +52,20 @@ module.exports = function (grunt) {
 			all : ["test/*.js"]
 		},
 		shell: {
+			closure: {
+				command: "cd lib\nclosure-compiler --js abaaso.js --js_output_file abaaso.min.js --create_source_map ./abaaso.map"
+			},
+			sourcemap: {
+				command: "echo //@ sourceMappingURL=abaaso.map >> lib/abaaso.min.js"
+			},
 			prepare : {
 				command : "rm -rf lib/compressed/*"
 			},
 			copy : {
-				command : "cp lib/*.js lib/compressed"
+				command : "cp lib/abaaso.* lib/compressed"
 			},
 			compress : {
 				command : "gzip -9 lib/compressed/*"
-			}
-		},
-		uglify: {
-			options: {
-				banner : "/**\n" + 
-				         " * <%= pkg.name %>\n" +
-				         " *\n" +
-				         " * @author <%= pkg.author.name %> <<%= pkg.author.email %>>\n" +
-				         " * @copyright <%= grunt.template.today('yyyy') %> <%= pkg.author.name %>\n" +
-				         " * @license <%= pkg.licenses[0].type %> <<%= pkg.licenses[0].url %>>\n" +
-				         " * @link <%= pkg.homepage %>\n" +
-				         " * @module <%= pkg.name %>\n" +
-				         " * @version <%= pkg.version %>\n" +
-				         " */\n",
-				mangle: {
-					except: ["abaaso", "DataList", "DataListFilter", "DataStore", "Deferred", "Promise"]
-				}
-			},
-			dist: {
-				options : {
-					sourceMap : "lib/<%= pkg.name %>.source-map.js",
-					sourceMappingURL : "<%= pkg.name %>.source-map.js",
-					sourceMapRoot : ".."
-				},
-				files: {
-					"lib/<%= pkg.name %>.min.js" : ["<%= concat.dist.dest %>"]
-				}
 			}
 		}
 	});
@@ -94,7 +73,6 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-shell");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
-	grunt.loadNpmTasks("grunt-contrib-uglify");
 
 	grunt.registerTask("test", ["nodeunit"]);
 
@@ -112,5 +90,5 @@ module.exports = function (grunt) {
 		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
 	});
 
-	grunt.registerTask("default", ["concat", "version", "uglify", "test", "compress"]);
+	grunt.registerTask("default", ["concat", "version", "test", "compress"]);
 };
