@@ -51,3 +51,40 @@ exports["coerce"] = {
 		test.done();
 	}
 };
+
+exports["define"] = {
+	setUp: function (done) {
+		this.obj = {};
+		done();
+	},
+	object: function (test) {
+		test.expect(6);
+		test.equal($.define("a.b.c.1", true, this.obj), this.obj, "Should be `this.obj`");
+		test.equal(typeof this.obj.a, "object", "Should be `object`");
+		test.equal(typeof this.obj.a.b, "object", "Should be `object`");
+		test.equal(typeof this.obj.a.b.c, "object", "Should be `object`");
+		test.equal(this.obj.a.b.c instanceof Object, true, "Should be `true`");
+		test.equal(this.obj.a.b.c["1"], true, "Should be `true`");
+		test.done();
+	},
+	array: function (test) {
+		test.expect(3);
+		test.equal($.define("a.b.c.2", false, this.obj), this.obj, "Should be `this.obj`");
+		test.equal(typeof this.obj.a.b.c, "object", "Should be `object`");
+		test.equal(this.obj.a.b.c instanceof Array, true, "Should be `true`");
+		test.done();
+	}
+};
+
+exports["extend"] = {
+	setUp: function (done) {
+		this.obj = {method: function () { void 0; }};
+		this.ext = {};
+		done();
+	},
+	test: function (test) {
+		test.expect(1);
+		test.equal(this.ext = $.extend(this.obj), this.ext, "Should be `this.ext`");
+		test.done();
+	}
+};
