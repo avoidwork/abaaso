@@ -1792,6 +1792,9 @@ var utility = {
 				un : function ( event, id, state ) {
 					return observer.remove( this, event, id, state );
 				},
+				unCamelCase : function () {
+					return string.unCamelCase( this );
+				},
 				uncapitalize : function () {
 					return string.uncapitalize( this );
 				},

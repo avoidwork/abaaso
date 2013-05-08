@@ -23,7 +23,7 @@ var filter = {
 			throw Error( label.error.invalidArguments );
 		}
 
-		instance = new DataListFilter( obj, ref[0], filters, debounce );
+		instance = new DataListFilter( obj, ref[0], debounce ).set( filters ).init();
 
 		return instance;
 	},
@@ -126,15 +126,16 @@ var filter = {
  *
  * @class DataListFilter
  * @namespace abaaso
- * @param  {String} filters DataStore fields to filter DataList by
- * @return {Object}         Instance of DataListFilter
+ * @param  {Object} obj      Element to receive the filter
+ * @param  {Object} datalist Data list linked to the data store
+ * @param  {Number} debounce [Optional] Milliseconds to debounce
+ * @return {Object}          Filter instance
  */
-function DataListFilter ( element, datalist, filters, debounce ) {
+function DataListFilter ( element, datalist, debounce ) {
 	this.element  = element;
 	this.datalist = datalist;
 	this.debounce = debounce;
-	this.set( filters );
-	this.init();
+	this.filters  = {};
 };
 
 // Setting prototype & constructor loop

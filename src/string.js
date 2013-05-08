@@ -8,6 +8,7 @@ var string = {
 	/**
 	 * Capitalizes the String
 	 * 
+	 * @method capitalize
 	 * @param  {String} obj String to capitalize
 	 * @return {String}     Capitalized String
 	 */
@@ -20,6 +21,7 @@ var string = {
 	/**
 	 * Escapes meta characters within a string
 	 * 
+	 * @method escape
 	 * @param  {String} obj String to escape
 	 * @return {String}     Escaped string
 	 */
@@ -30,6 +32,7 @@ var string = {
 	/**
 	 * Splits a string on comma, or a parameter, and trims each value in the resulting Array
 	 * 
+	 * @method explode
 	 * @param  {String} obj String to capitalize
 	 * @param  {String} arg String to split on
 	 * @return {Array}      Array of the exploded String
@@ -45,6 +48,7 @@ var string = {
 	/**
 	 * Replaces all spaces in a string with dashes
 	 * 
+	 * @method hyphenate
 	 * @param  {String} obj   String to hyphenate
 	 * @param {Boolean} camel [Optional] Hyphenate camelCase
 	 * @return {String}       String with dashes instead of spaces
@@ -183,6 +187,7 @@ var string = {
 	/**
 	 * Returns singular form of the string
 	 * 
+	 * @method singular
 	 * @param  {String} obj String to transform
 	 * @return {String}     Transformed string
 	 */
@@ -193,6 +198,7 @@ var string = {
 	/**
 	 * Transforms the case of a String into CamelCase
 	 * 
+	 * @method toCamelCase
 	 * @param  {String} obj String to capitalize
 	 * @return {String}     Camel case String
 	 */
@@ -216,6 +222,7 @@ var string = {
 	/**
 	 * Trims the whitespace around a String
 	 * 
+	 * @method trim
 	 * @param  {String} obj String to capitalize
 	 * @return {String}     Trimmed String
 	 */
@@ -224,9 +231,21 @@ var string = {
 	},
 
 	/**
+	 * Uncamelcases the String
+	 * 
+	 * @method unCamelCase
+	 * @param  {String} obj String to uncamelcase
+	 * @return {String}     Uncamelcased String
+	 */
+	unCamelCase : function ( obj ) {
+		return string.trim( obj.replace(/([A-Z])/g, " $1").toLowerCase() );
+	},
+
+	/**
 	 * Uncapitalizes the String
 	 * 
-	 * @param  {String} obj String to capitalize
+	 * @method uncapitalize
+	 * @param  {String} obj String to uncapitalize
 	 * @return {String}     Uncapitalized String
 	 */
 	uncapitalize : function ( obj ) {
@@ -238,6 +257,7 @@ var string = {
 	/**
 	 * Replaces all hyphens with spaces
 	 * 
+	 * @method unhyphenate
 	 * @param  {String}  obj  String to unhypenate
 	 * @param  {Boolean} caps [Optional] True to capitalize each word
 	 * @return {String}       Unhyphenated String
