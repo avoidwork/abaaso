@@ -203,16 +203,10 @@ var string = {
 	 * @return {String}     Camel case String
 	 */
 	toCamelCase : function ( obj ) {
-		var s = string.trim( obj ).toLowerCase().split( regex.space_hyphen ),
+		var s = string.trim( obj ).replace( /\.|_|-|\@|\[|\]|\(|\)|\#|\$|\%|\^|\&|\*|\s+/g, " " ).toLowerCase().split( regex.space_hyphen ),
 		    r = [];
 
 		array.each( s, function ( i, idx ) {
-			i = string.trim( i );
-
-			if ( string.isEmpty( i ) ) {
-				return;
-			}
-
 			r.push( idx === 0 ? i : string.capitalize(i) );
 		});
 

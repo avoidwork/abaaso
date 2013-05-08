@@ -127,20 +127,23 @@ exports["singular"] = {
 
 exports["toCamelCase"] = {
 	setUp: function (done) {
-		this.val  = "hello world";
+		this.val1  = "hello world";
 		this.val2 = "hello-world";
+		this.val3 = "hello.world"
 		done();
 	},
 	direct: function (test) {
-		test.expect(2);
-		test.equal(string.toCamelCase(this.val), "helloWorld", "Should be 'helloWorld'");
+		test.expect(3);
+		test.equal(string.toCamelCase(this.val1), "helloWorld", "Should be 'helloWorld'");
 		test.equal(string.toCamelCase(this.val2), "helloWorld", "Should be 'helloWorld'");
+		test.equal(string.toCamelCase(this.val3), "helloWorld", "Should be 'helloWorld'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(2);
-		test.equal(this.val.toCamelCase(), "helloWorld", "Should be 'helloWorld'");
+		test.expect(3);
+		test.equal(this.val1.toCamelCase(), "helloWorld", "Should be 'helloWorld'");
 		test.equal(this.val2.toCamelCase(), "helloWorld", "Should be 'helloWorld'");
+		test.equal(this.val3.toCamelCase(), "helloWorld", "Should be 'helloWorld'");
 		test.done();
 	}
 };
