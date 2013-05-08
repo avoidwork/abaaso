@@ -16,16 +16,13 @@ var filter = {
 	 */
 	factory : function ( obj, datalist, filters, debounce ) {
 		debounce = debounce || 250;
-		var ref  = [datalist],
-		    instance;
+		var ref  = [datalist];
 
 		if ( !( obj instanceof Element ) || ( datalist !== undefined && datalist.store === undefined ) || ( typeof filters !== "string" || string.isEmpty( filters ) ) ) {
 			throw Error( label.error.invalidArguments );
 		}
 
-		instance = new DataListFilter( obj, ref[0], debounce ).set( filters ).init();
-
-		return instance;
+		return new DataListFilter( obj, ref[0], debounce ).set( filters ).init();
 	},
 
 	// Inherited by DataListFilters
