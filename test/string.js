@@ -164,6 +164,25 @@ exports["trim"] = {
 	}
 };
 
+exports["unCamelCase"] = {
+	setUp: function (done) {
+		this.val = "Hello world";
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(string.unCamelCase(this.val), "hello world", "Should be 'hello world'");
+		test.equal(string.unCamelCase(string.toCamelCase(this.val)), "hello world", "Should be 'hello world'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(2);
+		test.equal(this.val.unCamelCase(), "hello world", "Should be 'hello world'");
+		test.equal(this.val.toCamelCase().unCamelCase(), "hello world", "Should be 'hello world'");
+		test.done();
+	}
+};
+
 exports["uncapitalize"] = {
 	setUp: function (done) {
 		this.val = "Hello world";

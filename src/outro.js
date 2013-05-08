@@ -7,7 +7,7 @@ $ = abaaso.bootstrap();
 if ( typeof exports !== "undefined" ) {
 	module.exports = $;
 }
-else if ( typeof define === "function") {
+else if ( typeof define === "function" ) {
 	define( "abaaso", function () {
 		return $;
 	});
