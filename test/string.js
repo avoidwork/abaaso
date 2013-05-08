@@ -6,13 +6,15 @@ exports["capitalize"] = {
 		done();
 	},
 	direct: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(string.capitalize(this.val), "Hello world", "Should be 'Hello world'");
+		test.equal(string.capitalize(this.val, true), "Hello World", "Should be 'Hello World'");
 		test.done();
 	},
 	sugar: function (test) {
-		test.expect(1);
+		test.expect(2);
 		test.equal(this.val.capitalize(), "Hello world", "Should be 'Hello world'");
+		test.equal(this.val.capitalize(true), "Hello World", "Should be 'Hello World'");
 		test.done();
 	}
 };

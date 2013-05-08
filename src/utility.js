@@ -1690,8 +1690,8 @@ var utility = {
 				allows : function ( arg ) {
 					return client.allows( this, arg );
 				},
-				capitalize: function () {
-					return string.capitalize( this );
+				capitalize: function ( arg ) {
+					return string.capitalize( this, arg );
 				},
 				del : function ( success, failure, headers ) {
 					return client.request( this, "DELETE", success, failure, null, headers );

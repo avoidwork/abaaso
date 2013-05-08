@@ -9,13 +9,26 @@ var string = {
 	 * Capitalizes the String
 	 * 
 	 * @method capitalize
-	 * @param  {String} obj String to capitalize
-	 * @return {String}     Capitalized String
+	 * @param  {String}  obj String to capitalize
+	 * @param  {Boolean} all [Optional] Capitalize each word
+	 * @return {String}      Capitalized String
 	 */
-	capitalize : function ( obj ) {
+	capitalize : function ( obj, all ) {
 		obj = string.trim( obj );
+		all = ( all === true );
 
-		return obj.charAt( 0 ).toUpperCase() + obj.slice( 1 );
+		var result;
+
+		if ( all ) {
+			result = string.explode( obj, " " ).map( function ( i ) {
+				return i.charAt( 0 ).toUpperCase() + i.slice( 1 );
+			}).join(" ");
+		}
+		else {
+			result = obj.charAt( 0 ).toUpperCase() + obj.slice( 1 );
+		}
+
+		return result;
 	},
 
 	/**
