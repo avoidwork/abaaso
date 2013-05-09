@@ -27,6 +27,7 @@ module.exports = function (grunt) {
 					"src/deferred.js",
 					"src/element.js",
 					"src/filter.js",
+					"src/grid.js",
 					"src/json.js",
 					"src/label.js",
 					"src/message.js",
