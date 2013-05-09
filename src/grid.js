@@ -1,0 +1,174 @@
+/**
+ * DataGrid
+ * 
+ * @class grid
+ * @namespace abaaso
+ */
+var grid = {
+	/**
+	 * DataGrid factory
+	 * 
+	 * @param  {Object}  element     Element to receive DataGrid
+	 * @param  {Object}  store       DataStore
+	 * @param  {Array}   fields      Array of fields to display
+	 * @param  {Array}   sortable    [Optional] Array of sortable columns/fields
+	 * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
+	 * @param  {Object}  options     [Optional] DataList options
+	 * @return {Object}              Instance
+	 */
+	factory : function ( element, store, fields, sortable, filtered, options, debounce ) {
+		var ref = [store];
+
+		return new DataGrid( element, ref[0], fields, sortable, filtered, options ).init( debounce );
+	},
+
+	// Inherited by DataGrids
+	methods : {
+		/**
+		 * Initializes DataGrid
+		 * 
+		 * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
+		 * @return {Object}          Instance
+		 */
+		init : function ( debounce ) {
+			var self, ref, template, container, header, width, css, sort;
+
+			if ( !this.initialized ) {
+				self      = this;
+				ref       = [];
+				template  = "";
+				container = element.create( "section", {"class": "grid"}, this.element );
+				header    = element.create( "ul", {"class": "header"}, container );
+				width     = ( 100 / this.fields.length ) + "%";
+				css       = "display:inline-block;width:" + width;
+				sort      = string.explode( this.options.order );
+
+				// Creating DataList template based on fields
+				array.each( this.fields, function ( i ) {
+					var obj = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( i ), true ), style: css, "class": i, "data-field": i} );
+
+					// Adding CSS class if "column" is sortable
+					if ( self.sortable.contains( i ) ) {
+						element.klass( obj, "sortable", true );
+						element.data( obj, "sort", array.contains( sort, i + " desc" ) ? "desc" : "asc" );
+					}
+
+					template += "<span class=\"" + i + "\" data-field=\"" + i + "\" style=\"" + css + "\">{{" + i + "}}</span>";
+				});
+
+				// Setting click handler on sortable "columns"
+				if ( this.sortable.length > 0 ) {
+					observer.add( header, "click", this.sort, "sort", this );
+				}
+
+				// Creating DataList
+				ref.push( datalist.factory( container, this.store, template, this.options ) );
+
+				// Setting by-reference DataList on DataGrid
+				this.list = ref[0];
+
+				if ( this.filtered === true ) {
+					// Creating DataListFilter
+					ref.push( filter.factory( element.create( "input", container, "first" ), ref[0], this.fields.join( "," ), debounce || 250 ) );
+					
+					// Setting by-reference DataListFilter on DataGrid
+					this.filter = ref[1];
+				}
+
+				this.initialized = true;
+			}
+
+			return this;
+		},
+
+		/**
+		 * Refreshes the DataGrid
+		 * 
+		 * @return {Object} Instance
+		 */
+		refresh : function () {
+			var sorts = element.find( this.element, ".header .sortable" ),
+			    sort  = [];
+
+			if ( sorts.length > 0 ) {
+				array.each( sorts, function ( i ) {
+					sort.push( element.data( i, "field" ) + " " + element.data( i, "sort" ) );
+				});
+
+				this.list.order = sort.join(", ");
+			}
+
+			this.list.refresh();
+
+			return this;
+		},
+
+		/**
+		 * Sorts the DataGrid when a column header is clicked
+		 * 
+		 * @param  {Object} e Event
+		 * @return {Object}   Instance
+		 */
+		sort : function ( e ) {
+			var target = utility.target( e );
+
+			// Stopping event propogation
+			utility.stop( e );
+
+			// Refreshing list if target is sortable
+			if ( element.hasClass( target, "sortable" ) ) {
+				element.data( target, "sort", element.data( target, "sort" ) === "asc" ? "desc" : "asc" );
+				this.refresh();
+			};
+
+			return this;
+		},
+
+		/**
+		 * Tears down grid
+		 * 
+		 * @return {Object} Instance
+		 */
+		teardown : function () {
+			this.filter.teardown();
+			this.list.teardown();
+
+			// Removing click handler on DataGrid header
+			observer.remove( element.find( this.element, ".header" )[0], "click", "sort" );
+
+			// Destroying DataGrid (from DOM)
+			element.destroy( element.find( this.element, ".grid" ) );
+
+			return this;
+		}
+	}
+};
+
+/**
+ * DataGrid factory
+ * 
+ * @class DataGrid
+ * @namespace abaaso
+ * @param  {Object}  element     Element to receive DataGrid
+ * @param  {Object}  store       DataStore
+ * @param  {Array}   fields      Array of fields to display
+ * @param  {Array}   sortable    [Optional] Array of sortable columns/fields
+ * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
+ * @param  {Object}  options     [Optional] DataList options
+ * @return {Object}              Instance
+ */
+function DataGrid ( element, store, fields, sortable, filtered, options ) {
+	this.element     = element;
+	this.fields      = fields;
+	this.filter      = null;
+	this.filtered    = ( filtered === true );
+	this.initialized = false;
+	this.list        = null;
+	this.options     = options     || {};
+	this.store       = store;
+	this.sortable    = sortable    || [];
+};
+
+// Setting prototype & constructor loop
+DataGrid.prototype = grid.methods;
+DataGrid.prototype.constructor = DataGrid;

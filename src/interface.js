@@ -131,6 +131,7 @@ return {
 	get             : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "GET", success, failure, null, headers, timeout );
 	},
+	grid            : grid.factory,
 	guid            : function () {
 		return utility.uuid().toUpperCase();
 	},
