@@ -12,14 +12,15 @@ var grid = {
 	 * @param  {Object}  store       DataStore
 	 * @param  {Array}   fields      Array of fields to display
 	 * @param  {Array}   sortable    [Optional] Array of sortable columns/fields
-	 * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
 	 * @param  {Object}  options     [Optional] DataList options
+	 * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
+	 * @param  {Number}  debounce    [Optional] DataListFilter input debounce, default is 250
 	 * @return {Object}              Instance
 	 */
-	factory : function ( element, store, fields, sortable, filtered, options, debounce ) {
+	factory : function ( element, store, fields, sortable, options, filtered, debounce ) {
 		var ref = [store];
 
-		return new DataGrid( element, ref[0], fields, sortable, filtered, options ).init( debounce );
+		return new DataGrid( element, ref[0], fields, sortable, options, filtered ).init( debounce );
 	},
 
 	// Inherited by DataGrids
@@ -87,12 +88,14 @@ var grid = {
 		 * @return {Object} Instance
 		 */
 		refresh : function () {
-			var sorts = element.find( this.element, ".header .sortable" ),
-			    sort  = [];
+			var sort = [],
+			    self = this;
 
-			if ( sorts.length > 0 ) {
-				array.each( sorts, function ( i ) {
-					sort.push( element.data( i, "field" ) + " " + element.data( i, "sort" ) );
+			if ( this.sortOrder.length > 0 ) {
+				array.each( this.sortOrder, function ( i ) {
+					var obj = element.find( self.element, ".header span[data-field='" + i + "']" )[0];
+
+					sort.push( i + " " + element.data( obj, "sort" ) );
 				});
 
 				this.list.order = sort.join(", ");
@@ -110,14 +113,19 @@ var grid = {
 		 * @return {Object}   Instance
 		 */
 		sort : function ( e ) {
-			var target = utility.target( e );
+			var target = utility.target( e ),
+			    field;
 
 			// Stopping event propogation
 			utility.stop( e );
 
 			// Refreshing list if target is sortable
 			if ( element.hasClass( target, "sortable" ) ) {
+				field = element.data( target, "field" );
+
 				element.data( target, "sort", element.data( target, "sort" ) === "asc" ? "desc" : "asc" );
+				array.remove( this.sortOrder, field );
+				this.sortOrder.splice( 0, 0, field );
 				this.refresh();
 			};
 
@@ -149,24 +157,35 @@ var grid = {
  * 
  * @class DataGrid
  * @namespace abaaso
- * @param  {Object}  element     Element to receive DataGrid
- * @param  {Object}  store       DataStore
- * @param  {Array}   fields      Array of fields to display
- * @param  {Array}   sortable    [Optional] Array of sortable columns/fields
- * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
- * @param  {Object}  options     [Optional] DataList options
- * @return {Object}              Instance
+ * @param  {Object}  element  Element to receive DataGrid
+ * @param  {Object}  store    DataStore
+ * @param  {Array}   fields   Array of fields to display
+ * @param  {Array}   sortable [Optional] Array of sortable columns/fields
+ * @param  {Object}  options  [Optional] DataList options
+ * @param  {Boolean} filtered [Optional] Create an input to filter the data grid
+ * @return {Object}           Instance
  */
-function DataGrid ( element, store, fields, sortable, filtered, options ) {
+function DataGrid ( element, store, fields, sortable, options, filtered ) {
+	var sortOrder;
+
+	if ( options !== undefined && !string.isEmpty( options.order ) ) {
+		sortOrder = string.explode( options.order );
+
+		sortOrder = sortOrder.map(function ( i ) {
+			return i.replace( /\s+.*/, "" );
+		});
+	}
+
 	this.element     = element;
 	this.fields      = fields;
 	this.filter      = null;
 	this.filtered    = ( filtered === true );
 	this.initialized = false;
 	this.list        = null;
-	this.options     = options     || {};
+	this.options     = options   || {};
 	this.store       = store;
-	this.sortable    = sortable    || [];
+	this.sortable    = sortable  || [];
+	this.sortOrder   = sortOrder || sortable || [];
 };
 
 // Setting prototype & constructor loop
