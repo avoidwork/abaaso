@@ -138,14 +138,17 @@ var grid = {
 		 * @return {Object} Instance
 		 */
 		teardown : function () {
-			this.filter.teardown();
+			if ( this.filter !== null ) {
+				this.filter.teardown();
+			}
+
 			this.list.teardown();
 
 			// Removing click handler on DataGrid header
 			observer.remove( element.find( this.element, ".header" )[0], "click", "sort" );
 
 			// Destroying DataGrid (from DOM)
-			element.destroy( element.find( this.element, ".grid" ) );
+			element.destroy( element.find( this.element, ".grid" )[0] );
 
 			return this;
 		}
