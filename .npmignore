@@ -1,6 +1,6 @@
 /node_modules/
 /lib/abaaso.min.js
-/lib/abaaso.source-map.js
+/lib/abaaso.map
 /lib/compressed/
 /test/
 /src/

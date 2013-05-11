@@ -133,7 +133,7 @@ var grid = {
 		},
 
 		/**
-		 * Tears down grid
+		 * Tears down the DataGrid
 		 * 
 		 * @return {Object} Instance
 		 */
@@ -165,7 +165,7 @@ var grid = {
  * @param  {Array}   fields   Array of fields to display
  * @param  {Array}   sortable [Optional] Array of sortable columns/fields
  * @param  {Object}  options  [Optional] DataList options
- * @param  {Boolean} filtered [Optional] Create an input to filter the data grid
+ * @param  {Boolean} filtered [Optional] Create an input to filter the DataGrid
  * @return {Object}           Instance
  */
 function DataGrid ( element, store, fields, sortable, options, filtered ) {
