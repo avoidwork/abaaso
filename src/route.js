@@ -63,7 +63,7 @@ var route = {
 	 */
 	hash : function ( arg ) {
 		var output = "",
-		    regex  = /\#|\!\/|\?.*/g;
+		    regex  = /^\#\!?/g;
 
 		if ( !server ) {
 			if ( arg === undefined ) {
