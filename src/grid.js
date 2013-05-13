@@ -51,7 +51,11 @@ var grid = {
 					// Adding CSS class if "column" is sortable
 					if ( self.sortable.contains( i ) ) {
 						element.klass( obj, "sortable", true );
-						element.data( obj, "sort", array.contains( sort, i + " desc" ) ? "desc" : "asc" );
+
+						// Applying default sort, if specified
+						if ( sort.filter( function ( x ) { return ( x.indexOf( i ) === 0 ); } ).length > 0 ) {
+							element.data( obj, "sort", array.contains( sort, i + " desc" ) ? "desc" : "asc" );
+						}
 					}
 
 					template += "<span class=\"" + i + "\" data-field=\"" + i + "\" style=\"" + css + "\">{{" + i + "}}</span>";
