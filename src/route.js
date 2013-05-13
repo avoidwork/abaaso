@@ -62,16 +62,15 @@ var route = {
 	 * @return {String}     Current route
 	 */
 	hash : function ( arg ) {
-		var output = "",
-		    regex  = /^\#\!?/g;
+		var output = "";
 
 		if ( !server ) {
 			if ( arg === undefined ) {
-				output = document.location.hash.replace( regex, "" );
+				output = document.location.hash.replace( regex.hash_bang, "" );
 			}
 			else {
-				output = arg.replace( regex, "" );
-				document.location.hash = "!/" + output;
+				output = arg.replace( regex.hash_bang, "" );
+				document.location.hash = "!" + output;
 			}
 		}
 
@@ -181,7 +180,7 @@ var route = {
 		}
 
 		// Public, private, local scope
-		name = name.replace( /\#|\!\/|\?.*/g, "" );
+		name = name.replace( /^\#\!?|\?.*|\#.*/g, "" );
 
 		if ( !server ) {
 			route.current = name;
@@ -222,7 +221,7 @@ var route = {
 
 		if ( host !== "all" && !route.routes.hasOwnProperty( host ) ) {
 			array.each( array.cast( route.routes, true ), function ( i ) {
-				var regex = new RegExp( i.replace(/^\*/, ".*") );
+				var regex = new RegExp( i.replace(/^\*/g, ".*") );
 
 				if ( regex.test( host ) ) {
 					host  = i;
