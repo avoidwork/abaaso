@@ -30,6 +30,7 @@ var regex = {
 	get_headers             : /^(head|get|options)$/,
 	get_remove_set          : /get|remove|set/,
 	hash                    : /\#/,
+	hash_bang               : /^\#\!?/,
 	header_replace          : /:.*/,
 	header_value_replace    : /.*:\s+/,
 	http_body               : /200|202|203|206/,
