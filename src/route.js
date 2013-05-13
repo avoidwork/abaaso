@@ -71,7 +71,7 @@ var route = {
 			}
 			else {
 				output = arg.replace( regex, "" );
-				document.location.hash = "!/" + output;
+				document.location.hash = "!" + output;
 			}
 		}
 
