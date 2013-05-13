@@ -316,7 +316,7 @@ bootstrap = function () {
 		}, "error", global, "all");
 
 		observer.add( global, "hashchange", function (e )  {
-			var hash = location.hash.replace( /\#|\!\/|\?.*/g, "" );
+			var hash = location.hash.replace( /^\#\!?|\?.*|\#.*/g, "" );
 
 			if ( $.route.current !== hash || self.route.current !== hash ) {
 				self.route.current = hash;
