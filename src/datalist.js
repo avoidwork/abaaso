@@ -76,8 +76,8 @@ var datalist = {
 		 * 
 		 * @return {Array} Record set
 		 */
-		export : function () {
-			return this.store.export( this.records );
+		dump : function () {
+			return this.store.dump( this.records );
 		},
 
 		/**

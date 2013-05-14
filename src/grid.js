@@ -30,8 +30,8 @@ var grid = {
 		 * 
 		 * @return {Array} Record set
 		 */
-		export : function () {
-			return this.list.export();
+		dump : function () {
+			return this.store.dump( this.list.records, this.fields );
 		},
 
 		/**
