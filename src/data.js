@@ -587,6 +587,30 @@ var data = {
 		},
 
 		/**
+		 * Exports a subset or complete record set of data store
+		 * 
+		 * @param  {Array} args [Optional] Sub-data set of data store
+		 * @return {Array}      Records
+		 */
+		export : function ( args ) {
+			args       = args || this.records;
+			var self   = this,
+			    output = [];
+
+			array.each( args, function ( i ) {
+				var record = {};
+
+				utility.iterate( i, function ( v, k ) {
+					record[k] = !array.contains( self.collections, k ) ? utility.clone( v ) : v.data.uri;
+				});
+
+				output.push(record);
+			});
+
+			return output;
+		},
+
+		/**
 		 * Finds needle in the haystack
 		 *
 		 * @method find
