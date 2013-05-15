@@ -603,10 +603,8 @@ var data = {
 				fn = function ( i ) {
 					var record = {};
 
-					record[self.key] = i.key;
-
-					utility.iterate( i.data, function ( v, k ) {
-						record[k] = !array.contains( self.collections, k ) ? utility.clone( v ) : v.data.uri;
+					array.each( fields, function ( f ) {
+						record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f] ) : i.data[f].data.uri );
 					});
 
 					return record;
@@ -616,8 +614,10 @@ var data = {
 				fn = function ( i ) {
 					var record = {};
 
-					array.each( fields, function ( f ) {
-						record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f] ) : i.data[f].data.uri );
+					record[self.key] = i.key;
+
+					utility.iterate( i.data, function ( v, k ) {
+						record[k] = !array.contains( self.collections, k ) ? utility.clone( v ) : v.data.uri;
 					});
 
 					return record;
