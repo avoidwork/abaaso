@@ -26,6 +26,15 @@ var grid = {
 	// Inherited by DataGrids
 	methods : {
 		/**
+		 * Exports data grid records
+		 * 
+		 * @return {Array} Record set
+		 */
+		dump : function () {
+			return this.store.dump( this.list.records, this.fields );
+		},
+
+		/**
 		 * Initializes DataGrid
 		 * 
 		 * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250

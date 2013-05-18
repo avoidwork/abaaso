@@ -58,15 +58,6 @@ module.exports = function (grunt) {
 			},
 			sourcemap: {
 				command: "echo //@ sourceMappingURL=abaaso.map >> lib/abaaso.min.js"
-			},
-			prepare : {
-				command : "rm -rf lib/compressed/*"
-			},
-			copy : {
-				command : "cp lib/abaaso.* lib/compressed"
-			},
-			compress : {
-				command : "gzip -9 lib/compressed/*"
 			}
 		}
 	});

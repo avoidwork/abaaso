@@ -587,6 +587,47 @@ var data = {
 		},
 
 		/**
+		 * Exports a subset or complete record set of data store
+		 * 
+		 * @param  {Array} args   [Optional] Sub-data set of data store
+		 * @param  {Array} fields [Optional] Fields to export, defaults to all
+		 * @return {Array}        Records
+		 */
+		dump : function ( args, fields ) {
+			args       = args || this.records;
+			var self   = this,
+			    custom = ( fields instanceof Array && fields.length > 0 ),
+			    fn;
+
+			if ( custom ) {
+				fn = function ( i ) {
+					var record = {};
+
+					array.each( fields, function ( f ) {
+						record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f] ) : i.data[f].data.uri );
+					});
+
+					return record;
+				};
+			}
+			else {
+				fn = function ( i ) {
+					var record = {};
+
+					record[self.key] = i.key;
+
+					utility.iterate( i.data, function ( v, k ) {
+						record[k] = !array.contains( self.collections, k ) ? utility.clone( v ) : v.data.uri;
+					});
+
+					return record;
+				};
+			}
+
+			return args.map( fn );
+		},
+
+		/**
 		 * Finds needle in the haystack
 		 *
 		 * @method find

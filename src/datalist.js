@@ -72,6 +72,15 @@ var datalist = {
 		},
 
 		/**
+		 * Exports data list records
+		 * 
+		 * @return {Array} Record set
+		 */
+		dump : function () {
+			return this.store.dump( this.records );
+		},
+
+		/**
 		 * Changes the page index of the DataList
 		 * 
 		 * @method page
@@ -299,8 +308,9 @@ var datalist = {
 				}
 			});
 
-			// Total count of items in the list
-			this.total = items.length;
+			// Exposting records & total count of items in the list
+			this.records = items;
+			this.total   = items.length;
 
 			// Pagination ( supports filtering )
 			if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
@@ -480,6 +490,7 @@ function DataList ( element, store, template ) {
 	this.pagination  = "bottom"; // "top" or "bottom|top" are also valid
 	this.placeholder = "";
 	this.order       = "";
+	this.records     = [];
 	this.template    = template;
 	this.total       = 0;
 	this.sensitivity = "ci";
