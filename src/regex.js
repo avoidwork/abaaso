@@ -59,6 +59,7 @@ var regex = {
 	null_undefined          : /null|undefined/,
 	observer_allowed        : /click|error|key|mousedown|mouseup|submit/i,
 	observer_globals        : /body|document|window/i,
+	object_type             : /\[object Object\]/,
 	object_undefined        : /object|undefined/,
 	opera                   : /opera/i,
 	osx                     : /macintosh/i,
