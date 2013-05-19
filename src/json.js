@@ -45,13 +45,19 @@ var json = {
 		};
 
 		if ( obj instanceof Array ) {
-			if ( header ) {
-				result  = ( array.keys( obj[0] ).join( delimiter ) + "\n" );
+			if ( obj[0] instanceof Object ) {
+				if ( header ) {
+					result = ( array.keys( obj[0] ).join( delimiter ) + "\n" );
+				}
+
+				result += obj.map( function ( i ) {
+					return json.csv( i, delimiter, false );
+				}).join( "\n" );
+			}
+			else {
+				result += ( prepare( obj, delimiter ) + "\n" );
 			}
 
-			result += obj.map( function ( i ) {
-				return json.csv( i, delimiter, false );
-			}).join( "\n" );
 		}
 		else {
 			if ( header ) {
