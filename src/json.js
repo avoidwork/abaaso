@@ -28,12 +28,11 @@ var json = {
 				output = "\"" + input.toString() + "\"";
 
 				if ( regex.object_type.test( output ) ) {
-					//output = "\"" + json.csv( input, delimiter ) + "\""; // Possible, but since "\n" is not handled properly within all CSV parsers we'll leave it as JSON
-					output = "\"" + json.encode( input ) + "\"";
+					output = "\"" + json.csv( input, delimiter ) + "\"";
 				}
 			}
 			else if ( input instanceof Object ) {
-				output = "\"" + json.encode( input ) + "\"";
+				output = "\"" + json.csv( input, delimiter ) + "\"";
 			}
 			else if ( regex.csv_quote.test( input ) ) {
 				output = "\"" + input.replace( /\n/g, " " ).replace( /"/g, "\"\"" ) + "\"";
