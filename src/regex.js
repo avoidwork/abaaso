@@ -18,6 +18,7 @@ var regex = {
 	checked_disabled        : /checked|disabled/i,
 	chrome                  : /chrome/i,
 	complete_loaded         : /^(complete|loaded)$/i,
+	csv_quote               : /^\s|\"|\n|,|\s$/,
 	del                     : /^del/,
 	decimal                 : /^\d+.(\d+)/,
 	desc                    : /\s*desc$/i,
