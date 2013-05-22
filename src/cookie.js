@@ -17,7 +17,7 @@ var cookie = {
 	 */
 	expire : function ( name, domain, secure, jar ) {
 		if ( cookie.get( name ) !== undefined ) {
-			cookie.set( name, "", "-1s", domain, secure );
+			cookie.set( name, "", "-1s", domain, secure, jar );
 		}
 
 		return name;
@@ -125,14 +125,9 @@ var cookie = {
 			document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
 		}
 		else {
-			cookies       = cookie.list( jar );
-			cookies[name] = value + expire + domain + " path=/" + secure;
-
-			jar = "";
-
-			utility.iterate( cookies, function ( v, k ) {
-				jar += k + "=" + v + ";"
-			});
+			cookies = jar.getHeader( "Set-Cookie" ) || [];
+			cookies.push( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
+			jar.setHeader( "Set-Cookie", cookies );
 		}
 
 		return cookie.get( name );
