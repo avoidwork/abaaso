@@ -50,7 +50,7 @@ var cookie = {
 			array.each( string.explode( jar, ";" ), function ( i ) {
 				var item = string.explode( i, "=" );
 
-				result[decodeURIComponent( item[0] )] = decodeURIComponent( item[1] );
+				result[decodeURIComponent( item[0] )] = utility.coerce( decodeURIComponent( item[1] ) );
 			});
 		}
 
