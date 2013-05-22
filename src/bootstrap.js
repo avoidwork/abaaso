@@ -259,10 +259,7 @@ bootstrap = function () {
 		}
 	}
 	else {
-		// Cookie class is not relevant for server environment
-		delete this.cookie;
-
-		// Curried
+		// Strategies
 		this.array.cast = array.cast();
 		this.property   = utility.property = utility.property();
 
