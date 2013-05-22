@@ -16,10 +16,7 @@ var cookie = {
 	 * @return {String}        Name of the expired cookie
 	 */
 	expire : function ( name, domain, secure, jar ) {
-		if ( cookie.get( name ) !== undefined ) {
-			cookie.set( name, "", "-1s", domain, secure, jar );
-		}
-
+		cookie.set( name, "", "-1s", domain, secure, jar );
 		return name;
 	},
 
@@ -130,6 +127,6 @@ var cookie = {
 			jar.setHeader( "Set-Cookie", cookies );
 		}
 
-		return cookie.get( name );
+		return cookie.get( name, jar );
 	}
 };
