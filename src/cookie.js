@@ -12,9 +12,10 @@ var cookie = {
 	 * @param  {String} name   Name of the cookie to expire
 	 * @param  {String} domain [Optional] Domain to set the cookie for
 	 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {String} jar    [Optional] Cookie jar, defaults to document.cookie
 	 * @return {String}        Name of the expired cookie
 	 */
-	expire : function ( name, domain, secure ) {
+	expire : function ( name, domain, secure, jar ) {
 		if ( cookie.get( name ) !== undefined ) {
 			cookie.set( name, "", "-1s", domain, secure );
 		}
@@ -27,23 +28,26 @@ var cookie = {
 	 *
 	 * @method get
 	 * @param  {String} name Name of the cookie to get
+	 * @param  {String} jar  [Optional] Cookie jar, defaults to document.cookie
 	 * @return {Mixed}       Cookie or undefined
 	 */
-	get : function ( name ) {
-		return utility.coerce( cookie.list()[name] );
+	get : function ( name, jar ) {
+		return utility.coerce( cookie.list( jar )[name] );
 	},
 
 	/**
 	 * Gets the cookies for the domain
 	 *
 	 * @method list
-	 * @return {Object} Collection of cookies
+	 * @param  {String} jar [Optional] Cookie jar, defaults to document.cookie
+	 * @return {Object}                Collection of cookies
 	 */
-	list : function () {
+	list : function ( jar ) {
+		jar        = jar || document.cookie;
 		var result = {};
 
-		if ( document.cookie !== undefined && !string.isEmpty( document.cookie ) ) {
-			array.each( string.explode( document.cookie, ";" ), function ( i ) {
+		if ( !string.isEmpty( jar ) ) {
+			array.each( string.explode( jar, ";" ), function ( i ) {
 				var item = string.explode( i, "=" );
 
 				result[decodeURIComponent( item[0] )] = decodeURIComponent( item[1] );
@@ -64,9 +68,10 @@ var cookie = {
 	 * @param  {String} offset A positive or negative integer followed by "d", "h", "m" or "s"
 	 * @param  {String} domain [Optional] Domain to set the cookie for
 	 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {String} jar    [Optional] Cookie jar, defaults to document.cookie
 	 * @return {Object}        The new cookie
 	 */
-	set : function ( name, value, offset, domain, secure ) {
+	set : function ( name, value, offset, domain, secure, jar ) {
 		value      = ( value || "" ) + ";"
 		offset     = offset || "";
 		domain     = typeof domain === "string" ? ( " domain=" + domain + ";" ) : "";
@@ -76,7 +81,8 @@ var cookie = {
 		    type   = null,
 		    types  = ["d", "h", "m", "s"],
 		    regex  = new RegExp(),
-		    i      = types.length;
+		    i      = types.length,
+		    cookies;
 
 		if ( !string.isEmpty( offset ) ) {
 			while ( i-- ) {
@@ -115,7 +121,19 @@ var cookie = {
 			expire = " expires=" + expire.toUTCString() + ";";
 		}
 
-		document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
+		if ( !server ) {
+			document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
+		}
+		else {
+			cookies       = cookie.list( jar );
+			cookies[name] = value + expire + domain + " path=/" + secure;
+
+			jar = "";
+
+			utility.iterate( cookies, function ( v, k ) {
+				jar += k + "=" + v + ";"
+			});
+		}
 
 		return cookie.get( name );
 	}
