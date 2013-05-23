@@ -74,7 +74,7 @@ var cookie = {
 		value      = ( value || "" ) + ";"
 		offset     = offset || "";
 		domain     = typeof domain === "string" ? ( " domain=" + domain + ";" ) : "";
-		secure     = ( secure === true ) ? "; secure" : "";
+		secure     = ( secure === true ) ? " secure" : "";
 		path       = typeof path === "string" ? ( " path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,
