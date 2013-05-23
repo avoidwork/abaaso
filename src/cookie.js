@@ -9,14 +9,15 @@ var cookie = {
 	 * Expires a cookie if it exists
 	 *
 	 * @method expire
-	 * @param  {String} name   Name of the cookie to expire
-	 * @param  {String} domain [Optional] Domain to set the cookie for
-	 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
-	 * @param  {String} jar    [Optional] Cookie jar, defaults to document.cookie
+	 * @param  {String}  name   Name of the cookie to expire
+	 * @param  {String}  domain [Optional] Domain to set the cookie for
+	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {String}  path   [Optional] Path the cookie is for
+	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
 	 * @return {String}        Name of the expired cookie
 	 */
-	expire : function ( name, domain, secure, jar ) {
-		cookie.set( name, "", "-1s", domain, secure, jar );
+	expire : function ( name, domain, secure, path, jar ) {
+		cookie.set( name, "", "-1s", domain, secure, path, jar );
 		return name;
 	},
 
@@ -60,19 +61,21 @@ var cookie = {
 	 * The offset specifies a positive or negative span of time as day, hour, minute or second
 	 *
 	 * @method set
-	 * @param  {String} name   Name of the cookie to create
-	 * @param  {String} value  Value to set
-	 * @param  {String} offset A positive or negative integer followed by "d", "h", "m" or "s"
-	 * @param  {String} domain [Optional] Domain to set the cookie for
-	 * @param  {Boolea} secure [Optional] Make the cookie only accessible via SSL
-	 * @param  {String} jar    [Optional] Cookie jar, defaults to document.cookie
+	 * @param  {String}  name   Name of the cookie to create
+	 * @param  {String}  value  Value to set
+	 * @param  {String}  offset A positive or negative integer followed by "d", "h", "m" or "s"
+	 * @param  {String}  domain [Optional] Domain to set the cookie for
+	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {String}  path   [Optional] Path the cookie is for
+	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
 	 * @return {Object}        The new cookie
 	 */
-	set : function ( name, value, offset, domain, secure, jar ) {
+	set : function ( name, value, offset, domain, secure, path, jar ) {
 		value      = ( value || "" ) + ";"
 		offset     = offset || "";
 		domain     = typeof domain === "string" ? ( " domain=" + domain + ";" ) : "";
 		secure     = ( secure === true ) ? "; secure" : "";
+		path       = typeof path === "string" ? ( " path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,
 		    type   = null,
@@ -119,11 +122,11 @@ var cookie = {
 		}
 
 		if ( !server ) {
-			document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
+			document.cookie = ( string.trim( name.toString() ) + "=" + value + expire + domain + path + secure );
 		}
 		else {
 			cookies = jar.getHeader( "Set-Cookie" ) || [];
-			cookies.push( string.trim( name.toString() ) + "=" + value + expire + domain + " path=/" + secure );
+			cookies.push( string.trim( name.toString() ) + "=" + value + expire + domain + path + secure );
 			jar.setHeader( "Set-Cookie", cookies );
 		}
 
