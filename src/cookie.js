@@ -68,14 +68,14 @@ var cookie = {
 	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
 	 * @param  {String}  path   [Optional] Path the cookie is for
 	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
-	 * @return {Object}        The new cookie
+	 * @return {Undefined}      undefined
 	 */
 	set : function ( name, value, offset, domain, secure, path, jar ) {
 		value      = ( value || "" ) + ";"
 		offset     = offset || "";
-		domain     = typeof domain === "string" ? ( " domain=" + domain + ";" ) : "";
+		domain     = typeof domain === "string" ? ( " Domain=" + domain + ";" ) : "";
 		secure     = ( secure === true ) ? " secure" : "";
-		path       = typeof path === "string" ? ( " path=" + path + ";" ) : "";
+		path       = typeof path === "string" ? ( " Path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,
 		    type   = null,
@@ -118,7 +118,7 @@ var cookie = {
 		}
 
 		if ( expire instanceof Date) {
-			expire = " expires=" + expire.toUTCString() + ";";
+			expire = " Expires=" + expire.toUTCString() + ";";
 		}
 
 		if ( !server ) {
@@ -126,10 +126,8 @@ var cookie = {
 		}
 		else {
 			cookies = jar.getHeader( "Set-Cookie" ) || [];
-			cookies.push( string.trim( name.toString() ) + "=" + value + expire + domain + path + secure );
+			cookies.push( ( string.trim( name.toString() ) + "=" + value + expire + domain + path + secure ).replace( /;$/, "" ) );
 			jar.setHeader( "Set-Cookie", cookies );
 		}
-
-		return cookie.get( name, jar );
 	}
 };
