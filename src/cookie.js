@@ -41,8 +41,11 @@ var cookie = {
 	 * @return {Object}                Collection of cookies
 	 */
 	list : function ( jar ) {
-		jar        = jar || document.cookie;
 		var result = {};
+
+		if ( jar === undefined ) {
+			jar = server ? "" : document.cookie;
+		}
 
 		if ( !string.isEmpty( jar ) ) {
 			array.each( string.explode( jar, ";" ), function ( i ) {
