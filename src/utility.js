@@ -13,56 +13,38 @@ var utility = {
 
 	/**
 	 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
-	 * 
-	 * Accepts comma delimited queries
 	 *
 	 * @method $
-	 * @param  {String}  arg      Comma delimited string of target #id, .class, tag or selector
-	 * @param  {Boolean} nodelist [Optional] True will return a NodeList ( by reference ) for tags & classes
-	 * @return {Mixed}            Element or Array of Elements
+	 * @param  {String} arg Comma delimited string of target #id, .class, tag or selector
+	 * @return {Mixed}      Element or Array of Elements
 	 */
-	$ : function ( arg, nodelist ) {
+	$ : function ( arg ) {
 		if ( document === undefined || arg === undefined ) {
 			return undefined;
 		}
 
-		var queries = [],
+		var queries = string.explode( arg ),
 		    result  = [],
 		    tmp     = [];
-
-		queries  = string.explode( arg );
-		nodelist = ( nodelist === true );
 
 		array.each( queries, function ( query ) {
 			var obj, sel;
 
 			if ( regex.selector_complex.test( query) ) {
-				sel = array.last( query.split( " " ).filter( function ( i ) {
-					if ( !string.isEmpty( i ) && i !== ">" ) {
-						return true;
-					}
-				}));
+				sel = array.last( query.split( /\s+|\>|\+|\~/ ) );
 
 				if ( regex.hash.test( sel ) && !regex.selector_many.test( sel ) ) {
 					obj = document.querySelector( query );
 				}
 				else {
-					obj = document.querySelectorAll( query );
-
-					if ( !nodelist ) {
-						obj = array.cast( obj );
-					}
+					obj = array.cast( document.querySelectorAll( query ) );
 				}
 			}
 			else if ( regex.hash.test( query ) && !regex.selector_many.test( query ) ) {
 				obj = document.querySelector( query )
 			}
 			else {
-				obj = document.querySelectorAll( query );
-
-				if ( !nodelist ) {
-					obj = array.cast( obj );
-				}
+				obj = array.cast( document.querySelectorAll( query ) );
 			}
 
 			if ( obj !== null ) {
