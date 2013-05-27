@@ -31,7 +31,7 @@ var utility = {
 			var obj, sel;
 
 			if ( regex.selector_complex.test( query) ) {
-				sel = array.last( query.split( /\s+|\>|\+|\~/ ) );
+				sel = array.last( query.split( regex.selector_split ) );
 
 				if ( regex.hash.test( sel ) && !regex.selector_many.test( sel ) ) {
 					obj = document.querySelector( query );
