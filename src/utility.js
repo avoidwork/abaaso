@@ -654,21 +654,29 @@ var utility = {
 	 * 
 	 * @method merge
 	 * @param  {Object} obj Object to decorate
-	 * @param  {Object} arg Object to decorate with
-	 * @return {Object}     Object to decorate
+	 * @param  {Object} arg Decoration
+	 * @return {Object}     Decorated Object
 	 */
 	merge : function ( obj, arg ) {
 		utility.iterate( arg, function ( v, k ) {
-			obj[k] = utility.clone( v );
+			if ( ( obj[k] instanceof Array ) && ( v instanceof Array ) ) {
+				array.merge( obj[k], v );
+			}
+			else if ( ( obj[k] instanceof Object ) && ( v instanceof Object ) ) {
+				utility.iterate( v, function ( x, y ) {
+					obj[k][y] = utility.clone( x );
+				});
+			}
+			else {
+				obj[k] = utility.clone( v );
+			}
 		});
 
 		return obj;
 	},
 	
 	/**
-	 * Registers a module in the abaaso namespace
-	 *
-	 * IE8 will have factories ( functions ) duplicated onto $ because it will not respect the binding
+	 * Registers a module on abaaso
 	 * 
 	 * @method module
 	 * @param  {String} arg Module name
