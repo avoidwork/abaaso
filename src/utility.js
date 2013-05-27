@@ -31,11 +31,7 @@ var utility = {
 			var obj, sel;
 
 			if ( regex.selector_complex.test( query) ) {
-				sel = array.last( query.split( " " ).filter( function ( i ) {
-					if ( !string.isEmpty( i ) && i !== ">" ) {
-						return true;
-					}
-				}));
+				sel = array.last( query.split( /\s+|\>|\+|\~/ ) );
 
 				if ( regex.hash.test( sel ) && !regex.selector_many.test( sel ) ) {
 					obj = document.querySelector( query );
