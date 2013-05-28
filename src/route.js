@@ -112,9 +112,9 @@ var route = {
 	/**
 	 * Lists all routes
 	 * 
-	 * @set list
-	 * @param {String} verb  HTTP method
-	 * @return {Mixed}       Hash of routes if not specified, else an Array of routes for a method
+	 * @method list
+	 * @param  {String} verb HTTP method
+	 * @return {Mixed}       Hash of routes if `host` not specified, else an Array of routes for a method
 	 */
 	list : function ( verb, host ) {
 		host = host || "all";
@@ -127,7 +127,7 @@ var route = {
 			result = array.cast( route.routes[host][route.method( verb )], true );
 		}
 		else {
-			result = [];
+			result = {};
 
 			if ( route.routes.hasOwnProperty( host ) ) {
 				utility.iterate( route.routes[host], function ( v, k ) {
