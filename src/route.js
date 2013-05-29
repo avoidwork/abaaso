@@ -127,7 +127,7 @@ var route = {
 			result = array.cast( route.routes[host][route.method( verb )], true );
 		}
 		else {
-			result = {};
+			result = [];
 
 			if ( route.routes.hasOwnProperty( host ) ) {
 				utility.iterate( route.routes[host], function ( v, k ) {
