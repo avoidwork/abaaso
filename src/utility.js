@@ -19,48 +19,38 @@ var utility = {
 	 * @return {Mixed}      Element or Array of Elements
 	 */
 	$ : function ( arg ) {
+		var queries, result, tmp;
+
 		if ( document === undefined || arg === undefined ) {
 			return undefined;
 		}
 
-		var queries = string.explode( arg ),
-		    result  = [],
-		    tmp     = [];
+		queries = string.explode( arg );
+		tmp     = [];
 
 		array.each( queries, function ( query ) {
 			var obj, sel;
 
-			if ( regex.selector_complex.test( query) ) {
-				sel = array.last( query.split( regex.selector_split ) );
+			if ( regex.hash.test( query ) && !regex.selector_many.test( query ) ) {
+				obj = document.getElementById( query.replace( regex.hash, "" ) );
 
-				if ( regex.hash.test( sel ) && !regex.selector_many.test( sel ) ) {
-					obj = document.querySelector( query );
+				if ( obj !== null ) {
+					array.merge( tmp, [obj] );
 				}
-				else {
-					obj = array.cast( document.querySelectorAll( query ) );
-				}
-			}
-			else if ( regex.hash.test( query ) && !regex.selector_many.test( query ) ) {
-				obj = document.querySelector( query )
 			}
 			else {
-				obj = array.cast( document.querySelectorAll( query ) );
-			}
-
-			if ( obj !== null ) {
-				tmp.push( obj );
+				array.merge( tmp, document.querySelectorAll( query ) );
 			}
 		});
 
-		array.each( tmp, function ( i ) {
-			result = result.concat( i );
-		});
+		result = array.flat( tmp );
 
-		if ( regex.hash.test( arg ) && !regex.selector_many.test( arg ) && !regex.selector_complex.test( arg ) ) {
-			result = result[0];
+		if ( queries.length === 1 && regex.hash.test( arg ) && !regex.selector_many.test( arg ) ) {
+			return result[0];
 		}
-
-		return result;
+		else {
+			return result;
+		}
 	},
 
 	/**
