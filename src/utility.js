@@ -31,7 +31,7 @@ var utility = {
 		array.each( queries, function ( query ) {
 			var obj, sel;
 
-			if ( regex.hash.test( query ) && !regex.selector_many.test( query ) ) {
+			if ( regex.hash.test( query ) && !regex.selector_complex.test( query ) ) {
 				obj = document.getElementById( query.replace( regex.hash, "" ) );
 
 				if ( obj !== null ) {
@@ -45,7 +45,7 @@ var utility = {
 
 		result = array.flat( tmp );
 
-		if ( queries.length === 1 && regex.hash.test( arg ) && !regex.selector_many.test( arg ) ) {
+		if ( queries.length === 1 && regex.hash.test( arg ) && !regex.selector_complex.test( arg ) ) {
 			return result[0];
 		}
 		else {
