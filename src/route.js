@@ -123,11 +123,11 @@ var route = {
 		if ( !server ) {
 			result = array.cast( route.routes.all.all, true );
 		}
-		else if ( verb !== undefined && route.routes.hasOwnProperty( host ) ) {
-			result = array.cast( route.routes[host][route.method( verb )], true );
+		else if ( verb !== undefined ) {
+			result = array.cast( route.routes[route.routes[host] ? host : "all" ][route.method( verb )], true );
 		}
 		else {
-			result = [];
+			result = {};
 
 			if ( route.routes.hasOwnProperty( host ) ) {
 				utility.iterate( route.routes[host], function ( v, k ) {
@@ -137,18 +137,6 @@ var route = {
 					});
 				});
 			}
-		}
-
-		if ( !server && host !== "all" ) {
-			utility.iterate( route.routes.all, function ( v, k ) {
-				if ( result[k] === undefined ) {
-					result[k] = [];
-				}
-
-				utility.iterate( v, function ( fn, r ) {
-					result[k].push( r );
-				});
-			});
 		}
 
 		return result;

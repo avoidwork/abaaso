@@ -488,7 +488,7 @@ var array = {
 	},
 
 	/**
-	 * Merges `arg` into `obj`
+	 * Merges `arg` into `obj`, excluding duplicate indices
 	 * 
 	 * @param  {Array} obj Array to receive indices
 	 * @param  {Array} arg Array to merge
@@ -496,7 +496,7 @@ var array = {
 	 */
 	merge : function ( obj, arg ) {
 		array.each( arg, function ( i ) {
-			obj.push( i );
+			array.add( obj, i );
 		});
 
 		return obj;
