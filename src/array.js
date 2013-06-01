@@ -30,7 +30,7 @@ var array = {
 	 * @return {Array}       Object as an Array
 	 */
 	cast : function ( obj, key ) {
-		if ( server || (!client.ie || client.version > 8) ) {
+		if ( server || ( !client.ie || client.version > 8 ) ) {
 			return function ( obj, key ) {
 				key = ( key === true );
 				var o = [];

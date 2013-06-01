@@ -29,7 +29,7 @@ var utility = {
 		tmp     = [];
 
 		array.each( queries, function ( query ) {
-			var obj, sel;
+			var obj;
 
 			if ( regex.hash.test( query ) && !regex.selector_complex.test( query ) ) {
 				obj = document.getElementById( query.replace( regex.hash, "" ) );
