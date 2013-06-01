@@ -224,7 +224,7 @@ var datalist = {
 			if ( !template ) {
 				fn = function ( i ) {
 					var html  = self.template,
-					    items = array.unique( html.match( /\{\{[\w\.]+\}\}/g ) );
+					    items = array.unique( html.match( /\{\{[\w\.\-]+\}\}/g ) );
 
 					// Replacing record key
 					html = html.replace( "{{" + self.store.key + "}}", i.key );
@@ -247,7 +247,7 @@ var datalist = {
 			else {
 				fn = function ( i ) {
 					var obj   = json.encode( self.template ),
-					    items = array.unique( obj.match( /\{\{[\w\.]+\}\}/g ) );
+					    items = array.unique( obj.match( /\{\{[\w\.\-]+\}\}/g ) );
 
 					// Replacing record key
 					obj = obj.replace( "{{" + self.store.key + "}}", i.key );
