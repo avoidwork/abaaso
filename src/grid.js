@@ -55,7 +55,7 @@ var grid = {
 
 				// Creating DataList template based on fields
 				array.each( this.fields, function ( i ) {
-					var obj = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( i ), true ), style: css, "class": i, "data-field": i} );
+					var obj = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( i, true ) ), true ), style: css, "class": i, "data-field": i} );
 
 					// Adding CSS class if "column" is sortable
 					if ( self.sortable.contains( i ) ) {
