@@ -875,7 +875,8 @@ var array = {
 	 * @return {Number}  Number indicating sort order
 	 */
 	sort : function ( a, b ) {
-		var nums = ( !isNaN( a ) && !isNaN( b ) ),
+		var bool = ( regex.boolean.test( a ) && regex.boolean.test( a ) ),
+		    nums = ( !bool && !isNaN( a ) && !isNaN( b ) ),
 		    result;
 
 		if ( nums ) {
@@ -897,6 +898,16 @@ var array = {
 		}
 
 		return result;
+	},
+
+	/**
+	 * Sorts `obj` using `array.sort`
+	 * 
+	 * @param  {Array} obj Array to sort
+	 * @return {Array}     Sorted Array
+	 */
+	sorted : function ( obj ) {
+		return obj.sort( array.sort );
 	},
 
 	/**

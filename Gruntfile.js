@@ -35,6 +35,7 @@ module.exports = function (grunt) {
 					"src/number.js",
 					"src/observer.js",
 					"src/promise.js",
+					"src/prototypes.js",
 					"src/route.js",
 					"src/state.js",
 					"src/string.js",
