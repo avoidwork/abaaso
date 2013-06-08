@@ -840,6 +840,9 @@ var utility = {
 
 					return result;
 				},
+				binIndex : function ( arg ) {
+					return array.binIndex( this, arg );
+				},
 				chunk : function ( size ) {
 					return array.chunk( this, size );
 				},

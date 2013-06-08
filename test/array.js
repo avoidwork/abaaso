@@ -19,6 +19,33 @@ exports["add"] = {
 	}
 };
 
+exports["binIndex"] = {
+	setUp: function (done) {
+		this.val = [0, 1, 2, 3, 4];
+		done();
+	},
+	direct: function (test) {
+		test.expect(6);
+		test.equal(array.binIndex(this.val, 0),  0, "Should be 0");
+		test.equal(array.binIndex(this.val, 1),  1, "Should be 1");
+		test.equal(array.binIndex(this.val, 2),  2, "Should be 2");
+		test.equal(array.binIndex(this.val, 3),  3, "Should be 3");
+		test.equal(array.binIndex(this.val, 4),  4, "Should be 4");
+		test.equal(array.binIndex(this.val, 5), -1, "Should be -1");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(6);
+		test.equal(this.val.binIndex(0),  0, "Should be 0");
+		test.equal(this.val.binIndex(1),  1, "Should be 1");
+		test.equal(this.val.binIndex(2),  2, "Should be 2");
+		test.equal(this.val.binIndex(3),  3, "Should be 3");
+		test.equal(this.val.binIndex(4),  4, "Should be 4");
+		test.equal(this.val.binIndex(5), -1, "Should be -1");
+		test.done();
+	}
+};
+
 exports["cast"] = {
 	setUp: function (done) {
 		this.val = {abc: true, xyz: false};
