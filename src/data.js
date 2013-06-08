@@ -1445,12 +1445,14 @@ var data = {
 			    queries  = string.explode( query ),
 			    key      = this.key,
 			    result   = [],
-			    bucket, sort, crawl;
+			    bucket, crawl, sort, sorting;
 
-			array.each( queries, function ( query ) {
+			queries = queries.map( function ( query ) {
 				if ( string.isEmpty( query ) ) {
 					throw Error( label.error.invalidArguments );
 				}
+
+				return query.replace( regex.asc, "" );
 			});
 
 			if ( !create && this.views[view] instanceof Array ) {
@@ -1489,7 +1491,6 @@ var data = {
 			}
 
 			bucket = function ( query, records, reverse ) {
-				query        = query.replace( /\s*asc/ig, "" );
 				var prop     = query.replace( regex.desc, "" ),
 				    pk       = ( key === prop ),
 				    order    = [],
@@ -1519,7 +1520,7 @@ var data = {
 					registry[k].push( r );
 				});
 
-				order.sort( array.sort );
+				order.sort( sorting );
 
 				if ( reverse) {
 					order.reverse();
@@ -1548,18 +1549,25 @@ var data = {
 				});
 
 				if ( tmp.length > 1 ) {
-					tmp.sort( array.sort );
+					tmp.sort( sorting );
 
 					if ( reverse ) {
 						tmp.reverse();
 					}
 				}
 
-				array.each( tmp, function ( i ) {
-					sorted.push( data[regex.sort_needle.exec( i )[1]] );
+				sorted = tmp.map( function ( i ) {
+					return data[i.replace( regex.sort_needle, "" )];
 				});
 
 				return sorted;
+			};
+
+			sorting = function ( a, b ) {
+				a = a.replace( regex.sort_value, "" );
+				b = b.replace( regex.sort_value, "" );
+
+				return array.sort( number.parse( a ) || a, number.parse( b ) || b );
 			};
 
 			result           = crawl( queries, where === undefined ? this.records : this.select( where ) );
