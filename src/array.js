@@ -310,15 +310,34 @@ var array = {
 	},
 
 	/**
-	 * Facade to indexOf for shorter syntax
+	 * Preforms a binary search for `arg` within `obj`
 	 *
 	 * @method index
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Value to find index of
-	 * @return {Number}    The position of arg in instance
+	 * @return {Number}    Index of `arg` within `obj`
 	 */
 	index : function ( obj, arg ) {
-		return obj.indexOf( arg );
+		var min = 0,
+		    max = obj.length - 1,
+		    idx, val;
+
+		while ( min <= max ) {
+			idx = Math.floor( ( min + max ) / 2 );
+			val = obj[idx];
+
+			if ( val < arg ) {
+				min = idx + 1;
+			}
+			else if ( val > arg ) {
+				max = idx - 1;
+			}
+			else {
+				return idx;
+			}
+		}
+
+		return -1;
 	},
 
 	/**
