@@ -22,9 +22,9 @@ var array = {
 	},
 
 	/**
-	 * Preforms a binary search for `arg` in a sorted Array (`obj`)
+	 * Preforms a binary search on a sorted Array
 	 *
-	 * @method index
+	 * @method binIndex
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Value to find index of
 	 * @return {Number}    Index of `arg` within `obj`
@@ -875,28 +875,33 @@ var array = {
 	 * @return {Number}  Number indicating sort order
 	 */
 	sort : function ( a, b ) {
-		var bool = ( regex["boolean"].test( a ) && regex["boolean"].test( b ) ),
-		    nums = ( !bool && !isNaN( a ) && !isNaN( b ) ),
-		    result;
+		var types = {
+		    	a : typeof a,
+		    	b : typeof b
+		    },
+		    c, d, result;
 
-		if ( bool ) {
+		if ( types.a === "number" && types.b === "number" ) {
 			result = a - b;
 		}
-		else if ( nums ) {
-			result = number.parse( a ) - number.parse( b );
-		}
 		else {
-			a = a.toString();
-			b = b.toString();
+			c = a.toString();
+			d = b.toString();
 
-			if ( a < b ) {
+			if ( c < d ) {
 				result = -1;
 			}
-			else if ( a > b ) {
+			else if ( c > d ) {
 				result = 1;
 			}
-			else {
+			else if ( types.a === types.b ) {
 				result = 0;
+			}
+			else if ( types.a === "boolean" ) {
+				result = -1;
+			}
+			else {
+				result = 1;
 			}
 		}
 
@@ -906,6 +911,7 @@ var array = {
 	/**
 	 * Sorts `obj` using `array.sort`
 	 * 
+	 * @method sorted
 	 * @param  {Array} obj Array to sort
 	 * @return {Array}     Sorted Array
 	 */
