@@ -875,7 +875,7 @@ var array = {
 	 * @return {Number}  Number indicating sort order
 	 */
 	sort : function ( a, b ) {
-		var bool = ( regex.boolean.test( a ) && regex.boolean.test( b ) ),
+		var bool = ( regex["boolean"].test( a ) && regex["boolean"].test( b ) ),
 		    nums = ( !bool && !isNaN( a ) && !isNaN( b ) ),
 		    result;
 
