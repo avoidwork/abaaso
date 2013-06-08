@@ -13,7 +13,7 @@ var regex = {
 	alphanum                : /^[a-zA-Z0-9]+$/,
 	auth                    : /\/\/(.*)\@/,
 	blackberry              : /blackberry/i,
-	"boolean"               : /^(0|1|true|false)?$/,
+	"boolean"               : /^(true|false)?$/,
 	boolean_number_string   : /boolean|number|string/,
 	checked_disabled        : /checked|disabled/i,
 	chrome                  : /chrome/i,

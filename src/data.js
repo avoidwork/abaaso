@@ -1550,7 +1550,7 @@ var data = {
 				if ( tmp.length > 1 ) {
 					tmp.sort( array.sort );
 
-					if ( reverse) {
+					if ( reverse ) {
 						tmp.reverse();
 					}
 				}

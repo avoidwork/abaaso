@@ -22,6 +22,37 @@ var array = {
 	},
 
 	/**
+	 * Preforms a binary search for `arg` in a sorted Array (`obj`)
+	 *
+	 * @method index
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Value to find index of
+	 * @return {Number}    Index of `arg` within `obj`
+	 */
+	binIndex : function ( obj, arg ) {
+		var min = 0,
+		    max = obj.length - 1,
+		    idx, val;
+
+		while ( min <= max ) {
+			idx = Math.floor( ( min + max ) / 2 );
+			val = obj[idx];
+
+			if ( val < arg ) {
+				min = idx + 1;
+			}
+			else if ( val > arg ) {
+				max = idx - 1;
+			}
+			else {
+				return idx;
+			}
+		}
+
+		return -1;
+	},
+
+	/**
 	 * Returns an Object ( NodeList, etc. ) as an Array
 	 *
 	 * @method cast
@@ -841,27 +872,45 @@ var array = {
 	 * @method sort
 	 * @param  {Mixed} a Argument to compare
 	 * @param  {Mixed} b Argument to compare
-	 * @return {Boolean} Boolean indicating sort order
+	 * @return {Number}  Number indicating sort order
 	 */
 	sort : function ( a, b ) {
-		var nums   = false,
-		    result = 0;
+		var bool = ( regex["boolean"].test( a ) && regex["boolean"].test( b ) ),
+		    nums = ( !bool && !isNaN( a ) && !isNaN( b ) ),
+		    result;
 
-		if ( !isNaN( a ) && !isNaN( b ) ) {
-			nums = true;
+		if ( bool ) {
+			result = a - b;
 		}
-
-		a = nums ? number.parse( a ) : a.toString();
-		b = nums ? number.parse( b ) : b.toString();
-
-		if ( a < b ) {
-			result = -1;
+		else if ( nums ) {
+			result = number.parse( a ) - number.parse( b );
 		}
-		else if ( a > b ) {
-			result = 1;
+		else {
+			a = a.toString();
+			b = b.toString();
+
+			if ( a < b ) {
+				result = -1;
+			}
+			else if ( a > b ) {
+				result = 1;
+			}
+			else {
+				result = 0;
+			}
 		}
 
 		return result;
+	},
+
+	/**
+	 * Sorts `obj` using `array.sort`
+	 * 
+	 * @param  {Array} obj Array to sort
+	 * @return {Array}     Sorted Array
+	 */
+	sorted : function ( obj ) {
+		return obj.sort( array.sort );
 	},
 
 	/**

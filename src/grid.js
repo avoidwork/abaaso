@@ -108,7 +108,7 @@ var grid = {
 				array.each( this.sortOrder, function ( i ) {
 					var obj = element.find( self.element, ".header span[data-field='" + i + "']" )[0];
 
-					sort.push( i + " " + ( element.data( obj, "sort" ) || "" ) );
+					sort.push( string.trim( i + " " + ( element.data( obj, "sort" ) || "" ) ) );
 				});
 
 				this.list.order = sort.join(", ");
