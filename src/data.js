@@ -159,7 +159,7 @@ var data = {
 
 				deferred.then( function ( arg ) {
 					if ( ++r === nth ) {
-						complete( arg );
+						complete( self.records );
 					}
 
 					return arg;
@@ -189,7 +189,7 @@ var data = {
 			}
 
 			if ( data.length === 0 ) {
-				complete( [] );
+				complete( self.records );
 			}
 			else {
 				if ( type === "set" ) {
@@ -261,8 +261,8 @@ var data = {
 		 *         afterDataClear   Fires after the data is cleared
 		 *
 		 * @method clear
-		 * @param  {Boolean} sync    [Optional] Boolean to limit clearing of properties
-		 * @return {Object}          Data store
+		 * @param  {Boolean} sync [Optional] Boolean to limit clearing of properties
+		 * @return {Object}       Data store
 		 */
 		clear : function ( sync ) {
 			sync       = ( sync === true );
