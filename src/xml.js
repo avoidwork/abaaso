@@ -118,7 +118,7 @@ var xml = {
 		}
 		else {
 			return function ( arg ) {
-				( xml.decode( arg ).parseError.errorCode === 0 );
+				return ( xml.decode( arg ).parseError.errorCode === 0 );
 			};
 		}
 	}()
