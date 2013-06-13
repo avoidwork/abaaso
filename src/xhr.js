@@ -1,6 +1,7 @@
 /**
  * XMLHttpRequest shim for node.js
- * 
+ *
+ * @namespace abaaso
  * @return {Object} Instance of xhr
  */
 var xhr = function () {
@@ -9,7 +10,7 @@ var xhr = function () {
 	    HEADERS_RECEIVED = 2,
 	    LOADING          = 3,
 	    DONE             = 4,
-	    ready            = RegExp( HEADERS_RECEIVED + "|" + LOADING ),
+	    ready            = new RegExp( HEADERS_RECEIVED + "|" + LOADING ),
 	    XMLHttpRequest, headers, handler, handlerError, state;
 
 	headers = {
@@ -20,9 +21,9 @@ var xhr = function () {
 
 	/**
 	 * Changes the readyState of an XMLHttpRequest
-	 * 
-	 * @param  {String} arg  New readyState
-	 * @return {Object}      XMLHttpRequest
+	 *
+	 * @param  {String} arg New readyState
+	 * @return {Object}     XMLHttpRequest
 	 */
 	state = function ( arg ) {
 		if ( this.readyState !== arg ) {
@@ -111,7 +112,7 @@ var xhr = function () {
 
 	/**
 	 * Aborts a request
-	 * 
+	 *
 	 * @return {Object} XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.abort = function () {
@@ -127,7 +128,7 @@ var xhr = function () {
 
 		if ( this._send === true || ready.test( this.readyState ) ) {
 			this._send = false;
-			state.call( this, DONE )
+			state.call( this, DONE );
 		}
 
 		this.dispatchEvent( "abort" );
@@ -138,7 +139,7 @@ var xhr = function () {
 
 	/**
 	 * Adds an event listener to an XMLHttpRequest instance
-	 * 
+	 *
 	 * @param {String}   event Event to listen for
 	 * @param {Function} fn    Event handler
 	 * @return {Object}        XMLHttpRequest
@@ -155,7 +156,7 @@ var xhr = function () {
 
 	/**
 	 * Dispatches an event
-	 * 
+	 *
 	 * @param  {String} event Name of event
 	 * @return {Object}       XMLHttpRequest
 	 */
@@ -179,14 +180,14 @@ var xhr = function () {
 
 	/**
 	 * Gets all response headers
-	 * 
+	 *
 	 * @return {Object} Response headers
 	 */
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		var result = "";
 
 		if ( this.readyState < HEADERS_RECEIVED || this._error ) {
-			throw Error( label.error.invalidStateNoHeaders );
+			throw new Error( label.error.invalidStateNoHeaders );
 		}
 
 		utility.iterate( this._resheaders, function ( v, k ) {
@@ -198,7 +199,7 @@ var xhr = function () {
 
 	/**
 	 * Gets a specific response header
-	 * 
+	 *
 	 * @param  {String} header Header to get
 	 * @return {String}        Response header value
 	 */
@@ -206,7 +207,7 @@ var xhr = function () {
 		var result;
 
 		if ( this.readyState < HEADERS_RECEIVED || this._error ) {
-			throw Error( label.error.invalidStateNoHeaders );
+			throw new Error( label.error.invalidStateNoHeaders );
 		}
 
 		result = this._resheaders[header] || this._resheaders[header.toLowerCase()];
@@ -216,7 +217,7 @@ var xhr = function () {
 
 	/**
 	 * Prepares an XMLHttpRequest instance to make a request
-	 * 
+	 *
 	 * @param  {String}  method   HTTP method
 	 * @param  {String}  url      URL to receive request
 	 * @param  {Boolean} async    [Optional] Asynchronous request
@@ -228,7 +229,7 @@ var xhr = function () {
 		var self = this;
 
 		if ( async !== undefined && async !== true) {
-			throw Error( label.error.invalidStateNoSync );
+			throw new Error( label.error.invalidStateNoSync );
 		}
 
 		this.abort();
@@ -239,7 +240,7 @@ var xhr = function () {
 			async    : async    || true,
 			user     : user     || null,
 			password : password || null
-		}
+		};
 
 		utility.iterate( headers, function ( v, k ) {
 			self._headers[k] = v;
@@ -252,7 +253,7 @@ var xhr = function () {
 
 	/**
 	 * Overrides the Content-Type of the request
-	 * 
+	 *
 	 * @param  {String} mime Mime type of the request ( media type )
 	 * @return {Object}      XMLHttpRequest
 	 */
@@ -264,7 +265,7 @@ var xhr = function () {
 
 	/**
 	 * Removes an event listener from an XMLHttpRequest instance
-	 * 
+	 *
 	 * @param {String}   event Event to listen for
 	 * @param {Function} fn    Event handler
 	 * @return {Object}        XMLHttpRequest
@@ -281,7 +282,7 @@ var xhr = function () {
 
 	/**
 	 * Sends an XMLHttpRequest request
-	 * 
+	 *
 	 * @param  {Mixed} data [Optional] Payload to send with the request
 	 * @return {Object}     XMLHttpRequest
 	 */
@@ -291,10 +292,10 @@ var xhr = function () {
 		    options, parsed, request, obj;
 
 		if ( this.readyState < OPENED ) {
-			throw Error( label.error.invalidStateNotOpen );
+			throw new Error( label.error.invalidStateNotOpen );
 		}
 		else if ( this._send ) {
-			throw Error( label.error.invalidStateNotSending );
+			throw new Error( label.error.invalidStateNotSending );
 		}
 
 		parsed      = utility.parse( this._params.url );
@@ -309,7 +310,7 @@ var xhr = function () {
 			this._headers["Content-Length"] = data !== null ? Buffer.byteLength( data ) : 0;
 		}
 
-		this._headers["Host"] = parsed.hostname + ( !regex.http_ports.test( parsed.port ) ? ":" + parsed.port : "" );
+		this._headers.Host = parsed.hostname + ( !regex.http_ports.test( parsed.port ) ? ":" + parsed.port : "" );
 
 		options = {
 			hostname : parsed.hostname,
@@ -317,7 +318,7 @@ var xhr = function () {
 			port     : parsed.port,
 			method   : this._params.method,
 			headers  : this._headers
-		}
+		};
 
 		if ( parsed.protocol === "https:" ) {
 			options.rejectUnauthorized = false;
@@ -350,17 +351,17 @@ var xhr = function () {
 
 	/**
 	 * Sets a request header of an XMLHttpRequest instance
-	 * 
+	 *
 	 * @param {String} header HTTP header
 	 * @param {String} value  Header value
 	 * @return {Object}       XMLHttpRequest
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function ( header, value ) {
 		if ( this.readyState !== OPENED ) {
-			throw Error( label.error.invalidStateNotUsable );
+			throw new Error( label.error.invalidStateNotUsable );
 		}
 		else if ( this._send ) {
-			throw Error( label.error.invalidStateNotSending );
+			throw new Error( label.error.invalidStateNotSending );
 		}
 
 		this._headers[header] = value;

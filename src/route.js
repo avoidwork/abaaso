@@ -2,7 +2,7 @@
  * URI routing via hashtag
  *
  * Client side routes will be in routes.all
- * 
+ *
  * @class route
  * @namespace abaaso
  */
@@ -21,7 +21,7 @@ var route = {
 
 	/**
 	 * Determines which HTTP method to use
-	 * 
+	 *
 	 * @param  {String} arg HTTP method
 	 * @return {[type]}     HTTP method to utilize
 	 */
@@ -31,7 +31,7 @@ var route = {
 
 	/**
 	 * Deletes a route
-	 * 
+	 *
 	 * @method del
 	 * @param  {String} name  Route name
 	 * @param  {String} verb  HTTP method
@@ -50,13 +50,13 @@ var route = {
 			return ( delete route.routes[host][verb][name] );
 		}
 		else {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 	},
 
 	/**
 	 * Getter / setter for the hashbang
-	 * 
+	 *
 	 * @method hash
 	 * @param  {String} arg Route to set
 	 * @return {String}     Current route
@@ -79,7 +79,7 @@ var route = {
 
 	/**
 	 * Creates a hostname entry in the routes table
-	 * 
+	 *
 	 * @param  {String} arg Hostname to route
 	 * @return {Object}     Routes for hostname
 	 */
@@ -99,7 +99,7 @@ var route = {
 
 	/**
 	 * Initializes the routing by loading the initial OR the first route registered
-	 * 
+	 *
 	 * @method init
 	 * @return {Undefined} undefined
 	 */
@@ -111,7 +111,7 @@ var route = {
 
 	/**
 	 * Lists all routes
-	 * 
+	 *
 	 * @method list
 	 * @param  {String} verb HTTP method
 	 * @return {Mixed}       Hash of routes if `host` not specified, else an Array of routes for a method
@@ -144,7 +144,7 @@ var route = {
 
 	/**
 	 * Loads the hash into the view
-	 * 
+	 *
 	 * @method load
 	 * @param  {String} name  Route to load
 	 * @param  {Object} arg   [Optional] HTTP response ( node )
@@ -246,7 +246,7 @@ var route = {
 
 	/**
 	 * Resets the routes
-	 * 
+	 *
 	 * @return {Undefined} undefined
 	 */
 	reset : function () {
@@ -266,7 +266,7 @@ var route = {
 							}
 						}
 						else {
-							throw Error( label.error.invalidRoute );
+							throw new Error( label.error.invalidRoute );
 						}
 					}
 				},
@@ -275,12 +275,12 @@ var route = {
 				put      : {},
 				post     : {}
 			}
-		}
+		};
 	},
 
 	/**
 	 * Creates a Server with URI routing
-	 * 
+	 *
 	 * @method server
 	 * @param  {Object}   arg  Server options
 	 * @param  {Function} fn   Error handler
@@ -292,7 +292,7 @@ var route = {
 		    handler, err, obj;
 
 		if ( !server ) {
-			throw Error( label.error.notSupported );
+			throw new Error( label.error.notSupported );
 		}
 
 		args = args || {};
@@ -349,7 +349,7 @@ var route = {
 
 	/**
 	 * Sets a route for a URI
-	 * 
+	 *
 	 * @method set
 	 * @param  {String}   name  Regex pattern for the route
 	 * @param  {Function} fn    Route listener
@@ -361,7 +361,7 @@ var route = {
 		verb = server ? route.method( verb ) : "all";
 
 		if ( typeof name !== "string" || string.isEmpty( name ) || typeof fn !== "function") {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		route.hostname( host )[verb][name] = fn;

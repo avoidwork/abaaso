@@ -2,20 +2,23 @@
  * Regex patterns used through abaaso
  *
  * `url` was authored by Diego Perini
- * 
+ *
  * @class regex
  * @namespace abaaso
  */
 var regex = {
+	after_space             : /\s+.*/,
 	android                 : /android/i,
 	allow                   : /^allow$/i,
 	allow_cors              : /^access-control-allow-methods$/i,
 	alphanum                : /^[a-zA-Z0-9]+$/,
+	and                     : /^&/,
 	asc                     : /\s+asc$/i,
 	auth                    : /\/\/(.*)\@/,
 	blackberry              : /blackberry/i,
 	"boolean"               : /^(true|false)?$/,
 	boolean_number_string   : /boolean|number|string/,
+	cdata                   : /\&|<|>|\"|\'|\t|\r|\n|\@|\$/,
 	checked_disabled        : /checked|disabled/i,
 	chrome                  : /chrome/i,
 	complete_loaded         : /^(complete|loaded)$/i,
@@ -23,10 +26,10 @@ var regex = {
 	del                     : /^del/,
 	decimal                 : /^\d+.(\d+)/,
 	desc                    : /\s+desc$/i,
-	domain                  : /^[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?/,
+	domain                  : /^[\w.-_]+\.[A-Za-z]{2,}$/,
 	down                    : /down/,
 	down_up                 : /down|up/,
-	email                   : /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+	email                   : /^[a-zA-Z0-9.!#$%&'*+\/=?\^_`{|}~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,253}[a-zA-Z0-9])?)*$/,
 	element_update          : /innerHTML|innerText|textContent|type|src/,
 	firefox                 : /firefox/i,
 	get_headers             : /^(head|get|options)$/,
@@ -41,7 +44,7 @@ var regex = {
 	input_button            : /button|submit|reset/,
 	integer                 : /(^-?\d\d*$)/,
 	ip                      : /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
-	is_xml                  : /<[^>]+>[^<]*]+>/,
+	is_xml                  : /^<\?xml.*\?>/,
 	ios                     : /ipad|iphone/i,
 	json_maybe              : /json|plain|javascript/,
 	json_wrap               : /^[\[\{]/,
@@ -77,13 +80,14 @@ var regex = {
 	safari                  : /safari/i,
 	scheme                  : /.*\/\//,
 	select                  : /select/i,
+	selector_is             : /^:/,
 	selector_many           : /\:|\.|\+|\~|\[/,
 	selector_complex        : /\s+|\>|\+|\~|\:|\.|\[/,
 	selector_split          : /\s+|\>|\+|\~/,
 	sensitivity_types       : /ci|cs|ms/,
 	set_del                 : /^(set|del|delete)$/,
-	sort_needle             : /.*:::/,
-	sort_value              : /:::.*/,
+	sort_needle             : /^.*:::/,
+	sort_value              : /:::.*$/,
 	space_hyphen            : /\s|-/,
 	string_boolean          : /^(true|false)$/i,
 	string_object           : /string|object/i,

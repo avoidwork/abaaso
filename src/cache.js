@@ -25,7 +25,7 @@ var cache = {
 
 	/**
 	 * Expires a URI from the local cache
-	 * 
+	 *
 	 * Events: expire    Fires when the URI expires
 	 *
 	 * @method expire
@@ -105,9 +105,16 @@ var cache = {
 			cache.items[uri].permission = 0;
 		}
 
-		property === "permission" ? cache.items[uri].permission |= value
-		                          : (property === "!permission" ? cache.items[uri].permission &= ~value
-		                                                        : cache.items[uri][property]   =  value);
+		switch ( property ) {
+			case "permission":
+				cache.items[uri].permission |= value;
+				break;
+			case "!permission":
+				cache.items[uri].permission &= ~value;
+				break;
+			default:
+				cache.items[uri][property] = value;
+		}
 
 		return cache.items[uri];
 	}

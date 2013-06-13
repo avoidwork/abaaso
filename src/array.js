@@ -7,7 +7,7 @@
 var array = {
 	/**
 	 * Adds 'arg' to 'obj' if it is not found
-	 * 
+	 *
 	 * @method add
 	 * @param  {Array} obj Array to receive 'arg'
 	 * @param  {Mixed} arg Argument to set in 'obj'
@@ -60,7 +60,7 @@ var array = {
 	 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
 	 * @return {Array}       Object as an Array
 	 */
-	cast : function ( obj, key ) {
+	cast : function () {
 		if ( server || ( !client.ie || client.version > 8 ) ) {
 			return function ( obj, key ) {
 				key = ( key === true );
@@ -69,11 +69,13 @@ var array = {
 				if ( !isNaN( obj.length ) ) {
 					o = Array.prototype.slice.call( obj );
 				}
+				else if ( key ) {
+					o = array.keys( obj );
+				}
 				else {
-					key ? o = array.keys( obj )
-					    : utility.iterate( obj, function ( i ) {
-					    	o.push( i );
-					      });
+					utility.iterate( obj, function ( i ) {
+						o.push( i );
+					});
 				}
 
 				return o;
@@ -96,11 +98,13 @@ var array = {
 						});
 					}
 				}
+				else if ( key ) {
+					o = array.keys( obj );
+				}
 				else {
-					key ? o = array.keys( obj )
-					    : utility.iterate(obj, function ( i ) {
-					    	o.push(i);
-					      });
+					utility.iterate( obj, function ( i ) {
+						o.push( i );
+					});
 				}
 
 				return o;
@@ -110,7 +114,7 @@ var array = {
 
 	/**
 	 * Transforms an Array to a 2D Array of chunks
-	 * 
+	 *
 	 * @method chunk
 	 * @param  {Array}  obj  Array to parse
 	 * @param  {Number} size Chunk size ( integer )
@@ -132,7 +136,7 @@ var array = {
 
 	/**
 	 * Clears an Array without destroying it
-	 * 
+	 *
 	 * @method clear
 	 * @param  {Array} obj Array to clear
 	 * @return {Array}     Cleared Array
@@ -143,7 +147,7 @@ var array = {
 
 	/**
 	 * Clones an Array
-	 * 
+	 *
 	 * @method clone
 	 * @param  {Array} obj Array to clone
 	 * @return {Array}     Clone of Array
@@ -154,7 +158,7 @@ var array = {
 
 	/**
 	 * Determines if obj contains arg
-	 * 
+	 *
 	 * @method contains
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Value to look for
@@ -166,7 +170,7 @@ var array = {
 
 	/**
 	 * Creates a new Array of the result of `fn` executed against every index of `obj`
-	 * 
+	 *
 	 * @method collect
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to execute against indices
@@ -184,7 +188,7 @@ var array = {
 
 	/**
 	 * Compacts a Array by removing `null` or `undefined` indices
-	 * 
+	 *
 	 * @method compact
 	 * @param  {Array} obj    Array to compact
 	 * @param  {Boolean} diff Indicates to return resulting Array only if there's a difference
@@ -202,7 +206,7 @@ var array = {
 
 	/**
 	 * Counts `value` in `obj`
-	 * 
+	 *
 	 * @method count
 	 * @param  {Array} obj   Array to search
 	 * @param  {Mixed} value Value to compare
@@ -243,7 +247,7 @@ var array = {
 	/**
 	 * Iterates obj and executes fn
 	 * Parameters for fn are 'value', 'key'
-	 * 
+	 *
 	 * @method each
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to execute on index values
@@ -264,7 +268,7 @@ var array = {
 
 	/**
 	 * Determines if an Array is empty
-	 * 
+	 *
 	 * @method empty
 	 * @param  {Array} obj Array to inspect
 	 * @return {Boolean}   `true` if there's no indices
@@ -275,7 +279,7 @@ var array = {
 
 	/**
 	 * Determines if `a` is equal to `b`
-	 * 
+	 *
 	 * @method equal
 	 * @param  {Array} a Array to compare
 	 * @param  {Array} b Array to compare
@@ -287,7 +291,7 @@ var array = {
 
 	/**
 	 * Fills `obj` with the evalution of `arg`, optionally from `start` to `offset`
-	 * 
+	 *
 	 * @method fill
 	 * @param  {Array}  obj   Array to fill
 	 * @param  {Mixed}  arg   String, Number of Function to fill with
@@ -305,8 +309,9 @@ var array = {
 			nth = l - 1;
 		}
 
-		for ( ; i <= nth; i++ ) {
+		while ( i <= nth ) {
 			obj[i] = fn ? arg( obj[i] ) : arg;
+			i++;
 		}
 
 		return obj;
@@ -325,7 +330,7 @@ var array = {
 
 	/**
 	 * Flattens a 2D Array
-	 * 
+	 *
 	 * @method flat
 	 * @param  {Array} obj 2D Array to flatten
 	 * @return {Array}     Flatten Array
@@ -362,8 +367,8 @@ var array = {
 	indexed : function ( obj ) {
 		var indexed = [];
 
-		utility.iterate( obj, function ( v, k ) {
-			typeof v === "object" ? indexed = indexed.concat( array.indexed( v ) ) : indexed.push( v );
+		utility.iterate( obj, function ( v ) {
+			indexed.push( v );
 		});
 
 		return indexed;
@@ -379,7 +384,7 @@ var array = {
 	 */
 	intersect : function ( array1, array2 ) {
 		var a = array1.length > array2.length ? array1 : array2,
-		    b = a === array1 ? array2 : array1;
+		    b = ( a === array1 ? array2 : array1 );
 
 		return a.filter( function ( key ) {
 			return array.contains( b, key );
@@ -388,7 +393,7 @@ var array = {
 
 	/**
 	 * Keeps every element of `obj` for which `fn` evaluates to true
-	 * 
+	 *
 	 * @method keep_if
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
@@ -396,7 +401,7 @@ var array = {
 	 */
 	keep_if : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		var result = [],
@@ -405,7 +410,7 @@ var array = {
 		result = obj.filter( fn );
 		remove = array.diff( obj, result );
 
-		array.each( remove, function ( i, idx ) {
+		array.each( remove, function ( i ) {
 			array.remove( obj, array.index( obj, i ) );
 		});
 
@@ -452,14 +457,17 @@ var array = {
 		if ( arg >= ( n + 1 ) ) {
 			return obj;
 		}
+		else if ( isNaN( arg ) || arg === 1 ) {
+			return obj[n];
+		}
 		else {
-			return isNaN( arg ) || arg === 1 ? obj[n] : array.limit( obj, n - --arg, n );
+			return array.limit( obj, ( n - ( --arg ) ), n );
 		}
 	},
 
 	/**
 	 * Returns a limited range of indices from the Array
-	 * 
+	 *
 	 * @method limit
 	 * @param  {Array}  obj    Array to iterate
 	 * @param  {Number} start  Starting index
@@ -483,7 +491,7 @@ var array = {
 
 	/**
 	 * Finds the maximum value in an Array
-	 * 
+	 *
 	 * @method max
 	 * @param  {Array} obj Array to parse
 	 * @return {Mixed}     Number, String, etc.
@@ -494,7 +502,7 @@ var array = {
 
 	/**
 	 * Finds the mean of an Array ( of numbers )
-	 * 
+	 *
 	 * @method mean
 	 * @param  {Array} obj Array to parse
 	 * @return {Number}    Mean of the Array ( float or integer )
@@ -520,7 +528,7 @@ var array = {
 
 	/**
 	 * Merges `arg` into `obj`, excluding duplicate indices
-	 * 
+	 *
 	 * @param  {Array} obj Array to receive indices
 	 * @param  {Array} arg Array to merge
 	 * @return {Array}     obj
@@ -535,7 +543,7 @@ var array = {
 
 	/**
 	 * Finds the minimum value in an Array
-	 * 
+	 *
 	 * @method min
 	 * @param  {Array} obj Array to parse
 	 * @return {Mixed}     Number, String, etc.
@@ -564,7 +572,7 @@ var array = {
 
 	/**
 	 * Finds the mode value of an Array
-	 * 
+	 *
 	 * @method mode
 	 * @param  {Array} obj Array to parse
 	 * @return {Mixed}     Mode value of the Array
@@ -578,7 +586,12 @@ var array = {
 
 		// Counting values
 		array.each( obj, function ( i ) {
-			!isNaN( values[i] ) ? ++values[i] : values[i] = 1;
+			if ( !isNaN( values[i] ) ) {
+				values[i]++;
+			}
+			else {
+				values[i] = 1;
+			}
 		});
 
 		// Finding the highest occurring count
@@ -603,7 +616,7 @@ var array = {
 
 	/**
 	 * Finds the range of the Array ( of numbers ) values
-	 * 
+	 *
 	 * @method range
 	 * @param  {Array} obj Array to parse
 	 * @return {Number}    Range of the array ( float or integer )
@@ -614,7 +627,7 @@ var array = {
 
 	/**
 	 * Searches a 2D Array `obj` for the first match of `arg` as a second index
-	 * 
+	 *
 	 * @method rassoc
 	 * @param  {Array} obj 2D Array to search
 	 * @param  {Mixed} arg Primitive to find
@@ -636,7 +649,7 @@ var array = {
 
 	/**
 	 * Returns Array containing the items in `obj` for which `fn()` is not true
-	 * 
+	 *
 	 * @method reject
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to execute against `obj` indices
@@ -648,7 +661,7 @@ var array = {
 	
 	/**
 	 * Replaces the contents of `obj` with `arg`
-	 * 
+	 *
 	 * @method replace
 	 * @param  {Array} obj Array to modify
 	 * @param  {Array} arg Array to become `obj`
@@ -673,16 +686,19 @@ var array = {
 	 * @return {Array}        Modified Array
 	 */
 	remove : function ( obj, start, end ) {
-		if ( isNaN(start) ) {
+		if ( isNaN( start ) ) {
 			start = obj.index( start );
-			if ( start === -1 ) return obj;
+
+			if ( start === -1 ) {
+				return obj;
+			}
 		}
 		else {
 			start = start || 0;
 		}
 
 		var length    = obj.length,
-		    remaining = obj.slice( (end || start) + 1 || length );
+		    remaining = obj.slice( ( end || start ) + 1 || length );
 
 		obj.length = start < 0 ? ( length + start ) : start;
 		obj.push.apply( obj, remaining );
@@ -692,21 +708,22 @@ var array = {
 
 	/**
 	 * Deletes every element of `obj` for which `fn` evaluates to true
-	 * 
+	 *
 	 * @method remove_if
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
 	 */
 	remove_if : function ( obj, fn ) {
+		var remove;
+
 		if ( typeof fn !== "function" ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
-		var remove = [];
-
 		remove = obj.filter( fn );
-		array.each( remove, function ( i, idx ) {
+
+		array.each( remove, function ( i ) {
 			array.remove( obj, array.index ( obj, i ) );
 		});
 
@@ -715,7 +732,7 @@ var array = {
 
 	/**
 	 * Deletes elements of `obj` until `fn` evaluates to false
-	 * 
+	 *
 	 * @method remove_while
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
@@ -723,26 +740,30 @@ var array = {
 	 */
 	remove_while : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		var remove = [];
 
 		array.each( obj, function ( i ) {
-			if ( fn( i ) !== false) remove.push( i );
-			else return false;
+			if ( fn( i ) !== false ) {
+				remove.push( i );
+			}
+			else {
+				return false;
+			}
 		});
 
-		array.each( remove, function ( i, idx ) {
+		array.each( remove, function ( i ) {
 			array.remove( obj, array.index( obj, i) );
 		});
 
-		return obj;	
+		return obj;
 	},
 
 	/**
 	 * Returns the "rest" of `obj` from `arg`
-	 * 
+	 *
 	 * @method rest
 	 * @param  {Array}  obj Array to parse
 	 * @param  {Number} arg [Optional] Start position of subset of `obj` ( positive number only )
@@ -760,7 +781,7 @@ var array = {
 
 	/**
 	 * Finds the last index of `arg` in `obj`
-	 * 
+	 *
 	 * @method rindex
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Primitive to find
@@ -780,21 +801,27 @@ var array = {
 
 	/**
 	 * Returns new Array with `arg` moved to the first index
-	 * 
+	 *
 	 * @method rotate
 	 * @param  {Array}  obj Array to rotate
 	 * @param  {Number} arg Index to become the first index, if negative the rotation is in the opposite direction
 	 * @return {Array}      Newly rotated Array
 	 */
 	rotate : function ( obj, arg ) {
-		var result = [],
-		    nth    = obj.length;
+		var nth = obj.length,
+		    result;
 
 		if ( arg === 0 ) {
 			result = obj;
 		}
 		else {
-			arg < 0 ? arg += nth : arg--;
+			if ( arg < 0 ) {
+				arg += nth;
+			}
+			else {
+				arg--;
+			}
+
 			result = array.limit( obj, arg, nth );
 			result = result.concat( array.limit( obj, 0, arg ) );
 		}
@@ -804,7 +831,7 @@ var array = {
 
 	/**
 	 * Generates a series Array
-	 * 
+	 *
 	 * @method series
 	 * @param  {Number} start  Start value the series
 	 * @param  {Number} end    [Optional] The end of the series
@@ -829,7 +856,7 @@ var array = {
 
 	/**
 	 * Splits an Array by divisor
-	 * 
+	 *
 	 * @method split
 	 * @param  {Array}  obj     Array to parse
 	 * @param  {Number} divisor Integer to divide the Array by
@@ -868,17 +895,14 @@ var array = {
 
 	/**
 	 * Sorts the Array by parsing values
-	 * 
+	 *
 	 * @method sort
 	 * @param  {Mixed} a Argument to compare
 	 * @param  {Mixed} b Argument to compare
 	 * @return {Number}  Number indicating sort order
 	 */
 	sort : function ( a, b ) {
-		var types = {
-		    	a : typeof a,
-		    	b : typeof b
-		    },
+		var types = {a: typeof a, b: typeof b},
 		    c, d, result;
 
 		if ( types.a === "number" && types.b === "number" ) {
@@ -910,7 +934,7 @@ var array = {
 
 	/**
 	 * Sorts `obj` using `array.sort`
-	 * 
+	 *
 	 * @method sorted
 	 * @param  {Array} obj Array to sort
 	 * @return {Array}     Sorted Array
@@ -921,7 +945,7 @@ var array = {
 
 	/**
 	 * Gets the summation of an Array of numbers
-	 * 
+	 *
 	 * @method sum
 	 * @param  {Array} obj Array to sum
 	 * @return {Number}    Summation of Array
@@ -940,7 +964,7 @@ var array = {
 
 	/**
 	 * Takes the first `arg` indices from `obj`
-	 * 
+	 *
 	 * @method take
 	 * @param  {Array}  obj Array to parse
 	 * @param  {Number} arg Offset from 0 to return
@@ -963,7 +987,7 @@ var array = {
 
 	/**
 	 * Casts an Array to Object
-	 * 
+	 *
 	 * @method toObject
 	 * @param  {Array} ar Array to transform
 	 * @return {Object}   New object
@@ -981,12 +1005,12 @@ var array = {
 
 	/**
 	 * Returns an Array of unique indices of `obj`
-	 * 
+	 *
 	 * @method unique
 	 * @param  {Array} obj Array to parse
 	 * @return {Array}     Array of unique indices
 	 */
-	unique : function ( obj, fn ) {
+	unique : function ( obj ) {
 		var result = [];
 
 		array.each( obj, function ( i ) {
@@ -998,7 +1022,7 @@ var array = {
 
 	/**
 	 * Converts any arguments to Arrays, then merges elements of `obj` with corresponding elements from each argument
-	 * 
+	 *
 	 * @method zip
 	 * @param  {Array} obj  Array to transform
 	 * @param  {Mixed} args Argument instance or Array to merge

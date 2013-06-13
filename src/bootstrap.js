@@ -15,10 +15,11 @@ bootstrap = function () {
 		});
 	};
 
-	fn = function ( e ) {
+	// Repeating function to call init()
+	fn = function () {
 		if ( regex.complete_loaded.test( document.readyState ) ) {
 			if ( typeof self.init === "function" ) {
-				self.init.call(self );
+				self.init.call( self );
 			}
 
 			return false;
@@ -34,7 +35,7 @@ bootstrap = function () {
 
 		// IE7 and older is not supported
 		if ( client.ie && client.version < 8 ) {
-			throw Error( label.error.upgrade );
+			throw new Error( label.error.upgrade );
 		}
 
 		// Curried
@@ -44,7 +45,9 @@ bootstrap = function () {
 
 		if ( Array.prototype.filter === undefined ) {
 			Array.prototype.filter = function ( fn ) {
-				if ( this === void 0 || this === null || typeof fn !== "function" ) throw Error( label.error.invalidArguments );
+				if ( this === void 0 || this === null || typeof fn !== "function" ) {
+					throw new Error( label.error.invalidArguments );
+				}
 
 				var i      = null,
 				    t      = Object( this ),
@@ -69,7 +72,9 @@ bootstrap = function () {
 
 		if ( Array.prototype.forEach === undefined ) {
 			Array.prototype.forEach = function ( callback, thisArg ) {
-				if ( this === null || typeof callback !== "function" ) throw Error( label.error.invalidArguments );
+				if ( this === null || typeof callback !== "function" ) {
+					throw new Error( label.error.invalidArguments );
+				}
 
 				var T,
 				    k   = 0,
@@ -101,7 +106,7 @@ bootstrap = function () {
 				}
 
 				return -1;
-			}
+			};
 		}
 
 		if ( Array.prototype.map === undefined ) {
@@ -138,7 +143,7 @@ bootstrap = function () {
 				}
 
 				return A;
-			}
+			};
 		}
 
 		if ( Array.prototype.reduce === undefined ) {
@@ -202,8 +207,8 @@ bootstrap = function () {
 					return new ClassList( this );
 				};
 
-				proto  = ClassList["prototype"] = [];
-				target = ( view.HTMLElement || view.Element )["prototype"];
+				proto  = ClassList.prototype = [];
+				target = ( view.HTMLElement || view.Element ).prototype;
 
 				proto.add = function ( arg ) {
 					if ( !array.contains( this, arg ) ) {
@@ -241,7 +246,7 @@ bootstrap = function () {
 					target.__defineGetter__( "classList", getter );
 				}
 				else {
-					throw Error( "Could not create classList shim" );
+					throw new Error( "Could not create classList shim" );
 				}
 			})( global );
 		}
@@ -312,7 +317,7 @@ bootstrap = function () {
 			observer.fire( abaaso, "error", e );
 		}, "error", global, "all");
 
-		observer.add( global, "hashchange", function (e )  {
+		observer.add( global, "hashchange", function ()  {
 			var hash = location.hash.replace( /^\#\!?|\?.*|\#.*/g, "" );
 
 			if ( $.route.current !== hash || self.route.current !== hash ) {
@@ -326,12 +331,12 @@ bootstrap = function () {
 			}
 		}, "hash", global, "all");
 
-		observer.add( global, "resize", function ( e )  {
+		observer.add( global, "resize", function ()  {
 			$.client.size = self.client.size = client.size();
 			observer.fire( abaaso, "resize", self.client.size );
 		}, "resize", global, "all");
 
-		observer.add( global, "load", function ( e )  {
+		observer.add( global, "load", function ()  {
 			observer.fire( abaaso, "render" );
 			observer.remove( abaaso, "render" );
 			observer.remove( this, "load" );
@@ -381,25 +386,20 @@ bootstrap = function () {
 
 	$.ready = true;
 
-	// Preparing init()
-	switch ( true ) {
-		case typeof exports !== "undefined":
-		case typeof define === "function":
-			this.init();
-			break;
-		case ( regex.complete_loaded.test( document.readyState ) ):
-			this.init();
-			break;
-		case typeof document.addEventListener === "function":
-			document.addEventListener( "DOMContentLoaded" , function () {
-				self.init.call( self );
-			}, false);
-			break;
-		case typeof document.attachEvent === "function":
-			document.attachEvent( "onreadystatechange" , fn );
-			break;
-		default:
-			utility.repeat( fn );
+	// Initializing
+	if ( typeof exports !== "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
+		this.init();
+	}
+	else if ( typeof document.addEventListener === "function" ) {
+		document.addEventListener( "DOMContentLoaded" , function () {
+			self.init.call( self );
+		}, false);
+	}
+	else if ( typeof document.attachEvent === "function" ) {
+		document.attachEvent( "onreadystatechange" , fn );
+	}
+	else {
+		utility.repeat( fn );
 	}
 
 	return $;

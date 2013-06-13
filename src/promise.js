@@ -7,7 +7,7 @@
 var promise = {
 	/**
 	 * Promise factory
-	 * 
+	 *
 	 * @method factory
 	 * @return {Object} Instance of promise
 	 */
@@ -24,7 +24,7 @@ var promise = {
 	methods : {
 		/**
 		 * Breaks a Promise
-		 * 
+		 *
 		 * @method reject
 		 * @param  {Mixed} arg Promise outcome
 		 * @return {Object} Promise
@@ -41,7 +41,7 @@ var promise = {
 
 		/**
 		 * Promise is resolved
-		 * 
+		 *
 		 * @method resolve
 		 * @param  {Mixed} arg Promise outcome
 		 * @return {Object}    Promise
@@ -58,7 +58,7 @@ var promise = {
 
 		/**
 		 * Returns a boolean indicating state of the Promise
-		 * 
+		 *
 		 * @method resolved
 		 * @return {Boolean} `true` if resolved
 		 */
@@ -68,7 +68,7 @@ var promise = {
 
 		/**
 		 * Registers handler( s ) for a Promise
-		 * 
+		 *
 		 * @method then
 		 * @param  {Function} success Executed when/if promise is resolved
 		 * @param  {Function} failure [Optional] Executed when/if promise is broken
@@ -98,7 +98,7 @@ var promise = {
 						}
 
 						// Casting to an Error to fix context
-						result = Error( result );
+						result = new Error( result );
 					}
 				}
 				finally {
@@ -106,7 +106,7 @@ var promise = {
 					if ( !( result instanceof Promise ) ) {
 						// This is clearly a mistake on the dev's part
 						if ( error && result === undefined ) {
-							throw Error( label.error.invalidArguments );
+							throw new Error( label.error.invalidArguments );
 						}
 						else {
 							deferred[!error ? "resolve" : "reject"]( result || self.outcome );
@@ -134,13 +134,13 @@ var promise = {
 
 			if ( typeof success === "function" ) {
 				promise.vouch.call( this, promise.state.resolved, function () {
-					return fn(true); 
+					return fn( true );
 				});
 			}
 
 			if ( typeof failure === "function" ) {
 				promise.vouch.call( this, promise.state.broken, function () {
-					return fn(false);
+					return fn( false );
 				});
 			}
 
@@ -154,7 +154,7 @@ var promise = {
 
 	/**
 	 * Resolves a Promise ( fulfilled or failed )
-	 * 
+	 *
 	 * @method resolve
 	 * @param  {String} state State to resolve
 	 * @param  {String} val   Value to set
@@ -174,7 +174,7 @@ var promise = {
 				return;
 			}
 			else {
-				throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.outcome ) );
+				throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.outcome ) );
 			}
 		}
 
@@ -189,7 +189,7 @@ var promise = {
 			if ( result instanceof Promise ) {
 				pending      = true;
 				self.outcome = null;
-				self.state   = promise.state.pending
+				self.state   = promise.state.pending;
 
 				return false;
 			}
@@ -242,7 +242,7 @@ var promise = {
 
 	/**
 	 * Vouches for a state
-	 * 
+	 *
 	 * @method vouch
 	 * @param  {String}   state Promise descriptor
 	 * @param  {Function} fn    Function to execute
@@ -250,7 +250,7 @@ var promise = {
 	 */
 	vouch : function ( state, fn ) {
 		if ( string.isEmpty( state ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( this.state === promise.state.pending ) {
@@ -278,7 +278,7 @@ function Promise () {
 	this.parentNode = null;
 	this.outcome    = null;
 	this.state      = promise.state.pending;
-};
+}
 
 // Setting prototype & constructor loop
 Promise.prototype = promise.methods;

@@ -10,7 +10,7 @@
 var datalist = {
 	/**
 	 * Creates an instance of datalist
-	 *           
+	 *
 	 * @method factory
 	 * @param  {Object} target   Element to receive the DataList
 	 * @param  {Object} store    Data store to feed the DataList
@@ -23,7 +23,7 @@ var datalist = {
 		    obj, instance;
 
 		if ( !( target instanceof Element ) || typeof store !== "object" || !regex.string_object.test( typeof template ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		obj = element.create( "ul", {"class": "list", id: store.parentNode.id + "-datalist"}, target );
@@ -49,7 +49,7 @@ var datalist = {
 	methods : {
 		/**
 		 * Delete sync handler
-		 * 
+		 *
 		 * @method del
 		 * @param  {Object} rec Record
 		 * @return {Object}     DataList instance
@@ -73,7 +73,7 @@ var datalist = {
 
 		/**
 		 * Exports data list records
-		 * 
+		 *
 		 * @return {Array} Record set
 		 */
 		dump : function () {
@@ -82,13 +82,13 @@ var datalist = {
 
 		/**
 		 * Changes the page index of the DataList
-		 * 
+		 *
 		 * @method page
 		 * @return {Object}  DataList instance
 		 */
 		page : function ( arg ) {
 			if ( isNaN( arg ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			this.pageIndex = arg;
@@ -99,7 +99,7 @@ var datalist = {
 
 		/**
 		 * Adds pagination Elements to the View
-		 * 
+		 *
 		 * @method pages
 		 * @return {Object}  DataList instance
 		 */
@@ -113,11 +113,10 @@ var datalist = {
 			    end   = page + mid,
 			    self  = this,
 			    total = datalist.pages.call( this ),
-			    i     = 0,
-			    diff, li, anchor;
+			    diff;
 
 			if ( !regex.top_bottom.test( pos ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			// Removing the existing controls
@@ -142,15 +141,18 @@ var datalist = {
 			if ( end > total ) {
 				end   = total;
 				start = ( end - range ) + 1;
-				if ( start < 1 ) start = 1;
+
+				if ( start < 1 ) {
+					start = 1;
+				}
 			}
 
-			array.each( string.explode(pos), function (i ) {
+			array.each( string.explode( pos ), function ( i ) {
 				var current = false,
 				    more    = page > 1,
 				    next    = ( page + 1 ) <= total,
-				    last    = !( page < total ),
-				    el;
+				    last    = ( page >= total ),
+				    el, n;
 
 				// Setting up the list
 				el = element.create( "ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before" );
@@ -162,9 +164,9 @@ var datalist = {
 				element.create( more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create( "li", {}, el) );
 
 				// Rendering the page range
-				for ( i = start; i <= end; i++ ) {
-					current = ( i === page );
-					element.create( current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": i, innerHTML: i}, element.create( "li", {}, el) );
+				for ( n = start; n <= end; n++ ) {
+					current = ( n === page );
+					element.create( current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": n, innerHTML: n}, element.create( "li", {}, el) );
 				}
 
 				// Next page
@@ -194,10 +196,10 @@ var datalist = {
 
 		/**
 		 * Refreshes element
-		 * 
+		 *
 		 * Events: beforeDataListRefresh  Fires from the element containing the DataList
 		 *         afterDataListRefresh   Fires from the element containing the DataList
-		 * 
+		 *
 		 * @method refresh
 		 * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
 		 * @param  {Boolean} create [Optional] Recreates cached View of data
@@ -208,7 +210,6 @@ var datalist = {
 			create       = ( create === true );
 			var el       = this.element,
 			    template = ( typeof this.template === "object" ),
-			    key      = ( !template && this.template.toString().replace( /\{\{|\}\}/g, "" ) === this.store.key ),
 			    consumed = [],
 			    items    = [],
 			    self     = this,
@@ -216,7 +217,7 @@ var datalist = {
 			    reg      = new RegExp(),
 			    registry = [], // keeps track of records in the list ( for filtering )
 			    limit    = [],
-			    fn, obj, ceiling;
+			    fn, ceiling;
 
 			observer.fire( el, "beforeDataListRefresh" );
 
@@ -376,12 +377,12 @@ var datalist = {
 
 		/**
 		 * Sorts data list & refreshes element
-		 * 
+		 *
 		 * Events: beforeDataListSort     Fires before the DataList sorts
 		 *         beforeDataListRefresh  Fires before the DataList refreshes
 		 *         afterDataListRefresh   Fires after the DataList refreshes
 		 *         afterDataListSort      Fires after the DataList is sorted
-		 * 
+		 *
 		 * @method sort
 		 * @param  {String}  order       SQL "order by" statement
 		 * @param  {String}  sensitivity [Optional] Defaults to "ci" ( "ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive )
@@ -390,7 +391,7 @@ var datalist = {
 		 */
 		sort : function ( order, sensitivity, create ) {
 			if ( typeof order !== "string" ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			this.element.fire( "beforeDataListSort" );
@@ -407,7 +408,7 @@ var datalist = {
 
 		/**
 		 * Tears down references to the DataList
-		 * 
+		 *
 		 * @method teardown
 		 * @param  {Boolean} destroy [Optional] `true` will remove the DataList from the DOM
 		 * @return {Object}  DataList instance
@@ -442,13 +443,13 @@ var datalist = {
 
 	/**
 	 * Calculates the total pages
-	 * 
+	 *
 	 * @method pages
 	 * @return {Number} Total pages
 	 */
 	pages : function () {
 		if ( isNaN( this.pageSize ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		return number.round( this.total / this.pageSize, "up" );
@@ -456,7 +457,7 @@ var datalist = {
 
 	/**
 	 * Calculates the page size as an Array of start & finish
-	 * 
+	 *
 	 * @method range
 	 * @return {Array}  Array of start & end numbers
 	 */
@@ -496,7 +497,7 @@ function DataList ( element, store, template ) {
 	this.sensitivity = "ci";
 	this.store       = store;
 	this.where       = null;
-};
+}
 
 // Setting prototype & constructor loop
 DataList.prototype = datalist.methods;

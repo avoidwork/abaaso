@@ -1,13 +1,13 @@
 /**
  * DataListFilter
- * 
+ *
  * @class filter
  * @namespace abaaso
  */
 var filter = {
 	/**
 	 * DataListFilter factory
-	 * 
+	 *
 	 * @param  {Object} obj      Element to receive the filter
 	 * @param  {Object} datalist Data list linked to the data store
 	 * @param  {String} filters  Comma delimited string of fields to filter by
@@ -19,7 +19,7 @@ var filter = {
 		var ref  = [datalist];
 
 		if ( !( obj instanceof Element ) || ( datalist !== undefined && datalist.store === undefined ) || ( typeof filters !== "string" || string.isEmpty( filters ) ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		return new DataListFilter( obj, ref[0], debounce ).set( filters ).init();
@@ -41,9 +41,9 @@ var filter = {
 
 		/**
 		 * Set the filters
-		 * 
+		 *
 		 * Create an object based on comma separated key string
-		 * 
+		 *
 		 * @param {String} fields Comma separated filters
 		 * @returns {Undefined} undefined
 		 */
@@ -51,7 +51,7 @@ var filter = {
 			var obj = {};
 
 			if ( typeof fields !== "string" || string.isEmpty( fields ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			array.each( string.explode( fields ), function (v ) {
@@ -80,7 +80,7 @@ var filter = {
 		 *
 		 * @returns {Undefined} undefined
 		 */
-		update : function ( e ) {
+		update : function () {
 			var self = this;
 
 			utility.defer( function () {
@@ -133,7 +133,7 @@ function DataListFilter ( element, datalist, debounce ) {
 	this.datalist = datalist;
 	this.debounce = debounce;
 	this.filters  = {};
-};
+}
 
 // Setting prototype & constructor loop
 DataListFilter.prototype = filter.methods;

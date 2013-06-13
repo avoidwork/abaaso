@@ -641,11 +641,11 @@ var prototypes = {
 				}
 
 			}, function ( e ) {
-				element.html( self, arg || label.error.serverError );
+				element.html( self, e || label.error.serverError );
 				observer.fire( self, "failedGet" );
 
 				if ( typeof failure === "function") {
-					failure.call( self, arg );
+					failure.call( self, e );
 				}
 
 				throw e;
@@ -653,7 +653,7 @@ var prototypes = {
 
 			observer.fire( this, "beforeGet" );
 
-			uri.get( function (arg ) { 
+			uri.get( function ( arg ) {
 				deferred.resolve( arg );
 			}, function ( e ) {
 				deferred.reject( e );
@@ -727,7 +727,7 @@ var prototypes = {
 				var self = target,
 				    node = response,
 				    prop = arg,
-				    i, nth, result;
+				    result;
 
 				try {
 					if ( prop !== undefined ) {
@@ -737,13 +737,15 @@ var prototypes = {
 							node = node[!!isNaN( i ) ? i : number.parse( i, 10 )];
 
 							if ( node === undefined ) {
-								throw Error( label.error.propertyNotFound );
+								throw new Error( label.error.propertyNotFound );
 							}
 						});
 
 						result = node;
 					}
-					else result = response;
+					else {
+						result = response;
+					}
 				}
 				catch ( e ) {
 					result = label.error.serverError;
@@ -888,7 +890,7 @@ var prototypes = {
 			return client.request( this, "DELETE", success, failure, null, headers );
 		},
 		escape : function () {
-			return string.escape(this );
+			return string.escape( this );
 		},
 		expire : function ( silent ) {
 			return cache.expire( this, silent );

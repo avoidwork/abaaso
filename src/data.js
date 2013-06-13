@@ -61,7 +61,7 @@ var data = {
 			chunk   = chunk || 1000;
 
 			if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			var self     = this,
@@ -70,7 +70,7 @@ var data = {
 			    nth      = data.length,
 			    f        = false,
 			    deferred = promise.factory(),
-			    complete, deferred2, failure, key, set, del, success, parsed;
+			    complete, deferred2, failure, set, del, parsed;
 
 			deferred2 = deferred.then( function ( arg ) {
 				self.loaded = true;
@@ -116,7 +116,9 @@ var data = {
 				}
 				else {
 					utility.iterate( data, function ( v, k ) {
-						if ( !array.contains( self.collections, k ) ) rec[k] = v;
+						if ( !array.contains( self.collections, k ) ) {
+							rec[k] = v;
+						}
 					});
 				}
 
@@ -125,7 +127,7 @@ var data = {
 					delete rec[self.key];
 				}
 
-				deferred.then( function ( arg ) {
+				deferred.then( function () {
 					if ( ++r === nth ) {
 						complete( self.records );
 					}
@@ -137,47 +139,40 @@ var data = {
 				});
 
 				if ( rec instanceof Array && self.uri !== null ) {
-					self.generate( key, undefined )
-					    .then( function ( arg ) {
-					    	deferred.resolve( arg );
-					     }, function ( e ) {
-					    	deferred.reject( e );
-					     });
+					self.generate( key, undefined ).then( function ( arg ) {
+						deferred.resolve( arg );
+					}, function ( e ) {
+						deferred.reject( e );
+					});
 				}
 				else {
-					self.set( key, rec, true )
-					    .then( function ( arg ) {
-					    	deferred.resolve( arg );
-					     }, function ( e ) {
-					    	deferred.reject( e );
-					     });
+					self.set( key, rec, true ).then( function ( arg ) {
+						deferred.resolve( arg );
+					}, function ( e ) {
+						deferred.reject( e );
+					});
 				}
 			};
 
 			del = function ( i ) {
 				var deferred = promise.factory();
 
-				deferred.then( function ( arg ) {
+				deferred.then( function () {
 					if ( ++r === nth ) {
 						complete( self.records );
 					}
-
-					return arg;
-				}, function ( arg ) {
+				}, function ( e ) {
 					if ( !f ) {
 						f = true;
-						failure( arg );
+						failure( e );
 					}
-
-					return arg;
 				});
 
-				self.del( i, false, true )
-				    .then( function ( arg ) {
-				    	deferred.resolve( arg );
-				     }, function ( e ) {
-				    	deferred.reject( e );
-				     });
+				self.del( i, false, true ).then( function ( arg ) {
+					deferred.resolve( arg );
+				}, function ( e ) {
+					deferred.reject( e );
+				});
 			};
 
 			if ( events ) {
@@ -195,10 +190,9 @@ var data = {
 				if ( type === "set" ) {
 					array.each( array.chunk( data, chunk ), function ( a, adx ) {
 						utility.defer(function () {
-							var offset = adx * chunk,
-							    id;
-
 							array.each( a, function ( i, idx ) {
+								var id;
+
 								if ( array.contains ( self.ignore, i ) || array.contains ( self.leafs, i ) ) {
 									id = i;
 									i  = {};
@@ -328,7 +322,7 @@ var data = {
 		 *
 		 * Events: afterDataRetrieve  Fires after the store has retrieved all data from crawling
 		 *         failedDataRetrieve Fires if an exception occurs
-		 * 
+		 *
 		 * @method crawl
 		 * @param  {Mixed}  arg Record, key or index
 		 * @return {Object}     Promise
@@ -344,7 +338,7 @@ var data = {
 			    build, complete, deferred2, setup;
 
 			if ( record === undefined ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			this.crawled = true;
@@ -355,7 +349,7 @@ var data = {
 
 			/**
 			 * Concats URIs together
-			 * 
+			 *
 			 * @method build
 			 * @param  {String} entity Entity URI
 			 * @param  {String} store  Data store URI
@@ -372,14 +366,16 @@ var data = {
 					parsed = utility.parse( store );
 					result = parsed.protocol + "//" + parsed.host + entity;
 				}
-				else result = entity;
+				else {
+					result = entity;
+				}
 
 				return result;
 			};
 
 			/**
 			 * Crawl complete handler
-			 * 
+			 *
 			 * @method complete
 			 * @return {Undefined} undefined
 			 */
@@ -393,7 +389,7 @@ var data = {
 			 * Sets up a data store
 			 *
 			 * Possibly a subset of the collection, so it relies on valid URI paths
-			 * 
+			 *
 			 * @method setup
 			 * @param  {String} key Record key
 			 * @return {Object}     Data store
@@ -418,7 +414,7 @@ var data = {
 
 			// Depth of recursion is controled by `maxDepth`
 			utility.iterate( record.data, function ( v, k ) {
-				var deferred, store, parsed;
+				var deferred;
 
 				if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) ) {
 					return;
@@ -449,23 +445,21 @@ var data = {
 						});
 					}
 
-					record.data[k].data.batch( "set", v, true, undefined )
-					                   .then( function ( arg ) {
-					                   		deferred.resolve( arg );
-					                   	}, function ( e ) {
-					                   		deferred.reject( e );
-					                   	});
+					record.data[k].data.batch( "set", v, true, undefined ).then( function ( arg ) {
+						deferred.resolve( arg );
+					}, function ( e ) {
+						deferred.reject( e );
+					});
 				}
 				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
 				else if ( v.charAt( 0 ) === "/" || v.indexOf( "//" ) > -1 ) {
 					record.data[k] = setup( k, self );
 					v = build( v, uri );
-					record.data[k].data.setUri( v )
-					                   .then( function ( arg ) {
-					                   		deferred.resolve( arg );
-					                   	}, function ( e ) {
-					                   		deferred.reject( e );
-					                   	});
+					record.data[k].data.setUri( v ).then( function ( arg ) {
+						deferred.resolve( arg );
+					}, function ( e ) {
+						deferred.reject( e );
+					});
 				}
 			});
 
@@ -487,7 +481,7 @@ var data = {
 		 */
 		del : function ( record, reindex, batch ) {
 			if ( record === undefined || !regex.number_string.test( typeof record ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			reindex      = ( reindex !== false );
@@ -505,7 +499,7 @@ var data = {
 				self.total--;
 				self.views = {};
 
-				utility.iterate( record.data, function ( v, k ) {
+				utility.iterate( record.data, function ( v ) {
 					if ( v === null ) {
 						return;
 					}
@@ -545,14 +539,14 @@ var data = {
 				record = this.keys[key];
 
 				if ( record === undefined ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 			}
 			else {
 				key = this.records[record];
 
 				if ( key === undefined ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				key = key.key;
@@ -573,7 +567,7 @@ var data = {
 				deferred.resolve( args );
 			}
 			else if ( regex.true_undefined.test( p ) ) {
-				client.request(uri, "DELETE", function ( arg ) {
+				client.request(uri, "DELETE", function () {
 					deferred.resolve( args );
 				}, function ( e ) {
 					deferred.reject( e );
@@ -588,7 +582,7 @@ var data = {
 
 		/**
 		 * Exports a subset or complete record set of data store
-		 * 
+		 *
 		 * @param  {Array} args   [Optional] Sub-data set of data store
 		 * @param  {Array} fields [Optional] Fields to export, defaults to all
 		 * @return {Array}        Records
@@ -638,7 +632,7 @@ var data = {
 		 */
 		find : function ( needle, haystack, modifiers ) {
 			if ( needle === undefined ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			var result = [],
@@ -669,7 +663,7 @@ var data = {
 			if ( haystack === null ) {
 				array.each( this.records, function ( r ) {
 					if ( !fn ) {
-						utility.iterate( r.data, function ( v, k ) {
+						utility.iterate( r.data, function ( v ) {
 							if ( array.contains( keys, r.key ) ) {
 								return false;
 							}
@@ -735,11 +729,11 @@ var data = {
 
 		/**
 		 * Generates a micro-format form from a record
-		 * 
+		 *
 		 * If record is null, an empty form based on the first record is generated.
 		 * The submit action is data.set() which triggers a POST or PUT
 		 * from the data store.
-		 * 
+		 *
 		 * @method form
 		 * @param  {Mixed}   record null, record, key or index
 		 * @param  {Object}  target Target HTML Element
@@ -747,10 +741,9 @@ var data = {
 		 * @return {Object}         Generated HTML form
 		 */
 		form : function ( record, target, test ) {
-			test       = ( test !== false );
-			var empty  = ( record === null ),
-			    self   = this,
-			    events = ( this.events === true ),
+			test      = ( test !== false );
+			var empty = ( record === null ),
+			    self  = this,
 			    entity, obj, handler, structure, key, data;
 
 			if ( empty ) {
@@ -761,10 +754,10 @@ var data = {
 			}
 
 			if ( record === undefined ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 			else if ( this.uri !== null && !client.cors ( this.uri ) && !client.allows( this.uri, "post" ) ) {
-				throw Error( label.error.serverInvalidMethod );
+				throw new Error( label.error.serverInvalidMethod );
 			}
 
 			key  = record.key;
@@ -775,7 +768,7 @@ var data = {
 			}
 
 			if ( this.uri !== null ) {
-				entity = this.uri.replace( regex.not_endpoint, "" ).replace( /\?.*/, "" )
+				entity = this.uri.replace( regex.not_endpoint, "" ).replace( /\?.*/, "" );
 
 				if ( string.isDomain( entity ) ) {
 					entity = entity.replace( /\..*/g, "" );
@@ -787,7 +780,7 @@ var data = {
 
 			/**
 			 * Button handler
-			 * 
+			 *
 			 * @method handler
 			 * @param  {Object} event Window event
 			 * @return {Undefined}    undefined
@@ -805,28 +798,26 @@ var data = {
 					result = element.validate( form );
 				}
 
-				switch ( result ) {
-					case true:
-						array.each( nodes, function ( i ) {
-							if ( i.type !== undefined && regex.input_button.test( i.type ) ) {
-								return;
-							}
+				if ( result ) {
+					array.each( nodes, function ( i ) {
+						if ( i.type !== undefined && regex.input_button.test( i.type ) ) {
+							return;
+						}
 
-							utility.define( i.name.replace( "[", "." ).replace( "]", "" ), i.value, newData );
-						});
+						utility.define( i.name.replace( "[", "." ).replace( "]", "" ), i.value, newData );
+					});
 
-						self.set( key, newData[entity] ).then(function (arg) {
-							element.destroy( form );
-						}, function (e) {
-							element.destroy ( form );
-						});
-						break;
+					self.set( key, newData[entity] ).then( function () {
+						element.destroy( form );
+					}, function () {
+						element.destroy( form );
+					});
 				}
 			};
 
 			/**
 			 * Data structure in micro-format
-			 * 
+			 *
 			 * @method structure
 			 * @param  {Object} record Data store record
 			 * @param  {Object} obj    Element
@@ -864,7 +855,7 @@ var data = {
 			element.create( "input", {type: "reset", value: label.common.reset}, obj );
 			element.css( obj, "display", "inherit" );
 
-			return obj;  
+			return obj;
 		},
 
 		/**
@@ -918,19 +909,18 @@ var data = {
 						
 						// Conditionally making the store RESTful
 						if ( arg !== undefined ) {
-							self.records[idx].data.setUri( arg )
-							                      .then( function (arg ) {
-							                      		deferred.resolve( arg );
-							                       }, function ( e ) {
-							                      		deferred.reject( e );
-							                       });
+							self.records[idx].data.setUri( arg ).then( function (arg ) {
+								deferred.resolve( arg );
+							}, function ( e ) {
+								deferred.reject( e );
+							});
 						}
 						else {
 							deferred.resolve( self.records[idx].data.records );
 						}
 					}
 				}
-			}
+			};
 
 			// Create stub or teardown existing data store
 			if ( this.keys[key] !== undefined ) {
@@ -997,7 +987,7 @@ var data = {
 
 		/**
 		 * Purges data store or record from localStorage
-		 * 
+		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
@@ -1029,7 +1019,7 @@ var data = {
 
 		/**
 		 * Restores data store or record frome localStorage
-		 * 
+		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
@@ -1039,7 +1029,7 @@ var data = {
 
 		/**
 		 * Saves data store or record to localStorage
-		 * 
+		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
@@ -1049,7 +1039,7 @@ var data = {
 
 		/**
 		 * Selects records based on an explcit description
-		 * 
+		 *
 		 * @param  {Object} where  Object describing the WHERE clause
 		 * @return {Array}         Array of records
 		 */
@@ -1057,7 +1047,7 @@ var data = {
 			var result;
 
 			if ( !( where instanceof Object ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			result = this.records.filter( function ( rec ) {
@@ -1098,10 +1088,10 @@ var data = {
 			var self     = this,
 			    deferred = promise.factory(),
 			    partial  = false,
-			    data, deferred2, record, method, events, args, uri, p, success, failure;
+			    data, deferred2, record, method, events, args, uri, p;
 
 			if ( !( arg instanceof Object ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			// Chaining a promise to return
@@ -1254,15 +1244,13 @@ var data = {
 
 			// Generating a child store
 			if ( data instanceof Array ) {
-				return this.generate( key )
-				           .then( function () {
-				           		self.get( key ).data.batch( "set", data )
-				           		                    .then( function ( arg ) {
-				           		                    	deferred.resolve( arg );
-				           		                     }, function ( e ) {
-				           		                     	deferred.reject( e );
-				           		                     });
-				            });
+				return this.generate( key ).then( function () {
+					self.get( key ).data.batch( "set", data ).then( function ( arg ) {
+						deferred.resolve( arg );
+					}, function ( e ) {
+						deferred.reject( e );
+					});
+				});
 			}
 
 			// Setting variables for ops
@@ -1344,7 +1332,7 @@ var data = {
 		setExpires : function ( arg ) {
 			// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
 			if ( ( arg !== null && this.uri === null ) || ( arg !== null && ( isNaN( arg ) || arg < 1000 ) ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			if ( this.expires === arg ) {
@@ -1377,7 +1365,7 @@ var data = {
 
 		/**
 		 * Sets the RESTful API end point
-		 * 
+		 *
 		 * @method setUri
 		 * @param  {String} arg [Optional] API collection end point
 		 * @return {Object}     Promise
@@ -1387,7 +1375,7 @@ var data = {
 			    result;
 
 			if ( arg !== null && string.isEmpty( arg ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			arg = utility.parse( arg ).href;
@@ -1409,12 +1397,11 @@ var data = {
 
 					cache.expire( result, true );
 
-					this.sync( true )
-					    .then( function (arg ) {
-					    	deferred.resolve( arg );
-					     }, function ( e ) {
-					    	deferred.reject( e );
-					     });
+					this.sync( true ).then( function (arg ) {
+						deferred.resolve( arg );
+					}, function ( e ) {
+						deferred.reject( e );
+					});
 				}
 			}
 
@@ -1433,7 +1420,7 @@ var data = {
 		 */
 		sort : function ( query, create, sensitivity, where ) {
 			if ( query === undefined || string.isEmpty( query ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			if ( !regex.sensitivity_types.test( sensitivity ) ) {
@@ -1449,7 +1436,7 @@ var data = {
 
 			queries = queries.map( function ( query ) {
 				if ( string.isEmpty( query ) ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				return query.replace( regex.asc, "" );
@@ -1488,7 +1475,7 @@ var data = {
 				});
 
 				return result;
-			}
+			};
 
 			bucket = function ( query, records, reverse ) {
 				var prop     = query.replace( regex.desc, "" ),
@@ -1578,7 +1565,7 @@ var data = {
 
 		/**
 		 * Storage interface
-		 * 
+		 *
 		 * @param  {Mixed}  obj  Record ( Object, key or index ) or store
 		 * @param  {Object} op   Operation to perform ( get, remove or set )
 		 * @param  {String} type [Optional] Type of Storage to use ( local or session, default is local )
@@ -1586,12 +1573,11 @@ var data = {
 		 */
 		storage : function ( obj, op, type ) {
 			var record  = false,
-			    self    = this,
 			    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
 			    result, key, data;
 
 			if ( !regex.number_string_object.test( typeof obj ) || !regex.get_remove_set.test( op ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			record = ( regex.number_string.test( obj ) || ( obj.hasOwnProperty( "key" ) && !obj.hasOwnProperty( "parentNode" ) ) );
@@ -1607,7 +1593,7 @@ var data = {
 					result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
 
 					if ( result === null ) {
-						throw Error( label.error.invalidArguments );
+						throw new Error( label.error.invalidArguments );
 					}
 
 					result = json.decode( result );
@@ -1641,7 +1627,7 @@ var data = {
 		 */
 		sync : function ( reindex ) {
 			if ( this.uri === null || string.isEmpty( this.uri ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			reindex       = ( reindex === true );
@@ -1653,7 +1639,7 @@ var data = {
 
 			deferred1.then( function ( arg ) {
 				if ( typeof arg !== "object" ) {
-					throw Error( label.error.expectedObject );
+					throw new Error( label.error.expectedObject );
 				}
 
 				var found = false,
@@ -1666,23 +1652,24 @@ var data = {
 				if ( arg instanceof Array ) {
 					data = arg;
 				}
-				else utility.iterate( arg, function ( i ) {
-					if ( !found && i instanceof Array ) {
-						found = true;
-						data  = i;
-					}
-				});
+				else {
+					utility.iterate( arg, function ( i ) {
+						if ( !found && i instanceof Array ) {
+							found = true;
+							data  = i;
+						}
+					});
+				}
 
 				if ( data === undefined ) {
 					data = [arg];
 				}
 
-				self.batch( "set", data, true, undefined )
-				    .then( function ( arg ) {
-				    	deferred2.resolve( arg );
-				     }, function ( e ) {
-				    	deferred2.reject( e );
-				     });
+				self.batch( "set", data, true, undefined ).then( function ( arg ) {
+					deferred2.resolve( arg );
+				}, function ( e ) {
+					deferred2.reject( e );
+				});
 
 				return data;
 			}, function ( e ) {
@@ -1717,15 +1704,19 @@ var data = {
 				observer.fire( self.parentNode, "beforeDataSync" );
 			}
 
-			this.callback !== null ? client.jsonp( this.uri, success, failure, {callback: this.callback} )
-			                       : client.request( this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers) );
+			if ( this.callback !== null ) {
+				client.jsonp( this.uri, success, failure, {callback: this.callback} );
+			}
+			else {
+				client.request( this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers) );
+			}
 
 			return deferred3;
 		},
 
 		/**
 		 * Tears down a store & expires all records associated to an API
-		 * 
+		 *
 		 * @return {Undefined} undefined
 		 */
 		teardown : function () {
@@ -1746,7 +1737,7 @@ var data = {
 				array.each( this.records, function ( i ) {
 					cache.expire( (uri + "/" + i.key), true );
 					observer.remove( uri + "/" + i.key );
-					utility.iterate( i.data, function ( v, k ) {
+					utility.iterate( i.data, function ( v ) {
 						if ( v === null ) {
 							return;
 						}
@@ -1767,7 +1758,7 @@ var data = {
 
 		/**
 		 * Returns Array of unique values of `key`
-		 * 
+		 *
 		 * @param  {String} key Field to compare
 		 * @return {Array}      Array of values
 		 */
@@ -1785,7 +1776,7 @@ var data = {
 		 * Updates an existing Record
 		 *
 		 * Use `data.set()` if the record contains child data stores
-		 * 
+		 *
 		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
 		 * @param  {Object} data Key:Value pairs to set as field values
 		 * @return {Object}      Promise
@@ -1796,7 +1787,7 @@ var data = {
 			    args, deferred;
 
 			if ( record === undefined ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			args     = utility.merge( utility.clone ( record.data ) , data );
@@ -1816,7 +1807,7 @@ var data = {
 
 /**
  * DataStore factory
- * 
+ *
  * @class DataStore
  * @namespace abaaso
  * @param  {Object} obj Object being decorated with a DataStore
@@ -1848,7 +1839,7 @@ function DataStore ( obj ) {
 	this.total       = 0;
 	this.views       = {};
 	this.uri         = null;
-};
+}
 
 // Setting prototype & constructor loop
 DataStore.prototype = data.methods;
