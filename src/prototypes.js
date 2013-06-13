@@ -890,7 +890,7 @@ var prototypes = {
 			return client.request( this, "DELETE", success, failure, null, headers );
 		},
 		escape : function () {
-			return string.escape(this );
+			return string.escape( this );
 		},
 		expire : function ( silent ) {
 			return cache.expire( this, silent );
