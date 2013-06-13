@@ -258,10 +258,14 @@ var client = {
 		if ( ( regex.json_maybe.test( type ) || string.isEmpty( type ) ) && ( regex.json_wrap.test( xhr.responseText ) && Boolean( obj = json.decode( xhr.responseText, true ) ) ) ) {
 			result = obj;
 		}
-		else if ( regex.xml.test( type ) && string.isEmpty( xhr.responseText  ) && xhr.responseXML !== undefined && xhr.responseXML !== null ) {
-			result = xml.decode( xhr.responseXML.xml !== undefined ? xhr.responseXML.xml : xhr.responseXML );
+		else if ( regex.xml.test( type ) ) {
+			if ( type !== "text/xml" ) {
+				xhr.overrideMimeType( "text/xml" );
+			}
+
+			result = xhr.responseXML;
 		}
-		else if ( regex.is_xml.test( xhr.responseText ) ) {
+		else if ( xml.valid( xhr.responseText ) ) {
 			result = xml.decode( xhr.responseText );
 		}
 		else {
@@ -693,7 +697,7 @@ var client = {
 			catch ( e ) {}
 		}
 		else if ( xdr ) {
-			r = client.parse( xhr );
+			r = client.parse( xhr, "text/plain" );
 			cache.set( uri, "permission", client.bit( ["get"] ) );
 			cache.set( uri, "response", r );
 			deferred.resolve( r );
