@@ -39,7 +39,7 @@ var string = {
 	 * @return {String}     Escaped string
 	 */
 	escape : function ( obj ) {
-		return obj.replace( /[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&" );
+		return obj.replace( /[\-\[\]{}()*+?.,\\\^\$|#\s]/g, "\\$&" );
 	},
 
 	/**
