@@ -1,6 +1,6 @@
 /**
  * Application state
- * 
+ *
  * @class state
  * @namespace abaaso
  */
@@ -10,7 +10,7 @@ var state = ( function () {
 
 	/**
 	 * Gets current application state
-	 * 
+	 *
 	 * @method getCurrent
 	 * @return {String} Application state
 	 */
@@ -20,17 +20,17 @@ var state = ( function () {
 
 	/**
 	 * Sets current application state
-	 * 
+	 *
 	 * @method setCurrent
 	 * @param  {String} arg New application state
 	 * @return {String}     Application state
 	 */
 	setCurrent = function ( arg ) {
 		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
-		prop.previous = prop.current
+		prop.previous = prop.current;
 		prop.current  = arg;
 
 		observer.fire( abaaso, "state", arg );
@@ -40,7 +40,7 @@ var state = ( function () {
 
 	/**
 	 * Gets current application state header
-	 * 
+	 *
 	 * @method getHeader
 	 * @return {String} Application state header
 	 */
@@ -50,14 +50,14 @@ var state = ( function () {
 
 	/**
 	 * Sets current application state header
-	 * 
+	 *
 	 * @method setHeader
 	 * @param  {String} arg New application state header
 	 * @return {String}     Application state header
 	 */
 	setHeader = function ( arg ) {
 		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		prop.header = arg;
@@ -67,7 +67,7 @@ var state = ( function () {
 
 	/**
 	 * Gets previous application state
-	 * 
+	 *
 	 * @method getPrevious
 	 * @return {String} Previous application state
 	 */
@@ -82,7 +82,7 @@ var state = ( function () {
 	 * @return {Undefined} undefined
 	 */
 	setPrevious = function () {
-		throw Error( label.error.readOnly );
+		throw new Error( label.error.readOnly );
 	};
 
 	// interface

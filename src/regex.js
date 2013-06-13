@@ -2,15 +2,17 @@
  * Regex patterns used through abaaso
  *
  * `url` was authored by Diego Perini
- * 
+ *
  * @class regex
  * @namespace abaaso
  */
 var regex = {
+	after_space             : /\s+.*/,
 	android                 : /android/i,
 	allow                   : /^allow$/i,
 	allow_cors              : /^access-control-allow-methods$/i,
 	alphanum                : /^[a-zA-Z0-9]+$/,
+	and                     : /^&/,
 	asc                     : /\s+asc$/i,
 	auth                    : /\/\/(.*)\@/,
 	blackberry              : /blackberry/i,
@@ -77,6 +79,7 @@ var regex = {
 	safari                  : /safari/i,
 	scheme                  : /.*\/\//,
 	select                  : /select/i,
+	selector_is             : /^:/,
 	selector_many           : /\:|\.|\+|\~|\[/,
 	selector_complex        : /\s+|\>|\+|\~|\:|\.|\[/,
 	selector_split          : /\s+|\>|\+|\~/,

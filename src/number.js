@@ -14,7 +14,7 @@ var number = {
 	 */
 	diff : function ( num1, num2 ) {
 		if ( isNaN( num1 ) || isNaN( num2 ) ) {
-			throw Error( label.error.expectedNumber );
+			throw new Error( label.error.expectedNumber );
 		}
 
 		return Math.abs( num1 - num2 );
@@ -33,7 +33,7 @@ var number = {
 
 	/**
 	 * Formats a Number to a delimited String
-	 * 
+	 *
 	 * @method format
 	 * @param  {Number} arg       Number to format
 	 * @param  {String} delimiter [Optional] String to delimit the Number with
@@ -42,7 +42,7 @@ var number = {
 	 */
 	format : function ( arg, delimiter, every ) {
 		if ( isNaN( arg ) ) {
-			throw Error( label.error.expectedNumber );
+			throw new Error( label.error.expectedNumber );
 		}
 
 		arg       = arg.toString();
@@ -71,13 +71,13 @@ var number = {
 
 	/**
 	 * Returns half of a, or true if a is half of b
-	 * 
+	 *
 	 * @param  {Number} a Number to divide
 	 * @param  {Number} b [Optional] Number to test a against
 	 * @return {Mixed}    Boolean if b is passed, Number if b is undefined
 	 */
 	half : function ( a, b ) {
-		return b !== undefined ? ( ( a / b ) === .5 ) : ( a / 2 );
+		return b !== undefined ? ( ( a / b ) === 0.5 ) : ( a / 2 );
 	},
 
 	/**
@@ -93,7 +93,7 @@ var number = {
 
 	/**
 	 * Parses the number
-	 * 
+	 *
 	 * @param  {Mixed}  arg  Number to parse
 	 * @param  {Number} base Integer representing the base or radix
 	 * @return {Number}      Integer or float
@@ -104,7 +104,7 @@ var number = {
 
 	/**
 	 * Generates a random number between 0 and arg
-	 * 
+	 *
 	 * @param  {Number} arg Ceiling for random number, default is 100
 	 * @return {Number}     Random number
 	 */
@@ -116,7 +116,7 @@ var number = {
 
 	/**
 	 * Rounds a number up or down
-	 * 
+	 *
 	 * @param  {Number} arg       Number to round
 	 * @param  {String} direction [Optional] "up" or "down"
 	 * @return {Number}           Rounded interger

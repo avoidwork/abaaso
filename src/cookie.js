@@ -74,7 +74,7 @@ var cookie = {
 	 * @return {Undefined}      undefined
 	 */
 	set : function ( name, value, offset, domain, secure, path, jar ) {
-		value      = ( value || "" ) + ";"
+		value      = ( value || "" ) + ";";
 		offset     = offset || "";
 		domain     = typeof domain === "string" ? ( " Domain=" + domain + ";" ) : "";
 		secure     = ( secure === true ) ? " secure" : "";
@@ -99,7 +99,7 @@ var cookie = {
 			}
 
 			if ( isNaN( span ) ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			expire = new Date();

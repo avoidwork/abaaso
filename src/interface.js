@@ -185,7 +185,9 @@ return {
 			st = scope;
 		}
 
-		if ( s === undefined ) s = o;
+		if ( s === undefined ) {
+			s = o;
+		}
 
 		return observer.add( o, e, l, i, s, st );
 	},
@@ -210,7 +212,9 @@ return {
 			st = scope;
 		}
 
-		if ( s === undefined ) s = o;
+		if ( s === undefined ) {
+			s = o;
+		}
 
 		return observer.once( o, e, l, i, s, st );
 	},
@@ -230,7 +234,10 @@ return {
 		return client.request( uri, "POST", success, failure, args, headers, timeout );
 	},
 	prepend         : function ( type, args, obj ) {
-		if ( obj instanceof Element ) obj.genId();
+		if ( obj instanceof Element ) {
+			obj.genId();
+		}
+
 		return element.create( type, args, obj, "first" );
 	},
 	promise         : promise.factory,

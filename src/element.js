@@ -7,7 +7,7 @@
 var element = {
 	/**
 	 * Gets or sets an Element attribute
-	 * 
+	 *
 	 * @param  {Mixed}  obj   Element
 	 * @param  {String} name  Attribute name
 	 * @param  {Mixed}  value Attribute value
@@ -115,35 +115,30 @@ var element = {
 		    obj, uid, frag;
 
 		if ( type === undefined || string.isEmpty( type ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( target !== undefined ) {
 			target = utility.object( target );
-			svg    = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
-		}
-		else if ( args !== undefined && ( typeof args === "string" || args.childNodes !== undefined ) ) {
-			target = utility.object( args );
-			svg    = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
+
+			if ( target === undefined ) {
+				throw new Error( label.error.invalidArguments );
+			}
+
+			svg = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
 		}
 		else {
 			target = document.body;
 		}
-
-		if ( target === undefined ) {
-			throw Error( label.error.invalidArguments );
-		}
 		
 		frag = !( target instanceof Element );
 		
-		uid  = args                   !== undefined
-		        && typeof args        !== "string"
-		        && args.childNodes    === undefined
-		        && args.id            !== undefined
-		        && $( "#" + args.id ) === undefined ? args.id : ( !svg ? utility.genId( undefined, true ) : undefined );
-
-		if ( args !== undefined && args.id !== undefined ) {
+		if ( args instanceof Object && args.id !== undefined && $( "#" + args.id ) === undefined ) {
+			uid = args.id;
 			delete args.id;
+		}
+		else if ( !svg ) {
+			uid = utility.genId( undefined, true );
 		}
 
 		if ( !svg && !regex.svg.test( type ) ) {
@@ -157,7 +152,7 @@ var element = {
 			obj.id = uid;
 		}
 
-		if ( typeof args === "object" && args.childNodes === undefined ) {
+		if ( args instanceof Object ) {
 			element.update( obj, args );
 		}
 
@@ -202,9 +197,10 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	css : function ( obj, key, value ) {
+		var result;
+
 		obj = utility.object( obj );
 		key = string.toCamelCase( key );
-		var i, result;
 
 		if ( value !== undefined ) {
 			obj.style[key] = value;
@@ -281,7 +277,7 @@ var element = {
 	 * Dispatches a DOM Event from an Element
 	 *
 	 * `data` will appear as `Event.detail`
-	 * 
+	 *
 	 * @param  {Object}  obj        Element which dispatches the Event
 	 * @param  {String}  type       Type of Event to dispatch
 	 * @param  {Object}  data       Data to include with the Event
@@ -321,19 +317,19 @@ var element = {
 			};
 		}
 		else if ( document !== undefined && typeof document.createEventObject === "object" ) {
-			return function ( obj, type, data, bubbles, cancelable ) {
+			return function ( obj, type, data, bubbles ) {
 				var ev = document.createEventObject();
 
 				ev.cancelBubble = ( bubbles !== false );
 				ev.detail       = data || {};
 
 				obj.fireEvent( "on" + type, ev );
-			}
+			};
 		}
 		else {
 			return function () {
-				throw Error( label.error.notSupported );
-			}
+				throw new Error( label.error.notSupported );
+			};
 		}
 	}(),
 
@@ -388,7 +384,7 @@ var element = {
 
 	/**
 	 * Determines if obj has a specific CSS class
-	 * 
+	 *
 	 * @method hasClass
 	 * @param  {Mixed} obj Element
 	 * @return {Mixed}     Element, Array of Elements or undefined
@@ -429,14 +425,14 @@ var element = {
 
 	/**
 	 * Gets or sets an Elements innerHTML
-	 * 
+	 *
 	 * @method html
 	 * @param  {Object} obj Element
 	 * @param  {String} arg [Optional] innerHTML value
 	 * @return {Object}     Element
 	 */
 	html : function ( obj, arg ) {
-		return arg === undefined ? string.trim( obj.innerHTML ) : element.update( obj, {innerHTML: string.trim( arg )} ); 
+		return arg === undefined ? string.trim( obj.innerHTML ) : element.update( obj, {innerHTML: string.trim( arg )} );
 	},
 
 	/**
@@ -448,7 +444,15 @@ var element = {
 	 * @return {Boolean}     True if a match
 	 */
 	is : function ( obj, arg ) {
-		return /^:/.test( arg ) ? ( array.contains( element.find( obj.parentNode, obj.nodeName.toLowerCase() + arg ), obj ) ) : new RegExp( arg, "i" ).test( obj.nodeName );
+		if ( regex.selector_is.test( arg ) ) {
+			utility.id( obj );
+			return ( element.find( obj.parentNode, obj.nodeName.toLowerCase() + arg ).filter( function ( i ) {
+				return ( i.id === obj.id );
+			}).length === 1 );
+		}
+		else {
+			return new RegExp( arg ).test( obj.nodeName );
+		}
 	},
 
 	/**
@@ -604,8 +608,6 @@ var element = {
 	 * @return {Object}      Element
 	 */
 	klass : function ( obj, arg, add ) {
-		var classes;
-
 		add = ( add !== false );
 		arg = string.explode( arg, " " );
 
@@ -614,18 +616,20 @@ var element = {
 				obj.classList.add( i );
 			});
 		}
-		else array.each( arg, function ( i ) {
-			if ( i !== "*" ) {
-				obj.classList.remove( i );
-			}
-			else {
-				array.each( obj.classList, function ( x ) {
-					this.remove( x );
-				});
+		else {
+			array.each( arg, function ( i ) {
+				if ( i !== "*" ) {
+					obj.classList.remove( i );
+				}
+				else {
+					array.each( obj.classList, function ( x ) {
+						this.remove( x );
+					});
 
-				return false;
-			}
-		});
+					return false;
+				}
+			});
+		}
 
 		return obj;
 	},
@@ -664,7 +668,7 @@ var element = {
 
 	/**
 	 * Prepends an Element to an Element
-	 * 
+	 *
 	 * @method prependChild
 	 * @param  {Object} obj   Element
 	 * @param  {Object} child Child Element
@@ -676,7 +680,7 @@ var element = {
 
 	/**
 	 * Removes an Element attribute
-	 * 
+	 *
 	 * @param  {Mixed}  obj Element
 	 * @param  {String} key Attribute name
 	 * @return {Object}     Element
@@ -706,7 +710,7 @@ var element = {
 
 	/**
 	 * Serializes the elements of a Form, an Element, or Array of Elements or $ queries
-	 * 
+	 *
 	 * @param  {Object}  obj    Form, individual Element, or $ query
 	 * @param  {Boolean} string [Optional] true if you want a query string, default is false ( JSON )
 	 * @param  {Boolean} encode [Optional] true if you want to URI encode the value, default is true
@@ -731,7 +735,7 @@ var element = {
 
 		array.each( children, function ( i ) {
 			if ( i.nodeName === "FORM" ) {
-				utility.merge( registry, json.decode( element.serialize( i ) ) )
+				utility.merge( registry, json.decode( element.serialize( i ) ) );
 			}
 			else if ( registry[i.name] === undefined ) {
 				registry[i.name] = element.val( i );
@@ -748,7 +752,7 @@ var element = {
 				encode ? result += "&" + encodeURIComponent( k ) + "=" + encodeURIComponent( v ) : result += "&" + k + "=" + v;
 			});
 
-			result = result.replace( /^&/, "?" );
+			result = result.replace( regex.and, "?" );
 		}
 
 		return result;
@@ -792,7 +796,7 @@ var element = {
 
 	/**
 	 * Getter / setter for an Element's text
-	 * 
+	 *
 	 * @param  {Object} obj Element
 	 * @param  {String} arg [Optional] Value to set
 	 * @return {Object}     Element
@@ -812,7 +816,7 @@ var element = {
 
 	/**
 	 * Toggles a CSS class
-	 * 
+	 *
 	 * @param  {Object} obj Element, or $ query
 	 * @param  {String} arg CSS class to toggle
 	 * @return {Object}     Element
@@ -862,7 +866,7 @@ var element = {
 
 	/**
 	 * Gets or sets the value of Element
-	 * 
+	 *
 	 * @param  {Mixed}  obj   Element
 	 * @param  {Mixed}  value [Optional] Value to set
 	 * @return {Object}       Element
@@ -874,7 +878,7 @@ var element = {
 		if ( value === undefined ) {
 			if ( regex.radio_checkbox.test( obj.type ) ) {
 				if ( string.isEmpty( obj.name ) ) {
-					throw Error( label.error.expectedProperty );
+					throw new Error( label.error.expectedProperty );
 				}
 
 				array.each( $( "input[name='" + obj.name + "']" ), function ( i ) {
@@ -938,7 +942,7 @@ var element = {
 
 	/**
 	 * Validates the contents of Element
-	 * 
+	 *
 	 * @method validate
 	 * @param  {Object} obj Element to test
 	 * @return {Object}     Result of test

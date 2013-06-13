@@ -1,11 +1,11 @@
 /node_modules/
 /lib/abaaso.min.js
 /lib/abaaso.map
-/lib/compressed/
 /test/
 /src/
 .git
 .gitignore
 .jamignore
+.jshintrc
 .travis.yml
 Gruntfile.js

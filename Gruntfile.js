@@ -50,38 +50,47 @@ module.exports = function (grunt) {
 				dest : "lib/<%= pkg.name %>.js"
 			}
 		},
-		nodeunit: {
+		exec : {
+			closure : {
+				cmd : "cd lib\nclosure-compiler --js <%= pkg.name %>.js --js_output_file <%= pkg.name %>.min.js --create_source_map ./<%= pkg.name %>.map"
+			},
+			sourcemap : {
+				cmd : "echo //@ sourceMappingURL=<%= pkg.name %>.map >> lib/<%= pkg.name %>.min.js"
+			}
+		},
+		jshint : {
+			options : {
+				jshintrc : ".jshintrc"
+			},
+			src : "lib/<%= pkg.name %>.js"
+		},
+		nodeunit : {
 			all : ["test/*.js"]
 		},
-		shell: {
-			closure: {
-				command: "cd lib\nclosure-compiler --js abaaso.js --js_output_file abaaso.min.js --create_source_map ./abaaso.map"
-			},
-			sourcemap: {
-				command: "echo //@ sourceMappingURL=abaaso.map >> lib/abaaso.min.js"
+		sed : {
+			"version" : {
+				pattern : "{{VERSION}}",
+				replacement : "<%= pkg.version %>",
+				path : ["<%= concat.dist.dest %>"]
+			}
+		},
+		watch : {
+			js : {
+				files : "<%= concat.dist.src %>",
+				tasks : "build:js"
 			}
 		}
 	});
 
-	grunt.loadNpmTasks("grunt-shell");
+	// tasks
+	grunt.loadNpmTasks("grunt-sed");
+	grunt.loadNpmTasks("grunt-exec");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
+	grunt.loadNpmTasks("grunt-contrib-jshint");
 
-	grunt.registerTask("test", ["nodeunit"]);
-
-	grunt.registerTask("compress", function () {
-		process.platform !== "win32" ? grunt.task.run("shell") : console.log("Couldn't compress files on your OS")
-	});
-
-	grunt.registerTask("version", function () {
-		var cfg = grunt.config("pkg"),
-		    ver = cfg.version,
-		    fn  = "lib/" + cfg.name + ".js",
-		    fp  = grunt.file.read(fn);
-
-		console.log("Setting version to: " + ver);
-		grunt.file.write(fn, fp.replace(/\{\{VERSION\}\}/g, ver));
-	});
-
-	grunt.registerTask("default", ["concat", "version", "test", "compress"]);
+	// aliases
+	grunt.registerTask("test", ["nodeunit", "jshint"]);
+	grunt.registerTask("build", ["concat", "sed"]);
+	grunt.registerTask("default", ["build", "test", "exec"]);
 };

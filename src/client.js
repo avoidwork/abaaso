@@ -6,16 +6,15 @@
  */
 var client = {
 	activex : function () {
-		var result = false;
+		var result = false,
+		    obj;
 
 		if ( typeof ActiveXObject !== "undefined" ) {
 			try {
-				new ActiveXObject( "Microsoft.XMLHTTP" );
+				obj    = new ActiveXObject( "Microsoft.XMLHTTP" );
 				result = true;
 			}
-			catch ( e ) {
-				void 0;
-			}
+			catch ( e ) {}
 		}
 
 		return result;
@@ -68,30 +67,34 @@ var client = {
 	version : function () {
 		var version = 0;
 
-		switch ( true ) {
-			case this.chrome:
-				version = navigator.userAgent.replace( /(.*chrome\/|safari.*)/gi, "" );
-				break;
-			case this.firefox:
-				version = navigator.userAgent.replace( /(.*firefox\/)/gi, "" );
-				break;
-			case this.ie:
-				version = number.parse( navigator.userAgent.replace(/(.*msie|;.*)/gi, ""), 10 );
-				if ( document.documentMode < version ) version = document.documentMode;
-				break;
-			case this.opera:
-				version = navigator.userAgent.replace( /(.*version\/|\(.*)/gi, "" );
-				break;
-			case this.safari:
-				version = navigator.userAgent.replace( /(.*version\/|safari.*)/gi, "" );
-				break;
-			default:
-				version = ( navigator !== undefined ) ? navigator.appVersion : 0;
+		if ( this.chrome ) {
+			version = navigator.userAgent.replace( /(.*chrome\/|safari.*)/gi, "" );
+		}
+		else if ( this.firefox ) {
+			version = navigator.userAgent.replace( /(.*firefox\/)/gi, "" );
+		}
+		else if ( this.ie ) {
+			version = number.parse( navigator.userAgent.replace(/(.*msie|;.*)/gi, ""), 10 );
+
+			if ( document.documentMode < version ) {
+				version = document.documentMode;
+			}
+		}
+		else if ( this.opera ) {
+			version = navigator.userAgent.replace( /(.*version\/|\(.*)/gi, "" );
+		}
+		else if ( this.safari ) {
+			version = navigator.userAgent.replace( /(.*version\/|safari.*)/gi, "" );
+		}
+		else {
+			version = ( navigator !== undefined ) ? navigator.appVersion : 0;
 		}
 
 		version = number.parse( string.trim( version ) );
 
-		if ( isNaN( version ) ) version = 0;
+		if ( isNaN( version ) ) {
+			version = 0;
+		}
 
 		return version;
 	},
@@ -106,7 +109,7 @@ var client = {
 	 */
 	allows : function ( uri, verb ) {
 		if ( string.isEmpty( uri ) || string.isEmpty( verb ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		uri        = utility.parse( uri ).href;
@@ -173,7 +176,7 @@ var client = {
 
 	/**
 	 * Determines if a URI is a CORS end point
-	 * 
+	 *
 	 * @method cors
 	 * @param  {String} uri  URI to parse
 	 * @return {Boolean}     True if CORS
@@ -184,7 +187,7 @@ var client = {
 
 	/**
 	 * Caches the headers from the XHR response
-	 * 
+	 *
 	 * @method headers
 	 * @param  {Object} xhr  XMLHttpRequest Object
 	 * @param  {String} uri  URI to request
@@ -200,7 +203,7 @@ var client = {
 		    expires = new Date(),
 		    cors    = client.cors( uri );
 
-		array.each( headers, function ( i, idx ) {
+		array.each( headers, function ( i ) {
 			var header, value;
 
 			value         = i.replace( regex.header_value_replace, "" );
@@ -215,18 +218,17 @@ var client = {
 			}
 		});
 
-		switch ( true ) {
-			case regex.no.test( items["Cache-Control"] ):
-			case regex.no.test( items["Pragma"] ):
-				break;
-			case items["Cache-Control"] !== undefined && regex.number_present.test( items["Cache-Control"] ):
-				expires = expires.setSeconds( expires.getSeconds() + number.parse( regex.number_present.exec( items["Cache-Control"] )[0], 10 ) );
-				break;
-			case items["Expires"] !== undefined:
-				expires = new Date( items["Expires"] );
-				break;
-			default:
-				expires = expires.setSeconds( expires.getSeconds() + $.expires );
+		if ( regex.no.test( items["Cache-Control"] ) ) {
+			// Do nothing
+		}
+		else if ( items["Cache-Control"] !== undefined && regex.number_present.test( items["Cache-Control"] ) ) {
+			expires = expires.setSeconds( expires.getSeconds() + number.parse( regex.number_present.exec( items["Cache-Control"] )[0], 10 ) );
+		}
+		else if ( items.Expires !== undefined ) {
+			expires = new Date( items.Expires );
+		}
+		else {
+			expires = expires.setSeconds( expires.getSeconds() + $.expires );
 		}
 
 		o.expires    = expires;
@@ -244,7 +246,7 @@ var client = {
 
 	/**
 	 * Parses an XHR response
-	 * 
+	 *
 	 * @param  {Object} xhr  XHR Object
 	 * @param  {String} type [Optional] Content-Type header value
 	 * @return {Mixed}       Array, Boolean, Document, Number, Object or String
@@ -253,19 +255,17 @@ var client = {
 		type = type || "";
 		var result, obj;
 
-		switch ( true ) {
-			case ( regex.json_maybe.test( type ) || string.isEmpty( type ) ) && regex.json_wrap.test( xhr.responseText ) && Boolean( obj = json.decode( xhr.responseText, true ) ):
-			case ( regex.json_maybe.test( type ) || string.isEmpty( type ) ) && ( obj = regex.jsonp_wrap.exec( xhr.responseText ) ) && obj !== null && Boolean( obj = json.decode( obj[2], true ) ):
-				result = obj;
-				break;
-			case ( regex.xml.test( type ) && string.isEmpty( xhr.responseText  ) && xhr.responseXML !== undefined && xhr.responseXML !== null ):
-				result = xml.decode( xhr.responseXML.xml !== undefined ? xhr.responseXML.xml : xhr.responseXML );
-				break;
-			case regex.is_xml.test( xhr.responseText ):
-				result = xml.decode( xhr.responseText );
-				break;
-			default:
-				result = xhr.responseText;
+		if ( ( regex.json_maybe.test( type ) || string.isEmpty( type ) ) && ( regex.json_wrap.test( xhr.responseText ) && Boolean( obj = json.decode( xhr.responseText, true ) ) ) ) {
+			result = obj;
+		}
+		else if ( regex.xml.test( type ) && string.isEmpty( xhr.responseText  ) && xhr.responseXML !== undefined && xhr.responseXML !== null ) {
+			result = xml.decode( xhr.responseXML.xml !== undefined ? xhr.responseXML.xml : xhr.responseXML );
+		}
+		else if ( regex.is_xml.test( xhr.responseText ) ) {
+			result = xml.decode( xhr.responseText );
+		}
+		else {
+			result = xhr.responseText;
 		}
 
 		return result;
@@ -315,27 +315,18 @@ var client = {
 	 */
 	jsonp : function ( uri, success, failure, args ) {
 		var deferred = promise.factory(),
-		    callback, cbid, s;
+		    callback = "callback", cbid, s;
 
-		// Utilizing the sugar if namespace is not global
 		if ( external === undefined ) {
-			if ( global.abaaso === undefined ) utility.define( "abaaso.callback", {}, global );
+			if ( global.abaaso === undefined ) {
+				utility.define( "abaaso.callback", {}, global );
+			}
 
 			external = "abaaso";
 		}
 
-		switch ( true ) {
-			case args === undefined:
-			case args === null:
-			case args instanceof Object && ( args.callback === null || args.callback === undefined ):
-			case typeof args === "string" && string.isEmpty( args ):
-				callback = "callback";
-				break;
-			case args instanceof Object && args.callback !== undefined:
-				callback = args.callback;
-				break;
-			default:
-				callback = "callback";
+		if ( args instanceof Object && args.callback !== undefined ) {
+			callback = args.callback;
 		}
 
 		deferred.then( function (arg ) {
@@ -350,7 +341,9 @@ var client = {
 			throw e;
 		});
 
-		do cbid = utility.genId().slice( 0, 10 );
+		do {
+			cbid = utility.genId().slice( 0, 10 );
+		}
 		while ( global.abaaso.callback[cbid] !== undefined );
 
 		uri = uri.replace( callback + "=?", callback + "=" + external + ".callback." + cbid );
@@ -398,7 +391,7 @@ var client = {
 		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2;
 
 		if ( regex.put_post.test( type ) && args === undefined ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		uri          = utility.parse( uri ).href;
@@ -453,7 +446,7 @@ var client = {
 			uri.fire( "afterGet", cached.response, xhr );
 		}
 		else {
-			xhr[typeof xhr.onreadystatechange !== "undefined" ? "onreadystatechange" : "onload"] = function ( e ) {
+			xhr[typeof xhr.onreadystatechange !== "undefined" ? "onreadystatechange" : "onload"] = function () {
 				client.response( xhr, uri, type, deferred );
 			};
 
@@ -463,9 +456,7 @@ var client = {
 					xhr.timeout = timeout;
 				}
 			}
-			catch ( e ) {
-				void 0;
-			}
+			catch ( e ) {}
 
 			// Setting events
 			if ( xhr.ontimeout  !== undefined ) {
@@ -585,10 +576,9 @@ var client = {
 	 */
 	response : function ( xhr, uri, type, deferred ) {
 		var typed    = string.capitalize( type.toLowerCase() ),
-		    l        = location,
 		    xhrState = null,
 		    xdr      = client.ie && xhr.readyState === undefined,
-		    exception, o, r, t, x, redirect;
+		    exception, o, r, t, redirect;
 
 		// server-side exception handling
 		exception = function ( e, xhr ) {
@@ -629,7 +619,7 @@ var client = {
 							r = client.parse( xhr, t );
 
 							if ( r === undefined ) {
-								throw Error( label.error.serverError );
+								throw new Error( label.error.serverError );
 							}
 						}
 
@@ -659,7 +649,7 @@ var client = {
 							break;
 						case 201:
 							if ( ( o.headers.Location === undefined || string.isEmpty ( o.headers.Location ) ) && !string.isUrl ( r ) ) {
-								exception( Error( label.error.invalidArguments ), xhr );
+								exception( new Error( label.error.invalidArguments ), xhr );
 							}
 							else {
 								redirect = string.trim ( o.headers.Location || r );
@@ -671,6 +661,7 @@ var client = {
 								});
 								break;
 							}
+							break;
 						case 204:
 							deferred.resolve( null );
 							uri.fire( "after" + typed, null, xhr );
@@ -682,26 +673,24 @@ var client = {
 					}
 					break;
 				case 401:
-					exception( !server ? Error( label.error.serverUnauthorized ) : label.error.serverUnauthorized, xhr );
+					exception( !server ? new Error( label.error.serverUnauthorized ) : label.error.serverUnauthorized, xhr );
 					break;
 				case 403:
 					cache.set( uri, "!permission", client.bit( [type] ) );
-					exception( !server ? Error( label.error.serverForbidden ) : label.error.serverForbidden, xhr );
+					exception( !server ? new Error( label.error.serverForbidden ) : label.error.serverForbidden, xhr );
 					break;
 				case 405:
 					cache.set( uri, "!permission", client.bit( [type] ) );
-					exception( !server ? Error( label.error.serverInvalidMethod ) : label.error.serverInvalidMethod, xhr );
-					break
+					exception( !server ? new Error( label.error.serverInvalidMethod ) : label.error.serverInvalidMethod, xhr );
+					break;
 				default:
-					exception( !server ? Error( label.error.serverError ) : label.error.serverError, xhr );
+					exception( !server ? new Error( label.error.serverError ) : label.error.serverError, xhr );
 			}
 
 			try {
 				xhr.onreadystatechange = null;
 			}
-			catch ( e ) {
-				void 0;
-			}
+			catch ( e ) {}
 		}
 		else if ( xdr ) {
 			r = client.parse( xhr );

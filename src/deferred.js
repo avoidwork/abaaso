@@ -1,12 +1,13 @@
 /**
  * Deferreds
- * 
+ *
  * @type {Object}
+ * @namespace abaaso
  */
 var deferred = {
 	/**
 	 * Deferred factory
-	 * 
+	 *
 	 * @method factory
 	 * @return {Object} Deferred
 	 */
@@ -18,17 +19,17 @@ var deferred = {
 	methods : {
 		/**
 		 * Registers a function to execute after Promise is reconciled
-		 * 
+		 *
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
 		always : function ( arg ) {
 			if ( typeof arg !== "function" ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			if ( this.promise.resolved() ) {
-				throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.outcome ) );
+				throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.outcome ) );
 			}
 
 			this.onAlways.push( arg );
@@ -38,17 +39,17 @@ var deferred = {
 
 		/**
 		 * Registers a function to execute after Promise is resolved
-		 * 
+		 *
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
 		done : function ( arg ) {
 			if ( typeof arg !== "function" ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			if ( this.promise.resolved() ) {
-				throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.outcome ) );
+				throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.outcome ) );
 			}
 
 			this.onDone.push( arg );
@@ -58,17 +59,17 @@ var deferred = {
 
 		/**
 		 * Registers a function to execute after Promise is rejected
-		 * 
+		 *
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
 		fail : function ( arg ) {
 			if ( typeof arg !== "function" ) {
-				throw Error( label.error.invalidArguments );
+				throw new Error( label.error.invalidArguments );
 			}
 
 			if ( this.promise.resolved() ) {
-				throw Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.outcome ) );
+				throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.outcome ) );
 			}
 
 			this.onFail.push( arg );
@@ -78,7 +79,7 @@ var deferred = {
 
 		/**
 		 * Determines if Deferred is rejected
-		 * 
+		 *
 		 * @return {Boolean} `true` if rejected
 		 */
 		isRejected : function () {
@@ -87,7 +88,7 @@ var deferred = {
 
 		/**
 		 * Determines if Deferred is resolved
-		 * 
+		 *
 		 * @return {Boolean} `true` if resolved
 		 */
 		isResolved : function () {
@@ -96,7 +97,7 @@ var deferred = {
 
 		/**
 		 * Rejects the Promise
-		 * 
+		 *
 		 * @param  {Mixed} arg Rejection outcome
 		 * @return {Object}    Deferred
 		 */
@@ -108,7 +109,7 @@ var deferred = {
 
 		/**
 		 * Resolves the Promise
-		 * 
+		 *
 		 * @param  {Mixed} arg Resolution outcome
 		 * @return {Object}    Deferred
 		 */
@@ -161,7 +162,7 @@ function Deferred () {
 		self.onDone   = [];
 		self.onFail   = [];
 	});
-};
+}
 
 // Setting prototype & constructor loop
 Deferred.prototype = deferred.methods;

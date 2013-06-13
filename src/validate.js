@@ -17,13 +17,9 @@ var validate = {
 	test : function ( args ) {
 		var exception = false,
 		    invalid   = [],
-		    tracked   = {},
 		    value     = null,
-		    result    = [],
 		    c         = [],
-		    inputs    = [],
-		    selects   = [],
-		    i, p, o, x, nth;
+		    p;
 
 		if ( args.nodeName !== undefined && args.nodeName === "FORM" ) {
 			if ( string.isEmpty( args.id ) ) {
@@ -39,10 +35,12 @@ var validate = {
 				p = regex[i.nodeName.toLowerCase()] ? regex[i.nodeName.toLowerCase()] : ( ( !string.isEmpty( i.id ) && regex[i.id.toLowerCase()] ) ? regex[i.id.toLowerCase()] : "notEmpty" );
 				v = i.val();
 
-				if ( v === null ) v = "";
+				if ( v === null ) {
+					v = "";
+				}
 
 				z[p] = v;
-				r    = validate.test( z )
+				r    = validate.test( z );
 
 				if ( !r.pass ) {
 					invalid.push( {element: i, test: p, value: v} );
@@ -55,8 +53,7 @@ var validate = {
 				if ( k === undefined || i === undefined ) {
 					invalid.push( {test: k, value: i} );
 					exception = true;
-
-					return
+					return;
 				}
 
 				value = i.toString().charAt( 0 ) === "#" ? ( $( i ) !== undefined ? $( i ).val() : "" ) : i;

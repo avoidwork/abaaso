@@ -96,13 +96,13 @@ var utility = {
 
 	/**
 	 * Clears deferred & repeating functions
-	 * 
+	 *
 	 * @param  {String} id ID of timer( s )
 	 * @return {Undefined} undefined
 	 */
 	clearTimers : function ( id ) {
 		if ( id === undefined || id.isEmpty() ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		// deferred
@@ -179,7 +179,7 @@ var utility = {
 
 	/**
 	 * Coerces a String to a Type
-	 * 
+	 *
 	 * @param  {String} value String to coerce
 	 * @return {Mixed}        Typed version of the String
 	 */
@@ -213,7 +213,7 @@ var utility = {
 	 * Recompiles a RegExp by reference
 	 *
 	 * This is ideal when you need to recompile a regex for use within a conditional statement
-	 * 
+	 *
 	 * @param  {Object} regex     RegExp
 	 * @param  {String} pattern   Regular expression pattern
 	 * @param  {String} modifiers Modifiers to apply to the pattern
@@ -251,7 +251,7 @@ var utility = {
 
 	/**
 	 * Debounces a function
-	 * 
+	 *
 	 * @method debounce
 	 * @param  {Function} fn    Function to execute
 	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 1000
@@ -260,7 +260,7 @@ var utility = {
 	 */
 	debounce : function ( fn, ms, scope ) {
 		if ( typeof fn !== "function" ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		ms    = ms    || 1000;
@@ -312,7 +312,7 @@ var utility = {
 				p[i] = array.cast( p[i] );
 			}
 			else if ( p[i] instanceof Object ) {
-				void 0;
+				// Do nothing
 			}
 			else if ( p[i] instanceof Array && !num ) {
 				p[i] = array.toObject( p[i] );
@@ -380,13 +380,13 @@ var utility = {
 	error : function ( e, args, scope, warning ) {
 		warning = ( warning === true );
 		var o   = {
-			arguments : args,
-			message   : e.message || e,
-			number    : e.number !== undefined ? ( e.number & 0xFFFF ) : undefined,
-			scope     : scope,
-			stack     : e.stack   || undefined,
-			timestamp : new Date().toUTCString(),
-			type      : e.type    || "TypeError"
+			"arguments" : array.cast( args ),
+			message     : e.message || e,
+			number      : e.number !== undefined ? ( e.number & 0xFFFF ) : undefined,
+			scope       : scope,
+			stack       : e.stack   || undefined,
+			timestamp   : new Date().toUTCString(),
+			type        : e.type    || "TypeError"
 		};
 
 		utility.log( o.stack || o.message, !warning ? "error" : "warn" );
@@ -410,7 +410,7 @@ var utility = {
 				var o;
 
 				if ( obj === undefined ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				o = Object.create( obj );
@@ -424,15 +424,17 @@ var utility = {
 		}
 		else {
 			return function ( obj, arg ) {
+				function Extended () {}
+
 				var o;
 
 				if ( obj === undefined ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
-				f = function () {};
-				f.prototype = obj;
-				o = new f();
+				Extended.prototype = obj;
+
+				o = new Extended();
 
 				if ( arg instanceof Object ) {
 					utility.merge( o, arg );
@@ -481,7 +483,7 @@ var utility = {
 
 	/**
 	 * Converts RGB to HEX
-	 * 
+	 *
 	 * @param  {String} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
 	 * @return {String}       Color as HEX
 	 */
@@ -517,7 +519,7 @@ var utility = {
 	 * Iterates an Object and executes a function against the properties
 	 *
 	 * Iteration can be stopped by returning false from fn
-	 * 
+	 *
 	 * @method iterate
 	 * @param  {Object}   obj Object to iterate
 	 * @param  {Function} fn  Function to execute against properties
@@ -527,7 +529,7 @@ var utility = {
 		if ( typeof Object.keys === "function" ) {
 			return function ( obj, fn ) {
 				if ( typeof fn !== "function" ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				array.each( Object.keys( obj ), function ( i ) {
@@ -543,7 +545,7 @@ var utility = {
 				    i, result;
 
 				if ( typeof fn !== "function" ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				for ( i in obj ) {
@@ -584,7 +586,7 @@ var utility = {
 		}
 
 		if ( l.url === null || obj === undefined ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		// Setting loading image
@@ -623,7 +625,7 @@ var utility = {
 
 	/**
 	 * Merges obj with arg
-	 * 
+	 *
 	 * @method merge
 	 * @param  {Object} obj Object to decorate
 	 * @param  {Object} arg Decoration
@@ -649,7 +651,7 @@ var utility = {
 	
 	/**
 	 * Registers a module on abaaso
-	 * 
+	 *
 	 * @method module
 	 * @param  {String} arg Module name
 	 * @param  {Object} obj Module structure
@@ -657,7 +659,7 @@ var utility = {
 	 */
 	module : function ( arg, obj ) {
 		if ( $[arg] !== undefined || !obj instanceof Object ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 		
 		$[arg] = obj;
@@ -679,7 +681,7 @@ var utility = {
 
 	/**
 	 * Parses a URI into an Object
-	 * 
+	 *
 	 * @method parse
 	 * @param  {String} uri URI to parse
 	 * @return {Object}     Parsed URI
@@ -748,7 +750,7 @@ var utility = {
 
 	/**
 	 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
-	 * 
+	 *
 	 * @method property
 	 * @param  {Object} obj        Object to decorate
 	 * @param  {String} prop       Name of property to set
@@ -759,7 +761,7 @@ var utility = {
 		if ( ( server || ( !client.ie || client.version > 8 ) ) && typeof Object.defineProperty === "function" ) {
 			return function ( obj, prop, descriptor ) {
 				if ( !( descriptor instanceof Object ) ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				if ( descriptor.value !== undefined && descriptor.get !== undefined ) {
@@ -772,7 +774,7 @@ var utility = {
 		else {
 			return function ( obj, prop, descriptor ) {
 				if ( !( descriptor instanceof Object ) ) {
-					throw Error( label.error.invalidArguments );
+					throw new Error( label.error.invalidArguments );
 				}
 
 				obj[prop] = descriptor.value;
@@ -855,7 +857,7 @@ var utility = {
 
 	/**
 	 * Returns an Array of parameters of a Function
-	 * 
+	 *
 	 * @method reflect
 	 * @param  {Function} arg Function to reflect
 	 * @return {Array}        Array of parameters
@@ -872,9 +874,9 @@ var utility = {
 
 	/**
 	 * Creates a recursive function
-	 * 
+	 *
 	 * Return false from the function to halt recursion
-	 * 
+	 *
 	 * @method repeat
 	 * @param  {Function} fn  Function to execute repeatedly
 	 * @param  {Number}   ms  Milliseconds to stagger the execution
@@ -914,7 +916,7 @@ var utility = {
 
 	/**
 	 * Creates a script Element to load an external script
-	 * 
+	 *
 	 * @method script
 	 * @param  {String} arg    URL to script
 	 * @param  {Object} target [Optional] Element to receive the script
@@ -927,7 +929,7 @@ var utility = {
 
 	/**
 	 * Creates a link Element to load an external stylesheet
-	 * 
+	 *
 	 * @method stylesheet
 	 * @param  {String} arg   URL to stylesheet
 	 * @param  {String} media [Optional] Medias the stylesheet applies to
@@ -939,7 +941,7 @@ var utility = {
 
 	/**
 	 * Stops an Event from bubbling
-	 * 
+	 *
 	 * @method stop
 	 * @param  {Object} e Event
 	 * @return {Object}   Event
@@ -965,7 +967,7 @@ var utility = {
 
 	/**
 	 * Returns the Event target
-	 * 
+	 *
 	 * @param  {Object} e Event
 	 * @return {Object}   Event target
 	 */
@@ -985,7 +987,7 @@ var utility = {
 		var frag;
 
 		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? $( target ) : $( target )[0] ) === undefined ) ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( target === undefined ) {
@@ -995,7 +997,7 @@ var utility = {
 		frag  = document.createDocumentFragment();
 
 		if ( arg instanceof Array ) {
-			array.each( arg, function ( i, idx ) {
+			array.each( arg, function ( i ) {
 				element.html(element.create( array.cast( i, true )[0], frag ), array.cast(i)[0] );
 			});
 		}
@@ -1038,7 +1040,7 @@ var utility = {
 
 	/**
 	 * Walks a structure and returns arg
-	 * 
+	 *
 	 * @method  walk
 	 * @param  {Mixed}  obj  Object or Array
 	 * @param  {String} arg  String describing the property to return
@@ -1055,7 +1057,7 @@ var utility = {
 	/**
 	 * Accepts 1 or more Promises as args or an Array, and returns a Promise which is reconciled
 	 * after all input Promises have been reconciled
-	 * 
+	 *
 	 * @method when
 	 * @return {Object} Promise
 	 */
@@ -1080,7 +1082,7 @@ var utility = {
 		// Setup and wait
 		else {
 			array.each( promises, function ( p ) {
-				p.then( function ( arg) {
+				p.then( function () {
 					if ( ++i === nth && !deferred.resolved()) {
 						if ( promises.length > 1 ) {
 							deferred.resolve( promises.map( function ( obj ) {
@@ -1091,7 +1093,7 @@ var utility = {
 							deferred.resolve( promises[0].outcome );
 						}
 					}
-				}, function ( e ) {
+				}, function () {
 					if ( !deferred.resolved() ) {
 						if ( promises.length > 1 ) {
 							deferred.reject( promises.map( function ( obj ) {

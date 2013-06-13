@@ -66,12 +66,10 @@ var observer = {
 		    gr       = regex.observer_globals,
 		    ar       = regex.observer_allowed,
 		    o        = observer.id( obj ),
-		    n        = false,
-		    c        = state.getCurrent(),
 		    add, reg;
 
 		if ( o === undefined || event === null || event === undefined || typeof fn !== "function" ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( l[o] === undefined ) {
@@ -126,7 +124,7 @@ var observer = {
 
 	/**
 	 * Decorates `obj` with `observer` methods
-	 * 
+	 *
 	 * @method decorate
 	 * @param  {Object} obj Object to decorate
 	 * @return {Object}     Object to decorate
@@ -170,16 +168,15 @@ var observer = {
 		obj      = utility.object( obj );
 		var quit = false,
 		    a    = array.cast( arguments ).remove( 0, 1 ),
-		    o, a, s, log, c, l, list;
+		    o, s, log, list;
 
 		if ( observer.ignore ) {
 			return obj;
 		}
 
 		if ( obj instanceof Array ) {
-			array.each( obj, function (i ) {
-				a = [i, event].concat( a );
-				observer.fire.apply( observer, a );
+			array.each( obj, function ( i ) {
+				observer.fire.apply( observer, [i, event].concat( a ) );
 			});
 
 			return obj;
@@ -188,7 +185,7 @@ var observer = {
 		o = observer.id( obj );
 
 		if ( o === undefined || event === undefined ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( observer.silent ) {
@@ -292,7 +289,7 @@ var observer = {
 
 	/**
 	 * Adds a listener for a single execution
-	 * 
+	 *
 	 * @method once
 	 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
 	 * @param  {String}   event Event being fired
@@ -310,7 +307,7 @@ var observer = {
 		st    = st    || state.getCurrent();
 
 		if ( obj === undefined || event === null || event === undefined || typeof fn !== "function" ) {
-			throw Error( label.error.invalidArguments );
+			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( obj instanceof Array ) {
@@ -331,7 +328,7 @@ var observer = {
 
 	/**
 	 * Pauses observer events, and queues them
-	 * 
+	 *
 	 * @param  {Boolean} arg Boolean indicating if events will be queued
 	 * @return {Boolean}     Current setting
 	 */
@@ -364,7 +361,7 @@ var observer = {
 	 */
 	remove : function ( obj, event, id, st ) {
 		obj = utility.object( obj );
-		st  = st || state.getCurrent()
+		st  = st || state.getCurrent();
 
 		if ( obj instanceof Array ) {
 			return array.each( obj, function ( i ) {
@@ -372,19 +369,18 @@ var observer = {
 			});
 		}
 
-		var instance = null,
-		    l        = observer.listeners,
-		    a        = observer.alisteners,
-		    ev       = observer.elisteners,
-		    cl       = observer.clisteners,
-		    o        = observer.id( obj ),
-		    add      = ( typeof obj.addEventListener === "function" ),
-		    reg      = ( typeof obj.attachEvent === "object" || add ),
+		var l   = observer.listeners,
+		    a   = observer.alisteners,
+		    ev  = observer.elisteners,
+		    cl  = observer.clisteners,
+		    o   = observer.id( obj ),
+		    add = ( typeof obj.addEventListener === "function" ),
+		    reg = ( typeof obj.attachEvent === "object" || add ),
 		    fn;
 
 		/**
 		 * Removes DOM event hook
-		 * 
+		 *
 		 * @method fn
 		 * @param  {Mixed}  event String or null
 		 * @param  {Number} i     Amount of listeners being removed
@@ -397,7 +393,7 @@ var observer = {
 				obj[add ? "removeEventListener" : "detachEvent"]( ( add ? "" : "on" ) + event, ev[o + "_" + event], false );
 				delete ev[o + "_" + event];
 			}
-		}
+		};
 
 		if ( l[o] === undefined ) {
 			return obj;
@@ -449,7 +445,7 @@ var observer = {
 
 	/**
 	 * Returns the sum of active listeners for one or all Objects
-	 * 
+	 *
 	 * @method sum
 	 * @param  {Mixed} obj [Optional] Entity
 	 * @return {Object}     Object with total listeners per event
@@ -472,9 +468,9 @@ var observer = {
 
 	/**
 	 * Syncs `alisteners` with `listeners`
-	 * 
+	 *
 	 * @method sync
-	 * @param  {String} obj   Object ID 
+	 * @param  {String} obj   Object ID
 	 * @param  {String} event Event
 	 * @param  {String} st    Application state
 	 * @return {Undefined}    undefined

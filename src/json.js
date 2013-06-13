@@ -7,7 +7,7 @@
 var json = {
 	/**
 	 * Transforms JSON to CSV
-	 * 
+	 *
 	 * @param  {String}  arg JSON  string to transform
 	 * @param  {String}  delimiter [Optional] Character to separate fields
 	 * @param  {Boolean} header    [Optional] False to not include field names as first row

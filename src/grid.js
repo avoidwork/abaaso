@@ -1,13 +1,13 @@
 /**
  * DataGrid
- * 
+ *
  * @class grid
  * @namespace abaaso
  */
 var grid = {
 	/**
 	 * DataGrid factory
-	 * 
+	 *
 	 * @param  {Object}  element     Element to receive DataGrid
 	 * @param  {Object}  store       DataStore
 	 * @param  {Array}   fields      Array of fields to display
@@ -27,7 +27,7 @@ var grid = {
 	methods : {
 		/**
 		 * Exports data grid records
-		 * 
+		 *
 		 * @return {Array} Record set
 		 */
 		dump : function () {
@@ -36,7 +36,7 @@ var grid = {
 
 		/**
 		 * Initializes DataGrid
-		 * 
+		 *
 		 * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
 		 * @return {Object}          Instance
 		 */
@@ -97,7 +97,7 @@ var grid = {
 
 		/**
 		 * Refreshes the DataGrid
-		 * 
+		 *
 		 * @return {Object} Instance
 		 */
 		refresh : function () {
@@ -121,7 +121,7 @@ var grid = {
 
 		/**
 		 * Sorts the DataGrid when a column header is clicked
-		 * 
+		 *
 		 * @param  {Object} e Event
 		 * @return {Object}   Instance
 		 */
@@ -140,14 +140,14 @@ var grid = {
 				array.remove( this.sortOrder, field );
 				this.sortOrder.splice( 0, 0, field );
 				this.refresh();
-			};
+			}
 
 			return this;
 		},
 
 		/**
 		 * Tears down the DataGrid
-		 * 
+		 *
 		 * @return {Object} Instance
 		 */
 		teardown : function () {
@@ -170,7 +170,7 @@ var grid = {
 
 /**
  * DataGrid factory
- * 
+ *
  * @class DataGrid
  * @namespace abaaso
  * @param  {Object}  element  Element to receive DataGrid
@@ -185,10 +185,8 @@ function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	var sortOrder;
 
 	if ( options !== undefined && !string.isEmpty( options.order ) ) {
-		sortOrder = string.explode( options.order );
-
-		sortOrder = sortOrder.map(function ( i ) {
-			return i.replace( /\s+.*/, "" );
+		sortOrder = string.explode( options.order ).map( function ( i ) {
+			return i.replace( regex.after_space, "" );
 		});
 	}
 
@@ -202,7 +200,7 @@ function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	this.store       = store;
 	this.sortable    = sortable  || [];
 	this.sortOrder   = sortOrder || sortable || [];
-};
+}
 
 // Setting prototype & constructor loop
 DataGrid.prototype = grid.methods;
