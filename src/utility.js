@@ -1004,10 +1004,10 @@ var utility = {
 		else {
 			utility.iterate( arg, function ( v, k ) {
 				if ( typeof v === "string" ) {
-					element.html( element.create( k, frag ), v );
+					element.html( element.create( k, undefined, frag ), v );
 				}
 				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) {
-					utility.tpl( v, element.create( k, frag ) );
+					utility.tpl( v, element.create( k, undefined, frag ) );
 				}
 			});
 		}
