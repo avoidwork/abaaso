@@ -18,6 +18,7 @@ var regex = {
 	blackberry              : /blackberry/i,
 	"boolean"               : /^(true|false)?$/,
 	boolean_number_string   : /boolean|number|string/,
+	cdata                   : /\&|<|>|\"|\'|\t|\r|\n|\@|\$/,
 	checked_disabled        : /checked|disabled/i,
 	chrome                  : /chrome/i,
 	complete_loaded         : /^(complete|loaded)$/i,

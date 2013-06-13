@@ -67,8 +67,8 @@ var xml = {
 			node = function ( name, value ) {
 				var output = "<n>v</n>";
 
-				output = output.replace( "v", ( /\&|\<|\>|\"|\'|\t|\r|\n|\@|\$/g.test( value ) ? "<![CDATA[" + value + "]]>" : value ) );
-				return output.replace(/\<(\/)?n\>/g, "<$1" + name + ">");
+				output = output.replace( "v", ( regex.cdata.test( value ) ? "<![CDATA[" + value + "]]>" : value ) );
+				return output.replace(/<(\/)?n>/g, "<$1" + name + ">");
 			};
 
 			if ( arg !== null && arg.xml !== undefined ) {
