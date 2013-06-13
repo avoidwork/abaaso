@@ -77,7 +77,11 @@ module.exports = function (grunt) {
 		watch : {
 			js : {
 				files : "<%= concat.dist.src %>",
-				tasks : "build:js"
+				tasks : "build"
+			},
+			pkg: {
+				files : "package.json",
+				tasks : "build"
 			}
 		}
 	});
@@ -88,9 +92,11 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
+	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// aliases
-	grunt.registerTask("test", ["nodeunit", "jshint"]);
-	grunt.registerTask("build", ["concat", "sed"]);
-	grunt.registerTask("default", ["build", "test", "exec"]);
+	grunt.registerTask("lint", ["jshint"]);
+	grunt.registerTask("test", ["nodeunit"]);
+	grunt.registerTask("build", ["concat", "sed", "exec"]);
+	grunt.registerTask("default", ["build", "test", "lint"]);
 };
