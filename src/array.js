@@ -305,8 +305,9 @@ var array = {
 			nth = l - 1;
 		}
 
-		for ( ; i <= nth; i++ ) {
+		while ( i <= nth ) {
 			obj[i] = fn ? arg( obj[i] ) : arg;
+			i++;
 		}
 
 		return obj;
