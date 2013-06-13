@@ -265,7 +265,7 @@ var client = {
 
 			result = xhr.responseXML;
 		}
-		else if ( xml.valid( xhr.responseText ) ) {
+		else if ( type === "text/plain" && regex.is_xml.test( xhr.responseText) && xml.valid( xhr.responseText ) ) {
 			result = xml.decode( xhr.responseText );
 		}
 		else {
