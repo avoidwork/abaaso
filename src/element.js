@@ -642,7 +642,8 @@ var element = {
 	 * @return {Object}    Object {top: n, right: n, bottom: n, left: n}
 	 */
 	position : function ( obj ) {
-		var left, top, height, width;
+		obj = obj || document.body;
+		var left, top, right, bottom, height, width;
 
 		left   = top = 0;
 		width  = obj.offsetWidth;
@@ -656,12 +657,19 @@ var element = {
 				left += obj.offsetLeft;
 				top  += obj.offsetTop;
 			}
+
+			right  = document.body.offsetWidth  - ( left + width );
+			bottom = document.body.offsetHeight - ( top  + height );
+		}
+		else {
+			right  = width;
+			bottom = height;
 		}
 
 		return {
 			top    : top,
-			right  : document.documentElement.clientWidth  - ( left + width ),
-			bottom : document.documentElement.clientHeight + global.scrollY - ( top + height ),
+			right  : right,
+			bottom : bottom,
 			left   : left
 		};
 	},
