@@ -77,11 +77,11 @@ module.exports = function (grunt) {
 		watch : {
 			js : {
 				files : "<%= concat.dist.src %>",
-				tasks : "build"
+				tasks : "default"
 			},
 			pkg: {
 				files : "package.json",
-				tasks : "build"
+				tasks : "default"
 			}
 		}
 	});
@@ -95,8 +95,7 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// aliases
-	grunt.registerTask("lint", ["jshint"]);
-	grunt.registerTask("test", ["nodeunit"]);
+	grunt.registerTask("test", ["nodeunit", "jshint"]);
 	grunt.registerTask("build", ["concat", "sed", "exec"]);
-	grunt.registerTask("default", ["build", "test", "lint"]);
+	grunt.registerTask("default", ["build", "test"]);
 };
