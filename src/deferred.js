@@ -166,30 +166,35 @@ function Deferred () {
 	this.onAlways = [];
 	this.onFail   = [];
 
-	utility.when( this.promise ).then( function ( arg ) {
-		array.each( self.onDone, function ( i ) {
-			i( arg );
-		});
+	// Setting handlers to execute Arrays of Functions
+	this.promise.then( function ( arg ) {
+		utility.defer( function () {
+			array.each( self.onDone, function ( i ) {
+				i( arg );
+			});
 
-		array.each( self.onAlways, function ( i ) {
-			i( arg );
-		});
+			array.each( self.onAlways, function ( i ) {
+				i( arg );
+			});
 
-		self.onAlways = [];
-		self.onDone   = [];
-		self.onFail   = [];
+			self.onAlways = [];
+			self.onDone   = [];
+			self.onFail   = [];
+		});
 	}, function ( arg ) {
-		array.each( self.onFail, function ( i ) {
-			i( arg );
-		});
+		utility.defer( function () {
+			array.each( self.onFail, function ( i ) {
+				i( arg );
+			});
 
-		array.each( self.onAlways, function ( i ) {
-			i( arg );
-		});
+			array.each( self.onAlways, function ( i ) {
+				i( arg );
+			});
 
-		self.onAlways = [];
-		self.onDone   = [];
-		self.onFail   = [];
+			self.onAlways = [];
+			self.onDone   = [];
+			self.onFail   = [];
+		});
 	});
 }
 
