@@ -127,7 +127,7 @@ var deferred = {
 		},
 
 		/**
-		 * Gets the state of the deferred
+		 * Gets the state of the Promise
 		 *
 		 * @method state
 		 * @return {String} Describes the state
@@ -137,7 +137,7 @@ var deferred = {
 		},
 
 		/**
-		 * Registers handler(s) for a Promise
+		 * Registers handler(s) for the Promise
 		 *
 		 * @method then
 		 * @param  {Function} success Executed when/if promise is resolved
