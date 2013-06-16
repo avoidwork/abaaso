@@ -1055,7 +1055,7 @@ var utility = {
 	},
 
 	/**
-	 * Accepts 1+ Deferreds or Promises as arguments or an Array
+	 * Accepts Deferreds or Promises as arguments or an Array
 	 *
 	 * @method when
 	 * @return {Object} Deferred
