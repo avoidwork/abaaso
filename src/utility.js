@@ -1055,59 +1055,58 @@ var utility = {
 	},
 
 	/**
-	 * Accepts 1 or more Promises as args or an Array, and returns a Promise which is reconciled
-	 * after all input Promises have been reconciled
+	 * Accepts 1+ Deferreds or Promises as arguments or an Array
 	 *
 	 * @method when
-	 * @return {Object} Promise
+	 * @return {Object} Deferred
 	 */
 	when : function () {
-		var i        = 0,
-		    deferred = promise.factory(),
-		    promises = array.cast( arguments ),
+		var i     = 0,
+		    defer = deferred.factory(),
+		    args  = array.cast( arguments ),
 		    nth;
 
 		// Did we receive an Array? if so it overrides any other arguments
-		if ( promises[0] instanceof Array ) {
-			promises = promises[0];
+		if ( args[0] instanceof Array ) {
+			args = args[0];
 		}
 
-		// How many promises to observe?
-		nth = promises.length;
+		// How many instances to observe?
+		nth = args.length;
 
-		// Zero, end on next tick
+		// None, end on next tick
 		if ( nth === 0 ) {
-			deferred.resolve( null );
+			defer.resolve( null );
 		}
 		// Setup and wait
 		else {
-			array.each( promises, function ( p ) {
+			array.each( args, function ( p ) {
 				p.then( function () {
-					if ( ++i === nth && !deferred.resolved()) {
-						if ( promises.length > 1 ) {
-							deferred.resolve( promises.map( function ( obj ) {
+					if ( ++i === nth && !defer.isResolved()) {
+						if ( args.length > 1 ) {
+							defer.resolve( args.map( function ( obj ) {
 								return obj.outcome;
 							}));
 						}
 						else {
-							deferred.resolve( promises[0].outcome );
+							defer.resolve( args[0].outcome );
 						}
 					}
 				}, function () {
-					if ( !deferred.resolved() ) {
-						if ( promises.length > 1 ) {
-							deferred.reject( promises.map( function ( obj ) {
+					if ( !defer.isResolved() ) {
+						if ( args.length > 1 ) {
+							defer.reject( args.map( function ( obj ) {
 								return obj.outcome;
 							}));
 						}
 						else {
-							deferred.reject( promises[0].outcome );
+							defer.reject( args[0].outcome );
 						}
 					}
 				});
 			});
 		}
 
-		return deferred;
+		return defer;
 	}
 };
