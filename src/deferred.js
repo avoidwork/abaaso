@@ -137,7 +137,7 @@ var deferred = {
 		},
 
 		/**
-		 * Registers handler( s ) for a Promise
+		 * Registers handler(s) for a Promise
 		 *
 		 * @method then
 		 * @param  {Function} success Executed when/if promise is resolved

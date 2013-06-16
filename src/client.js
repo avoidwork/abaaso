@@ -180,6 +180,7 @@ var client = {
 	 * @method cors
 	 * @param  {String} uri  URI to parse
 	 * @return {Boolean}     True if CORS
+	 * @private
 	 */
 	cors : function ( uri ) {
 		return ( !server && uri.indexOf( "//" ) > -1 && uri.indexOf( "//" + location.host ) === -1 );
@@ -315,10 +316,10 @@ var client = {
 	 * @param  {Function} success A handler function to execute when an appropriate response been received
 	 * @param  {Function} failure [Optional] A handler function to execute on error
 	 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request ( CORS )
-	 * @return {Object}           Promise
+	 * @return {Object}           Deferred
 	 */
 	jsonp : function ( uri, success, failure, args ) {
-		var deferred = promise.factory(),
+		var defer    = deferred.factory(),
 		    callback = "callback", cbid, s;
 
 		if ( external === undefined ) {
@@ -333,7 +334,7 @@ var client = {
 			callback = args.callback;
 		}
 
-		deferred.then( function (arg ) {
+		defer.then( function (arg ) {
 			if ( typeof success === "function") {
 				success( arg );
 			}
@@ -356,17 +357,17 @@ var client = {
 			clearTimeout( utility.timer[cbid] );
 			delete utility.timer[cbid];
 			delete global.abaaso.callback[cbid];
-			deferred.resolve( arg );
+			defer.resolve( arg );
 			element.destroy( s );
 		};
 
 		s = element.create( "script", {src: uri, type: "text/javascript"}, $( "head" )[0] );
 		
 		utility.defer( function () {
-			deferred.reject( undefined );
+			defer.reject( undefined );
 		}, 30000, cbid );
 
-		return deferred;
+		return defer;
 	},
 
 	/**
@@ -387,42 +388,46 @@ var client = {
 	 * @param  {Mixed}    args    [Optional] Data to send with the request
 	 * @param  {Object}   headers [Optional] Custom request headers ( can be used to set withCredentials )
 	 * @param  {Number}   timeout [Optional] Timeout in milliseconds, default is 30000
-	 * @return {Object}           Promise
-	 * @private
+	 * @return {Object}           Deferred
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, deferred, deferred2;
+		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, defer, defer2;
 
 		if ( regex.put_post.test( type ) && args === undefined ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
-		uri          = utility.parse( uri ).href;
-		type         = type.toLowerCase();
-		headers      = headers instanceof Object ? headers : null;
-		cors         = client.cors( uri );
-		xhr          = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : ( !client.ie || ( client.version > 8 || type !== "patch")  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" ) );
-		payload      = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args !== undefined ? args : null;
-		cached       = type === "get" ? cache.get( uri ) : false;
-		typed        = type.capitalize();
-		contentType  = null;
-		doc          = ( typeof Document !== "undefined" );
-		ab           = ( typeof ArrayBuffer !== "undefined" );
-		blob         = ( typeof Blob !== "undefined" );
-		deferred     = promise.factory();
+		uri         = utility.parse( uri ).href;
+		type        = type.toLowerCase();
+		headers     = headers instanceof Object ? headers : null;
+		cors        = client.cors( uri );
+		xhr         = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : ( !client.ie || ( client.version > 8 || type !== "patch")  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" ) );
+		payload     = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args !== undefined ? args : null;
+		cached      = type === "get" ? cache.get( uri ) : false;
+		typed       = type.capitalize();
+		contentType = null;
+		doc         = ( typeof Document !== "undefined" );
+		ab          = ( typeof ArrayBuffer !== "undefined" );
+		blob        = ( typeof Blob !== "undefined" );
+		defer       = deferred.factory();
+		defer2      = deferred.factory();
 
-		// Using a promise to resolve request
-		deferred2 = deferred.then( function ( arg ) {
+		// Using a deferred to resolve request
+		defer.then( function ( arg ) {
 			if ( typeof success === "function" ) {
 				success.call( uri, arg, xhr );
 			}
+
+			defer2.resolve( arg );
 
 			xhr = null;
 		}, function ( e ) {
 			if ( typeof failure === "function" ) {
 				failure.call( uri, e, xhr );
 			}
+
+			defer2.reject( e );
 
 			xhr = null;
 
@@ -433,7 +438,7 @@ var client = {
 
 		if ( !cors && !regex.get_headers.test( type ) && client.allows( uri, type ) === false ) {
 			xhr.status = 405;
-			deferred.reject( null );
+			defer.reject( null );
 
 			return uri.fire( "failed" + typed, null, xhr );
 		}
@@ -446,12 +451,12 @@ var client = {
 				xhr._resheaders = cached.headers;
 			}
 
-			deferred.resolve( cached.response );
+			defer.resolve( cached.response );
 			uri.fire( "afterGet", cached.response, xhr );
 		}
 		else {
 			xhr[typeof xhr.onreadystatechange !== "undefined" ? "onreadystatechange" : "onload"] = function () {
-				client.response( xhr, uri, type, deferred );
+				client.response( xhr, uri, type, defer );
 			};
 
 			// Setting timeout
@@ -554,7 +559,7 @@ var client = {
 			payload !== null ? xhr.send( payload ) : xhr.send();
 		}
 
-		return deferred2;
+		return defer2;
 	},
 
 	/**
@@ -574,11 +579,11 @@ var client = {
 	 * @param  {Object} xhr      XMLHttpRequest Object
 	 * @param  {String} uri      URI to query
 	 * @param  {String} type     Type of request
-	 * @param  {Object} deferred Promise to reconcile with the response
+	 * @param  {Object} defer    Deferred to reconcile with the response
 	 * @return {Undefined}       undefined
 	 * @private
 	 */
-	response : function ( xhr, uri, type, deferred ) {
+	response : function ( xhr, uri, type, defer ) {
 		var typed    = string.capitalize( type.toLowerCase() ),
 		    xhrState = null,
 		    xdr      = client.ie && xhr.readyState === undefined,
@@ -586,7 +591,7 @@ var client = {
 
 		// server-side exception handling
 		exception = function ( e, xhr ) {
-			deferred.reject( e );
+			defer.reject( e );
 			error( e, arguments, this, true );
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
@@ -608,12 +613,12 @@ var client = {
 					uri.fire( "headers", o.headers, xhr );
 
 					if ( type === "head" ) {
-						deferred.resolve( o.headers );
+						defer.resolve( o.headers );
 
 						return uri.fire( "afterHead", o.headers );
 					}
 					else if ( type === "options" ) {
-						deferred.resolve( o.headers );
+						defer.resolve( o.headers );
 
 						return uri.fire( "afterOptions", o.headers );
 					}
@@ -648,7 +653,7 @@ var client = {
 						case 202:
 						case 203:
 						case 206:
-							deferred.resolve( r );
+							defer.resolve( r );
 							uri.fire( "after" + typed, r, xhr );
 							break;
 						case 201:
@@ -658,7 +663,7 @@ var client = {
 							else {
 								redirect = string.trim ( o.headers.Location || r );
 								client.request( redirect, "GET", function ( arg ) {
-									deferred.resolve ( arg );
+									defer.resolve ( arg );
 									uri.fire( "after" + typed, arg, xhr );
 								}, function ( e ) {
 									exception( e, xhr );
@@ -667,11 +672,11 @@ var client = {
 							}
 							break;
 						case 204:
-							deferred.resolve( null );
+							defer.resolve( null );
 							uri.fire( "after" + typed, null, xhr );
 							break;
 						case 205:
-							deferred.resolve( null );
+							defer.resolve( null );
 							uri.fire( "reset", null, xhr );
 							break;
 					}
@@ -700,7 +705,7 @@ var client = {
 			r = client.parse( xhr, "text/plain" );
 			cache.set( uri, "permission", client.bit( ["get"] ) );
 			cache.set( uri, "response", r );
-			deferred.resolve( r );
+			defer.resolve( r );
 			uri.fire( "afterGet", r, xhr );
 		}
 	},
