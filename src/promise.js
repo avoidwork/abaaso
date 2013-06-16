@@ -67,7 +67,7 @@ var promise = {
 		},
 
 		/**
-		 * Registers handler( s ) for a Promise
+		 * Registers handler(s) for a Promise
 		 *
 		 * @method then
 		 * @param  {Function} success Executed when/if promise is resolved
@@ -153,7 +153,7 @@ var promise = {
 	},
 
 	/**
-	 * Resolves a Promise ( fulfilled or failed )
+	 * Resolves a Promise (fulfilled or failed)
 	 *
 	 * @method resolve
 	 * @param  {String} state State to resolve

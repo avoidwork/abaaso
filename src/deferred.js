@@ -20,6 +20,7 @@ var deferred = {
 		/**
 		 * Registers a function to execute after Promise is reconciled
 		 *
+		 * @method always
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
@@ -40,6 +41,7 @@ var deferred = {
 		/**
 		 * Registers a function to execute after Promise is resolved
 		 *
+		 * @method done
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
@@ -60,6 +62,7 @@ var deferred = {
 		/**
 		 * Registers a function to execute after Promise is rejected
 		 *
+		 * @method fail
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
@@ -80,6 +83,7 @@ var deferred = {
 		/**
 		 * Determines if Deferred is rejected
 		 *
+		 * @method isRejected
 		 * @return {Boolean} `true` if rejected
 		 */
 		isRejected : function () {
@@ -89,6 +93,7 @@ var deferred = {
 		/**
 		 * Determines if Deferred is resolved
 		 *
+		 * @method isResolved
 		 * @return {Boolean} `true` if resolved
 		 */
 		isResolved : function () {
@@ -98,6 +103,7 @@ var deferred = {
 		/**
 		 * Rejects the Promise
 		 *
+		 * @method reject
 		 * @param  {Mixed} arg Rejection outcome
 		 * @return {Object}    Deferred
 		 */
@@ -110,6 +116,7 @@ var deferred = {
 		/**
 		 * Resolves the Promise
 		 *
+		 * @method resolve
 		 * @param  {Mixed} arg Resolution outcome
 		 * @return {Object}    Deferred
 		 */
@@ -117,6 +124,28 @@ var deferred = {
 			this.promise.resolve.call( this.promise, arg );
 
 			return this;
+		},
+
+		/**
+		 * Gets the state of the deferred
+		 *
+		 * @method state
+		 * @return {String} Describes the state
+		 */
+		state : function () {
+			return this.promise.state;
+		},
+
+		/**
+		 * Registers handler(s) for a Promise
+		 *
+		 * @method then
+		 * @param  {Function} success Executed when/if promise is resolved
+		 * @param  {Function} failure [Optional] Executed when/if promise is broken
+		 * @return {Object}           New Promise instance
+		 */
+		then : function ( success, failure ) {
+			return this.promise.then( success, failure );
 		}
 	}
 };
@@ -137,30 +166,35 @@ function Deferred () {
 	this.onAlways = [];
 	this.onFail   = [];
 
-	utility.when( this.promise ).then( function ( arg ) {
-		array.each( self.onDone, function ( i ) {
-			i( arg );
-		});
+	// Setting handlers to execute Arrays of Functions
+	this.promise.then( function ( arg ) {
+		utility.defer( function () {
+			array.each( self.onDone, function ( i ) {
+				i( arg );
+			});
 
-		array.each( self.onAlways, function ( i ) {
-			i( arg );
-		});
+			array.each( self.onAlways, function ( i ) {
+				i( arg );
+			});
 
-		self.onAlways = [];
-		self.onDone   = [];
-		self.onFail   = [];
+			self.onAlways = [];
+			self.onDone   = [];
+			self.onFail   = [];
+		});
 	}, function ( arg ) {
-		array.each( self.onFail, function ( i ) {
-			i( arg );
-		});
+		utility.defer( function () {
+			array.each( self.onFail, function ( i ) {
+				i( arg );
+			});
 
-		array.each( self.onAlways, function ( i ) {
-			i( arg );
-		});
+			array.each( self.onAlways, function ( i ) {
+				i( arg );
+			});
 
-		self.onAlways = [];
-		self.onDone   = [];
-		self.onFail   = [];
+			self.onAlways = [];
+			self.onDone   = [];
+			self.onFail   = [];
+		});
 	});
 }
 

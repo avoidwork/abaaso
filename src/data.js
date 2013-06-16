@@ -53,7 +53,7 @@ var data = {
 		 * @param  {Mixed}   data    Array of keys or indices to delete, or Object containing multiple records to set
 		 * @param  {Boolean} sync    [Optional] Syncs store with data, if true everything is erased
 		 * @param  {Number}  chunk   [Optional] Size to chunk Array to batch set or delete
-		 * @return {Object}          Promise
+		 * @return {Object}          Deferred
 		 */
 		batch : function ( type, data, sync, chunk ) {
 			type    = type.toString().toLowerCase();
@@ -69,10 +69,11 @@ var data = {
 			    r        = 0,
 			    nth      = data.length,
 			    f        = false,
-			    deferred = promise.factory(),
-			    complete, deferred2, failure, set, del, parsed;
+			    defer    = deferred.factory(),
+			    defer2   = deferred.factory(),
+			    complete, failure, set, del, parsed;
 
-			deferred2 = deferred.then( function ( arg ) {
+			defer.then( function ( arg ) {
 				self.loaded = true;
 
 				if ( regex.del.test( type ) ) {
@@ -90,26 +91,28 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataBatch", arg );
 				}
+
+				defer2.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataBatch", e );
 				}
 
-				throw e;
+				defer2.reject( e );
 			});
 
 			complete = function ( arg ) {
-				deferred.resolve( arg );
+				defer.resolve( arg );
 			};
 
 			failure = function ( arg ) {
-				deferred.reject( arg );
+				defer.reject( arg );
 			};
 
 			set = function ( arg, key ) {
-				var data     = utility.clone( arg ),
-				    deferred = promise.factory(),
-				    rec      = {};
+				var data  = utility.clone( arg ),
+				    defer = deferred.factory(),
+				    rec   = {};
 
 				if ( typeof data.batch !== "function" ) {
 					rec = data;
@@ -127,7 +130,7 @@ var data = {
 					delete rec[self.key];
 				}
 
-				deferred.then( function () {
+				defer.then( function () {
 					if ( ++r === nth ) {
 						complete( self.records );
 					}
@@ -140,24 +143,22 @@ var data = {
 
 				if ( rec instanceof Array && self.uri !== null ) {
 					self.generate( key, undefined ).then( function ( arg ) {
-						deferred.resolve( arg );
+						defer.resolve( arg );
 					}, function ( e ) {
-						deferred.reject( e );
+						defer.reject( e );
 					});
 				}
 				else {
 					self.set( key, rec, true ).then( function ( arg ) {
-						deferred.resolve( arg );
+						defer.resolve( arg );
 					}, function ( e ) {
-						deferred.reject( e );
+						defer.reject( e );
 					});
 				}
 			};
 
 			del = function ( i ) {
-				var deferred = promise.factory();
-
-				deferred.then( function () {
+				self.del( i, false, true ).then( function () {
 					if ( ++r === nth ) {
 						complete( self.records );
 					}
@@ -166,12 +167,6 @@ var data = {
 						f = true;
 						failure( e );
 					}
-				});
-
-				self.del( i, false, true ).then( function ( arg ) {
-					deferred.resolve( arg );
-				}, function ( e ) {
-					deferred.reject( e );
 				});
 			};
 
@@ -245,7 +240,7 @@ var data = {
 				}
 			}
 
-			return deferred2;
+			return defer2;
 		},
 
 		/**
@@ -325,17 +320,18 @@ var data = {
 		 *
 		 * @method crawl
 		 * @param  {Mixed}  arg Record, key or index
-		 * @return {Object}     Promise
+		 * @return {Object}     Deferred
 		 */
 		crawl : function ( arg ) {
-			var self     = this,
-			    events   = ( this.events === true ),
-			    record   = ( arg instanceof Object ) ? arg : this.get( arg ),
-			    uri      = this.uri === null ? "" : this.uri,
-			    deferred = promise.factory(),
-			    i        = 0,
-			    nth      = 0,
-			    build, complete, deferred2, setup;
+			var self   = this,
+			    events = ( this.events === true ),
+			    record = ( arg instanceof Object ) ? arg : this.get( arg ),
+			    uri    = this.uri === null ? "" : this.uri,
+			    defer  = deferred.factory(),
+			    defer2 = deferred.factory(),
+			    i      = 0,
+			    nth    = 0,
+			    build, complete, setup;
 
 			if ( record === undefined ) {
 				throw new Error( label.error.invalidArguments );
@@ -343,8 +339,8 @@ var data = {
 
 			this.crawled = true;
 
-			deferred2 = deferred.then( function ( arg ) {
-				return arg;
+			defer.then( function ( arg ) {
+				defer2.resolve( arg );
 			});
 
 			/**
@@ -381,7 +377,7 @@ var data = {
 			 */
 			complete = function () {
 				if ( ++i === nth ) {
-					deferred.resolve( nth );
+					defer.resolve( nth );
 				}
 			};
 
@@ -414,15 +410,15 @@ var data = {
 
 			// Depth of recursion is controled by `maxDepth`
 			utility.iterate( record.data, function ( v, k ) {
-				var deferred;
+				var defer;
 
 				if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) ) {
 					return;
 				}
 
-				nth      = array.cast( record.data ).length;
-				deferred = promise.factory();
-				deferred.then( function ( arg ) {
+				nth   = array.cast( record.data ).length;
+				defer = deferred.factory();
+				defer.then( function ( arg ) {
 					if ( events ) {
 						observer.fire( record.data[k], "afterDataRetrieve", arg );
 					}
@@ -446,9 +442,9 @@ var data = {
 					}
 
 					record.data[k].data.batch( "set", v, true, undefined ).then( function ( arg ) {
-						deferred.resolve( arg );
+						defer.resolve( arg );
 					}, function ( e ) {
-						deferred.reject( e );
+						defer.reject( e );
 					});
 				}
 				// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
@@ -456,14 +452,14 @@ var data = {
 					record.data[k] = setup( k, self );
 					v = build( v, uri );
 					record.data[k].data.setUri( v ).then( function ( arg ) {
-						deferred.resolve( arg );
+						defer.resolve( arg );
 					}, function ( e ) {
-						deferred.reject( e );
+						defer.reject( e );
 					});
 				}
 			});
 
-			return deferred2;
+			return defer2;
 		},
 
 		/**
@@ -477,21 +473,22 @@ var data = {
 		 * @param  {Mixed}   record  Record key or index
 		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
 		 * @param  {Boolean} batch   [Optional] True if called by data.batch
-		 * @return {Object}          Promise
+		 * @return {Object}          Deferred
 		 */
 		del : function ( record, reindex, batch ) {
 			if ( record === undefined || !regex.number_string.test( typeof record ) ) {
 				throw new Error( label.error.invalidArguments );
 			}
 
-			reindex      = ( reindex !== false );
-			batch        = ( batch === true );
-			var self     = this,
-			    events   = ( this.events === true ),
-			    deferred = promise.factory(),
-			    deferred2, key, args, uri, p;
+			reindex    = ( reindex !== false );
+			batch      = ( batch === true );
+			var self   = this,
+			    events = ( this.events === true ),
+			    defer  = deferred.factory(),
+			    defer2 = deferred.factory(),
+			    key, args, uri, p;
 
-			deferred2 = deferred.then( function ( arg ) {
+			defer.then( function ( arg ) {
 				var record = self.get( arg.record );
 
 				self.records.remove( self.keys[arg.key] );
@@ -526,12 +523,14 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataDelete", record );
 				}
+
+				defer2.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataDelete", e );
 				}
 
-				throw e;
+				defer2.reject( e );
 			});
 
 			if ( typeof record === "string" ) {
@@ -564,20 +563,20 @@ var data = {
 			}
 
 			if ( batch || this.callback !== null || this.uri === null ) {
-				deferred.resolve( args );
+				defer.resolve( args );
 			}
 			else if ( regex.true_undefined.test( p ) ) {
 				client.request(uri, "DELETE", function () {
-					deferred.resolve( args );
+					defer.resolve( args );
 				}, function ( e ) {
-					deferred.reject( e );
+					defer.reject( e );
 				}, utility.merge( {withCredentials: this.credentials}, this.headers) );
 			}
 			else {
-				deferred.reject( args );
+				defer.reject( args );
 			}
 
-			return deferred2;
+			return defer2;
 		},
 
 		/**
@@ -863,14 +862,14 @@ var data = {
 		 *
 		 * @param  {Object} key Record key
 		 * @param  {Mixed}  arg [Optional] Array or URI String
-		 * @return {Object}     Promise
+		 * @return {Object}     Deferred
 		 */
 		generate : function ( key, arg ) {
-			var self     = this,
-			    deferred = promise.factory(),
-			    params   = {},
-			    recs     = null,
-			    deferred2, fn, idx;
+			var self   = this,
+			    defer  = deferred.factory(),
+			    defer2 = deferred.factory(),
+			    recs   = null,
+			    fn, idx, params;
 			
 			params = {
 				depth     : this.depth + 1,
@@ -885,10 +884,10 @@ var data = {
 				source    : this.source
 			};
 
-			deferred2 = deferred.then( function (arg ) {
-				return arg;
+			defer.then( function ( arg ) {
+				defer2.resolve( arg );
 			}, function ( e ) {
-				throw e;
+				defer2.reject( e );
 			});
 
 			fn = function () {
@@ -910,13 +909,13 @@ var data = {
 						// Conditionally making the store RESTful
 						if ( arg !== undefined ) {
 							self.records[idx].data.setUri( arg ).then( function (arg ) {
-								deferred.resolve( arg );
+								defer.resolve( arg );
 							}, function ( e ) {
-								deferred.reject( e );
+								defer.reject( e );
 							});
 						}
 						else {
-							deferred.resolve( self.records[idx].data.records );
+							defer.resolve( self.records[idx].data.records );
 						}
 					}
 				}
@@ -933,14 +932,14 @@ var data = {
 				fn();
 			}
 			else {
-				this.set( key, {}, true).then( function ( arg ) {
+				this.set( key, {}, true ).then( function ( arg ) {
 					idx = self.keys[arg.key];
 					self.collections.add( arg.key );
 					fn();
 				});
 			}
 
-			return deferred2;
+			return defer2;
 		},
 
 		/**
@@ -965,7 +964,7 @@ var data = {
 			else if ( type === "string" && record.indexOf( "," ) > -1 ) {
 				r = [];
 				array.each( string.explode( record ), function ( i ) {
-					if ( !isNaN( i )) {
+					if ( !isNaN( i ) ) {
 						i = number.parse( i, 10 );
 					}
 
@@ -1081,29 +1080,30 @@ var data = {
 		 * @param  {Mixed}   key   [Optional] Integer or String to use as a Primary Key
 		 * @param  {Object}  arg   Key:Value pairs to set as field values
 		 * @param  {Boolean} batch [Optional] True if called by data.batch
-		 * @return {Object}        Promise
+		 * @return {Object}        Deferred
 		 */
 		set : function ( key, arg, batch ) {
-			batch        = ( batch === true );
-			var self     = this,
-			    deferred = promise.factory(),
-			    partial  = false,
-			    data, deferred2, record, method, events, args, uri, p;
+			batch       = ( batch === true );
+			var self    = this,
+			    defer   = deferred.factory(),
+			    defer2  = deferred.factory(),
+			    partial = false,
+			    data, record, method, events, args, uri, p;
 
 			if ( !( arg instanceof Object ) ) {
 				throw new Error( label.error.invalidArguments );
 			}
 
 			// Chaining a promise to return
-			deferred2 = deferred.then( function ( arg ) {
-				var data     = {data: null, key: arg.key, record: arg.record, result: arg.result},
-				    deferred = promise.factory(),
+			defer.then( function ( arg ) {
+				var data  = {data: null, key: arg.key, record: arg.record, result: arg.result},
+				    defer = deferred.factory(),
 				    record, uri;
 
 				// Making sure nothing is by reference
 				data.data = utility.clone( arg.data );
 
-				deferred.then( function ( arg ) {
+				defer.then( function ( arg ) {
 					if ( self.retrieve ) {
 						self.crawl( arg );
 					}
@@ -1121,12 +1121,14 @@ var data = {
 					if ( events ) {
 						observer.fire( self.parentNode, "afterDataSet", arg );
 					}
+
+					defer2.resolve( arg );
 				}, function ( e ) {
 					if ( events ) {
 						observer.fire( self.parentNode, "failedDataSet", e );
 					}
 
-					throw e;
+					defer2.reject( e );
 				});
 
 				self.views = {};
@@ -1142,7 +1144,7 @@ var data = {
 					if ( data.key === undefined ) {
 						if ( data.result === undefined ) {
 							self.total--;
-							deferred.reject( label.error.expectedObject );
+							defer.reject( label.error.expectedObject );
 						}
 					
 						if ( self.source !== null ) {
@@ -1175,7 +1177,7 @@ var data = {
 							delete record.data[self.key];
 						}
 
-						deferred.resolve( record );
+						defer.resolve( record );
 					}
 					else {
 						uri  = data.data[self.pointer];
@@ -1183,7 +1185,7 @@ var data = {
 						if ( uri === undefined || uri === null ) {
 							delete self.records[index];
 							delete self.keys[data.key];
-							deferred.reject( label.error.expectedObject );
+							defer.reject( label.error.expectedObject );
 						}
 
 						record.data = {};
@@ -1198,16 +1200,16 @@ var data = {
 							}
 
 							record.data = args;
-							deferred.resolve( record );
+							defer.resolve( record );
 						}, function ( e ) {
-							deferred.reject( e );
+							defer.reject( e );
 						}, self.headers );
 					}
 				}
 				else {
 					record = self.records[self.keys[data.record.key]];
 					record.data = data.data;
-					deferred.resolve( record );
+					defer.resolve( record );
 				}
 
 				return record;
@@ -1246,9 +1248,9 @@ var data = {
 			if ( data instanceof Array ) {
 				return this.generate( key ).then( function () {
 					self.get( key ).data.batch( "set", data ).then( function ( arg ) {
-						deferred.resolve( arg );
+						defer.resolve( arg );
 					}, function ( e ) {
-						deferred.reject( e );
+						defer.reject( e );
 					});
 				});
 			}
@@ -1305,21 +1307,21 @@ var data = {
 			}
 
 			if ( batch || this.callback !== null || this.uri === null ) {
-				deferred.resolve( args );
+				defer.resolve( args );
 			}
 			else if ( regex.true_undefined.test( p ) ) {
 				client.request( uri, method.toUpperCase(), function ( arg ) {
 					args.result = arg;
-					deferred.resolve( args );
+					defer.resolve( args );
 				}, function ( e ) {
-					deferred.reject( e );
+					defer.reject( e );
 				}, data, utility.merge( {withCredentials: this.credentials}, this.headers ) );
 			}
 			else {
-				deferred.reject( args );
+				defer.reject( args );
 			}
 
-			return deferred2;
+			return defer2;
 		},
 
 		/**
@@ -1368,10 +1370,10 @@ var data = {
 		 *
 		 * @method setUri
 		 * @param  {String} arg [Optional] API collection end point
-		 * @return {Object}     Promise
+		 * @return {Object}     Deferred
 		 */
 		setUri : function ( arg ) {
-			var deferred = promise.factory(),
+			var defer = deferred.factory(),
 			    result;
 
 			if ( arg !== null && string.isEmpty( arg ) ) {
@@ -1398,14 +1400,14 @@ var data = {
 					cache.expire( result, true );
 
 					this.sync( true ).then( function (arg ) {
-						deferred.resolve( arg );
+						defer.resolve( arg );
 					}, function ( e ) {
-						deferred.reject( e );
+						defer.reject( e );
 					});
 				}
 			}
 
-			return deferred;
+			return defer;
 		},
 
 		/**
@@ -1525,8 +1527,8 @@ var data = {
 			};
 
 			sort = function ( data, query, prop, reverse, pk ) {
-				var tmp    = [],
-				    sorted = [];
+				var tmp = [],
+				    sorted;
 
 				array.each( data, function ( i, idx ) {
 					var v  = pk ? i.key : i.data[prop];
@@ -1623,21 +1625,22 @@ var data = {
 		 *
 		 * @method sync
 		 * @param  {Boolean} reindex [Optional] True will reindex the data store
-		 * @return {Object}          Promise
+		 * @return {Object}          Deferred
 		 */
 		sync : function ( reindex ) {
 			if ( this.uri === null || string.isEmpty( this.uri ) ) {
 				throw new Error( label.error.invalidArguments );
 			}
 
-			reindex       = ( reindex === true );
-			var self      = this,
-			    events    = ( this.events === true ),
-			    deferred1 = promise.factory(),
-			    deferred2 = promise.factory(),
-			    deferred3, success, failure;
+			reindex    = ( reindex === true );
+			var self   = this,
+			    events = ( this.events === true ),
+			    defer1 = deferred.factory(),
+			    defer2 = deferred.factory(),
+			    defer3 = deferred.factory(),
+			    success, failure;
 
-			deferred1.then( function ( arg ) {
+			defer1.then( function ( arg ) {
 				if ( typeof arg !== "object" ) {
 					throw new Error( label.error.expectedObject );
 				}
@@ -1666,17 +1669,17 @@ var data = {
 				}
 
 				self.batch( "set", data, true, undefined ).then( function ( arg ) {
-					deferred2.resolve( arg );
+					defer2.resolve( arg );
 				}, function ( e ) {
-					deferred2.reject( e );
+					defer2.reject( e );
 				});
 
 				return data;
 			}, function ( e ) {
-				deferred2.reject( e );
+				defer2.reject( e );
 			});
 
-			deferred3 = deferred2.then( function ( arg ) {
+			defer2.then( function ( arg ) {
 				if ( reindex ) {
 					self.reindex();
 				}
@@ -1684,20 +1687,22 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataSync", arg );
 				}
+
+				defer3.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataSync", e );
 				}
 
-				throw e;
+				defer3.reject( e );
 			});
 
 			success = function ( arg ) {
-				deferred1.resolve( arg );
+				defer1.resolve( arg );
 			};
 
 			failure = function ( e ) {
-				deferred1.reject( e );
+				defer1.reject( e );
 			};
 
 			if ( events) {
@@ -1708,10 +1713,10 @@ var data = {
 				client.jsonp( this.uri, success, failure, {callback: this.callback} );
 			}
 			else {
-				client.request( this.uri, "GET", success, failure, null, utility.merge({withCredentials: this.credentials}, this.headers) );
+				client.request( this.uri, "GET", success, failure, null, utility.merge( {withCredentials: this.credentials}, this.headers) );
 			}
 
-			return deferred3;
+			return defer3;
 		},
 
 		/**
@@ -1779,27 +1784,26 @@ var data = {
 		 *
 		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
 		 * @param  {Object} data Key:Value pairs to set as field values
-		 * @return {Object}      Promise
+		 * @return {Object}      Deferred
 		 */
 		update : function ( key, data ) {
 			var record = this.get( key ),
-			    self   = this,
-			    args, deferred;
+			    defer  = deferred.factory(),
+			    args;
 
 			if ( record === undefined ) {
 				throw new Error( label.error.invalidArguments );
 			}
 
-			args     = utility.merge( utility.clone ( record.data ) , data );
-			deferred = promise.factory();
+			args = utility.merge( utility.clone ( record.data ) , data );
 
 			this.set( key, args ).then( function ( arg ) {
-				deferred.resolve( arg );
+				defer.resolve( arg );
 			}, function ( e ) {
-				error( e, arguments, self );
+				defer.reject( e );
 			});
 
-			return deferred;
+			return defer;
 
 		}
 	}
