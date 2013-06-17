@@ -333,16 +333,18 @@ var utility = {
 	 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine
 	 *
 	 * @method defer
-	 * @param  {Function} fn Function to defer execution of
-	 * @param  {Number}   ms Milliseconds to defer execution
-	 * @param  {Number}   id [Optional] ID of the deferred function
-	 * @return {String}      ID of the timer
+	 * @param  {Function} fn     Function to defer execution of
+	 * @param  {Number}   ms     Milliseconds to defer execution
+	 * @param  {Number}   id     [Optional] ID of the deferred function
+	 * @param  {Boolean}  repeat [Optional] Describes the execution, default is `false`
+	 * @return {String}          ID of the timer
 	 */
-	defer : function ( fn, ms, id ) {
+	defer : function ( fn, ms, id, repeat ) {
 		var op;
 
-		ms = ms || 0;
-		id = id || utility.uuid( true );
+		ms     = ms || 0;
+		id     = id || utility.uuid( true );
+		repeat = ( repeat === true );
 
 		op = function () {
 			utility.clearTimers( id );
@@ -350,7 +352,7 @@ var utility = {
 		};
 
 		utility.clearTimers( id );
-		utility.timer[id] = setTimeout( op, ms );
+		utility[repeat ? "repeating" : "timer"][id] = setTimeout( op, ms );
 
 		return id;
 	},
@@ -894,6 +896,7 @@ var utility = {
 			return;
 		}
 
+		// Creating repeating execution
 		utility.defer( function () {
 			var recursive = function ( fn, ms, id ) {
 				var recursive = this;
@@ -909,7 +912,7 @@ var utility = {
 			};
 
 			recursive.call( recursive, fn, ms, id );
-		}, ms, id );
+		}, ms, id, true );
 
 		return id;
 	},
