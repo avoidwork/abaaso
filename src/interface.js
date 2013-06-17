@@ -148,7 +148,7 @@ return {
 		delete abaaso.init;
 
 		// Cache garbage collector (every minute)
-		$.repeat(function () {
+		utility.repeat(function () {
 			cache.clean();
 		}, 60000, "cacheGarbageCollector");
 
