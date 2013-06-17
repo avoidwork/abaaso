@@ -257,6 +257,9 @@ return {
 	ready           : false,
 	reflect         : utility.reflect,
 	repeat          : utility.repeat,
+	repeating       : function () {
+		return array.keys( utility.repeating );
+	},
 	stylesheet      : utility.stylesheet,
 	script          : utility.script,
 	stop            : utility.stop,
