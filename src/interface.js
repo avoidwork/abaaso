@@ -147,6 +147,11 @@ return {
 		// Stopping multiple executions
 		delete abaaso.init;
 
+		// Cache garbage collector (every minute)
+		$.repeat(function () {
+			cache.clean();
+		}, 60000, "cacheGarbageCollector");
+
 		// Firing events to setup
 		return observer.fire( this, "init, ready").un(this, "init, ready" );
 	},

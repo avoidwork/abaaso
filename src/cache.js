@@ -18,7 +18,7 @@ var cache = {
 	clean : function () {
 		return utility.iterate( cache.items, function ( v, k ) {
 			if ( cache.expired( k ) ) {
-				cache.expire( k );
+				cache.expire( k, true );
 			}
 		});
 	},
