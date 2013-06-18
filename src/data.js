@@ -1068,13 +1068,16 @@ var data = {
 			batch       = ( batch === true );
 			var self    = this,
 			    defer   = deferred.factory(),
-			    defer2  = deferred.factory(),
 			    partial = false,
-			    data, record, method, events, args, uri, p;
+			    data, record, method, events, args, uri, p, reconcile;
 
 			if ( !( arg instanceof Object ) ) {
 				throw new Error( label.error.invalidArguments );
 			}
+
+			reconcile = function ( success, arg ) {
+				defer[success ? "resolve" : "reject"]( arg );
+			};
 
 			// Chaining a promise to return
 			defer.then( function ( arg ) {
@@ -1104,13 +1107,13 @@ var data = {
 						observer.fire( self.parentNode, "afterDataSet", arg );
 					}
 
-					defer2.resolve( arg );
+					reconcile( true, arg );
 				}, function ( e ) {
 					if ( events ) {
 						observer.fire( self.parentNode, "failedDataSet", e );
 					}
 
-					defer2.reject( e );
+					reconcile( false, e );
 				});
 
 				self.views = {};
@@ -1303,7 +1306,7 @@ var data = {
 				defer.reject( args );
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
