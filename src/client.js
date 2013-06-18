@@ -392,7 +392,7 @@ var client = {
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
-		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, defer, defer2;
+		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, defer;
 
 		if ( regex.put_post.test( type ) && args === undefined ) {
 			throw new Error( label.error.invalidArguments );
@@ -411,7 +411,6 @@ var client = {
 		ab          = ( typeof ArrayBuffer !== "undefined" );
 		blob        = ( typeof Blob !== "undefined" );
 		defer       = deferred.factory();
-		defer2      = deferred.factory();
 
 		// Using a deferred to resolve request
 		defer.then( function ( arg ) {
@@ -419,15 +418,11 @@ var client = {
 				success.call( uri, arg, xhr );
 			}
 
-			defer2.resolve( arg );
-
 			xhr = null;
 		}, function ( e ) {
 			if ( typeof failure === "function" ) {
 				failure.call( uri, e, xhr );
 			}
-
-			defer2.reject( e );
 
 			xhr = null;
 
@@ -559,7 +554,7 @@ var client = {
 			payload !== null ? xhr.send( payload ) : xhr.send();
 		}
 
-		return defer2;
+		return defer;
 	},
 
 	/**

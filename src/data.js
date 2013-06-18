@@ -64,13 +64,12 @@ var data = {
 				throw new Error( label.error.invalidArguments );
 			}
 
-			var self     = this,
-			    events   = ( this.events === true ),
-			    r        = 0,
-			    nth      = data.length,
-			    f        = false,
-			    defer    = deferred.factory(),
-			    defer2   = deferred.factory(),
+			var self   = this,
+			    events = ( this.events === true ),
+			    r      = 0,
+			    nth    = data.length,
+			    f      = false,
+			    defer  = deferred.factory(),
 			    complete, failure, set, del, parsed;
 
 			defer.then( function ( arg ) {
@@ -91,14 +90,12 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataBatch", arg );
 				}
-
-				defer2.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataBatch", e );
 				}
 
-				defer2.reject( e );
+				throw e;
 			});
 
 			complete = function ( arg ) {
@@ -240,7 +237,7 @@ var data = {
 				}
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -328,7 +325,6 @@ var data = {
 			    record = ( arg instanceof Object ) ? arg : this.get( arg ),
 			    uri    = this.uri === null ? "" : this.uri,
 			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
 			    i      = 0,
 			    nth    = 0,
 			    build, complete, setup;
@@ -338,10 +334,6 @@ var data = {
 			}
 
 			this.crawled = true;
-
-			defer.then( function ( arg ) {
-				defer2.resolve( arg );
-			});
 
 			/**
 			 * Concats URIs together
@@ -459,7 +451,7 @@ var data = {
 				}
 			});
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -485,7 +477,6 @@ var data = {
 			var self   = this,
 			    events = ( this.events === true ),
 			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
 			    key, args, uri, p;
 
 			defer.then( function ( arg ) {
@@ -523,14 +514,12 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataDelete", record );
 				}
-
-				defer2.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataDelete", e );
 				}
 
-				defer2.reject( e );
+				throw e;
 			});
 
 			if ( typeof record === "string" ) {
@@ -576,7 +565,7 @@ var data = {
 				defer.reject( args );
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -865,10 +854,9 @@ var data = {
 		 * @return {Object}     Deferred
 		 */
 		generate : function ( key, arg ) {
-			var self   = this,
-			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
-			    recs   = null,
+			var self  = this,
+			    defer = deferred.factory(),
+			    recs  = null,
 			    fn, idx, params;
 			
 			params = {
@@ -883,12 +871,6 @@ var data = {
 				retrieve  : this.retrieve,
 				source    : this.source
 			};
-
-			defer.then( function ( arg ) {
-				defer2.resolve( arg );
-			}, function ( e ) {
-				defer2.reject( e );
-			});
 
 			fn = function () {
 				// Creating new child data store
@@ -939,7 +921,7 @@ var data = {
 				});
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -1086,13 +1068,16 @@ var data = {
 			batch       = ( batch === true );
 			var self    = this,
 			    defer   = deferred.factory(),
-			    defer2  = deferred.factory(),
 			    partial = false,
-			    data, record, method, events, args, uri, p;
+			    data, record, method, events, args, uri, p, reconcile;
 
 			if ( !( arg instanceof Object ) ) {
 				throw new Error( label.error.invalidArguments );
 			}
+
+			reconcile = function ( success, arg ) {
+				defer[success ? "resolve" : "reject"]( arg );
+			};
 
 			// Chaining a promise to return
 			defer.then( function ( arg ) {
@@ -1122,13 +1107,13 @@ var data = {
 						observer.fire( self.parentNode, "afterDataSet", arg );
 					}
 
-					defer2.resolve( arg );
+					reconcile( true, arg );
 				}, function ( e ) {
 					if ( events ) {
 						observer.fire( self.parentNode, "failedDataSet", e );
 					}
 
-					defer2.reject( e );
+					reconcile( false, e );
 				});
 
 				self.views = {};
@@ -1321,7 +1306,7 @@ var data = {
 				defer.reject( args );
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -1635,18 +1620,31 @@ var data = {
 			reindex    = ( reindex === true );
 			var self   = this,
 			    events = ( this.events === true ),
-			    defer1 = deferred.factory(),
-			    defer2 = deferred.factory(),
-			    defer3 = deferred.factory(),
+			    defer  = deferred.factory(),
 			    success, failure;
 
-			defer1.then( function ( arg ) {
+			defer.then( function ( arg ) {
+				if ( reindex ) {
+					self.reindex();
+				}
+
+				if ( events ) {
+					observer.fire( self.parentNode, "afterDataSync", arg );
+				}
+			}, function ( e ) {
+				if ( events ) {
+					observer.fire( self.parentNode, "failedDataSync", e );
+				}
+
+				throw e;
+			});
+
+			success = function ( arg ) {
+				var data;
+
 				if ( typeof arg !== "object" ) {
 					throw new Error( label.error.expectedObject );
 				}
-
-				var found = false,
-				    data;
 
 				if ( self.source !== null ) {
 					arg = utility.walk( arg, self.source );
@@ -1657,9 +1655,10 @@ var data = {
 				}
 				else {
 					utility.iterate( arg, function ( i ) {
-						if ( !found && i instanceof Array ) {
-							found = true;
-							data  = i;
+						if ( i instanceof Array ) {
+							data = i;
+
+							return false;
 						}
 					});
 				}
@@ -1669,40 +1668,14 @@ var data = {
 				}
 
 				self.batch( "set", data, true, undefined ).then( function ( arg ) {
-					defer2.resolve( arg );
+					defer.resolve( arg );
 				}, function ( e ) {
-					defer2.reject( e );
+					defer.reject( e );
 				});
-
-				return data;
-			}, function ( e ) {
-				defer2.reject( e );
-			});
-
-			defer2.then( function ( arg ) {
-				if ( reindex ) {
-					self.reindex();
-				}
-
-				if ( events ) {
-					observer.fire( self.parentNode, "afterDataSync", arg );
-				}
-
-				defer3.resolve( arg );
-			}, function ( e ) {
-				if ( events ) {
-					observer.fire( self.parentNode, "failedDataSync", e );
-				}
-
-				defer3.reject( e );
-			});
-
-			success = function ( arg ) {
-				defer1.resolve( arg );
 			};
 
 			failure = function ( e ) {
-				defer1.reject( e );
+				defer.reject( e );
 			};
 
 			if ( events) {
@@ -1716,7 +1689,7 @@ var data = {
 				client.request( this.uri, "GET", success, failure, null, utility.merge( {withCredentials: this.credentials}, this.headers) );
 			}
 
-			return defer3;
+			return defer;
 		},
 
 		/**
