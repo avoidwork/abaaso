@@ -628,18 +628,16 @@ var prototypes = {
 			return utility.genId( this );
 		},
 		get : function ( uri, success, failure, headers, timeout ) {
-			var self     = this,
-			    deferred = promise.factory(),
-			    deferred2;
+			var self  = this,
+			    defer = deferred.factory();
 
-			deferred2 = deferred.then( function ( arg ) {
+			defer.then( function ( arg ) {
 				element.html( self, arg );
 				observer.fire( self, "afterGet" );
 
 				if ( typeof success === "function") {
 					success.call( self, arg );
 				}
-
 			}, function ( e ) {
 				element.html( self, e || label.error.serverError );
 				observer.fire( self, "failedGet" );
@@ -654,12 +652,12 @@ var prototypes = {
 			observer.fire( this, "beforeGet" );
 
 			uri.get( function ( arg ) {
-				deferred.resolve( arg );
+				defer.resolve( arg );
 			}, function ( e ) {
-				deferred.reject( e );
+				defer.reject( e );
 			}, headers, timeout);
 
-			return deferred2;
+			return defer;
 		},
 		has : function ( arg ) {
 			return element.has( this, arg );
@@ -720,10 +718,9 @@ var prototypes = {
 		},
 		jsonp : function ( uri, property, callback ) {
 			var target = this,
-			    arg    = property, fn,
-			    deferred;
+			    arg    = property;
 
-			fn = function ( response ) {
+			return client.jsonp( uri, function ( response ) {
 				var self = target,
 				    node = response,
 				    prop = arg,
@@ -753,15 +750,11 @@ var prototypes = {
 				}
 
 				element.html( self, result );
-			};
-
-			deferred = client.jsonp( uri, fn, function (e) {
+			}, function ( e ) {
 				element.html( target, label.error.serverError );
 
 				throw e;
 			}, callback );
-
-			return deferred;
 		},
 		listeners : function ( event ) {
 			return observer.list( this, event );
