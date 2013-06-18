@@ -26,7 +26,7 @@ var validate = {
 				utility.genId( args );
 			}
 
-			c = $( "#" + args.id + " input", "#" + args.id + " select" );
+			c = $( "#" + args.id + " input, #" + args.id + " select" );
 
 			array.each( c, function ( i ) {
 				var z = {},
@@ -49,41 +49,40 @@ var validate = {
 			});
 		}
 		else {
-			utility.iterate( args, function ( i, k ) {
-				if ( k === undefined || i === undefined ) {
-					invalid.push( {test: k, value: i} );
+			utility.iterate( args, function ( v, k ) {
+				if ( v === undefined || v === null ) {
+					invalid.push( {test: k, value: v} );
 					exception = true;
 					return;
 				}
 
-				value = i.toString().charAt( 0 ) === "#" ? ( $( i ) !== undefined ? $( i ).val() : "" ) : i;
+				value = v.toString().charAt( 0 ) === "#" ? ( $( v ) !== undefined ? $( v ).val() : "" ) : v;
 
-				switch ( k ) {
-					case "date":
-						if ( isNaN( new Date( value ).getYear() ) ) {
-							invalid.push( {test: k, value: value} );
-							exception = true;
-						}
-						break;
-					case "domain":
-						if ( !regex.domain.test( value.replace( regex.scheme, "" ) ) ) {
-							invalid.push( {test: k, value: value} );
-							exception = true;
-						}
-						break;
-					case "domainip":
-						if ( !regex.domain.test( value.replace( regex.scheme, "" ) ) || !regex.ip.test( value ) ) {
-							invalid.push( {test: k, value: value} );
-							exception = true;
-						}
-						break;
-					default:
-						p = regex[k] || k;
+				if ( k === "date" ) {
+					if ( isNaN( new Date( value ).getYear() ) ) {
+						invalid.push( {test: k, value: value} );
+						exception = true;
+					}
+				}
+				else if ( k === "domain" ) {
+					if ( !regex.domain.test( value.replace( regex.scheme, "" ) ) ) {
+						invalid.push( {test: k, value: value} );
+						exception = true;
+					}
+				}
+				else if ( k === "domainip" ) {
+					if ( !regex.domain.test( value.replace( regex.scheme, "" ) ) || !regex.ip.test( value ) ) {
+						invalid.push( {test: k, value: value} );
+						exception = true;
+					}
+				}
+				else {
+					p = regex[k] || k;
 
-						if ( !p.test( value ) ) {
-							invalid.push( {test: k, value: value} );
-							exception = true;
-						}
+					if ( !p.test( value ) ) {
+						invalid.push( {test: k, value: value} );
+						exception = true;
+					}
 				}
 			});
 		}

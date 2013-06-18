@@ -105,15 +105,14 @@ var cache = {
 			cache.items[uri].permission = 0;
 		}
 
-		switch ( property ) {
-			case "permission":
-				cache.items[uri].permission |= value;
-				break;
-			case "!permission":
-				cache.items[uri].permission &= ~value;
-				break;
-			default:
-				cache.items[uri][property] = value;
+		if ( property === "permission" ) {
+			cache.items[uri].permission |= value;
+		}
+		else if ( property === "!permission" ) {
+			cache.items[uri].permission &= ~value;
+		}
+		else {
+			cache.items[uri][property] = value;
 		}
 
 		return cache.items[uri];
