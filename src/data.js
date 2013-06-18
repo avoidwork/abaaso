@@ -64,13 +64,12 @@ var data = {
 				throw new Error( label.error.invalidArguments );
 			}
 
-			var self     = this,
-			    events   = ( this.events === true ),
-			    r        = 0,
-			    nth      = data.length,
-			    f        = false,
-			    defer    = deferred.factory(),
-			    defer2   = deferred.factory(),
+			var self   = this,
+			    events = ( this.events === true ),
+			    r      = 0,
+			    nth    = data.length,
+			    f      = false,
+			    defer  = deferred.factory(),
 			    complete, failure, set, del, parsed;
 
 			defer.then( function ( arg ) {
@@ -91,14 +90,12 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataBatch", arg );
 				}
-
-				defer2.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataBatch", e );
 				}
 
-				defer2.reject( e );
+				throw e;
 			});
 
 			complete = function ( arg ) {
@@ -240,7 +237,7 @@ var data = {
 				}
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -328,7 +325,6 @@ var data = {
 			    record = ( arg instanceof Object ) ? arg : this.get( arg ),
 			    uri    = this.uri === null ? "" : this.uri,
 			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
 			    i      = 0,
 			    nth    = 0,
 			    build, complete, setup;
@@ -338,10 +334,6 @@ var data = {
 			}
 
 			this.crawled = true;
-
-			defer.then( function ( arg ) {
-				defer2.resolve( arg );
-			});
 
 			/**
 			 * Concats URIs together
@@ -459,7 +451,7 @@ var data = {
 				}
 			});
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -485,7 +477,6 @@ var data = {
 			var self   = this,
 			    events = ( this.events === true ),
 			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
 			    key, args, uri, p;
 
 			defer.then( function ( arg ) {
@@ -523,14 +514,12 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataDelete", record );
 				}
-
-				defer2.resolve( arg );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataDelete", e );
 				}
 
-				defer2.reject( e );
+				throw e;
 			});
 
 			if ( typeof record === "string" ) {
@@ -576,7 +565,7 @@ var data = {
 				defer.reject( args );
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
@@ -865,10 +854,9 @@ var data = {
 		 * @return {Object}     Deferred
 		 */
 		generate : function ( key, arg ) {
-			var self   = this,
-			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
-			    recs   = null,
+			var self  = this,
+			    defer = deferred.factory(),
+			    recs  = null,
 			    fn, idx, params;
 			
 			params = {
@@ -883,12 +871,6 @@ var data = {
 				retrieve  : this.retrieve,
 				source    : this.source
 			};
-
-			defer.then( function ( arg ) {
-				defer2.resolve( arg );
-			}, function ( e ) {
-				defer2.reject( e );
-			});
 
 			fn = function () {
 				// Creating new child data store
@@ -939,7 +921,7 @@ var data = {
 				});
 			}
 
-			return defer2;
+			return defer;
 		},
 
 		/**
