@@ -39,7 +39,7 @@ exports["date"] = {
 		test.expect(3);
 		test.equal("2012/08/08".isDate(), true, "Should be true");
 		test.equal("2012-08-08".isDate(), true, "Should be true");
-		test.equal("abc".isBoolean(), false, "Should be false");
+		test.equal("abc".isDate(), false, "Should be false");
 		test.done();
 	}
 };

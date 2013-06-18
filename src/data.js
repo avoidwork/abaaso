@@ -1474,16 +1474,14 @@ var data = {
 					var val = pk ? r.key : r.data[prop],
 					    k   = val === null ? "null" : val.toString();
 
-					switch ( sensitivity ) {
-						case "ci":
-							k = string.toCamelCase( k );
-							break;
-						case "cs":
-							k = string.trim( k );
-							break;
-						case "ms":
-							k = string.trim( k ).slice(0, 1).toLowerCase();
-							break;
+					if ( sensitivity === "ci" ) {
+						k = string.toCamelCase( k );
+					}
+					else if ( sensitivity === "cs" ) {
+						k = string.trim( k );
+					}
+					else if ( sensitivity === "ms" ) {
+						k = string.trim( k ).slice( 0, 1 ).toLowerCase();
 					}
 
 					if ( !( registry[k] instanceof Array ) ) {
@@ -1573,29 +1571,27 @@ var data = {
 				obj = this.get( obj );
 			}
 
-			key    = record ? obj.key : obj.parentNode.id;
+			key = record ? obj.key : obj.parentNode.id;
 
-			switch ( op ) {
-				case "get":
-					result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
+			if ( op === "get" ) {
+				result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
 
-					if ( result === null ) {
-						throw new Error( label.error.invalidArguments );
-					}
+				if ( result === null ) {
+					throw new Error( label.error.invalidArguments );
+				}
 
-					result = json.decode( result );
-					record ? this.set( key, result, true ) : utility.merge( this, result );
-					result = record ? obj : this;
-					break;
-				case "remove":
-					session ? sessionStorage.removeItem( key ) : localStorage.removeItem( key );
-					result = this;
-					break;
-				case "set":
-					data = json.encode( record ? obj.data : {total: this.total, keys: this.keys, records: this.records} );
-					session ? sessionStorage.setItem( key, data ) : localStorage.setItem( key, data );
-					result = this;
-					break;
+				result = json.decode( result );
+				record ? this.set( key, result, true ) : utility.merge( this, result );
+				result = record ? obj : this;
+			}
+			else if ( op === "remove" ) {
+				session ? sessionStorage.removeItem( key ) : localStorage.removeItem( key );
+				result = this;
+			}
+			else if ( op === "set" ) {
+				data = json.encode( record ? obj.data : {total: this.total, keys: this.keys, records: this.records} );
+				session ? sessionStorage.setItem( key, data ) : localStorage.setItem( key, data );
+				result = this;
 			}
 
 			return result;

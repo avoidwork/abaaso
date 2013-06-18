@@ -22,6 +22,12 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Evented with a global observer
 * Built on Promises/A+
 
+## Support
+
+If you're having problems with using the project, use the support forum at CodersClan.
+
+<a href="http://codersclan.net/forum/index.php?repo_id=9"><img src="http://www.codersclan.net/graphics/getSupport_blue_big.png" width="160"></a>
+
 ## License
 
 abaaso is licensed under BSD-3 https://raw.github.com/avoidwork/abaaso/master/LICENSE

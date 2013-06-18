@@ -151,23 +151,20 @@ var client = {
 	bit : function ( args ) {
 		var result = 0;
 
-		array.each( args, function ( a ) {
-			switch ( a.toLowerCase() ) {
-				case "head":
-				case "get":
-				case "options":
-					result |= 4;
-					break;
-				case "post":
-				case "put":
-					result |= 2;
-					break;
-				case "patch":
-					result |= 8;
-					break;
-				case "delete":
-					result |= 1;
-					break;
+		array.each( args, function ( verb ) {
+			verb = verb.toLowerCase();
+
+			if ( regex.get_headers.test( verb ) ) {
+				result |= 4;
+			}
+			else if ( regex.put_post.test( verb ) ) {
+				result |= 2;
+			}
+			else if ( regex.patch.test( verb ) ) {
+				result |= 8;
+			}
+			else if ( regex.del.test( verb ) ) {
+				result |= 1;
 			}
 		});
 

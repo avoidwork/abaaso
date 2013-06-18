@@ -104,19 +104,17 @@ var cookie = {
 
 			expire = new Date();
 
-			switch ( type ) {
-				case "d":
-					expire.setDate( expire.getDate() + span );
-					break;
-				case "h":
-					expire.setHours( expire.getHours() + span );
-					break;
-				case "m":
-					expire.setMinutes( expire.getMinutes() + span );
-					break;
-				case "s":
-					expire.setSeconds( expire.getSeconds() + span );
-					break;
+			if ( type === "d" ) {
+				expire.setDate( expire.getDate() + span );
+			}
+			else if ( type === "h" ) {
+				expire.setHours( expire.getHours() + span );
+			}
+			else if ( type === "m" ) {
+				expire.setMinutes( expire.getMinutes() + span );
+			}
+			else if ( type === "s" ) {
+				expire.setSeconds( expire.getSeconds() + span );
 			}
 		}
 
