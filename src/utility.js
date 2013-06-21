@@ -1088,22 +1088,22 @@ var utility = {
 					if ( ++i === nth && !defer.isResolved()) {
 						if ( args.length > 1 ) {
 							defer.resolve( args.map( function ( obj ) {
-								return obj.outcome;
+								return obj.outcome || obj.promise.outcome;
 							}));
 						}
 						else {
-							defer.resolve( args[0].outcome );
+							defer.resolve( args[0].outcome || args[0].promise.outcome );
 						}
 					}
 				}, function () {
 					if ( !defer.isResolved() ) {
 						if ( args.length > 1 ) {
 							defer.reject( args.map( function ( obj ) {
-								return obj.outcome;
+								return obj.outcome || obj.promise.outcome;
 							}));
 						}
 						else {
-							defer.reject( args[0].outcome );
+							defer.reject( args[0].outcome || args[0].promise.outcome );
 						}
 					}
 				});
