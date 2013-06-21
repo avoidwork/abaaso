@@ -1,7 +1,5 @@
 /**
- * Validation methods and patterns
- *
- * pattern.url is authored by Diego Perini
+ * Validation
  *
  * @class validate
  * @namespace abaaso
