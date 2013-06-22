@@ -129,7 +129,7 @@ var utility = {
 		var clone;
 
 		if ( obj instanceof Array ) {
-			return obj.concat();
+			return obj.slice();
 		}
 		else if ( typeof obj === "boolean" ) {
 			return Boolean( obj );
