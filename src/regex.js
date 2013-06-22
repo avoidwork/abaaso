@@ -71,6 +71,7 @@ var regex = {
 	phone                   : /^([0-9\(\)\/\+ \-\.]+)$/,
 	playbook                : /playbook/i,
 	plural                  : /s$/,
+	priv                    : /private/,
 	put_post                : /^(post|put)$/i,
 	radio_checkbox          : /^(radio|checkbox)$/i,
 	reflect                 : /function\s+\w*\s*\((.*?)\)/,

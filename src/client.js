@@ -579,6 +579,7 @@ var client = {
 		var typed    = string.capitalize( type.toLowerCase() ),
 		    xhrState = null,
 		    xdr      = client.ie && xhr.readyState === undefined,
+		    shared   = true,
 		    exception, o, r, t, redirect;
 
 		// server-side exception handling
@@ -615,6 +616,10 @@ var client = {
 						return uri.fire( "afterOptions", o.headers );
 					}
 					else if ( type !== "delete" ) {
+						if ( server && regex.priv.test( o.headers["Cache-Control"] ) ) {
+							shared = false;
+						}
+
 						if ( regex.http_body.test( xhr.status ) ) {
 							t = o.headers["Content-Type"] || "";
 							r = client.parse( xhr, t );
@@ -624,7 +629,7 @@ var client = {
 							}
 						}
 
-						if ( type === "get" ) {
+						if ( type === "get" && shared ) {
 							cache.set( uri, "response", ( o.response = utility.clone( r ) ) );
 						}
 						else {
