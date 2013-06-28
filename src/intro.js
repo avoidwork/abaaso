@@ -27,4 +27,4 @@ if ( server ) {
 abaaso = (function () {
 "use strict";
 
-var $, bootstrap, error, external;
+var bootstrap, external;

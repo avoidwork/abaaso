@@ -308,7 +308,7 @@ var route = {
 
 		// Error handler
 		err = function ( e ) {
-			error( e, this, arguments );
+			utility.error( e, this, arguments );
 
 			if ( typeof fn === "function" ) {
 				fn( e );

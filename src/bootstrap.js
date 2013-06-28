@@ -1,5 +1,4 @@
 // concated before outro.js
-error     = utility.error;
 bootstrap = function () {
 	var self = this,
 	    cleanup, fn;

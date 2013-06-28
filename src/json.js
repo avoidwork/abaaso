@@ -84,7 +84,7 @@ var json = {
 		}
 		catch ( e ) {
 			if ( silent !== true ) {
-				error( e, arguments, this );
+				utility.error( e, arguments, this );
 			}
 
 			return undefined;
@@ -105,7 +105,7 @@ var json = {
 		}
 		catch ( e ) {
 			if ( silent !== true) {
-				error( e, arguments, this );
+				utility.error( e, arguments, this );
 			}
 
 			return undefined;

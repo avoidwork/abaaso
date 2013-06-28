@@ -97,7 +97,7 @@ var xml = {
 			return x;
 		}
 		catch ( e ) {
-			error( e, arguments, this );
+			utility.error( e, arguments, this );
 
 			return undefined;
 		}

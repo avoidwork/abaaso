@@ -746,7 +746,7 @@ var prototypes = {
 				}
 				catch ( e ) {
 					result = label.error.serverError;
-					error( e, arguments, this );
+					utility.error( e, arguments, this );
 				}
 
 				element.html( self, result );

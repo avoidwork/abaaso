@@ -91,6 +91,7 @@ var promise = {
 				catch ( e ) {
 					result = e;
 					error  = true;
+
 					if ( result !== undefined && !( result instanceof Error ) ) {
 						// Encoding Array or Object as a JSON string for transmission
 						if ( typeof result === "object" ) {
@@ -99,6 +100,9 @@ var promise = {
 
 						// Casting to an Error to fix context
 						result = new Error( result );
+
+						// Logging error
+						utility.error(result);
 					}
 				}
 				finally {
