@@ -369,7 +369,7 @@ exports["intersect"] = {
 	}
 };
 
-exports["keep_if"] = {
+exports["keepIf"] = {
 	setUp: function (done) {
 		this.val = [0, 1, 2, 3, 4];
 		this.fn  = function (i) { return i.isOdd(); };
@@ -377,12 +377,12 @@ exports["keep_if"] = {
 	},
 	direct: function (test) {
 		test.expect(1);
-		test.equal(array.keep_if(this.val, this.fn).length, 2, "Should be '2'");
+		test.equal(array.keepIf(this.val, this.fn).length, 2, "Should be '2'");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(1);
-		test.equal(this.val.keep_if(this.fn).length, 2, "Should be '2'");
+		test.equal(this.val.keepIf(this.fn).length, 2, "Should be '2'");
 		test.done();
 	}
 };
@@ -672,7 +672,7 @@ exports["remove"] = {
 	}
 };
 
-exports["remove_if"] = {
+exports["removeIf"] = {
 	setUp: function (done) {
 		this.val = [0, 1, 2, 3, 4];
 		this.fn  = function (i) { return i.isEven(); };
@@ -680,17 +680,17 @@ exports["remove_if"] = {
 	},
 	direct: function (test) {
 		test.expect(1);
-		test.equal(array.remove_if(this.val, this.fn).length, 2, "Should be '2'");
+		test.equal(array.removeIf(this.val, this.fn).length, 2, "Should be '2'");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(1);
-		test.equal(this.val.remove_if(this.fn).length, 2, "Should be '2'");
+		test.equal(this.val.removeIf(this.fn).length, 2, "Should be '2'");
 		test.done();
 	}
 };
 
-exports["remove_while"] = {
+exports["removeWhile"] = {
 	setUp: function (done) {
 		this.val = [0, 1, 2, 3, 4];
 		this.fn  = function (i) { return i < 3; };
@@ -698,12 +698,12 @@ exports["remove_while"] = {
 	},
 	direct: function (test) {
 		test.expect(1);
-		test.equal(array.remove_while(this.val, this.fn).length, 2, "Should be '2'");
+		test.equal(array.removeWhile(this.val, this.fn).length, 2, "Should be '2'");
 		test.done();
 	},
 	sugar: function (test) {
 		test.expect(1);
-		test.equal(this.val.remove_while(this.fn).length, 2, "Should be '2'");
+		test.equal(this.val.removeWhile(this.fn).length, 2, "Should be '2'");
 		test.done();
 	}
 };

@@ -394,12 +394,12 @@ var array = {
 	/**
 	 * Keeps every element of `obj` for which `fn` evaluates to true
 	 *
-	 * @method keep_if
+	 * @method keepIf
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
 	 */
-	keep_if : function ( obj, fn ) {
+	keepIf : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
@@ -709,12 +709,12 @@ var array = {
 	/**
 	 * Deletes every element of `obj` for which `fn` evaluates to true
 	 *
-	 * @method remove_if
+	 * @method removeIf
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
 	 */
-	remove_if : function ( obj, fn ) {
+	removeIf : function ( obj, fn ) {
 		var remove;
 
 		if ( typeof fn !== "function" ) {
@@ -733,12 +733,12 @@ var array = {
 	/**
 	 * Deletes elements of `obj` until `fn` evaluates to false
 	 *
-	 * @method remove_while
+	 * @method removeWhile
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
 	 */
-	remove_while : function ( obj, fn ) {
+	removeWhile : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
