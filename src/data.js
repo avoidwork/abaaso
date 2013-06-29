@@ -775,7 +775,7 @@ var data = {
 			 */
 			handler = function ( e ) {
 				var form    = utility.target( e ).parentNode,
-				    nodes   = $( "#" + form.id + " input" ),
+				    nodes   = utility.$( "#" + form.id + " input" ),
 				    entity  = nodes[0].name.match( /(.*)\[/ )[1],
 				    result  = true,
 				    newData = {};

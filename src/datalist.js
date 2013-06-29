@@ -120,7 +120,7 @@ var datalist = {
 			}
 
 			// Removing the existing controls
-			array.each( $( "#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom" ), function ( i ) {
+			array.each( utility.$( "#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom" ), function ( i ) {
 				if ( i !== undefined ) {
 					element.destroy( i );
 				}
@@ -365,7 +365,7 @@ var datalist = {
 				this.pages();
 			}
 			else {
-				array.each( $( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
+				array.each( utility.$( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 					element.destroy( i );
 				});
 			}
@@ -420,7 +420,7 @@ var datalist = {
 
 			observer.remove( id );
 
-			array.each( $( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
+			array.each( utility.$( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
 				observer.remove( i );
 			});
 

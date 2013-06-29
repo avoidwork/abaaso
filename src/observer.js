@@ -236,10 +236,7 @@ var observer = {
 	id : function ( arg ) {
 		var id;
 
-		if ( arg === abaaso ) {
-			id = "abaaso";
-		}
-		else if ( arg === global ) {
+		if ( arg === global ) {
 			id = "window";
 		}
 		else if ( !server && arg === document ) {

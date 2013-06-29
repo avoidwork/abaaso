@@ -25,45 +25,43 @@ var mouse = {
 	 * Enables or disables mouse co-ordinate tracking
 	 *
 	 * @method track
-	 * @param  {Mixed} n Boolean to enable/disable tracking, or Mouse Event
-	 * @return {Object}  mouse
+	 * @param  {Mixed} arg Boolean to enable/disable tracking, or Mouse Event
+	 * @return {Object}    $.mouse
 	 */
-	track : function ( e ) {
-		var m  = mouse,
-		    ev = "mousemove",
-		    n  = "tracking";
+	track : function ( arg ) {
+		var type = typeof arg;
 
-		if ( typeof e === "object" ) {
-			var v = document[m.view],
-			    x = e.pageX ? e.pageX : ( v.scrollLeft + e.clientX ),
-			    y = e.pageY ? e.pageY : ( v.scrollTop  + e.clientY ),
+		if ( type === "object" ) {
+			var v = document[mouse.view],
+			    x = arg.pageX ? arg.pageX : ( v.scrollLeft + arg.clientX ),
+			    y = arg.pageY ? arg.pageY : ( v.scrollTop  + arg.clientY ),
 			    c = false;
 
-			if ( m.pos.x !== x ) {
+			if ( mouse.pos.x !== x ) {
 				c = true;
 			}
 
-			$.mouse.prev.x = m.prev.x = number.parse( m.pos.x, 10 );
-			$.mouse.pos.x  = m.pos.x  = x;
-			$.mouse.diff.x = m.diff.x = m.pos.x - m.prev.x;
+			$.mouse.prev.x = mouse.prev.x = number.parse( mouse.pos.x, 10 );
+			$.mouse.pos.x  = mouse.pos.x  = x;
+			$.mouse.diff.x = mouse.diff.x = mouse.pos.x - mouse.prev.x;
 
-			if ( m.pos.y !== y ) {
+			if ( mouse.pos.y !== y ) {
 				c = true;
 			}
 
-			$.mouse.prev.y = m.prev.y = number.parse( m.pos.y, 10 );
-			$.mouse.pos.y  = m.pos.y  = y;
-			$.mouse.diff.y = m.diff.y = m.pos.y - m.prev.y;
+			$.mouse.prev.y = mouse.prev.y = number.parse( mouse.pos.y, 10 );
+			$.mouse.pos.y  = mouse.pos.y  = y;
+			$.mouse.diff.y = mouse.diff.y = mouse.pos.y - mouse.prev.y;
 
-			if ( c && m.log ) {
-				utility.log( [m.pos.x, m.pos.y, m.diff.x, m.diff.y] );
+			if ( c && $.mouse.log ) {
+				utility.log( [mouse.pos.x, mouse.pos.y, mouse.diff.x, mouse.diff.y] );
 			}
 		}
-		else if ( typeof e === "boolean" ) {
-			e ? observer.add( document, ev, mouse.track, n ) : observer.remove( document, ev, n );
-			$.mouse.enabled = m.enabled = e;
+		else if ( type === "boolean" ) {
+			arg ? observer.add( document, "mousemove", mouse.track, "tracking" ) : observer.remove( document, "mousemove", "tracking" );
+			$.mouse.enabled = mouse.enabled = arg;
 		}
 
-		return m;
+		return $.mouse;
 	}
 };

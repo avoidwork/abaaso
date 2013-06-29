@@ -80,7 +80,6 @@ return {
 	xml             : xml,
 
 	// Methods & Properties
-	$               : utility.$,
 	alias           : utility.alias,
 	aliased         : "abaaso",
 	allows          : client.allows,
@@ -121,7 +120,7 @@ return {
 	filter          : filter.factory,
 	fire            : function ( obj, event ) {
 		var all  = typeof obj === "object",
-		    o    = all ? obj   : ( this !== $ ? this : abaaso ),
+		    o    = all ? obj   : this,
 		    e    = all ? event : obj,
 		    args = [o, e].concat( array.cast( arguments ).remove( 0, !all ? 0 : 1 ) );
 
@@ -158,9 +157,7 @@ return {
 	iterate         : utility.iterate,
 	jsonp           : function ( uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback ); },
 	listeners       : function ( obj, event ) {
-		obj = typeof obj === "object" ? obj : ( this !== $ ? this : abaaso );
-
-		return observer.list( obj, event );
+		return observer.list( typeof obj === "object" ? obj : this, event );
 	},
 	listenersTotal  : observer.sum,
 	log             : utility.log,
@@ -182,7 +179,7 @@ return {
 			st = state;
 		}
 		else {
-			o  = ( this !== $ ? this : abaaso );
+			o  = this;
 			e  = obj;
 			l  = event;
 			i  = listener;
@@ -209,7 +206,7 @@ return {
 			st = state;
 		}
 		else {
-			o  = ( this !== $ ? this : abaaso );
+			o  = this;
 			e  = obj;
 			l  = event;
 			i  = listener;
@@ -277,7 +274,7 @@ return {
 			s = state;
 		}
 		else {
-			o = ( this !== $ ? this : abaaso );
+			o = this;
 			e = obj;
 			i = event;
 			s = id;

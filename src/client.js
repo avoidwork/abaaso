@@ -358,7 +358,7 @@ var client = {
 			element.destroy( s );
 		};
 
-		s = element.create( "script", {src: uri, type: "text/javascript"}, $( "head" )[0] );
+		s = element.create( "script", {src: uri, type: "text/javascript"}, utility.$( "head" )[0] );
 		
 		utility.defer( function () {
 			defer.reject( undefined );

@@ -1,10 +1,12 @@
-// concated before outro.js
+/**
+ * Bootstraps framework and sets on $
+ *
+ * @method bootstrap
+ * @return {Undefined} undefined
+ */
 bootstrap = function () {
 	var self = this,
 	    cleanup, fn;
-
-	// Blocking multiple executions
-	delete abaaso.bootstrap;
 
 	// Removes references to deleted DOM elements, avoiding memory leaks
 	cleanup = function ( obj ) {
@@ -25,6 +27,12 @@ bootstrap = function () {
 		}
 	};
 
+	// Blocking multiple executions
+	delete this.bootstrap;
+
+	// Creating error log
+	this.error.log = [];
+
 	// Describing the Client
 	if ( !server ) {
 		this.client.size    = client.size();
@@ -37,69 +45,55 @@ bootstrap = function () {
 			throw new Error( label.error.upgrade );
 		}
 
-		// Curried
+		// Strategies
 		this.array.cast = array.cast();
-		this.mouse.view = mouse.view       = mouse.view();
+		this.mouse.view = mouse.view();
 		this.property   = utility.property = utility.property();
 
 		if ( Array.prototype.filter === undefined ) {
-			Array.prototype.filter = function ( fn ) {
-				if ( this === void 0 || this === null || typeof fn !== "function" ) {
+			Array.prototype.filter = function ( fn, self ) {
+				self       = self || this;
+				var result = [];
+
+				if ( self === undefined || self === null || typeof fn !== "function" ) {
 					throw new Error( label.error.invalidArguments );
 				}
 
-				var i      = null,
-				    t      = Object( this ),
-				    nth    = t.length >>> 0,
-				    result = [],
-				    prop   = arguments[1],
-				    val    = null;
-
-				for ( i = 0; i < nth; i++ ) {
-					if ( i in t ) {
-						val = t[i];
-
-						if ( fn.call( prop, val, i, t ) ) {
-							result.push( val );
-						}
+				array.each( self, function ( i ) {
+					if ( fn.call( self, i ) ) {
+						result.push( i );
 					}
-				}
+				});
 
 				return result;
 			};
 		}
 
 		if ( Array.prototype.forEach === undefined ) {
-			Array.prototype.forEach = function ( callback, thisArg ) {
+			Array.prototype.forEach = function ( fn, self ) {
+				self = self || this;
+
 				if ( this === null || typeof callback !== "function" ) {
 					throw new Error( label.error.invalidArguments );
 				}
 
-				var T,
-				    k   = 0,
-				    O   = Object( this ),
-				    len = O.length >>> 0;
-
-				if ( thisArg ) {
-					T = thisArg;
-				}
-
-				while ( k < len ) {
-					var kValue;
-
-					if ( k in O ) {
-						kValue = O[k];
-						callback.call( T, kValue, k, O );
-					}
-					k++;
-				}
+				array.each( self, function ( i ) {
+					fn.call( self, i );
+				});
 			};
 		}
 
 		if ( Array.prototype.indexOf === undefined ) {
-			Array.prototype.indexOf = function( obj, start ) {
-				for ( var i = (start || 0 ), j = this.length; i < j; i++ ) {
-					if ( this[i] === obj ) {
+			Array.prototype.indexOf = function( arg, start ) {
+				var nth = this.length >> 0,
+				    i   = ( start || 0 ) -1;
+
+				if ( this === undefined || this === null || arg === undefined ) {
+					throw new Error( label.error.invalidArguments );
+				}
+
+				while ( ++i < nth ) {
+					if ( this[i] === arg ) {
 						return i;
 					}
 				}
@@ -109,75 +103,47 @@ bootstrap = function () {
 		}
 
 		if ( Array.prototype.map === undefined ) {
-			Array.prototype.map = function ( callback, thisArg ) {
-				var T, A, k;
+			Array.prototype.map = function ( fn, self ) {
+				self       = self || this;
+				var result = [];
 
-				if ( this == null ) {
-					throw new TypeError( "this is null or not defined" );
+				if ( self === undefined || self === null || typeof fn !== "function" ) {
+					throw new Error( label.error.invalidArguments );
 				}
 
-				var O = Object( this );
-				var len = O.length >>> 0;
+				array.each( self, function ( i ) {
+					result.push( fn.call( self, i ) );
+				});
 
-				if ( {}.toString.call( callback ) != "[object Function]" ) {
-					throw new TypeError( callback + " is not a function" );
-				}
-
-				if ( thisArg ) {
-					T = thisArg;
-				}
-
-				A = new Array( len );
-				k = 0;
-
-				while ( k < len ) {
-					var kValue, mappedValue;
-
-					if ( k in O ) {
-						kValue = O[k];
-						mappedValue = callback.call( T, kValue, k, O );
-						A[k] = mappedValue;
-					}
-					k++;
-				}
-
-				return A;
+				return result;
 			};
 		}
 
 		if ( Array.prototype.reduce === undefined ) {
-			Array.prototype.reduce = function ( accumulator ) {
-				if ( this === null || this === undefined ) {
-					throw new TypeError( "Object is null or undefined" );
+			Array.prototype.reduce = function ( fn, x ) {
+				var nth = this.length >> 0,
+				    i   = 0;
+
+				if ( this === undefined || this === null || typeof fn !== "function" ) {
+					throw new Error( label.error.invalidArguments );
 				}
 
-				var i = 0, l = this.length >> 0, curr;
-
-				if ( typeof accumulator !== "function") {
-					throw new TypeError( "First argument is not callable" );
-				}
-
-				if ( arguments.length < 2 ) {
-					if ( l === 0) {
-						throw new TypeError( "Array length is 0 and no second argument" );
+				if ( x === undefined ) {
+					if ( nth === 0 ) {
+						throw new Error( label.error.invalidArguments );
 					}
 
-					curr = this[0];
-					i = 1; // start accumulating at the second element
-				}
-				else {
-					curr = arguments[1];
+					x = this[0];
+					i = 1;
 				}
 
-				while ( i < l ) {
-					if ( i in this) {
-						curr = accumulator.call(undefined, curr, this[i], i, this );
-					}
+				i--;
 
-					++i;
+				while ( ++i < nth ) {
+					x = fn.call( this, x, this[i] );
 				}
 
-				return curr;
+				return x;
 			};
 		}
 
@@ -274,23 +240,11 @@ bootstrap = function () {
 	// Binding helper & namespace to $
 	$ = utility.$;
 	utility.merge( $, this );
-	delete $.$;
-	delete $.bootstrap;
 	delete $.init;
 	delete $.loading;
 
 	// Setting default routes
 	route.reset();
-
-	// Shortcut to loading.create
-	$.loading   = this.loading.create.bind( $.loading );
-
-	// Unbinding observer methods to maintain scope
-	$.fire      = this.fire;
-	$.on        = this.on;
-	$.once      = this.once;
-	$.un        = this.un;
-	$.listeners = this.listeners;
 
 	// Hooking abaaso into native Objects
 	utility.proto( Array, "array" );
@@ -306,9 +260,6 @@ bootstrap = function () {
 	utility.proto( Function, "function" );
 	utility.proto( Number, "number" );
 	utility.proto( String, "string" );
-
-	// Creating error log
-	$.error.log = this.error.log = [];
 
 	// Setting events & garbage collection
 	if ( !server ) {
@@ -378,12 +329,12 @@ bootstrap = function () {
 	}
 	else {
 		// Pure hackery, only exists when needed
-		$.state.current   = self.state.current   = self.state._current;
+		$.state.current   = this.state.current   = this.state._current;
 		$.state.change    = this.state.change    = function ( arg) { return self.state.current = state.setCurrent(arg ); };
 		$.state.setHeader = this.state.setHeader = function ( arg) { return self.state.header  = state.setHeader(arg ); };
 	}
 
-	$.ready = true;
+	$.ready = this.ready = true;
 
 	// Initializing
 	if ( typeof exports !== "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
@@ -400,6 +351,4 @@ bootstrap = function () {
 	else {
 		utility.repeat( fn );
 	}
-
-	return $;
 };
