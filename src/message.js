@@ -30,7 +30,7 @@ var message = {
 			target.postMessage( arg, "*" );
 		}
 		catch ( e ) {
-			error( e, arguments, this );
+			utility.error( e, arguments, this );
 		}
 
 		return target;

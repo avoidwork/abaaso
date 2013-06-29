@@ -357,8 +357,8 @@ var prototypes = {
 
 			return result;
 		},
-		keep_if : function ( fn ) {
-			return array.keep_if( this, fn );
+		keepIf : function ( fn ) {
+			return array.keepIf( this, fn );
 		},
 		keys : function () {
 			return array.keys( this );
@@ -444,11 +444,11 @@ var prototypes = {
 		remove : function ( start, end ) {
 			return array.remove( this, start, end );
 		},
-		remove_if : function ( fn ) {
-			return array.remove_if( this, fn );
+		removeIf : function ( fn ) {
+			return array.removeIf( this, fn );
 		},
-		remove_while: function ( fn ) {
-			return array.remove_while( this, fn );
+		removeWhile: function ( fn ) {
+			return array.removeWhile( this, fn );
 		},
 		removeAttr : function ( key ) {
 			array.each( this, function ( i ) {
@@ -746,7 +746,7 @@ var prototypes = {
 				}
 				catch ( e ) {
 					result = label.error.serverError;
-					error( e, arguments, this );
+					utility.error( e, arguments, this );
 				}
 
 				element.html( self, result );

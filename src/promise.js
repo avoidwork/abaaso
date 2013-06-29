@@ -91,6 +91,7 @@ var promise = {
 				catch ( e ) {
 					result = e;
 					error  = true;
+
 					if ( result !== undefined && !( result instanceof Error ) ) {
 						// Encoding Array or Object as a JSON string for transmission
 						if ( typeof result === "object" ) {
@@ -100,6 +101,9 @@ var promise = {
 						// Casting to an Error to fix context
 						result = new Error( result );
 					}
+
+					// Logging error
+					utility.error( result, [self.outcome], self );
 				}
 				finally {
 					// Not a Promise, passing result & chaining if applicable
@@ -118,11 +122,11 @@ var promise = {
 						self.outcome      = null;
 						result.parentNode = self;
 						result.then( function ( arg ) {
-							array.each( self.children, function ( i ) {
+							array.each( self.childNodes, function ( i ) {
 								i.resolve( arg );
 							});
 						}, function ( e ) {
-							array.each( self.children, function ( i ) {
+							array.each( self.childNodes, function ( i ) {
 								i.reject( e );
 							});
 						});
@@ -146,7 +150,7 @@ var promise = {
 
 			// Setting references
 			deferred.parentNode = self;
-			self.children.push( deferred );
+			self.childNodes.push( deferred );
 
 			return deferred;
 		}
@@ -170,7 +174,7 @@ var promise = {
 
 		if ( this.state !== promise.state.pending ) {
 			// Walking "forward" from a reverse chain or a fork, we've already been here...
-			if ( ( this.parentNode !== null && this.parentNode.state === promise.state.resolved ) || this.children.length > 0 ) {
+			if ( ( this.parentNode !== null && this.parentNode.state === promise.state.resolved ) || this.childNodes.length > 0 ) {
 				return;
 			}
 			else {
@@ -272,7 +276,7 @@ var promise = {
  * @return {Object} Instance of Promise
  */
 function Promise () {
-	this.children   = [];
+	this.childNodes = [];
 	this.error      = [];
 	this.fulfill    = [];
 	this.parentNode = null;

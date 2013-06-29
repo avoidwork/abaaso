@@ -1,7 +1,7 @@
 })();
 
 // Bootstrapping the framework
-$ = abaaso.bootstrap();
+abaaso.bootstrap();
 
 // Node, AMD & window supported
 if ( typeof exports !== "undefined" ) {

@@ -24,7 +24,7 @@ var validate = {
 				utility.genId( args );
 			}
 
-			c = $( "#" + args.id + " input, #" + args.id + " select" );
+			c = utility.$( "#" + args.id + " input, #" + args.id + " select" );
 
 			array.each( c, function ( i ) {
 				var z = {},
@@ -54,7 +54,7 @@ var validate = {
 					return;
 				}
 
-				value = v.toString().charAt( 0 ) === "#" ? ( $( v ) !== undefined ? $( v ).val() : "" ) : v;
+				value = v.toString().charAt( 0 ) === "#" ? ( utility.$( v ) !== undefined ? utility.$( v ).val() : "" ) : v;
 
 				if ( k === "date" ) {
 					if ( isNaN( new Date( value ).getYear() ) ) {

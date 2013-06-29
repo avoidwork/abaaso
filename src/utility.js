@@ -236,7 +236,7 @@ var utility = {
 	css : function ( content, media ) {
 		var ss, css;
 
-		ss = element.create( "style", {type: "text/css", media: media || "print, screen"}, $( "head" )[0] );
+		ss = element.create( "style", {type: "text/css", media: media || "print, screen"}, utility.$( "head" )[0] );
 
 		if ( ss.styleSheet ) {
 			ss.styleSheet.cssText = content;
@@ -392,7 +392,7 @@ var utility = {
 		};
 
 		utility.log( o.stack || o.message, !warning ? "error" : "warn" );
-		abaaso.error.log.push( o );
+		utility.error.log.push( o );
 		observer.fire( abaaso, "error", o );
 
 		return undefined;
@@ -467,7 +467,7 @@ var utility = {
 			do {
 				id = utility.domId( utility.uuid( true) );
 			}
-			while ( $( "#" + id ) !== undefined );
+			while ( utility.$( "#" + id ) !== undefined );
 		}
 		else {
 			id = utility.domId( utility.uuid( true) );
@@ -678,7 +678,7 @@ var utility = {
 	 * @private
 	 */
 	object : function ( obj ) {
-		return typeof obj === "object" ? obj : ( obj.toString().charAt( 0 ) === "#" ? $( obj ) : obj );
+		return typeof obj === "object" ? obj : ( obj.toString().charAt( 0 ) === "#" ? utility.$( obj ) : obj );
 	},
 
 	/**
@@ -866,7 +866,7 @@ var utility = {
 	 */
 	reflect : function ( arg ) {
 		if ( arg === undefined ) {
-			arg = this || $;
+			arg = this || utility.$;
 		}
 
 		arg = arg.toString().match( regex.reflect )[1];
@@ -927,7 +927,7 @@ var utility = {
 	 * @return {Object}        Script
 	 */
 	script : function ( arg, target, pos ) {
-		return element.create( "script", {type: "application/javascript", src: arg}, target || $( "head" )[0], pos );
+		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.$( "head" )[0], pos );
 	},
 
 	/**
@@ -939,7 +939,7 @@ var utility = {
 	 * @return {Objecct}      Stylesheet
 	 */
 	stylesheet : function ( arg, media ) {
-		return element.create( "link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, $( "head" )[0] );
+		return element.create( "link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, utility.$( "head" )[0] );
 	},
 
 	/**
@@ -989,12 +989,12 @@ var utility = {
 	tpl : function ( arg, target ) {
 		var frag;
 
-		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? $( target ) : $( target )[0] ) === undefined ) ) {
+		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.$( target ) : utility.$( target )[0] ) === undefined ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( target === undefined ) {
-			target = $( "body" )[0];
+			target = utility.$( "body" )[0];
 		}
 
 		frag  = document.createDocumentFragment();
