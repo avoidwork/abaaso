@@ -392,7 +392,7 @@ var utility = {
 		};
 
 		utility.log( o.stack || o.message, !warning ? "error" : "warn" );
-		abaaso.error.log.push( o );
+		utility.error.log.push( o );
 		observer.fire( abaaso, "error", o );
 
 		return undefined;
