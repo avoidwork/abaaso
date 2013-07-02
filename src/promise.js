@@ -5,6 +5,19 @@
  * @namespace abaaso
  */
 var promise = {
+	// Async delay strategy
+	delay : ( function () {
+		if ( typeof setImmediate !== "undefined" ) {
+			return setImmediate;
+		}
+		else if ( typeof process !== "undefined" ) {
+			return process.nextTick;
+		}
+		else {
+			return utility.defer;
+		}
+	})(),
+
 	/**
 	 * Promise factory
 	 *
@@ -16,8 +29,8 @@ var promise = {
 	},
 
 	// Caching if this function is available
-	freeze : (function () {
-		return (typeof Object.freeze === "function");
+	freeze : ( function () {
+		return ( typeof Object.freeze === "function" );
 	})(),
 
 	// Inherited by promises
@@ -32,7 +45,7 @@ var promise = {
 		reject : function ( arg ) {
 			var self = this;
 
-			utility.defer( function () {
+			promise.delay( function () {
 				promise.resolve.call( self, promise.state.broken, arg );
 			});
 
@@ -49,7 +62,7 @@ var promise = {
 		resolve : function ( arg ) {
 			var self = this;
 
-			utility.defer( function () {
+			promise.delay( function () {
 				promise.resolve.call( self, promise.state.resolved, arg );
 			});
 
@@ -85,7 +98,7 @@ var promise = {
 				    result;
 
 				try {
-					result = handler( self.outcome );
+					result = handler.call( undefined, self.outcome );
 					error  = false;
 				}
 				catch ( e ) {
