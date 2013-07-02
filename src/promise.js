@@ -6,7 +6,7 @@
  */
 var promise = {
 	// Async delay strategy
-	delay : ( function () {
+	delay : function () {
 		if ( typeof setImmediate !== "undefined" ) {
 			return setImmediate;
 		}
@@ -16,7 +16,7 @@ var promise = {
 		else {
 			return utility.defer;
 		}
-	})(),
+	},
 
 	/**
 	 * Promise factory
