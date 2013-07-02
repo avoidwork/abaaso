@@ -1,5 +1,14 @@
-var $       = require("../lib/abaaso.js")
-    promise = $.promise;
+var promise = require("../lib/abaaso.js").promise,
+    delay;
+
+delay = ( function () {
+	if ( typeof setImmediate !== "undefined" ) {
+		return setImmediate;
+	}
+	else {
+		return process.nextTick;
+	}
+})();
 
 exports["verify"] = {
 	setUp: function (done) {
@@ -35,7 +44,7 @@ exports["kept"] = {
 		test.equal(this.promise.resolved(), false, "Should be false");
 		test.equal(this.promise.fulfill.length, 1, "Should be \"1\"");
 		test.equal(this.promise.resolve(this.outcome), this.promise, "Should match");
-		$.delay(function () {
+		delay(function () {
 			test.equal(self.promise.outcome, self.outcome, "Should match");
 			test.equal(self.promise.resolved(), true, "Should be true");
 			test.equal(self.promise.fulfill.length, 0, "Should match");
@@ -64,7 +73,7 @@ exports["unkept"] = {
 		test.equal(this.promise.fulfill.length, 1, "Should be \"1\"");
 		test.equal(typeof this.promise.error[0], "function", "Should be \"function\"");
 		test.equal(this.promise.reject(this.outcome), this.promise, "Should match");
-		$.delay(function () {
+		delay(function () {
 			test.equal(self.promise.resolved(), true, "Should be true");
 			test.equal(self.promise.outcome, self.outcome, "Should match");
 			test.equal(self.promise.fulfill.length, 0, "Should be \"0\"");

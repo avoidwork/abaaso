@@ -168,7 +168,7 @@ function Deferred () {
 
 	// Setting handlers to execute Arrays of Functions
 	this.promise.then( function ( arg ) {
-		utility.defer( function () {
+		promise.delay( function () {
 			array.each( self.onDone, function ( i ) {
 				i( arg );
 			});
@@ -182,7 +182,7 @@ function Deferred () {
 			self.onFail   = [];
 		});
 	}, function ( arg ) {
-		utility.defer( function () {
+		promise.delay( function () {
 			array.each( self.onFail, function ( i ) {
 				i( arg );
 			});
