@@ -382,7 +382,7 @@ var utility = {
 	error : function ( e, args, scope, warning ) {
 		warning = ( warning === true );
 		var o   = {
-			"arguments" : array.cast( args ),
+			"arguments" : args !== undefined ? array.cast( args ) : [],
 			message     : e.message || e,
 			number      : e.number !== undefined ? ( e.number & 0xFFFF ) : undefined,
 			scope       : scope,
