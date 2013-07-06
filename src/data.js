@@ -967,6 +967,18 @@ var data = {
 		},
 
 		/**
+		 * Retrieves only 1 field/property
+		 *
+		 * @param  {String} arg Field/property to retrieve
+		 * @return {Array}      Array of values
+		 */
+		only : function ( arg ) {
+			return this.records.map( function( i ) {
+				return i.data[arg];
+			} );
+		},
+
+		/**
 		 * Purges data store or record from localStorage
 		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
