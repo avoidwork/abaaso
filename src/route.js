@@ -147,12 +147,12 @@ var route = {
 	 *
 	 * @method load
 	 * @param  {String} name  Route to load
-	 * @param  {Object} arg   [Optional] HTTP response ( node )
 	 * @param  {String} req   [Optional] HTTP request ( node )
+	 * @param  {Object} res   [Optional] HTTP response ( node )
 	 * @param  {String} host  [Optional] Hostname to query
 	 * @return {Mixed}        True or undefined
 	 */
-	load : function ( name, res, req, host ) {
+	load : function ( name, req, res, host ) {
 		req        = req  || "all";
 		host       = host || "all";
 		var active = "",
@@ -239,7 +239,7 @@ var route = {
 			}
 		}
 
-		route.routes[host][path][active]( res || active, req );
+		route.routes[host][path][active]( req || active, res );
 
 		return result;
 	},
@@ -303,7 +303,7 @@ var route = {
 			var parsed   = url.parse( req.url ),
 			    hostname = req.headers.host.replace( regex.header_replace, "" );
 
-			route.load( parsed.pathname, res, req, hostname );
+			route.load( parsed.pathname, req, res, hostname );
 		};
 
 		// Error handler
