@@ -1414,7 +1414,7 @@ var data = {
 		 * @param  {String} query       SQL ( style ) order by
 		 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
 		 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" ( insensitive = "ci", sensitive = "cs", mixed = "ms" )
-		 * @param  {Object} where       Object describing the WHERE clause
+		 * @param  {Object} where       [Optional] Object describing the WHERE clause
 		 * @return {Array}              View of data
 		 */
 		sort : function ( query, create, sensitivity, where ) {
@@ -1426,7 +1426,7 @@ var data = {
 				sensitivity = "ci";
 			}
 
-			create       = ( create === true );
+			create       = ( create === true || ( where instanceof Object ) );
 			var view     = ( query.replace( /\s*asc/ig, "" ).explode().join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
 			    queries  = string.explode( query ),
 			    key      = this.key,
