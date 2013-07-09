@@ -114,6 +114,7 @@ var grid = {
 				this.list.order = sort.join(", ");
 			}
 
+			this.list.where = null;
 			utility.merge( this.list, this.options );
 
 			this.list.refresh();
