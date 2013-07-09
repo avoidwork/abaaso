@@ -111,7 +111,7 @@ var grid = {
 					sort.push( string.trim( i + " " + ( element.data( obj, "sort" ) || "" ) ) );
 				});
 
-				this.list.order = sort.join(", ");
+				this.options.order = this.list.order = sort.join( ", " );
 			}
 
 			this.list.where = null;
