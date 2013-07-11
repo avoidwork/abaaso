@@ -34,7 +34,7 @@
 		"module": true,
 		"define": true,
 		"setImmediate": true,
-		"mongo": true,
+		"mongodb": true,
 		"format": true
 	}
 }
