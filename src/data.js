@@ -1021,10 +1021,10 @@ var data = {
 		},
 
 		/**
-		 * Saves data store or record to localStorage
+		 * Saves data store or record to localStorage, sessionStorage or MongoDB (node.js only)
 		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
-		 * @return {Object}     Record or store
+		 * @return {Object}     Deferred
 		 */
 		save : function ( arg ) {
 			return this.storage( arg || this, "set" );
@@ -1080,6 +1080,7 @@ var data = {
 			batch       = ( batch === true );
 			var self    = this,
 			    defer   = deferred.factory(),
+			    defer2  = deferred.factory(),
 			    partial = false,
 			    data, record, method, events, args, uri, p, reconcile;
 
@@ -1088,7 +1089,7 @@ var data = {
 			}
 
 			reconcile = function ( success, arg ) {
-				defer[success ? "resolve" : "reject"]( arg );
+				defer2[success ? "resolve" : "reject"]( arg );
 			};
 
 			// Chaining a promise to return
@@ -1318,7 +1319,7 @@ var data = {
 				defer.reject( args );
 			}
 
-			return defer;
+			return defer2;
 		},
 
 		/**
@@ -1563,15 +1564,20 @@ var data = {
 		/**
 		 * Storage interface
 		 *
+		 * SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js only)
+		 *
 		 * @param  {Mixed}  obj  Record ( Object, key or index ) or store
 		 * @param  {Object} op   Operation to perform ( get, remove or set )
-		 * @param  {String} type [Optional] Type of Storage to use ( local or session, default is local )
-		 * @return {Object}      Record or store
+		 * @param  {String} type [Optional] Type of Storage to use ( local, session [local] )
+		 * @return {Object}      Deferred
 		 */
 		storage : function ( obj, op, type ) {
-			var record  = false,
+			var self    = this,
+			    record  = false,
+			    mongodb = !string.isEmpty( this.mongodb ),
 			    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
-			    result, key, data;
+			    defer   = deferred.factory(),
+			    data, deferreds, callback, key;
 
 			if ( !regex.number_string_object.test( typeof obj ) || !regex.get_remove_set.test( op ) ) {
 				throw new Error( label.error.invalidArguments );
@@ -1586,27 +1592,153 @@ var data = {
 			key = record ? obj.key : obj.parentNode.id;
 
 			if ( op === "get" ) {
-				result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
+				if ( mongodb ) {
+					mongo.connect( this.mongodb, function( e, db ) {
+						if ( e ) {
+							defer.reject( e );
+							db.close();
+						}
+						else {
+							db.collection( self.parentNode.id ).find( record ? {_id: obj.key} : {}, function ( e, objects ) {
+								if ( e ) {
+									defer.reject( e );
+								}
+								else {
+									console.log( objects );
+									defer.resolve( objects );
+								}
 
-				if ( result === null ) {
-					throw new Error( label.error.invalidArguments );
+								db.close();
+							} );
+						}
+					} );
 				}
-
-				result = json.decode( result );
-				record ? this.set( key, result, true ) : utility.merge( this, result );
-				result = record ? obj : this;
+				else {
+					callback( session ? sessionStorage.getItem( key ) : localStorage.getItem( key ), defer );
+				}
 			}
 			else if ( op === "remove" ) {
-				session ? sessionStorage.removeItem( key ) : localStorage.removeItem( key );
-				result = this;
+				if ( mongodb ) {
+					mongo.connect( this.mongodb, function( e, db ) {
+						if ( e ) {
+							defer.reject( e );
+							db.close();
+						}
+						else if ( record ) {
+							db.collection( self.parentNode.id ).remove( {_id: obj.key}, function ( e, removed ) {
+								if ( e ) {
+									defer.reject( e );
+								}
+								else {
+									defer.resolve( removed );
+								}
+
+								db.close();
+							} );
+						}
+						else {
+							deferreds = [];
+
+							array.each( self.records, function ( i ) {
+								var data   = {},
+								    defer2 = deferred.factory();
+
+								deferreds.push( defer2 );
+
+								utility.iterate( i.data, function ( v, k ) {
+									if ( !array.contains( self.collections, k ) ) {
+										data[k] = v;
+									}
+								} );
+
+								db.collection( self.parentNode.id ).remove( {_id: i.key}, function ( e, removed ) {
+									if ( e ) {
+										defer2.reject( e );
+									}
+									else {
+										defer2.resolve( removed );
+									}
+								} );
+							} );
+
+							utility.when( deferreds ).then( function () {
+								defer.resolve( self );
+								db.close();
+							}, function ( e ) {
+								defer.reject( e );
+								db.close();
+							} );
+						}
+					} );
+				}
+				else {
+					session ? sessionStorage.removeItem( key ) : localStorage.removeItem( key );
+					defer.resolve( this );
+				}
 			}
 			else if ( op === "set" ) {
-				data = json.encode( record ? obj.data : {total: this.total, keys: this.keys, records: this.records} );
-				session ? sessionStorage.setItem( key, data ) : localStorage.setItem( key, data );
-				result = this;
+				if ( mongodb ) {
+					mongo.connect( this.mongodb, function( e, db ) {
+						if ( e ) {
+							defer.reject( e );
+							db.close();
+						}
+						else if ( record ) {
+							db.collection( self.parentNode.id ).update( {_id: obj.key}, {$set: obj.data}, {w:1, safe:true, upsert:true}, function ( e, objects ) {
+								if ( e ) {
+									defer.reject( e );
+								}
+								else {
+									console.log( objects );
+									defer.resolve( objects );
+								}
+
+								db.close();
+							} );
+						}
+						else {
+							deferreds = [];
+
+							array.each( self.records, function ( i ) {
+								var data   = {},
+								    defer2 = deferred.factory();
+
+								deferreds.push( defer2 );
+
+								utility.iterate( i.data, function ( v, k ) {
+									if ( !array.contains( self.collections, k ) ) {
+										data[k] = v;
+									}
+								} );
+
+								db.collection( self.parentNode.id ).update( {_id: i.key}, {$set: data}, {w:1, safe:true, upsert:true}, function ( e, objects ) {
+									if ( e ) {
+										defer2.reject( e );
+									}
+									else {
+										defer2.resolve( objects );
+									}
+								} );
+							} );
+
+							utility.when( deferreds ).then( function ( result ) {
+								defer.resolve( result );
+								db.close();
+							}, function ( e ) {
+								defer.reject( e );
+								db.close();
+							} );
+						}
+					} );
+				}
+				else {
+					data = json.encode( record ? obj.data : {total: this.total, keys: this.keys, records: this.records} );
+					session ? sessionStorage.setItem( key, data ) : localStorage.setItem( key, data );
+					defer.resolve( this );
+				}
 			}
 
-			return result;
+			return defer;
 		},
 
 		/**
@@ -1815,6 +1947,7 @@ function DataStore ( obj ) {
 	this.leafs       = [];
 	this.loaded      = false;
 	this.maxDepth    = 0;
+	this.mongodb     = "";
 	this.parentNode  = obj;
 	this.pointer     = null;
 	this.records     = [];

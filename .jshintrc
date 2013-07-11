@@ -33,6 +33,8 @@
 		"process": true,
 		"module": true,
 		"define": true,
-		"setImmediate": true
+		"setImmediate": true,
+		"mongo": true,
+		"format": true
 	}
 }
