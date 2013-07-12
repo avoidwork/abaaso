@@ -11,9 +11,11 @@ if ( global.abaaso !== undefined ) {
 }
 
 if ( server ) {
-	url   = require( "url" );
-	http  = require( "http" );
-	https = require( "https" );
+	url     = require( "url" );
+	http    = require( "http" );
+	https   = require( "https" );
+	mongodb = require( "mongodb" ).MongoClient;
+	format  = require( "util" ).format;
 
 	if ( typeof Storage === "undefined" ) {
 		localStorage = require( "localStorage" );

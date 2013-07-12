@@ -105,7 +105,7 @@ var promise = {
 					result = e;
 					error  = true;
 
-					if ( result !== undefined && !( result instanceof Error ) ) {
+					if ( result !== undefined && result !== null && !( result instanceof Error ) ) {
 						// Encoding Array or Object as a JSON string for transmission
 						if ( typeof result === "object" ) {
 							result = json.encode( result );
