@@ -477,6 +477,7 @@ var data = {
 			var self   = this,
 			    events = ( this.events === true ),
 			    defer  = deferred.factory(),
+			    defer2 = deferred.factory(),
 			    key, args, uri, p;
 
 			defer.then( function ( arg ) {
@@ -514,12 +515,14 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataDelete", record );
 				}
+
+				defer2.resolve( record );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataDelete", e );
 				}
 
-				throw e;
+				defer2.reject( e );
 			});
 
 			if ( typeof record === "string" ) {
@@ -565,7 +568,7 @@ var data = {
 				defer.reject( args );
 			}
 
-			return defer;
+			return defer2;
 		},
 
 		/**
