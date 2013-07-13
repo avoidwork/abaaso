@@ -249,18 +249,50 @@ var array = {
 	 * Parameters for fn are 'value', 'key'
 	 *
 	 * @method each
-	 * @param  {Array}    obj Array to iterate
-	 * @param  {Function} fn  Function to execute on index values
-	 * @return {Array}        Array
+	 * @param  {Array}    obj   Array to iterate
+	 * @param  {Function} fn    Function to execute on index values
+	 * @param  {Boolean}  async [Optional] Asynchronous iteration
+	 * @param  {Number}   size  [Optional] Batch size for async iteration, default is 10
+	 * @return {Array}          Array
 	 */
-	each : function ( obj, fn ) {
+	each : function ( obj, fn, async, size ) {
 		var nth = obj.length,
-		    i   = -1;
+		    i   = -1,
+		    offset;
 
-		while ( ++i < nth ) {
-			if ( fn.call( obj, obj[i], i ) === false ) {
-				break;
+		if ( async !== true ) {
+			while ( ++i < nth ) {
+				if ( fn.call( obj, obj[i], i ) === false ) {
+					break;
+				}
 			}
+		}
+		else {
+			size   = size || 10;
+			offset = 0;
+
+			if ( size > nth ) {
+				size = nth;
+			}
+
+			utility.repeat( function () {
+				var i = -1,
+				    idx;
+
+				while ( ++i < size ) {
+					idx = i + offset;
+
+					if ( fn.call( obj, obj[idx], idx ) === false ) {
+						return false;
+					}
+				}
+
+				offset += size;
+
+				if ( offset >= nth ) {
+					return false;
+				}
+			}, undefined, undefined, false );
 		}
 
 		return obj;

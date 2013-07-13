@@ -114,8 +114,8 @@ var prototypes = {
 
 			return [];
 		},
-		each : function ( arg ) {
-			return array.each( this, arg );
+		each : function ( arg, async, size ) {
+			return array.each( this, arg, async, size );
 		},
 		empty : function () {
 			return array.empty( this );
