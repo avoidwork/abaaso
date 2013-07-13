@@ -258,7 +258,7 @@ var array = {
 	each : function ( obj, fn, async, size ) {
 		var nth = obj.length,
 		    i   = -1,
-		    clone, offset;
+		    offset;
 
 		if ( async !== true ) {
 			while ( ++i < nth ) {
@@ -269,7 +269,6 @@ var array = {
 		}
 		else {
 			size   = size || 10;
-			clone  = utility.clone( obj );
 			offset = 0;
 
 			if ( size > nth ) {
@@ -283,7 +282,7 @@ var array = {
 				while ( ++i < size ) {
 					idx = i + offset;
 
-					if ( fn.call( clone, clone[idx], idx ) === false ) {
+					if ( fn.call( obj, obj[idx], idx ) === false ) {
 						return false;
 					}
 				}
