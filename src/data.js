@@ -1626,19 +1626,23 @@ var data = {
 								}
 								else {
 									collection.find( {} ).toArray( function ( e, recs ) {
+										var i = -1;
+										
 										if ( e ) {
 											defer.reject( e );
 										}
 										else {
-											self.batch( "set", recs.map( function ( i ) {
+											self.records = recs.map( function ( i ) {
 												i[self.key || "id"] = i._id;
+												i.index             = ++i;
+												self.keys[i._id]    = i.index;
 												delete i._id;
 												return i;
-											} ), true ).then( function ( args ) {
-												defer.resolve( args );
-											}, function ( e ) {
-												defer.reject( e );
 											} );
+											
+											self.total = self.records.length;
+											
+											defer.resolve( self.records );
 										}
 
 										db.close();
