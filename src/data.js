@@ -1626,18 +1626,27 @@ var data = {
 								}
 								else {
 									collection.find( {} ).toArray( function ( e, recs ) {
-										var i = -1;
+										var keys, i;
 										
 										if ( e ) {
 											defer.reject( e );
 										}
 										else {
-											self.records = recs.map( function ( i ) {
-												i[self.key || "id"] = i._id;
-												i.index             = ++i;
-												self.keys[i._id]    = i.index;
-												delete i._id;
-												return i;
+											keys = array.cast( recs[0] || {}, true );
+											i    = -1;
+											
+											keys.remove( "_id" );
+											
+											self.records = recs.map( function ( r ) {
+												var rec = {key: r._id, index: ++i, data: {}};
+												
+												array.each( keys, function ( k ) {
+													rec.data[k] = r[k];
+												});
+												
+												self.keys[r._id] = rec.index;
+												
+												return rec;
 											} );
 											
 											self.total = self.records.length;
