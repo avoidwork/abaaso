@@ -1626,13 +1626,14 @@ var data = {
 								}
 								else {
 									collection.find( {} ).toArray( function ( e, recs ) {
-										var i = -1;
+										var i   = -1,
+										    nth = recs.length;
 										
 										if ( e ) {
 											defer.reject( e );
 										}
 										else {
-											if ( recs.length > 0 ) {
+											if ( nth > 0 ) {
 												self.records = recs.map( function ( r ) {
 													var rec = {key: r._id, index: ++i, data: {}};
 
@@ -1643,7 +1644,7 @@ var data = {
 													return rec;
 												} );
 												
-												self.total = self.records.length;
+												self.total = nth;
 											}
 											
 											defer.resolve( self.records );
