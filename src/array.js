@@ -651,12 +651,13 @@ var array = {
 	 *
 	 * @param  {Array}  obj       Array to iterate
 	 * @param  {Number} precision [Optional] Rounding precision
+	 * @param  {Number} total     [Optional] Value to compare against
 	 * @return {Array}            Array of percents
 	 */
-	percents : function ( obj, precision ) {
+	percents : function ( obj, precision, total ) {
 		precision  = precision || 0;
-		var total  = array.sum( obj ),
-		    result = [],
+		total      = total     || array.sum( obj );
+		var result = [],
 		    nth    = obj.length - 1,
 		    sum    = 0;
 

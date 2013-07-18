@@ -414,8 +414,8 @@ var prototypes = {
 				observer.once( i, event, listener, id, scope || i, state );
 			});
 		},
-		percents : function ( arg ) {
-			return array.percents( this, arg );
+		percents : function ( precision, total ) {
+			return array.percents( this, precision, total );
 		},
 		position : function () {
 			var result = [];
