@@ -589,6 +589,29 @@ exports["mode"] = {
 	}
 };
 
+exports["percents"] = {
+	setUp: function (done) {
+		this.val = [1, 2, 3, 37];
+		done();
+	},
+	direct: function (test) {
+		test.expect(4);
+		test.equal(array.percents(this.val).sum(), 100, "Should be '100'");
+		test.equal(array.percents(this.val).toString(), "2,5,7,86", "Should be '2,5,7,86'");
+		test.equal(array.percents(this.val, 1).sum(), 100, "Should be '100'");
+		test.equal(array.percents(this.val, 7).sum(), 100, "Should be '100'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(4);
+		test.equal(this.val.percents().sum(), 100, "Should be '100'");
+		test.equal(this.val.percents().toString(), "2,5,7,86", "Should be '2,5,7,86'");
+		test.equal(this.val.percents(1).sum(), 100, "Should be '100'");
+		test.equal(this.val.percents(7).sum(), 100, "Should be '100'");
+		test.done();
+	}
+};
+
 exports["range"] = {
 	setUp: function (done) {
 		this.val = [5, 1, 3, 8];

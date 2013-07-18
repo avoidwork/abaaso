@@ -647,6 +647,37 @@ var array = {
 	},
 
 	/**
+	 * Creates an Array of percentages from an Array of Numbers (ints/floats)
+	 *
+	 * @param  {Array}  obj       Array to iterate
+	 * @param  {Number} precision [Optional] Rounding precision
+	 * @return {Array}            Array of percents
+	 */
+	percents : function ( obj, precision ) {
+		precision  = precision || 0;
+		var total  = array.sum( obj ),
+		    result = [],
+		    nth    = obj.length - 1,
+		    sum    = 0;
+
+		array.each( obj, function ( i, idx ) {
+			var percent;
+
+			if ( idx < nth ) {
+				percent = number.parse( ( ( i / total ) * 100 ).toFixed( precision ) );
+				sum    += percent;
+			}
+			else {
+				percent = number.parse( ( 100 - sum ).toFixed( precision ) );
+			}
+
+			result.push( percent );
+		} );
+
+		return result;
+	},
+
+	/**
 	 * Finds the range of the Array ( of numbers ) values
 	 *
 	 * @method range
