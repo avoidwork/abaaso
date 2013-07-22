@@ -976,9 +976,16 @@ var data = {
 		 * @return {Array}      Array of values
 		 */
 		only : function ( arg ) {
-			return this.records.map( function( i ) {
-				return i.data[arg];
-			} );
+			if ( arg === this.key ) {
+				return this.records.map( function ( i ) {
+					return i.key;
+				});
+			}
+			else {
+				return this.records.map( function( i ) {
+					return i.data[arg];
+				});
+			}
 		},
 
 		/**
