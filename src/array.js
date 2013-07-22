@@ -257,11 +257,10 @@ var array = {
 	 */
 	each : function ( obj, fn, async, size ) {
 		var nth = obj.length,
-		    i   = -1,
-		    offset;
+		    i, offset;
 
 		if ( async !== true ) {
-			while ( ++i < nth ) {
+			for ( i = 0; i < nth; i++ ) {
 				if ( fn.call( obj, obj[i], i ) === false ) {
 					break;
 				}
@@ -276,10 +275,10 @@ var array = {
 			}
 
 			utility.repeat( function () {
-				var i = -1,
+				var i = 0,
 				    idx;
 
-				while ( ++i < size ) {
+				for ( i = 0; i < size; i++ ) {
 					idx = i + offset;
 
 					if ( fn.call( obj, obj[idx], idx ) === false ) {
