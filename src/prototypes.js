@@ -562,7 +562,7 @@ var prototypes = {
 				type = i.type;
 
 				if ( typeof i.val === "function" ) {
-					a.push( i.val( arg ) );
+					a.push( element.val( i, arg ) );
 				}
 			});
 

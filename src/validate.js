@@ -31,7 +31,7 @@ var validate = {
 				    p, v, r;
 
 				p = regex[i.nodeName.toLowerCase()] ? regex[i.nodeName.toLowerCase()] : ( ( !string.isEmpty( i.id ) && regex[i.id.toLowerCase()] ) ? regex[i.id.toLowerCase()] : "notEmpty" );
-				v = i.val();
+				v = element.val( i );
 
 				if ( v === null ) {
 					v = "";
@@ -54,7 +54,7 @@ var validate = {
 					return;
 				}
 
-				value = v.toString().charAt( 0 ) === "#" ? ( utility.$( v ) !== undefined ? utility.$( v ).val() : "" ) : v;
+				value = v.toString().charAt( 0 ) === "#" ? ( utility.$( v ) !== undefined ? element.val( utility.$( v ) ) : "" ) : v;
 
 				if ( k === "date" ) {
 					if ( isNaN( new Date( value ).getYear() ) ) {
