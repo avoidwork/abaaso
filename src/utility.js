@@ -15,40 +15,46 @@ var utility = {
 	 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 	 *
 	 * @method $
-	 * @param  {String} arg Comma delimited string of target #id, .class, tag or selector
+	 * @param  {String} arg Comma delimited string of CSS selectors
 	 * @return {Mixed}      Element or Array of Elements
 	 */
 	$ : function ( arg ) {
-		var queries, result, tmp;
+		var result;
 
-		if ( document === undefined || arg === undefined ) {
+		if ( arg === undefined ) {
 			return undefined;
 		}
 
-		queries = string.explode( arg );
-		tmp     = [];
+		arg = string.trim( arg );
 
-		array.each( queries, function ( query ) {
-			var obj;
-
-			if ( regex.hash.test( query ) && !regex.selector_complex.test( query ) ) {
-				obj = document.getElementById( query.replace( regex.hash, "" ) );
-
-				if ( obj !== null ) {
-					array.merge( tmp, [obj] );
-				}
+		if ( arg.indexOf( "," ) === -1 ) {
+			if ( !regex.selector_complex.test( arg ) && regex.hash.test( arg ) ) {
+				result = document.getElementById( arg.replace( regex.hash, "" ) ) || undefined;
 			}
 			else {
-				array.merge( tmp, document.querySelectorAll( query ) );
+				result = array.cast( document.querySelectorAll( arg ) );
 			}
-		});
 
-		result = array.flat( tmp );
-
-		if ( queries.length === 1 && regex.hash.test( arg ) && !regex.selector_complex.test( arg ) ) {
-			return result[0];
+			return result;
 		}
 		else {
+			result = [];
+
+			array.each( string.explode( arg ), function ( query ) {
+				var obj;
+
+				if ( !regex.selector_complex.test( query ) && regex.hash.test( query ) ) {
+					obj = document.getElementById( query.replace( regex.hash, "" ) );
+
+					if ( obj !== null ) {
+						result.push( obj );
+					}
+				}
+				else {
+					result = result.concat( array.cast( document.querySelectorAll( query ) ) );
+				}
+			});
+
 			return result;
 		}
 	},
