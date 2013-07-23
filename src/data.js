@@ -1062,7 +1062,7 @@ var data = {
 					if ( type !== "function" && rec.data[k] !== v ) {
 						return ( match = false );
 					}
-					else if ( type === "function" && !v( rec.data[k] ) ) {
+					else if ( type === "function" && !v( rec.data[k], rec ) ) {
 						return ( match = false );
 					}
 				});
