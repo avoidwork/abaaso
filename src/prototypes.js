@@ -191,11 +191,6 @@ var prototypes = {
 
 			return result;
 		},
-		hide : function () {
-			return array.each( this, function ( i ) {
-				element.hide( i );
-			});
-		},
 		html : function ( arg ) {
 			var result;
 
@@ -667,9 +662,6 @@ var prototypes = {
 		},
 		hasClass : function ( arg ) {
 			return element.hasClass( this, arg );
-		},
-		hide : function () {
-			return element.hide( this );
 		},
 		html : function ( arg ) {
 			return element.html( this, arg );
