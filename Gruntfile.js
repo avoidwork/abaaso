@@ -30,6 +30,7 @@ module.exports = function (grunt) {
 					"src/grid.js",
 					"src/json.js",
 					"src/label.js",
+					"src/lru.js",
 					"src/message.js",
 					"src/mouse.js",
 					"src/number.js",

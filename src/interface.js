@@ -162,6 +162,7 @@ return {
 	listenersTotal  : observer.sum,
 	log             : utility.log,
 	logging         : observer.log,
+	lru             : lru.factory,
 	merge           : utility.merge,
 	module          : utility.module,
 	object          : utility.object,
