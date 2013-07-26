@@ -30,6 +30,7 @@ var regex = {
 	down                    : /down/,
 	down_up                 : /down|up/,
 	email                   : /^[a-zA-Z0-9.!#$%&'*+\/=?\^_`{|}~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9\-]{0,253}[a-zA-Z0-9])?)*$/,
+	endslash                : /\/$/,
 	element_update          : /innerHTML|innerText|textContent|type|src/,
 	firefox                 : /firefox/i,
 	get_headers             : /^(head|get|options)$/,
