@@ -128,6 +128,9 @@ var prototypes = {
 		equal : function ( arg ) {
 			return array.equal( this, arg );
 		},
+		fib : function ( arg ) {
+			return array.fib( arg );
+		},
 		fill : function ( arg, start, offset ) {
 			return array.fill( this, arg, start, offset );
 		},
