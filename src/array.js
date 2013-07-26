@@ -321,6 +321,35 @@ var array = {
 	},
 
 	/**
+	 * Fibonacci generator
+	 *
+	 * @param  {Number} arg [Optional] Amount of numbers to generate, default is 100
+	 * @return {Array}      Array of numbers
+	 */
+	fib : function ( arg ) {
+		var result = [1, 2],
+		    first  = result[0],
+		    second = result[1],
+		    sum;
+
+		// Subtracting 1 to account for `first` & `second`
+		arg = ( arg || 100 ) - 1;
+		
+		if ( isNaN( arg ) || arg < 2 ) {
+			throw new Error( label.error.invalidArguments );
+		}
+
+		while ( --arg ) {
+			sum    = first + second;
+			first  = second;
+			second = sum;
+			result.push( sum );
+		}
+
+		return result;
+	},
+
+	/**
 	 * Fills `obj` with the evalution of `arg`, optionally from `start` to `offset`
 	 *
 	 * @method fill

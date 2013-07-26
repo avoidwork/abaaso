@@ -258,6 +258,29 @@ exports["equal"] = {
 	}
 };
 
+exports["fib"] = {
+	setUp: function (done) {
+		this.test = [];
+		done();
+	},
+	direct: function (test) {
+		test.expect(4);
+		test.equal(array.fib(5).length, 5, "Should be '5'");
+		test.equal(array.fib(5).toString(), "1,2,3,5,8", "Should be '1,2,3,5,8'");
+		test.equal(array.fib(7).toString(), "1,2,3,5,8,13,21", "Should be '1,2,3,5,8,13,21'");
+		test.equal(array.fib().length, 100, "Should be '100'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(4);
+		test.equal(this.test.fib(5).length, 5, "Should be '5'");
+		test.equal(this.test.fib(5).toString(), "1,2,3,5,8", "Should be '1,2,3,5,8'");
+		test.equal(this.test.fib(7).toString(), "1,2,3,5,8,13,21", "Should be '1,2,3,5,8,13,21'");
+		test.equal(this.test.fib().length, 100, "Should be '100'");
+		test.done();
+	}
+};
+
 exports["fill"] = {
 	setUp: function (done) {
 		this.val = ["a", "b"];

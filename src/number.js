@@ -32,30 +32,6 @@ var number = {
 	},
 
 	/**
-	 * Fibonacci generator
-	 *
-	 * @param  {Number} arg [Optional] Ceiling
-	 * @return {Array}      Array of numbers
-	 */
-	fib : function ( arg ) {
-		var result = [1, 2],
-		    first  = result[0],
-		    second = result[1],
-		    sum;
-
-		arg = arg || 927372692193079200000;
-
-		while ( second < arg ) {
-			sum    = first + second;
-			first  = second;
-			second = sum;
-			result.push( sum );
-		}
-
-		return result;
-	},
-
-	/**
 	 * Formats a Number to a delimited String
 	 *
 	 * @method format
