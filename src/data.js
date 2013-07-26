@@ -196,15 +196,16 @@ var data = {
 							set( i, id || utility.uuid() );
 						}
 						else if ( i.indexOf( "//" ) === -1 ) {
+							parsed = utility.parse( self.uri );
+
 							// Relative path to store, i.e. a child
 							if ( i.charAt( 0 ) !== "/" ) {
-								i = self.uri + "/" + i;
+								i = parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + i;
 							}
 
 							// Root path, relative to store, i.e. a domain
 							else if ( self.uri !== null && regex.root.test( i ) ) {
-								parsed = utility.parse( self.uri );
-								i      = parsed.protocol + "//" + parsed.host + i;
+								i = parsed.protocol + "//" + parsed.host + i;
 							}
 
 							idx = i.replace( regex.not_endpoint, "" );
