@@ -116,6 +116,7 @@ return {
 	error           : utility.error,
 	expire          : cache.clean,
 	expires         : 120000,
+	fib             : number.fib,
 	extend          : utility.extend,
 	filter          : filter.factory,
 	fire            : function ( obj, event ) {

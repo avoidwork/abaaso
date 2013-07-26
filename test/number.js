@@ -38,6 +38,18 @@ exports["even"] = {
 	}
 };
 
+exports["fib"] = {
+	setUp: function (done) {
+		this.result = number.fib(21);
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(this.result.toString(), "1,2,3,5,8,13,21", "Should be '1,2,3,5,8,13,21'");
+		test.done();
+	}
+};
+
 exports["format"] = {
 	setUp: function (done) {
 		this.val = 123456789;
