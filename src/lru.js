@@ -106,6 +106,9 @@ var lru = {
 			if ( item === undefined ) {
 				item = new LRUItem( value );
 			}
+			else {
+				item.value = value;
+			}
 
 			item.next       = null;
 			item.previous   = this.first;
