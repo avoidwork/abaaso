@@ -175,9 +175,6 @@ var datalist = {
 				// Last page
 				element.create( last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create( "li", {}, el) );
 
-				// Removing ( potentially ) existing click handler
-				observer.remove( el, "click" );
-
 				// Adding to DOM
 				element.klass( el, "hidden", false );
 

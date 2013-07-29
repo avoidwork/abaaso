@@ -90,6 +90,8 @@ var data = {
 				if ( events ) {
 					observer.fire( self.parentNode, "afterDataBatch", arg );
 				}
+
+				return self.records;
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataBatch", e );
@@ -348,7 +350,7 @@ var data = {
 				var result = "",
 				    parsed;
 
-				if ( /\/\//.test( entity ) ) {
+				if ( regex.double_slash.test( entity ) ) {
 					result = entity;
 				}
 				else if ( entity.charAt( 0 ) === "/" && store.charAt( 0 ) !== "/" ) {
@@ -983,7 +985,7 @@ var data = {
 				});
 			}
 			else {
-				return this.records.map( function( i ) {
+				return this.records.map( function ( i ) {
 					return i.data[arg];
 				});
 			}
@@ -1438,20 +1440,13 @@ var data = {
 				sensitivity = "ci";
 			}
 
+			query        = query.replace( regex.asc, "" );
 			create       = ( create === true || ( where instanceof Object ) );
-			var view     = ( query.replace( /\s*asc/ig, "" ).explode().join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
-			    queries  = string.explode( query ),
+			var queries  = string.explode( query ),
+			    view     = ( queries.join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
 			    key      = this.key,
 			    result   = [],
 			    bucket, crawl, sort, sorting;
-
-			queries = queries.map( function ( query ) {
-				if ( string.isEmpty( query ) ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				return query.replace( regex.asc, "" );
-			});
 
 			if ( !create && this.views[view] instanceof Array ) {
 				return this.views[view];
@@ -1534,14 +1529,14 @@ var data = {
 			};
 
 			sort = function ( data, query, prop, reverse, pk ) {
-				var tmp = [],
-				    sorted;
+				var tmp    = [],
+				    sorted = [];
 
 				array.each( data, function ( i, idx ) {
-					var v  = pk ? i.key : i.data[prop];
+					var v  = pk ? i.key : i.data[prop] || "!";
 
 					v = string.trim( v.toString() ) + ":::" + idx;
-					tmp.push( v.replace(regex.nil, "\"\"") );
+					tmp.push( v );
 				});
 
 				if ( tmp.length > 1 ) {
@@ -1550,11 +1545,11 @@ var data = {
 					if ( reverse ) {
 						tmp.reverse();
 					}
-				}
 
-				sorted = tmp.map( function ( i ) {
-					return data[i.replace( regex.sort_needle, "" )];
-				});
+					sorted = tmp.map( function ( i ) {
+						return data[i.replace( regex.sort_needle, "" )];
+					});
+				}
 
 				return sorted;
 			};
@@ -1899,8 +1894,11 @@ var data = {
 				});
 
 				array.each( this.records, function ( i ) {
-					cache.expire( (uri + "/" + i.key), true );
-					observer.remove( uri + "/" + i.key );
+					var recordUri = uri + "/" + i.key;
+
+					cache.expire( recordUri, true );
+					observer.remove( recordUri );
+
 					utility.iterate( i.data, function ( v ) {
 						if ( v === null ) {
 							return;
