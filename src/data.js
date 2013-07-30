@@ -8,7 +8,7 @@
  */
 var data = {
 	/**
-	 * Decorates a data store on an Object
+	 * Decorates a DataStore on an Object
 	 *
 	 * @method decorator
 	 * @param  {Object} obj  Object to decorate
@@ -39,7 +39,7 @@ var data = {
 		return obj;
 	},
 
-	// Inherited by data stores
+	// Inherited by DataStores
 	methods : {
 		/**
 		 * Batch sets or deletes data in the store
@@ -313,7 +313,7 @@ var data = {
 		},
 
 		/**
-		 * Crawls a record's properties and creates data stores when URIs are detected
+		 * Crawls a record's properties and creates DataStores when URIs are detected
 		 *
 		 * Events: afterDataRetrieve  Fires after the store has retrieved all data from crawling
 		 *         failedDataRetrieve Fires if an exception occurs
@@ -377,7 +377,7 @@ var data = {
 			};
 
 			/**
-			 * Sets up a data store
+			 * Sets up a DataStore
 			 *
 			 * Possibly a subset of the collection, so it relies on valid URI paths
 			 *
@@ -575,9 +575,9 @@ var data = {
 		},
 
 		/**
-		 * Exports a subset or complete record set of data store
+		 * Exports a subset or complete record set of DataStore
 		 *
-		 * @param  {Array} args   [Optional] Sub-data set of data store
+		 * @param  {Array} args   [Optional] Sub-data set of DataStore
 		 * @param  {Array} fields [Optional] Fields to export, defaults to all
 		 * @return {Array}        Records
 		 */
@@ -726,7 +726,7 @@ var data = {
 		 *
 		 * If record is null, an empty form based on the first record is generated.
 		 * The submit action is data.set() which triggers a POST or PUT
-		 * from the data store.
+		 * from the DataStore.
 		 *
 		 * @method form
 		 * @param  {Mixed}   record null, record, key or index
@@ -879,7 +879,7 @@ var data = {
 			};
 
 			fn = function () {
-				// Creating new child data store
+				// Creating new child DataStore
 				if ( typeof arg === "object" ) {
 					recs = arg;
 				}
@@ -909,7 +909,7 @@ var data = {
 				}
 			};
 
-			// Create stub or teardown existing data store
+			// Create stub or teardown existing DataStore
 			if ( this.keys[key] !== undefined ) {
 				idx = this.keys[key];
 
@@ -973,6 +973,35 @@ var data = {
 		},
 
 		/**
+		 * Performs an INNER JOIN on two DataStores
+		 *
+		 * @param  {String} arg   DataStore to join
+		 * @param  {String} field Field in both DataStores
+		 * @return {Array}        Array of records
+		 */
+		join : function ( arg, field ) {
+			var results = [],
+			    key     = field === this.key;
+
+			array.each( this.records, function ( i ) {
+				var where = {},
+				    match;
+
+				where[field] = key ? i.key : i.data[field];
+				match        = arg.data.select( where );
+
+				if ( match.length > 2 ) {
+					throw new Error( label.error.databaseMoreThanOne );
+				}
+				else if ( match.length === 1 ) {
+					results.push( utility.merge( utility.clone( i.data ), utility.clone( match[0].data) ) );
+				}
+			});
+
+			return results;
+		},
+
+		/**
 		 * Retrieves only 1 field/property
 		 *
 		 * @param  {String} arg Field/property to retrieve
@@ -992,7 +1021,7 @@ var data = {
 		},
 
 		/**
-		 * Purges data store or record from localStorage
+		 * Purges DataStore or record from localStorage
 		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
@@ -1002,7 +1031,7 @@ var data = {
 		},
 
 		/**
-		 * Reindexes the data store
+		 * Reindexes the DataStore
 		 *
 		 * @method reindex
 		 * @return {Object} Data store
@@ -1024,7 +1053,7 @@ var data = {
 		},
 
 		/**
-		 * Restores data store or record frome localStorage
+		 * Restores DataStore or record frome localStorage
 		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
@@ -1034,7 +1063,7 @@ var data = {
 		},
 
 		/**
-		 * Saves data store or record to localStorage, sessionStorage or MongoDB (node.js only)
+		 * Saves DataStore or record to localStorage, sessionStorage or MongoDB (node.js only)
 		 *
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Deferred
@@ -1783,14 +1812,14 @@ var data = {
 		},
 
 		/**
-		 * Syncs the data store with a URI representation
+		 * Syncs the DataStore with a URI representation
 		 *
-		 * Events: beforeDataSync  Fires before syncing the data store
-		 *         afterDataSync   Fires after syncing the data store
+		 * Events: beforeDataSync  Fires before syncing the DataStore
+		 *         afterDataSync   Fires after syncing the DataStore
 		 *         failedDataSync  Fires when an exception occurs
 		 *
 		 * @method sync
-		 * @param  {Boolean} reindex [Optional] True will reindex the data store
+		 * @param  {Boolean} reindex [Optional] True will reindex the DataStore
 		 * @return {Object}          Deferred
 		 */
 		sync : function ( reindex ) {
@@ -1937,7 +1966,7 @@ var data = {
 		/**
 		 * Updates an existing Record
 		 *
-		 * Use `data.set()` if the record contains child data stores
+		 * Use `data.set()` if the record contains child DataStores
 		 *
 		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
 		 * @param  {Object} data Key:Value pairs to set as field values
