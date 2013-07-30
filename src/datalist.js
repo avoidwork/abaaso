@@ -155,7 +155,7 @@ var datalist = {
 				    el, n;
 
 				// Setting up the list
-				el = element.create( "ul", {"class": "list pages " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before" );
+				el = element.create( "ul", {"class": "list pages hidden " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before" );
 
 				// First page
 				element.create( more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create( "li", {}, el) );
@@ -175,8 +175,8 @@ var datalist = {
 				// Last page
 				element.create( last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create( "li", {}, el) );
 
-				// Removing ( potentially ) existing click handler
-				observer.remove( el, "click" );
+				// Adding to DOM
+				element.klass( el, "hidden", false );
 
 				// Click handler scrolls to top the top of page
 				observer.add( el, "click", function (e ) {
