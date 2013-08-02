@@ -973,30 +973,91 @@ var data = {
 		},
 
 		/**
-		 * Performs an INNER JOIN on two DataStores
+		 * Performs an (INNER/LEFT/RIGHT) JOIN on two DataStores
 		 *
 		 * @param  {String} arg   DataStore to join
 		 * @param  {String} field Field in both DataStores
+		 * @param  {String} join  Type of JOIN to perform, defaults to `inner`
 		 * @return {Array}        Array of records
 		 */
-		join : function ( arg, field ) {
-			var results = [],
-			    key     = field === this.key;
+		join : function ( arg, field, join ) {
+			join        = join || "inner";
+			var self    = this,
+			    results = [],
+			    key     = field === this.key,
+			    keys    = array.merge( array.cast( this.records[0].data, true ), array.cast( arg.data.records[0].data, true ) ),
+				fn;
 
-			array.each( this.records, function ( i ) {
-				var where = {},
-				    match;
+			if ( join === "inner" ) {
+				fn = function ( i ) {
+					var where = {},
+						match;
 
-				where[field] = key ? i.key : i.data[field];
-				match        = arg.data.select( where );
+					where[field] = key ? i.key : i.data[field];
+					match        = arg.data.select( where );
 
-				if ( match.length > 2 ) {
-					throw new Error( label.error.databaseMoreThanOne );
-				}
-				else if ( match.length === 1 ) {
-					results.push( utility.merge( utility.clone( i.data ), utility.clone( match[0].data) ) );
-				}
-			});
+					if ( match.length > 2 ) {
+						throw new Error( label.error.databaseMoreThanOne );
+					}
+					else if ( match.length === 1 ) {
+						results.push( utility.merge( utility.clone( i.data ), utility.clone( match[0].data) ) );
+					}
+				};
+			}
+			else if ( join === "left" ) {
+				fn = function ( i ) {
+					var where  = {},
+					    record = utility.clone( i.data ),
+						match;
+
+					where[field] = key ? i.key : i.data[field];
+					match        = arg.data.select( where );
+
+					if ( match.length > 2 ) {
+						throw new Error( label.error.databaseMoreThanOne );
+					}
+					else if ( match.length === 1 ) {
+						results.push( utility.merge( utility.clone( record ), utility.clone( match[0].data) ) );
+					}
+					else {
+						array.each( keys, function ( i ) {
+							if ( record[i] === undefined ) {
+								record[i] = null;
+							}
+						});
+
+						results.push( record );
+					}
+				};
+			}
+			else if ( join === "right" ) {
+				fn = function ( i ) {
+					var where  = {},
+					    record = utility.clone( i.data ),
+						match;
+
+					where[field] = key ? i.key : i.data[field];
+					match        = self.select( where );
+
+					if ( match.length > 2 ) {
+						throw new Error( label.error.databaseMoreThanOne );
+					}
+					else if ( match.length === 1 ) {
+						results.push( utility.merge( utility.clone( record ), utility.clone( match[0].data) ) );
+					}
+					else {
+						array.each( keys, function ( i ) {
+							if ( record[i] === undefined ) {
+								record[i] = null;
+							}
+						});
+
+						results.push( record );
+					}
+				};
+			}
+
+			array.each( join === "right" ? arg.data.records : this.records, fn);
 
 			return results;
 		},
