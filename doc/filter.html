@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head><title>filter</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="filter"><meta name="groc-project-path" content="src/filter.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/filter.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>DataListFilter</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">filter</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>DataListFilter factory</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Element to receive the filter)</p></li>
+<li><p><strong>datalist must be an Object.</strong><br/>(Data list linked to the data store)</p></li>
+<li><p><strong>filters must be a String.</strong><br/>(Comma delimited string of fields to filter by)</p></li>
+<li><p><strong>debounce must be a Number.</strong><br/>([Optional] Milliseconds to debounce)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Filter instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">factory</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">datalist</span><span class="p">,</span> <span class="nx">filters</span><span class="p">,</span> <span class="nx">debounce</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">debounce</span> <span class="o">=</span> <span class="nx">debounce</span> <span class="o">||</span> <span class="mi">250</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">ref</span>  <span class="o">=</span> <span class="p">[</span><span class="nx">datalist</span><span class="p">];</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nx">Element</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">datalist</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">datalist</span><span class="p">.</span><span class="nx">store</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">filters</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">filters</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">DataListFilter</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">ref</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">debounce</span> <span class="p">).</span><span class="nx">set</span><span class="p">(</span> <span class="nx">filters</span> <span class="p">).</span><span class="nx">init</span><span class="p">();</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by DataListFilters</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Initiate all event listeners</p>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">init</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span> <span class="s2">&quot;keyup&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">update</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">,</span> <span class="k">this</span> <span class="p">);</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">update</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span>  <span class="k">this</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Set the filters
+Create an object based on comma separated key string</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>fields must be a String.</strong><br/>(Comma separated filters)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">set</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fields</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{};</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fields</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">fields</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">fields</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">v</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">[</span><span class="nx">v</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+      <span class="p">});</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">filters</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Cancel all event listeners</p>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">teardown</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span> <span class="s2">&quot;keyup&quot;</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span> <span class="p">);</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Update the results list</p>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">update</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">val</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">element</span> <span class="p">);</span>
+        
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">val</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">queries</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">val</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Ignoring trailing commas</p></div></div><div class="code"><div class="wrapper">            <span class="nx">queries</span> <span class="o">=</span> <span class="nx">queries</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+            <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Shaping valid pattern</p></div></div><div class="code"><div class="wrapper">            <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">queries</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">this</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="nx">string</span><span class="p">.</span><span class="nx">escape</span><span class="p">(</span> <span class="nx">i</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;\\*&quot;</span><span class="p">,</span> <span class="s2">&quot;.*&quot;</span> <span class="p">);</span>
+            <span class="p">});</span>
+
+            <span class="k">this</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">queries</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot;,&quot;</span> <span class="p">);</span>
+          <span class="p">});</span>
+
+          <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filters</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">filter</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">datalists</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">debounce</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;Debounce&quot;</span><span class="p">);</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>DataListFilter factory</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Element to receive the filter)</p></li>
+<li><p><strong>datalist must be an Object.</strong><br/>(Data list linked to the data store)</p></li>
+<li><p><strong>debounce must be a Number.</strong><br/>([Optional] Milliseconds to debounce)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Filter instance)</p></div></div><div class="code"><div class="wrapper"><span class="kd">function</span> <span class="nx">DataListFilter</span> <span class="p">(</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">datalist</span><span class="p">,</span> <span class="nx">debounce</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">element</span>  <span class="o">=</span> <span class="nx">element</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">datalist</span> <span class="o">=</span> <span class="nx">datalist</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">debounce</span> <span class="o">=</span> <span class="nx">debounce</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">filters</span>  <span class="o">=</span> <span class="p">{};</span>
+<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting prototype &amp; constructor loop</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataListFilter</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">methods</span><span class="p">;</span>
+<span class="nx">DataListFilter</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">DataListFilter</span><span class="p">;</span></div></div></div></div></body></html>

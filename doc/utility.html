@@ -1,0 +1,1090 @@
+<!DOCTYPE html><html lang="en"><head><title>utility</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="utility"><meta name="groc-project-path" content="src/utility.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/utility.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>Utilities</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">utility</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection of timers</p></div></div><div class="code"><div class="wrapper">  <span class="nx">timer</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection of repeating functions</p></div></div><div class="code"><div class="wrapper">  <span class="nx">repeating</span><span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method $</span></p>
+
+<p>Queries the DOM using CSS selectors and returns an Element or Array of Elements</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(Comma delimited string of CSS selectors)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Element or Array of Elements)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">$</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">arg</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;,&quot;</span> <span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">selector_complex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">||</span> <span class="kc">undefined</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">obj</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">selector_complex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="nx">query</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">);</span>
+
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+
+      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method alias</span></p>
+
+<p>Aliases origin onto obj</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object receiving aliasing)</p></li>
+<li><p><strong>origin must be an Object.</strong><br/>(Object providing structure to obj)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Object receiving aliasing)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">alias</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">origin</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">,</span>
+        <span class="nx">s</span> <span class="o">=</span> <span class="nx">origin</span><span class="p">;</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">s</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">getter</span><span class="p">,</span> <span class="nx">setter</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">RegExp</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">v</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span> <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span><span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">RegExp</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="p">}</span>
+
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">alias</span><span class="p">(</span> <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">],</span> <span class="nx">s</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">getter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">s</span><span class="p">[</span><span class="nx">k</span><span class="p">];</span>
+        <span class="p">};</span>
+
+        <span class="nx">setter</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">s</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+        <span class="p">};</span>
+
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="p">{</span><span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">get</span><span class="o">:</span> <span class="nx">getter</span><span class="p">,</span> <span class="nx">set</span><span class="o">:</span> <span class="nx">setter</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">s</span><span class="p">[</span><span class="nx">k</span><span class="p">]}</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Clears deferred &amp; repeating functions</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>id must be a String.</strong><br/>(ID of timer( s ))</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clearTimers</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">id</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>deferred</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="p">);</span>
+      <span class="k">delete</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>repeating</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="p">);</span>
+      <span class="k">delete</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method clone</span></p>
+
+<p>Clones an Object</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Object.</strong><br/>(Object to clone)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Clone of obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">clone</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;boolean&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nb">String</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">RegExp</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nx">Document</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration</p></div></div><div class="code"><div class="wrapper">      <span class="nx">clone</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">clone</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">clone</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">clone</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Decorating Functions that would be lost with JSON encoding/decoding</p></div></div><div class="code"><div class="wrapper">        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">v</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">clone</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">clone</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">clone</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Coerces a String to a Type</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>value must be a String.</strong><br/>(String to coerce)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Typed version of the String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">coerce</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">value</span> <span class="p">),</span>
+        <span class="nx">tmp</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">===</span> <span class="s2">&quot;null&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">string_boolean</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">string_true</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="nx">tmp</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">tmp</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">tmp</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">result</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Recompiles a RegExp by reference
+This is ideal when you need to recompile a regex for use within a conditional statement</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>regex must be an Object.</strong><br/>(RegExp)</p></li>
+<li><p><strong>pattern must be a String.</strong><br/>(Regular expression pattern)</p></li>
+<li><p><strong>modifiers must be a String.</strong><br/>(Modifiers to apply to the pattern)</p></li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(true)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">compile</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">reg</span><span class="p">,</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">modifiers</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">reg</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">modifiers</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method css</span></p>
+
+<p>Creates a CSS stylesheet in the View</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>content must be a String.</strong><br/>(CSS to put in a style tag)</p></li>
+<li><p><strong>media must be a String.</strong><br/>([Optional] Medias the stylesheet applies to)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Element created or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">css</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">content</span><span class="p">,</span> <span class="nx">media</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ss</span><span class="p">,</span> <span class="nx">css</span><span class="p">;</span>
+
+    <span class="nx">ss</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;style&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text/css&quot;</span><span class="p">,</span> <span class="nx">media</span><span class="o">:</span> <span class="nx">media</span> <span class="o">||</span> <span class="s2">&quot;print, screen&quot;</span><span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">ss</span><span class="p">.</span><span class="nx">styleSheet</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">ss</span><span class="p">.</span><span class="nx">styleSheet</span><span class="p">.</span><span class="nx">cssText</span> <span class="o">=</span> <span class="nx">content</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">css</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createTextNode</span><span class="p">(</span> <span class="nx">content</span> <span class="p">);</span>
+      <span class="nx">ss</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">css</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">ss</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method debounce</span></p>
+
+<p>Debounces a function</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to execute)</p></li>
+<li><p><strong>ms must be a Number.</strong><br/>(Time to wait to execute in milliseconds, default is 1000)</p></li>
+<li><p><strong>scope can be of any type.</strong><br/>(<code>this</code> context during execution, default is <code>global</code>)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">debounce</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">scope</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">ms</span>    <span class="o">=</span> <span class="nx">ms</span>    <span class="o">||</span> <span class="mi">1000</span><span class="p">;</span>
+    <span class="nx">scope</span> <span class="o">=</span> <span class="nx">scope</span> <span class="o">||</span> <span class="nx">global</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="kd">function</span> <span class="nx">debounced</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
+      <span class="p">},</span> <span class="nx">ms</span><span class="p">);</span>
+    <span class="p">};</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method define</span></p>
+
+<p>Allows deep setting of properties without knowing
+if the structure is valid</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>args must be a String.</strong><br/>(Dot delimited string of the structure)</p></li>
+<li><p><strong>value can be of any type.</strong><br/>(Value to set)</p></li>
+<li><p><strong>obj must be an Object.</strong><br/>(Object receiving value)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Object receiving value)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">define</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">args</span>    <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span> <span class="s2">&quot;.&quot;</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">p</span>   <span class="o">=</span> <span class="nx">obj</span><span class="p">,</span>
+        <span class="nx">nth</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">value</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">num</span> <span class="o">=</span> <span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nx">nth</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">10</span> <span class="p">)</span> <span class="p">),</span>
+          <span class="nx">val</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="mi">10</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span>  <span class="p">{</span>
+        <span class="nx">i</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="mi">10</span> <span class="p">);</span>
+      <span class="p">}</span>
+      </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating or casting</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">num</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="p">{};</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="o">&amp;&amp;</span> <span class="nx">num</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Do nothing</p></div></div><div class="code"><div class="wrapper">      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">num</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">toObject</span><span class="p">(</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting reference or value</p></div></div><div class="code"><div class="wrapper">      <span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">===</span> <span class="nx">nth</span> <span class="o">?</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">val</span> <span class="o">:</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">p</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method defer</span></p>
+
+<p>Defers the execution of Function by at least the supplied milliseconds
+Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript engine</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to defer execution of)</p></li>
+<li><p><strong>ms must be a Number.</strong><br/>(Milliseconds to defer execution)</p></li>
+<li><p><strong>id must be a Number.</strong><br/>([Optional] ID of the deferred function)</p></li>
+<li><p><strong>repeat must be a Boolean.</strong><br/>([Optional] Describes the execution, default is <code>false</code>)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(ID of the timer)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">defer</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">repeat</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">op</span><span class="p">;</span>
+
+    <span class="nx">ms</span>     <span class="o">=</span> <span class="nx">ms</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">id</span>     <span class="o">=</span> <span class="nx">id</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="nx">repeat</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">repeat</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+
+    <span class="nx">op</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">clearTimers</span><span class="p">(</span> <span class="nx">id</span> <span class="p">);</span>
+      <span class="nx">fn</span><span class="p">();</span>
+    <span class="p">};</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">clearTimers</span><span class="p">(</span> <span class="nx">id</span> <span class="p">);</span>
+    <span class="nx">utility</span><span class="p">[</span><span class="nx">repeat</span> <span class="o">?</span> <span class="s2">&quot;repeating&quot;</span> <span class="o">:</span> <span class="s2">&quot;timer&quot;</span><span class="p">][</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">op</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method domId</span></p>
+
+<p>Encodes a UUID to a DOM friendly ID</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>UUID must be a String.</strong></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(DOM friendly ID)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">domId</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">&quot;a&quot;</span> <span class="o">+</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/-/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">).</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method error</span></p>
+
+<p>Error handling, with history in .log</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>e can be of any type.</strong><br/>(Error object or message to display)</p></li>
+<li><p><strong>args must be an Array.</strong><br/>(Array of arguments from the callstack)</p></li>
+<li><p><strong>scope can be of any type.</strong><br/>(Entity that was "this")</p></li>
+<li><p><strong>warning must be a Boolean.</strong><br/>([Optional] Will display as console warning if true)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">error</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">warning</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">warning</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">warning</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">o</span>   <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">&quot;arguments&quot;</span> <span class="o">:</span> <span class="nx">args</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">args</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[],</span>
+      <span class="nx">message</span>     <span class="o">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">message</span> <span class="o">||</span> <span class="nx">e</span><span class="p">,</span>
+      <span class="nx">number</span>      <span class="o">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">number</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">e</span><span class="p">.</span><span class="nx">number</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">undefined</span><span class="p">,</span>
+      <span class="nx">scope</span>       <span class="o">:</span> <span class="nx">scope</span><span class="p">,</span>
+      <span class="nx">stack</span>       <span class="o">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">stack</span>   <span class="o">||</span> <span class="kc">undefined</span><span class="p">,</span>
+      <span class="nx">timestamp</span>   <span class="o">:</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toUTCString</span><span class="p">(),</span>
+      <span class="nx">type</span>        <span class="o">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">type</span>    <span class="o">||</span> <span class="s2">&quot;TypeError&quot;</span>
+    <span class="p">};</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">stack</span> <span class="o">||</span> <span class="nx">o</span><span class="p">.</span><span class="nx">message</span><span class="p">,</span> <span class="o">!</span><span class="nx">warning</span> <span class="o">?</span> <span class="s2">&quot;error&quot;</span> <span class="o">:</span> <span class="s2">&quot;warn&quot;</span> <span class="p">);</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">log</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">o</span> <span class="p">);</span>
+    <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">abaaso</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="nx">o</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method extend</span></p>
+
+<p>Creates a "class" extending Object, with optional decoration</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to extend)</p></li>
+<li><p><strong>arg must be an Object.</strong><br/>([Optional] Object for decoration)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Decorated obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">extend</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">o</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">o</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">function</span> <span class="nx">Extended</span> <span class="p">()</span> <span class="p">{}</span>
+
+        <span class="kd">var</span> <span class="nx">o</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">Extended</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+
+        <span class="nx">o</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Extended</span><span class="p">();</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method genId</span></p>
+
+<p>Generates an ID value</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>([Optional] Object to receive id)</p></li>
+<li><p><strong>dom must be a Boolean.</strong><br/>([Optional] Verify the ID is unique in the DOM, default is false)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Object or id)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">genId</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">dom</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">dom</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">dom</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">id</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">!==</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">String</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">dom</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">do</span> <span class="p">{</span>
+        <span class="nx">id</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">domId</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(</span> <span class="kc">true</span><span class="p">)</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">while</span> <span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="p">)</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">id</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">domId</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(</span> <span class="kc">true</span><span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Converts RGB to HEX</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>color must be a String.</strong><br/>(RGB as <code>rgb(255, 255, 255)</code> or <code>255, 255, 255</code>)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Color as HEX)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">hex</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">color</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">digits</span><span class="p">,</span> <span class="nx">red</span><span class="p">,</span> <span class="nx">green</span><span class="p">,</span> <span class="nx">blue</span><span class="p">,</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">nth</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">color</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;#&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">color</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">digits</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">color</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/.*\(|\)/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="nx">red</span>    <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">digits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">||</span> <span class="mi">0</span> <span class="p">);</span>
+      <span class="nx">green</span>  <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">digits</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">||</span> <span class="mi">0</span> <span class="p">);</span>
+      <span class="nx">blue</span>   <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">digits</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">||</span> <span class="mi">0</span> <span class="p">);</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">blue</span> <span class="o">|</span> <span class="p">(</span> <span class="nx">green</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="o">|</span> <span class="p">(</span> <span class="nx">red</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span> <span class="p">)</span> <span class="p">).</span><span class="nx">toString</span><span class="p">(</span> <span class="mi">16</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="mi">6</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">nth</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="mi">6</span> <span class="p">);</span>
+        <span class="nx">i</span>   <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+        <span class="k">while</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">result</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="nx">result</span> <span class="o">=</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method iterate</span></p>
+
+<p>Iterates an Object and executes a function against the properties
+Iteration can be stopped by returning false from fn</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to execute against properties)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">iterate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span> <span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">has</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">,</span>
+            <span class="nx">i</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">has</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">result</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span> <span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method loading</span></p>
+
+<p>Renders a loading icon in a target element,
+with a class of "loading"</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">loading</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">abaaso</span><span class="p">.</span><span class="nx">loading</span><span class="p">;</span>
+
+    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">loading</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting loading image</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">.</span><span class="nx">image</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">l</span><span class="p">.</span><span class="nx">image</span>     <span class="o">=</span> <span class="k">new</span> <span class="nx">Image</span><span class="p">();</span>
+      <span class="nx">l</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">url</span><span class="p">;</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Clearing target element</p></div></div><div class="code"><div class="wrapper">    <span class="nx">element</span><span class="p">.</span><span class="nx">clear</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating loading image in target element</p></div></div><div class="code"><div class="wrapper">    <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">alt</span><span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">common</span><span class="p">.</span><span class="nx">loading</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">l</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">src</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;loading&quot;</span><span class="p">},</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method log</span></p>
+
+<p>Writes argument to the console</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>(String to write to the console)</p></li>
+<li><p><strong>target must be a String.</strong><br/>([Optional] Target console, default is "log")</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">log</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ts</span><span class="p">,</span> <span class="nx">msg</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">console</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">ts</span>  <span class="o">=</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="s2">&quot;object&quot;</span><span class="p">;</span>
+      <span class="nx">msg</span> <span class="o">=</span> <span class="nx">ts</span> <span class="o">?</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;] &quot;</span> <span class="o">+</span> <span class="nx">arg</span> <span class="o">:</span> <span class="nx">arg</span><span class="p">;</span>
+      <span class="nx">console</span><span class="p">[</span><span class="nx">target</span> <span class="o">||</span> <span class="s2">&quot;log&quot;</span><span class="p">](</span> <span class="nx">msg</span> <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method merge</span></p>
+
+<p>Merges obj with arg</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to decorate)</p></li>
+<li><p><strong>arg must be an Object.</strong><br/>(Decoration)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Decorated Object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">merge</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">array</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">],</span> <span class="nx">v</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">y</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">][</span><span class="nx">y</span><span class="p">]</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">x</span> <span class="p">);</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">v</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span>
+  </div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method module</span></p>
+
+<p>Registers a module on abaaso</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>(Module name)</p></li>
+<li><p><strong>obj must be an Object.</strong><br/>(Module structure)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Module registered)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">module</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">$</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="o">!</span><span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="nx">$</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">$</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method object</span></p>
+
+<p>Returns Object, or reference to Element</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj can be of any type.</strong><br/>(Entity or $ query)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Entity)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">object</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">?</span> <span class="nx">obj</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">toString</span><span class="p">().</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;#&quot;</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method parse</span></p>
+
+<p>Parses a URI into an Object</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>uri must be a String.</strong><br/>(URI to parse)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Parsed URI)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">parse</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">obj</span>    <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">parsed</span> <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">uri</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">uri</span> <span class="o">=</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s2">&quot;a&quot;</span> <span class="p">);</span>
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">uri</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">obj</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="nx">parsed</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">auth</span>     <span class="o">:</span> <span class="nx">server</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">auth</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">),</span>
+      <span class="nx">protocol</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">||</span> <span class="s2">&quot;http:&quot;</span><span class="p">,</span>
+      <span class="nx">hostname</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">||</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span>
+      <span class="nx">port</span>     <span class="o">:</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">port</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="mi">10</span> <span class="p">)</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+      <span class="nx">pathname</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">pathname</span><span class="p">,</span>
+      <span class="nx">search</span>   <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">search</span>   <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+      <span class="nx">hash</span>     <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">hash</span>     <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+      <span class="nx">host</span>     <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">host</span>     <span class="o">||</span> <span class="s2">&quot;localhost&quot;</span>
+    <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>'cause IE is ... IE; required for data.batch()</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s2">&quot;:&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">hostname</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">parsed</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">hostname</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">host</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">parsed</span><span class="p">.</span><span class="nx">host</span> <span class="o">=</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">!==</span> <span class="s2">&quot;/&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span>  <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">auth</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+    <span class="nx">parsed</span><span class="p">.</span><span class="nx">href</span>  <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">href</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s2">&quot;//&quot;</span> <span class="o">+</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">+</span> <span class="s2">&quot;@&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">host</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">search</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">hash</span> <span class="p">);</span>
+    <span class="nx">parsed</span><span class="p">.</span><span class="nx">path</span>  <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">path</span> <span class="o">||</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span>
+    <span class="nx">parsed</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">queryString</span><span class="p">(</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">search</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">parsed</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method property</span></p>
+
+<p>Sets a property on an Object, if defineProperty cannot be used the value will be set classically</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to decorate)</p></li>
+<li><p><strong>prop must be a String.</strong><br/>(Name of property to set)</p></li>
+<li><p><strong>descriptor must be an Object.</strong><br/>(Descriptor of the property)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Object receiving the property)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">property</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="p">(</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">descriptor</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">get</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">delete</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">);</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">descriptor</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method proto</span></p>
+
+<p>Sets methods on a prototype object
+Allows hooks to be overwritten</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object receiving prototype extension)</p></li>
+<li><p><strong>type must be a String.</strong><br/>(Identifier of obj, determines what Arrays to apply)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(obj or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">proto</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">prototypes</span><span class="p">[</span><span class="nx">type</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method queryString</span></p>
+
+<p>Parses a query string &amp; coerces values</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>([Optional] Key to find in the querystring)</p></li>
+<li><p><strong>qstring must be a String.</strong><br/>([Optional] Query string to parse)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Value or Object of key:value pairs)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">queryString</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">qstring</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">obj</span>    <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">qstring</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">qstring</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;?&quot;</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">?</span> <span class="nx">qstring</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/.*\?/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">null</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">location</span><span class="p">.</span><span class="nx">search</span> <span class="p">)</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">location</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;?&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">),</span>
+        <span class="nx">item</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span> <span class="s2">&quot;&amp;&quot;</span> <span class="p">);</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">prop</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">item</span> <span class="o">=</span> <span class="nx">prop</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span> <span class="s2">&quot;=&quot;</span> <span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isNumber</span><span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">))</span> <span class="p">{</span>
+          <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isBoolean</span><span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">))</span> <span class="p">{</span>
+          <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&quot;true&quot;</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]]];</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]].</span><span class="nx">push</span><span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">obj</span><span class="p">[</span><span class="nx">item</span><span class="p">[</span><span class="mi">0</span><span class="p">]].</span><span class="nx">push</span><span class="p">(</span> <span class="nx">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method reflect</span></p>
+
+<p>Returns an Array of parameters of a Function</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a Function.</strong><br/>(Function to reflect)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of parameters)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">reflect</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">arg</span> <span class="o">=</span> <span class="k">this</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toString</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">reflect</span> <span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
+
+    <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method repeat</span></p>
+
+<p>Creates a recursive function
+Return false from the function to halt recursion</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to execute repeatedly)</p></li>
+<li><p><strong>ms must be a Number.</strong><br/>(Milliseconds to stagger the execution)</p></li>
+<li><p><strong>id must be a String.</strong><br/>([Optional] Timeout ID)</p></li>
+<li><p><strong>now must be a Boolean.</strong><br/>(Executes <code>fn</code> and then setup repetition, default is <code>true</code>)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Timeout ID)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">repeat</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">now</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">ms</span>  <span class="o">=</span> <span class="nx">ms</span> <span class="o">||</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="nx">id</span>  <span class="o">=</span> <span class="nx">id</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="nx">now</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">now</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Could be valid to return false from initial execution</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">now</span> <span class="o">&amp;&amp;</span> <span class="nx">fn</span><span class="p">()</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating repeating execution</p></div></div><div class="code"><div class="wrapper">    <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">recursive</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">recursive</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">()</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">recursive</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">recursive</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span> <span class="p">);</span>
+          <span class="p">},</span> <span class="nx">ms</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="k">delete</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
+        <span class="p">}</span>
+      <span class="p">};</span>
+
+      <span class="nx">recursive</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">recursive</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span> <span class="p">);</span>
+    <span class="p">},</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method script</span></p>
+
+<p>Creates a script Element to load an external script</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>(URL to script)</p></li>
+<li><p><strong>target must be an Object.</strong><br/>([Optional] Element to receive the script)</p></li>
+<li><p><strong>pos must be a String.</strong><br/>([Optional] Position to create the script at within the target)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Script)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">script</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;application/javascript&quot;</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">arg</span><span class="p">},</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">pos</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method stylesheet</span></p>
+
+<p>Creates a link Element to load an external stylesheet</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>(URL to stylesheet)</p></li>
+<li><p><strong>media must be a String.</strong><br/>([Optional] Medias the stylesheet applies to)</p></li>
+</ul>
+
+<p><strong>Returns an Objecct</strong><br/>(Stylesheet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">stylesheet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">rel</span><span class="o">:</span> <span class="s2">&quot;stylesheet&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text/css&quot;</span><span class="p">,</span> <span class="nx">href</span><span class="o">:</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span><span class="o">:</span> <span class="nx">media</span> <span class="o">||</span> <span class="s2">&quot;print, screen&quot;</span><span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method stop</span></p>
+
+<p>Stops an Event from bubbling</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>e must be an Object.</strong><br/>(Event)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Event)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">stop</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span><span class="p">.</span><span class="nx">cancelBubble</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">e</span><span class="p">.</span><span class="nx">cancelBubble</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">e</span><span class="p">.</span><span class="nx">stopPropagation</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">e</span><span class="p">.</span><span class="nx">stopPropagation</span><span class="p">();</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Assumed to always be valid, even if it's not decorated on <code>e</code> ( I'm looking at you IE8 )</p></div></div><div class="code"><div class="wrapper">    <span class="nx">e</span><span class="p">.</span><span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+
+<p>Returns the Event target</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>e must be an Object.</strong><br/>(Event)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Event target)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">target</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span> <span class="o">||</span> <span class="nx">e</span><span class="p">.</span><span class="nx">srcElement</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method tpl</span></p>
+
+<p>Transforms JSON to HTML and appends to Body or target Element</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>data must be an Object.</strong><br/>(JSON Object describing HTML)</p></li>
+<li><p><strong>target can be of any type.</strong><br/>([Optional] Target Element or Element.id to receive the HTML)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(New Element created from the template)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">tpl</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">frag</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="s2">&quot;object&quot;</span> <span class="o">||</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">regex</span><span class="p">.</span><span class="nx">object_undefined</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">target</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">target</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;#&quot;</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="nx">target</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="nx">target</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">target</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">target</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;body&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="nx">frag</span>  <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createDocumentFragment</span><span class="p">();</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span><span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">frag</span> <span class="p">),</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span><span class="nx">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">v</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">k</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="nx">frag</span> <span class="p">),</span> <span class="nx">v</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">tpl</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">k</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="nx">frag</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="nx">target</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">frag</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">target</span><span class="p">.</span><span class="nx">childNodes</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method uuid</span></p>
+
+<p>Generates UUID Version 4</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>safe must be a Boolean.</strong><br/>([Optional] Strips - from UUID)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(UUID)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">uuid</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">safe</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="mi">1</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="p">)</span> <span class="o">*</span> <span class="mh">0x10000</span> <span class="p">)</span> <span class="o">|</span> <span class="mi">0</span> <span class="p">).</span><span class="nx">toString</span><span class="p">(</span> <span class="mi">16</span> <span class="p">).</span><span class="nx">substring</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span> <span class="p">},</span>
+        <span class="nx">r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">],</span>
+        <span class="nx">o</span><span class="p">;</span>
+
+    <span class="nx">o</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">s</span><span class="p">()</span> <span class="o">+</span> <span class="nx">s</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">s</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;-4&quot;</span> <span class="o">+</span> <span class="nx">s</span><span class="p">().</span><span class="nx">substr</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">r</span><span class="p">[</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="nx">r</span><span class="p">.</span><span class="nx">length</span> <span class="p">)]</span> <span class="o">+</span> <span class="nx">s</span><span class="p">().</span><span class="nx">substr</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">s</span><span class="p">()</span> <span class="o">+</span> <span class="nx">s</span><span class="p">()</span> <span class="o">+</span> <span class="nx">s</span><span class="p">()</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">safe</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">o</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/-/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method walk</span></p>
+
+<p>Walks a structure and returns arg</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>(Object or Array)</p></li>
+<li><p><strong>arg must be a String.</strong><br/>(String describing the property to return)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(arg)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">walk</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\]$/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\]/g</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span> <span class="p">).</span><span class="nx">split</span><span class="p">(</span> <span class="sr">/\.|\[/</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method when</span></p>
+
+<p>Accepts Deferreds or Promises as arguments or an Array</p>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">when</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">i</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+        <span class="nx">args</span>  <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">),</span>
+        <span class="nx">nth</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Did we receive an Array? if so it overrides any other arguments</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">args</span> <span class="o">=</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>How many instances to observe?</p></div></div><div class="code"><div class="wrapper">    <span class="nx">nth</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>None, end on next tick</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">nth</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setup and wait</p></div></div><div class="code"><div class="wrapper">    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">p</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">p</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">===</span> <span class="nx">nth</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defer</span><span class="p">.</span><span class="nx">isResolved</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span><span class="p">;</span>
+              <span class="p">}));</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span> <span class="p">);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">},</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">defer</span><span class="p">.</span><span class="nx">isResolved</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span><span class="p">;</span>
+              <span class="p">}));</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span> <span class="p">);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div></div></body></html>

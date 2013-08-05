@@ -5,28 +5,60 @@
  * @namespace abaaso
  */
 var observer = {
-	// Collection of listeners
+	/**
+	 * Collection of listeners
+	 *
+	 * @type {Object}
+	 */
 	listeners  : {},
 
-	// Array copy of listeners for observer.fire()
+	/**
+	 * Array copy of listeners for observer.fire()
+	 *
+	 * @type {Object}
+	 */
 	alisteners : {},
 
-	// Event listeners
+	/**
+	 * Event listeners
+	 *
+	 * @type {Object}
+	 */
 	elisteners : {},
 
-	// Tracks count of listeners per event across all states
+	/**
+	 * Tracks count of listeners per event across all states
+	 *
+	 * @type {Object}
+	 */
 	clisteners : {},
 
-	// Boolean indicating if events are logged to the console
+	/**
+	 * Boolean indicating if events are logged to the console
+	 *
+	 * @type {Boolean}
+	 */
 	log : false,
 
-	// Queue of events to fire
+	/**
+	 * Queue of events to fire
+	 *
+	 * @type {Array}
+	 */
 	queue : [],
 
-	// If `true`, events are queued
+	/**
+	 * If `true`, events are queued
+	 *
+	 * @type {Boolean}
+	 */
 	silent : false,
 
-	// If `true`, events are ignored
+	/**
+	 * If `true`, events are ignored
+	 *
+	 * @type {Boolean}
+	 */
 	ignore : false,
 
 	/**
@@ -149,8 +181,8 @@ var observer = {
 	 * Discard observer events
 	 *
 	 * @method discard
-	 * @param {Boolean} arg [Optional] Boolean indicating if events will be ignored
-	 * @return              Current setting
+	 * @param  {Boolean} arg [Optional] Boolean indicating if events will be ignored
+	 * @return {Boolean}     Current setting
 	 */
 	discard : function ( arg ) {
 		return arg === undefined ? observer.ignore : ( observer.ignore = ( arg === true ) );
@@ -229,9 +261,9 @@ var observer = {
 	 * Gets the Observer id of arg
 	 *
 	 * @method id
+	 * @private
 	 * @param  {Mixed}  Object or String
 	 * @return {String} Observer id
-	 * @private
 	 */
 	id : function ( arg ) {
 		var id;
@@ -445,7 +477,7 @@ var observer = {
 	 *
 	 * @method sum
 	 * @param  {Mixed} obj [Optional] Entity
-	 * @return {Object}     Object with total listeners per event
+	 * @return {Object}    Object with total listeners per event
 	 */
 	sum : function ( obj ) {
 		var result = {},
