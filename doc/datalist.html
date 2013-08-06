@@ -1,0 +1,395 @@
+<!DOCTYPE html><html lang="en"><head><title>datalist</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="datalist"><meta name="groc-project-path" content="src/datalist.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/datalist.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>DataList
+Provides a reactive View of a DataStore
+Requires a CSS class named "hidden" to toggle "display:none" of list items</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">datalist</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method factory</span></p>
+
+<p>Creates an instance of datalist</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>target must be an Object.</strong><br/>(Element to receive the DataList)</p></li>
+<li><p><strong>store must be an Object.</strong><br/>(Data store to feed the DataList)</p></li>
+<li><p><strong>template can be of any type.</strong><br/>(Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }})</p></li>
+<li><p><strong>options must be an Object.</strong><br/>(Optional parameters to set on the DataList)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">factory</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">store</span><span class="p">,</span> <span class="nx">template</span><span class="p">,</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">ref</span> <span class="o">=</span> <span class="p">[</span><span class="nx">store</span><span class="p">],</span>
+        <span class="nx">obj</span><span class="p">,</span> <span class="nx">instance</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">target</span> <span class="k">instanceof</span> <span class="nx">Element</span> <span class="p">)</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">store</span> <span class="o">!==</span> <span class="s2">&quot;object&quot;</span> <span class="o">||</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">string_object</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">template</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;ul&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;list&quot;</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="nx">store</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-datalist&quot;</span><span class="p">},</span> <span class="nx">target</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating instance</p></div></div><div class="code"><div class="wrapper">    <span class="nx">instance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DataList</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">ref</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">template</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">options</span> <span class="k">instanceof</span> <span class="nb">Object</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">instance</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">instance</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">datalists</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">instance</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Rendering if not tied to an API or data is ready</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">loaded</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">instance</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">instance</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by DataLists</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method del</span></p>
+
+<p>Delete sync handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>rec must be an Object.</strong><br/>(Record)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">del</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span> <span class="s2">&quot;beforeDataListRefresh&quot;</span> <span class="p">);</span>
+        
+        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="s2">&quot;&gt; li[data-key=&#39;&quot;</span> <span class="o">+</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span> <span class="s2">&quot;afterDataListRefresh&quot;</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method dump</span></p>
+
+<p>Exports data list records</p>
+
+<p><strong>Returns an Array</strong><br/>(Record set)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">dump</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">dump</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method page</span></p>
+
+<p>Changes the page index of the DataList</p>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">page</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method pages</span></p>
+
+<p>Adds pagination Elements to the View</p>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">pages</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">obj</span>   <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span>
+          <span class="nx">page</span>  <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span><span class="p">,</span>
+          <span class="nx">pos</span>   <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pagination</span><span class="p">,</span>
+          <span class="nx">range</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageRange</span><span class="p">,</span>
+          <span class="nx">mid</span>   <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">half</span><span class="p">(</span> <span class="nx">range</span> <span class="p">),</span> <span class="s2">&quot;down&quot;</span> <span class="p">),</span>
+          <span class="nx">start</span> <span class="o">=</span> <span class="nx">page</span> <span class="o">-</span> <span class="nx">mid</span><span class="p">,</span>
+          <span class="nx">end</span>   <span class="o">=</span> <span class="nx">page</span> <span class="o">+</span> <span class="nx">mid</span><span class="p">,</span>
+          <span class="nx">self</span>  <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+          <span class="nx">total</span> <span class="o">=</span> <span class="nx">datalist</span><span class="p">.</span><span class="nx">pages</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span> <span class="p">),</span>
+          <span class="nx">diff</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">top_bottom</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Removing the existing controls</p></div></div><div class="code"><div class="wrapper">      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-top, #&quot;</span> <span class="o">+</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-bottom&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+      </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Halting because there's 1 page, or nothing</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">total</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Getting the range to display</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">start</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">diff</span>  <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">start</span><span class="p">,</span> <span class="mi">1</span> <span class="p">);</span>
+        <span class="nx">start</span> <span class="o">=</span> <span class="nx">start</span> <span class="o">+</span> <span class="nx">diff</span><span class="p">;</span>
+        <span class="nx">end</span>   <span class="o">=</span> <span class="nx">end</span>   <span class="o">+</span> <span class="nx">diff</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">end</span> <span class="o">&gt;</span> <span class="nx">total</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">end</span>   <span class="o">=</span> <span class="nx">total</span><span class="p">;</span>
+        <span class="nx">start</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">end</span> <span class="o">-</span> <span class="nx">range</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">start</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">start</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">pos</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">current</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nx">more</span>    <span class="o">=</span> <span class="nx">page</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="nx">next</span>    <span class="o">=</span> <span class="p">(</span> <span class="nx">page</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">&lt;=</span> <span class="nx">total</span><span class="p">,</span>
+            <span class="nx">last</span>    <span class="o">=</span> <span class="p">(</span> <span class="nx">page</span> <span class="o">&gt;=</span> <span class="nx">total</span> <span class="p">),</span>
+            <span class="nx">el</span><span class="p">,</span> <span class="nx">n</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting up the list</p></div></div><div class="code"><div class="wrapper">        <span class="nx">el</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;ul&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;list pages hidden &quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">id</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">},</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span> <span class="o">===</span> <span class="s2">&quot;bottom&quot;</span> <span class="o">?</span> <span class="s2">&quot;after&quot;</span> <span class="o">:</span> <span class="s2">&quot;before&quot;</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>First page</p></div></div><div class="code"><div class="wrapper">        <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">more</span> <span class="o">?</span> <span class="s2">&quot;a&quot;</span> <span class="o">:</span> <span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;first page&quot;</span><span class="p">,</span> <span class="s2">&quot;data-page&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">innerHTML</span><span class="o">:</span> <span class="s2">&quot;&amp;lt;&amp;lt;&quot;</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">el</span><span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Previous page</p></div></div><div class="code"><div class="wrapper">        <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">more</span> <span class="o">?</span> <span class="s2">&quot;a&quot;</span> <span class="o">:</span> <span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;prev page&quot;</span><span class="p">,</span> <span class="s2">&quot;data-page&quot;</span><span class="o">:</span> <span class="p">(</span><span class="nx">page</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="nx">innerHTML</span><span class="o">:</span> <span class="s2">&quot;&amp;lt;&quot;</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">el</span><span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Rendering the page range</p></div></div><div class="code"><div class="wrapper">        <span class="k">for</span> <span class="p">(</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">start</span><span class="p">;</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="nx">end</span><span class="p">;</span> <span class="nx">n</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">current</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">n</span> <span class="o">===</span> <span class="nx">page</span> <span class="p">);</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">current</span> <span class="o">?</span> <span class="s2">&quot;span&quot;</span> <span class="o">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="nx">current</span> <span class="o">?</span> <span class="s2">&quot;current page&quot;</span> <span class="o">:</span> <span class="s2">&quot;page&quot;</span><span class="p">,</span> <span class="s2">&quot;data-page&quot;</span><span class="o">:</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">innerHTML</span><span class="o">:</span> <span class="nx">n</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">el</span><span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Next page</p></div></div><div class="code"><div class="wrapper">        <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">next</span> <span class="o">?</span> <span class="s2">&quot;a&quot;</span> <span class="o">:</span> <span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;next page&quot;</span><span class="p">,</span> <span class="s2">&quot;data-page&quot;</span><span class="o">:</span> <span class="nx">next</span> <span class="o">?</span> <span class="p">(</span><span class="nx">page</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">innerHTML</span><span class="o">:</span> <span class="s2">&quot;&amp;gt;&quot;</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">el</span><span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Last page</p></div></div><div class="code"><div class="wrapper">        <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">last</span> <span class="o">?</span> <span class="s2">&quot;span&quot;</span> <span class="o">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;last page&quot;</span><span class="p">,</span> <span class="s2">&quot;data-page&quot;</span><span class="o">:</span> <span class="nx">last</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">total</span><span class="p">,</span> <span class="nx">innerHTML</span><span class="o">:</span> <span class="s2">&quot;&amp;gt;&amp;gt;&quot;</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">el</span><span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Adding to DOM</p></div></div><div class="code"><div class="wrapper">        <span class="nx">element</span><span class="p">.</span><span class="nx">klass</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span><span class="p">,</span> <span class="kc">false</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Click handler scrolls to top the top of page</p></div></div><div class="code"><div class="wrapper">        <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">target</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">stop</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">target</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s2">&quot;A&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">self</span><span class="p">.</span><span class="nx">page</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="nx">target</span><span class="p">,</span> <span class="s2">&quot;page&quot;</span><span class="p">)</span> <span class="p">);</span>
+            <span class="nb">window</span><span class="p">.</span><span class="nx">scrollTo</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">},</span> <span class="s2">&quot;pagination&quot;</span><span class="p">);</span>
+      <span class="p">});</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method refresh</span></p>
+
+<p>Refreshes element
+Events: beforeDataListRefresh  Fires from the element containing the DataList
+        afterDataListRefresh   Fires from the element containing the DataList</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>redraw must be a Boolean.</strong><br/>([Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items)</p></li>
+<li><p><strong>create must be a Boolean.</strong><br/>([Optional] Recreates cached View of data)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">refresh</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">redraw</span><span class="p">,</span> <span class="nx">create</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">redraw</span>       <span class="o">=</span> <span class="p">(</span> <span class="nx">redraw</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">);</span>
+      <span class="nx">create</span>       <span class="o">=</span> <span class="p">(</span> <span class="nx">create</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">el</span>       <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">,</span>
+          <span class="nx">template</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">template</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">),</span>
+          <span class="nx">consumed</span> <span class="o">=</span> <span class="p">[],</span>
+          <span class="nx">items</span>    <span class="o">=</span> <span class="p">[],</span>
+          <span class="nx">self</span>     <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+          <span class="nx">callback</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">),</span>
+          <span class="nx">reg</span>      <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(),</span>
+          <span class="nx">registry</span> <span class="o">=</span> <span class="p">[],</span> <span class="c1">// keeps track of records in the list ( for filtering )</span>
+          <span class="nx">limit</span>    <span class="o">=</span> <span class="p">[],</span>
+          <span class="nx">fn</span><span class="p">,</span> <span class="nx">ceiling</span><span class="p">;</span>
+
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;beforeDataListRefresh&quot;</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating templates for the html rep</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">template</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">html</span>  <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span>
+              <span class="nx">items</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">unique</span><span class="p">(</span> <span class="nx">html</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span> <span class="sr">/\{\{[\w\.\-]+\}\}/g</span> <span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Replacing record key</p></div></div><div class="code"><div class="wrapper">          <span class="nx">html</span> <span class="o">=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;{{&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;}}&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
+          </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Replacing dot notation properties</p></div></div><div class="code"><div class="wrapper">          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">items</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">attr</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">key</span>   <span class="o">=</span> <span class="nx">attr</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\{\{|\}\}/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
+                <span class="nx">value</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">walk</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">key</span> <span class="p">);</span>
+
+            <span class="nx">reg</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">attr</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span> <span class="p">);</span>
+            <span class="nx">html</span> <span class="o">=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">reg</span><span class="p">,</span> <span class="nx">value</span> <span class="p">);</span>
+          <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Filling in placeholder value</p></div></div><div class="code"><div class="wrapper">          <span class="nx">html</span> <span class="o">=</span> <span class="nx">html</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\{\{.*\}\}/g</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">placeholder</span> <span class="p">);</span>
+
+          <span class="k">return</span> <span class="p">{</span><span class="nx">li</span><span class="o">:</span> <span class="nx">html</span><span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">template</span> <span class="p">),</span>
+              <span class="nx">items</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">unique</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span> <span class="sr">/\{\{[\w\.\-]+\}\}/g</span> <span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Replacing record key</p></div></div><div class="code"><div class="wrapper">          <span class="nx">obj</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;{{&quot;</span> <span class="o">+</span> <span class="nx">self</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;}}&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
+          </div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Replacing dot notation properties</p></div></div><div class="code"><div class="wrapper">          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">items</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">attr</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">key</span>   <span class="o">=</span> <span class="nx">attr</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\{\{|\}\}/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
+                <span class="nx">value</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">walk</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">key</span> <span class="p">);</span>
+
+            <span class="nx">reg</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">attr</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Stripping first and last " to concat to valid JSON</p></div></div><div class="code"><div class="wrapper">            <span class="nx">obj</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">reg</span><span class="p">,</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">value</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(^&quot;)|(&quot;$)/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Filling in placeholder value</p></div></div><div class="code"><div class="wrapper">          <span class="nx">obj</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\{\{.*\}\}/g</span><span class="p">,</span> <span class="nx">self</span><span class="p">.</span><span class="nx">placeholder</span> <span class="p">)</span> <span class="p">);</span>
+
+          <span class="k">return</span> <span class="p">{</span><span class="nx">li</span><span class="o">:</span> <span class="nx">obj</span><span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Consuming records based on sort</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">consumed</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span><span class="p">,</span> <span class="nx">create</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sensitivity</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">consumed</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span><span class="p">,</span> <span class="nx">create</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">sensitivity</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="p">);</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Processing ( filtering ) records &amp; generating templates</p></div></div><div class="code"><div class="wrapper">      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">consumed</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filter</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="o">!</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filter</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="p">{</span><span class="nx">key</span><span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span> <span class="nx">template</span><span class="o">:</span> <span class="nx">fn</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)}</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filter</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">reg</span><span class="p">,</span> <span class="nx">key</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">registry</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">return</span><span class="p">;</span>
+            <span class="p">}</span>
+            
+            <span class="nx">v</span>   <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">v</span> <span class="p">);</span>
+            <span class="nx">reg</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(),</span>
+            <span class="nx">key</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">k</span> <span class="o">===</span> <span class="nx">self</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
+
+            <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">utility</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">reg</span><span class="p">,</span> <span class="nx">query</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span> <span class="p">);</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">&amp;&amp;</span> <span class="nx">reg</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="p">)</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">reg</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">registry</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
+                <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="p">{</span><span class="nx">key</span><span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span> <span class="nx">template</span><span class="o">:</span> <span class="nx">fn</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)}</span> <span class="p">);</span>
+
+                <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+              <span class="p">}</span>
+            <span class="p">});</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+      <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Exposting records &amp; total count of items in the list</p></div></div><div class="code"><div class="wrapper">      <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">items</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">total</span>   <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Pagination ( supports filtering )</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ceiling</span> <span class="o">=</span> <span class="nx">datalist</span><span class="p">.</span><span class="nx">pages</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Passed the end, so putting you on the end</p></div></div><div class="code"><div class="wrapper">        <span class="k">if</span> <span class="p">(</span> <span class="nx">ceiling</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">&gt;</span> <span class="nx">ceiling</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">page</span><span class="p">(</span> <span class="nx">ceiling</span> <span class="p">);</span>
+        <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Paginating the items</p></div></div><div class="code"><div class="wrapper">        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">limit</span> <span class="o">=</span> <span class="nx">datalist</span><span class="p">.</span><span class="nx">range</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
+          <span class="nx">items</span> <span class="o">=</span> <span class="nx">items</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">limit</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Preparing the target element</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">redraw</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">clear</span><span class="p">(</span> <span class="nx">el</span> <span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;li&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">innerHTML</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">emptyMsg</span><span class="p">,</span> <span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;empty&quot;</span><span class="p">},</span> <span class="nx">el</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">items</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">tpl</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">template</span><span class="p">,</span> <span class="nx">el</span> <span class="p">);</span>
+
+            <span class="nx">element</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot;key&quot;</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">callback</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">self</span><span class="p">.</span><span class="nx">callback</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+            <span class="p">}</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;&gt; li&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">addClass</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span> <span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">items</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;&gt; li[data-key=&#39;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">element</span><span class="p">.</span><span class="nx">removeClass</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span> <span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">});</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Rendering pagination elements</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">top_bottom</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">pagination</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">pages</span><span class="p">();</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">el</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-top, #&quot;</span> <span class="o">+</span> <span class="nx">el</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-bottom&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;afterDataListRefresh&quot;</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sort</span></p>
+
+<p>Sorts data list &amp; refreshes element
+Events: beforeDataListSort     Fires before the DataList sorts
+        beforeDataListRefresh  Fires before the DataList refreshes
+        afterDataListRefresh   Fires after the DataList refreshes
+        afterDataListSort      Fires after the DataList is sorted</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>order must be a String.</strong><br/>(SQL "order by" statement)</p></li>
+<li><p><strong>sensitivity must be a String.</strong><br/>([Optional] Defaults to "ci" ( "ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive ))</p></li>
+<li><p><strong>create must be a Boolean.</strong><br/>([Optional] Recreates cached View of data store)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">sort</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">order</span><span class="p">,</span> <span class="nx">sensitivity</span><span class="p">,</span> <span class="nx">create</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">order</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;beforeDataListSort&quot;</span> <span class="p">);</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">order</span>       <span class="o">=</span> <span class="nx">order</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">sensitivity</span> <span class="o">=</span> <span class="nx">sensitivity</span> <span class="o">||</span> <span class="s2">&quot;ci&quot;</span><span class="p">;</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">create</span> <span class="p">);</span>
+
+      <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterDataListSort&quot;</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method teardown</span></p>
+
+<p>Tears down references to the DataList</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>destroy must be a Boolean.</strong><br/>([Optional] <code>true</code> will remove the DataList from the DOM)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">teardown</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">destroy</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">destroy</span>  <span class="o">=</span> <span class="p">(</span> <span class="nx">destroy</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+          <span class="nx">id</span>   <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">id</span> <span class="p">);</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-top, #&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;-pages-bottom&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+      <span class="p">});</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">datalists</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">id</span> <span class="o">===</span> <span class="nx">self</span><span class="p">.</span><span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">idx</span> <span class="p">);</span>
+
+          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">destroy</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">element</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method pages</span></p>
+
+<p>Calculates the total pages</p>
+
+<p><strong>Returns a Number</strong><br/>(Total pages)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">pages</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">number</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">/</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method range</span></p>
+
+<p>Calculates the page size as an Array of start &amp; finish</p>
+
+<p><strong>Returns an Array</strong><br/>(Array of start &amp; end numbers)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">range</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">start</span> <span class="o">=</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">*</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span> <span class="p">)</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span><span class="p">,</span>
+        <span class="nx">end</span>   <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="nx">start</span><span class="p">,</span> <span class="nx">end</span><span class="p">];</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private constructor method DataList </span></p>
+
+<p>DataList factory</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>element must be an Object.</strong><br/>(DataList element)</p></li>
+<li><p><strong>store must be an Object.</strong><br/>(Data store to feed the DataList)</p></li>
+<li><p><strong>template can be of any type.</strong><br/>(Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }})</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Instance of DataList)</p></div></div><div class="code"><div class="wrapper"><span class="kd">function</span> <span class="nx">DataList</span> <span class="p">(</span> <span class="nx">element</span><span class="p">,</span> <span class="nx">store</span><span class="p">,</span> <span class="nx">template</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">callback</span>    <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">element</span>     <span class="o">=</span> <span class="nx">element</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">emptyMsg</span>    <span class="o">=</span> <span class="s2">&quot;Nothing to display&quot;</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">filter</span>      <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">id</span>          <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span>   <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span>    <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">pageRange</span>   <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">pagination</span>  <span class="o">=</span> <span class="s2">&quot;bottom&quot;</span><span class="p">;</span> <span class="c1">// &quot;top&quot; or &quot;bottom|top&quot; are also valid</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">placeholder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">order</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">records</span>     <span class="o">=</span> <span class="p">[];</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">template</span>    <span class="o">=</span> <span class="nx">template</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">total</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">sensitivity</span> <span class="o">=</span> <span class="s2">&quot;ci&quot;</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">store</span>       <span class="o">=</span> <span class="nx">store</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">where</span>       <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+<span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting prototype &amp; constructor loop</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataList</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">datalist</span><span class="p">.</span><span class="nx">methods</span><span class="p">;</span>
+<span class="nx">DataList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">DataList</span><span class="p">;</span></div></div></div></div></body></html>

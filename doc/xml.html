@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="en"><head><title>xml</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="xml"><meta name="groc-project-path" content="src/xml.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/xml.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>XML methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">xml</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method decode</span></p>
+
+<p>Returns XML (Document) Object from a String</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(XML String)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XML Object or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">decode</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">DOMParser</span><span class="p">().</span><span class="nx">parseFromString</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="s2">&quot;text/xml&quot;</span> <span class="p">);</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">x</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">x</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span> <span class="s2">&quot;Microsoft.XMLDOM&quot;</span> <span class="p">);</span>
+        <span class="nx">x</span><span class="p">.</span><span class="nx">async</span> <span class="o">=</span> <span class="s2">&quot;false&quot;</span><span class="p">;</span>
+        <span class="nx">x</span><span class="p">.</span><span class="nx">loadXML</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+
+        <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method encode</span></p>
+
+<p>Returns XML String from an Object or Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg can be of any type.</strong><br/>(Object or Array to cast to XML String)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(XML String or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">encode</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">wrap</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="nx">wrap</span>    <span class="o">=</span> <span class="p">(</span> <span class="nx">wrap</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">);</span>
+      <span class="kd">var</span> <span class="nx">x</span>   <span class="o">=</span> <span class="nx">wrap</span> <span class="o">?</span> <span class="s2">&quot;&lt;xml&gt;&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+          <span class="nx">top</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">arguments</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">),</span>
+          <span class="nx">node</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method node</span></p>
+
+<p>Encodes a value as a node</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>name must be a String.</strong><br/>(Node name)</p></li>
+<li><p><strong>value must be a Value.</strong><br/>(Node value)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Node)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">node</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">&quot;&lt;n&gt;v&lt;/n&gt;&quot;</span><span class="p">;</span>
+
+        <span class="nx">output</span> <span class="o">=</span> <span class="nx">output</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;v&quot;</span><span class="p">,</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">cdata</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;&lt;![CDATA[&quot;</span> <span class="o">+</span> <span class="nx">value</span> <span class="o">+</span> <span class="s2">&quot;]]&gt;&quot;</span> <span class="o">:</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="k">return</span> <span class="nx">output</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/&lt;(\/)?n&gt;/g</span><span class="p">,</span> <span class="s2">&quot;&lt;$1&quot;</span> <span class="o">+</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;&gt;&quot;</span><span class="p">);</span>
+      <span class="p">};</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">xml</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">xml</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nx">Document</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arg</span> <span class="o">=</span> <span class="p">(</span> <span class="k">new</span> <span class="nx">XMLSerializer</span><span class="p">()</span> <span class="p">).</span><span class="nx">serializeToString</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">boolean_number_string</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">x</span> <span class="o">+=</span> <span class="nx">node</span><span class="p">(</span> <span class="s2">&quot;item&quot;</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">x</span> <span class="o">+=</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">v</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">),</span> <span class="kc">false</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/item|xml/g</span><span class="p">,</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">k</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">k</span> <span class="o">:</span> <span class="s2">&quot;item&quot;</span> <span class="p">);</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+
+      <span class="nx">x</span> <span class="o">+=</span> <span class="nx">wrap</span> <span class="o">?</span> <span class="s2">&quot;&lt;/xml&gt;&quot;</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">top</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">x</span> <span class="o">=</span> <span class="s2">&quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF8\&quot;?&gt;&quot;</span> <span class="o">+</span> <span class="nx">x</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">,</span> <span class="k">this</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method valid</span></p>
+
+<p>Validates <code>arg</code> is XML</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(String to validate)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if valid XML)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">valid</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">).</span><span class="nx">getElementsByTagName</span><span class="p">(</span> <span class="s2">&quot;parsererror&quot;</span> <span class="p">).</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">);</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">).</span><span class="nx">parseError</span><span class="p">.</span><span class="nx">errorCode</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">);</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}()</span>
+<span class="p">};</span></div></div></div></div></body></html>

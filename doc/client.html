@@ -1,0 +1,731 @@
+<!DOCTYPE html><html lang="en"><head><title>client</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="client"><meta name="groc-project-path" content="src/client.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/client.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>Client properties and methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method activex</span></p>
+
+<p>ActiveX support</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if supported)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">activex</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">obj</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">ActiveXObject</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">obj</span>    <span class="o">=</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span> <span class="s2">&quot;Microsoft.XMLHTTP&quot;</span> <span class="p">);</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method android</span></p>
+
+<p>Android platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Android)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">android</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method blackberry</span></p>
+
+<p>Blackberry platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Blackberry)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">blackberry</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">blackberry</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method chrome</span></p>
+
+<p>Chrome browser</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Chrome)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">chrome</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">chrome</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method firefox</span></p>
+
+<p>Firefox browser</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Firefox)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">firefox</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">firefox</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method ie</span></p>
+
+<p>Internet Explorer browser</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Internet Explorer)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ie</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">ie</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method ios</span></p>
+
+<p>iOS platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if iOS)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ios</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">ios</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method linux</span></p>
+
+<p>Linux Platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Linux)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">linux</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">linux</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mobile</span></p>
+
+<p>Mobile platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Mobile)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mobile</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="sr">/blackberry|iphone|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">height</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method playbook</span></p>
+
+<p>Playbook platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Playbook)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">playbook</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">playbook</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method opera</span></p>
+
+<p>Opera browser</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Opera)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">opera</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">opera</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method osx</span></p>
+
+<p>OSX platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if OSX)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">osx</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">osx</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method safari</span></p>
+
+<p>Safari browser</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Safari)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">safari</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">safari</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/chrome.*/i</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method tablet</span></p>
+
+<p>Tablet platform
+Modern smartphone resolution makes this a hit/miss scenario</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Tablet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">tablet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="sr">/ipad|playbook|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method webos</span></p>
+
+<p>WebOS platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if WebOS)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">webos</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">webos</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method windows</span></p>
+
+<p>Windows platform</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Windows)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">windows</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">windows</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method version</span></p>
+
+<p>Client version</p>
+
+<p><strong>Returns a Number</strong><br/>(Estimated client version)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">version</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">version</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">chrome</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*chrome\/|safari.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">firefox</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*firefox\/)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">ie</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(.*msie|;.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="mi">10</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span> <span class="o">&lt;</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">version</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">opera</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*version\/|\(.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">safari</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*version\/|safari.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">navigator</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">appVersion</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">version</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">version</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method allows</span></p>
+
+<p>Quick way to see if a URI allows a specific verb</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>uri must be a String.</strong><br/>(URI to query)</p></li>
+<li><p><strong>verb must be a String.</strong><br/>(HTTP verb)</p></li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if the verb is allowed, undefined if unknown)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">allows</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">uri</span>        <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">).</span><span class="nx">href</span><span class="p">;</span>
+    <span class="nx">verb</span>       <span class="o">=</span> <span class="nx">verb</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">bit</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">cache</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">del</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">bit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">get_headers</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">bit</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">put_post</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">bit</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">patch</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">bit</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">result</span> <span class="o">=</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">client</span><span class="p">.</span><span class="nx">permissions</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">verb</span> <span class="p">).</span><span class="nx">bit</span> <span class="o">&amp;</span> <span class="nx">bit</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method bit</span></p>
+
+<p>Gets bit value based on args</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>args must be an Array.</strong><br/>(Array of commands the URI accepts)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(To be set as a bit)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">bit</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">verb</span> <span class="o">=</span> <span class="nx">verb</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">get_headers</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">|=</span> <span class="mi">4</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">put_post</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">|=</span> <span class="mi">2</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">patch</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">|=</span> <span class="mi">8</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">del</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">|=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method cors</span></p>
+
+<p>Determines if a URI is a CORS end point</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>uri must be a String.</strong><br/>(URI to parse)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(True if CORS)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">cors</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;//&quot;</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;//&quot;</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span> <span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method headers</span></p>
+
+<p>Caches the headers from the XHR response</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>xhr must be an Object.</strong><br/>(XMLHttpRequest Object)</p></li>
+<li><p><strong>uri must be a String.</strong><br/>(URI to request)</p></li>
+<li><p><strong>type must be a String.</strong><br/>(Type of request)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Cached URI representation)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">headers</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">headers</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">getAllResponseHeaders</span><span class="p">()</span> <span class="p">).</span><span class="nx">split</span><span class="p">(</span> <span class="s2">&quot;\n&quot;</span> <span class="p">),</span>
+        <span class="nx">items</span>   <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">o</span>       <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">allow</span>   <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">expires</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(),</span>
+        <span class="nx">cors</span>    <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">cors</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">);</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">headers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">header</span><span class="p">,</span> <span class="nx">value</span><span class="p">;</span>
+
+      <span class="nx">value</span>         <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">header_value_replace</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+      <span class="nx">header</span>        <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">header_replace</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+      <span class="nx">header</span>        <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">unhyphenate</span><span class="p">(</span> <span class="nx">header</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\s+/g</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="p">);</span>
+      <span class="nx">items</span><span class="p">[</span><span class="nx">header</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">allow</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="o">!</span><span class="nx">cors</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">allow</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">header</span><span class="p">)</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">cors</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">allow_cors</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">header</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">allow</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">no</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">items</span><span class="p">[</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Do nothing</p></div></div><div class="code"><div class="wrapper">    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">items</span><span class="p">[</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">number_present</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">items</span><span class="p">[</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">expires</span> <span class="o">=</span> <span class="nx">expires</span><span class="p">.</span><span class="nx">setSeconds</span><span class="p">(</span> <span class="nx">expires</span><span class="p">.</span><span class="nx">getSeconds</span><span class="p">()</span> <span class="o">+</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">number_present</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span> <span class="nx">items</span><span class="p">[</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">]</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">10</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">items</span><span class="p">.</span><span class="nx">Expires</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">expires</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span> <span class="nx">items</span><span class="p">.</span><span class="nx">Expires</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">expires</span> <span class="o">=</span> <span class="nx">expires</span><span class="p">.</span><span class="nx">setSeconds</span><span class="p">(</span> <span class="nx">expires</span><span class="p">.</span><span class="nx">getSeconds</span><span class="p">()</span> <span class="o">+</span> <span class="nx">$</span><span class="p">.</span><span class="nx">expires</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">o</span><span class="p">.</span><span class="nx">expires</span>    <span class="o">=</span> <span class="nx">expires</span><span class="p">;</span>
+    <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span>    <span class="o">=</span> <span class="nx">items</span><span class="p">;</span>
+    <span class="nx">o</span><span class="p">.</span><span class="nx">permission</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">bit</span><span class="p">(</span> <span class="nx">allow</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">allow</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;get&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;expires&quot;</span><span class="p">,</span>    <span class="nx">o</span><span class="p">.</span><span class="nx">expires</span> <span class="p">);</span>
+      <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;headers&quot;</span><span class="p">,</span>    <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span> <span class="p">);</span>
+      <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;permission&quot;</span><span class="p">,</span> <span class="nx">o</span><span class="p">.</span><span class="nx">permission</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method parse</span></p>
+
+<p>Parses an XHR response</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>xhr must be an Object.</strong><br/>(XHR Object)</p></li>
+<li><p><strong>type must be a String.</strong><br/>([Optional] Content-Type header value)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Array, Boolean, Document, Number, Object or String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">parse</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">type</span> <span class="o">=</span> <span class="nx">type</span> <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">obj</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">json_maybe</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">json_wrap</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">xml</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">!==</span> <span class="s2">&quot;text/xml&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">overrideMimeType</span><span class="p">(</span> <span class="s2">&quot;text/xml&quot;</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseXML</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;text/plain&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">is_xml</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">valid</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">responseText</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method permissions</span></p>
+
+<p>Returns the permission of the cached URI</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>uri must be a String.</strong><br/>(URI to query)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Contains an Array of available commands, the permission bit and a map)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">permissions</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">cached</span> <span class="o">=</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">false</span> <span class="p">),</span>
+        <span class="nx">bit</span>    <span class="o">=</span> <span class="o">!</span><span class="nx">cached</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="nx">cached</span><span class="p">.</span><span class="nx">permission</span><span class="p">,</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="p">{</span><span class="nx">allows</span><span class="o">:</span> <span class="p">[],</span> <span class="nx">bit</span><span class="o">:</span> <span class="nx">bit</span><span class="p">,</span> <span class="nx">map</span><span class="o">:</span> <span class="p">{</span><span class="nx">partial</span><span class="o">:</span> <span class="mi">8</span><span class="p">,</span> <span class="nx">read</span><span class="o">:</span> <span class="mi">4</span><span class="p">,</span> <span class="nx">write</span><span class="o">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">unknown</span><span class="o">:</span> <span class="mi">0</span><span class="p">}};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">bit</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">allows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;DELETE&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">bit</span> <span class="o">&amp;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">allows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;POST&quot;</span> <span class="p">);</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">allows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;PUT&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">bit</span> <span class="o">&amp;</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">allows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;GET&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">bit</span> <span class="o">&amp;</span> <span class="mi">8</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">allows</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;PATCH&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method jsonp</span></p>
+
+<p>Creates a JSONP request</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>uri must be a String.</strong><br/>(URI to request)</p></li>
+<li><p><strong>success must be a Function.</strong><br/>(A handler function to execute when an appropriate response been received)</p></li>
+<li><p><strong>failure must be a Function.</strong><br/>([Optional] A handler function to execute on error)</p></li>
+<li><p><strong>args can be of any type.</strong><br/>(Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request ( CORS ))</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">jsonp</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">defer</span>    <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+        <span class="nx">callback</span> <span class="o">=</span> <span class="s2">&quot;callback&quot;</span><span class="p">,</span> <span class="nx">cbid</span><span class="p">,</span> <span class="nx">s</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">external</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">global</span><span class="p">.</span><span class="nx">abaaso</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span> <span class="s2">&quot;abaaso.callback&quot;</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">global</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="nx">external</span> <span class="o">=</span> <span class="s2">&quot;abaaso&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="o">&amp;&amp;</span> <span class="nx">args</span><span class="p">.</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">callback</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">callback</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">success</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">success</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">failure</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">failure</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">throw</span> <span class="nx">e</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="k">do</span> <span class="p">{</span>
+      <span class="nx">cbid</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">().</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">while</span> <span class="p">(</span> <span class="nx">global</span><span class="p">.</span><span class="nx">abaaso</span><span class="p">.</span><span class="nx">callback</span><span class="p">[</span><span class="nx">cbid</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">);</span>
+
+    <span class="nx">uri</span> <span class="o">=</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">callback</span> <span class="o">+</span> <span class="s2">&quot;=?&quot;</span><span class="p">,</span> <span class="nx">callback</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="nx">external</span> <span class="o">+</span> <span class="s2">&quot;.callback.&quot;</span> <span class="o">+</span> <span class="nx">cbid</span> <span class="p">);</span>
+
+    <span class="nx">global</span><span class="p">.</span><span class="nx">abaaso</span><span class="p">.</span><span class="nx">callback</span><span class="p">[</span><span class="nx">cbid</span><span class="p">]</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">cbid</span><span class="p">]</span> <span class="p">);</span>
+      <span class="k">delete</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">cbid</span><span class="p">];</span>
+      <span class="k">delete</span> <span class="nx">global</span><span class="p">.</span><span class="nx">abaaso</span><span class="p">.</span><span class="nx">callback</span><span class="p">[</span><span class="nx">cbid</span><span class="p">];</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">s</span> <span class="p">);</span>
+    <span class="p">};</span>
+
+    <span class="nx">s</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">src</span><span class="o">:</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text/javascript&quot;</span><span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
+    
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="kc">undefined</span> <span class="p">);</span>
+    <span class="p">},</span> <span class="mi">30000</span><span class="p">,</span> <span class="nx">cbid</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method request</span></p>
+
+<p>Creates an XmlHttpRequest to a URI ( aliased to multiple methods )
+Events: before[type]          Fires before the XmlHttpRequest is made, type specific
+        failed[type]          Fires on error
+        progress[type]        Fires on progress
+        progressUpload[type]  Fires on upload progress
+        received[type]        Fires on XHR readystate 2
+        timeout[type]         Fires when XmlHttpRequest times out</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>uri must be a String.</strong><br/>(URI to query)</p></li>
+<li><p><strong>type must be a String.</strong><br/>(Type of request ( DELETE/GET/POST/PUT/HEAD ))</p></li>
+<li><p><strong>success must be a Function.</strong><br/>(A handler function to execute when an appropriate response been received)</p></li>
+<li><p><strong>failure must be a Function.</strong><br/>([Optional] A handler function to execute on error)</p></li>
+<li><p><strong>args can be of any type.</strong><br/>([Optional] Data to send with the request)</p></li>
+<li><p><strong>headers must be an Object.</strong><br/>([Optional] Custom request headers ( can be used to set withCredentials ))</p></li>
+<li><p><strong>timeout must be a Number.</strong><br/>([Optional] Timeout in milliseconds, default is 30000)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">request</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">timeout</span> <span class="o">=</span> <span class="nx">timeout</span> <span class="o">||</span> <span class="mi">30000</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">cors</span><span class="p">,</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">payload</span><span class="p">,</span> <span class="nx">cached</span><span class="p">,</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">contentType</span><span class="p">,</span> <span class="nx">doc</span><span class="p">,</span> <span class="nx">ab</span><span class="p">,</span> <span class="nx">blob</span><span class="p">,</span> <span class="nx">defer</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">put_post</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">args</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">uri</span>         <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">).</span><span class="nx">href</span><span class="p">;</span>
+    <span class="nx">type</span>        <span class="o">=</span> <span class="nx">type</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+    <span class="nx">headers</span>     <span class="o">=</span> <span class="nx">headers</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="o">?</span> <span class="nx">headers</span> <span class="o">:</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="nx">cors</span>        <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">cors</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">);</span>
+    <span class="nx">xhr</span>         <span class="o">=</span> <span class="p">(</span> <span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">&amp;&amp;</span> <span class="nx">cors</span> <span class="p">)</span> <span class="o">?</span> <span class="k">new</span> <span class="nx">XDomainRequest</span><span class="p">()</span> <span class="o">:</span> <span class="p">(</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="o">||</span> <span class="nx">type</span> <span class="o">!==</span> <span class="s2">&quot;patch&quot;</span><span class="p">)</span>  <span class="o">?</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">()</span> <span class="o">:</span> <span class="k">new</span> <span class="nx">ActiveXObject</span><span class="p">(</span> <span class="s2">&quot;Microsoft.XMLHTTP&quot;</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="nx">payload</span>     <span class="o">=</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">put_post</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">patch</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">args</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">args</span> <span class="o">:</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="nx">cached</span>      <span class="o">=</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;get&quot;</span> <span class="o">?</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="nx">typed</span>       <span class="o">=</span> <span class="nx">type</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">();</span>
+    <span class="nx">contentType</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="nx">doc</span>         <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">Document</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">);</span>
+    <span class="nx">ab</span>          <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">ArrayBuffer</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">);</span>
+    <span class="nx">blob</span>        <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">Blob</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">);</span>
+    <span class="nx">defer</span>       <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">();</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Using a deferred to resolve request</p></div></div><div class="code"><div class="wrapper">    <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">success</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">success</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="nx">xhr</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">failure</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">failure</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="nx">xhr</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+
+      <span class="k">throw</span> <span class="nx">e</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;before&quot;</span> <span class="o">+</span> <span class="nx">typed</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">cors</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">get_headers</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">client</span><span class="p">.</span><span class="nx">allows</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="o">=</span> <span class="mi">405</span><span class="p">;</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;failed&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;get&quot;</span> <span class="o">&amp;&amp;</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">cached</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Decorating XHR for proxy behavior</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span>  <span class="o">=</span> <span class="mi">4</span><span class="p">;</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span>      <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">_resheaders</span> <span class="o">=</span> <span class="nx">cached</span><span class="p">.</span><span class="nx">headers</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">cached</span><span class="p">.</span><span class="nx">response</span> <span class="p">);</span>
+      <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterGet&quot;</span><span class="p">,</span> <span class="nx">cached</span><span class="p">.</span><span class="nx">response</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">xhr</span><span class="p">[</span><span class="k">typeof</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">?</span> <span class="s2">&quot;onreadystatechange&quot;</span> <span class="o">:</span> <span class="s2">&quot;onload&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">client</span><span class="p">.</span><span class="nx">response</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">defer</span> <span class="p">);</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting timeout</p></div></div><div class="code"><div class="wrapper">      <span class="k">try</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">xhr</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">=</span> <span class="nx">timeout</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting events</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">ontimeout</span>  <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">ontimeout</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;timeout&quot;</span>  <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+        <span class="p">};</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">onprogress</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onprogress</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;progress&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+        <span class="p">};</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">upload</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">upload</span><span class="p">.</span><span class="nx">onprogress</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">upload</span><span class="p">.</span><span class="nx">onprogress</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;progressUpload&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+        <span class="p">};</span>
+      <span class="p">}</span>
+
+      <span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span> <span class="nx">type</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">(),</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting Content-Type value</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">headers</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">headers</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="s2">&quot;Content-Type&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">contentType</span> <span class="o">=</span> <span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">cors</span> <span class="o">&amp;&amp;</span> <span class="nx">contentType</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">contentType</span> <span class="o">=</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">;</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Transforming payload</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">payload</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="s2">&quot;xml&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">payload</span> <span class="o">=</span> <span class="nx">payload</span><span class="p">.</span><span class="nx">xml</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">doc</span> <span class="o">&amp;&amp;</span> <span class="nx">payload</span> <span class="k">instanceof</span> <span class="nx">Document</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">payload</span> <span class="o">=</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">payload</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">payload</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">is_xml</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">payload</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">contentType</span> <span class="o">=</span> <span class="s2">&quot;application/xml&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">ab</span> <span class="o">&amp;&amp;</span> <span class="nx">payload</span> <span class="k">instanceof</span> <span class="nx">ArrayBuffer</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span> <span class="nx">blob</span> <span class="o">&amp;&amp;</span> <span class="nx">payload</span> <span class="k">instanceof</span> <span class="nx">Blob</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">payload</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">contentType</span> <span class="o">=</span> <span class="s2">&quot;application/json&quot;</span><span class="p">;</span>
+          <span class="nx">payload</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">payload</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">contentType</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="p">((</span><span class="nx">ab</span> <span class="o">&amp;&amp;</span> <span class="nx">payload</span> <span class="k">instanceof</span> <span class="nx">ArrayBuffer</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="nx">blob</span> <span class="o">&amp;&amp;</span> <span class="nx">payload</span> <span class="k">instanceof</span> <span class="nx">Blob</span><span class="p">))</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">contentType</span> <span class="o">=</span> <span class="s2">&quot;application/octet-stream&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">contentType</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">contentType</span> <span class="o">=</span> <span class="s2">&quot;application/x-www-form-urlencoded; charset=UTF-8&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting headers (using typeof for PATCH support in IE8)</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">cached</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">cached</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="s2">&quot;ETag&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span> <span class="s2">&quot;ETag&quot;</span><span class="p">,</span> <span class="nx">cached</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">ETag</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">headers</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">headers</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">contentType</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">contentType</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">headers</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="s2">&quot;callback&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">delete</span> <span class="nx">headers</span><span class="p">.</span><span class="nx">callback</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">headers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">k</span> <span class="o">!==</span> <span class="s2">&quot;withCredentials&quot;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">xhr</span><span class="p">.</span><span class="nx">setRequestHeader</span><span class="p">(</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Cross Origin Resource Sharing ( CORS )</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">withCredentials</span> <span class="o">===</span> <span class="s2">&quot;boolean&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">headers</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">headers</span><span class="p">.</span><span class="nx">withCredentials</span> <span class="o">===</span> <span class="s2">&quot;boolean&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">withCredentials</span> <span class="o">=</span> <span class="nx">headers</span><span class="p">.</span><span class="nx">withCredentials</span><span class="p">;</span>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Firing event &amp; sending request</p></div></div><div class="code"><div class="wrapper">      <span class="nx">payload</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">payload</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method response</span></p>
+
+<p>Caches the URI headers &amp; response if received, and fires the relevant events
+If abaaso.state.header is set, an application state change is possible
+Permissions are handled if the ACCEPT header is received; a bit is set on the cached
+resource
+Events: after[type]  Fires after the XmlHttpRequest response is received, type specific
+        reset        Fires if a 206 response is received
+        failure      Fires if an exception is thrown
+        headers      Fires after a possible state change, with the headers from the response</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>xhr must be an Object.</strong><br/>(XMLHttpRequest Object)</p></li>
+<li><p><strong>uri must be a String.</strong><br/>(URI to query)</p></li>
+<li><p><strong>type must be a String.</strong><br/>(Type of request)</p></li>
+<li><p><strong>defer must be an Object.</strong><br/>(Deferred to reconcile with the response)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">response</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">defer</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">typed</span>    <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span> <span class="nx">type</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="p">),</span>
+        <span class="nx">xhrState</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">xdr</span>      <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">,</span>
+        <span class="nx">shared</span>   <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">exception</span><span class="p">,</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">redirect</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>server-side exception handling</p></div></div><div class="code"><div class="wrapper">    <span class="nx">exception</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">,</span> <span class="k">this</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;failed&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">client</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">xhr</span> <span class="p">),</span> <span class="nx">xhr</span> <span class="p">);</span>
+    <span class="p">};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">xdr</span> <span class="o">&amp;&amp;</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;received&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">xdr</span> <span class="o">&amp;&amp;</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">switch</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="mi">200</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">201</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">202</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">203</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">204</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">205</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">206</span><span class="o">:</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Caching headers</p></div></div><div class="code"><div class="wrapper">          <span class="nx">o</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">headers</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">type</span> <span class="p">);</span>
+          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;headers&quot;</span><span class="p">,</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;head&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span> <span class="p">);</span>
+
+            <span class="k">return</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterHead&quot;</span><span class="p">,</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span> <span class="p">);</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;options&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span> <span class="p">);</span>
+
+            <span class="k">return</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterOptions&quot;</span><span class="p">,</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span> <span class="p">);</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">!==</span> <span class="s2">&quot;delete&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">priv</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;Cache-Control&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">shared</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">http_body</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">t</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">||</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+              <span class="nx">r</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="nx">t</span> <span class="p">);</span>
+
+              <span class="k">if</span> <span class="p">(</span> <span class="nx">r</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span> <span class="p">);</span>
+              <span class="p">}</span>
+            <span class="p">}</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;get&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">shared</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">response</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">r</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;delete&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+          <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Application state change triggered by hypermedia ( HATEOAS )</p></div></div><div class="code"><div class="wrapper">          <span class="k">if</span> <span class="p">(</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">()</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">xhrState</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="nx">state</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">()])</span> <span class="o">&amp;&amp;</span> <span class="nx">state</span><span class="p">.</span><span class="nx">current</span> <span class="o">!==</span> <span class="nx">xhrState</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">state</span><span class="p">.</span><span class="nx">setCurrent</span><span class="p">(</span> <span class="nx">state</span> <span class="p">);</span>
+          <span class="p">}</span>
+
+          <span class="k">switch</span> <span class="p">(</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">status</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="mi">200</span><span class="o">:</span>
+            <span class="k">case</span> <span class="mi">202</span><span class="o">:</span>
+            <span class="k">case</span> <span class="mi">203</span><span class="o">:</span>
+            <span class="k">case</span> <span class="mi">206</span><span class="o">:</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
+              <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="mi">201</span><span class="o">:</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">Location</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">Location</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isUrl</span> <span class="p">(</span> <span class="nx">r</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">exception</span><span class="p">(</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">),</span> <span class="nx">xhr</span> <span class="p">);</span>
+              <span class="p">}</span>
+              <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">redirect</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span> <span class="p">(</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">Location</span> <span class="o">||</span> <span class="nx">r</span> <span class="p">);</span>
+                <span class="nx">client</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span> <span class="nx">redirect</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+                  <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+                <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">exception</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+                <span class="p">});</span>
+                <span class="k">break</span><span class="p">;</span>
+              <span class="p">}</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="mi">204</span><span class="o">:</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
+              <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="mi">205</span><span class="o">:</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">null</span> <span class="p">);</span>
+              <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;reset&quot;</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+              <span class="k">break</span><span class="p">;</span>
+          <span class="p">}</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">401</span><span class="o">:</span>
+          <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverUnauthorized</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverUnauthorized</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">403</span><span class="o">:</span>
+          <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;!permission&quot;</span><span class="p">,</span> <span class="nx">client</span><span class="p">.</span><span class="nx">bit</span><span class="p">(</span> <span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverForbidden</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverForbidden</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">405</span><span class="o">:</span>
+          <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;!permission&quot;</span><span class="p">,</span> <span class="nx">client</span><span class="p">.</span><span class="nx">bit</span><span class="p">(</span> <span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+          <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">try</span> <span class="p">{</span>
+        <span class="nx">xhr</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">xdr</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">r</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">xhr</span><span class="p">,</span> <span class="s2">&quot;text/plain&quot;</span> <span class="p">);</span>
+      <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;permission&quot;</span><span class="p">,</span> <span class="nx">client</span><span class="p">.</span><span class="nx">bit</span><span class="p">(</span> <span class="p">[</span><span class="s2">&quot;get&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;response&quot;</span><span class="p">,</span> <span class="nx">r</span> <span class="p">);</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
+      <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterGet&quot;</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method size</span></p>
+
+<p>Returns the visible area of the View</p>
+
+<p><strong>Returns an Object</strong><br/>(Describes the View {x: ?, y: ?})</p></div></div><div class="code"><div class="wrapper">  <span class="nx">size</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span> <span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span> <span class="p">)</span> <span class="o">:</span> <span class="p">{</span><span class="nx">clientHeight</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">clientWidth</span><span class="o">:</span> <span class="mi">0</span><span class="p">};</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="nx">height</span><span class="o">:</span> <span class="nx">view</span><span class="p">.</span><span class="nx">clientHeight</span><span class="p">,</span> <span class="nx">width</span><span class="o">:</span> <span class="nx">view</span><span class="p">.</span><span class="nx">clientWidth</span><span class="p">};</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div></div></body></html>

@@ -7,21 +7,43 @@
  * @namespace abaaso
  */
 var route = {
-	// Current route ( Client only )
+	/**
+	 * Current route ( Client only )
+	 *
+	 * @private
+	 * @type {String}
+	 */
 	current : "",
 
-	// Initial / default route
+	/**
+	 * Initial / default route
+	 *
+	 * @private
+	 * @type {String}
+	 */
 	initial : null,
 
-	// Reused regex object
+	/**
+	 * Reused regex object
+	 *
+	 * @private
+	 * @type {RegExp}
+	 */
 	reg : new RegExp(),
 
-	// Routing listeners
+	/**
+	 * Routing listeners
+	 *
+	 * @private
+	 * @type {Object}
+	 */
 	routes : {},
 
 	/**
 	 * Determines which HTTP method to use
 	 *
+	 * @method method
+	 * @public
 	 * @param  {String} arg HTTP method
 	 * @return {[type]}     HTTP method to utilize
 	 */
@@ -33,6 +55,7 @@ var route = {
 	 * Deletes a route
 	 *
 	 * @method del
+	 * @public
 	 * @param  {String} name  Route name
 	 * @param  {String} verb  HTTP method
 	 * @return {Mixed}        True or undefined
@@ -58,6 +81,7 @@ var route = {
 	 * Getter / setter for the hashbang
 	 *
 	 * @method hash
+	 * @public
 	 * @param  {String} arg Route to set
 	 * @return {String}     Current route
 	 */
@@ -80,6 +104,8 @@ var route = {
 	/**
 	 * Creates a hostname entry in the routes table
 	 *
+	 * @method hostname
+	 * @public
 	 * @param  {String} arg Hostname to route
 	 * @return {Object}     Routes for hostname
 	 */
@@ -101,6 +127,7 @@ var route = {
 	 * Initializes the routing by loading the initial OR the first route registered
 	 *
 	 * @method init
+	 * @public
 	 * @return {Undefined} undefined
 	 */
 	init : function () {
@@ -113,6 +140,7 @@ var route = {
 	 * Lists all routes
 	 *
 	 * @method list
+	 * @public
 	 * @param  {String} verb HTTP method
 	 * @return {Mixed}       Hash of routes if `host` not specified, else an Array of routes for a method
 	 */
@@ -146,6 +174,7 @@ var route = {
 	 * Loads the hash into the view
 	 *
 	 * @method load
+	 * @public
 	 * @param  {String} name  Route to load
 	 * @param  {String} req   [Optional] HTTP request ( node )
 	 * @param  {Object} res   [Optional] HTTP response ( node )
@@ -174,7 +203,16 @@ var route = {
 			route.current = name;
 		}
 
-		// Crawls the hostnames
+		/**
+		 * Crawls the hostnames, sets `active` & `path`
+		 *
+		 * @method crawl
+		 * @private
+		 * @param  {String} host Hostname
+		 * @param  {String} verb HTTP method
+		 * @param  {String} name Route
+		 * @return {Undefined}   undefined
+		 */
 		crawl = function ( host, verb, name ) {
 			if ( route.routes[host][verb][name] !== undefined ) {
 				active = name;
@@ -197,7 +235,16 @@ var route = {
 			}
 		};
 
-		// Finds a match
+		/**
+		 * Finds a match, sets `active` & `path`
+		 *
+		 * @method find
+		 * @private
+		 * @param  {String} pattern Route
+		 * @param  {String} method  HTTP method
+		 * @param  {String} arg     URL
+		 * @return {Undefined}      undefined
+		 */
 		find = function ( pattern, method, arg ) {
 			if ( utility.compile( route.reg, "^" + pattern + "$" ) && route.reg.test( arg ) ) {
 				active = pattern;
@@ -247,6 +294,8 @@ var route = {
 	/**
 	 * Resets the routes
 	 *
+	 * @method reset
+	 * @public
 	 * @return {Undefined} undefined
 	 */
 	reset : function () {
@@ -282,6 +331,7 @@ var route = {
 	 * Creates a Server with URI routing
 	 *
 	 * @method server
+	 * @public
 	 * @param  {Object}   arg  Server options
 	 * @param  {Function} fn   Error handler
 	 * @param  {Boolean}  ssl  Determines if HTTPS server is created
@@ -298,7 +348,15 @@ var route = {
 		args = args || {};
 		ssl  = ( ssl === true || args.port === 443 );
 
-		// Request handler
+		/**
+		 * Request handler
+		 *
+		 * @method handler
+		 * @private
+		 * @param  {Object} req HTTP(S) Request Object
+		 * @param  {Object} res HTTP(S) Response Object
+		 * @return {Undefined}  undefined
+		 */
 		handler = function ( req, res ) {
 			var parsed   = url.parse( req.url ),
 			    hostname = req.headers.host.replace( regex.header_replace, "" );
@@ -306,7 +364,14 @@ var route = {
 			route.load( parsed.pathname, req, res, hostname );
 		};
 
-		// Error handler
+		/**
+		 * Error handler
+		 *
+		 * @method err
+		 * @private
+		 * @param  {Object} e Error
+		 * @return {Undefined} undefined
+		 */
 		err = function ( e ) {
 			utility.error( e, [args, fn, ssl] );
 
@@ -323,13 +388,13 @@ var route = {
 		args.port = args.port || 8000;
 
 		// Creating server
-		if (!ssl) {
+		if ( !ssl ) {
 			// For proxy behavior
 			http.globalAgent.maxConnections = args.maxConnections  || maxConnections;
 
 			obj = http.createServer( handler ).on( "error", err ).listen( args.port, args.host );
 
-			if (obj.maxConnections) {
+			if ( obj.maxConnections ) {
 				obj.maxConnections = args.maxConnections || maxConnections;
 			}
 		}
@@ -339,7 +404,7 @@ var route = {
 
 			obj = https.createServer( args, handler ).on( "error", err).listen( args.port );
 
-			if (obj.maxConnections) {
+			if ( obj.maxConnections ) {
 				obj.maxConnections = args.maxConnections || maxConnections;
 			}
 		}
@@ -351,6 +416,7 @@ var route = {
 	 * Sets a route for a URI
 	 *
 	 * @method set
+	 * @public
 	 * @param  {String}   name  Regex pattern for the route
 	 * @param  {Function} fn    Route listener
 	 * @param  {String}   verb  HTTP method the route is for ( default is GET )

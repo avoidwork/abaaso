@@ -1,0 +1,305 @@
+<!DOCTYPE html><html lang="en"><head><title>string</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="string"><meta name="groc-project-path" content="src/string.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/string.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>String methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">string</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method capitalize</span></p>
+
+<p>Capitalizes the String</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be a String.</strong><br/>(String to capitalize)</p></li>
+<li><p><strong>all must be a Boolean.</strong><br/>([Optional] Capitalize each word)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Capitalized String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">capitalize</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">all</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="nx">all</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">all</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">all</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot; &quot;</span> <span class="p">).</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">i</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">).</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="nx">i</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
+      <span class="p">}).</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">).</span><span class="nx">toUpperCase</span><span class="p">()</span> <span class="o">+</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method escape</span></p>
+
+<p>Escapes meta characters within a string</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to escape)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Escaped string)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">escape</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/[\-\[\]{}()*+?.,\\\^\$|#\s]/g</span><span class="p">,</span> <span class="s2">&quot;\\$&amp;&quot;</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method explode</span></p>
+
+<p>Splits a string on comma, or a parameter, and trims each value in the resulting Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be a String.</strong><br/>(String to capitalize)</p></li>
+<li><p><strong>arg must be a String.</strong><br/>(String to split on)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of the exploded String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">explode</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">===</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">arg</span> <span class="o">=</span> <span class="s2">&quot;,&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">?</span> <span class="p">[]</span> <span class="o">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">split</span><span class="p">(</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span> <span class="s2">&quot;\\s*&quot;</span> <span class="o">+</span> <span class="nx">arg</span> <span class="o">+</span> <span class="s2">&quot;\\s*&quot;</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method hyphenate</span></p>
+
+<p>Replaces all spaces in a string with dashes</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be a String.</strong><br/>(String to hyphenate)</p></li>
+<li><p><strong>camel must be a Boolean.</strong><br/>([Optional] Hyphenate camelCase)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(String with dashes instead of spaces)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">hyphenate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">camel</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\s+/g</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">camel</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/([A-Z])/g</span><span class="p">,</span> <span class="s2">&quot;-$1&quot;</span> <span class="p">).</span><span class="nx">toLowerCase</span><span class="p">();</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isAlphaNum</span></p>
+
+<p>Tests if a string is alpha-numeric</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isAlphaNum</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">alphanum</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isBoolean</span></p>
+
+<p>Tests if a string is a boolean</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isBoolean</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="s2">&quot;boolean&quot;</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isDate</span></p>
+
+<p>Tests if a string a date</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isDate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">date</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isDomain</span></p>
+
+<p>Tests if a string is a domain</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isDomain</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">domain</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isEmail</span></p>
+
+<p>Tests if a string is an email address</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isEmail</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">email</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isEmpty</span></p>
+
+<p>Tests if a string is empty</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isEmpty</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isIP</span></p>
+
+<p>Tests if a string is an IP address</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isIP</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">ip</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isInt</span></p>
+
+<p>Tests if a string is an integer</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isInt</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">integer</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isNumber</span></p>
+
+<p>Tests if a string is a number</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isNumber</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">number</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isPhone</span></p>
+
+<p>Tests if a string is a phone number</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isPhone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">phone</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method isUrl</span></p>
+
+<p>Tests if a string is a URL</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to test)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Result of test)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">isUrl</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">validate</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="p">{</span><span class="nx">url</span><span class="o">:</span> <span class="nx">obj</span><span class="p">}</span> <span class="p">).</span><span class="nx">pass</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method singular</span></p>
+
+<p>Returns singular form of the string</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to transform)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Transformed string)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">singular</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">plural</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method toCamelCase</span></p>
+
+<p>Transforms the case of a String into CamelCase</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to capitalize)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Camel case String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">toCamelCase</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\.|_|-|\@|\[|\]|\(|\)|\#|\$|\%|\^|\&amp;|\*|\s+/g</span><span class="p">,</span> <span class="s2">&quot; &quot;</span> <span class="p">).</span><span class="nx">toLowerCase</span><span class="p">().</span><span class="nx">split</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">space_hyphen</span> <span class="p">),</span>
+        <span class="nx">r</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">s</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">r</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">idx</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">?</span> <span class="nx">i</span> <span class="o">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">r</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method trim</span></p>
+
+<p>Trims the whitespace around a String</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to capitalize)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Trimmed String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">trim</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">toString</span><span class="p">().</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/^(\s+|\t+)|(\s+|\t+)$/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method unCamelCase</span></p>
+
+<p>Uncamelcases the String</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to uncamelcase)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Uncamelcased String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">unCamelCase</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/([A-Z])/g</span><span class="p">,</span> <span class="s2">&quot; $1&quot;</span><span class="p">).</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method uncapitalize</span></p>
+
+<p>Uncapitalizes the String</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to uncapitalize)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Uncapitalized String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">uncapitalize</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">).</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">+</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method unhyphenate</span></p>
+
+<p>Replaces all hyphens with spaces</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be a String.</strong><br/>(String to unhypenate)</p></li>
+<li><p><strong>caps must be a Boolean.</strong><br/>([Optional] True to capitalize each word)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Unhyphenated String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">unhyphenate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">caps</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">caps</span>       <span class="o">=</span> <span class="p">(</span> <span class="nx">caps</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;-&quot;</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">split</span><span class="p">(</span> <span class="s2">&quot;-&quot;</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">+=</span> <span class="p">(</span> <span class="nx">caps</span> <span class="o">?</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">i</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">;</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">caps</span> <span class="o">?</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div></div></body></html>

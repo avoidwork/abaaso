@@ -1,0 +1,380 @@
+<!DOCTYPE html><html lang="en"><head><title>route</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="route"><meta name="groc-project-path" content="src/route.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/route.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>URI routing via hashtag
+Client side routes will be in routes.all</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">route</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Current route ( Client only )</p></div></div><div class="code"><div class="wrapper">  <span class="nx">current</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Initial / default route</p></div></div><div class="code"><div class="wrapper">  <span class="nx">initial</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Reused regex object</p></div></div><div class="code"><div class="wrapper">  <span class="nx">reg</span> <span class="o">:</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Routing listeners</p></div></div><div class="code"><div class="wrapper">  <span class="nx">routes</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method method</span></p>
+
+<p>Determines which HTTP method to use</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(HTTP method)</li>
+</ul>
+
+<p><strong>Returns a [type]</strong><br/>(HTTP method to utilize)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">method</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">route_methods</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method del</span></p>
+
+<p>Deletes a route</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>name must be a String.</strong><br/>(Route name)</p></li>
+<li><p><strong>verb must be a String.</strong><br/>(HTTP method)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(True or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">del</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">host</span>      <span class="o">=</span> <span class="nx">host</span> <span class="o">||</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+    <span class="nx">verb</span>      <span class="o">=</span> <span class="nx">route</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">name</span> <span class="o">===</span> <span class="s2">&quot;error&quot;</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">error</span> <span class="o">&amp;&amp;</span> <span class="nx">verb</span> <span class="o">!==</span> <span class="s2">&quot;all&quot;</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="o">!</span><span class="nx">error</span> <span class="o">&amp;&amp;</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">][</span><span class="nx">verb</span><span class="p">].</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">name</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span> <span class="o">===</span> <span class="nx">name</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="p">(</span> <span class="k">delete</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">][</span><span class="nx">verb</span><span class="p">][</span><span class="nx">name</span><span class="p">]</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method hash</span></p>
+
+<p>Getter / setter for the hashbang</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(Route to set)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Current route)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">hash</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">output</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash_bang</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">output</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash_bang</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+        <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">=</span> <span class="s2">&quot;!&quot;</span> <span class="o">+</span> <span class="nx">output</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">output</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method hostname</span></p>
+
+<p>Creates a hostname entry in the routes table</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(Hostname to route)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Routes for hostname)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">hostname</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">all</span>      <span class="o">:</span> <span class="p">{},</span>
+        <span class="s2">&quot;delete&quot;</span> <span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">get</span>      <span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">post</span>     <span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">put</span>      <span class="o">:</span> <span class="p">{}</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method init</span></p>
+
+<p>Initializes the routing by loading the initial OR the first route registered</p>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">init</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">;</span>
+
+    <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">val</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">route</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span> <span class="o">:</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">.</span><span class="nx">all</span><span class="p">.</span><span class="nx">all</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">remove</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span> <span class="nx">val</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method list</span></p>
+
+<p>Lists all routes</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>verb must be a String.</strong><br/>(HTTP method)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Hash of routes if <code>host</code> not specified, else an Array of routes for a method)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">list</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">host</span> <span class="o">=</span> <span class="nx">host</span> <span class="o">||</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">.</span><span class="nx">all</span><span class="p">.</span><span class="nx">all</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">verb</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">]</span> <span class="o">?</span> <span class="nx">host</span> <span class="o">:</span> <span class="s2">&quot;all&quot;</span> <span class="p">][</span><span class="nx">route</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)],</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="p">{};</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">result</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">r</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">result</span><span class="p">[</span><span class="nx">k</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method load</span></p>
+
+<p>Loads the hash into the view</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>name must be a String.</strong><br/>(Route to load)</p></li>
+<li><p><strong>req must be a String.</strong><br/>([Optional] HTTP request ( node ))</p></li>
+<li><p><strong>res must be an Object.</strong><br/>([Optional] HTTP response ( node ))</p></li>
+<li><p><strong>host must be a String.</strong><br/>([Optional] Hostname to query)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(True or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">load</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">req</span>        <span class="o">=</span> <span class="nx">req</span>  <span class="o">||</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+    <span class="nx">host</span>       <span class="o">=</span> <span class="nx">host</span> <span class="o">||</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">active</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nx">path</span>   <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">found</span>  <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">verb</span>   <span class="o">=</span> <span class="nx">route</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="nx">req</span><span class="p">.</span><span class="nx">method</span> <span class="o">||</span> <span class="nx">req</span> <span class="p">),</span>
+        <span class="nx">crawl</span><span class="p">,</span> <span class="nx">find</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Not a GET, but assuming the route is smart enough to strip the entity body</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">route_nget</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">verb</span> <span class="o">=</span> <span class="s2">&quot;get&quot;</span><span class="p">;</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Public, private, local scope</p></div></div><div class="code"><div class="wrapper">    <span class="nx">name</span> <span class="o">=</span> <span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/^\#\!?|\?.*|\#.*/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">route</span><span class="p">.</span><span class="nx">current</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method crawl</span></p>
+
+<p>Crawls the hostnames, sets <code>active</code> &amp; <code>path</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>host must be a String.</strong><br/>(Hostname)</p></li>
+<li><p><strong>verb must be a String.</strong><br/>(HTTP method)</p></li>
+<li><p><strong>name must be a String.</strong><br/>(Route)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">crawl</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">host</span><span class="p">,</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">name</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">][</span><span class="nx">verb</span><span class="p">][</span><span class="nx">name</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">active</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+        <span class="nx">path</span>   <span class="o">=</span> <span class="nx">verb</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">verb</span> <span class="o">!==</span> <span class="s2">&quot;all&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">].</span><span class="nx">all</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">active</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+        <span class="nx">path</span>   <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">][</span><span class="nx">verb</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nx">find</span><span class="p">(</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">name</span> <span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">active</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">verb</span> <span class="o">!==</span> <span class="s2">&quot;all&quot;</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">].</span><span class="nx">all</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">find</span><span class="p">(</span> <span class="nx">k</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="nx">name</span> <span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method find</span></p>
+
+<p>Finds a match, sets <code>active</code> &amp; <code>path</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>pattern must be a String.</strong><br/>(Route)</p></li>
+<li><p><strong>method must be a String.</strong><br/>(HTTP method)</p></li>
+<li><p><strong>arg must be a String.</strong><br/>(URL)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">find</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">method</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">reg</span><span class="p">,</span> <span class="s2">&quot;^&quot;</span> <span class="o">+</span> <span class="nx">pattern</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">route</span><span class="p">.</span><span class="nx">reg</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">active</span> <span class="o">=</span> <span class="nx">pattern</span><span class="p">;</span>
+        <span class="nx">path</span>   <span class="o">=</span> <span class="nx">method</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">host</span> <span class="o">!==</span> <span class="s2">&quot;all&quot;</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">regex</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^\*/g</span><span class="p">,</span> <span class="s2">&quot;.*&quot;</span><span class="p">)</span> <span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">host</span>  <span class="o">=</span> <span class="nx">i</span><span class="p">;</span>
+          <span class="nx">found</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">found</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">host</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">crawl</span><span class="p">(</span> <span class="nx">host</span><span class="p">,</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">name</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">active</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">host</span> <span class="o">!==</span> <span class="s2">&quot;all&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">host</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+        <span class="nx">crawl</span><span class="p">(</span> <span class="nx">host</span><span class="p">,</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">name</span> <span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">active</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">active</span> <span class="o">=</span> <span class="s2">&quot;error&quot;</span><span class="p">;</span>
+        <span class="nx">path</span>   <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span><span class="p">[</span><span class="nx">host</span><span class="p">][</span><span class="nx">path</span><span class="p">][</span><span class="nx">active</span><span class="p">](</span> <span class="nx">req</span> <span class="o">||</span> <span class="nx">active</span><span class="p">,</span> <span class="nx">res</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method reset</span></p>
+
+<p>Resets the routes</p>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">reset</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">route</span><span class="p">.</span><span class="nx">routes</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">all</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="nx">all</span> <span class="o">:</span> <span class="p">{</span>
+          <span class="nx">error</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">hash</span><span class="p">()</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">history</span><span class="p">.</span><span class="nx">go</span><span class="p">(</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
+              <span class="p">}</span>
+              <span class="k">else</span> <span class="p">{</span>
+                <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidRoute</span> <span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">route</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span> <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span> <span class="p">);</span>
+                <span class="p">}</span>
+              <span class="p">}</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+              <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidRoute</span> <span class="p">);</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;delete&quot;</span> <span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">get</span>      <span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">put</span>      <span class="o">:</span> <span class="p">{},</span>
+        <span class="nx">post</span>     <span class="o">:</span> <span class="p">{}</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method server</span></p>
+
+<p>Creates a Server with URI routing</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be an Object.</strong><br/>(Server options)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Error handler)</p></li>
+<li><p><strong>ssl must be a Boolean.</strong><br/>(Determines if HTTPS server is created)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Server)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">server</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ssl</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">maxConnections</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span>
+        <span class="nx">handler</span><span class="p">,</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">obj</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">notSupported</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">args</span> <span class="o">=</span> <span class="nx">args</span> <span class="o">||</span> <span class="p">{};</span>
+    <span class="nx">ssl</span>  <span class="o">=</span> <span class="p">(</span> <span class="nx">ssl</span> <span class="o">===</span> <span class="kc">true</span> <span class="o">||</span> <span class="nx">args</span><span class="p">.</span><span class="nx">port</span> <span class="o">===</span> <span class="mi">443</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handler</span></p>
+
+<p>Request handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>req must be an Object.</strong><br/>(HTTP(S) Request Object)</p></li>
+<li><p><strong>res must be an Object.</strong><br/>(HTTP(S) Response Object)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">parsed</span>   <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">req</span><span class="p">.</span><span class="nx">url</span> <span class="p">),</span>
+          <span class="nx">hostname</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">headers</span><span class="p">.</span><span class="nx">host</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">header_replace</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+
+      <span class="nx">route</span><span class="p">.</span><span class="nx">load</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span><span class="p">,</span> <span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">hostname</span> <span class="p">);</span>
+    <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method err</span></p>
+
+<p>Error handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>e must be an Object.</strong><br/>(Error)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">err</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="p">[</span><span class="nx">args</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ssl</span><span class="p">]</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">fn</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Enabling routing, in case it's not explicitly enabled prior to route.server()</p></div></div><div class="code"><div class="wrapper">    <span class="nx">route</span><span class="p">.</span><span class="nx">enabled</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Server parameters</p></div></div><div class="code"><div class="wrapper">    <span class="nx">args</span><span class="p">.</span><span class="nx">host</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">host</span> <span class="o">||</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="nx">args</span><span class="p">.</span><span class="nx">port</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">port</span> <span class="o">||</span> <span class="mi">8000</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating server</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">ssl</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>For proxy behavior</p></div></div><div class="code"><div class="wrapper">      <span class="nx">http</span><span class="p">.</span><span class="nx">globalAgent</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">maxConnections</span>  <span class="o">||</span> <span class="nx">maxConnections</span><span class="p">;</span>
+
+      <span class="nx">obj</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span> <span class="nx">handler</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="nx">err</span> <span class="p">).</span><span class="nx">listen</span><span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span> <span class="nx">args</span><span class="p">.</span><span class="nx">host</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="o">||</span> <span class="nx">maxConnections</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>For proxy behavior</p></div></div><div class="code"><div class="wrapper">      <span class="nx">https</span><span class="p">.</span><span class="nx">globalAgent</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">maxConnections</span><span class="p">;</span>
+
+      <span class="nx">obj</span> <span class="o">=</span> <span class="nx">https</span><span class="p">.</span><span class="nx">createServer</span><span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">handler</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="nx">err</span><span class="p">).</span><span class="nx">listen</span><span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">port</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">maxConnections</span> <span class="o">||</span> <span class="nx">maxConnections</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method set</span></p>
+
+<p>Sets a route for a URI</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>name must be a String.</strong><br/>(Regex pattern for the route)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Route listener)</p></li>
+<li><p><strong>verb must be a String.</strong><br/>(HTTP method the route is for ( default is GET ))</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(True or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">set</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">verb</span><span class="p">,</span> <span class="nx">host</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">host</span> <span class="o">=</span> <span class="nx">server</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">host</span> <span class="o">||</span> <span class="s2">&quot;all&quot;</span> <span class="p">)</span>    <span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+    <span class="nx">verb</span> <span class="o">=</span> <span class="nx">server</span> <span class="o">?</span> <span class="nx">route</span><span class="p">.</span><span class="nx">method</span><span class="p">(</span> <span class="nx">verb</span> <span class="p">)</span> <span class="o">:</span> <span class="s2">&quot;all&quot;</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">name</span> <span class="o">!==</span> <span class="s2">&quot;string&quot;</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">name</span> <span class="p">)</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">route</span><span class="p">.</span><span class="nx">hostname</span><span class="p">(</span> <span class="nx">host</span> <span class="p">)[</span><span class="nx">verb</span><span class="p">][</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div></div></body></html>

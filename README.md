@@ -35,4 +35,4 @@ abaaso is licensed under BSD-3 https://raw.github.com/avoidwork/abaaso/master/LI
 
 ### Copyright
 
-Copyright (c) 2013, Jason Mulligan <jason.mulligan@avoidwork.com>
+Copyright 2013 Jason Mulligan - jason.mulligan@avoidwork.com

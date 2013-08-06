@@ -8,6 +8,8 @@ var grid = {
 	/**
 	 * DataGrid factory
 	 *
+	 * @method factory
+	 * @public
 	 * @param  {Object}  element     Element to receive DataGrid
 	 * @param  {Object}  store       DataStore
 	 * @param  {Array}   fields      Array of fields to display
@@ -28,6 +30,8 @@ var grid = {
 		/**
 		 * Exports data grid records
 		 *
+		 * @method dump
+		 * @public
 		 * @return {Array} Record set
 		 */
 		dump : function () {
@@ -37,6 +41,8 @@ var grid = {
 		/**
 		 * Initializes DataGrid
 		 *
+		 * @method init
+		 * @public
 		 * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
 		 * @return {Object}          Instance
 		 */
@@ -98,6 +104,8 @@ var grid = {
 		/**
 		 * Refreshes the DataGrid
 		 *
+		 * @method refresh
+		 * @public
 		 * @return {Object} Instance
 		 */
 		refresh : function () {
@@ -125,6 +133,8 @@ var grid = {
 		/**
 		 * Sorts the DataGrid when a column header is clicked
 		 *
+		 * @method sort
+		 * @public
 		 * @param  {Object} e Event
 		 * @return {Object}   Instance
 		 */
@@ -151,6 +161,8 @@ var grid = {
 		/**
 		 * Tears down the DataGrid
 		 *
+		 * @method teardown
+		 * @public
 		 * @return {Object} Instance
 		 */
 		teardown : function () {
@@ -176,6 +188,9 @@ var grid = {
  *
  * @class DataGrid
  * @namespace abaaso
+ * @method DataGrid
+ * @private
+ * @constructor
  * @param  {Object}  element  Element to receive DataGrid
  * @param  {Object}  store    DataStore
  * @param  {Array}   fields   Array of fields to display

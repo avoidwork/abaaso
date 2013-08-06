@@ -1,0 +1,395 @@
+<!DOCTYPE html><html lang="en"><head><title>xhr</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="xhr"><meta name="groc-project-path" content="src/xhr.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/xhr.js</div></div><div id="document"><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method xhr </span></p>
+
+<p>XMLHttpRequest shim for node.js</p>
+
+<p><strong>Returns an Object</strong><br/>(Instance of xhr)</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">UNSENT</span>           <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nx">OPENED</span>           <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="nx">HEADERS_RECEIVED</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="nx">LOADING</span>          <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+      <span class="nx">DONE</span>             <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+      <span class="nx">ready</span>            <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span> <span class="nx">HEADERS_RECEIVED</span> <span class="o">+</span> <span class="s2">&quot;|&quot;</span> <span class="o">+</span> <span class="nx">LOADING</span> <span class="p">),</span>
+      <span class="nx">XMLHttpRequest</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="nx">handlerError</span><span class="p">,</span> <span class="nx">state</span><span class="p">;</span>
+
+  <span class="nx">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;User-Agent&quot;</span>   <span class="o">:</span> <span class="s2">&quot;abaaso/{{VERSION}} node.js/&quot;</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">versions</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/^v/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; (&quot;</span> <span class="o">+</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span> <span class="nx">process</span><span class="p">.</span><span class="nx">platform</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; V8/&quot;</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">versions</span><span class="p">.</span><span class="nx">v8</span> <span class="o">+</span> <span class="s2">&quot; )&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Content-Type&quot;</span> <span class="o">:</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Accept&quot;</span>       <span class="o">:</span> <span class="s2">&quot;*/*&quot;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method state</span></p>
+
+<p>Changes the readyState of an XMLHttpRequest</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(New readyState)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">state</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">!==</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;readystatechange&quot;</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">===</span> <span class="nx">DONE</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_error</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;load&quot;</span> <span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;loadend&quot;</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handler</span></p>
+
+<p>Response handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>res must be an Object.</strong><br/>(HTTP(S) Response Object)</li>
+</ul>
+
+<p><strong>Returns an undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">res</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">HEADERS_RECEIVED</span> <span class="p">);</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">status</span>      <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">headers</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="s2">&quot;set-cookie&quot;</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="s2">&quot;set-cookie&quot;</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="s2">&quot;set-cookie&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="s2">&quot;set-cookie&quot;</span><span class="p">].</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot;;&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">res</span><span class="p">.</span><span class="nx">setEncoding</span><span class="p">(</span> <span class="s2">&quot;utf8&quot;</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_send</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">self</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">+=</span> <span class="nx">arg</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">LOADING</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">_send</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">DONE</span> <span class="p">);</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">_send</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;close&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handlerError</span></p>
+
+<p>Response error handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>e must be an Object.</strong><br/>(Error)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">handlerError</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">status</span>       <span class="o">=</span> <span class="mi">503</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">statusText</span>   <span class="o">=</span> <span class="nx">e</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">=</span> <span class="nx">e</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">e</span><span class="p">.</span><span class="nx">stack</span> <span class="o">||</span> <span class="nx">e</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">e</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>       <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span> <span class="p">);</span>
+    <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">DONE</span> <span class="p">);</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public constructor method XMLHttpRequest</span></p>
+
+<p>XMLHttpRequest factory</p>
+
+<p><strong>Returns an Object</strong><br/>(Instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onabort</span>            <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onerror</span>            <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onload</span>             <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onloadend</span>          <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onloadstart</span>        <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">onreadystatechange</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span>         <span class="o">=</span> <span class="nx">UNSENT</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">response</span>           <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseType</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseXML</span>        <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">status</span>             <span class="o">=</span> <span class="nx">UNSENT</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">statusText</span>         <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Psuedo private for prototype chain</p></div></div><div class="code"><div class="wrapper">    <span class="k">this</span><span class="p">.</span><span class="nx">_id</span>                <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>             <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span>           <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span>         <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_params</span>            <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_request</span>           <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span>        <span class="o">=</span> <span class="p">{};</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_send</span>              <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method abort</span></p>
+
+<p>Aborts a request</p>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">abort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_request</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_request</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_request</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseXML</span>  <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>       <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span>     <span class="o">=</span> <span class="p">{};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_send</span> <span class="o">===</span> <span class="kc">true</span> <span class="o">||</span> <span class="nx">ready</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_send</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">DONE</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;abort&quot;</span> <span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="nx">UNSENT</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method addEventListener</span></p>
+
+<p>Adds an event listener to an XMLHttpRequest instance</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>event must be a String.</strong><br/>(Event to listen for)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Event handler)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">[</span><span class="nx">event</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">[</span><span class="nx">event</span><span class="p">].</span><span class="nx">add</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method dispatchEvent</span></p>
+
+<p>Dispatches an event</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>event must be a String.</strong><br/>(Name of event)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">dispatchEvent</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="k">this</span><span class="p">[</span><span class="s2">&quot;on&quot;</span> <span class="o">+</span> <span class="nx">event</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">[</span><span class="s2">&quot;on&quot;</span> <span class="o">+</span> <span class="nx">event</span><span class="p">]();</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">event</span> <span class="p">))</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">[</span><span class="nx">event</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">i</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">i</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method getAllResponseHeaders</span></p>
+
+<p>Gets all response headers</p>
+
+<p><strong>Returns an Object</strong><br/>(Response headers)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getAllResponseHeaders</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">&lt;</span> <span class="nx">HEADERS_RECEIVED</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">_error</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNoHeaders</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">+=</span> <span class="nx">k</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nx">v</span> <span class="o">+</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method getResponseHeader</span></p>
+
+<p>Gets a specific response header</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>header must be a String.</strong><br/>(Header to get)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Response header value)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getResponseHeader</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">header</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">&lt;</span> <span class="nx">HEADERS_RECEIVED</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">_error</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNoHeaders</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="nx">header</span><span class="p">]</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="nx">header</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()];</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method open</span></p>
+
+<p>Prepares an XMLHttpRequest instance to make a request</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>method must be a String.</strong><br/>(HTTP method)</p></li>
+<li><p><strong>url must be a String.</strong><br/>(URL to receive request)</p></li>
+<li><p><strong>async must be a Boolean.</strong><br/>([Optional] Asynchronous request)</p></li>
+<li><p><strong>user must be a String.</strong><br/>([Optional] Basic auth username)</p></li>
+<li><p><strong>password must be a String.</strong><br/>([Optional] Basic auth password)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">open</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">method</span><span class="p">,</span> <span class="nx">url</span><span class="p">,</span> <span class="nx">async</span><span class="p">,</span> <span class="nx">user</span><span class="p">,</span> <span class="nx">password</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">async</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">async</span> <span class="o">!==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNoSync</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>  <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_params</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">method</span>   <span class="o">:</span> <span class="nx">method</span><span class="p">,</span>
+      <span class="nx">url</span>      <span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+      <span class="nx">async</span>    <span class="o">:</span> <span class="nx">async</span>    <span class="o">||</span> <span class="kc">true</span><span class="p">,</span>
+      <span class="nx">user</span>     <span class="o">:</span> <span class="nx">user</span>     <span class="o">||</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">password</span> <span class="o">:</span> <span class="nx">password</span> <span class="o">||</span> <span class="kc">null</span>
+    <span class="p">};</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">headers</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">_headers</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="nx">OPENED</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method overrideMimeType</span></p>
+
+<p>Overrides the Content-Type of the request</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>mime must be a String.</strong><br/>(Mime type of the request ( media type ))</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">overrideMimeType</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">mime</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mime</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method removeEventListener</span></p>
+
+<p>Removes an event listener from an XMLHttpRequest instance</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>event must be a String.</strong><br/>(Event to listen for)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Event handler)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">removeEventListener</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">[</span><span class="nx">event</span><span class="p">].</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method send</span></p>
+
+<p>Sends an XMLHttpRequest request</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>data can be of any type.</strong><br/>([Optional] Payload to send with the request)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">send</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">data</span>     <span class="o">=</span> <span class="nx">data</span> <span class="o">||</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+        <span class="nx">options</span><span class="p">,</span> <span class="nx">parsed</span><span class="p">,</span> <span class="nx">request</span><span class="p">,</span> <span class="nx">obj</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">&lt;</span> <span class="nx">OPENED</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNotOpen</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_send</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNotSending</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">parsed</span>      <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">url</span> <span class="p">);</span>
+    <span class="nx">parsed</span><span class="p">.</span><span class="nx">port</span> <span class="o">=</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">port</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s2">&quot;https:&quot;</span> <span class="o">?</span> <span class="mi">443</span> <span class="o">:</span> <span class="mi">80</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">user</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">password</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">user</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Specifying Content-Length accordingly</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">put_post</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">method</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span><span class="p">[</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">data</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">byteLength</span><span class="p">(</span> <span class="nx">data</span> <span class="p">)</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span><span class="p">.</span><span class="nx">Host</span> <span class="o">=</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">hostname</span> <span class="o">+</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">http_ports</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">port</span> <span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">port</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+
+    <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="nx">hostname</span> <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">hostname</span><span class="p">,</span>
+      <span class="nx">path</span>     <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
+      <span class="nx">port</span>     <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span>
+      <span class="nx">method</span>   <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">method</span><span class="p">,</span>
+      <span class="nx">headers</span>  <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span>
+    <span class="p">};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s2">&quot;https:&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">rejectUnauthorized</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">agent</span>              <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">options</span><span class="p">.</span><span class="nx">auth</span> <span class="o">=</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">self</span><span class="p">.</span><span class="nx">_send</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;readystatechange&quot;</span> <span class="p">);</span>
+
+    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s2">&quot;http:&quot;</span> <span class="o">?</span> <span class="nx">http</span> <span class="o">:</span> <span class="nx">https</span><span class="p">;</span>
+
+    <span class="nx">request</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span> <span class="nx">options</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">handler</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
+    <span class="p">}).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="nx">data</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">request</span><span class="p">.</span><span class="nx">setSocketKeepAlive</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">10000</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="s2">&quot;utf8&quot;</span> <span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">_request</span> <span class="o">=</span> <span class="nx">request</span><span class="p">;</span>
+    <span class="nx">request</span><span class="p">.</span><span class="nx">end</span><span class="p">();</span>
+
+    <span class="nx">self</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;loadstart&quot;</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method setRequestHeader</span></p>
+
+<p>Sets a request header of an XMLHttpRequest instance</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>header must be a String.</strong><br/>(HTTP header)</p></li>
+<li><p><strong>value must be a String.</strong><br/>(Header value)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(XMLHttpRequest)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">setRequestHeader</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">header</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">!==</span> <span class="nx">OPENED</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNotUsable</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">_send</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidStateNotSending</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span><span class="p">[</span><span class="nx">header</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="k">return</span> <span class="nx">XMLHttpRequest</span><span class="p">;</span>
+<span class="p">};</span></div></div></div></div></body></html>

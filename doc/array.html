@@ -1,0 +1,1187 @@
+<!DOCTYPE html><html lang="en"><head><title>array</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="array"><meta name="groc-project-path" content="src/array.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/array.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>Array methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method add</span></p>
+
+<p>Adds 'arg' to 'obj' if it is not found</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to receive 'arg')</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Argument to set in 'obj')</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array that was queried)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">add</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method binIndex</span></p>
+
+<p>Preforms a binary search on a sorted Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to search)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Value to find index of)</p></li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Index of <code>arg</code> within <code>obj</code>)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">binIndex</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">min</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">max</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nx">idx</span><span class="p">,</span> <span class="nx">val</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="nx">min</span> <span class="o">&lt;=</span> <span class="nx">max</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">idx</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="p">(</span> <span class="nx">min</span> <span class="o">+</span> <span class="nx">max</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">);</span>
+      <span class="nx">val</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">val</span> <span class="o">&lt;</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">min</span> <span class="o">=</span> <span class="nx">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">val</span> <span class="o">&gt;</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">max</span> <span class="o">=</span> <span class="nx">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">idx</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method cast</span></p>
+
+<p>Returns an Object ( NodeList, etc. ) as an Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to cast)</p></li>
+<li><p><strong>key must be a Boolean.</strong><br/>([Optional] Returns key or value, only applies to Objects without a length property)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Object as an Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">cast</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="p">(</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">key</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">[];</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">o</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">o</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">key</span>   <span class="o">=</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">[];</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">try</span> <span class="p">{</span>
+            <span class="nx">o</span> <span class="o">=</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+          <span class="p">}</span>
+          <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="nx">idx</span> <span class="o">!==</span> <span class="s2">&quot;length&quot;</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+              <span class="p">}</span>
+            <span class="p">});</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">o</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method chunk</span></p>
+
+<p>Transforms an Array to a 2D Array of chunks</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to parse)</p></li>
+<li><p><strong>size must be a Number.</strong><br/>(Chunk size ( integer ))</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Chunked Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">chunk</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">size</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">nth</span>    <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">/</span> <span class="nx">size</span> <span class="p">),</span> <span class="s2">&quot;up&quot;</span> <span class="p">),</span>
+        <span class="nx">start</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">i</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">*</span> <span class="nx">size</span><span class="p">;</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">size</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clear</span></p>
+
+<p>Clears an Array without destroying it</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to clear)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Cleared Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clear</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clone</span></p>
+
+<p>Clones an Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to clone)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Clone of Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method contains</span></p>
+
+<p>Determines if obj contains arg</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to search)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Value to look for)</p></li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(True if found, false if not)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">contains</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method collect</span></p>
+
+<p>Creates a new Array of the result of <code>fn</code> executed against every index of <code>obj</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to execute against indices)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(New Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">collect</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">fn</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method compact</span></p>
+
+<p>Compacts a Array by removing <code>null</code> or <code>undefined</code> indices</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to compact)</p></li>
+<li><p><strong>diff must be a Boolean.</strong><br/>(Indicates to return resulting Array only if there's a difference)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Compacted copy of <code>obj</code>, or null ( if <code>diff</code> is passed &amp; no diff is found ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">compact</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">diff</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">null_undefined</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="o">!</span><span class="nx">diff</span> <span class="o">?</span> <span class="nx">result</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">?</span> <span class="nx">result</span> <span class="o">:</span> <span class="kc">null</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method count</span></p>
+
+<p>Counts <code>value</code> in <code>obj</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to search)</p></li>
+<li><p><strong>value can be of any type.</strong><br/>(Value to compare)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of counts)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">count</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">value</span> <span class="p">);</span>
+    <span class="p">}).</span><span class="nx">length</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method diff</span></p>
+
+<p>Finds the difference between array1 and array2</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>array1 must be an Array.</strong><br/>(Source Array)</p></li>
+<li><p><strong>array2 must be an Array.</strong><br/>(Comparison Array)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of the differences)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">diff</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">array1</span><span class="p">,</span> <span class="nx">array2</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">array1</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">array2</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">array</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">i</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">array2</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">array1</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">array</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">i</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method each</span></p>
+
+<p>Iterates obj and executes fn
+Parameters for fn are 'value', 'index'</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to execute on index values)</p></li>
+<li><p><strong>async must be a Boolean.</strong><br/>([Optional] Asynchronous iteration)</p></li>
+<li><p><strong>size must be a Number.</strong><br/>([Optional] Batch size for async iteration, default is 10)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">each</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">async</span><span class="p">,</span> <span class="nx">size</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">nth</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">i</span><span class="p">,</span> <span class="nx">offset</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">async</span> <span class="o">!==</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">nth</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">size</span>   <span class="o">=</span> <span class="nx">size</span> <span class="o">||</span> <span class="mi">10</span><span class="p">;</span>
+      <span class="nx">offset</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">size</span> <span class="o">&gt;</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">size</span> <span class="o">=</span> <span class="nx">nth</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="nx">idx</span><span class="p">;</span>
+
+        <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">size</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">idx</span> <span class="o">=</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">offset</span><span class="p">;</span>
+
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">idx</span><span class="p">],</span> <span class="nx">idx</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="nx">offset</span> <span class="o">+=</span> <span class="nx">size</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">offset</span> <span class="o">&gt;=</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">},</span> <span class="kc">undefined</span><span class="p">,</span> <span class="kc">undefined</span><span class="p">,</span> <span class="kc">false</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method empty</span></p>
+
+<p>Determines if an Array is empty</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to inspect)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if there's no indices)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">empty</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method equal</span></p>
+
+<p>Determines if <code>a</code> is equal to <code>b</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>a must be an Array.</strong><br/>(Array to compare)</p></li>
+<li><p><strong>b must be an Array.</strong><br/>(Array to compare)</p></li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if the Arrays match)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">equal</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">a</span> <span class="p">)</span> <span class="o">===</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fib</span></p>
+
+<p>Fibonacci generator</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a Number.</strong><br/>([Optional] Amount of numbers to generate, default is 100)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of numbers)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fib</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+        <span class="nx">first</span>  <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="nx">second</span> <span class="o">=</span> <span class="nx">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="nx">sum</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Subtracting 1 to account for <code>first</code> &amp; <code>second</code></p></div></div><div class="code"><div class="wrapper">    <span class="nx">arg</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">||</span> <span class="mi">100</span> <span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    
+    <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">arg</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="o">--</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">sum</span>    <span class="o">=</span> <span class="nx">first</span> <span class="o">+</span> <span class="nx">second</span><span class="p">;</span>
+      <span class="nx">first</span>  <span class="o">=</span> <span class="nx">second</span><span class="p">;</span>
+      <span class="nx">second</span> <span class="o">=</span> <span class="nx">sum</span><span class="p">;</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">sum</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fill</span></p>
+
+<p>Fills <code>obj</code> with the evalution of <code>arg</code>, optionally from <code>start</code> to <code>offset</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to fill)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(String, Number of Function to fill with)</p></li>
+<li><p><strong>start must be a Number.</strong><br/>([Optional] Index to begin filling at)</p></li>
+<li><p><strong>end must be a Number.</strong><br/>([Optional] Offset from start to stop filling at)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Filled Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fill</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">offset</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">fn</span>  <span class="o">=</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">,</span>
+        <span class="nx">l</span>   <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">i</span>   <span class="o">=</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">start</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">start</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">nth</span> <span class="o">=</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">offset</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">i</span> <span class="o">+</span> <span class="nx">offset</span> <span class="o">:</span> <span class="nx">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">nth</span> <span class="o">&gt;</span> <span class="p">(</span> <span class="nx">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">nth</span> <span class="o">=</span> <span class="nx">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">&lt;=</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">fn</span> <span class="o">?</span> <span class="nx">arg</span><span class="p">(</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">arg</span><span class="p">;</span>
+      <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method first</span></p>
+
+<p>Returns the first Array node</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(The array)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(The first node of the array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">first</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method flat</span></p>
+
+<p>Flattens a 2D Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(2D Array to flatten)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Flatten Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">flat</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">b</span> <span class="p">);</span>
+    <span class="p">},</span> <span class="nx">result</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method index</span></p>
+
+<p>Facade to indexOf for shorter syntax</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to search)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Value to find index of)</p></li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(The position of arg in instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">index</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method indexed</span></p>
+
+<p>Returns an Associative Array as an Indexed Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to index)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Indexed Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">indexed</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">indexed</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">indexed</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">v</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">indexed</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method intersect</span></p>
+
+<p>Finds the intersections between array1 and array2</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>array1 must be an Array.</strong><br/>(Source Array)</p></li>
+<li><p><strong>array2 must be an Array.</strong><br/>(Comparison Array)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of the intersections)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">intersect</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">array1</span><span class="p">,</span> <span class="nx">array2</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">array1</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="nx">array2</span><span class="p">.</span><span class="nx">length</span> <span class="o">?</span> <span class="nx">array1</span> <span class="o">:</span> <span class="nx">array2</span><span class="p">,</span>
+        <span class="nx">b</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">a</span> <span class="o">===</span> <span class="nx">array1</span> <span class="o">?</span> <span class="nx">array2</span> <span class="o">:</span> <span class="nx">array1</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">key</span> <span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method keepIf</span></p>
+
+<p>Keeps every element of <code>obj</code> for which <code>fn</code> evaluates to true</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to test indices against)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">keepIf</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">remove</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
+    <span class="nx">remove</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">result</span> <span class="p">);</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">remove</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">array</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method keys</span></p>
+
+<p>Returns the keys in an "Associative Array"</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj can be of any type.</strong><br/>(Array or Object to extract keys from)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of the keys)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">keys</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">keys</span> <span class="o">=</span> <span class="p">[];</span>
+
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">keys</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">k</span> <span class="p">);</span>
+        <span class="p">});</span>
+
+        <span class="k">return</span> <span class="nx">keys</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">}</span>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method last</span></p>
+
+<p>Returns the last index of the Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array)</p></li>
+<li><p><strong>arg must be a Number.</strong><br/>([Optional] Negative offset from last index to return)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Last index( s ) of Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">last</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">n</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">&gt;=</span> <span class="p">(</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">arg</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">n</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="p">(</span> <span class="nx">n</span> <span class="o">-</span> <span class="p">(</span> <span class="o">--</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">),</span> <span class="nx">n</span> <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method limit</span></p>
+
+<p>Returns a limited range of indices from the Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>start must be a Number.</strong><br/>(Starting index)</p></li>
+<li><p><strong>offset must be a Number.</strong><br/>(Number of indices to return)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of indices)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">limit</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">offset</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">i</span>      <span class="o">=</span> <span class="nx">start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="nx">nth</span>    <span class="o">=</span> <span class="nx">start</span> <span class="o">+</span> <span class="nx">offset</span><span class="p">,</span>
+        <span class="nx">max</span>    <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">max</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">while</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">nth</span> <span class="o">&amp;&amp;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">max</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method max</span></p>
+
+<p>Finds the maximum value in an Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Number, String, etc.)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">max</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mean</span></p>
+
+<p>Finds the mean of an Array ( of numbers )</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Mean of the Array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mean</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sum</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">/</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">undefined</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method median</span></p>
+
+<p>Finds the median value of an Array ( of numbers )</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Median number of the Array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">median</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">nth</span>    <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">mid</span>    <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="nx">nth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span> <span class="p">),</span>
+        <span class="nx">sorted</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">number</span><span class="p">.</span><span class="nx">odd</span><span class="p">(</span> <span class="nx">nth</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">sorted</span><span class="p">[</span><span class="nx">mid</span><span class="p">]</span> <span class="o">:</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">sorted</span><span class="p">[</span><span class="nx">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">sorted</span><span class="p">[</span><span class="nx">mid</span><span class="p">]</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method merge</span></p>
+
+<p>Merges <code>arg</code> into <code>obj</code>, excluding duplicate indices</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to receive indices)</p></li>
+<li><p><strong>arg must be an Array.</strong><br/>(Array to merge)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">merge</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method min</span></p>
+
+<p>Finds the minimum value in an Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Number, String, etc.)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">min</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mingle</span></p>
+
+<p>Mingles Arrays and returns a 2D Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj1 must be an Array.</strong><br/>(Array to mingle)</p></li>
+<li><p><strong>obj2 must be an Array.</strong><br/>(Array to mingle)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(2D Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mingle</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj1</span><span class="p">,</span> <span class="nx">obj2</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj1</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="p">[</span><span class="nx">i</span><span class="p">,</span> <span class="nx">obj2</span><span class="p">[</span><span class="nx">idx</span><span class="p">]];</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mode</span></p>
+
+<p>Finds the mode value of an Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Mode value of the Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mode</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">values</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">count</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">nth</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">mode</span>   <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">result</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Counting values</p></div></div><div class="code"><div class="wrapper">    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">values</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Finding the highest occurring count</p></div></div><div class="code"><div class="wrapper">    <span class="nx">count</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">values</span> <span class="p">)</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Finding values that match the count</p></div></div><div class="code"><div class="wrapper">    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">values</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="o">===</span> <span class="nx">count</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">mode</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Determining the result</p></div></div><div class="code"><div class="wrapper">    <span class="nx">nth</span> <span class="o">=</span> <span class="nx">mode</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">nth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">nth</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">mode</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">mode</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method percents</span></p>
+
+<p>Creates an Array of percentages from an Array of Numbers (ints/floats)</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>precision must be a Number.</strong><br/>([Optional] Rounding precision)</p></li>
+<li><p><strong>total must be a Number.</strong><br/>([Optional] Value to compare against)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of percents)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">percents</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">precision</span><span class="p">,</span> <span class="nx">total</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">custom</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">last</span><span class="p">,</span> <span class="nx">padding</span><span class="p">,</span> <span class="nx">sum</span><span class="p">;</span>
+
+    <span class="nx">precision</span> <span class="o">=</span> <span class="nx">precision</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
+    
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">total</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">total</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sum</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">custom</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">/</span> <span class="nx">total</span> <span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span> <span class="nx">precision</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Dealing with the awesomeness of JavaScript "integers"</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">custom</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">sum</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sum</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">sum</span> <span class="o">&lt;</span> <span class="mi">100</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">padding</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">sum</span><span class="p">,</span> <span class="mi">100</span> <span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span> <span class="nx">precision</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="nx">last</span>    <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">padding</span><span class="p">;</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">result</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">last</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">sum</span> <span class="o">&gt;</span> <span class="mi">100</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">padding</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">sum</span><span class="p">,</span> <span class="mi">100</span> <span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span> <span class="nx">precision</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="nx">last</span>    <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="o">-</span> <span class="nx">padding</span> <span class="p">).</span><span class="nx">toFixed</span><span class="p">(</span> <span class="nx">precision</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">result</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nx">last</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method range</span></p>
+
+<p>Finds the range of the Array ( of numbers ) values</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Range of the array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">range</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">-</span> <span class="nx">array</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rassoc</span></p>
+
+<p>Searches a 2D Array <code>obj</code> for the first match of <code>arg</code> as a second index</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(2D Array to search)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Primitive to find)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Array or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">rassoc</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">idx</span><span class="p">];</span>
+
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method reject</span></p>
+
+<p>Returns Array containing the items in <code>obj</code> for which <code>fn()</code> is not true</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to execute against <code>obj</code> indices)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of indices which fn() is not true)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">reject</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span>
+  </div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method replace</span></p>
+
+<p>Replaces the contents of <code>obj</code> with <code>arg</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to modify)</p></li>
+<li><p><strong>arg must be an Array.</strong><br/>(Array to become <code>obj</code>)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(New version of <code>obj</code>)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">replace</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">);</span>
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method remove</span></p>
+
+<p>Removes indices from an Array without recreating it</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to remove from)</p></li>
+<li><p><strong>start can be of any type.</strong><br/>(Starting index, or value to find within obj)</p></li>
+<li><p><strong>end must be a Number.</strong><br/>([Optional] Ending index)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Modified Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">remove</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">end</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">start</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">start</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">start</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="nx">start</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">length</span>    <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">remaining</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">(</span> <span class="p">(</span> <span class="nx">end</span> <span class="o">||</span> <span class="nx">start</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">||</span> <span class="nx">length</span> <span class="p">);</span>
+
+    <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="nx">start</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">length</span> <span class="o">+</span> <span class="nx">start</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">start</span><span class="p">;</span>
+    <span class="nx">obj</span><span class="p">.</span><span class="nx">push</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">remaining</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method removeIf</span></p>
+
+<p>Deletes every element of <code>obj</code> for which <code>fn</code> evaluates to true</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to test indices against)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">removeIf</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">remove</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">remove</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">remove</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">array</span><span class="p">.</span><span class="nx">index</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method removeWhile</span></p>
+
+<p>Deletes elements of <code>obj</code> until <code>fn</code> evaluates to false</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to iterate)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Function to test indices against)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">removeWhile</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">remove</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">remove</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">remove</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">array</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rest</span></p>
+
+<p>Returns the "rest" of <code>obj</code> from <code>arg</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to parse)</p></li>
+<li><p><strong>arg must be a Number.</strong><br/>([Optional] Start position of subset of <code>obj</code> ( positive number only ))</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of a subset of <code>obj</code>)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">rest</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arg</span> <span class="o">||</span> <span class="mi">1</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">arg</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rindex</span></p>
+
+<p>Finds the last index of <code>arg</code> in <code>obj</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to search)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Primitive to find)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Index or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">rindex</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">idx</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rotate</span></p>
+
+<p>Returns new Array with <code>arg</code> moved to the first index</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to rotate)</p></li>
+<li><p><strong>arg must be a Number.</strong><br/>(Index to become the first index, if negative the rotation is in the opposite direction)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Newly rotated Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">rotate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">nth</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">arg</span> <span class="o">+=</span> <span class="nx">nth</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">arg</span><span class="o">--</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">nth</span> <span class="p">);</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method series</span></p>
+
+<p>Generates a series Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>start must be a Number.</strong><br/>(Start value the series)</p></li>
+<li><p><strong>end must be a Number.</strong><br/>([Optional] The end of the series)</p></li>
+<li><p><strong>offset must be a Number.</strong><br/>([Optional] Offset for indices, default is 1)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of new series)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">series</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">end</span><span class="p">,</span> <span class="nx">offset</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">start</span>      <span class="o">=</span> <span class="nx">start</span>  <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nx">end</span>        <span class="o">=</span> <span class="nx">end</span>    <span class="o">||</span> <span class="nx">start</span><span class="p">;</span>
+    <span class="nx">offset</span>     <span class="o">=</span> <span class="nx">offset</span> <span class="o">||</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">n</span>      <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="nx">nth</span>    <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span> <span class="p">(</span> <span class="nx">end</span> <span class="o">-</span> <span class="nx">start</span> <span class="p">)</span> <span class="o">/</span> <span class="nx">offset</span> <span class="p">)</span> <span class="p">);</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="o">++</span><span class="nx">n</span> <span class="o">&lt;</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">[</span><span class="nx">n</span><span class="p">]</span>  <span class="o">=</span> <span class="nx">start</span><span class="p">;</span>
+      <span class="nx">start</span>     <span class="o">+=</span> <span class="nx">offset</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method split</span></p>
+
+<p>Splits an Array by divisor</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to parse)</p></li>
+<li><p><strong>divisor must be a Number.</strong><br/>(Integer to divide the Array by)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Split Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">split</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">divisor</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span>  <span class="o">=</span> <span class="p">[],</span>
+        <span class="nx">total</span>   <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">nth</span>     <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span> <span class="nx">total</span> <span class="o">/</span> <span class="nx">divisor</span> <span class="p">),</span>
+        <span class="nx">low</span>     <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nx">total</span> <span class="o">/</span> <span class="nx">divisor</span> <span class="p">),</span>
+        <span class="nx">lower</span>   <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span> <span class="nx">total</span> <span class="o">/</span> <span class="nx">nth</span> <span class="p">),</span>
+        <span class="nx">lowered</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">start</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">i</span>       <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Finding the fold</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">total</span><span class="p">,</span> <span class="p">(</span> <span class="nx">divisor</span> <span class="o">*</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">lower</span> <span class="o">=</span> <span class="nx">total</span> <span class="o">-</span> <span class="p">(</span> <span class="nx">low</span> <span class="o">*</span> <span class="nx">divisor</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">low</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">divisor</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">lowered</span> <span class="o">&amp;&amp;</span> <span class="nx">lower</span> <span class="o">&lt;</span> <span class="nx">divisor</span> <span class="o">&amp;&amp;</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">lower</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="o">--</span><span class="nx">nth</span><span class="p">;</span>
+        <span class="nx">lowered</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">start</span> <span class="o">=</span> <span class="nx">start</span> <span class="o">+</span> <span class="nx">nth</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sort</span></p>
+
+<p>Sorts the Array by parsing values</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>a can be of any type.</strong><br/>(Argument to compare)</p></li>
+<li><p><strong>b can be of any type.</strong><br/>(Argument to compare)</p></li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Number indicating sort order)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sort</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">types</span> <span class="o">=</span> <span class="p">{</span><span class="nx">a</span><span class="o">:</span> <span class="k">typeof</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="o">:</span> <span class="k">typeof</span> <span class="nx">b</span><span class="p">},</span>
+        <span class="nx">c</span><span class="p">,</span> <span class="nx">d</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">types</span><span class="p">.</span><span class="nx">a</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">types</span><span class="p">.</span><span class="nx">b</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">-</span> <span class="nx">b</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+      <span class="nx">d</span> <span class="o">=</span> <span class="nx">b</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">c</span> <span class="o">&lt;</span> <span class="nx">d</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">c</span> <span class="o">&gt;</span> <span class="nx">d</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">types</span><span class="p">.</span><span class="nx">a</span> <span class="o">===</span> <span class="nx">types</span><span class="p">.</span><span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">types</span><span class="p">.</span><span class="nx">a</span> <span class="o">===</span> <span class="s2">&quot;boolean&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sorted</span></p>
+
+<p>Sorts <code>obj</code> using <code>array.sort</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to sort)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Sorted Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sorted</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sum</span></p>
+
+<p>Gets the summation of an Array of numbers</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to sum)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Summation of Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sum</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">reduce</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">prev</span><span class="p">,</span> <span class="nx">cur</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">prev</span> <span class="o">+</span> <span class="nx">cur</span><span class="p">;</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method take</span></p>
+
+<p>Takes the first <code>arg</code> indices from <code>obj</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to parse)</p></li>
+<li><p><strong>arg must be a Number.</strong><br/>(Offset from 0 to return)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Subset of <code>obj</code>)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">take</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method total</span></p>
+
+<p>Gets the total keys in an Array</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to find the length of)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Number of keys in Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">total</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">indexed</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">length</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method toObject</span></p>
+
+<p>Casts an Array to Object</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>ar must be an Array.</strong><br/>(Array to transform)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(New object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">toObject</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">ar</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">i</span>   <span class="o">=</span> <span class="nx">ar</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span> <span class="nx">i</span><span class="o">--</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">.</span><span class="nx">toString</span><span class="p">()]</span> <span class="o">=</span> <span class="nx">ar</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method unique</span></p>
+
+<p>Returns an Array of unique indices of <code>obj</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array of unique indices)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">unique</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="nx">i</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method zip</span></p>
+
+<p>Converts any arguments to Arrays, then merges elements of <code>obj</code> with corresponding elements from each argument</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to transform)</p></li>
+<li><p><strong>args can be of any type.</strong><br/>(Argument instance or Array to merge)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">zip</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Preparing args</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span><span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Array</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">args</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">args</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">?</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">args</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[</span><span class="nx">args</span><span class="p">];</span>
+    <span class="p">}</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">i</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Building result Array</p></div></div><div class="code"><div class="wrapper">    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">args</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">x</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span><span class="p">[</span><span class="nx">idx</span><span class="p">].</span><span class="nx">push</span><span class="p">(</span> <span class="nx">x</span><span class="p">[</span><span class="nx">idx</span><span class="p">]</span> <span class="o">||</span> <span class="kc">null</span> <span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div></div></body></html>

@@ -2,6 +2,7 @@
  * Bootstraps framework and sets on $
  *
  * @method bootstrap
+ * @private
  * @return {Undefined} undefined
  */
 bootstrap = function () {

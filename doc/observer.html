@@ -1,0 +1,471 @@
+<!DOCTYPE html><html lang="en"><head><title>observer</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="observer"><meta name="groc-project-path" content="src/observer.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/observer.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
+<p>Global Observer wired to a State Machine</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">observer</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Collection of listeners</p></div></div><div class="code"><div class="wrapper">  <span class="nx">listeners</span>  <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Array copy of listeners for observer.fire()</p></div></div><div class="code"><div class="wrapper">  <span class="nx">alisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Event listeners</p></div></div><div class="code"><div class="wrapper">  <span class="nx">elisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Tracks count of listeners per event across all states</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Boolean indicating if events are logged to the console</p></div></div><div class="code"><div class="wrapper">  <span class="nx">log</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>Queue of events to fire</p></div></div><div class="code"><div class="wrapper">  <span class="nx">queue</span> <span class="o">:</span> <span class="p">[],</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>If <code>true</code>, events are queued</p></div></div><div class="code"><div class="wrapper">  <span class="nx">silent</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+
+<p>If <code>true</code>, events are ignored</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ignore</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method add</span></p>
+
+<p>Adds a handler to an event</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>event must be a String.</strong><br/>(Event, or Events being fired ( comma delimited supported ))</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Event handler)</p></li>
+<li><p><strong>id must be a String.</strong><br/>([Optional / Recommended] The id for the listener)</p></li>
+<li><p><strong>scope must be a String.</strong><br/>([Optional / Recommended] The id of the object or element to be set as 'this')</p></li>
+<li><p><strong>st must be a String.</strong><br/>([Optional] Application state, default is current)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">add</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="nx">scope</span> <span class="o">=</span> <span class="nx">scope</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="nx">st</span>    <span class="o">=</span> <span class="nx">st</span>    <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">event</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">event</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">event</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">id</span> <span class="o">=</span> <span class="nx">id</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
+
+    <span class="kd">var</span> <span class="nx">instance</span> <span class="o">=</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">l</span>        <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">,</span>
+        <span class="nx">a</span>        <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">alisteners</span><span class="p">,</span>
+        <span class="nx">ev</span>       <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">elisteners</span><span class="p">,</span>
+        <span class="nx">cl</span>       <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span><span class="p">,</span>
+        <span class="nx">gr</span>       <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">observer_globals</span><span class="p">,</span>
+        <span class="nx">ar</span>       <span class="o">=</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">observer_allowed</span><span class="p">,</span>
+        <span class="nx">o</span>        <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span>
+        <span class="nx">add</span><span class="p">,</span> <span class="nx">reg</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">o</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span>  <span class="o">=</span> <span class="p">{};</span>
+      <span class="nx">a</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span>  <span class="o">=</span> <span class="p">{};</span>
+      <span class="nx">cl</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">eid</span> <span class="o">=</span> <span class="nx">o</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">]</span>  <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">a</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">]</span>  <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">cl</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="nx">a</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="o">=</span> <span class="p">[];</span>
+      <span class="p">}</span>
+
+      <span class="nx">instance</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">gr</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="o">!</span><span class="sr">/\//g</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">o</span> <span class="o">!==</span> <span class="s2">&quot;abaaso&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">obj</span> <span class="o">:</span> <span class="kc">null</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting up event listener if valid</p></div></div><div class="code"><div class="wrapper">      <span class="k">if</span> <span class="p">(</span> <span class="nx">instance</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">instance</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">i</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">!==</span> <span class="s2">&quot;afterjsonp&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">ev</span><span class="p">[</span><span class="nx">eid</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">gr</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">listeners</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">add</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">);</span>
+        <span class="nx">reg</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">attachEvent</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">||</span> <span class="nx">add</span> <span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">reg</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Registering event listener</p></div></div><div class="code"><div class="wrapper">          <span class="nx">ev</span><span class="p">[</span><span class="nx">eid</span><span class="p">]</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">ar</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">e</span><span class="p">.</span><span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">utility</span><span class="p">.</span><span class="nx">stop</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
+          <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Hooking event listener</p></div></div><div class="code"><div class="wrapper">          <span class="nx">instance</span><span class="p">[</span><span class="nx">add</span> <span class="o">?</span> <span class="s2">&quot;addEventListener&quot;</span> <span class="o">:</span> <span class="s2">&quot;attachEvent&quot;</span><span class="p">](</span> <span class="p">(</span> <span class="nx">add</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="s2">&quot;on&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">ev</span><span class="p">[</span><span class="nx">eid</span><span class="p">],</span> <span class="kc">false</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">][</span><span class="nx">st</span><span class="p">][</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="nx">fn</span><span class="o">:</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">scope</span><span class="o">:</span> <span class="nx">scope</span><span class="p">};</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
+      <span class="nx">cl</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">i</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method decorate</span></p>
+
+<p>Decorates <code>obj</code> with <code>observer</code> methods</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Object.</strong><br/>(Object to decorate)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Object to decorate)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">decorate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">methods</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="p">[</span><span class="s2">&quot;fire&quot;</span><span class="p">,</span>      <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">observer</span><span class="p">,</span> <span class="p">[</span><span class="k">this</span><span class="p">].</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span> <span class="p">}],</span>
+      <span class="p">[</span><span class="s2">&quot;listeners&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">list</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">event</span> <span class="p">);</span> <span class="p">}],</span>
+      <span class="p">[</span><span class="s2">&quot;on&quot;</span><span class="p">,</span>        <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">standby</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">standby</span> <span class="p">);</span> <span class="p">}],</span>
+      <span class="p">[</span><span class="s2">&quot;once&quot;</span><span class="p">,</span>      <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">standby</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">listener</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">standby</span> <span class="p">);</span> <span class="p">}],</span>
+      <span class="p">[</span><span class="s2">&quot;un&quot;</span><span class="p">,</span>        <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span> <span class="p">);</span> <span class="p">}]</span>
+    <span class="p">];</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">methods</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">enumerable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
+    <span class="p">});</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method discard</span></p>
+
+<p>Discard observer events</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a Boolean.</strong><br/>([Optional] Boolean indicating if events will be ignored)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Current setting)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">discard</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">ignore</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">ignore</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fire</span></p>
+
+<p>Fires an event</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>event must be a String.</strong><br/>(Event, or Events being fired ( comma delimited supported ))</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fire</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span>      <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">quit</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">a</span>    <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">).</span><span class="nx">remove</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">),</span>
+        <span class="nx">o</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">log</span><span class="p">,</span> <span class="nx">list</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">ignore</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">observer</span><span class="p">,</span> <span class="p">[</span><span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">].</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">a</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">});</span>
+
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">o</span> <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">o</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">silent</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="p">{</span><span class="nx">obj</span><span class="o">:</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="o">:</span> <span class="nx">event</span><span class="p">}</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">s</span>   <span class="o">=</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
+      <span class="nx">log</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">logging</span><span class="p">;</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">event</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">log</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">utility</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">o</span> <span class="o">+</span> <span class="s2">&quot; firing &quot;</span> <span class="o">+</span> <span class="nx">e</span> <span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nx">list</span> <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">list</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">alisteners</span> <span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">list</span><span class="p">.</span><span class="nx">all</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">list</span><span class="p">.</span><span class="nx">all</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">scope</span><span class="p">,</span> <span class="nx">a</span> <span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">quit</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+              <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+            <span class="p">}</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">quit</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span> <span class="o">!==</span> <span class="s2">&quot;all&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">list</span><span class="p">[</span><span class="nx">s</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">list</span><span class="p">[</span><span class="nx">s</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">i</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">scope</span><span class="p">,</span> <span class="nx">a</span> <span class="p">);</span>
+          <span class="p">});</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method id</span></p>
+
+<p>Gets the Observer id of arg</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>Object can be of any type.</strong><br/>(or String)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Observer id)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">id</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">id</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="nx">global</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">id</span> <span class="o">=</span> <span class="s2">&quot;window&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">arg</span> <span class="o">===</span> <span class="nb">document</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">id</span> <span class="o">=</span> <span class="s2">&quot;document&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">arg</span> <span class="o">===</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">id</span> <span class="o">=</span> <span class="s2">&quot;body&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="nx">id</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">id</span> <span class="o">||</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toString</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="o">?</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">:</span> <span class="nx">arg</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method list</span></p>
+
+<p>Gets the listeners for an event</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>event must be a String.</strong><br/>(Event being queried)</p></li>
+<li><p><strong>target must be an Object.</strong><br/>([Optional] Listeners collection to access, default is <code>observer.listeners</code>)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Object or Array of listeners for the event)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">list</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">target</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">,</span>
+        <span class="nx">o</span> <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span>
+        <span class="nx">r</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">r</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">r</span> <span class="o">=</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">event</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">r</span> <span class="o">=</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">event</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">r</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method once</span></p>
+
+<p>Adds a listener for a single execution</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>event must be a String.</strong><br/>(Event being fired)</p></li>
+<li><p><strong>fn must be a Function.</strong><br/>(Event handler)</p></li>
+<li><p><strong>id must be a String.</strong><br/>([Optional / Recommended] The id for the listener)</p></li>
+<li><p><strong>scope must be a String.</strong><br/>([Optional / Recommended] The id of the object or element to be set as 'this')</p></li>
+<li><p><strong>st must be a String.</strong><br/>([Optional] Application state, default is current)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">once</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">uuid</span> <span class="o">=</span> <span class="nx">id</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
+
+    <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="nx">scope</span> <span class="o">=</span> <span class="nx">scope</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="nx">st</span>    <span class="o">=</span> <span class="nx">st</span>    <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
+      <span class="p">});</span>
+
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">uuid</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
+    <span class="p">},</span> <span class="nx">uuid</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method pause</span></p>
+
+<p>Pauses observer events, and queues them</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a Boolean.</strong><br/>(Boolean indicating if events will be queued)</li>
+</ul>
+
+<p><strong>Returns a Boolean</strong><br/>(Current setting)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">pause</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">silent</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">silent</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">queue</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span><span class="p">.</span><span class="nx">event</span> <span class="p">);</span>
+      <span class="p">});</span>
+
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">queue</span> <span class="o">=</span> <span class="p">[];</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method remove</span></p>
+
+<p>Removes listeners</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>event must be a String.</strong><br/>([Optional] Event, or Events being fired ( comma delimited supported ))</p></li>
+<li><p><strong>id must be a String.</strong><br/>([Optional] Listener id)</p></li>
+<li><p><strong>st must be a String.</strong><br/>([Optional] Application state, default is current)</p></li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">remove</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="nx">st</span>  <span class="o">=</span> <span class="nx">st</span> <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="kd">var</span> <span class="nx">l</span>   <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">,</span>
+        <span class="nx">a</span>   <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">alisteners</span><span class="p">,</span>
+        <span class="nx">ev</span>  <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">elisteners</span><span class="p">,</span>
+        <span class="nx">cl</span>  <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span><span class="p">,</span>
+        <span class="nx">o</span>   <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span>
+        <span class="nx">add</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">addEventListener</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">),</span>
+        <span class="nx">reg</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">attachEvent</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">||</span> <span class="nx">add</span> <span class="p">),</span>
+        <span class="nx">fn</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method fn</span></p>
+
+<p>Removes DOM event hook</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>event can be of any type.</strong><br/>(String or null)</p></li>
+<li><p><strong>i must be a Number.</strong><br/>(Amount of listeners being removed)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">unhook</span> <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">i</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">cl</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">event</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">cl</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">event</span><span class="p">]</span> <span class="o">-</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">)</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">unhook</span> <span class="o">&amp;&amp;</span> <span class="nx">reg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">[</span><span class="nx">add</span> <span class="o">?</span> <span class="s2">&quot;removeEventListener&quot;</span> <span class="o">:</span> <span class="s2">&quot;detachEvent&quot;</span><span class="p">](</span> <span class="p">(</span> <span class="nx">add</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="s2">&quot;on&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">ev</span><span class="p">[</span><span class="nx">o</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nx">event</span><span class="p">],</span> <span class="kc">false</span> <span class="p">);</span>
+        <span class="k">delete</span> <span class="nx">ev</span><span class="p">[</span><span class="nx">o</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nx">event</span><span class="p">];</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">observer_globals</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">o</span><span class="p">.</span><span class="nx">listeners</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">ev</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">k</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">o</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">fn</span><span class="p">(</span> <span class="nx">k</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/.*_/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span> <span class="mi">1</span> <span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+      <span class="p">}</span>
+
+      <span class="k">delete</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">];</span>
+      <span class="k">delete</span> <span class="nx">a</span><span class="p">[</span><span class="nx">o</span><span class="p">];</span>
+      <span class="k">delete</span> <span class="nx">cl</span><span class="p">[</span><span class="nx">o</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">event</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">sync</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">e</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">observer_globals</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">o</span><span class="p">.</span><span class="nx">listeners</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">fn</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">e</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="p">).</span><span class="nx">length</span> <span class="p">);</span>
+          <span class="p">}</span>
+
+          <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">e</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="o">=</span> <span class="p">{};</span>
+          <span class="nx">sync</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">e</span><span class="p">][</span><span class="nx">st</span><span class="p">][</span><span class="nx">id</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">fn</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="mi">1</span> <span class="p">);</span>
+          <span class="k">delete</span> <span class="nx">l</span><span class="p">[</span><span class="nx">o</span><span class="p">][</span><span class="nx">e</span><span class="p">][</span><span class="nx">st</span><span class="p">][</span><span class="nx">id</span><span class="p">];</span>
+          <span class="nx">sync</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">sync</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">observer</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sum</span></p>
+
+<p>Returns the sum of active listeners for one or all Objects</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj can be of any type.</strong><br/>([Optional] Entity)</li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Object with total listeners per event)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sum</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">{},</span>
+        <span class="nx">o</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span>    <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+      <span class="nx">o</span>      <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sync</span></p>
+
+<p>Syncs <code>alisteners</code> with <code>listeners</code></p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be a String.</strong><br/>(Object ID)</p></li>
+<li><p><strong>event must be a String.</strong><br/>(Event)</p></li>
+<li><p><strong>st must be a String.</strong><br/>(Application state)</p></li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sync</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">observer</span><span class="p">.</span><span class="nx">alisteners</span><span class="p">[</span><span class="nx">obj</span><span class="p">][</span><span class="nx">event</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">[</span><span class="nx">obj</span><span class="p">][</span><span class="nx">event</span><span class="p">][</span><span class="nx">st</span><span class="p">]</span> <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">};</span></div></div></div></div></body></html>

@@ -13,6 +13,7 @@ var cache = {
 	 * Garbage collector for the cached items
 	 *
 	 * @method clean
+	 * @private
 	 * @return {Undefined} undefined
 	 */
 	clean : function () {
@@ -29,6 +30,7 @@ var cache = {
 	 * Events: expire    Fires when the URI expires
 	 *
 	 * @method expire
+	 * @private
 	 * @param  {String}  uri    URI of the local representation
 	 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
 	 * @return {Undefined}      undefined
@@ -53,6 +55,7 @@ var cache = {
 	 * Determines if a URI has expired
 	 *
 	 * @method expired
+	 * @private
 	 * @param  {Object} uri Cached URI object
 	 * @return {Boolean}    True if the URI has expired
 	 */
@@ -66,6 +69,7 @@ var cache = {
 	 * Returns the cached object {headers, response} of the URI or false
 	 *
 	 * @method get
+	 * @private
 	 * @param  {String}  uri    URI/Identifier for the resource to retrieve from cache
 	 * @param  {Boolean} expire [Optional] If 'false' the URI will not expire
 	 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
@@ -92,6 +96,7 @@ var cache = {
 	 * Sets, or updates an item in cache.items
 	 *
 	 * @method set
+	 * @private
 	 * @param  {String} uri      URI to set or update
 	 * @param  {String} property Property of the cached URI to set
 	 * @param  {Mixed} value     Value to set

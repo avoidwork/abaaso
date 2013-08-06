@@ -1,5 +1,11 @@
-// Prototype methods
+/**
+ * Prototype hooks
+ *
+ * @private
+ * @type {Object}
+ */
 var prototypes = {
+	// Array.prototype
 	array : {
 		add : function ( arg ) {
 			return array.add( this, arg );
@@ -579,6 +585,7 @@ var prototypes = {
 			return array.zip( this, arguments );
 		}
 	},
+	// Element.prototype
 	element : {
 		addClass : function ( arg ) {
 			return element.klass( this, arg, true );
@@ -812,6 +819,7 @@ var prototypes = {
 			return element.validate( this );
 		}
 	},
+	// Function.prototype
 	"function": {
 		reflect : function () {
 			return utility.reflect( this );
@@ -820,6 +828,7 @@ var prototypes = {
 			return utility.debounce( this, ms );
 		}
 	},
+	// Number.prototype
 	number : {
 		diff : function ( arg ) {
 			return number.diff( this, arg );
@@ -870,6 +879,7 @@ var prototypes = {
 			return this;
 		}
 	},
+	// String.prototype
 	string : {
 		allows : function ( arg ) {
 			return client.allows( this, arg );

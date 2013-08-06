@@ -8,6 +8,8 @@ var element = {
 	/**
 	 * Gets or sets an Element attribute
 	 *
+	 * @method attr
+	 * @public
 	 * @param  {Mixed}  obj   Element
 	 * @param  {String} name  Attribute name
 	 * @param  {Mixed}  value Attribute value
@@ -81,6 +83,7 @@ var element = {
 	 * Clears an object's innerHTML, or resets it's state
 	 *
 	 * @method clear
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
@@ -104,6 +107,7 @@ var element = {
 	 * An id is generated if not specified with args
 	 *
 	 * @method create
+	 * @public
 	 * @param  {String} type   Type of Element to create
 	 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 	 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
@@ -191,6 +195,7 @@ var element = {
 	 * Gets or sets a CSS style attribute on an Element
 	 *
 	 * @method css
+	 * @public
 	 * @param  {Mixed}  obj   Element
 	 * @param  {String} key   CSS to put in a style tag
 	 * @param  {String} value [Optional] Value to set
@@ -217,6 +222,7 @@ var element = {
 	 * Data attribute facade acting as a getter (with coercion) & setter
 	 *
 	 * @method data
+	 * @public
 	 * @param  {Mixed}  obj   Element
 	 * @param  {String} key   Data key
 	 * @param  {Mixed}  value Boolean, Number or String to set
@@ -245,6 +251,7 @@ var element = {
 	 * Destroys an Element
 	 *
 	 * @method destroy
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Undefined} undefined
 	 */
@@ -262,6 +269,7 @@ var element = {
 	 * Disables an Element
 	 *
 	 * @method disable
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
@@ -278,6 +286,8 @@ var element = {
 	 *
 	 * `data` will appear as `Event.detail`
 	 *
+	 * @method dispatch
+	 * @public
 	 * @param  {Object}  obj        Element which dispatches the Event
 	 * @param  {String}  type       Type of Event to dispatch
 	 * @param  {Object}  data       Data to include with the Event
@@ -337,6 +347,7 @@ var element = {
 	 * Enables an Element
 	 *
 	 * @method enable
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
@@ -352,6 +363,7 @@ var element = {
 	 * Finds descendant childNodes of Element matched by arg
 	 *
 	 * @method find
+	 * @public
 	 * @param  {Mixed}  obj Element to search
 	 * @param  {String} arg Comma delimited string of descendant selectors
 	 * @return {Mixed}      Array of Elements or undefined
@@ -372,6 +384,7 @@ var element = {
 	 * Determines if Element has descendants matching arg
 	 *
 	 * @method has
+	 * @public
 	 * @param  {Mixed}   obj Element or Array of Elements or $ queries
 	 * @param  {String}  arg Type of Element to find
 	 * @return {Boolean}     True if 1 or more Elements are found
@@ -397,6 +410,7 @@ var element = {
 	 * Hides an Element if it's visible
 	 *
 	 * @method hide
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
@@ -416,6 +430,7 @@ var element = {
 	 * Returns a Boolean indidcating if the Object is hidden
 	 *
 	 * @method hidden
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Boolean}   True if hidden
 	 */
@@ -427,6 +442,7 @@ var element = {
 	 * Gets or sets an Elements innerHTML
 	 *
 	 * @method html
+	 * @public
 	 * @param  {Object} obj Element
 	 * @param  {String} arg [Optional] innerHTML value
 	 * @return {Object}     Element
@@ -439,6 +455,7 @@ var element = {
 	 * Determines if Element is equal to arg, supports nodeNames & CSS2+ selectors
 	 *
 	 * @method is
+	 * @public
 	 * @param  {Mixed}   obj Element
 	 * @param  {String}  arg Property to query
 	 * @return {Boolean}     True if a match
@@ -459,6 +476,7 @@ var element = {
 	 * Tests if Element value or text is alpha-numeric
 	 *
 	 * @method isAlphaNum
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -470,6 +488,7 @@ var element = {
 	 * Tests if Element value or text is a boolean
 	 *
 	 * @method isBoolean
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -481,6 +500,7 @@ var element = {
 	 * Tests if Element value or text is checked
 	 *
 	 * @method isChecked
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -492,6 +512,7 @@ var element = {
 	 * Tests if Element value or text is a date
 	 *
 	 * @method isDate
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -503,6 +524,7 @@ var element = {
 	 * Tests if Element value or text is disabled
 	 *
 	 * @method isDisabled
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -514,6 +536,7 @@ var element = {
 	 * Tests if Element value or text is a domain
 	 *
 	 * @method isDomain
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -525,6 +548,7 @@ var element = {
 	 * Tests if Element value or text is an email address
 	 *
 	 * @method isEmail
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -536,6 +560,7 @@ var element = {
 	 * Tests if Element value or text is empty
 	 *
 	 * @method isEmpty
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -547,6 +572,7 @@ var element = {
 	 * Tests if Element value or text is an IP address
 	 *
 	 * @method isIP
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -558,6 +584,7 @@ var element = {
 	 * Tests if Element value or text is an integer
 	 *
 	 * @method isInt
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -569,6 +596,7 @@ var element = {
 	 * Tests if Element value or text is numeric
 	 *
 	 * @method isNumber
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -580,6 +608,7 @@ var element = {
 	 * Tests if Element value or text is a phone number
 	 *
 	 * @method isPhone
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -591,6 +620,7 @@ var element = {
 	 * Tests if Element value or text is a URL
 	 *
 	 * @method isUrl
+	 * @public
 	 * @param  {Object}  obj Element to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -601,7 +631,8 @@ var element = {
 	/**
 	 * Adds or removes a CSS class
 	 *
-	 * @method clear
+	 * @method klass
+	 * @public
 	 * @param  {Mixed}   obj Element
 	 * @param  {String}  arg Class to add or remove ( can be a wildcard )
 	 * @param  {Boolean} add Boolean to add or remove, defaults to true
@@ -638,6 +669,7 @@ var element = {
 	 * Finds the position of an element
 	 *
 	 * @method position
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Object {top: n, right: n, bottom: n, left: n}
 	 */
@@ -678,6 +710,7 @@ var element = {
 	 * Prepends an Element to an Element
 	 *
 	 * @method prependChild
+	 * @public
 	 * @param  {Object} obj   Element
 	 * @param  {Object} child Child Element
 	 * @return {Object}       Element
@@ -689,6 +722,8 @@ var element = {
 	/**
 	 * Removes an Element attribute
 	 *
+	 * @method removeAttr
+	 * @public
 	 * @param  {Mixed}  obj Element
 	 * @param  {String} key Attribute name
 	 * @return {Object}     Element
@@ -719,6 +754,8 @@ var element = {
 	/**
 	 * Serializes the elements of a Form, an Element, or Array of Elements or $ queries
 	 *
+	 * @method serialize
+	 * @public
 	 * @param  {Object}  obj    Form, individual Element, or $ query
 	 * @param  {Boolean} string [Optional] true if you want a query string, default is false ( JSON )
 	 * @param  {Boolean} encode [Optional] true if you want to URI encode the value, default is true
@@ -770,6 +807,7 @@ var element = {
 	 * Shows an Element if it's not visible
 	 *
 	 * @method show
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Element
 	 */
@@ -788,6 +826,7 @@ var element = {
 	 * Returns the size of the Object
 	 *
 	 * @method size
+	 * @public
 	 * @param  {Mixed} obj Element
 	 * @return {Object}    Size {height: n, width:n}
 	 */
@@ -805,6 +844,8 @@ var element = {
 	/**
 	 * Getter / setter for an Element's text
 	 *
+	 * @method text
+	 * @public
 	 * @param  {Object} obj Element
 	 * @param  {String} arg [Optional] Value to set
 	 * @return {Object}     Element
@@ -825,6 +866,8 @@ var element = {
 	/**
 	 * Toggles a CSS class
 	 *
+	 * @method toggleClass
+	 * @public
 	 * @param  {Object} obj Element, or $ query
 	 * @param  {String} arg CSS class to toggle
 	 * @return {Object}     Element
@@ -839,6 +882,7 @@ var element = {
 	 * Updates an Element
 	 *
 	 * @method update
+	 * @public
 	 * @param  {Mixed}  obj  Element
 	 * @param  {Object} args Collection of properties
 	 * @return {Object}      Element
@@ -875,6 +919,8 @@ var element = {
 	/**
 	 * Gets or sets the value of Element
 	 *
+	 * @method val
+	 * @public
 	 * @param  {Mixed}  obj   Element
 	 * @param  {Mixed}  value [Optional] Value to set
 	 * @return {Object}       Element
@@ -952,6 +998,7 @@ var element = {
 	 * Validates the contents of Element
 	 *
 	 * @method validate
+	 * @public
 	 * @param  {Object} obj Element to test
 	 * @return {Object}     Result of test
 	 */
