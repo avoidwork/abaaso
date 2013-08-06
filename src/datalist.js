@@ -12,6 +12,7 @@ var datalist = {
 	 * Creates an instance of datalist
 	 *
 	 * @method factory
+	 * @public
 	 * @param  {Object} target   Element to receive the DataList
 	 * @param  {Object} store    Data store to feed the DataList
 	 * @param  {Mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
@@ -51,6 +52,7 @@ var datalist = {
 		 * Delete sync handler
 		 *
 		 * @method del
+		 * @public
 		 * @param  {Object} rec Record
 		 * @return {Object}     DataList instance
 		 */
@@ -74,6 +76,8 @@ var datalist = {
 		/**
 		 * Exports data list records
 		 *
+		 * @method dump
+		 * @public
 		 * @return {Array} Record set
 		 */
 		dump : function () {
@@ -84,6 +88,7 @@ var datalist = {
 		 * Changes the page index of the DataList
 		 *
 		 * @method page
+		 * @public
 		 * @return {Object}  DataList instance
 		 */
 		page : function ( arg ) {
@@ -101,6 +106,7 @@ var datalist = {
 		 * Adds pagination Elements to the View
 		 *
 		 * @method pages
+		 * @public
 		 * @return {Object}  DataList instance
 		 */
 		pages : function () {
@@ -201,6 +207,7 @@ var datalist = {
 		 *         afterDataListRefresh   Fires from the element containing the DataList
 		 *
 		 * @method refresh
+		 * @public
 		 * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
 		 * @param  {Boolean} create [Optional] Recreates cached View of data
 		 * @return {Object}         DataList instance
@@ -384,6 +391,7 @@ var datalist = {
 		 *         afterDataListSort      Fires after the DataList is sorted
 		 *
 		 * @method sort
+		 * @public
 		 * @param  {String}  order       SQL "order by" statement
 		 * @param  {String}  sensitivity [Optional] Defaults to "ci" ( "ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive )
 		 * @param  {Boolean} create      [Optional] Recreates cached View of data store
@@ -410,6 +418,7 @@ var datalist = {
 		 * Tears down references to the DataList
 		 *
 		 * @method teardown
+		 * @public
 		 * @param  {Boolean} destroy [Optional] `true` will remove the DataList from the DOM
 		 * @return {Object}  DataList instance
 		 */
@@ -445,6 +454,7 @@ var datalist = {
 	 * Calculates the total pages
 	 *
 	 * @method pages
+	 * @public
 	 * @return {Number} Total pages
 	 */
 	pages : function () {
@@ -459,6 +469,7 @@ var datalist = {
 	 * Calculates the page size as an Array of start & finish
 	 *
 	 * @method range
+	 * @public
 	 * @return {Array}  Array of start & end numbers
 	 */
 	range : function () {
@@ -474,6 +485,9 @@ var datalist = {
  *
  * @class DataList
  * @namespace abaaso
+ * @private
+ * @constructor
+ * @method DataList
  * @param  {Object} element  DataList element
  * @param  {Object} store    Data store to feed the DataList
  * @param  {Mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}

@@ -12,6 +12,7 @@ var state = ( function () {
 	 * Gets current application state
 	 *
 	 * @method getCurrent
+	 * @private
 	 * @return {String} Application state
 	 */
 	getCurrent = function () {
@@ -22,6 +23,7 @@ var state = ( function () {
 	 * Sets current application state
 	 *
 	 * @method setCurrent
+	 * @private
 	 * @param  {String} arg New application state
 	 * @return {String}     Application state
 	 */
@@ -42,6 +44,7 @@ var state = ( function () {
 	 * Gets current application state header
 	 *
 	 * @method getHeader
+	 * @private
 	 * @return {String} Application state header
 	 */
 	getHeader = function () {
@@ -52,6 +55,7 @@ var state = ( function () {
 	 * Sets current application state header
 	 *
 	 * @method setHeader
+	 * @private
 	 * @param  {String} arg New application state header
 	 * @return {String}     Application state header
 	 */
@@ -69,6 +73,7 @@ var state = ( function () {
 	 * Gets previous application state
 	 *
 	 * @method getPrevious
+	 * @private
 	 * @return {String} Previous application state
 	 */
 	getPrevious = function () {
@@ -79,6 +84,7 @@ var state = ( function () {
 	 * Exists because you can't mix accessor & data descriptors
 	 *
 	 * @method setPrevious
+	 * @private
 	 * @return {Undefined} undefined
 	 */
 	setPrevious = function () {

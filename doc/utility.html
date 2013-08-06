@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><title>utility</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="utility"><meta name="groc-project-path" content="src/utility.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/utility.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Utilities</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">utility</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection of timers</p></div></div><div class="code"><div class="wrapper">  <span class="nx">timer</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection of repeating functions</p></div></div><div class="code"><div class="wrapper">  <span class="nx">repeating</span><span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method $</span></p>
+<p>Utilities</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">utility</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection of timers</p></div></div><div class="code"><div class="wrapper">  <span class="nx">timer</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection of repeating functions</p></div></div><div class="code"><div class="wrapper">  <span class="nx">repeating</span><span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method $</span></p>
 
 <p>Queries the DOM using CSS selectors and returns an Element or Array of Elements</p>
 
@@ -49,7 +49,7 @@
 
       <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method alias</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method alias</span></p>
 
 <p>Aliases origin onto obj</p>
 
@@ -91,7 +91,7 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clearTimers</span></p>
 
 <p>Clears deferred &amp; repeating functions</p>
 
@@ -111,7 +111,7 @@
       <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="p">);</span>
       <span class="k">delete</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">repeating</span><span class="p">[</span><span class="nx">id</span><span class="p">];</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method clone</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clone</span></p>
 
 <p>Clones an Object</p>
 
@@ -166,7 +166,7 @@
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method coerce</span></p>
 
 <p>Coerces a String to a Type</p>
 
@@ -200,7 +200,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method compile</span></p>
 
 <p>Recompiles a RegExp by reference
 This is ideal when you need to recompile a regex for use within a conditional statement</p>
@@ -217,7 +217,7 @@ This is ideal when you need to recompile a regex for use within a conditional st
     <span class="nx">reg</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">pattern</span><span class="p">,</span> <span class="nx">modifiers</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method css</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method css</span></p>
 
 <p>Creates a CSS stylesheet in the View</p>
 
@@ -242,7 +242,7 @@ This is ideal when you need to recompile a regex for use within a conditional st
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">ss</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method debounce</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method debounce</span></p>
 
 <p>Debounces a function</p>
 
@@ -267,7 +267,7 @@ This is ideal when you need to recompile a regex for use within a conditional st
         <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
       <span class="p">},</span> <span class="nx">ms</span><span class="p">);</span>
     <span class="p">};</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method define</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method define</span></p>
 
 <p>Allows deep setting of properties without knowing
 if the structure is valid</p>
@@ -316,7 +316,7 @@ if the structure is valid</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method defer</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method defer</span></p>
 
 <p>Defers the execution of Function by at least the supplied milliseconds
 Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript engine</p>
@@ -346,7 +346,7 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="nx">utility</span><span class="p">[</span><span class="nx">repeat</span> <span class="o">?</span> <span class="s2">&quot;repeating&quot;</span> <span class="o">:</span> <span class="s2">&quot;timer&quot;</span><span class="p">][</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">op</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method domId</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method domId</span></p>
 
 <p>Encodes a UUID to a DOM friendly ID</p>
 
@@ -358,7 +358,7 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
 
 <p><strong>Returns a String</strong><br/>(DOM friendly ID)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">domId</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="s2">&quot;a&quot;</span> <span class="o">+</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/-/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">).</span><span class="nx">slice</span><span class="p">(</span> <span class="mi">1</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method error</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method error</span></p>
 
 <p>Error handling, with history in .log</p>
 
@@ -388,7 +388,7 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">abaaso</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="nx">o</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method extend</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method extend</span></p>
 
 <p>Creates a "class" extending Object, with optional decoration</p>
 
@@ -438,7 +438,7 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
         <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">}</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method genId</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method genId</span></p>
 
 <p>Generates an ID value</p>
 
@@ -475,7 +475,7 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method hex</span></p>
 
 <p>Converts RGB to HEX</p>
 
@@ -511,7 +511,7 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method iterate</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method iterate</span></p>
 
 <p>Iterates an Object and executes a function against the properties
 Iteration can be stopped by returning false from fn</p>
@@ -562,7 +562,7 @@ Iteration can be stopped by returning false from fn</p>
         <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">}</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method loading</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method loading</span></p>
 
 <p>Renders a loading icon in a target element,
 with a class of "loading"</p>
@@ -592,7 +592,7 @@ with a class of "loading"</p>
     <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Clearing target element</p></div></div><div class="code"><div class="wrapper">    <span class="nx">element</span><span class="p">.</span><span class="nx">clear</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating loading image in target element</p></div></div><div class="code"><div class="wrapper">    <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;img&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">alt</span><span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">common</span><span class="p">.</span><span class="nx">loading</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">l</span><span class="p">.</span><span class="nx">image</span><span class="p">.</span><span class="nx">src</span><span class="p">},</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;div&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="o">:</span> <span class="s2">&quot;loading&quot;</span><span class="p">},</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method log</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method log</span></p>
 
 <p>Writes argument to the console</p>
 
@@ -611,7 +611,7 @@ with a class of "loading"</p>
       <span class="nx">msg</span> <span class="o">=</span> <span class="nx">ts</span> <span class="o">?</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">().</span><span class="nx">toLocaleTimeString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;] &quot;</span> <span class="o">+</span> <span class="nx">arg</span> <span class="o">:</span> <span class="nx">arg</span><span class="p">;</span>
       <span class="nx">console</span><span class="p">[</span><span class="nx">target</span> <span class="o">||</span> <span class="s2">&quot;log&quot;</span><span class="p">](</span> <span class="nx">msg</span> <span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method merge</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method merge</span></p>
 
 <p>Merges obj with arg</p>
 
@@ -639,7 +639,7 @@ with a class of "loading"</p>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
   <span class="p">},</span>
-  </div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method module</span></p>
+  </div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method module</span></p>
 
 <p>Registers a module on abaaso</p>
 
@@ -670,7 +670,7 @@ with a class of "loading"</p>
 
 <p><strong>Returns a Mixed</strong><br/>(Entity)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">object</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="o">?</span> <span class="nx">obj</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">toString</span><span class="p">().</span><span class="nx">charAt</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="o">===</span> <span class="s2">&quot;#&quot;</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method parse</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method parse</span></p>
 
 <p>Parses a URI into an Object</p>
 
@@ -737,7 +737,7 @@ with a class of "loading"</p>
     <span class="nx">parsed</span><span class="p">.</span><span class="nx">query</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">queryString</span><span class="p">(</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">search</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">parsed</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method property</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method property</span></p>
 
 <p>Sets a property on an Object, if defineProperty cannot be used the value will be set classically</p>
 
@@ -792,7 +792,7 @@ Allows hooks to be overwritten</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method queryString</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method queryString</span></p>
 
 <p>Parses a query string &amp; coerces values</p>
 
@@ -845,7 +845,7 @@ Allows hooks to be overwritten</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method reflect</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method reflect</span></p>
 
 <p>Returns an Array of parameters of a Function</p>
 
@@ -863,7 +863,7 @@ Allows hooks to be overwritten</p>
     <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toString</span><span class="p">().</span><span class="nx">match</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">reflect</span> <span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
 
     <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method repeat</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method repeat</span></p>
 
 <p>Creates a recursive function
 Return false from the function to halt recursion</p>
@@ -900,7 +900,7 @@ Return false from the function to halt recursion</p>
     <span class="p">},</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method script</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method script</span></p>
 
 <p>Creates a script Element to load an external script</p>
 
@@ -914,7 +914,7 @@ Return false from the function to halt recursion</p>
 
 <p><strong>Returns an Object</strong><br/>(Script)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">script</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;application/javascript&quot;</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">arg</span><span class="p">},</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">pos</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method stylesheet</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method stylesheet</span></p>
 
 <p>Creates a link Element to load an external stylesheet</p>
 
@@ -927,7 +927,7 @@ Return false from the function to halt recursion</p>
 
 <p><strong>Returns an Objecct</strong><br/>(Stylesheet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">stylesheet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">rel</span><span class="o">:</span> <span class="s2">&quot;stylesheet&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text/css&quot;</span><span class="p">,</span> <span class="nx">href</span><span class="o">:</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span><span class="o">:</span> <span class="nx">media</span> <span class="o">||</span> <span class="s2">&quot;print, screen&quot;</span><span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method stop</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method stop</span></p>
 
 <p>Stops an Event from bubbling</p>
 
@@ -951,7 +951,7 @@ Return false from the function to halt recursion</p>
     <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Assumed to always be valid, even if it's not decorated on <code>e</code> ( I'm looking at you IE8 )</p></div></div><div class="code"><div class="wrapper">    <span class="nx">e</span><span class="p">.</span><span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method target</span></p>
 
 <p>Returns the Event target</p>
 
@@ -963,7 +963,7 @@ Return false from the function to halt recursion</p>
 
 <p><strong>Returns an Object</strong><br/>(Event target)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">target</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">target</span> <span class="o">||</span> <span class="nx">e</span><span class="p">.</span><span class="nx">srcElement</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method tpl</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method tpl</span></p>
 
 <p>Transforms JSON to HTML and appends to Body or target Element</p>
 
@@ -1006,7 +1006,7 @@ Return false from the function to halt recursion</p>
     <span class="nx">target</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">frag</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">target</span><span class="p">.</span><span class="nx">childNodes</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method uuid</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method uuid</span></p>
 
 <p>Generates UUID Version 4</p>
 
@@ -1028,7 +1028,7 @@ Return false from the function to halt recursion</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method walk</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method walk</span></p>
 
 <p>Walks a structure and returns arg</p>
 
@@ -1045,7 +1045,7 @@ Return false from the function to halt recursion</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method when</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method when</span></p>
 
 <p>Accepts Deferreds or Promises as arguments or an Array</p>
 

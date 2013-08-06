@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><title>cache</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="cache"><meta name="groc-project-path" content="src/cache.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/cache.js</div></div><div id="document"><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
 
-<p>Cache for RESTful behavior</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection URIs</p></div></div><div class="code"><div class="wrapper">  <span class="nx">items</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method clean</span></p>
+<p>Cache for RESTful behavior</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">cache</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Collection URIs</p></div></div><div class="code"><div class="wrapper">  <span class="nx">items</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method clean</span></p>
 
 <p>Garbage collector for the cached items</p>
 
@@ -10,7 +10,7 @@
         <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="nx">k</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
       <span class="p">}</span>
     <span class="p">});</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method expire</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method expire</span></p>
 
 <p>Expires a URI from the local cache
 Events: expire    Fires when the URI expires</p>
@@ -36,7 +36,7 @@ Events: expire    Fires when the URI expires</p>
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method expired</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method expired</span></p>
 
 <p>Determines if a URI has expired</p>
 
@@ -50,7 +50,7 @@ Events: expire    Fires when the URI expires</p>
     <span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">uri</span><span class="p">];</span>
 
     <span class="k">return</span> <span class="nx">item</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">expires</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">item</span><span class="p">.</span><span class="nx">expires</span> <span class="o">&lt;</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">();</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method get</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method get</span></p>
 
 <p>Returns the cached object {headers, response} of the URI or false</p>
 
@@ -77,7 +77,7 @@ Events: expire    Fires when the URI expires</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">uri</span><span class="p">]</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method set</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method set</span></p>
 
 <p>Sets, or updates an item in cache.items</p>
 

@@ -2,7 +2,7 @@
 
 <p>DataList
 Provides a reactive View of a DataStore
-Requires a CSS class named "hidden" to toggle "display:none" of list items</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">datalist</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method factory</span></p>
+Requires a CSS class named "hidden" to toggle "display:none" of list items</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">datalist</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method factory</span></p>
 
 <p>Creates an instance of datalist</p>
 
@@ -34,7 +34,7 @@ Requires a CSS class named "hidden" to toggle "display:none" of list items</p></
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">instance</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by DataLists</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method del</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by DataLists</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method del</span></p>
 
 <p>Delete sync handler</p>
 
@@ -59,13 +59,13 @@ Requires a CSS class named "hidden" to toggle "display:none" of list items</p></
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method dump</span></p>
 
 <p>Exports data list records</p>
 
 <p><strong>Returns an Array</strong><br/>(Record set)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">dump</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">dump</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method page</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method page</span></p>
 
 <p>Changes the page index of the DataList</p>
 
@@ -78,7 +78,7 @@ Requires a CSS class named "hidden" to toggle "display:none" of list items</p></
       <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method pages</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method pages</span></p>
 
 <p>Adds pagination Elements to the View</p>
 
@@ -139,7 +139,7 @@ Requires a CSS class named "hidden" to toggle "display:none" of list items</p></
       <span class="p">});</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method refresh</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method refresh</span></p>
 
 <p>Refreshes element
 Events: beforeDataListRefresh  Fires from the element containing the DataList
@@ -274,7 +274,7 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
       <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;afterDataListRefresh&quot;</span> <span class="p">);</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sort</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sort</span></p>
 
 <p>Sorts data list &amp; refreshes element
 Events: beforeDataListSort     Fires before the DataList sorts
@@ -305,7 +305,7 @@ Events: beforeDataListSort     Fires before the DataList sorts
       <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterDataListSort&quot;</span> <span class="p">);</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method teardown</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method teardown</span></p>
 
 <p>Tears down references to the DataList</p>
 
@@ -341,7 +341,7 @@ Events: beforeDataListSort     Fires before the DataList sorts
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method pages</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method pages</span></p>
 
 <p>Calculates the total pages</p>
 
@@ -351,7 +351,7 @@ Events: beforeDataListSort     Fires before the DataList sorts
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">number</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">/</span> <span class="k">this</span><span class="p">.</span><span class="nx">pageSize</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method range</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method range</span></p>
 
 <p>Calculates the page size as an Array of start &amp; finish</p>
 
@@ -361,7 +361,7 @@ Events: beforeDataListSort     Fires before the DataList sorts
 
     <span class="k">return</span> <span class="p">[</span><span class="nx">start</span><span class="p">,</span> <span class="nx">end</span><span class="p">];</span>
   <span class="p">}</span>
-<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private constructor method DataList </span></p>
 
 <p>DataList factory</p>
 

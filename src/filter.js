@@ -8,6 +8,8 @@ var filter = {
 	/**
 	 * DataListFilter factory
 	 *
+	 * @method factory
+	 * @public
 	 * @param  {Object} obj      Element to receive the filter
 	 * @param  {Object} datalist Data list linked to the data store
 	 * @param  {String} filters  Comma delimited string of fields to filter by
@@ -30,6 +32,8 @@ var filter = {
 		/**
 		 * Initiate all event listeners
 		 *
+		 * @method init
+		 * @public
 		 * @returns {Undefined} undefined
 		 */
 		init : function () {
@@ -44,6 +48,8 @@ var filter = {
 		 *
 		 * Create an object based on comma separated key string
 		 *
+		 * @method set
+		 * @public
 		 * @param {String} fields Comma separated filters
 		 * @returns {Undefined} undefined
 		 */
@@ -66,6 +72,8 @@ var filter = {
 		/**
 		 * Cancel all event listeners
 		 *
+		 * @method teardown
+		 * @public
 		 * @returns {Undefined} undefined
 		 */
 		teardown : function () {
@@ -78,6 +86,8 @@ var filter = {
 		/**
 		 * Update the results list
 		 *
+		 * @method update
+		 * @public
 		 * @returns {Undefined} undefined
 		 */
 		update : function () {
@@ -123,6 +133,9 @@ var filter = {
  *
  * @class DataListFilter
  * @namespace abaaso
+ * @method DataListFilter
+ * @private
+ * @constructor
  * @param  {Object} obj      Element to receive the filter
  * @param  {Object} datalist Data list linked to the data store
  * @param  {Number} debounce [Optional] Milliseconds to debounce

@@ -9,6 +9,7 @@ var xml = {
 	 * Returns XML (Document) Object from a String
 	 *
 	 * @method decode
+	 * @public
 	 * @param  {String} arg XML String
 	 * @return {Object}     XML Object or undefined
 	 */
@@ -43,6 +44,7 @@ var xml = {
 	 * Returns XML String from an Object or Array
 	 *
 	 * @method encode
+	 * @public
 	 * @param  {Mixed} arg Object or Array to cast to XML String
 	 * @return {String}    XML String or undefined
 	 */
@@ -60,6 +62,8 @@ var xml = {
 			/**
 			 * Encodes a value as a node
 			 *
+			 * @method node
+			 * @private
 			 * @param  {String} name  Node name
 			 * @param  {Value}  value Node value
 			 * @return {String}       Node
@@ -107,6 +111,7 @@ var xml = {
 	 * Validates `arg` is XML
 	 *
 	 * @method valid
+	 * @public
 	 * @param  {String} arg String to validate
 	 * @return {Boolean}    `true` if valid XML
 	 */

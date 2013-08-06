@@ -6,7 +6,7 @@
   <span class="nx">pos</span>  <span class="o">:</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="kc">null</span><span class="p">},</span>
   <span class="nx">prev</span> <span class="o">:</span> <span class="p">{</span><span class="nx">x</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">y</span><span class="o">:</span> <span class="kc">null</span><span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Caching the view</p></div></div><div class="code"><div class="wrapper">  <span class="nx">view</span>    <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&lt;</span> <span class="mi">9</span> <span class="o">?</span> <span class="s2">&quot;documentElement&quot;</span> <span class="o">:</span> <span class="s2">&quot;body&quot;</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method track</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method track</span></p>
 
 <p>Enables or disables mouse co-ordinate tracking</p>
 

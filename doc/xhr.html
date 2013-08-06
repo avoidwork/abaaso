@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>xhr</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="xhr"><meta name="groc-project-path" content="src/xhr.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/xhr.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+<!DOCTYPE html><html lang="en"><head><title>xhr</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="xhr"><meta name="groc-project-path" content="src/xhr.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/xhr.js</div></div><div id="document"><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method xhr </span></p>
 
 <p>XMLHttpRequest shim for node.js</p>
 
@@ -15,7 +15,7 @@
     <span class="s2">&quot;User-Agent&quot;</span>   <span class="o">:</span> <span class="s2">&quot;abaaso/{{VERSION}} node.js/&quot;</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">versions</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/^v/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; (&quot;</span> <span class="o">+</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span> <span class="nx">process</span><span class="p">.</span><span class="nx">platform</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; V8/&quot;</span> <span class="o">+</span> <span class="nx">process</span><span class="p">.</span><span class="nx">versions</span><span class="p">.</span><span class="nx">v8</span> <span class="o">+</span> <span class="s2">&quot; )&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Content-Type&quot;</span> <span class="o">:</span> <span class="s2">&quot;text/plain&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Accept&quot;</span>       <span class="o">:</span> <span class="s2">&quot;*/*&quot;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method state</span></p>
 
 <p>Changes the readyState of an XMLHttpRequest</p>
 
@@ -37,9 +37,17 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handler</span></p>
 
-  <span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">res</span> <span class="p">)</span> <span class="p">{</span>
+<p>Response handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>res must be an Object.</strong><br/>(HTTP(S) Response Object)</li>
+</ul>
+
+<p><strong>Returns an undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">res</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
 
     <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">HEADERS_RECEIVED</span> <span class="p">);</span>
@@ -73,18 +81,28 @@
     <span class="nx">res</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;close&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
     <span class="p">});</span>
-  <span class="p">};</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handlerError</span></p>
 
-  <span class="nx">handlerError</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+<p>Response error handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>e must be an Object.</strong><br/>(Error)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">handlerError</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">status</span>       <span class="o">=</span> <span class="mi">503</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">statusText</span>   <span class="o">=</span> <span class="nx">e</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">=</span> <span class="nx">e</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">e</span><span class="p">.</span><span class="nx">stack</span> <span class="o">||</span> <span class="nx">e</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">e</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>       <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span> <span class="p">);</span>
     <span class="nx">state</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">DONE</span> <span class="p">);</span>
-  <span class="p">};</span>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public constructor method XMLHttpRequest</span></p>
 
-  <span class="nx">XMLHttpRequest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>XMLHttpRequest factory</p>
+
+<p><strong>Returns an Object</strong><br/>(Instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">XMLHttpRequest</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">onabort</span>            <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">onerror</span>            <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">onload</span>             <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
@@ -105,7 +123,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">_request</span>           <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span>        <span class="o">=</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_send</span>              <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method abort</span></p>
 
 <p>Aborts a request</p>
 
@@ -129,7 +147,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="nx">UNSENT</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method addEventListener</span></p>
 
 <p>Adds an event listener to an XMLHttpRequest instance</p>
 
@@ -148,7 +166,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">[</span><span class="nx">event</span><span class="p">].</span><span class="nx">add</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method dispatchEvent</span></p>
 
 <p>Dispatches an event</p>
 
@@ -174,7 +192,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method getAllResponseHeaders</span></p>
 
 <p>Gets all response headers</p>
 
@@ -190,7 +208,7 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method getResponseHeader</span></p>
 
 <p>Gets a specific response header</p>
 
@@ -210,7 +228,7 @@
     <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="nx">header</span><span class="p">]</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">_resheaders</span><span class="p">[</span><span class="nx">header</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()];</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method open</span></p>
 
 <p>Prepares an XMLHttpRequest instance to make a request</p>
 
@@ -248,7 +266,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">=</span> <span class="nx">OPENED</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method overrideMimeType</span></p>
 
 <p>Overrides the Content-Type of the request</p>
 
@@ -262,7 +280,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span><span class="p">[</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">mime</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method removeEventListener</span></p>
 
 <p>Removes an event listener from an XMLHttpRequest instance</p>
 
@@ -281,7 +299,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">[</span><span class="nx">event</span><span class="p">].</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method send</span></p>
 
 <p>Sends an XMLHttpRequest request</p>
 
@@ -349,7 +367,7 @@
     <span class="nx">self</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;loadstart&quot;</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method setRequestHeader</span></p>
 
 <p>Sets a request header of an XMLHttpRequest instance</p>
 

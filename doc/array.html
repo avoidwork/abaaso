@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><title>array</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="array"><meta name="groc-project-path" content="src/array.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/array.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Array methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method add</span></p>
+<p>Array methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">array</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method add</span></p>
 
 <p>Adds 'arg' to 'obj' if it is not found</p>
 
@@ -17,7 +17,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method binIndex</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method binIndex</span></p>
 
 <p>Preforms a binary search on a sorted Array</p>
 
@@ -49,7 +49,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method cast</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method cast</span></p>
 
 <p>Returns an Object ( NodeList, etc. ) as an Array</p>
 
@@ -110,7 +110,7 @@
         <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method chunk</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method chunk</span></p>
 
 <p>Transforms an Array to a 2D Array of chunks</p>
 
@@ -133,7 +133,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method clear</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clear</span></p>
 
 <p>Clears an Array without destroying it</p>
 
@@ -145,7 +145,7 @@
 
 <p><strong>Returns an Array</strong><br/>(Cleared Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clear</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method clone</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clone</span></p>
 
 <p>Clones an Array</p>
 
@@ -157,7 +157,7 @@
 
 <p><strong>Returns an Array</strong><br/>(Clone of Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method contains</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method contains</span></p>
 
 <p>Determines if obj contains arg</p>
 
@@ -170,7 +170,7 @@
 
 <p><strong>Returns a Boolean</strong><br/>(True if found, false if not)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">contains</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method collect</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method collect</span></p>
 
 <p>Creates a new Array of the result of <code>fn</code> executed against every index of <code>obj</code></p>
 
@@ -189,7 +189,7 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method compact</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method compact</span></p>
 
 <p>Compacts a Array by removing <code>null</code> or <code>undefined</code> indices</p>
 
@@ -208,7 +208,7 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="o">!</span><span class="nx">diff</span> <span class="o">?</span> <span class="nx">result</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">result</span><span class="p">.</span><span class="nx">length</span> <span class="o">&lt;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">?</span> <span class="nx">result</span> <span class="o">:</span> <span class="kc">null</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method count</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method count</span></p>
 
 <p>Counts <code>value</code> in <code>obj</code></p>
 
@@ -223,7 +223,7 @@
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="p">(</span> <span class="nx">i</span> <span class="o">===</span> <span class="nx">value</span> <span class="p">);</span>
     <span class="p">}).</span><span class="nx">length</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method diff</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method diff</span></p>
 
 <p>Finds the difference between array1 and array2</p>
 
@@ -250,10 +250,10 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method each</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method each</span></p>
 
 <p>Iterates obj and executes fn
-Parameters for fn are 'value', 'key'</p>
+Parameters for fn are 'value', 'index'</p>
 
 <p>Parameters:</p>
 
@@ -304,7 +304,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method empty</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method empty</span></p>
 
 <p>Determines if an Array is empty</p>
 
@@ -316,7 +316,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Boolean</strong><br/>(<code>true</code> if there's no indices)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">empty</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method equal</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method equal</span></p>
 
 <p>Determines if <code>a</code> is equal to <code>b</code></p>
 
@@ -329,7 +329,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Boolean</strong><br/>(<code>true</code> if the Arrays match)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">equal</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">(</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">a</span> <span class="p">)</span> <span class="o">===</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fib</span></p>
 
 <p>Fibonacci generator</p>
 
@@ -357,7 +357,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method fill</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fill</span></p>
 
 <p>Fills <code>obj</code> with the evalution of <code>arg</code>, optionally from <code>start</code> to <code>offset</code></p>
 
@@ -386,7 +386,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method first</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method first</span></p>
 
 <p>Returns the first Array node</p>
 
@@ -398,7 +398,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Mixed</strong><br/>(The first node of the array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">first</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method flat</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method flat</span></p>
 
 <p>Flattens a 2D Array</p>
 
@@ -416,7 +416,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">},</span> <span class="nx">result</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method index</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method index</span></p>
 
 <p>Facade to indexOf for shorter syntax</p>
 
@@ -429,7 +429,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Number</strong><br/>(The position of arg in instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">index</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method indexed</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method indexed</span></p>
 
 <p>Returns an Associative Array as an Indexed Array</p>
 
@@ -447,7 +447,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">indexed</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method intersect</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method intersect</span></p>
 
 <p>Finds the intersections between array1 and array2</p>
 
@@ -465,7 +465,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="k">return</span> <span class="nx">a</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">key</span> <span class="p">);</span>
     <span class="p">});</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method keepIf</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method keepIf</span></p>
 
 <p>Keeps every element of <code>obj</code> for which <code>fn</code> evaluates to true</p>
 
@@ -492,7 +492,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method keys</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method keys</span></p>
 
 <p>Returns the keys in an "Associative Array"</p>
 
@@ -519,7 +519,7 @@ Parameters for fn are 'value', 'key'</p>
         <span class="k">return</span> <span class="nx">keys</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">}</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method last</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method last</span></p>
 
 <p>Returns the last index of the Array</p>
 
@@ -542,7 +542,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="p">(</span> <span class="nx">n</span> <span class="o">-</span> <span class="p">(</span> <span class="o">--</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">),</span> <span class="nx">n</span> <span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method limit</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method limit</span></p>
 
 <p>Returns a limited range of indices from the Array</p>
 
@@ -567,7 +567,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method max</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method max</span></p>
 
 <p>Finds the maximum value in an Array</p>
 
@@ -579,7 +579,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Mixed</strong><br/>(Number, String, etc.)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">max</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">)</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method mean</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mean</span></p>
 
 <p>Finds the mean of an Array ( of numbers )</p>
 
@@ -591,7 +591,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Number</strong><br/>(Mean of the Array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mean</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sum</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">/</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">undefined</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method median</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method median</span></p>
 
 <p>Finds the median value of an Array ( of numbers )</p>
 
@@ -607,7 +607,7 @@ Parameters for fn are 'value', 'key'</p>
         <span class="nx">sorted</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">number</span><span class="p">.</span><span class="nx">odd</span><span class="p">(</span> <span class="nx">nth</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">sorted</span><span class="p">[</span><span class="nx">mid</span><span class="p">]</span> <span class="o">:</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">sorted</span><span class="p">[</span><span class="nx">mid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nx">sorted</span><span class="p">[</span><span class="nx">mid</span><span class="p">]</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method merge</span></p>
 
 <p>Merges <code>arg</code> into <code>obj</code>, excluding duplicate indices</p>
 
@@ -624,7 +624,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method min</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method min</span></p>
 
 <p>Finds the minimum value in an Array</p>
 
@@ -636,7 +636,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Mixed</strong><br/>(Number, String, etc.)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">min</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">)[</span><span class="mi">0</span><span class="p">];</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method mingle</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mingle</span></p>
 
 <p>Mingles Arrays and returns a 2D Array</p>
 
@@ -655,7 +655,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method mode</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mode</span></p>
 
 <p>Finds the mode value of an Array</p>
 
@@ -688,7 +688,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method percents</span></p>
 
 <p>Creates an Array of percentages from an Array of Numbers (ints/floats)</p>
 
@@ -732,7 +732,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method range</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method range</span></p>
 
 <p>Finds the range of the Array ( of numbers ) values</p>
 
@@ -744,7 +744,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Number</strong><br/>(Range of the array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">range</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">max</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">-</span> <span class="nx">array</span><span class="p">.</span><span class="nx">min</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method rassoc</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rassoc</span></p>
 
 <p>Searches a 2D Array <code>obj</code> for the first match of <code>arg</code> as a second index</p>
 
@@ -767,7 +767,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method reject</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method reject</span></p>
 
 <p>Returns Array containing the items in <code>obj</code> for which <code>fn()</code> is not true</p>
 
@@ -781,7 +781,7 @@ Parameters for fn are 'value', 'key'</p>
 <p><strong>Returns an Array</strong><br/>(Array of indices which fn() is not true)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">reject</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">diff</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">);</span>
   <span class="p">},</span>
-  </div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method replace</span></p>
+  </div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method replace</span></p>
 
 <p>Replaces the contents of <code>obj</code> with <code>arg</code></p>
 
@@ -799,7 +799,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method remove</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method remove</span></p>
 
 <p>Removes indices from an Array without recreating it</p>
 
@@ -830,7 +830,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="nx">obj</span><span class="p">.</span><span class="nx">push</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">remaining</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method removeIf</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method removeIf</span></p>
 
 <p>Deletes every element of <code>obj</code> for which <code>fn</code> evaluates to true</p>
 
@@ -855,7 +855,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method removeWhile</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method removeWhile</span></p>
 
 <p>Deletes elements of <code>obj</code> until <code>fn</code> evaluates to false</p>
 
@@ -887,7 +887,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method rest</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rest</span></p>
 
 <p>Returns the "rest" of <code>obj</code> from <code>arg</code></p>
 
@@ -906,7 +906,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method rindex</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rindex</span></p>
 
 <p>Finds the last index of <code>arg</code> in <code>obj</code></p>
 
@@ -927,7 +927,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method rotate</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method rotate</span></p>
 
 <p>Returns new Array with <code>arg</code> moved to the first index</p>
 
@@ -958,7 +958,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method series</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method series</span></p>
 
 <p>Generates a series Array</p>
 
@@ -984,7 +984,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method split</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method split</span></p>
 
 <p>Splits an Array by divisor</p>
 
@@ -1021,7 +1021,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sort</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sort</span></p>
 
 <p>Sorts the Array by parsing values</p>
 
@@ -1061,7 +1061,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sorted</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sorted</span></p>
 
 <p>Sorts <code>obj</code> using <code>array.sort</code></p>
 
@@ -1073,7 +1073,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns an Array</strong><br/>(Sorted Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sorted</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sum</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sum</span></p>
 
 <p>Gets the summation of an Array of numbers</p>
 
@@ -1093,7 +1093,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method take</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method take</span></p>
 
 <p>Takes the first <code>arg</code> indices from <code>obj</code></p>
 
@@ -1106,7 +1106,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns an Array</strong><br/>(Subset of <code>obj</code>)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">take</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">limit</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method total</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method total</span></p>
 
 <p>Gets the total keys in an Array</p>
 
@@ -1118,7 +1118,7 @@ Parameters for fn are 'value', 'key'</p>
 
 <p><strong>Returns a Number</strong><br/>(Number of keys in Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">total</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">indexed</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">length</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method toObject</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method toObject</span></p>
 
 <p>Casts an Array to Object</p>
 
@@ -1137,7 +1137,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method unique</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method unique</span></p>
 
 <p>Returns an Array of unique indices of <code>obj</code></p>
 
@@ -1155,7 +1155,7 @@ Parameters for fn are 'value', 'key'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method zip</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method zip</span></p>
 
 <p>Converts any arguments to Arrays, then merges elements of <code>obj</code> with corresponding elements from each argument</p>
 

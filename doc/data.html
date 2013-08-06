@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="en"><head><title>data</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="data"><meta name="groc-project-path" content="src/data.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/data.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
 <p>DataStore
-RESTful behavior is supported, by setting the 'key' &amp; 'uri' properties</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method decorator</span></p>
+RESTful behavior is supported, by setting the 'key' &amp; 'uri' properties</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method decorator</span></p>
 
 <p>Decorates a DataStore on an Object</p>
 
@@ -28,7 +28,7 @@ RESTful behavior is supported, by setting the 'key' &amp; 'uri' properties</p></
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by DataStores</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method batch</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by DataStores</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method batch</span></p>
 
 <p>Batch sets or deletes data in the store
 Events: beforeDataBatch  Fires before the batch is queued
@@ -39,7 +39,7 @@ Events: beforeDataBatch  Fires before the batch is queued
 
 <ul>
 <li><p><strong>type must be a String.</strong><br/>(Type of action to perform ( set/del/delete ))</p></li>
-<li><p><strong>data can be of any type.</strong><br/>(Array of keys or indices to delete, or Object containing multiple records to set)</p></li>
+<li><p><strong>data must be an Array.</strong><br/>(Array of keys or indices to delete, or Object containing multiple records to set)</p></li>
 <li><p><strong>sync must be a Boolean.</strong><br/>([Optional] Syncs store with data, if true everything is erased)</p></li>
 <li><p><strong>chunk must be a Number.</strong><br/>([Optional] Size to chunk Array to batch set or delete)</p></li>
 </ul>
@@ -87,17 +87,11 @@ Events: beforeDataBatch  Fires before the batch is queued
         <span class="p">}</span>
 
         <span class="k">throw</span> <span class="nx">e</span><span class="p">;</span>
-      <span class="p">});</span>
-
-      <span class="nx">complete</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="p">});</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Resolves public deferred</p></div></div><div class="code"><div class="wrapper">      <span class="nx">complete</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-      <span class="p">};</span>
-
-      <span class="nx">failure</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Rejects public deferred</p></div></div><div class="code"><div class="wrapper">      <span class="nx">failure</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-      <span class="p">};</span>
-
-      <span class="nx">set</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Set handler</p></div></div><div class="code"><div class="wrapper">      <span class="nx">set</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">data</span>  <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">),</span>
             <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
             <span class="nx">rec</span>   <span class="o">=</span> <span class="p">{};</span>
@@ -147,9 +141,7 @@ Events: beforeDataBatch  Fires before the batch is queued
             <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
           <span class="p">});</span>
         <span class="p">}</span>
-      <span class="p">};</span>
-
-      <span class="nx">del</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Delete handler</p></div></div><div class="code"><div class="wrapper">      <span class="nx">del</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">self</span><span class="p">.</span><span class="nx">del</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
           <span class="k">if</span> <span class="p">(</span> <span class="o">++</span><span class="nx">r</span> <span class="o">===</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
             <span class="nx">complete</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
@@ -224,7 +216,7 @@ Events: beforeDataBatch  Fires before the batch is queued
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method clear</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method clear</span></p>
 
 <p>Clears the data object, unsets the uri property
 Events: beforeDataClear  Fires before the data is cleared
@@ -293,7 +285,7 @@ Events: beforeDataClear  Fires before the data is cleared
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method crawl</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method crawl</span></p>
 
 <p>Crawls a record's properties and creates DataStores when URIs are detected
 Events: afterDataRetrieve  Fires after the store has retrieved all data from crawling
@@ -319,7 +311,7 @@ Events: afterDataRetrieve  Fires after the store has retrieved all data from cra
         <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
       <span class="p">}</span>
 
-      <span class="k">this</span><span class="p">.</span><span class="nx">crawled</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method build</span></p>
+      <span class="k">this</span><span class="p">.</span><span class="nx">crawled</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method build</span></p>
 
 <p>Concats URIs together</p>
 
@@ -346,7 +338,7 @@ Events: afterDataRetrieve  Fires after the store has retrieved all data from cra
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method complete</span></p>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method complete</span></p>
 
 <p>Crawl complete handler</p>
 
@@ -354,7 +346,7 @@ Events: afterDataRetrieve  Fires after the store has retrieved all data from cra
         <span class="k">if</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">===</span> <span class="nx">nth</span> <span class="p">)</span> <span class="p">{</span>
           <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">nth</span> <span class="p">);</span>
         <span class="p">}</span>
-      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method setup</span></p>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method setup</span></p>
 
 <p>Sets up a DataStore
 Possibly a subset of the collection, so it relies on valid URI paths</p>
@@ -430,7 +422,7 @@ Possibly a subset of the collection, so it relies on valid URI paths</p>
       <span class="p">});</span>
 
       <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method del</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method del</span></p>
 
 <p>Deletes a record based on key or index
 Events: beforeDataDelete  Fires before the record is deleted
@@ -547,7 +539,7 @@ Events: beforeDataDelete  Fires before the record is deleted
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer2</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method dump</span></p>
 
 <p>Exports a subset or complete record set of DataStore</p>
 
@@ -590,7 +582,7 @@ Events: beforeDataDelete  Fires before the record is deleted
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">args</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method find</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method find</span></p>
 
 <p>Finds needle in the haystack</p>
 
@@ -686,7 +678,7 @@ Events: beforeDataDelete  Fires before the record is deleted
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method form</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method form</span></p>
 
 <p>Generates a micro-format form from a record
 If record is null, an empty form based on the first record is generated.
@@ -737,7 +729,7 @@ from the DataStore.</p>
       <span class="p">}</span>
       <span class="k">else</span> <span class="p">{</span>
         <span class="nx">entity</span> <span class="o">=</span> <span class="s2">&quot;record&quot;</span><span class="p">;</span>
-      <span class="p">}</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method handler</span></p>
+      <span class="p">}</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handler</span></p>
 
 <p>Button handler</p>
 
@@ -775,7 +767,7 @@ from the DataStore.</p>
             <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">form</span> <span class="p">);</span>
           <span class="p">});</span>
         <span class="p">}</span>
-      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method structure</span></p>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method structure</span></p>
 
 <p>Data structure in micro-format</p>
 
@@ -819,7 +811,7 @@ from the DataStore.</p>
       <span class="nx">element</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot;display&quot;</span><span class="p">,</span> <span class="s2">&quot;inherit&quot;</span> <span class="p">);</span>
 
       <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method generate</span></p>
 
 <p>Generates a RESTful store ( replacing a record ) when consuming an API end point</p>
 
@@ -887,7 +879,7 @@ from the DataStore.</p>
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method get</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method get</span></p>
 
 <p>Retrieves a record based on key or index
 If the key is an integer, cast to a string before sending as an argument!</p>
@@ -929,7 +921,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method join</span></p>
 
 <p>Performs an (INNER/LEFT/RIGHT) JOIN on two DataStores</p>
 
@@ -1021,7 +1013,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
       <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">join</span> <span class="o">===</span> <span class="s2">&quot;right&quot;</span> <span class="o">?</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">records</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
 
       <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method only</span></p>
 
 <p>Retrieves only 1 field/property</p>
 
@@ -1042,7 +1034,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
           <span class="k">return</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
         <span class="p">});</span>
       <span class="p">}</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method purge</span></p>
 
 <p>Purges DataStore or record from localStorage</p>
 
@@ -1054,7 +1046,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
 
 <p><strong>Returns an Object</strong><br/>(Record or store)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">purge</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">storage</span><span class="p">(</span> <span class="nx">arg</span> <span class="o">||</span> <span class="k">this</span><span class="p">,</span> <span class="s2">&quot;remove&quot;</span> <span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method reindex</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method reindex</span></p>
 
 <p>Reindexes the DataStore</p>
 
@@ -1072,7 +1064,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method restore</span></p>
 
 <p>Restores DataStore or record frome localStorage</p>
 
@@ -1084,7 +1076,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
 
 <p><strong>Returns an Object</strong><br/>(Record or store)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">restore</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">storage</span><span class="p">(</span> <span class="nx">arg</span> <span class="o">||</span> <span class="k">this</span><span class="p">,</span> <span class="s2">&quot;get&quot;</span> <span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method save</span></p>
 
 <p>Saves DataStore or record to localStorage, sessionStorage or MongoDB (node.js only)</p>
 
@@ -1096,7 +1088,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
 
 <p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">save</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">storage</span><span class="p">(</span> <span class="nx">arg</span> <span class="o">||</span> <span class="k">this</span><span class="p">,</span> <span class="s2">&quot;set&quot;</span> <span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method select</span></p>
 
 <p>Selects records based on an explcit description</p>
 
@@ -1131,7 +1123,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
       <span class="p">});</span>
 
       <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method set</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method set</span></p>
 
 <p>Creates or updates an existing record
 Events: beforeDataSet  Fires before the record is set
@@ -1351,7 +1343,7 @@ Events: beforeDataSet  Fires before the record is set
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer2</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method setExpires</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method setExpires</span></p>
 
 <p>Gets or sets an explicit expiration of data</p>
 
@@ -1391,7 +1383,7 @@ Events: beforeDataSet  Fires before the record is set
           <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;beforeExpire, expire, afterExpire&quot;</span> <span class="p">);</span>
         <span class="p">}</span>
       <span class="p">},</span> <span class="nx">expires</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="kc">false</span><span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method setUri</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method setUri</span></p>
 
 <p>Sets the RESTful API end point</p>
 
@@ -1437,7 +1429,7 @@ Events: beforeDataSet  Fires before the record is set
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sort</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sort</span></p>
 
 <p>Returns a view, or creates a view and returns it</p>
 
@@ -1465,17 +1457,18 @@ Events: beforeDataSet  Fires before the record is set
           <span class="nx">view</span>     <span class="o">=</span> <span class="p">(</span> <span class="nx">queries</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot; &quot;</span> <span class="p">).</span><span class="nx">toCamelCase</span><span class="p">()</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">sensitivity</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">(),</span>
           <span class="nx">key</span>      <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span>
           <span class="nx">result</span>   <span class="o">=</span> <span class="p">[],</span>
-          <span class="nx">bucket</span><span class="p">,</span> <span class="nx">crawl</span><span class="p">,</span> <span class="nx">sort</span><span class="p">,</span> <span class="nx">sorting</span><span class="p">;</span>
+          <span class="nx">bucket</span><span class="p">,</span> <span class="nx">crawl</span><span class="p">,</span> <span class="nx">sort</span><span class="p">,</span> <span class="nx">sorting</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method crawl</span></p>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">create</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">];</span>
-      <span class="p">}</span>
+<p>Recursively crawls queries &amp; data</p>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="p">[];</span>
-      <span class="p">}</span>
+<p>Parameters:</p>
 
-      <span class="nx">crawl</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+<ul>
+<li><p><strong>q must be an Array.</strong><br/>(Queries)</p></li>
+<li><p><strong>data must be an Object.</strong><br/>(Records)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Sorted records)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">crawl</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">q</span><span class="p">,</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">queries</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">q</span> <span class="p">),</span>
             <span class="nx">query</span>   <span class="o">=</span> <span class="nx">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="nx">sorted</span>  <span class="o">=</span> <span class="p">{},</span>
@@ -1500,9 +1493,19 @@ Events: beforeDataSet  Fires before the record is set
         <span class="p">});</span>
 
         <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-      <span class="p">};</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method bucket</span></p>
 
-      <span class="nx">bucket</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">records</span><span class="p">,</span> <span class="nx">reverse</span> <span class="p">)</span> <span class="p">{</span>
+<p>Creates a bucket of records</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>query must be a String.</strong><br/>(Query to execute)</p></li>
+<li><p><strong>records must be an Array.</strong><br/>(Records to sort)</p></li>
+<li><p><strong>reverse must be a Boolean.</strong><br/>(<code>true</code> to reverse records)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Describes bucket)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">bucket</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">records</span><span class="p">,</span> <span class="nx">reverse</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">prop</span>     <span class="o">=</span> <span class="nx">query</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">desc</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
             <span class="nx">pk</span>       <span class="o">=</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="nx">prop</span> <span class="p">),</span>
             <span class="nx">order</span>    <span class="o">=</span> <span class="p">[],</span>
@@ -1545,9 +1548,21 @@ Events: beforeDataSet  Fires before the record is set
         <span class="p">});</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="nx">order</span><span class="o">:</span> <span class="nx">order</span><span class="p">,</span> <span class="nx">registry</span><span class="o">:</span> <span class="nx">registry</span><span class="p">};</span>
-      <span class="p">};</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method sort</span></p>
 
-      <span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">reverse</span><span class="p">,</span> <span class="nx">pk</span> <span class="p">)</span> <span class="p">{</span>
+<p>Sorts bucket</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>data must be an Object.</strong><br/>(Records to sort)</p></li>
+<li><p><strong>query must be a String.</strong><br/>(Query to execute)</p></li>
+<li><p><strong>prop must be a String.</strong><br/>(Property / field)</p></li>
+<li><p><strong>reverse must be a Boolean.</strong><br/>(<code>true</code> to reverse records)</p></li>
+<li><p><strong>pk must be a Boolean.</strong><br/>(<code>true</code> if sorting on Primary Key)</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Sorted records)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">reverse</span><span class="p">,</span> <span class="nx">pk</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">tmp</span>    <span class="o">=</span> <span class="p">[],</span>
             <span class="nx">sorted</span> <span class="o">=</span> <span class="p">[];</span>
 
@@ -1571,20 +1586,37 @@ Events: beforeDataSet  Fires before the record is set
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="nx">sorted</span><span class="p">;</span>
-      <span class="p">};</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method sort</span></p>
 
-      <span class="nx">sorting</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
+<p>Sorts based on parsed value</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>a must be a String.</strong><br/>([description])</p></li>
+<li><p><strong>b must be a String.</strong><br/>([description])</p></li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(-1, 0, or 1)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">sorting</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">a</span> <span class="o">=</span> <span class="nx">a</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">sort_value</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
         <span class="nx">b</span> <span class="o">=</span> <span class="nx">b</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">sort_value</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
 
         <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">a</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">b</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">b</span> <span class="p">);</span>
       <span class="p">};</span>
 
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">create</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">];</span>
+      <span class="p">}</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">[];</span>
+      <span class="p">}</span>
+
       <span class="nx">result</span>           <span class="o">=</span> <span class="nx">crawl</span><span class="p">(</span> <span class="nx">queries</span><span class="p">,</span> <span class="nx">where</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">)</span> <span class="p">);</span>
       <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="o">=</span> <span class="nx">result</span><span class="p">;</span>
 
       <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public </span></p>
 
 <p>Storage interface
 SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js only)</p>
@@ -1800,7 +1832,7 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sync</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sync</span></p>
 
 <p>Syncs the DataStore with a URI representation
 Events: beforeDataSync  Fires before syncing the DataStore
@@ -1838,9 +1870,17 @@ Events: beforeDataSync  Fires before syncing the DataStore
         <span class="p">}</span>
 
         <span class="k">throw</span> <span class="nx">e</span><span class="p">;</span>
-      <span class="p">});</span>
+      <span class="p">});</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method success</span></p>
 
-      <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+<p>Resolves public deferred</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be an Object.</strong><br/>(API response)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">data</span><span class="p">;</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
@@ -1873,9 +1913,17 @@ Events: beforeDataSync  Fires before syncing the DataStore
         <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
           <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
         <span class="p">});</span>
-      <span class="p">};</span>
+      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method failure</span></p>
 
-      <span class="nx">failure</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+<p>Rejects public deferred</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>e must be an Object.</strong><br/>(Error instance)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">failure</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
       <span class="p">};</span>
 
@@ -1891,7 +1939,7 @@ Events: beforeDataSync  Fires before syncing the DataStore
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method teardown</span></p>
 
 <p>Tears down a store &amp; expires all records associated to an API</p>
 
@@ -1933,7 +1981,7 @@ Events: beforeDataSync  Fires before syncing the DataStore
       <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;afterDataTeardown&quot;</span> <span class="p">);</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method unique</span></p>
 
 <p>Returns Array of unique values of <code>key</code></p>
 
@@ -1951,7 +1999,7 @@ Events: beforeDataSync  Fires before syncing the DataStore
       <span class="p">});</span>
 
       <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'></span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method update</span></p>
 
 <p>Updates an existing Record
 Use <code>data.set()</code> if the record contains child DataStores</p>
@@ -1984,7 +2032,7 @@ Use <code>data.set()</code> if the record contains child DataStores</p>
 
     <span class="p">}</span>
   <span class="p">}</span>
-<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private constructor method DataStore </span></p>
 
 <p>DataStore factory</p>
 

@@ -9,6 +9,7 @@ var array = {
 	 * Adds 'arg' to 'obj' if it is not found
 	 *
 	 * @method add
+	 * @public
 	 * @param  {Array} obj Array to receive 'arg'
 	 * @param  {Mixed} arg Argument to set in 'obj'
 	 * @return {Array}     Array that was queried
@@ -25,6 +26,7 @@ var array = {
 	 * Preforms a binary search on a sorted Array
 	 *
 	 * @method binIndex
+	 * @public
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Value to find index of
 	 * @return {Number}    Index of `arg` within `obj`
@@ -56,6 +58,7 @@ var array = {
 	 * Returns an Object ( NodeList, etc. ) as an Array
 	 *
 	 * @method cast
+	 * @public
 	 * @param  {Object}  obj Object to cast
 	 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
 	 * @return {Array}       Object as an Array
@@ -116,6 +119,7 @@ var array = {
 	 * Transforms an Array to a 2D Array of chunks
 	 *
 	 * @method chunk
+	 * @public
 	 * @param  {Array}  obj  Array to parse
 	 * @param  {Number} size Chunk size ( integer )
 	 * @return {Array}       Chunked Array
@@ -138,6 +142,7 @@ var array = {
 	 * Clears an Array without destroying it
 	 *
 	 * @method clear
+	 * @public
 	 * @param  {Array} obj Array to clear
 	 * @return {Array}     Cleared Array
 	 */
@@ -149,6 +154,7 @@ var array = {
 	 * Clones an Array
 	 *
 	 * @method clone
+	 * @public
 	 * @param  {Array} obj Array to clone
 	 * @return {Array}     Clone of Array
 	 */
@@ -160,6 +166,7 @@ var array = {
 	 * Determines if obj contains arg
 	 *
 	 * @method contains
+	 * @public
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Value to look for
 	 * @return {Boolean}   True if found, false if not
@@ -172,6 +179,7 @@ var array = {
 	 * Creates a new Array of the result of `fn` executed against every index of `obj`
 	 *
 	 * @method collect
+	 * @public
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to execute against indices
 	 * @return {Array}        New Array
@@ -190,6 +198,7 @@ var array = {
 	 * Compacts a Array by removing `null` or `undefined` indices
 	 *
 	 * @method compact
+	 * @public
 	 * @param  {Array} obj    Array to compact
 	 * @param  {Boolean} diff Indicates to return resulting Array only if there's a difference
 	 * @return {Array}        Compacted copy of `obj`, or null ( if `diff` is passed & no diff is found )
@@ -208,6 +217,7 @@ var array = {
 	 * Counts `value` in `obj`
 	 *
 	 * @method count
+	 * @public
 	 * @param  {Array} obj   Array to search
 	 * @param  {Mixed} value Value to compare
 	 * @return {Array}       Array of counts
@@ -222,6 +232,7 @@ var array = {
 	 * Finds the difference between array1 and array2
 	 *
 	 * @method diff
+	 * @public
 	 * @param  {Array} array1 Source Array
 	 * @param  {Array} array2 Comparison Array
 	 * @return {Array}        Array of the differences
@@ -246,9 +257,11 @@ var array = {
 
 	/**
 	 * Iterates obj and executes fn
-	 * Parameters for fn are 'value', 'key'
+	 *
+	 * Parameters for fn are 'value', 'index'
 	 *
 	 * @method each
+	 * @public
 	 * @param  {Array}    obj   Array to iterate
 	 * @param  {Function} fn    Function to execute on index values
 	 * @param  {Boolean}  async [Optional] Asynchronous iteration
@@ -301,6 +314,7 @@ var array = {
 	 * Determines if an Array is empty
 	 *
 	 * @method empty
+	 * @public
 	 * @param  {Array} obj Array to inspect
 	 * @return {Boolean}   `true` if there's no indices
 	 */
@@ -312,6 +326,7 @@ var array = {
 	 * Determines if `a` is equal to `b`
 	 *
 	 * @method equal
+	 * @public
 	 * @param  {Array} a Array to compare
 	 * @param  {Array} b Array to compare
 	 * @return {Boolean} `true` if the Arrays match
@@ -323,6 +338,8 @@ var array = {
 	/**
 	 * Fibonacci generator
 	 *
+	 * @method fib
+	 * @public
 	 * @param  {Number} arg [Optional] Amount of numbers to generate, default is 100
 	 * @return {Array}      Array of numbers
 	 */
@@ -353,6 +370,7 @@ var array = {
 	 * Fills `obj` with the evalution of `arg`, optionally from `start` to `offset`
 	 *
 	 * @method fill
+	 * @public
 	 * @param  {Array}  obj   Array to fill
 	 * @param  {Mixed}  arg   String, Number of Function to fill with
 	 * @param  {Number} start [Optional] Index to begin filling at
@@ -381,6 +399,7 @@ var array = {
 	 * Returns the first Array node
 	 *
 	 * @method first
+	 * @public
 	 * @param  {Array} obj The array
 	 * @return {Mixed}     The first node of the array
 	 */
@@ -392,6 +411,7 @@ var array = {
 	 * Flattens a 2D Array
 	 *
 	 * @method flat
+	 * @public
 	 * @param  {Array} obj 2D Array to flatten
 	 * @return {Array}     Flatten Array
 	 */
@@ -409,6 +429,7 @@ var array = {
 	 * Facade to indexOf for shorter syntax
 	 *
 	 * @method index
+	 * @public
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Value to find index of
 	 * @return {Number}    The position of arg in instance
@@ -421,6 +442,7 @@ var array = {
 	 * Returns an Associative Array as an Indexed Array
 	 *
 	 * @method indexed
+	 * @public
 	 * @param  {Array} obj Array to index
 	 * @return {Array}     Indexed Array
 	 */
@@ -438,6 +460,7 @@ var array = {
 	 * Finds the intersections between array1 and array2
 	 *
 	 * @method intersect
+	 * @public
 	 * @param  {Array} array1 Source Array
 	 * @param  {Array} array2 Comparison Array
 	 * @return {Array}        Array of the intersections
@@ -455,6 +478,7 @@ var array = {
 	 * Keeps every element of `obj` for which `fn` evaluates to true
 	 *
 	 * @method keepIf
+	 * @public
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
@@ -481,6 +505,7 @@ var array = {
 	 * Returns the keys in an "Associative Array"
 	 *
 	 * @method keys
+	 * @public
 	 * @param  {Mixed} obj Array or Object to extract keys from
 	 * @return {Array}     Array of the keys
 	 */
@@ -507,6 +532,7 @@ var array = {
 	 * Returns the last index of the Array
 	 *
 	 * @method last
+	 * @public
 	 * @param  {Array}  obj Array
 	 * @param  {Number} arg [Optional] Negative offset from last index to return
 	 * @return {Mixed}      Last index( s ) of Array
@@ -529,6 +555,7 @@ var array = {
 	 * Returns a limited range of indices from the Array
 	 *
 	 * @method limit
+	 * @public
 	 * @param  {Array}  obj    Array to iterate
 	 * @param  {Number} start  Starting index
 	 * @param  {Number} offset Number of indices to return
@@ -553,6 +580,7 @@ var array = {
 	 * Finds the maximum value in an Array
 	 *
 	 * @method max
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Mixed}     Number, String, etc.
 	 */
@@ -564,6 +592,7 @@ var array = {
 	 * Finds the mean of an Array ( of numbers )
 	 *
 	 * @method mean
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Number}    Mean of the Array ( float or integer )
 	 */
@@ -575,6 +604,7 @@ var array = {
 	 * Finds the median value of an Array ( of numbers )
 	 *
 	 * @method median
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Number}    Median number of the Array ( float or integer )
 	 */
@@ -589,6 +619,8 @@ var array = {
 	/**
 	 * Merges `arg` into `obj`, excluding duplicate indices
 	 *
+	 * @method merge
+	 * @public
 	 * @param  {Array} obj Array to receive indices
 	 * @param  {Array} arg Array to merge
 	 * @return {Array}     obj
@@ -605,6 +637,7 @@ var array = {
 	 * Finds the minimum value in an Array
 	 *
 	 * @method min
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Mixed}     Number, String, etc.
 	 */
@@ -616,6 +649,7 @@ var array = {
 	 * Mingles Arrays and returns a 2D Array
 	 *
 	 * @method mingle
+	 * @public
 	 * @param  {Array} obj1 Array to mingle
 	 * @param  {Array} obj2 Array to mingle
 	 * @return {Array}      2D Array
@@ -634,6 +668,7 @@ var array = {
 	 * Finds the mode value of an Array
 	 *
 	 * @method mode
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Mixed}     Mode value of the Array
 	 */
@@ -677,6 +712,8 @@ var array = {
 	/**
 	 * Creates an Array of percentages from an Array of Numbers (ints/floats)
 	 *
+	 * @method percents
+	 * @public
 	 * @param  {Array}  obj       Array to iterate
 	 * @param  {Number} precision [Optional] Rounding precision
 	 * @param  {Number} total     [Optional] Value to compare against
@@ -723,6 +760,7 @@ var array = {
 	 * Finds the range of the Array ( of numbers ) values
 	 *
 	 * @method range
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Number}    Range of the array ( float or integer )
 	 */
@@ -734,6 +772,7 @@ var array = {
 	 * Searches a 2D Array `obj` for the first match of `arg` as a second index
 	 *
 	 * @method rassoc
+	 * @public
 	 * @param  {Array} obj 2D Array to search
 	 * @param  {Mixed} arg Primitive to find
 	 * @return {Mixed}     Array or undefined
@@ -756,6 +795,7 @@ var array = {
 	 * Returns Array containing the items in `obj` for which `fn()` is not true
 	 *
 	 * @method reject
+	 * @public
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to execute against `obj` indices
 	 * @return {Array}        Array of indices which fn() is not true
@@ -768,6 +808,7 @@ var array = {
 	 * Replaces the contents of `obj` with `arg`
 	 *
 	 * @method replace
+	 * @public
 	 * @param  {Array} obj Array to modify
 	 * @param  {Array} arg Array to become `obj`
 	 * @return {Array}     New version of `obj`
@@ -785,6 +826,7 @@ var array = {
 	 * Removes indices from an Array without recreating it
 	 *
 	 * @method remove
+	 * @public
 	 * @param  {Array}  obj   Array to remove from
 	 * @param  {Mixed}  start Starting index, or value to find within obj
 	 * @param  {Number} end   [Optional] Ending index
@@ -815,6 +857,7 @@ var array = {
 	 * Deletes every element of `obj` for which `fn` evaluates to true
 	 *
 	 * @method removeIf
+	 * @public
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
@@ -839,6 +882,7 @@ var array = {
 	 * Deletes elements of `obj` until `fn` evaluates to false
 	 *
 	 * @method removeWhile
+	 * @public
 	 * @param  {Array}    obj Array to iterate
 	 * @param  {Function} fn  Function to test indices against
 	 * @return {Array}        Array
@@ -870,6 +914,7 @@ var array = {
 	 * Returns the "rest" of `obj` from `arg`
 	 *
 	 * @method rest
+	 * @public
 	 * @param  {Array}  obj Array to parse
 	 * @param  {Number} arg [Optional] Start position of subset of `obj` ( positive number only )
 	 * @return {Array}      Array of a subset of `obj`
@@ -888,6 +933,7 @@ var array = {
 	 * Finds the last index of `arg` in `obj`
 	 *
 	 * @method rindex
+	 * @public
 	 * @param  {Array} obj Array to search
 	 * @param  {Mixed} arg Primitive to find
 	 * @return {Mixed}     Index or undefined
@@ -908,6 +954,7 @@ var array = {
 	 * Returns new Array with `arg` moved to the first index
 	 *
 	 * @method rotate
+	 * @public
 	 * @param  {Array}  obj Array to rotate
 	 * @param  {Number} arg Index to become the first index, if negative the rotation is in the opposite direction
 	 * @return {Array}      Newly rotated Array
@@ -938,6 +985,7 @@ var array = {
 	 * Generates a series Array
 	 *
 	 * @method series
+	 * @public
 	 * @param  {Number} start  Start value the series
 	 * @param  {Number} end    [Optional] The end of the series
 	 * @param  {Number} offset [Optional] Offset for indices, default is 1
@@ -963,6 +1011,7 @@ var array = {
 	 * Splits an Array by divisor
 	 *
 	 * @method split
+	 * @public
 	 * @param  {Array}  obj     Array to parse
 	 * @param  {Number} divisor Integer to divide the Array by
 	 * @return {Array}          Split Array
@@ -1002,6 +1051,7 @@ var array = {
 	 * Sorts the Array by parsing values
 	 *
 	 * @method sort
+	 * @public
 	 * @param  {Mixed} a Argument to compare
 	 * @param  {Mixed} b Argument to compare
 	 * @return {Number}  Number indicating sort order
@@ -1041,6 +1091,7 @@ var array = {
 	 * Sorts `obj` using `array.sort`
 	 *
 	 * @method sorted
+	 * @public
 	 * @param  {Array} obj Array to sort
 	 * @return {Array}     Sorted Array
 	 */
@@ -1052,6 +1103,7 @@ var array = {
 	 * Gets the summation of an Array of numbers
 	 *
 	 * @method sum
+	 * @public
 	 * @param  {Array} obj Array to sum
 	 * @return {Number}    Summation of Array
 	 */
@@ -1071,6 +1123,7 @@ var array = {
 	 * Takes the first `arg` indices from `obj`
 	 *
 	 * @method take
+	 * @public
 	 * @param  {Array}  obj Array to parse
 	 * @param  {Number} arg Offset from 0 to return
 	 * @return {Array}      Subset of `obj`
@@ -1083,6 +1136,7 @@ var array = {
 	 * Gets the total keys in an Array
 	 *
 	 * @method total
+	 * @public
 	 * @param  {Array} obj Array to find the length of
 	 * @return {Number}    Number of keys in Array
 	 */
@@ -1094,6 +1148,7 @@ var array = {
 	 * Casts an Array to Object
 	 *
 	 * @method toObject
+	 * @public
 	 * @param  {Array} ar Array to transform
 	 * @return {Object}   New object
 	 */
@@ -1112,6 +1167,7 @@ var array = {
 	 * Returns an Array of unique indices of `obj`
 	 *
 	 * @method unique
+	 * @public
 	 * @param  {Array} obj Array to parse
 	 * @return {Array}     Array of unique indices
 	 */
@@ -1129,6 +1185,7 @@ var array = {
 	 * Converts any arguments to Arrays, then merges elements of `obj` with corresponding elements from each argument
 	 *
 	 * @method zip
+	 * @public
 	 * @param  {Array} obj  Array to transform
 	 * @param  {Mixed} args Argument instance or Array to merge
 	 * @return {Array}      Array

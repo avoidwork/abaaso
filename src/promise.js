@@ -5,7 +5,13 @@
  * @namespace abaaso
  */
 var promise = {
-	// Async delay strategy
+	/**
+	 * Async delay strategy
+	 *
+	 * @method delay
+	 * @private
+	 * @return {Function} Delay method
+	 */
 	delay : function () {
 		if ( typeof setImmediate !== "undefined" ) {
 			return setImmediate;
@@ -22,13 +28,19 @@ var promise = {
 	 * Promise factory
 	 *
 	 * @method factory
+	 * @public
 	 * @return {Object} Instance of promise
 	 */
 	factory : function () {
 		return new Promise();
 	},
 
-	// Caching if this function is available
+	/**
+	 * Caching if this function is available
+	 *
+	 * @private
+	 * @return {Boolean} `true` if `Object.freeze` is supported
+	 */
 	freeze : ( function () {
 		return ( typeof Object.freeze === "function" );
 	})(),
@@ -39,6 +51,7 @@ var promise = {
 		 * Breaks a Promise
 		 *
 		 * @method reject
+		 * @public
 		 * @param  {Mixed} arg Promise outcome
 		 * @return {Object} Promise
 		 */
@@ -56,6 +69,7 @@ var promise = {
 		 * Promise is resolved
 		 *
 		 * @method resolve
+		 * @public
 		 * @param  {Mixed} arg Promise outcome
 		 * @return {Object}    Promise
 		 */
@@ -73,6 +87,7 @@ var promise = {
 		 * Returns a boolean indicating state of the Promise
 		 *
 		 * @method resolved
+		 * @public
 		 * @return {Boolean} `true` if resolved
 		 */
 		resolved : function () {
@@ -83,6 +98,7 @@ var promise = {
 		 * Registers handler(s) for a Promise
 		 *
 		 * @method then
+		 * @public
 		 * @param  {Function} success Executed when/if promise is resolved
 		 * @param  {Function} failure [Optional] Executed when/if promise is broken
 		 * @return {Object}           New Promise instance
@@ -92,6 +108,14 @@ var promise = {
 			    deferred = promise.factory(),
 			    fn;
 
+			/**
+			 * Vouched handler
+			 *
+			 * @method fn
+			 * @private
+			 * @param  {Boolean} yay `true` if resolved
+			 * @return {Mixed}       Result
+			 */
 			fn = function ( yay ) {
 				var handler = yay ? success : failure,
 				    error   = yay ? false   : true,
@@ -173,6 +197,7 @@ var promise = {
 	 * Resolves a Promise (fulfilled or failed)
 	 *
 	 * @method resolve
+	 * @public
 	 * @param  {String} state State to resolve
 	 * @param  {String} val   Value to set
 	 * @return {Object}       Promise instance
@@ -261,6 +286,7 @@ var promise = {
 	 * Vouches for a state
 	 *
 	 * @method vouch
+	 * @public
 	 * @param  {String}   state Promise descriptor
 	 * @param  {Function} fn    Function to execute
 	 * @return {Object}         Promise instance
@@ -286,6 +312,9 @@ var promise = {
  *
  * @class Promise
  * @namespace abaaso
+ * @method Promise
+ * @private
+ * @constructor
  * @return {Object} Instance of Promise
  */
 function Promise () {

@@ -2,13 +2,13 @@
 
 <p>Application state</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">state</span> <span class="o">=</span> <span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">prop</span> <span class="o">=</span> <span class="p">{</span><span class="nx">current</span><span class="o">:</span> <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="nx">previous</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">header</span><span class="o">:</span> <span class="kc">null</span><span class="p">},</span>
-      <span class="nx">getCurrent</span><span class="p">,</span> <span class="nx">setCurrent</span><span class="p">,</span> <span class="nx">getHeader</span><span class="p">,</span> <span class="nx">setHeader</span><span class="p">,</span> <span class="nx">getPrevious</span><span class="p">,</span> <span class="nx">setPrevious</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method getCurrent</span></p>
+      <span class="nx">getCurrent</span><span class="p">,</span> <span class="nx">setCurrent</span><span class="p">,</span> <span class="nx">getHeader</span><span class="p">,</span> <span class="nx">setHeader</span><span class="p">,</span> <span class="nx">getPrevious</span><span class="p">,</span> <span class="nx">setPrevious</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method getCurrent</span></p>
 
 <p>Gets current application state</p>
 
 <p><strong>Returns a String</strong><br/>(Application state)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">getCurrent</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">prop</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method setCurrent</span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method setCurrent</span></p>
 
 <p>Sets current application state</p>
 
@@ -29,13 +29,13 @@
     <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">abaaso</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method getHeader</span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method getHeader</span></p>
 
 <p>Gets current application state header</p>
 
 <p><strong>Returns a String</strong><br/>(Application state header)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">getHeader</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">prop</span><span class="p">.</span><span class="nx">header</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method setHeader</span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method setHeader</span></p>
 
 <p>Sets current application state header</p>
 
@@ -53,13 +53,13 @@
     <span class="nx">prop</span><span class="p">.</span><span class="nx">header</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method getPrevious</span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method getPrevious</span></p>
 
 <p>Gets previous application state</p>
 
 <p><strong>Returns a String</strong><br/>(Previous application state)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">getPrevious</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">prop</span><span class="p">.</span><span class="nx">previous</span><span class="p">;</span>
-  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method setPrevious</span></p>
+  <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method setPrevious</span></p>
 
 <p>Exists because you can't mix accessor &amp; data descriptors</p>
 

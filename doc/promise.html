@@ -1,6 +1,10 @@
 <!DOCTYPE html><html lang="en"><head><title>promise</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="promise"><meta name="groc-project-path" content="src/promise.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/promise.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Promises/A+</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Async delay strategy</p></div></div><div class="code"><div class="wrapper">  <span class="nx">delay</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Promises/A+</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">promise</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method delay</span></p>
+
+<p>Async delay strategy</p>
+
+<p><strong>Returns a Function</strong><br/>(Delay method)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">delay</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">setImmediate</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">setImmediate</span><span class="p">;</span>
     <span class="p">}</span>
@@ -10,15 +14,19 @@
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method factory</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method factory</span></p>
 
 <p>Promise factory</p>
 
 <p><strong>Returns an Object</strong><br/>(Instance of promise)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">factory</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="k">new</span> <span class="nx">Promise</span><span class="p">();</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Caching if this function is available</p></div></div><div class="code"><div class="wrapper">  <span class="nx">freeze</span> <span class="o">:</span> <span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private</span></p>
+
+<p>Caching if this function is available</p>
+
+<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if <code>Object.freeze</code> is supported)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">freeze</span> <span class="o">:</span> <span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">freeze</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">);</span>
-  <span class="p">})(),</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by promises</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method reject</span></p>
+  <span class="p">})(),</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Inherited by promises</p></div></div><div class="code"><div class="wrapper">  <span class="nx">methods</span> <span class="o">:</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method reject</span></p>
 
 <p>Breaks a Promise</p>
 
@@ -36,7 +44,7 @@
       <span class="p">});</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method resolve</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method resolve</span></p>
 
 <p>Promise is resolved</p>
 
@@ -54,13 +62,13 @@
       <span class="p">});</span>
 
       <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method resolved</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method resolved</span></p>
 
 <p>Returns a boolean indicating state of the Promise</p>
 
 <p><strong>Returns a Boolean</strong><br/>(<code>true</code> if resolved)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">resolved</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="k">return</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">===</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">broken</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">===</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">resolved</span> <span class="p">);</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method then</span></p>
+    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method then</span></p>
 
 <p>Registers handler(s) for a Promise</p>
 
@@ -74,9 +82,17 @@
 <p><strong>Returns an Object</strong><br/>(New Promise instance)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">then</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span> <span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">self</span>     <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
           <span class="nx">deferred</span> <span class="o">=</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
-          <span class="nx">fn</span><span class="p">;</span>
+          <span class="nx">fn</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method fn</span></p>
 
-      <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">yay</span> <span class="p">)</span> <span class="p">{</span>
+<p>Vouched handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>yay must be a Boolean.</strong><br/>(<code>true</code> if resolved)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(Result)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">yay</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">handler</span> <span class="o">=</span> <span class="nx">yay</span> <span class="o">?</span> <span class="nx">success</span> <span class="o">:</span> <span class="nx">failure</span><span class="p">,</span>
             <span class="nx">error</span>   <span class="o">=</span> <span class="nx">yay</span> <span class="o">?</span> <span class="kc">false</span>   <span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
             <span class="nx">result</span><span class="p">;</span>
@@ -134,7 +150,7 @@
 
       <span class="k">return</span> <span class="nx">deferred</span><span class="p">;</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method resolve</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method resolve</span></p>
 
 <p>Resolves a Promise (fulfilled or failed)</p>
 
@@ -204,7 +220,7 @@
     <span class="nx">broken</span>   <span class="o">:</span> <span class="s2">&quot;rejected&quot;</span><span class="p">,</span>
     <span class="nx">pending</span>  <span class="o">:</span> <span class="s2">&quot;pending&quot;</span><span class="p">,</span>
     <span class="nx">resolved</span> <span class="o">:</span> <span class="s2">&quot;fulfilled&quot;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method vouch</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method vouch</span></p>
 
 <p>Vouches for a state</p>
 
@@ -229,7 +245,7 @@
 
     <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
   <span class="p">}</span>
-<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private constructor method Promise </span></p>
 
 <p>Promise factory</p>
 

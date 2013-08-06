@@ -9,6 +9,7 @@ var message = {
 	 * Clears the message listener
 	 *
 	 * @method clear
+	 * @public
 	 * @return {Object} abaaso
 	 */
 	clear : function ( state ) {
@@ -21,6 +22,7 @@ var message = {
 	 * Posts a message to the target
 	 *
 	 * @method send
+	 * @public
 	 * @param  {Object} target Object to receive message
 	 * @param  {Mixed}  arg    Entity to send as message
 	 * @return {Object}        target
@@ -40,6 +42,7 @@ var message = {
 	 * Sets a handler for recieving a message
 	 *
 	 * @method recv
+	 * @public
 	 * @param  {Function} fn Callback function
 	 * @return {Object}      abaaso
 	 */

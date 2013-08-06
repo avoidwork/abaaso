@@ -3,7 +3,6 @@ return {
 	array           : array,
 	callback        : {},
 	client          : {
-		// Properties
 		activex : client.activex,
 		android : client.android,
 		blackberry : client.blackberry,
@@ -22,8 +21,6 @@ return {
 		version : 0,
 		webos   : client.webos,
 		windows : client.windows,
-
-		// Methods
 		del     : function ( uri, success, failure, headers, timeout ) {
 			return client.request( uri, "DELETE", success, failure, null, headers, timeout );
 		},

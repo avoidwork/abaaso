@@ -15,6 +15,7 @@ var utility = {
 	 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 	 *
 	 * @method $
+	 * @public
 	 * @param  {String} arg Comma delimited string of CSS selectors
 	 * @return {Mixed}      Element or Array of Elements
 	 */
@@ -63,6 +64,7 @@ var utility = {
 	 * Aliases origin onto obj
 	 *
 	 * @method alias
+	 * @public
 	 * @param  {Object} obj    Object receiving aliasing
 	 * @param  {Object} origin Object providing structure to obj
 	 * @return {Object}        Object receiving aliasing
@@ -103,6 +105,8 @@ var utility = {
 	/**
 	 * Clears deferred & repeating functions
 	 *
+	 * @method clearTimers
+	 * @public
 	 * @param  {String} id ID of timer( s )
 	 * @return {Undefined} undefined
 	 */
@@ -128,6 +132,7 @@ var utility = {
 	 * Clones an Object
 	 *
 	 * @method clone
+	 * @public
 	 * @param {Object}  obj Object to clone
 	 * @return {Object}     Clone of obj
 	 */
@@ -186,6 +191,8 @@ var utility = {
 	/**
 	 * Coerces a String to a Type
 	 *
+	 * @method coerce
+	 * @public
 	 * @param  {String} value String to coerce
 	 * @return {Mixed}        Typed version of the String
 	 */
@@ -220,6 +227,8 @@ var utility = {
 	 *
 	 * This is ideal when you need to recompile a regex for use within a conditional statement
 	 *
+	 * @method compile
+	 * @public
 	 * @param  {Object} regex     RegExp
 	 * @param  {String} pattern   Regular expression pattern
 	 * @param  {String} modifiers Modifiers to apply to the pattern
@@ -235,6 +244,7 @@ var utility = {
 	 * Creates a CSS stylesheet in the View
 	 *
 	 * @method css
+	 * @public
 	 * @param  {String} content CSS to put in a style tag
 	 * @param  {String} media   [Optional] Medias the stylesheet applies to
 	 * @return {Object}         Element created or undefined
@@ -259,6 +269,7 @@ var utility = {
 	 * Debounces a function
 	 *
 	 * @method debounce
+	 * @public
 	 * @param  {Function} fn    Function to execute
 	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 1000
 	 * @param  {Mixed}    scope `this` context during execution, default is `global`
@@ -284,6 +295,7 @@ var utility = {
 	 * if the structure is valid
 	 *
 	 * @method define
+	 * @public
 	 * @param  {String} args  Dot delimited string of the structure
 	 * @param  {Mixed}  value Value to set
 	 * @param  {Object} obj   Object receiving value
@@ -339,6 +351,7 @@ var utility = {
 	 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine
 	 *
 	 * @method defer
+	 * @public
 	 * @param  {Function} fn     Function to defer execution of
 	 * @param  {Number}   ms     Milliseconds to defer execution
 	 * @param  {Number}   id     [Optional] ID of the deferred function
@@ -367,9 +380,9 @@ var utility = {
 	 * Encodes a UUID to a DOM friendly ID
 	 *
 	 * @method domId
+	 * @public
 	 * @param  {String} UUID
 	 * @return {String} DOM friendly ID
-	 * @private
 	 */
 	domId : function ( arg ) {
 		return "a" + arg.replace( /-/g, "" ).slice( 1 );
@@ -379,6 +392,7 @@ var utility = {
 	 * Error handling, with history in .log
 	 *
 	 * @method error
+	 * @public
 	 * @param  {Mixed}   e       Error object or message to display
 	 * @param  {Array}   args    Array of arguments from the callstack
 	 * @param  {Mixed}   scope   Entity that was "this"
@@ -408,6 +422,7 @@ var utility = {
 	 * Creates a "class" extending Object, with optional decoration
 	 *
 	 * @method extend
+	 * @public
 	 * @param  {Object} obj Object to extend
 	 * @param  {Object} arg [Optional] Object for decoration
 	 * @return {Object}     Decorated obj
@@ -457,6 +472,7 @@ var utility = {
 	 * Generates an ID value
 	 *
 	 * @method genId
+	 * @public
 	 * @param  {Mixed}   obj [Optional] Object to receive id
 	 * @param  {Boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
 	 * @return {Mixed}       Object or id
@@ -492,6 +508,8 @@ var utility = {
 	/**
 	 * Converts RGB to HEX
 	 *
+	 * @method hex
+	 * @public
 	 * @param  {String} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
 	 * @return {String}       Color as HEX
 	 */
@@ -529,6 +547,7 @@ var utility = {
 	 * Iteration can be stopped by returning false from fn
 	 *
 	 * @method iterate
+	 * @public
 	 * @param  {Object}   obj Object to iterate
 	 * @param  {Function} fn  Function to execute against properties
 	 * @return {Object}       Object
@@ -579,6 +598,7 @@ var utility = {
 	 * with a class of "loading"
 	 *
 	 * @method loading
+	 * @public
 	 * @param  {Mixed} obj Entity or Array of Entities or $ queries
 	 * @return {Mixed}     Entity, Array of Entities or undefined
 	 */
@@ -616,7 +636,7 @@ var utility = {
 	 * Writes argument to the console
 	 *
 	 * @method log
-	 * @private
+	 * @public
 	 * @param  {String} arg    String to write to the console
 	 * @param  {String} target [Optional] Target console, default is "log"
 	 * @return {Undefined}     undefined
@@ -635,6 +655,7 @@ var utility = {
 	 * Merges obj with arg
 	 *
 	 * @method merge
+	 * @public
 	 * @param  {Object} obj Object to decorate
 	 * @param  {Object} arg Decoration
 	 * @return {Object}     Decorated Object
@@ -661,6 +682,7 @@ var utility = {
 	 * Registers a module on abaaso
 	 *
 	 * @method module
+	 * @public
 	 * @param  {String} arg Module name
 	 * @param  {Object} obj Module structure
 	 * @return {Object}     Module registered
@@ -679,9 +701,9 @@ var utility = {
 	 * Returns Object, or reference to Element
 	 *
 	 * @method object
+	 * @private
 	 * @param  {Mixed} obj Entity or $ query
 	 * @return {Mixed}     Entity
-	 * @private
 	 */
 	object : function ( obj ) {
 		return typeof obj === "object" ? obj : ( obj.toString().charAt( 0 ) === "#" ? utility.$( obj ) : obj );
@@ -691,6 +713,7 @@ var utility = {
 	 * Parses a URI into an Object
 	 *
 	 * @method parse
+	 * @public
 	 * @param  {String} uri URI to parse
 	 * @return {Object}     Parsed URI
 	 */
@@ -760,6 +783,7 @@ var utility = {
 	 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
 	 *
 	 * @method property
+	 * @public
 	 * @param  {Object} obj        Object to decorate
 	 * @param  {String} prop       Name of property to set
 	 * @param  {Object} descriptor Descriptor of the property
@@ -798,10 +822,10 @@ var utility = {
 	 * Allows hooks to be overwritten
 	 *
 	 * @method proto
+	 * @private
 	 * @param  {Object} obj  Object receiving prototype extension
 	 * @param  {String} type Identifier of obj, determines what Arrays to apply
 	 * @return {Object}      obj or undefined
-	 * @private
 	 */
 	proto : function ( obj, type ) {
 		utility.iterate( prototypes[type], function ( v, k ) {
@@ -815,6 +839,7 @@ var utility = {
 	 * Parses a query string & coerces values
 	 *
 	 * @method queryString
+	 * @public
 	 * @param  {String} arg     [Optional] Key to find in the querystring
 	 * @param  {String} qstring [Optional] Query string to parse
 	 * @return {Mixed}          Value or Object of key:value pairs
@@ -867,6 +892,7 @@ var utility = {
 	 * Returns an Array of parameters of a Function
 	 *
 	 * @method reflect
+	 * @public
 	 * @param  {Function} arg Function to reflect
 	 * @return {Array}        Array of parameters
 	 */
@@ -886,6 +912,7 @@ var utility = {
 	 * Return false from the function to halt recursion
 	 *
 	 * @method repeat
+	 * @public
 	 * @param  {Function} fn  Function to execute repeatedly
 	 * @param  {Number}   ms  Milliseconds to stagger the execution
 	 * @param  {String}   id  [Optional] Timeout ID
@@ -927,6 +954,7 @@ var utility = {
 	 * Creates a script Element to load an external script
 	 *
 	 * @method script
+	 * @public
 	 * @param  {String} arg    URL to script
 	 * @param  {Object} target [Optional] Element to receive the script
 	 * @param  {String} pos    [Optional] Position to create the script at within the target
@@ -940,6 +968,7 @@ var utility = {
 	 * Creates a link Element to load an external stylesheet
 	 *
 	 * @method stylesheet
+	 * @public
 	 * @param  {String} arg   URL to stylesheet
 	 * @param  {String} media [Optional] Medias the stylesheet applies to
 	 * @return {Objecct}      Stylesheet
@@ -952,6 +981,7 @@ var utility = {
 	 * Stops an Event from bubbling
 	 *
 	 * @method stop
+	 * @public
 	 * @param  {Object} e Event
 	 * @return {Object}   Event
 	 */
@@ -977,6 +1007,8 @@ var utility = {
 	/**
 	 * Returns the Event target
 	 *
+	 * @method target
+	 * @public
 	 * @param  {Object} e Event
 	 * @return {Object}   Event target
 	 */
@@ -988,6 +1020,7 @@ var utility = {
 	 * Transforms JSON to HTML and appends to Body or target Element
 	 *
 	 * @method tpl
+	 * @public
 	 * @param  {Object} data   JSON Object describing HTML
 	 * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
 	 * @return {Object}        New Element created from the template
@@ -1030,6 +1063,7 @@ var utility = {
 	 * Generates UUID Version 4
 	 *
 	 * @method uuid
+	 * @public
 	 * @param  {Boolean} safe [Optional] Strips - from UUID
 	 * @return {String}       UUID
 	 */
@@ -1051,6 +1085,7 @@ var utility = {
 	 * Walks a structure and returns arg
 	 *
 	 * @method  walk
+	 * @public
 	 * @param  {Mixed}  obj  Object or Array
 	 * @param  {String} arg  String describing the property to return
 	 * @return {Mixed}       arg
@@ -1067,6 +1102,7 @@ var utility = {
 	 * Accepts Deferreds or Promises as arguments or an Array
 	 *
 	 * @method when
+	 * @public
 	 * @return {Object} Deferred
 	 */
 	when : function () {

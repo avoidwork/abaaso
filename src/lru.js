@@ -9,6 +9,7 @@ var lru = {
 	 * LRU cache factory
 	 *
 	 * @method factory
+	 * @public
 	 * @param  {Number} max [Optional] Max size of cache, default is 1000
 	 * @return {Object}     LRU instance
 	 */
@@ -28,6 +29,7 @@ var lru = {
 		 * Evicts the least recently used item from cache
 		 *
 		 * @method evict
+		 * @public
 		 * @return {Object} LRU instance
 		 */
 		evict : function () {
@@ -42,6 +44,7 @@ var lru = {
 		 * Gets cached item and moves it to the front
 		 *
 		 * @method get
+		 * @public
 		 * @param  {String} key Item key
 		 * @return {Mixed}      Undefined or Item value
 		 */
@@ -61,6 +64,7 @@ var lru = {
 		 * Removes item from cache
 		 *
 		 * @method remove
+		 * @public
 		 * @param  {String} key Item key
 		 * @return {Object}     Item
 		 */
@@ -96,6 +100,7 @@ var lru = {
 		 * Sets item in cache as `first`
 		 *
 		 * @method set
+		 * @public
 		 * @param  {String} key   Item key
 		 * @param  {Mixed}  value Item value
 		 * @return {Object}       LRU instance
@@ -138,6 +143,7 @@ var lru = {
  *
  * @method LRU
  * @constructor
+ * @private
  */
 function LRU () {
 	this.cache  = {};
@@ -154,8 +160,10 @@ LRU.prototype.constructor = LRU;
 /**
  * LRU Item factory
  *
- * @param {Mixed} value Item value
+ * @method LRUItem
  * @constructor
+ * @private
+ * @param {Mixed} value Item value
  */
 function LRUItem ( value ) {
 	this.next     = null;

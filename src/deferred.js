@@ -9,6 +9,7 @@ var deferred = {
 	 * Deferred factory
 	 *
 	 * @method factory
+	 * @public
 	 * @return {Object} Deferred
 	 */
 	factory : function () {
@@ -21,6 +22,7 @@ var deferred = {
 		 * Registers a function to execute after Promise is reconciled
 		 *
 		 * @method always
+		 * @public
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
@@ -42,6 +44,7 @@ var deferred = {
 		 * Registers a function to execute after Promise is resolved
 		 *
 		 * @method done
+		 * @public
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
@@ -63,6 +66,7 @@ var deferred = {
 		 * Registers a function to execute after Promise is rejected
 		 *
 		 * @method fail
+		 * @public
 		 * @param  {Function} arg Function to execute
 		 * @return {Object}       Deferred
 		 */
@@ -84,6 +88,7 @@ var deferred = {
 		 * Determines if Deferred is rejected
 		 *
 		 * @method isRejected
+		 * @public
 		 * @return {Boolean} `true` if rejected
 		 */
 		isRejected : function () {
@@ -104,6 +109,7 @@ var deferred = {
 		 * Rejects the Promise
 		 *
 		 * @method reject
+		 * @public
 		 * @param  {Mixed} arg Rejection outcome
 		 * @return {Object}    Deferred
 		 */
@@ -117,6 +123,7 @@ var deferred = {
 		 * Resolves the Promise
 		 *
 		 * @method resolve
+		 * @public
 		 * @param  {Mixed} arg Resolution outcome
 		 * @return {Object}    Deferred
 		 */
@@ -130,6 +137,7 @@ var deferred = {
 		 * Gets the state of the Promise
 		 *
 		 * @method state
+		 * @public
 		 * @return {String} Describes the state
 		 */
 		state : function () {
@@ -140,6 +148,7 @@ var deferred = {
 		 * Registers handler(s) for the Promise
 		 *
 		 * @method then
+		 * @public
 		 * @param  {Function} success Executed when/if promise is resolved
 		 * @param  {Function} failure [Optional] Executed when/if promise is broken
 		 * @return {Object}           New Promise instance
@@ -156,6 +165,9 @@ var deferred = {
  *
  * @class Deferred
  * @namespace abaaso
+ * @method Deferred
+ * @constructor
+ * @private
  * @return {Object} Instance of Deferred
  */
 function Deferred () {

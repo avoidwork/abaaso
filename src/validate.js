@@ -9,6 +9,7 @@ var validate = {
 	 * Validates args based on the type or pattern specified
 	 *
 	 * @method test
+	 * @public
 	 * @param  {Object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
 	 * @return {Object}      Results
 	 */

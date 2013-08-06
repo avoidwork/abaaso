@@ -11,6 +11,7 @@ var data = {
 	 * Decorates a DataStore on an Object
 	 *
 	 * @method decorator
+	 * @public
 	 * @param  {Object} obj  Object to decorate
 	 * @param  {Mixed}  recs [Optional] Data to set with this.batch
 	 * @param  {Object} args [Optional] Arguments to set on the store
@@ -49,8 +50,9 @@ var data = {
 		 *         failedDataBatch  Fires when an exception occurs
 		 *
 		 * @method batch
+		 * @public
 		 * @param  {String}  type    Type of action to perform ( set/del/delete )
-		 * @param  {Mixed}   data    Array of keys or indices to delete, or Object containing multiple records to set
+		 * @param  {Array}   data    Array of keys or indices to delete, or Object containing multiple records to set
 		 * @param  {Boolean} sync    [Optional] Syncs store with data, if true everything is erased
 		 * @param  {Number}  chunk   [Optional] Size to chunk Array to batch set or delete
 		 * @return {Object}          Deferred
@@ -100,14 +102,17 @@ var data = {
 				throw e;
 			});
 
+			// Resolves public deferred
 			complete = function ( arg ) {
 				defer.resolve( arg );
 			};
 
+			// Rejects public deferred
 			failure = function ( arg ) {
 				defer.reject( arg );
 			};
 
+			// Set handler
 			set = function ( arg, key ) {
 				var data  = utility.clone( arg ),
 				    defer = deferred.factory(),
@@ -160,6 +165,7 @@ var data = {
 				}
 			};
 
+			// Delete handler
 			del = function ( i ) {
 				self.del( i, false, true ).then( function () {
 					if ( ++r === nth ) {
@@ -250,6 +256,7 @@ var data = {
 		 *         afterDataClear   Fires after the data is cleared
 		 *
 		 * @method clear
+		 * @public
 		 * @param  {Boolean} sync [Optional] Boolean to limit clearing of properties
 		 * @return {Object}       Data store
 		 */
@@ -319,6 +326,7 @@ var data = {
 		 *         failedDataRetrieve Fires if an exception occurs
 		 *
 		 * @method crawl
+		 * @public
 		 * @param  {Mixed}  arg Record, key or index
 		 * @return {Object}     Deferred
 		 */
@@ -342,6 +350,7 @@ var data = {
 			 * Concats URIs together
 			 *
 			 * @method build
+			 * @private
 			 * @param  {String} entity Entity URI
 			 * @param  {String} store  Data store URI
 			 * @return {String}        URI
@@ -368,6 +377,7 @@ var data = {
 			 * Crawl complete handler
 			 *
 			 * @method complete
+			 * @private
 			 * @return {Undefined} undefined
 			 */
 			complete = function () {
@@ -382,6 +392,7 @@ var data = {
 			 * Possibly a subset of the collection, so it relies on valid URI paths
 			 *
 			 * @method setup
+			 * @private
 			 * @param  {String} key Record key
 			 * @return {Object}     Data store
 			 */
@@ -465,6 +476,7 @@ var data = {
 		 *         failedDataDelete  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method del
+		 * @public
 		 * @param  {Mixed}   record  Record key or index
 		 * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
 		 * @param  {Boolean} batch   [Optional] True if called by data.batch
@@ -577,6 +589,8 @@ var data = {
 		/**
 		 * Exports a subset or complete record set of DataStore
 		 *
+		 * @method dump
+		 * @public
 		 * @param  {Array} args   [Optional] Sub-data set of DataStore
 		 * @param  {Array} fields [Optional] Fields to export, defaults to all
 		 * @return {Array}        Records
@@ -619,6 +633,7 @@ var data = {
 		 * Finds needle in the haystack
 		 *
 		 * @method find
+		 * @public
 		 * @param  {Mixed}  needle    String, Number, RegExp Pattern or Function
 		 * @param  {String} haystack  [Optional] Commma delimited string of the field( s ) to search
 		 * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
@@ -729,6 +744,7 @@ var data = {
 		 * from the DataStore.
 		 *
 		 * @method form
+		 * @public
 		 * @param  {Mixed}   record null, record, key or index
 		 * @param  {Object}  target Target HTML Element
 		 * @param  {Boolean} test   [Optional] Test form before setting values
@@ -776,6 +792,7 @@ var data = {
 			 * Button handler
 			 *
 			 * @method handler
+			 * @private
 			 * @param  {Object} event Window event
 			 * @return {Undefined}    undefined
 			 */
@@ -813,6 +830,7 @@ var data = {
 			 * Data structure in micro-format
 			 *
 			 * @method structure
+			 * @private
 			 * @param  {Object} record Data store record
 			 * @param  {Object} obj    Element
 			 * @param  {String} name   Property
@@ -855,6 +873,8 @@ var data = {
 		/**
 		 * Generates a RESTful store ( replacing a record ) when consuming an API end point
 		 *
+		 * @method generate
+		 * @public
 		 * @param  {Object} key Record key
 		 * @param  {Mixed}  arg [Optional] Array or URI String
 		 * @return {Object}     Deferred
@@ -936,6 +956,7 @@ var data = {
 		 * If the key is an integer, cast to a string before sending as an argument!
 		 *
 		 * @method get
+		 * @public
 		 * @param  {Mixed}  record Key, index or Array of pagination start & end; or comma delimited String of keys or indices
 		 * @param  {Number} offset [Optional] Offset from `record` for pagination
 		 * @return {Mixed}         Individual record, or Array of records
@@ -975,6 +996,8 @@ var data = {
 		/**
 		 * Performs an (INNER/LEFT/RIGHT) JOIN on two DataStores
 		 *
+		 * @method join
+		 * @public
 		 * @param  {String} arg   DataStore to join
 		 * @param  {String} field Field in both DataStores
 		 * @param  {String} join  Type of JOIN to perform, defaults to `inner`
@@ -1065,6 +1088,8 @@ var data = {
 		/**
 		 * Retrieves only 1 field/property
 		 *
+		 * @method only
+		 * @public
 		 * @param  {String} arg Field/property to retrieve
 		 * @return {Array}      Array of values
 		 */
@@ -1084,6 +1109,8 @@ var data = {
 		/**
 		 * Purges DataStore or record from localStorage
 		 *
+		 * @method purge
+		 * @public
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
@@ -1095,6 +1122,7 @@ var data = {
 		 * Reindexes the DataStore
 		 *
 		 * @method reindex
+		 * @public
 		 * @return {Object} Data store
 		 */
 		reindex : function () {
@@ -1116,6 +1144,8 @@ var data = {
 		/**
 		 * Restores DataStore or record frome localStorage
 		 *
+		 * @method restore
+		 * @public
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Record or store
 		 */
@@ -1126,6 +1156,8 @@ var data = {
 		/**
 		 * Saves DataStore or record to localStorage, sessionStorage or MongoDB (node.js only)
 		 *
+		 * @method save
+		 * @public
 		 * @param  {Mixed} arg  [Optional] String or Number for record
 		 * @return {Object}     Deferred
 		 */
@@ -1136,6 +1168,8 @@ var data = {
 		/**
 		 * Selects records based on an explcit description
 		 *
+		 * @method select
+		 * @public
 		 * @param  {Object} where  Object describing the WHERE clause
 		 * @return {Array}         Array of records
 		 */
@@ -1174,6 +1208,7 @@ var data = {
 		 *         failedDataSet  Fires if the store is RESTful and the action is denied
 		 *
 		 * @method set
+		 * @public
 		 * @param  {Mixed}   key   [Optional] Integer or String to use as a Primary Key
 		 * @param  {Object}  arg   Key:Value pairs to set as field values
 		 * @param  {Boolean} batch [Optional] True if called by data.batch
@@ -1429,6 +1464,7 @@ var data = {
 		 * Gets or sets an explicit expiration of data
 		 *
 		 * @method setExpires
+		 * @public
 		 * @param  {Number} arg  Milliseconds until data is stale
 		 * @return {Object}      Data store
 		 */
@@ -1470,6 +1506,7 @@ var data = {
 		 * Sets the RESTful API end point
 		 *
 		 * @method setUri
+		 * @public
 		 * @param  {String} arg [Optional] API collection end point
 		 * @return {Object}     Deferred
 		 */
@@ -1515,6 +1552,7 @@ var data = {
 		 * Returns a view, or creates a view and returns it
 		 *
 		 * @method sort
+		 * @public
 		 * @param  {String} query       SQL ( style ) order by
 		 * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
 		 * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" ( insensitive = "ci", sensitive = "cs", mixed = "ms" )
@@ -1538,14 +1576,15 @@ var data = {
 			    result   = [],
 			    bucket, crawl, sort, sorting;
 
-			if ( !create && this.views[view] instanceof Array ) {
-				return this.views[view];
-			}
-
-			if ( this.total === 0 ) {
-				return [];
-			}
-
+			/**
+			 * Recursively crawls queries & data
+			 *
+			 * @method crawl
+			 * @private
+			 * @param  {Array}  q    Queries
+			 * @param  {Object} data Records
+			 * @return {Array}       Sorted records
+			 */
 			crawl = function ( q, data ) {
 				var queries = utility.clone( q ),
 				    query   = q[0],
@@ -1573,6 +1612,16 @@ var data = {
 				return result;
 			};
 
+			/**
+			 * Creates a bucket of records
+			 *
+			 * @method bucket
+			 * @private
+			 * @param  {String}  query   Query to execute
+			 * @param  {Array}   records Records to sort
+			 * @param  {Boolean} reverse `true` to reverse records
+			 * @return {Object}          Describes bucket
+			 */
 			bucket = function ( query, records, reverse ) {
 				var prop     = query.replace( regex.desc, "" ),
 				    pk       = ( key === prop ),
@@ -1618,6 +1667,18 @@ var data = {
 				return {order: order, registry: registry};
 			};
 
+			/**
+			 * Sorts bucket
+			 *
+			 * @method sort
+			 * @private
+			 * @param  {Object}  data    Records to sort
+			 * @param  {String}  query   Query to execute
+			 * @param  {String}  prop    Property / field
+			 * @param  {Boolean} reverse `true` to reverse records
+			 * @param  {Boolean} pk      `true` if sorting on Primary Key
+			 * @return {Array}           Sorted records
+			 */
 			sort = function ( data, query, prop, reverse, pk ) {
 				var tmp    = [],
 				    sorted = [];
@@ -1644,12 +1705,29 @@ var data = {
 				return sorted;
 			};
 
+			/**
+			 * Sorts based on parsed value
+			 *
+			 * @method sort
+			 * @private
+			 * @param  {String} a [description]
+			 * @param  {String} b [description]
+			 * @return {Number}   -1, 0, or 1
+			 */
 			sorting = function ( a, b ) {
 				a = a.replace( regex.sort_value, "" );
 				b = b.replace( regex.sort_value, "" );
 
 				return array.sort( number.parse( a ) || a, number.parse( b ) || b );
 			};
+
+			if ( !create && this.views[view] instanceof Array ) {
+				return this.views[view];
+			}
+
+			if ( this.total === 0 ) {
+				return [];
+			}
 
 			result           = crawl( queries, where === undefined ? this.records : this.select( where ) );
 			this.views[view] = result;
@@ -1662,6 +1740,8 @@ var data = {
 		 *
 		 * SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js only)
 		 *
+		 * @methd storage
+		 * @public
 		 * @param  {Mixed}  obj  Record ( Object, key or index ) or store
 		 * @param  {Object} op   Operation to perform ( get, remove or set )
 		 * @param  {String} type [Optional] Type of Storage to use ( local, session [local] )
@@ -1880,6 +1960,7 @@ var data = {
 		 *         failedDataSync  Fires when an exception occurs
 		 *
 		 * @method sync
+		 * @public
 		 * @param  {Boolean} reindex [Optional] True will reindex the DataStore
 		 * @return {Object}          Deferred
 		 */
@@ -1910,6 +1991,14 @@ var data = {
 				throw e;
 			});
 
+			/**
+			 * Resolves public deferred
+			 *
+			 * @method success
+			 * @private
+			 * @param  {Object} arg API response
+			 * @return {Undefined}  undefined
+			 */
 			success = function ( arg ) {
 				var data;
 
@@ -1945,6 +2034,14 @@ var data = {
 				});
 			};
 
+			/**
+			 * Rejects public deferred
+			 *
+			 * @method failure
+			 * @private
+			 * @param  {Object} e Error instance
+			 * @return {Undefined} undefined
+			 */
 			failure = function ( e ) {
 				defer.reject( e );
 			};
@@ -1966,6 +2063,8 @@ var data = {
 		/**
 		 * Tears down a store & expires all records associated to an API
 		 *
+		 * @method teardown
+		 * @public
 		 * @return {Undefined} undefined
 		 */
 		teardown : function () {
@@ -2011,6 +2110,8 @@ var data = {
 		/**
 		 * Returns Array of unique values of `key`
 		 *
+		 * @method unique
+		 * @public
 		 * @param  {String} key Field to compare
 		 * @return {Array}      Array of values
 		 */
@@ -2029,6 +2130,8 @@ var data = {
 		 *
 		 * Use `data.set()` if the record contains child DataStores
 		 *
+		 * @method update
+		 * @public
 		 * @param  {Mixed}  key  Integer or String to use as a Primary Key
 		 * @param  {Object} data Key:Value pairs to set as field values
 		 * @return {Object}      Deferred
@@ -2061,6 +2164,9 @@ var data = {
  *
  * @class DataStore
  * @namespace abaaso
+ * @method DataStore
+ * @constructor
+ * @private
  * @param  {Object} obj Object being decorated with a DataStore
  * @return {Object}     Instance of DataStore
  */

@@ -8,6 +8,8 @@ var json = {
 	/**
 	 * Transforms JSON to CSV
 	 *
+	 * @method csv
+	 * @public
 	 * @param  {String}  arg JSON  string to transform
 	 * @param  {String}  delimiter [Optional] Character to separate fields
 	 * @param  {Boolean} header    [Optional] False to not include field names as first row
@@ -74,6 +76,7 @@ var json = {
 	 * Decodes the argument
 	 *
 	 * @method decode
+	 * @public
 	 * @param  {String}  arg    String to parse
 	 * @param  {Boolean} silent [Optional] Silently fail
 	 * @return {Mixed}          Entity resulting from parsing JSON, or undefined
@@ -95,6 +98,7 @@ var json = {
 	 * Encodes the argument as JSON
 	 *
 	 * @method encode
+	 * @public
 	 * @param  {Mixed}   arg    Entity to encode
 	 * @param  {Boolean} silent [Optional] Silently fail
 	 * @return {String}         JSON, or undefined

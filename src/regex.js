@@ -5,6 +5,7 @@
  *
  * @class regex
  * @namespace abaaso
+ * @public
  */
 var regex = {
 	after_space             : /\s+.*/,
