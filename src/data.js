@@ -1568,7 +1568,7 @@ var data = {
 				sensitivity = "ci";
 			}
 
-			query        = query.replace( regex.asc, "" );
+			query        = query.replace( /\s*asc/ig, "" );
 			create       = ( create === true || ( where instanceof Object ) );
 			var queries  = string.explode( query ),
 			    view     = ( queries.join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
