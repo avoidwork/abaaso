@@ -78,7 +78,6 @@ return {
 
 	// Methods & Properties
 	alias           : utility.alias,
-	aliased         : "abaaso",
 	allows          : client.allows,
 	append          : function ( type, args, obj ) {
 		if ( obj instanceof Element ) {
@@ -113,7 +112,7 @@ return {
 	error           : utility.error,
 	expire          : cache.clean,
 	expires         : 120000,
-	fib             : array.fib,
+	fib             : utility.fib,
 	extend          : utility.extend,
 	filter          : filter.factory,
 	fire            : function ( obj, event ) {

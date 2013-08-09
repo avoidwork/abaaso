@@ -469,6 +469,18 @@ var utility = {
 	}(),
 
 	/**
+	 * Fibonacci calculator
+	 *
+	 * @method fib
+	 * @public
+	 * @param  {Number} i Number to calculate
+	 * @return {Number}   Calculated number
+	 */
+	fib : function ( i ) {
+		return i > 1 ? utility.fib( i - 1 ) + utility.fib( i - 2 ) : i;
+	},
+
+	/**
 	 * Generates an ID value
 	 *
 	 * @method genId

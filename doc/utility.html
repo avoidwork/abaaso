@@ -438,7 +438,19 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
         <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">}</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method genId</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fib</span></p>
+
+<p>Fibonacci calculator</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>i must be a Number.</strong><br/>(Number to calculate)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Calculated number)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fib</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">i</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method genId</span></p>
 
 <p>Generates an ID value</p>
 

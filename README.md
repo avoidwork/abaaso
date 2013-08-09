@@ -1,4 +1,9 @@
+# abaaso
+
+abaaso is a modern, lightweight Enterprise class RESTful JavaScript application framework.
+
 [![build status](https://secure.travis-ci.org/avoidwork/abaaso.png)](http://travis-ci.org/avoidwork/abaaso)
+
 ## What is Supported?
 
 All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
@@ -30,9 +35,5 @@ If you're having problems with using the project, use the support forum at Coder
 <a href="http://codersclan.net/forum/index.php?repo_id=9"><img src="http://www.codersclan.net/graphics/getSupport_blue_big.png" width="160"></a>
 
 ## License
-
-abaaso is licensed under BSD-3 https://raw.github.com/avoidwork/abaaso/master/LICENSE
-
-### Copyright
-
-Copyright 2013 Jason Mulligan - jason.mulligan@avoidwork.com
+Copyright (c) 2013 Jason Mulligan  
+Licensed under the BSD-3 license.

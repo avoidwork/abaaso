@@ -344,7 +344,7 @@ var array = {
 	 * @return {Array}      Array of numbers
 	 */
 	fib : function ( arg ) {
-		var result = [1, 2],
+		var result = [1, 1],
 		    first  = result[0],
 		    second = result[1],
 		    sum;
