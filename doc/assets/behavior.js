@@ -16,7 +16,52 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "sourcePath": "/Users/jason/Projects/abaaso/README.md",
         "projectPath": "README.md",
         "targetPath": "index",
-        "title": "index"
+        "firstHeader": {
+          "type": "heading",
+          "data": {
+            "level": 1,
+            "title": "abaaso",
+            "slug": "abaaso",
+            "isFileHeader": true
+          },
+          "depth": 1,
+          "children": [
+            {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "What is Supported?",
+                "slug": "what-is-supported"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Features",
+                "slug": "features"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "Support",
+                "slug": "support"
+              },
+              "depth": 2
+            }, {
+              "type": "heading",
+              "data": {
+                "level": 2,
+                "title": "License",
+                "slug": "license"
+              },
+              "depth": 2
+            }
+          ]
+        },
+        "title": "abaaso"
       },
       "depth": 1,
       "outline": [
@@ -51,18 +96,7 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
             "title": "License",
             "slug": "license"
           },
-          "depth": 2,
-          "children": [
-            {
-              "type": "heading",
-              "data": {
-                "level": 3,
-                "title": "Copyright",
-                "slug": "copyright"
-              },
-              "depth": 3
-            }
-          ]
+          "depth": 2
         }
       ]
     }, {
