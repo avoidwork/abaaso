@@ -1715,21 +1715,22 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
         <span class="k">else</span> <span class="p">{</span>
           <span class="nx">result</span> <span class="o">=</span> <span class="nx">session</span> <span class="o">?</span> <span class="nx">sessionStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">localStorage</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span> <span class="nx">key</span> <span class="p">);</span>
 
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-          <span class="p">}</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">result</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
 
-          <span class="nx">result</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
-
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">self</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">result</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">rec</span> <span class="p">);</span>
-            <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-            <span class="p">}</span> <span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">self</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">result</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">rec</span> <span class="p">);</span>
+              <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+              <span class="p">}</span> <span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">result</span> <span class="p">);</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">self</span> <span class="p">);</span>
+            <span class="p">}</span>
           <span class="p">}</span>
           <span class="k">else</span> <span class="p">{</span>
-            <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">result</span> <span class="p">);</span>
             <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">self</span> <span class="p">);</span>
           <span class="p">}</span>
         <span class="p">}</span>
