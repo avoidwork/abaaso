@@ -1833,21 +1833,22 @@ var data = {
 				else {
 					result = session ? sessionStorage.getItem( key ) : localStorage.getItem( key );
 
-					if ( result === null ) {
-						throw new Error( label.error.invalidArguments );
-					}
+					if ( result !== null ) {
+						result = json.decode( result );
 
-					result = json.decode( result );
-
-					if ( record ) {
-						self.set( key, result, true ).then( function ( rec ) {
-							defer.resolve( rec );
-						}, function ( e ) {
-							defer.reject( e );
-						} );
+						if ( record ) {
+							self.set( key, result, true ).then( function ( rec ) {
+								defer.resolve( rec );
+							}, function ( e ) {
+								defer.reject( e );
+							} );
+						}
+						else {
+							utility.merge( self, result );
+							defer.resolve( self );
+						}
 					}
 					else {
-						utility.merge( self, result );
 						defer.resolve( self );
 					}
 				}

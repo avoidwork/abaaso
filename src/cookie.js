@@ -9,6 +9,7 @@ var cookie = {
 	 * Expires a cookie if it exists
 	 *
 	 * @method expire
+	 * @public
 	 * @param  {String}  name   Name of the cookie to expire
 	 * @param  {String}  domain [Optional] Domain to set the cookie for
 	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
@@ -25,6 +26,7 @@ var cookie = {
 	 * Gets a cookie
 	 *
 	 * @method get
+	 * @public
 	 * @param  {String} name Name of the cookie to get
 	 * @param  {String} jar  [Optional] Cookie jar, defaults to document.cookie
 	 * @return {Mixed}       Cookie or undefined
@@ -37,6 +39,7 @@ var cookie = {
 	 * Gets the cookies for the domain
 	 *
 	 * @method list
+	 * @public
 	 * @param  {String} jar [Optional] Cookie jar, defaults to document.cookie
 	 * @return {Object}                Collection of cookies
 	 */
@@ -64,6 +67,7 @@ var cookie = {
 	 * The offset specifies a positive or negative span of time as day, hour, minute or second
 	 *
 	 * @method set
+	 * @public
 	 * @param  {String}  name   Name of the cookie to create
 	 * @param  {String}  value  Value to set
 	 * @param  {String}  offset A positive or negative integer followed by "d", "h", "m" or "s"
