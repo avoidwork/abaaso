@@ -581,7 +581,7 @@ var data = {
 			}
 
 			if ( valid ) {
-				args   = {key: key, record: record, reindex: reindex};
+				args = {key: key, record: record, reindex: reindex};
 
 				if ( !batch && this.callback === null && this.uri !== null ) {
 					uri = this.uri + "/" + key;
