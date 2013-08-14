@@ -75,6 +75,20 @@ var data = {
 			    complete, failure, set, del, parsed;
 
 			defer.then( function ( arg ) {
+				var success;
+
+				success = function () {
+					array.each( self.datalists, function ( i ) {
+						i.refresh( true );
+					});
+
+					if ( events ) {
+						observer.fire( self.parentNode, "afterDataBatch", arg );
+					}
+
+					return self.records;
+				};
+
 				self.loaded = true;
 
 				if ( regex.del.test( type ) ) {
@@ -82,18 +96,13 @@ var data = {
 				}
 
 				if ( self.autosave ) {
-					self.save();
+					self.save().then( success, function ( e ) {
+						utility.error( e, arg, self );
+					} );
 				}
-
-				array.each( self.datalists, function ( i ) {
-					i.refresh( true );
-				});
-
-				if ( events ) {
-					observer.fire( self.parentNode, "afterDataBatch", arg );
+				else {
+					success();
 				}
-
-				return self.records;
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataBatch", e );
@@ -496,7 +505,20 @@ var data = {
 			    key, args, uri, p;
 
 			defer.then( function ( arg ) {
-				var record = self.get( arg.record );
+				var record = self.get( arg.record ),
+				    success;
+
+				success = function () {
+					array.each( self.datalists, function ( i ) {
+						i.del( record );
+					});
+
+					if ( events ) {
+						observer.fire( self.parentNode, "afterDataDelete", record );
+					}
+
+					defer2.resolve( record );
+				};
 
 				self.records.remove( self.keys[arg.key] );
 				delete self.keys[arg.key];
@@ -517,21 +539,18 @@ var data = {
 					self.reindex();
 				}
 
-				if ( !batch ) {
-					if ( self.autosave ) {
-						self.save();
-					}
+				if ( !batch && self.autosave ) {
+					self.save().then( success, function ( e ) {
+						if ( events ) {
+							observer.fire( self.parentNode, "failedDataDelete", e );
+						}
 
-					array.each( self.datalists, function ( i ) {
-						i.del( record );
+						defer2.reject( e );
 					});
 				}
-
-				if ( events ) {
-					observer.fire( self.parentNode, "afterDataDelete", record );
+				else {
+					success();
 				}
-
-				defer2.resolve( record );
 			}, function ( e ) {
 				if ( events ) {
 					observer.fire( self.parentNode, "failedDataDelete", e );
@@ -1240,25 +1259,36 @@ var data = {
 				data.data = utility.clone( arg.data );
 
 				defer.then( function ( arg ) {
+					var success;
+
+					success = function () {
+						array.each( self.datalists, function ( i ) {
+							i.refresh();
+						});
+
+						if ( events ) {
+							observer.fire( self.parentNode, "afterDataSet", arg );
+						}
+
+						reconcile( true, arg );
+					};
+
 					if ( self.retrieve ) {
 						self.crawl( arg );
 					}
 
-					if ( !batch ) {
-						if ( self.autosave ) {
-							self.save( data.key );
-						}
+					if ( !batch && self.autosave ) {
+						self.save( data.key ).then( success, function ( e ) {
+							if ( events ) {
+								observer.fire( self.parentNode, "failedDataSet", e );
+							}
 
-						array.each( self.datalists, function ( i ) {
-							i.refresh();
+							reconcile( false, e );
 						});
 					}
-
-					if ( events ) {
-						observer.fire( self.parentNode, "afterDataSet", arg );
+					else {
+						success();
 					}
-
-					reconcile( true, arg );
 				}, function ( e ) {
 					if ( events ) {
 						observer.fire( self.parentNode, "failedDataSet", e );
