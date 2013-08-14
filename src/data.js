@@ -1937,36 +1937,52 @@ var data = {
 									} );
 								}
 								else {
-									deferreds = [];
+									collection.drop( function ( e ) {
+										if ( e ) {
+											defer.reject( e );
+											db.close();
+										}
+										else {
+											db.createCollection( self.parentNode.id, function ( e, collection ) {
+												if ( e ) {
+													defer.reject( e );
+													db.close();
+												}
+												else {
+													deferreds = [];
 
-									array.each( self.records, function ( i ) {
-										var data   = {},
-										    defer2 = deferred.factory();
+													array.each( self.records, function ( i ) {
+														var data   = {},
+														    defer2 = deferred.factory();
 
-										deferreds.push( defer2 );
+														deferreds.push( defer2 );
 
-										utility.iterate( i.data, function ( v, k ) {
-											if ( !array.contains( self.collections, k ) ) {
-												data[k] = v;
-											}
-										} );
+														utility.iterate( i.data, function ( v, k ) {
+															if ( !array.contains( self.collections, k ) ) {
+																data[k] = v;
+															}
+														} );
 
-										collection.update( {_id: i.key}, {$set: data}, {w:1, safe:true, upsert:true}, function ( e, arg ) {
-											if ( e ) {
-												defer2.reject( e );
-											}
-											else {
-												defer2.resolve( arg );
-											}
-										} );
-									} );
+														collection.update( {_id: i.key}, {$set: data}, {w:1, safe:true, upsert:true}, function ( e, arg ) {
+															if ( e ) {
+																defer2.reject( e );
+															}
+															else {
+																defer2.resolve( arg );
+															}
+														} );
+													} );
 
-									utility.when( deferreds ).then( function ( result ) {
-										defer.resolve( result );
-										db.close();
-									}, function ( e ) {
-										defer.reject( e );
-										db.close();
+													utility.when( deferreds ).then( function ( result ) {
+														defer.resolve( result );
+														db.close();
+													}, function ( e ) {
+														defer.reject( e );
+														db.close();
+													} );
+												}
+											} );
+										}
 									} );
 								}
 							} );
