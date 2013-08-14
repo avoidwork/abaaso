@@ -506,9 +506,29 @@ var data = {
 
 			defer.then( function ( arg ) {
 				var record = self.get( arg.record ),
+				    key    = arg.key,
 				    success;
 
 				success = function () {
+					self.records.remove( self.keys[key] );
+					delete self.keys[key];
+					self.total--;
+					self.views = {};
+
+					utility.iterate( record.data, function ( v ) {
+						if ( v === null ) {
+							return;
+						}
+
+						if ( v.data !== undefined && typeof v.data.teardown === "function") {
+							v.data.teardown();
+						}
+					});
+
+					if ( arg.reindex ) {
+						self.reindex();
+					}
+
 					array.each( self.datalists, function ( i ) {
 						i.del( record );
 					});
@@ -520,27 +540,8 @@ var data = {
 					defer2.resolve( record );
 				};
 
-				self.records.remove( self.keys[arg.key] );
-				delete self.keys[arg.key];
-				self.total--;
-				self.views = {};
-
-				utility.iterate( record.data, function ( v ) {
-					if ( v === null ) {
-						return;
-					}
-
-					if ( v.data !== undefined && typeof v.data.teardown === "function") {
-						v.data.teardown();
-					}
-				});
-
-				if ( arg.reindex ) {
-					self.reindex();
-				}
-
 				if ( !batch && self.autosave ) {
-					self.save().then( success, function ( e ) {
+					self.purge( key ).then( success, function ( e ) {
 						if ( events ) {
 							observer.fire( self.parentNode, "failedDataDelete", e );
 						}
