@@ -502,33 +502,14 @@ var data = {
 			    events = ( this.events === true ),
 			    defer  = deferred.factory(),
 			    defer2 = deferred.factory(),
+			    valid  = true,
 			    key, args, uri, p;
 
 			defer.then( function ( arg ) {
 				var record = self.get( arg.record ),
-				    key    = arg.key,
 				    success;
 
 				success = function () {
-					self.records.remove( self.keys[key] );
-					delete self.keys[key];
-					self.total--;
-					self.views = {};
-
-					utility.iterate( record.data, function ( v ) {
-						if ( v === null ) {
-							return;
-						}
-
-						if ( v.data !== undefined && typeof v.data.teardown === "function") {
-							v.data.teardown();
-						}
-					});
-
-					if ( arg.reindex ) {
-						self.reindex();
-					}
-
 					array.each( self.datalists, function ( i ) {
 						i.del( record );
 					});
@@ -540,8 +521,27 @@ var data = {
 					defer2.resolve( record );
 				};
 
+				self.records.remove( self.keys[arg.key] );
+				delete self.keys[arg.key];
+				self.total--;
+				self.views = {};
+
+				utility.iterate( record.data, function ( v ) {
+					if ( v === null ) {
+						return;
+					}
+
+					if ( v.data !== undefined && typeof v.data.teardown === "function") {
+						v.data.teardown();
+					}
+				});
+
+				if ( arg.reindex ) {
+					self.reindex();
+				}
+
 				if ( !batch && self.autosave ) {
-					self.purge( key ).then( success, function ( e ) {
+					self.purge( arg.key ).then( success, function ( e ) {
 						if ( events ) {
 							observer.fire( self.parentNode, "failedDataDelete", e );
 						}
@@ -565,42 +565,46 @@ var data = {
 				record = this.keys[key];
 
 				if ( record === undefined ) {
-					throw new Error( label.error.invalidArguments );
+					valid = false;
+					defer.reject( label.error.invalidArguments );
 				}
 			}
 			else {
 				key = this.records[record];
 
 				if ( key === undefined ) {
-					throw new Error( label.error.invalidArguments );
+					valid = false;
+					defer.reject( label.error.invalidArguments );
 				}
 
 				key = key.key;
 			}
 
-			args   = {key: key, record: record, reindex: reindex};
+			if ( valid ) {
+				args = {key: key, record: record, reindex: reindex};
 
-			if ( !batch && this.callback === null && this.uri !== null ) {
-				uri = this.uri + "/" + key;
-				p   = ( client.cors( uri ) || client.allows( uri, "delete" ) );
-			}
+				if ( !batch && this.callback === null && this.uri !== null ) {
+					uri = this.uri + "/" + key;
+					p   = ( client.cors( uri ) || client.allows( uri, "delete" ) );
+				}
 
-			if ( events ) {
-				observer.fire( self.parentNode, "beforeDataDelete", args );
-			}
+				if ( events ) {
+					observer.fire( self.parentNode, "beforeDataDelete", args );
+				}
 
-			if ( batch || this.callback !== null || this.uri === null ) {
-				defer.resolve( args );
-			}
-			else if ( regex.true_undefined.test( p ) ) {
-				client.request(uri, "DELETE", function () {
+				if ( batch || this.callback !== null || this.uri === null ) {
 					defer.resolve( args );
-				}, function ( e ) {
-					defer.reject( e );
-				}, utility.merge( {withCredentials: this.credentials}, this.headers) );
-			}
-			else {
-				defer.reject( args );
+				}
+				else if ( regex.true_undefined.test( p ) ) {
+					client.request(uri, "DELETE", function () {
+						defer.resolve( args );
+					}, function ( e ) {
+						defer.reject( e );
+					}, utility.merge( {withCredentials: this.credentials}, this.headers) );
+				}
+				else {
+					defer.reject( args );
+				}
 			}
 
 			return defer2;
@@ -754,140 +758,6 @@ var data = {
 			}
 
 			return result;
-		},
-
-		/**
-		 * Generates a micro-format form from a record
-		 *
-		 * If record is null, an empty form based on the first record is generated.
-		 * The submit action is data.set() which triggers a POST or PUT
-		 * from the DataStore.
-		 *
-		 * @method form
-		 * @public
-		 * @param  {Mixed}   record null, record, key or index
-		 * @param  {Object}  target Target HTML Element
-		 * @param  {Boolean} test   [Optional] Test form before setting values
-		 * @return {Object}         Generated HTML form
-		 */
-		form : function ( record, target, test ) {
-			test      = ( test !== false );
-			var empty = ( record === null ),
-			    self  = this,
-			    entity, obj, handler, structure, key, data;
-
-			if ( empty ) {
-				record = this.get( 0 );
-			}
-			else if ( !( record instanceof Object ) ) {
-				record = this.get( record );
-			}
-
-			if ( record === undefined ) {
-				throw new Error( label.error.invalidArguments );
-			}
-			else if ( this.uri !== null && !client.cors ( this.uri ) && !client.allows( this.uri, "post" ) ) {
-				throw new Error( label.error.serverInvalidMethod );
-			}
-
-			key  = record.key;
-			data = record.data;
-
-			if ( target !== undefined ) {
-				target = utility.object( target );
-			}
-
-			if ( this.uri !== null ) {
-				entity = this.uri.replace( regex.not_endpoint, "" ).replace( /\?.*/, "" );
-
-				if ( string.isDomain( entity ) ) {
-					entity = entity.replace( /\..*/g, "" );
-				}
-			}
-			else {
-				entity = "record";
-			}
-
-			/**
-			 * Button handler
-			 *
-			 * @method handler
-			 * @private
-			 * @param  {Object} event Window event
-			 * @return {Undefined}    undefined
-			 */
-			handler = function ( e ) {
-				var form    = utility.target( e ).parentNode,
-				    nodes   = utility.$( "#" + form.id + " input" ),
-				    entity  = nodes[0].name.match( /(.*)\[/ )[1],
-				    result  = true,
-				    newData = {};
-
-				utility.stop( e );
-
-				if ( test ) {
-					result = element.validate( form );
-				}
-
-				if ( result ) {
-					array.each( nodes, function ( i ) {
-						if ( i.type !== undefined && regex.input_button.test( i.type ) ) {
-							return;
-						}
-
-						utility.define( i.name.replace( "[", "." ).replace( "]", "" ), i.value, newData );
-					});
-
-					self.set( key, newData[entity] ).then( function () {
-						element.destroy( form );
-					}, function () {
-						element.destroy( form );
-					});
-				}
-			};
-
-			/**
-			 * Data structure in micro-format
-			 *
-			 * @method structure
-			 * @private
-			 * @param  {Object} record Data store record
-			 * @param  {Object} obj    Element
-			 * @param  {String} name   Property
-			 * @return {Undefined}     undefined
-			 */
-			structure = function ( record, obj, name ) {
-				var x, id;
-
-				utility.iterate( record, function ( v, k ) {
-					if ( v instanceof Array ) {
-						x = 0;
-						array.each( v, function ( o ) {
-							structure( o, obj, name + "[" + k + "][" + ( x++ ) + "]" );
-						});
-					}
-					else if ( v instanceof Object ) {
-						structure( v, obj, name + "[" + k + "]" );
-					}
-					else {
-						id = ( name + "[" + k + "]" ).replace( /\[|\]/g, "" );
-						obj.create( "label", {"for": id, innerHTML: string.capitalize( k )} );
-						obj.create( "input", {id: id, name: name + "[" + k + "]", type: "text", value: empty ? "" : v} );
-					}
-				});
-			};
-
-			obj = element.create( "form", { style: "display:none;"}, target );
-			structure( data, obj, entity );
-
-			observer.add( element.create( "input", {type: "button", value: label.common.submit}, obj ), "click", function ( e ) {
-				handler( e );
-			});
-
-			element.create( "input", {type: "reset", value: label.common.reset}, obj );
-			element.css( obj, "display", "inherit" );
-
-			return obj;
 		},
 
 		/**
@@ -1792,11 +1662,16 @@ var data = {
 
 			record = ( regex.number_string.test( typeof obj ) || ( obj.hasOwnProperty( "key" ) && !obj.hasOwnProperty( "parentNode" ) ) );
 
-			if ( record && !( obj instanceof Object ) ) {
-				obj = this.get( obj );
-			}
+			if ( op !== "remove" ) {
+				if ( record && !( obj instanceof Object ) ) {
+					obj = this.get( obj );
+				}
 
-			key = record ? obj.key : obj.parentNode.id;
+				key = record ? obj.key : obj.parentNode.id;
+			}
+			else if ( op === "remove" && record ) {
+				key = obj.key || obj;
+			}
 
 			if ( op === "get" ) {
 				if ( mongo ) {
@@ -1812,7 +1687,7 @@ var data = {
 									db.close();
 								}
 								else if ( record ) {
-									collection.find( {_id: obj.key} ).limit(1).toArray( function ( e, recs ) {
+									collection.find( {_id: obj.key} ).limit( 1 ).toArray( function ( e, recs ) {
 										if ( e ) {
 											defer.reject( e );
 										}
@@ -1893,7 +1768,7 @@ var data = {
 						}
 						else {
 							db.createCollection( self.parentNode.id, function ( e, collection ) {
-								collection.remove( record ? {_id: obj.key} : {}, {safe: true}, function ( e, arg ) {
+								collection.remove( record ? {_id: key} : {}, {safe: true}, function ( e, arg ) {
 									if ( e ) {
 										defer.reject( e );
 									}
@@ -1926,7 +1801,7 @@ var data = {
 									db.close();
 								}
 								else if ( record ) {
-									collection.update( {_id: obj.key}, {$set: obj.data}, {w:1, safe:true, upsert:true}, function ( e, arg ) {
+									collection.update( {_id: obj.key}, {$set: obj.data}, {w: 1, safe: true, upsert: true}, function ( e, arg ) {
 										if ( e ) {
 											defer.reject( e );
 										}
@@ -1938,36 +1813,45 @@ var data = {
 									} );
 								}
 								else {
-									deferreds = [];
+									// Removing all documents & re-inserting
+									collection.remove( {}, {w: 1, safe: true}, function ( e ) {
+										if ( e ) {
+											defer.reject( e );
+											db.close();
+										}
+										else {
+											deferreds = [];
 
-									array.each( self.records, function ( i ) {
-										var data   = {},
-										    defer2 = deferred.factory();
+											array.each( self.records, function ( i ) {
+												var data   = {},
+												    defer2 = deferred.factory();
 
-										deferreds.push( defer2 );
+												deferreds.push( defer2 );
 
-										utility.iterate( i.data, function ( v, k ) {
-											if ( !array.contains( self.collections, k ) ) {
-												data[k] = v;
-											}
-										} );
+												utility.iterate( i.data, function ( v, k ) {
+													if ( !array.contains( self.collections, k ) ) {
+														data[k] = v;
+													}
+												} );
 
-										collection.update( {_id: i.key}, {$set: data}, {w:1, safe:true, upsert:true}, function ( e, arg ) {
-											if ( e ) {
-												defer2.reject( e );
-											}
-											else {
-												defer2.resolve( arg );
-											}
-										} );
-									} );
+												collection.update( {_id: i.key}, {$set: data}, {w:1, safe:true, upsert:true}, function ( e, arg ) {
+													if ( e ) {
+														defer2.reject( e );
+													}
+													else {
+														defer2.resolve( arg );
+													}
+												} );
+											} );
 
-									utility.when( deferreds ).then( function ( result ) {
-										defer.resolve( result );
-										db.close();
-									}, function ( e ) {
-										defer.reject( e );
-										db.close();
+											utility.when( deferreds ).then( function ( result ) {
+												defer.resolve( result );
+												db.close();
+											}, function ( e ) {
+												defer.reject( e );
+												db.close();
+											} );
+										}
 									} );
 								}
 							} );

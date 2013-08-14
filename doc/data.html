@@ -457,6 +457,7 @@ Events: beforeDataDelete  Fires before the record is deleted
           <span class="nx">events</span> <span class="o">=</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">events</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">),</span>
           <span class="nx">defer</span>  <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
           <span class="nx">defer2</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+          <span class="nx">valid</span>  <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
           <span class="nx">key</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">p</span><span class="p">;</span>
 
       <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
@@ -495,7 +496,7 @@ Events: beforeDataDelete  Fires before the record is deleted
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">batch</span> <span class="o">&amp;&amp;</span> <span class="nx">self</span><span class="p">.</span><span class="nx">autosave</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">self</span><span class="p">.</span><span class="nx">save</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span> <span class="nx">success</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">self</span><span class="p">.</span><span class="nx">purge</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">key</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">success</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
               <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;failedDataDelete&quot;</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
             <span class="p">}</span>
@@ -519,42 +520,46 @@ Events: beforeDataDelete  Fires before the record is deleted
         <span class="nx">record</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">keys</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+          <span class="nx">valid</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
         <span class="p">}</span>
       <span class="p">}</span>
       <span class="k">else</span> <span class="p">{</span>
         <span class="nx">key</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="nx">record</span><span class="p">];</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+          <span class="nx">valid</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
         <span class="p">}</span>
 
         <span class="nx">key</span> <span class="o">=</span> <span class="nx">key</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span>
       <span class="p">}</span>
 
-      <span class="nx">args</span>   <span class="o">=</span> <span class="p">{</span><span class="nx">key</span><span class="o">:</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">record</span><span class="o">:</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">reindex</span><span class="o">:</span> <span class="nx">reindex</span><span class="p">};</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">valid</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">args</span> <span class="o">=</span> <span class="p">{</span><span class="nx">key</span><span class="o">:</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">record</span><span class="o">:</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">reindex</span><span class="o">:</span> <span class="nx">reindex</span><span class="p">};</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">batch</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">uri</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nx">key</span><span class="p">;</span>
-        <span class="nx">p</span>   <span class="o">=</span> <span class="p">(</span> <span class="nx">client</span><span class="p">.</span><span class="nx">cors</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">allows</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">batch</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">uri</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="nx">key</span><span class="p">;</span>
+          <span class="nx">p</span>   <span class="o">=</span> <span class="p">(</span> <span class="nx">client</span><span class="p">.</span><span class="nx">cors</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">allows</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;delete&quot;</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;beforeDataDelete&quot;</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
-      <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;beforeDataDelete&quot;</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
+        <span class="p">}</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">batch</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">true_undefined</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">p</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">client</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">batch</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
           <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span> <span class="p">);</span>
-        <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-        <span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="p">{</span><span class="nx">withCredentials</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">credentials</span><span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">headers</span><span class="p">)</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">true_undefined</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">p</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">client</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span><span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+            <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span> <span class="p">);</span>
+          <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+          <span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="p">{</span><span class="nx">withCredentials</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">credentials</span><span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">headers</span><span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span> <span class="p">);</span>
+        <span class="p">}</span>
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">defer2</span><span class="p">;</span>
@@ -697,139 +702,6 @@ Events: beforeDataDelete  Fires before the record is deleted
       <span class="p">}</span>
 
       <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-    <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method form</span></p>
-
-<p>Generates a micro-format form from a record
-If record is null, an empty form based on the first record is generated.
-The submit action is data.set() which triggers a POST or PUT
-from the DataStore.</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><p><strong>record can be of any type.</strong><br/>(null, record, key or index)</p></li>
-<li><p><strong>target must be an Object.</strong><br/>(Target HTML Element)</p></li>
-<li><p><strong>test must be a Boolean.</strong><br/>([Optional] Test form before setting values)</p></li>
-</ul>
-
-<p><strong>Returns an Object</strong><br/>(Generated HTML form)</p></div></div><div class="code"><div class="wrapper">    <span class="nx">form</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">test</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">test</span>      <span class="o">=</span> <span class="p">(</span> <span class="nx">test</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">);</span>
-      <span class="kd">var</span> <span class="nx">empty</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">),</span>
-          <span class="nx">self</span>  <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
-          <span class="nx">entity</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">handler</span><span class="p">,</span> <span class="nx">structure</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">data</span><span class="p">;</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">empty</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">record</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="mi">0</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">record</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">record</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">record</span> <span class="p">);</span>
-      <span class="p">}</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">cors</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">allows</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;post&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span> <span class="p">);</span>
-      <span class="p">}</span>
-
-      <span class="nx">key</span>  <span class="o">=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span>
-      <span class="nx">data</span> <span class="o">=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">target</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">target</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">target</span> <span class="p">);</span>
-      <span class="p">}</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">entity</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">not_endpoint</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\?.*/</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isDomain</span><span class="p">(</span> <span class="nx">entity</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">entity</span> <span class="o">=</span> <span class="nx">entity</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\..*/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
-        <span class="p">}</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">entity</span> <span class="o">=</span> <span class="s2">&quot;record&quot;</span><span class="p">;</span>
-      <span class="p">}</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method handler</span></p>
-
-<p>Button handler</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><strong>event must be an Object.</strong><br/>(Window event)</li>
-</ul>
-
-<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">form</span>    <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">target</span><span class="p">(</span> <span class="nx">e</span> <span class="p">).</span><span class="nx">parentNode</span><span class="p">,</span>
-            <span class="nx">nodes</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">form</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot; input&quot;</span> <span class="p">),</span>
-            <span class="nx">entity</span>  <span class="o">=</span> <span class="nx">nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">name</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span> <span class="sr">/(.*)\[/</span> <span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="nx">result</span>  <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
-            <span class="nx">newData</span> <span class="o">=</span> <span class="p">{};</span>
-
-        <span class="nx">utility</span><span class="p">.</span><span class="nx">stop</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">test</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">result</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">validate</span><span class="p">(</span> <span class="nx">form</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">nodes</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">type</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">input_button</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="k">return</span><span class="p">;</span>
-            <span class="p">}</span>
-
-            <span class="nx">utility</span><span class="p">.</span><span class="nx">define</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">name</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span> <span class="nx">i</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span> <span class="nx">newData</span> <span class="p">);</span>
-          <span class="p">});</span>
-
-          <span class="nx">self</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">newData</span><span class="p">[</span><span class="nx">entity</span><span class="p">]</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-            <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">form</span> <span class="p">);</span>
-          <span class="p">},</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-            <span class="nx">element</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span> <span class="nx">form</span> <span class="p">);</span>
-          <span class="p">});</span>
-        <span class="p">}</span>
-      <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method structure</span></p>
-
-<p>Data structure in micro-format</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><p><strong>record must be an Object.</strong><br/>(Data store record)</p></li>
-<li><p><strong>obj must be an Object.</strong><br/>(Element)</p></li>
-<li><p><strong>name must be a String.</strong><br/>(Property)</p></li>
-</ul>
-
-<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">      <span class="nx">structure</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">name</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">x</span><span class="p">,</span> <span class="nx">id</span><span class="p">;</span>
-
-        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-            <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">o</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="nx">structure</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="nx">k</span> <span class="o">+</span> <span class="s2">&quot;][&quot;</span> <span class="o">+</span> <span class="p">(</span> <span class="nx">x</span><span class="o">++</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span> <span class="p">);</span>
-            <span class="p">});</span>
-          <span class="p">}</span>
-          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">structure</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="nx">k</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span> <span class="p">);</span>
-          <span class="p">}</span>
-          <span class="k">else</span> <span class="p">{</span>
-            <span class="nx">id</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="nx">k</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\[|\]/g</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
-            <span class="nx">obj</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;for&quot;</span><span class="o">:</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">innerHTML</span><span class="o">:</span> <span class="nx">string</span><span class="p">.</span><span class="nx">capitalize</span><span class="p">(</span> <span class="nx">k</span> <span class="p">)}</span> <span class="p">);</span>
-            <span class="nx">obj</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">name</span><span class="o">:</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot;[&quot;</span> <span class="o">+</span> <span class="nx">k</span> <span class="o">+</span> <span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">empty</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="nx">v</span><span class="p">}</span> <span class="p">);</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
-      <span class="p">};</span>
-
-      <span class="nx">obj</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;form&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">style</span><span class="o">:</span> <span class="s2">&quot;display:none;&quot;</span><span class="p">},</span> <span class="nx">target</span> <span class="p">);</span>
-      <span class="nx">structure</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">entity</span> <span class="p">);</span>
-
-      <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">common</span><span class="p">.</span><span class="nx">submit</span><span class="p">},</span> <span class="nx">obj</span> <span class="p">),</span> <span class="s2">&quot;click&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">handler</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-      <span class="p">});</span>
-
-      <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;reset&quot;</span><span class="p">,</span> <span class="nx">value</span><span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">common</span><span class="p">.</span><span class="nx">reset</span><span class="p">},</span> <span class="nx">obj</span> <span class="p">);</span>
-      <span class="nx">element</span><span class="p">.</span><span class="nx">css</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot;display&quot;</span><span class="p">,</span> <span class="s2">&quot;inherit&quot;</span> <span class="p">);</span>
-
-      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method generate</span></p>
 
 <p>Generates a RESTful store ( replacing a record ) when consuming an API end point</p>
@@ -1673,11 +1545,16 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
 
       <span class="nx">record</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">number_string</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="s2">&quot;key&quot;</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">obj</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">(</span> <span class="s2">&quot;parentNode&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">obj</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-      <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">op</span> <span class="o">!==</span> <span class="s2">&quot;remove&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">obj</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+        <span class="p">}</span>
 
-      <span class="nx">key</span> <span class="o">=</span> <span class="nx">record</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+        <span class="nx">key</span> <span class="o">=</span> <span class="nx">record</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">op</span> <span class="o">===</span> <span class="s2">&quot;remove&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">record</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">key</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="p">}</span>
 
       <span class="k">if</span> <span class="p">(</span> <span class="nx">op</span> <span class="o">===</span> <span class="s2">&quot;get&quot;</span> <span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span> <span class="nx">mongo</span> <span class="p">)</span> <span class="p">{</span>
@@ -1693,7 +1570,7 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
                   <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
                 <span class="p">}</span>
                 <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="p">)</span> <span class="p">{</span>
-                  <span class="nx">collection</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span><span class="p">}</span> <span class="p">).</span><span class="nx">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">toArray</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">recs</span> <span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">collection</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span><span class="p">}</span> <span class="p">).</span><span class="nx">limit</span><span class="p">(</span> <span class="mi">1</span> <span class="p">).</span><span class="nx">toArray</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">recs</span> <span class="p">)</span> <span class="p">{</span>
                     <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
                       <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
                     <span class="p">}</span>
@@ -1774,7 +1651,7 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
             <span class="p">}</span>
             <span class="k">else</span> <span class="p">{</span>
               <span class="nx">db</span><span class="p">.</span><span class="nx">createCollection</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">collection</span> <span class="p">)</span> <span class="p">{</span>
-                <span class="nx">collection</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">record</span> <span class="o">?</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span><span class="p">}</span> <span class="o">:</span> <span class="p">{},</span> <span class="p">{</span><span class="nx">safe</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">collection</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">record</span> <span class="o">?</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">key</span><span class="p">}</span> <span class="o">:</span> <span class="p">{},</span> <span class="p">{</span><span class="nx">safe</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
                   <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
                     <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
                   <span class="p">}</span>
@@ -1807,7 +1684,7 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
                   <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
                 <span class="p">}</span>
                 <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="p">)</span> <span class="p">{</span>
-                  <span class="nx">collection</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span><span class="p">},</span> <span class="p">{</span><span class="nx">$set</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span><span class="p">},</span> <span class="p">{</span><span class="nx">w</span><span class="o">:</span><span class="mi">1</span><span class="p">,</span> <span class="nx">safe</span><span class="o">:</span><span class="kc">true</span><span class="p">,</span> <span class="nx">upsert</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">collection</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">key</span><span class="p">},</span> <span class="p">{</span><span class="nx">$set</span><span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span><span class="p">},</span> <span class="p">{</span><span class="nx">w</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">safe</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">upsert</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
                     <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
                       <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
                     <span class="p">}</span>
@@ -1818,37 +1695,44 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
                     <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
                   <span class="p">}</span> <span class="p">);</span>
                 <span class="p">}</span>
-                <span class="k">else</span> <span class="p">{</span>
-                  <span class="nx">deferreds</span> <span class="o">=</span> <span class="p">[];</span>
+                <span class="k">else</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Removing all documents &amp; re-inserting</p></div></div><div class="code"><div class="wrapper">                  <span class="nx">collection</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="p">{},</span> <span class="p">{</span><span class="nx">w</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">safe</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                      <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+                      <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span> <span class="p">{</span>
+                      <span class="nx">deferreds</span> <span class="o">=</span> <span class="p">[];</span>
 
-                  <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-                    <span class="kd">var</span> <span class="nx">data</span>   <span class="o">=</span> <span class="p">{},</span>
-                        <span class="nx">defer2</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">();</span>
+                      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+                        <span class="kd">var</span> <span class="nx">data</span>   <span class="o">=</span> <span class="p">{},</span>
+                            <span class="nx">defer2</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">();</span>
 
-                    <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">defer2</span> <span class="p">);</span>
+                        <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">defer2</span> <span class="p">);</span>
 
-                    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
-                      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">collections</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-                        <span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
-                      <span class="p">}</span>
-                    <span class="p">}</span> <span class="p">);</span>
+                        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+                          <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">collections</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
+                          <span class="p">}</span>
+                        <span class="p">}</span> <span class="p">);</span>
 
-                    <span class="nx">collection</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">},</span> <span class="p">{</span><span class="nx">$set</span><span class="o">:</span> <span class="nx">data</span><span class="p">},</span> <span class="p">{</span><span class="nx">w</span><span class="o">:</span><span class="mi">1</span><span class="p">,</span> <span class="nx">safe</span><span class="o">:</span><span class="kc">true</span><span class="p">,</span> <span class="nx">upsert</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-                      <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-                        <span class="nx">defer2</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-                      <span class="p">}</span>
-                      <span class="k">else</span> <span class="p">{</span>
-                        <span class="nx">defer2</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-                      <span class="p">}</span>
-                    <span class="p">}</span> <span class="p">);</span>
-                  <span class="p">}</span> <span class="p">);</span>
+                        <span class="nx">collection</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">},</span> <span class="p">{</span><span class="nx">$set</span><span class="o">:</span> <span class="nx">data</span><span class="p">},</span> <span class="p">{</span><span class="nx">w</span><span class="o">:</span><span class="mi">1</span><span class="p">,</span> <span class="nx">safe</span><span class="o">:</span><span class="kc">true</span><span class="p">,</span> <span class="nx">upsert</span><span class="o">:</span><span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+                          <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                            <span class="nx">defer2</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+                          <span class="p">}</span>
+                          <span class="k">else</span> <span class="p">{</span>
+                            <span class="nx">defer2</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+                          <span class="p">}</span>
+                        <span class="p">}</span> <span class="p">);</span>
+                      <span class="p">}</span> <span class="p">);</span>
 
-                  <span class="nx">utility</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span> <span class="nx">deferreds</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">{</span>
-                    <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
-                    <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
-                  <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-                    <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-                    <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+                      <span class="nx">utility</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span> <span class="nx">deferreds</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">result</span> <span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
+                        <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+                      <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+                        <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+                      <span class="p">}</span> <span class="p">);</span>
+                    <span class="p">}</span>
                   <span class="p">}</span> <span class="p">);</span>
                 <span class="p">}</span>
               <span class="p">}</span> <span class="p">);</span>
