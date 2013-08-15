@@ -189,7 +189,7 @@ var utility = {
 		var tmp;
 
 		try {
-			return value ? value === "true" || ( value === "false" ? false : value === "null" ? null : !isNaN( tmp = Number( value ) ) ? tmp : regex.json_wrap.test( value ) ? json.decode( value ) : value ) : value;
+			return value ? value === "true" || ( value === "false" ? false : value === "null" ? null : !isNaN( tmp = Number( value ) ) ? tmp : regex.json_wrap.test( value ) ? json.decode( value ) : value === "undefined" ? undefined : value ) : value;
 		}
 		catch ( e ) {
 			return value;
