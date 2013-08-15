@@ -13,42 +13,31 @@
 <p><strong>Returns a Mixed</strong><br/>(Element or Array of Elements)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">$</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="nx">arg</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;,&quot;</span> <span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">selector_complex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">result</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">||</span> <span class="kc">undefined</span><span class="p">;</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">}</span>
-
-      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">dom</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
       <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
 
       <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">obj</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">dom</span><span class="p">(</span> <span class="nx">query</span> <span class="p">);</span>
 
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">selector_complex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="nx">query</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">);</span>
-
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-          <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="nx">query</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
         <span class="p">}</span>
       <span class="p">});</span>
-
-      <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
     <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method alias</span></p>
 
 <p>Aliases origin onto obj</p>
@@ -346,6 +335,35 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="nx">utility</span><span class="p">[</span><span class="nx">repeat</span> <span class="o">?</span> <span class="s2">&quot;repeating&quot;</span> <span class="o">:</span> <span class="s2">&quot;timer&quot;</span><span class="p">][</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">op</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method dom</span></p>
+
+<p>Queries DOM with fastest method</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(DOM query)</li>
+</ul>
+
+<p><strong>Returns a Mixed</strong><br/>(undefined, Element, or Array of Elements)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">dom</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">selector_complex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">||</span> <span class="kc">undefined</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">klass</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByClassName</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method domId</span></p>
 
 <p>Encodes a UUID to a DOM friendly ID</p>
