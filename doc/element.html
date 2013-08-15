@@ -225,22 +225,13 @@ An id is generated if not specified with args</p>
 </ul>
 
 <p><strong>Returns a Mixed</strong><br/>(undefined, Element or value)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">data</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">dataset</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">dataset</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-        <span class="nx">result</span><span class="p">;</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">dataset</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">key</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">toCamelCase</span><span class="p">(</span> <span class="nx">key</span> <span class="p">);</span>
-    <span class="p">}</span>
-
     <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">dataset</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">dataset</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span> <span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot;data-&quot;</span> <span class="o">+</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="p">);</span>
-      <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">setAttribute</span><span class="p">(</span> <span class="s2">&quot;data-&quot;</span> <span class="o">+</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="p">);</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">coerce</span><span class="p">(</span> <span class="nx">dataset</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">dataset</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot;data-&quot;</span> <span class="o">+</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">coerce</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">getAttribute</span><span class="p">(</span> <span class="s2">&quot;data-&quot;</span> <span class="o">+</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
-
-    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method destroy</span></p>
 
 <p>Destroys an Element</p>

@@ -183,32 +183,17 @@ var utility = {
 	 * @method coerce
 	 * @public
 	 * @param  {String} value String to coerce
-	 * @return {Mixed}        Typed version of the String
+	 * @return {Mixed}        Primitive version of the String
 	 */
 	coerce : function ( value ) {
-		var result = utility.clone( value ),
-		    tmp;
+		var tmp;
 
-		if ( string.isEmpty( result ) ) {
-			result = undefined;
+		try {
+			return value ? value === "true" || ( value === "false" ? false : value === "null" ? null : !isNaN( tmp = Number( value ) ) ? tmp : regex.json_wrap.test( value ) ? json.decode( value ) : value === "undefined" ? undefined : value ) : value;
 		}
-		else if ( result === "undefined" ) {
-			result = undefined;
+		catch ( e ) {
+			return value;
 		}
-		else if ( result === "null" ) {
-			result = null;
-		}
-		else if ( regex.string_boolean.test( result ) ) {
-			result = regex.string_true.test( result );
-		}
-		else if ( (tmp = json.decode( result, true ) ) && tmp !== undefined ) {
-			result = tmp;
-		}
-		else if ( result !== null && result !== undefined && !isNaN( Number( result ) ) ) {
-			result = Number( result );
-		}
-
-		return result;
 	},
 
 	/**
