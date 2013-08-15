@@ -52,6 +52,7 @@ var regex = {
 	json_maybe              : /json|plain|javascript/,
 	json_wrap               : /^[\[\{]/,
 	jsonp_wrap              : /([a-zA-Z0-9\.]+\()(.*)(\))$/,
+	klass                   : /^\.[a-z]/,
 	linux                   : /linux|bsd|unix/i,
 	no                      : /no/i,
 	not_endpoint            : /.*\//,

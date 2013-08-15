@@ -22,42 +22,31 @@ var utility = {
 	$ : function ( arg ) {
 		var result;
 
-		if ( arg === undefined ) {
-			return undefined;
+		if ( !arg ) {
+			return;
 		}
 
 		arg = string.trim( arg );
 
 		if ( arg.indexOf( "," ) === -1 ) {
-			if ( !regex.selector_complex.test( arg ) && regex.hash.test( arg ) ) {
-				result = document.getElementById( arg.replace( regex.hash, "" ) ) || undefined;
-			}
-			else {
-				result = array.cast( document.querySelectorAll( arg ) );
-			}
-
-			return result;
+			result = utility.dom( arg );
 		}
 		else {
 			result = [];
 
 			array.each( string.explode( arg ), function ( query ) {
-				var obj;
+				var obj = utility.dom( query );
 
-				if ( !regex.selector_complex.test( query ) && regex.hash.test( query ) ) {
-					obj = document.getElementById( query.replace( regex.hash, "" ) );
-
-					if ( obj !== null ) {
-						result.push( obj );
-					}
+				if ( obj instanceof Array ) {
+					result = result.concat( obj );
 				}
 				else {
-					result = result.concat( array.cast( document.querySelectorAll( query ) ) );
+					result.push( obj );
 				}
 			});
-
-			return result;
 		}
+
+		return result;
 	},
 
 	/**
@@ -374,6 +363,35 @@ var utility = {
 		utility[repeat ? "repeating" : "timer"][id] = setTimeout( op, ms );
 
 		return id;
+	},
+
+	/**
+	 * Queries DOM with fastest method
+	 *
+	 * @method dom
+	 * @private
+	 * @param  {String} arg DOM query
+	 * @return {Mixed}      undefined, Element, or Array of Elements
+	 */
+	dom : function ( arg ) {
+		var result;
+
+		if ( !regex.selector_complex.test( arg ) ) {
+			if ( regex.hash.test( arg ) ) {
+				result = document.getElementById( arg.replace( regex.hash, "" ) ) || undefined;
+			}
+			else if ( regex.klass.test( arg ) ) {
+				result = array.cast( document.getElementsByClassName( arg ) );
+			}
+			else {
+				result = array.cast( document.getElementsByTagName( arg ) );
+			}
+		}
+		else {
+			result = array.cast( document.querySelectorAll( arg ) );
+		}
+
+		return result;
 	},
 
 	/**
