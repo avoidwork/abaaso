@@ -230,7 +230,7 @@ var element = {
 	 */
 	data : function ( obj, key, value ) {
 		if ( value !== undefined ) {
-			obj.setAttribute( "data-" + key, value );
+			obj.setAttribute( "data-" + key, regex.json_wrap.test( value ) ? json.encode( value ) : value );
 			return obj;
 		}
 		else {
