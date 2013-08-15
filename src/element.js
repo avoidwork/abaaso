@@ -229,22 +229,13 @@ var element = {
 	 * @return {Mixed}        undefined, Element or value
 	 */
 	data : function ( obj, key, value ) {
-		var dataset = typeof obj.dataset === "object",
-		    result;
-
-		if ( dataset ) {
-			key = string.toCamelCase( key );
-		}
-
 		if ( value !== undefined ) {
-			dataset ? obj.dataset[key] = value : element.attr( obj, "data-" + key, value );
-			result = obj;
+			obj.setAttribute( "data-" + key, value );
+			return obj;
 		}
 		else {
-			result = utility.coerce( dataset ? obj.dataset[key] : element.attr( obj, "data-" + key ) );
+			return utility.coerce( obj.getAttribute( "data-" + key ) );
 		}
-
-		return result;
 	},
 
 	/**
