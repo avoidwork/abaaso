@@ -365,6 +365,28 @@ var element = {
 	},
 
 	/**
+	 * Creates a document fragment
+	 *
+	 * @method frag
+	 * @public
+	 * @param  {String} arg [Optional] innerHTML
+	 * @return {Object}     Document fragment
+	 */
+	frag : function ( arg ) {
+		var obj = document.createDocumentFragment();
+
+		if ( arg ) {
+			array.each( array.cast( element.create( "div", {innerHTML: arg}, obj ).childNodes ), function ( i ) {
+				obj.appendChild( i );
+			});
+
+			obj.removeChild( obj.childNodes[0] );
+		}
+
+		return obj;
+	},
+
+	/**
 	 * Determines if Element has descendants matching arg
 	 *
 	 * @method has
