@@ -188,7 +188,10 @@ var utility = {
 	coerce : function ( value ) {
 		var tmp;
 
-		if ( value === "true" ) {
+		if ( value === null || value === undefined ) {
+			return undefined;
+		}
+		else if ( value === "true" ) {
 			return true;
 		}
 		else if ( value === "false" ) {
