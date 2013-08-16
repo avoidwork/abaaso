@@ -151,8 +151,18 @@ bootstrap = function () {
 			};
 		}
 
+		if ( Element.prototype.getElementsByClassName === undefined ) {
+			( function () {
+				var getElementsByClassName = function ( arg ) {
+					return document.querySelectorAll( "." + arg );
+				};
+
+				Element.prototype.getElementsByClassName = HTMLDocument.prototype.getElementsByClassName = getElementsByClassName;
+			})();
+		}
+
 		if ( document.documentElement.classList === undefined ) {
-			( function (view ) {
+			( function ( view ) {
 				var ClassList, getter, proto, target, descriptor;
 
 				if ( !( "HTMLElement" in view ) && !( "Element" in view ) ) {
@@ -160,7 +170,7 @@ bootstrap = function () {
 				}
 
 				ClassList = function ( obj ) {
-					var classes = !string.isEmpty( obj.className ) ? obj.className.explode( " " ) : [],
+					var classes = string.explode( obj.className, " " ),
 					    self    = this;
 
 					array.each( classes, function (i) {
