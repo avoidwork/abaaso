@@ -1,7 +1,7 @@
 /doc/
 /node_modules/
-/lib/abaaso.min.js
 /lib/abaaso.map
+/lib/abaaso.min.js
 /test/
 /src/
 .git

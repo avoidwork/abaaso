@@ -168,11 +168,26 @@
 <p><strong>Returns a Mixed</strong><br/>(Primitive version of the String)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">coerce</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">tmp</span><span class="p">;</span>
 
-    <span class="k">try</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">value</span> <span class="o">?</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;true&quot;</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;false&quot;</span> <span class="o">?</span> <span class="kc">false</span> <span class="o">:</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;null&quot;</span> <span class="o">?</span> <span class="kc">null</span> <span class="o">:</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">tmp</span> <span class="o">:</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">json_wrap</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span> <span class="o">?</span> <span class="kc">undefined</span> <span class="o">:</span> <span class="nx">value</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;true&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">true</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;false&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;null&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">tmp</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">json_wrap</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">value</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">value</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method compile</span></p>
 
