@@ -74,24 +74,17 @@ var observer = {
 	 *
 	 * @method add
 	 * @public
-	 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
+	 * @param  {Mixed}    obj   Primitive
 	 * @param  {String}   event Event, or Events being fired ( comma delimited supported )
 	 * @param  {Function} fn    Event handler
 	 * @param  {String}   id    [Optional / Recommended] The id for the listener
 	 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
 	 * @param  {String}   st    [Optional] Application state, default is current
-	 * @return {Mixed}          Entity, Array of Entities or undefined
+	 * @return {Mixed}          Primitive
 	 */
 	add : function ( obj, event, fn, id, scope, st ) {
-		obj   = utility.object( obj );
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
-
-		if ( obj instanceof Array ) {
-			return array.each( obj, function ( i ) {
-				observer.add( i, event, fn, id, scope, st );
-			});
-		}
 
 		if ( event !== undefined ) {
 			event = string.explode( event );
@@ -204,25 +197,16 @@ var observer = {
 	 *
 	 * @method fire
 	 * @public
-	 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
+	 * @param  {Mixed}  obj   Primitive
 	 * @param  {String} event Event, or Events being fired ( comma delimited supported )
-	 * @return {Mixed}        Entity, Array of Entities or undefined
+	 * @return {Mixed}        Primitive
 	 */
 	fire : function ( obj, event ) {
-		obj      = utility.object( obj );
 		var quit = false,
 		    a    = array.cast( arguments ).remove( 0, 1 ),
 		    o, s, log, list;
 
 		if ( observer.ignore ) {
-			return obj;
-		}
-
-		if ( obj instanceof Array ) {
-			array.each( obj, function ( i ) {
-				observer.fire.apply( observer, [i, event].concat( a ) );
-			});
-
 			return obj;
 		}
 
@@ -302,13 +286,12 @@ var observer = {
 	 *
 	 * @method list
 	 * @public
-	 * @param  {Mixed}  obj    Entity or Array of Entities or $ queries
+	 * @param  {Mixed}  obj    Primitive
 	 * @param  {String} event  Event being queried
 	 * @param  {Object} target [Optional] Listeners collection to access, default is `observer.listeners`
-	 * @return {Mixed}         Object or Array of listeners for the event
+	 * @return {Mixed}         Primitive
 	 */
 	list : function ( obj, event, target ) {
-		obj   = utility.object( obj );
 		var l = target || observer.listeners,
 		    o = observer.id( obj ),
 		    r;
@@ -334,31 +317,22 @@ var observer = {
 	 *
 	 * @method once
 	 * @public
-	 * @param  {Mixed}    obj   Entity or Array of Entities or $ queries
+	 * @param  {Mixed}    obj   Primitive
 	 * @param  {String}   event Event being fired
 	 * @param  {Function} fn    Event handler
 	 * @param  {String}   id    [Optional / Recommended] The id for the listener
 	 * @param  {String}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
 	 * @param  {String}   st    [Optional] Application state, default is current
-	 * @return {Mixed}          Entity, Array of Entities or undefined
+	 * @return {Mixed}          Primitive
 	 */
 	once : function ( obj, event, fn, id, scope, st ) {
 		var uuid = id || utility.genId();
 
-		obj   = utility.object( obj );
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
 		if ( obj === undefined || event === null || event === undefined || typeof fn !== "function" ) {
 			throw new Error( label.error.invalidArguments );
-		}
-
-		if ( obj instanceof Array ) {
-			array.each( obj, function ( i ) {
-				observer.once( i, event, fn, id, scope, st );
-			});
-
-			return obj;
 		}
 
 		observer.add( obj, event, function () {
@@ -399,21 +373,14 @@ var observer = {
 	 *
 	 * @method remove
 	 * @public
-	 * @param  {Mixed}  obj   Entity or Array of Entities or $ queries
+	 * @param  {Mixed}  obj   Primitive
 	 * @param  {String} event [Optional] Event, or Events being fired ( comma delimited supported )
 	 * @param  {String} id    [Optional] Listener id
 	 * @param  {String} st    [Optional] Application state, default is current
-	 * @return {Mixed}        Entity, Array of Entities or undefined
+	 * @return {Mixed}        Primitive
 	 */
 	remove : function ( obj, event, id, st ) {
-		obj = utility.object( obj );
-		st  = st || state.getCurrent();
-
-		if ( obj instanceof Array ) {
-			return array.each( obj, function ( i ) {
-				observer.remove( i, event, id, st );
-			});
-		}
+		st = st || state.getCurrent();
 
 		var l   = observer.listeners,
 		    a   = observer.alisteners,
@@ -503,7 +470,6 @@ var observer = {
 		    o;
 
 		if ( obj !== undefined ) {
-			obj    = utility.object( obj );
 			o      = observer.id( obj );
 			result = utility.clone( observer.clisteners[o] );
 		}

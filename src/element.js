@@ -110,7 +110,7 @@ var element = {
 	 * @public
 	 * @param  {String} type   Type of Element to create
 	 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
-	 * @param  {Mixed}  target [Optional] Target object or element.id value to append to
+	 * @param  {Mixed}  target [Optional] Target Element
 	 * @param  {Mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
 	 * @return {Object}        Element that was created or undefined
 	 */
@@ -123,12 +123,6 @@ var element = {
 		}
 
 		if ( target !== undefined ) {
-			target = utility.object( target );
-
-			if ( target === undefined ) {
-				throw new Error( label.error.invalidArguments );
-			}
-
 			svg = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
 		}
 		else {
@@ -204,7 +198,6 @@ var element = {
 	css : function ( obj, key, value ) {
 		var result;
 
-		obj = utility.object( obj );
 		key = string.toCamelCase( key );
 
 		if ( value !== undefined ) {
@@ -743,31 +736,23 @@ var element = {
 	},
 
 	/**
-	 * Serializes the elements of a Form, an Element, or Array of Elements or $ queries
+	 * Serializes the elements of an Element
 	 *
 	 * @method serialize
 	 * @public
-	 * @param  {Object}  obj    Form, individual Element, or $ query
+	 * @param  {Object}  obj    Element
 	 * @param  {Boolean} string [Optional] true if you want a query string, default is false ( JSON )
 	 * @param  {Boolean} encode [Optional] true if you want to URI encode the value, default is true
 	 * @return {Mixed}          String or Object
 	 */
 	serialize : function ( obj, string, encode ) {
-		obj          = utility.object( obj );
 		string       = ( string === true );
 		encode       = ( encode !== false );
 		var children = [],
 		    registry = {},
 		    result;
 
-		if ( obj instanceof Array ) {
-			array.each( obj, function ( i ) {
-				children.push( utility.object( i ) );
-			});
-		}
-		else {
-			children = obj.nodeName === "FORM" ? ( obj.elements !== undefined ? array.cast( obj.elements ) : obj.find( "button, input, select, textarea" ) ) : [obj];
-		}
+		children = obj.nodeName === "FORM" ? ( obj.elements !== undefined ? array.cast( obj.elements ) : obj.find( "button, input, select, textarea" ) ) : [obj];
 
 		array.each( children, function ( i ) {
 			if ( i.nodeName === "FORM" ) {

@@ -23,7 +23,7 @@
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>obj can be of any type.</strong><br/>(Primitive)</p></li>
 <li><p><strong>event must be a String.</strong><br/>(Event, or Events being fired ( comma delimited supported ))</p></li>
 <li><p><strong>fn must be a Function.</strong><br/>(Event handler)</p></li>
 <li><p><strong>id must be a String.</strong><br/>([Optional / Recommended] The id for the listener)</p></li>
@@ -31,16 +31,9 @@
 <li><p><strong>st must be a String.</strong><br/>([Optional] Application state, default is current)</p></li>
 </ul>
 
-<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">add</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+<p><strong>Returns a Mixed</strong><br/>(Primitive)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">add</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">scope</span> <span class="o">=</span> <span class="nx">scope</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="nx">st</span>    <span class="o">=</span> <span class="nx">st</span>    <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">event</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">event</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">event</span> <span class="p">);</span>
@@ -145,25 +138,16 @@
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>obj can be of any type.</strong><br/>(Primitive)</p></li>
 <li><p><strong>event must be a String.</strong><br/>(Event, or Events being fired ( comma delimited supported ))</p></li>
 </ul>
 
-<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fire</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">obj</span>      <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+<p><strong>Returns a Mixed</strong><br/>(Primitive)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fire</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">quit</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
         <span class="nx">a</span>    <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">).</span><span class="nx">remove</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="p">),</span>
         <span class="nx">o</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">log</span><span class="p">,</span> <span class="nx">list</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">ignore</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">observer</span><span class="p">,</span> <span class="p">[</span><span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">].</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">a</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">});</span>
-
       <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="p">}</span>
 
@@ -243,13 +227,12 @@
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>obj can be of any type.</strong><br/>(Primitive)</p></li>
 <li><p><strong>event must be a String.</strong><br/>(Event being queried)</p></li>
 <li><p><strong>target must be an Object.</strong><br/>([Optional] Listeners collection to access, default is <code>observer.listeners</code>)</p></li>
 </ul>
 
-<p><strong>Returns a Mixed</strong><br/>(Object or Array of listeners for the event)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">list</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">target</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+<p><strong>Returns a Mixed</strong><br/>(Primitive)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">list</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">target</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">,</span>
         <span class="nx">o</span> <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span>
         <span class="nx">r</span><span class="p">;</span>
@@ -275,7 +258,7 @@
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>obj can be of any type.</strong><br/>(Primitive)</p></li>
 <li><p><strong>event must be a String.</strong><br/>(Event being fired)</p></li>
 <li><p><strong>fn must be a Function.</strong><br/>(Event handler)</p></li>
 <li><p><strong>id must be a String.</strong><br/>([Optional / Recommended] The id for the listener)</p></li>
@@ -283,23 +266,14 @@
 <li><p><strong>st must be a String.</strong><br/>([Optional] Application state, default is current)</p></li>
 </ul>
 
-<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">once</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns a Mixed</strong><br/>(Primitive)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">once</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">uuid</span> <span class="o">=</span> <span class="nx">id</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
 
-    <span class="nx">obj</span>   <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="nx">scope</span> <span class="o">=</span> <span class="nx">scope</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="nx">st</span>    <span class="o">=</span> <span class="nx">st</span>    <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">event</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">observer</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
-      <span class="p">});</span>
-
-      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
@@ -340,21 +314,14 @@
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</p></li>
+<li><p><strong>obj can be of any type.</strong><br/>(Primitive)</p></li>
 <li><p><strong>event must be a String.</strong><br/>([Optional] Event, or Events being fired ( comma delimited supported ))</p></li>
 <li><p><strong>id must be a String.</strong><br/>([Optional] Listener id)</p></li>
 <li><p><strong>st must be a String.</strong><br/>([Optional] Application state, default is current)</p></li>
 </ul>
 
-<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">remove</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-    <span class="nx">st</span>  <span class="o">=</span> <span class="nx">st</span> <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">st</span> <span class="p">);</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
+<p><strong>Returns a Mixed</strong><br/>(Primitive)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">remove</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">st</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">st</span> <span class="o">=</span> <span class="nx">st</span> <span class="o">||</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getCurrent</span><span class="p">();</span>
 
     <span class="kd">var</span> <span class="nx">l</span>   <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">,</span>
         <span class="nx">a</span>   <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">alisteners</span><span class="p">,</span>
@@ -444,7 +411,6 @@
         <span class="nx">o</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">obj</span>    <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
       <span class="nx">o</span>      <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
       <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span><span class="p">[</span><span class="nx">o</span><span class="p">]</span> <span class="p">);</span>
     <span class="p">}</span>

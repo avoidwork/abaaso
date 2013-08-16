@@ -31,7 +31,7 @@
         <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
           <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
         <span class="p">}</span>
-        <span class="k">else</span> <span class="p">{</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
           <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
         <span class="p">}</span>
       <span class="p">});</span>
@@ -187,7 +187,7 @@
       <span class="k">return</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">value</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="o">||</span> <span class="nx">value</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">value</span><span class="p">;</span>
+      <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
     <span class="p">}</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method compile</span></p>
 
@@ -600,19 +600,11 @@ with a class of "loading"</p>
 <p>Parameters:</p>
 
 <ul>
-<li><strong>obj can be of any type.</strong><br/>(Entity or Array of Entities or $ queries)</li>
+<li><strong>obj can be of any type.</strong><br/>(Element)</li>
 </ul>
 
-<p><strong>Returns a Mixed</strong><br/>(Entity, Array of Entities or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">loading</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns a Mixed</strong><br/>(Element)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">loading</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">abaaso</span><span class="p">.</span><span class="nx">loading</span><span class="p">;</span>
-
-    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">utility</span><span class="p">.</span><span class="nx">loading</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">l</span><span class="p">.</span><span class="nx">url</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>

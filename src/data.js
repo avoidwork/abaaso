@@ -18,7 +18,6 @@ var data = {
 	 * @return {Object}      Object to decorate
 	 */
 	decorator : function ( obj, recs, args ) {
-		obj = utility.object( obj );
 		utility.genId( obj );
 
 		// Decorating observer if not present in prototype chain

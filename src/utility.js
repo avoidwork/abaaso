@@ -40,7 +40,7 @@ var utility = {
 				if ( obj instanceof Array ) {
 					result = result.concat( obj );
 				}
-				else {
+				else if ( obj ) {
 					result.push( obj );
 				}
 			});
@@ -207,7 +207,7 @@ var utility = {
 			return json.decode( value, true ) || value;
 		}
 		else {
-			value;
+			return value;
 		}
 	},
 
@@ -629,19 +629,11 @@ var utility = {
 	 *
 	 * @method loading
 	 * @public
-	 * @param  {Mixed} obj Entity or Array of Entities or $ queries
-	 * @return {Mixed}     Entity, Array of Entities or undefined
+	 * @param  {Mixed} obj Element
+	 * @return {Mixed}     Element
 	 */
 	loading : function ( obj ) {
 		var l = abaaso.loading;
-
-		obj = utility.object( obj );
-
-		if ( obj instanceof Array ) {
-			return array.each( obj, function ( i ) {
-				utility.loading( i );
-			});
-		}
 
 		if ( l.url === null || obj === undefined ) {
 			throw new Error( label.error.invalidArguments );

@@ -106,7 +106,7 @@ An id is generated if not specified with args</p>
 <ul>
 <li><p><strong>type must be a String.</strong><br/>(Type of Element to create)</p></li>
 <li><p><strong>args must be an Object.</strong><br/>([Optional] Collection of properties to apply to the new element)</p></li>
-<li><p><strong>target can be of any type.</strong><br/>([Optional] Target object or element.id value to append to)</p></li>
+<li><p><strong>target can be of any type.</strong><br/>([Optional] Target Element)</p></li>
 <li><p><strong>pos can be of any type.</strong><br/>([Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement})</p></li>
 </ul>
 
@@ -119,12 +119,6 @@ An id is generated if not specified with args</p>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">target</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">target</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">target</span> <span class="p">);</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">target</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-      <span class="p">}</span>
-
       <span class="nx">svg</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">target</span><span class="p">.</span><span class="nx">namespaceURI</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">target</span><span class="p">.</span><span class="nx">namespaceURI</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
@@ -200,7 +194,6 @@ An id is generated if not specified with args</p>
 <p><strong>Returns an Object</strong><br/>(Element)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">css</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
 
-    <span class="nx">obj</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="nx">key</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">toCamelCase</span><span class="p">(</span> <span class="nx">key</span> <span class="p">);</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
@@ -738,32 +731,24 @@ An id is generated if not specified with args</p>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method serialize</span></p>
 
-<p>Serializes the elements of a Form, an Element, or Array of Elements or $ queries</p>
+<p>Serializes the elements of an Element</p>
 
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>obj must be an Object.</strong><br/>(Form, individual Element, or $ query)</p></li>
+<li><p><strong>obj must be an Object.</strong><br/>(Element)</p></li>
 <li><p><strong>string must be a Boolean.</strong><br/>([Optional] true if you want a query string, default is false ( JSON ))</p></li>
 <li><p><strong>encode must be a Boolean.</strong><br/>([Optional] true if you want to URI encode the value, default is true)</p></li>
 </ul>
 
 <p><strong>Returns a Mixed</strong><br/>(String or Object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">serialize</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">encode</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">obj</span>          <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="nx">string</span>       <span class="o">=</span> <span class="p">(</span> <span class="nx">string</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
     <span class="nx">encode</span>       <span class="o">=</span> <span class="p">(</span> <span class="nx">encode</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">);</span>
     <span class="kd">var</span> <span class="nx">children</span> <span class="o">=</span> <span class="p">[],</span>
         <span class="nx">registry</span> <span class="o">=</span> <span class="p">{},</span>
         <span class="nx">result</span><span class="p">;</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">children</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">});</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">children</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s2">&quot;FORM&quot;</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">elements</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">elements</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="s2">&quot;button, input, select, textarea&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[</span><span class="nx">obj</span><span class="p">];</span>
-    <span class="p">}</span>
+    <span class="nx">children</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s2">&quot;FORM&quot;</span> <span class="o">?</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">elements</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">elements</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span> <span class="s2">&quot;button, input, select, textarea&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[</span><span class="nx">obj</span><span class="p">];</span>
 
     <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">children</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">nodeName</span> <span class="o">===</span> <span class="s2">&quot;FORM&quot;</span> <span class="p">)</span> <span class="p">{</span>
