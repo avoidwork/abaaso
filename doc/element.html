@@ -876,7 +876,7 @@ An id is generated if not specified with args</p>
         <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">listeners</span><span class="p">;</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="nx">o</span><span class="p">[</span><span class="nx">obj</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">o</span><span class="p">[</span><span class="nx">obj</span><span class="p">.</span><span class="nx">id</span><span class="p">]</span> <span class="p">);</span>
+          <span class="nx">o</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">o</span><span class="p">[</span><span class="nx">obj</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
           <span class="k">delete</span> <span class="nx">o</span><span class="p">[</span><span class="nx">obj</span><span class="p">.</span><span class="nx">id</span><span class="p">];</span>
         <span class="p">}</span>
       <span class="p">}</span>

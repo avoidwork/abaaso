@@ -107,34 +107,25 @@
 <p>Parameters:</p>
 
 <ul>
-<li><strong>obj must be an Object.</strong><br/>(Object to clone)</li>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to clone)</p></li>
+<li><p><strong>shallow must be a Boolean.</strong><br/>([Optional] Create a shallow clone, which doesn't maintain prototypes, default is <code>false</code>)</p></li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Clone of obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(Clone of obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">shallow</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">clone</span><span class="p">;</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">shallow</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">obj</span> <span class="o">||</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">primitive</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">RegExp</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">slice</span><span class="p">();</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;boolean&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;number&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nb">String</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">RegExp</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-    <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nx">Document</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Custom Object (deep clone)</p></div></div><div class="code"><div class="wrapper">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">!==</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration</p></div></div><div class="code"><div class="wrapper">      <span class="nx">clone</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
@@ -575,8 +566,7 @@ Iteration can be stopped by returning false from fn</p>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">has</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">hasOwnProperty</span><span class="p">,</span>
-            <span class="nx">i</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
           <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
