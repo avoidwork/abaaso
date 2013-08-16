@@ -124,8 +124,18 @@
       <span class="p">};</span>
     <span class="p">}</span>
 
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">Element</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nx">arg</span> <span class="p">);</span>
+        <span class="p">};</span>
+
+        <span class="nx">Element</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">HTMLDocument</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">getElementsByClassName</span><span class="p">;</span>
+      <span class="p">})();</span>
+    <span class="p">}</span>
+
     <span class="k">if</span> <span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span><span class="p">.</span><span class="nx">classList</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">view</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">view</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">ClassList</span><span class="p">,</span> <span class="nx">getter</span><span class="p">,</span> <span class="nx">proto</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">descriptor</span><span class="p">;</span>
 
         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="s2">&quot;HTMLElement&quot;</span> <span class="k">in</span> <span class="nx">view</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span> <span class="s2">&quot;Element&quot;</span> <span class="k">in</span> <span class="nx">view</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
@@ -133,7 +143,7 @@
         <span class="p">}</span>
 
         <span class="nx">ClassList</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="kd">var</span> <span class="nx">classes</span> <span class="o">=</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">className</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">className</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="s2">&quot; &quot;</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[],</span>
+          <span class="kd">var</span> <span class="nx">classes</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">className</span><span class="p">,</span> <span class="s2">&quot; &quot;</span> <span class="p">),</span>
               <span class="nx">self</span>    <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
 
           <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">classes</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
