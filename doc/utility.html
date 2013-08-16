@@ -358,8 +358,11 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
       <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">klass</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByClassName</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">klass</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
       <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
+      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">word</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">getElementsByTagName</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">);</span>
       <span class="p">}</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>

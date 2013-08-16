@@ -386,8 +386,11 @@ var utility = {
 			else if ( regex.klass.test( arg ) ) {
 				result = array.cast( document.getElementsByClassName( arg.replace( regex.klass, "" ) ) );
 			}
-			else {
+			else if ( regex.word.test( arg ) ) {
 				result = array.cast( document.getElementsByTagName( arg ) );
+			}
+			else {
+				result = array.cast( document.querySelectorAll( arg ) );
 			}
 		}
 		else {
