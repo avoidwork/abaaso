@@ -124,6 +124,7 @@ return {
 
 		return observer.fire.apply( observer, args );
 	},
+	frag            : element.frag,
 	genId           : utility.genId,
 	get             : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "GET", success, failure, null, headers, timeout );
