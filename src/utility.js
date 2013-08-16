@@ -188,11 +188,26 @@ var utility = {
 	coerce : function ( value ) {
 		var tmp;
 
-		try {
-			return value ? value === "true" || ( value === "false" ? false : value === "null" ? null : !isNaN( tmp = Number( value ) ) ? tmp : regex.json_wrap.test( value ) ? json.decode( value ) : value === "undefined" ? undefined : value ) : value;
+		if ( value === "true" ) {
+			return true;
 		}
-		catch ( e ) {
-			return value;
+		else if ( value === "false" ) {
+			return false;
+		}
+		else if ( value === "null" ) {
+			return null;
+		}
+		else if ( value === "undefined" ) {
+			return undefined;
+		}
+		else if ( !isNaN( tmp = Number( value ) ) ) {
+			return tmp;
+		}
+		else if ( regex.json_wrap.test( value ) ) {
+			return json.decode( value, true ) || value;
+		}
+		else {
+			value;
 		}
 	},
 
