@@ -89,7 +89,7 @@ var cache = {
 			return false;
 		}
 
-		return utility.clone( cache.items[uri] );
+		return utility.clone( cache.items[uri], true );
 	},
 
 	/**

@@ -233,7 +233,6 @@ bootstrap = function () {
 		if ( Function.prototype.bind === undefined ) {
 			Function.prototype.bind = function ( arg ) {
 				var fn    = this,
-				    slice = Array.prototype.slice,
 				    args  = slice.call( arguments, 1 );
 
 				return function () {
@@ -250,6 +249,10 @@ bootstrap = function () {
 		// XHR shim
 		XMLHttpRequest = xhr();
 	}
+
+	// Caching functions
+	has   = Object.prototype.hasOwnProperty;
+	slice = Array.prototype.slice;
 
 	// Binding helper & namespace to $
 	$ = utility.$;

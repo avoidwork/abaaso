@@ -122,34 +122,27 @@ var utility = {
 	 *
 	 * @method clone
 	 * @public
-	 * @param {Object}  obj Object to clone
+	 * @param {Object}  obj     Object to clone
+	 * @param {Boolean} shallow [Optional] Create a shallow clone, which doesn't maintain prototypes, default is `false`
 	 * @return {Object}     Clone of obj
 	 */
-	clone : function ( obj ) {
+	clone : function ( obj, shallow ) {
 		var clone;
 
-		if ( obj instanceof Array ) {
+		if ( shallow === true ) {
+			return json.decode( json.encode( obj ) );
+		}
+		else if ( !obj || regex.primitive.test( typeof obj ) || ( obj instanceof RegExp ) ) {
+			return obj;
+		}
+		else if ( obj instanceof Array ) {
 			return obj.slice();
 		}
-		else if ( typeof obj === "boolean" ) {
-			return Boolean( obj );
-		}
-		else if ( typeof obj === "function" ) {
-			return obj;
-		}
-		else if ( typeof obj === "number" ) {
-			return Number( obj );
-		}
-		else if ( typeof obj === "string" ) {
-			return String( obj );
-		}
-		else if ( obj instanceof RegExp ) {
-			return obj;
-		}
 		else if ( !server && !client.ie && obj instanceof Document ) {
-			return xml.decode( xml.encode(obj) );
+			return xml.decode( xml.encode( obj ) );
 		}
-		else if ( obj !== null && obj !== undefined && typeof obj.__proto__ !== "undefined" ) {
+		// Custom Object (deep clone)
+		else if ( obj.__proto__ && obj.__proto__.constructor !== Object ) {
 			return utility.extend( obj.__proto__, obj );
 		}
 		else if ( obj instanceof Object ) {
@@ -604,8 +597,7 @@ var utility = {
 		}
 		else {
 			return function ( obj, fn ) {
-				var has = Object.prototype.hasOwnProperty,
-				    i, result;
+				var i, result;
 
 				if ( typeof fn !== "function" ) {
 					throw new Error( label.error.invalidArguments );

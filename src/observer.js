@@ -466,18 +466,7 @@ var observer = {
 	 * @return {Object}    Object with total listeners per event
 	 */
 	sum : function ( obj ) {
-		var result = {},
-		    o;
-
-		if ( obj !== undefined ) {
-			o      = observer.id( obj );
-			result = utility.clone( observer.clisteners[o] );
-		}
-		else {
-			result = utility.clone( observer.clisteners );
-		}
-
-		return result;
+		return obj ? observer.clisteners[observer.id( obj )] : array.keys( observer.clisteners ).length;
 	},
 
 	/**

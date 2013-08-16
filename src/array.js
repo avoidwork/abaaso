@@ -70,7 +70,7 @@ var array = {
 				var o = [];
 
 				if ( !isNaN( obj.length ) ) {
-					o = Array.prototype.slice.call( obj );
+					o = slice.call( obj );
 				}
 				else if ( key ) {
 					o = array.keys( obj );
@@ -91,7 +91,7 @@ var array = {
 
 				if ( !isNaN( obj.length ) ) {
 					try {
-						o = Array.prototype.slice.call( obj );
+						o = slice.call( obj );
 					}
 					catch ( e ) {
 						utility.iterate( obj, function ( i, idx ) {
@@ -159,7 +159,7 @@ var array = {
 	 * @return {Array}     Clone of Array
 	 */
 	clone : function ( obj ) {
-		return utility.clone( obj );
+		return obj.slice();
 	},
 
 	/**
