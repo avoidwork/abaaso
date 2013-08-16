@@ -76,7 +76,7 @@ Events: expire    Fires when the URI expires</p>
       <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">uri</span><span class="p">]</span> <span class="p">);</span>
+    <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">cache</span><span class="p">.</span><span class="nx">items</span><span class="p">[</span><span class="nx">uri</span><span class="p">],</span> <span class="kc">true</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method set</span></p>
 
 <p>Sets, or updates an item in cache.items</p>
