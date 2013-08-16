@@ -112,8 +112,6 @@
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Clone of obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clone</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">shallow</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">clone</span><span class="p">;</span>
-
     <span class="k">if</span> <span class="p">(</span> <span class="nx">shallow</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
@@ -125,23 +123,9 @@
     <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nx">Document</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">xml</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
-    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Custom Object (deep clone)</p></div></div><div class="code"><div class="wrapper">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span> <span class="o">&amp;&amp;</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">!==</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration</p></div></div><div class="code"><div class="wrapper">      <span class="nx">clone</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">clone</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">clone</span> <span class="o">=</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">(</span> <span class="nx">clone</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Decorating Functions that would be lost with JSON encoding/decoding</p></div></div><div class="code"><div class="wrapper">        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">v</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">clone</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">clone</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
-      <span class="p">}</span>
-
-      <span class="k">return</span> <span class="nx">clone</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
