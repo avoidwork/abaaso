@@ -773,7 +773,7 @@ var client = {
 						}
 
 						if ( type === "get" && shared ) {
-							cache.set( uri, "response", ( o.response = utility.clone( r ) ) );
+							cache.set( uri, "response", ( o.response = utility.clone( r, true ) ) );
 						}
 						else {
 							cache.expire( uri, true );

@@ -29,4 +29,4 @@ if ( server ) {
 abaaso = (function () {
 "use strict";
 
-var bootstrap, external;
+var bootstrap, external, has, slice;

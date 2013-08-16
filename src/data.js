@@ -122,7 +122,7 @@ var data = {
 
 			// Set handler
 			set = function ( arg, key ) {
-				var data  = utility.clone( arg ),
+				var data  = utility.clone( arg, true ),
 				    defer = deferred.factory(),
 				    rec   = {};
 
@@ -629,7 +629,7 @@ var data = {
 					var record = {};
 
 					array.each( fields, function ( f ) {
-						record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f] ) : i.data[f].data.uri );
+						record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f], true ) : i.data[f].data.uri );
 					});
 
 					return record;
@@ -642,7 +642,7 @@ var data = {
 					record[self.key] = i.key;
 
 					utility.iterate( i.data, function ( v, k ) {
-						record[k] = !array.contains( self.collections, k ) ? utility.clone( v ) : v.data.uri;
+						record[k] = !array.contains( self.collections, k ) ? utility.clone( v, true ) : v.data.uri;
 					});
 
 					return record;
@@ -912,14 +912,14 @@ var data = {
 						throw new Error( label.error.databaseMoreThanOne );
 					}
 					else if ( match.length === 1 ) {
-						results.push( utility.merge( utility.clone( i.data ), utility.clone( match[0].data) ) );
+						results.push( utility.merge( utility.clone( i.data, true ), utility.clone( match[0].data, true ) ) );
 					}
 				};
 			}
 			else if ( join === "left" ) {
 				fn = function ( i ) {
 					var where  = {},
-					    record = utility.clone( i.data ),
+					    record = utility.clone( i.data, true ),
 						match;
 
 					where[field] = key ? i.key : i.data[field];
@@ -929,7 +929,7 @@ var data = {
 						throw new Error( label.error.databaseMoreThanOne );
 					}
 					else if ( match.length === 1 ) {
-						results.push( utility.merge( utility.clone( record ), utility.clone( match[0].data) ) );
+						results.push( utility.merge( utility.clone( record, true ), utility.clone( match[0].data, true ) ) );
 					}
 					else {
 						array.each( keys, function ( i ) {
@@ -945,7 +945,7 @@ var data = {
 			else if ( join === "right" ) {
 				fn = function ( i ) {
 					var where  = {},
-					    record = utility.clone( i.data ),
+					    record = utility.clone( i.data, true ),
 						match;
 
 					where[field] = key ? i.key : i.data[field];
@@ -955,7 +955,7 @@ var data = {
 						throw new Error( label.error.databaseMoreThanOne );
 					}
 					else if ( match.length === 1 ) {
-						results.push( utility.merge( utility.clone( record ), utility.clone( match[0].data) ) );
+						results.push( utility.merge( utility.clone( record, true ), utility.clone( match[0].data, true ) ) );
 					}
 					else {
 						array.each( keys, function ( i ) {
@@ -1121,12 +1121,9 @@ var data = {
 
 			// Chaining a promise to return
 			defer.then( function ( arg ) {
-				var data  = {data: null, key: arg.key, record: arg.record, result: arg.result},
+				var data  = {data: arg.data, key: arg.key, record: arg.record, result: arg.result},
 				    defer = deferred.factory(),
 				    record, uri;
-
-				// Making sure nothing is by reference
-				data.data = utility.clone( arg.data );
 
 				defer.then( function ( arg ) {
 					var success;
@@ -1264,7 +1261,7 @@ var data = {
 			}
 
 			// Cloning data to avoid `by reference` issues
-			data = utility.clone( arg );
+			data = utility.clone( arg, true );
 
 			// Finding or assigning the record key
 			if ( key === null && this.uri === null ) {

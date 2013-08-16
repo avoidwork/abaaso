@@ -880,7 +880,7 @@ var element = {
 				var o = observer.listeners;
 
 				if ( o[obj.id] !== undefined ) {
-					o[k] = utility.clone( o[obj.id] );
+					o[k] = o[obj.id];
 					delete o[obj.id];
 				}
 			}
