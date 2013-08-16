@@ -108,6 +108,7 @@ return {
 	},
 	delay           : utility.defer,
 	destroy         : element.destroy,
+	each            : array.each,
 	encode          : json.encode,
 	error           : utility.error,
 	expire          : cache.clean,
@@ -119,7 +120,7 @@ return {
 		var all  = typeof obj === "object",
 		    o    = all ? obj   : this,
 		    e    = all ? event : obj,
-		    args = [o, e].concat( array.cast( arguments ).remove( 0, !all ? 0 : 1 ) );
+		    args = [o, e].concat( array.remove( array.cast( arguments ), 0, !all ? 0 : 1 ) );
 
 		return observer.fire.apply( observer, args );
 	},
@@ -144,15 +145,17 @@ return {
 		delete abaaso.init;
 
 		// Cache garbage collector (every minute)
-		utility.repeat(function () {
+		utility.repeat( function () {
 			cache.clean();
 		}, 60000, "cacheGarbageCollector");
 
 		// Firing events to setup
-		return observer.fire( this, "init, ready").un(this, "init, ready" );
+		return observer.fire( this, "init, ready" ).un( this, "init, ready" );
 	},
 	iterate         : utility.iterate,
-	jsonp           : function ( uri, success, failure, callback) { return client.jsonp(uri, success, failure, callback ); },
+	jsonp           : function ( uri, success, failure, callback) {
+		return client.jsonp( uri, success, failure, callback );
+	},
 	listeners       : function ( obj, event ) {
 		return observer.list( typeof obj === "object" ? obj : this, event );
 	},

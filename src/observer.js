@@ -203,7 +203,7 @@ var observer = {
 	 */
 	fire : function ( obj, event ) {
 		var quit = false,
-		    a    = array.cast( arguments ).remove( 0, 1 ),
+		    a    = array.remove( array.cast( arguments ), 0, 1 ),
 		    o, s, log, list;
 
 		if ( observer.ignore ) {
