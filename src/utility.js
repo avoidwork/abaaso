@@ -962,6 +962,36 @@ var utility = {
 	},
 
 	/**
+	 * Scrolls to a position in the view
+	 *
+	 * @param  {Number} x     X coordinate
+	 * @param  {Number} y     Y coordinate
+	 * @param  {Number} speed [Optional] Scrolling speed
+	 * @param  {String} ease  [Optional] Ease effect
+	 * @return {Object}       Deferred
+	 * @todo Implement this
+	 */
+	scroll : function ( x, y, speed, ease ) {
+		var defer = deferred.factory();
+
+		return defer;
+	},
+
+	/**
+	 * Scrolls to the position of an Element
+	 *
+	 * @param  {Object} obj   Element to scroll to
+	 * @param  {Number} speed [Optional] Scrolling speed
+	 * @param  {String} ease  [Optional] Ease effect
+	 * @return {Object}       Deferred
+	 */
+	scrollTo : function ( obj, speed, ease ) {
+		var pos = element.position( obj );
+
+		return scroll( pos.top, pos.left, speed, ease );
+	},
+
+	/**
 	 * Creates a link Element to load an external stylesheet
 	 *
 	 * @method stylesheet

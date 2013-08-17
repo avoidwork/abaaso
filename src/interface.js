@@ -259,6 +259,8 @@ return {
 	repeating       : function () {
 		return array.keys( utility.repeating );
 	},
+	scroll          : utility.scroll,
+	scrollTo        : utility.scrollTo,
 	stylesheet      : utility.stylesheet,
 	script          : utility.script,
 	stop            : utility.stop,
