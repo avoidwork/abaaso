@@ -56,6 +56,7 @@ return {
 		create  : utility.loading,
 		url     : null
 	},
+	math            : math,
 	message         : message,
 	mouse           : mouse,
 	number          : number,
@@ -260,10 +261,10 @@ return {
 	repeating       : function () {
 		return array.keys( utility.repeating );
 	},
-	scroll          : utility.scroll,
-	scrollTo        : utility.scrollTo,
-	stylesheet      : utility.stylesheet,
-	script          : utility.script,
+	script          : client.script,
+	scroll          : client.scroll,
+	scrollTo        : element.scrollTo,
+	stylesheet      : client.stylesheet,
 	stop            : utility.stop,
 	store           : data.decorator,
 	target          : utility.target,

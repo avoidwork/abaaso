@@ -675,7 +675,7 @@ An id is generated if not specified with args</p>
 <li><strong>obj can be of any type.</strong><br/>(Element)</li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Object {top: n, right: n, bottom: n, left: n})</p></div></div><div class="code"><div class="wrapper">  <span class="nx">position</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Array</strong><br/>(Coordinates [left, top, right, bottom])</p></div></div><div class="code"><div class="wrapper">  <span class="nx">position</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">obj</span> <span class="o">=</span> <span class="nx">obj</span> <span class="o">||</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
     <span class="kd">var</span> <span class="nx">left</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">bottom</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">width</span><span class="p">;</span>
 
@@ -700,12 +700,7 @@ An id is generated if not specified with args</p>
       <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="p">{</span>
-      <span class="nx">top</span>    <span class="o">:</span> <span class="nx">top</span><span class="p">,</span>
-      <span class="nx">right</span>  <span class="o">:</span> <span class="nx">right</span><span class="p">,</span>
-      <span class="nx">bottom</span> <span class="o">:</span> <span class="nx">bottom</span><span class="p">,</span>
-      <span class="nx">left</span>   <span class="o">:</span> <span class="nx">left</span>
-    <span class="p">};</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">left</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">bottom</span><span class="p">];</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method prependChild</span></p>
 
 <p>Prepends an Element to an Element</p>
@@ -751,6 +746,19 @@ An id is generated if not specified with args</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method scrollTo</span></p>
+
+<p>Scrolls to the position of an Element</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Element to scroll to)</p></li>
+<li><p><strong>ms must be a Number.</strong><br/>([Optional] Milliseconds to scroll, default is 250, min is 100)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">scrollTo</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">scroll</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">position</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">),</span> <span class="nx">ms</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method serialize</span></p>
 
 <p>Serializes the elements of an Element</p>

@@ -677,7 +677,7 @@ var element = {
 	 * @method position
 	 * @public
 	 * @param  {Mixed} obj Element
-	 * @return {Object}    Object {top: n, right: n, bottom: n, left: n}
+	 * @return {Array}     Coordinates [left, top, right, bottom]
 	 */
 	position : function ( obj ) {
 		obj = obj || document.body;
@@ -704,12 +704,7 @@ var element = {
 			bottom = height;
 		}
 
-		return {
-			top    : top,
-			right  : right,
-			bottom : bottom,
-			left   : left
-		};
+		return [left, top, right, bottom];
 	},
 
 	/**
@@ -755,6 +750,19 @@ var element = {
 		}
 
 		return obj;
+	},
+
+	/**
+	 * Scrolls to the position of an Element
+	 *
+	 * @method scrollTo
+	 * @public
+	 * @param  {Object} obj Element to scroll to
+	 * @param  {Number} ms  [Optional] Milliseconds to scroll, default is 250, min is 100
+	 * @return {Object}     Deferred
+	 */
+	scrollTo : function ( obj, ms ) {
+		return client.scroll( array.remove( element.position( obj ), 2, 3 ), ms );
 	},
 
 	/**

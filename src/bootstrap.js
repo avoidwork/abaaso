@@ -274,8 +274,9 @@ bootstrap = function () {
 	}
 
 	utility.proto( Function, "function" );
-	utility.proto( Number, "number" );
-	utility.proto( String, "string" );
+	utility.proto( Math,     "math" );
+	utility.proto( Number,   "number" );
+	utility.proto( String,   "string" );
 
 	// Setting events & garbage collection
 	if ( !server ) {

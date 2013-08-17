@@ -64,7 +64,16 @@
 <p>Mobile platform</p>
 
 <p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Mobile)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mobile</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="sr">/blackberry|iphone|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">height</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">size</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">size</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">();</span>
+
+      <span class="k">return</span> <span class="p">(</span> <span class="sr">/blackberry|iphone|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="o">||</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method playbook</span></p>
 
 <p>Playbook platform</p>
@@ -95,7 +104,16 @@
 Modern smartphone resolution makes this a hit/miss scenario</p>
 
 <p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Tablet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">tablet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="sr">/ipad|playbook|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">.</span><span class="nx">width</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">size</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">size</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">size</span><span class="p">();</span>
+
+      <span class="k">return</span> <span class="p">(</span> <span class="sr">/ipad|playbook|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="o">||</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method webos</span></p>
 
 <p>WebOS platform</p>
@@ -719,13 +737,80 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
       <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
       <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterGet&quot;</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
     <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method script</span></p>
+
+<p>Creates a script Element to load an external script</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>(URL to script)</p></li>
+<li><p><strong>target must be an Object.</strong><br/>([Optional] Element to receive the script)</p></li>
+<li><p><strong>pos must be a String.</strong><br/>([Optional] Position to create the script at within the target)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Script)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">script</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;application/javascript&quot;</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">arg</span><span class="p">},</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">pos</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method scroll</span></p>
+
+<p>Scrolls to a position in the view using a two point bezier curve</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>dest must be an Array.</strong><br/>(Coordinates)</p></li>
+<li><p><strong>ms must be a Number.</strong><br/>([Optional] Milliseconds to scroll, default is 250, min is 100)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">scroll</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">dest</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+        <span class="nx">start</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">scrollPos</span><span class="p">(),</span>
+        <span class="nx">t</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="nx">ms</span> <span class="o">=</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">ms</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">ms</span> <span class="o">:</span> <span class="mi">250</span> <span class="p">)</span> <span class="o">/</span> <span class="mi">100</span><span class="p">;</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">repeat</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">pos</span> <span class="o">=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">bezier</span><span class="p">(</span> <span class="nx">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nx">dest</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">dest</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">++</span><span class="nx">t</span> <span class="o">/</span> <span class="mi">100</span> <span class="p">);</span>
+
+      <span class="nb">window</span><span class="p">.</span><span class="nx">scrollTo</span><span class="p">(</span> <span class="nx">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">);</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">t</span> <span class="o">===</span> <span class="mi">100</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">},</span> <span class="nx">ms</span><span class="p">,</span> <span class="s2">&quot;scrolling&quot;</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method scrollPos</span></p>
+
+<p>Returns the current scroll position of the View</p>
+
+<p><strong>Returns an Array</strong><br/>(Describes the scroll position)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">scrollPos</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span>
+      <span class="nb">window</span><span class="p">.</span><span class="nx">scrollX</span> <span class="o">||</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nb">window</span><span class="p">.</span><span class="nx">scrollY</span> <span class="o">||</span> <span class="mi">0</span>
+    <span class="p">];</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method size</span></p>
 
 <p>Returns the visible area of the View</p>
 
-<p><strong>Returns an Object</strong><br/>(Describes the View {x: ?, y: ?})</p></div></div><div class="code"><div class="wrapper">  <span class="nx">size</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">view</span> <span class="o">=</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentElement</span> <span class="o">:</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span> <span class="p">)</span> <span class="o">:</span> <span class="p">{</span><span class="nx">clientHeight</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">clientWidth</span><span class="o">:</span> <span class="mi">0</span><span class="p">};</span>
+<p><strong>Returns an Array</strong><br/>(Describes the View)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">size</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">[</span>
+      <span class="nb">document</span><span class="p">[</span><span class="s2">&quot;documentElement&quot;</span> <span class="o">||</span> <span class="s2">&quot;body&quot;</span><span class="p">][</span><span class="s2">&quot;scrollWidth&quot;</span>  <span class="o">||</span> <span class="s2">&quot;clientWidth&quot;</span>  <span class="o">||</span> <span class="s2">&quot;offsetWidth&quot;</span><span class="p">]</span>  <span class="o">||</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nb">document</span><span class="p">[</span><span class="s2">&quot;documentElement&quot;</span> <span class="o">||</span> <span class="s2">&quot;body&quot;</span><span class="p">][</span><span class="s2">&quot;scrollHeight&quot;</span> <span class="o">||</span> <span class="s2">&quot;clientHeight&quot;</span> <span class="o">||</span> <span class="s2">&quot;offsetHeight&quot;</span><span class="p">]</span> <span class="o">||</span> <span class="mi">0</span>
+    <span class="p">];</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method stylesheet</span></p>
 
-    <span class="k">return</span> <span class="p">{</span><span class="nx">height</span><span class="o">:</span> <span class="nx">view</span><span class="p">.</span><span class="nx">clientHeight</span><span class="p">,</span> <span class="nx">width</span><span class="o">:</span> <span class="nx">view</span><span class="p">.</span><span class="nx">clientWidth</span><span class="p">};</span>
+<p>Creates a link Element to load an external stylesheet</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>arg must be a String.</strong><br/>(URL to stylesheet)</p></li>
+<li><p><strong>media must be a String.</strong><br/>([Optional] Medias the stylesheet applies to)</p></li>
+</ul>
+
+<p><strong>Returns an Objecct</strong><br/>(Stylesheet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">stylesheet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">rel</span><span class="o">:</span> <span class="s2">&quot;stylesheet&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text/css&quot;</span><span class="p">,</span> <span class="nx">href</span><span class="o">:</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span><span class="o">:</span> <span class="nx">media</span> <span class="o">||</span> <span class="s2">&quot;print, screen&quot;</span><span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
   <span class="p">}</span>
 <span class="p">};</span></div></div></div></div></body></html>

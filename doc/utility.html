@@ -444,11 +444,17 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
 <p>Parameters:</p>
 
 <ul>
-<li><strong>i must be a Number.</strong><br/>(Number to calculate)</li>
+<li><p><strong>i must be a Number.</strong><br/>(Number to calculate)</p></li>
+<li><p><strong>r must be a Boolean.</strong><br/>(Recursive if <code>true</code>)</p></li>
 </ul>
 
-<p><strong>Returns a Number</strong><br/>(Calculated number)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fib</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">2</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">i</span><span class="p">;</span>
+<p><strong>Returns a Number</strong><br/>(Calculated number)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fib</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">r</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">r</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">i</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">r</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">r</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">i</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">last</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">fib</span><span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="p">}</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method genId</span></p>
 
 <p>Generates an ID value</p>
@@ -789,8 +795,10 @@ Allows hooks to be overwritten</p>
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(obj or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">proto</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
+
     <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">prototypes</span><span class="p">[</span><span class="nx">type</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
@@ -902,33 +910,6 @@ Return false from the function to halt recursion</p>
     <span class="p">},</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method script</span></p>
-
-<p>Creates a script Element to load an external script</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><p><strong>arg must be a String.</strong><br/>(URL to script)</p></li>
-<li><p><strong>target must be an Object.</strong><br/>([Optional] Element to receive the script)</p></li>
-<li><p><strong>pos must be a String.</strong><br/>([Optional] Position to create the script at within the target)</p></li>
-</ul>
-
-<p><strong>Returns an Object</strong><br/>(Script)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">script</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;application/javascript&quot;</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">arg</span><span class="p">},</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">pos</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method stylesheet</span></p>
-
-<p>Creates a link Element to load an external stylesheet</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><p><strong>arg must be a String.</strong><br/>(URL to stylesheet)</p></li>
-<li><p><strong>media must be a String.</strong><br/>([Optional] Medias the stylesheet applies to)</p></li>
-</ul>
-
-<p><strong>Returns an Objecct</strong><br/>(Stylesheet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">stylesheet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;link&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">rel</span><span class="o">:</span> <span class="s2">&quot;stylesheet&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;text/css&quot;</span><span class="p">,</span> <span class="nx">href</span><span class="o">:</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">media</span><span class="o">:</span> <span class="nx">media</span> <span class="o">||</span> <span class="s2">&quot;print, screen&quot;</span><span class="p">},</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method stop</span></p>
 
 <p>Stops an Event from bubbling</p>

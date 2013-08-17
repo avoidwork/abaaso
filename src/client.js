@@ -120,7 +120,7 @@ var client = {
 		else {
 			size = client.size();
 
-			return ( /blackberry|iphone|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( size.height < 720 || size.width < 720 ) ) );
+			return ( /blackberry|iphone|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( size[0] < 720 || size[1] < 720 ) ) );
 		}
 	},
 
@@ -186,7 +186,7 @@ var client = {
 		else {
 			size = client.size();
 
-			return ( /ipad|playbook|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( size.width >= 720 || size.width >= 720 ) ) );
+			return ( /ipad|playbook|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( size[0] >= 720 || size[1] >= 720 ) ) );
 		}
 	},
 
@@ -869,17 +869,61 @@ var client = {
 	},
 
 	/**
+	 * Creates a script Element to load an external script
+	 *
+	 * @method script
+	 * @public
+	 * @param  {String} arg    URL to script
+	 * @param  {Object} target [Optional] Element to receive the script
+	 * @param  {String} pos    [Optional] Position to create the script at within the target
+	 * @return {Object}        Script
+	 */
+	script : function ( arg, target, pos ) {
+		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.$( "head" )[0], pos );
+	},
+
+	/**
+	 * Scrolls to a position in the view using a two point bezier curve
+	 *
+	 * @method scroll
+	 * @public
+	 * @param  {Array}  dest Coordinates
+	 * @param  {Number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
+	 * @return {Object}      Deferred
+	 */
+	scroll : function ( dest, ms ) {
+		var defer = deferred.factory(),
+		    start = client.scrollPos(),
+		    t     = 0;
+
+		ms = ( !isNaN( ms ) ? ms : 250 ) / 100;
+
+		utility.repeat( function () {
+			var pos = math.bezier( start[0], start[1], dest[0], dest[1], ++t / 100 );
+
+			window.scrollTo( pos[0], pos[1] );
+
+			if ( t === 100 ) {
+				defer.resolve( true );
+				return false;
+			}
+		}, ms, "scrolling" );
+
+		return defer;
+	},
+
+	/**
 	 * Returns the current scroll position of the View
 	 *
 	 * @method scrollPos
 	 * @public
-	 * @return {Object} Describes the scroll position
+	 * @return {Array} Describes the scroll position
 	 */
 	scrollPos : function () {
-		return {
-			top  : document["documentElement" || "body"].scrollTop,
-			left : document["documentElement" || "body"].scrollLeft
-		};
+		return [
+			window.scrollX || 0,
+			window.scrollY || 0
+		];
 	},
 
 	/**
@@ -887,12 +931,25 @@ var client = {
 	 *
 	 * @method size
 	 * @public
-	 * @return {Object} Describes the View
+	 * @return {Array} Describes the View
 	 */
 	size : function () {
-		return {
-			height : document["documentElement" || "body"]["scrollHeight" || "clientHeight" || "offsetHeight"],
-			width  : document["documentElement" || "body"]["scrollWidth"  || "clientWidth"  || "offsetWidth"]
-		};
+		return [
+			document["documentElement" || "body"]["scrollWidth"  || "clientWidth"  || "offsetWidth"]  || 0,
+			document["documentElement" || "body"]["scrollHeight" || "clientHeight" || "offsetHeight"] || 0
+		];
+	},
+
+	/**
+	 * Creates a link Element to load an external stylesheet
+	 *
+	 * @method stylesheet
+	 * @public
+	 * @param  {String} arg   URL to stylesheet
+	 * @param  {String} media [Optional] Medias the stylesheet applies to
+	 * @return {Objecct}      Stylesheet
+	 */
+	stylesheet : function ( arg, media ) {
+		return element.create( "link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, utility.$( "head" )[0] );
 	}
 };
