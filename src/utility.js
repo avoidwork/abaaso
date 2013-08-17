@@ -972,7 +972,11 @@ var utility = {
 	 * @todo Implement this
 	 */
 	scroll : function ( x, y, speed, ease ) {
-		var defer = deferred.factory();
+		speed     = speed || 100;
+		ease      = ease  || null;
+		var defer = deferred.factory(),
+		    start = client.scrollPos(),
+		    max   = client.size();
 
 		return defer;
 	},

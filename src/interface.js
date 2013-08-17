@@ -3,49 +3,50 @@ return {
 	array           : array,
 	callback        : {},
 	client          : {
-		activex : client.activex,
-		android : client.android,
+		activex    : client.activex,
+		android    : client.android,
 		blackberry : client.blackberry,
-		chrome  : client.chrome,
-		firefox : client.firefox,
-		ie      : client.ie,
-		ios     : client.ios,
-		linux   : client.linux,
-		mobile  : client.mobile,
-		opera   : client.opera,
-		osx     : client.osx,
-		playbook: client.playbook,
-		safari  : client.safari,
-		tablet  : client.tablet,
-		size    : {height: 0, width: 0},
-		version : 0,
-		webos   : client.webos,
-		windows : client.windows,
-		del     : function ( uri, success, failure, headers, timeout ) {
+		chrome     : client.chrome,
+		firefox    : client.firefox,
+		ie         : client.ie,
+		ios        : client.ios,
+		linux      : client.linux,
+		mobile     : client.mobile,
+		opera      : client.opera,
+		osx        : client.osx,
+		playbook   : client.playbook,
+		safari     : client.safari,
+		tablet     : client.tablet,
+		version    : 0,
+		webos      : client.webos,
+		windows    : client.windows,
+		del        : function ( uri, success, failure, headers, timeout ) {
 			return client.request( uri, "DELETE", success, failure, null, headers, timeout );
 		},
-		get     : function ( uri, success, failure, headers, timeout ) {
+		get        : function ( uri, success, failure, headers, timeout ) {
 			return client.request( uri, "GET", success, failure, null, headers, timeout );
 		},
-		headers : function ( uri, success, failure, timeout ) {
+		headers    : function ( uri, success, failure, timeout ) {
 			return client.request( uri, "HEAD", success, failure, null, null, timeout );
 		},
-		patch   : function ( uri, success, failure, args, headers, timeout ) {
+		patch      : function ( uri, success, failure, args, headers, timeout ) {
 			return client.request( uri, "PATCH", success, failure, args, headers, timeout );
 		},
-		post    : function ( uri, success, failure, args, headers, timeout ) {
+		post       : function ( uri, success, failure, args, headers, timeout ) {
 			return client.request( uri, "POST", success, failure, args, headers, timeout );
 		},
-		put     : function ( uri, success, failure, args, headers, timeout ) {
+		put        : function ( uri, success, failure, args, headers, timeout ) {
 			return client.request( uri, "PUT", success, failure, args, headers, timeout );
 		},
-		jsonp   : function ( uri, success, failure, callback ) {
+		jsonp      : function ( uri, success, failure, callback ) {
 			return client.jsonp(uri, success, failure, callback );
 		},
-		options : function ( uri, success, failure, timeout ) {
+		options    : function ( uri, success, failure, timeout ) {
 			return client.request(uri, "OPTIONS", success, failure, null, null, timeout );
 		},
-		permissions : client.permissions
+		permissions: client.permissions,
+		scrollPos  : client.scrollPos,
+		size       : client.size
 	},
 	cookie          : cookie,
 	element         : element,

@@ -112,7 +112,16 @@ var client = {
 	 * @return {Boolean} `true` if Mobile
 	 */
 	mobile : function () {
-		return !server && ( /blackberry|iphone|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( this.client.size.height < 720 || this.client.size.width < 720 ) ) );
+		var size;
+
+		if ( server ) {
+			return false;
+		}
+		else {
+			size = client.size();
+
+			return ( /blackberry|iphone|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( size.height < 720 || size.width < 720 ) ) );
+		}
 	},
 
 	/**
@@ -169,7 +178,16 @@ var client = {
 	 * @return {Boolean} `true` if Tablet
 	 */
 	tablet : function () {
-		return !server && ( /ipad|playbook|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( this.client.size.width >= 720 || this.client.size.width >= 720 ) ) );
+		var size;
+
+		if ( server ) {
+			return false;
+		}
+		else {
+			size = client.size();
+
+			return ( /ipad|playbook|webos/i.test( navigator.userAgent ) || ( regex.android.test( navigator.userAgent ) && ( size.width >= 720 || size.width >= 720 ) ) );
+		}
 	},
 
 	/**
@@ -850,17 +868,31 @@ var client = {
 		}
 	},
 
+	/**
+	 * Returns the current scroll position of the View
+	 *
+	 * @method scrollPos
+	 * @public
+	 * @return {Object} Describes the scroll position
+	 */
+	scrollPos : function () {
+		return {
+			top  : document["documentElement" || "body"].scrollTop,
+			left : document["documentElement" || "body"].scrollLeft
+		};
+	},
 
 	/**
 	 * Returns the visible area of the View
 	 *
 	 * @method size
 	 * @public
-	 * @return {Object} Describes the View {x: ?, y: ?}
+	 * @return {Object} Describes the View
 	 */
 	size : function () {
-		var view = !server ? ( document.documentElement !== undefined ? document.documentElement : document.body ) : {clientHeight: 0, clientWidth: 0};
-
-		return {height: view.clientHeight, width: view.clientWidth};
+		return {
+			height : document["documentElement" || "body"]["scrollHeight" || "clientHeight" || "offsetHeight"],
+			width  : document["documentElement" || "body"]["scrollWidth"  || "clientWidth"  || "offsetWidth"]
+		};
 	}
 };
