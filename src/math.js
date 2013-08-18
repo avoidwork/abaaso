@@ -29,9 +29,9 @@ var math = {
 		// Setting variables
 		c  = [];
 		S0 = 1 - t;
-		Q0 = Math.pow( S0, 2 );
+		Q0 = math.sqr( S0 );
 		Q1 = 2 * S0 * t;
-		Q2 = Math.pow( t, 2 );
+		Q2 = math.sqr( t );
 		C0 = Math.pow( S0, 3 );
 		C1 = 3 * Q0 * t;
 		C2 = 3 * S0 * Q2;

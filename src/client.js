@@ -935,8 +935,8 @@ var client = {
 	 */
 	size : function () {
 		return [
-			document["documentElement" || "body"]["scrollWidth"  || "clientWidth"  || "offsetWidth"]  || 0,
-			document["documentElement" || "body"]["scrollHeight" || "clientHeight" || "offsetHeight"] || 0
+			document["documentElement" || "body"].clientWidth  || 0,
+			document["documentElement" || "body"].clientHeight || 0
 		];
 	},
 
