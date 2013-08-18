@@ -112,11 +112,12 @@ var element = {
 	 * @param  {Object} args   [Optional] Collection of properties to apply to the new element
 	 * @param  {Mixed}  target [Optional] Target Element
 	 * @param  {Mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
-	 * @return {Object}        Element that was created or undefined
+	 * @return {Mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
 	 */
 	create : function ( type, args, target, pos ) {
-		var svg = false,
-		    obj, uid, frag;
+		var svg  = false,
+		    frag = false,
+		    obj, uid, result;
 
 		if ( type === undefined || string.isEmpty( type ) ) {
 			throw new Error( label.error.invalidArguments );
@@ -129,8 +130,6 @@ var element = {
 			target = document.body;
 		}
 		
-		frag = !( target instanceof Element );
-		
 		if ( args instanceof Object && args.id !== undefined && utility.$( "#" + args.id ) === undefined ) {
 			uid = args.id;
 			delete args.id;
@@ -139,19 +138,28 @@ var element = {
 			uid = utility.genId( undefined, true );
 		}
 
-		if ( !svg && !regex.svg.test( type ) ) {
-			obj = document.createElement( type );
+		// String injection, create a frag and apply it
+		if ( regex.html.test( type ) ) {
+			frag   = true;
+			obj    = element.frag( type );
+			result = obj.childNodes.length === 1 ? obj.childNodes[0] : array.cast( obj.childNodes );
 		}
+		// Original syntax
 		else {
-			obj = document.createElementNS( "http://www.w3.org/2000/svg", type );
-		}
+			if ( !svg && !regex.svg.test( type ) ) {
+				obj = document.createElement( type );
+			}
+			else {
+				obj = document.createElementNS( "http://www.w3.org/2000/svg", type );
+			}
 
-		if ( uid !== undefined ) {
-			obj.id = uid;
-		}
+			if ( uid !== undefined ) {
+				obj.id = uid;
+			}
 
-		if ( args instanceof Object ) {
-			element.update( obj, args );
+			if ( args instanceof Object ) {
+				element.update( obj, args );
+			}
 		}
 
 		if ( pos === undefined || pos === "last" ) {
@@ -181,8 +189,8 @@ var element = {
 		else {
 			target.appendChild( obj );
 		}
-		
-		return obj;
+
+		return !frag ? obj : result;
 	},
 
 	/**
