@@ -127,6 +127,8 @@ var utility = {
 	 * @return {Object}     Clone of obj
 	 */
 	clone : function ( obj, shallow ) {
+		var clone;
+
 		if ( shallow === true ) {
 			return json.decode( json.encode( obj ) );
 		}
@@ -139,8 +141,28 @@ var utility = {
 		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode( obj ) );
 		}
-		else if ( obj instanceof Object ) {
+		else if ( typeof obj.__proto__ !== "undefined" ) {
 			return utility.extend( obj.__proto__, obj );
+		}
+		else if ( obj instanceof Object ) {
+			// If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration
+			clone = json.encode( obj, true );
+
+			if ( clone !== undefined ) {
+				clone = json.decode( clone );
+
+				// Decorating Functions that would be lost with JSON encoding/decoding
+				utility.iterate( obj, function ( v, k ) {
+					if ( typeof v === "function" ) {
+						clone[k] = v;
+					}
+				});
+			}
+			else {
+				clone = obj;
+			}
+
+			return clone;
 		}
 		else {
 			return obj;
