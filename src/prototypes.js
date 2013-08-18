@@ -788,6 +788,9 @@ var prototypes = {
 		removeClass : function ( arg ) {
 			return element.klass( this, arg, false );
 		},
+		scrollTo  : function ( ms ) {
+			return element.scrollTo( this, ms );
+		},
 		serialize : function ( string, encode ) {
 			return element.serialize( this, string, encode );
 		},
@@ -827,6 +830,12 @@ var prototypes = {
 		debounce : function ( ms ) {
 			return utility.debounce( this, ms );
 		}
+	},
+	// Math
+	math : {
+		bezier : math.bezier,
+		dist   : math.dist,
+		sqr    : math.sqr
 	},
 	// Number.prototype
 	number : {

@@ -39,7 +39,6 @@ bootstrap = function () {
 
 	// Describing the Client
 	if ( !server ) {
-		this.client.size    = client.size();
 		this.client.version = client.version = client.version();
 		this.client.mobile  = client.mobile.call( this );
 		this.client.tablet  = client.tablet.call( this );
@@ -275,8 +274,9 @@ bootstrap = function () {
 	}
 
 	utility.proto( Function, "function" );
-	utility.proto( Number, "number" );
-	utility.proto( String, "string" );
+	utility.proto( Math,     "math" );
+	utility.proto( Number,   "number" );
+	utility.proto( String,   "string" );
 
 	// Setting events & garbage collection
 	if ( !server ) {
@@ -297,11 +297,6 @@ bootstrap = function () {
 				observer.fire( abaaso, "beforeHash, hash, afterHash", location.hash );
 			}
 		}, "hash", global, "all");
-
-		observer.add( global, "resize", function ()  {
-			$.client.size = self.client.size = client.size();
-			observer.fire( abaaso, "resize", self.client.size );
-		}, "resize", global, "all");
 
 		observer.add( global, "load", function ()  {
 			observer.fire( abaaso, "render" );

@@ -110,9 +110,10 @@ An id is generated if not specified with args</p>
 <li><p><strong>pos can be of any type.</strong><br/>([Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement})</p></li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Element that was created or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">create</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">svg</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
-        <span class="nx">obj</span><span class="p">,</span> <span class="nx">uid</span><span class="p">,</span> <span class="nx">frag</span><span class="p">;</span>
+<p><strong>Returns a Mixed</strong><br/>(Element that was created, or an Array if <code>type</code> is a String of multiple Elements (frag))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">create</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">svg</span>  <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">frag</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+        <span class="nx">obj</span><span class="p">,</span> <span class="nx">uid</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
@@ -125,29 +126,31 @@ An id is generated if not specified with args</p>
       <span class="nx">target</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
     <span class="p">}</span>
     
-    <span class="nx">frag</span> <span class="o">=</span> <span class="o">!</span><span class="p">(</span> <span class="nx">target</span> <span class="k">instanceof</span> <span class="nx">Element</span> <span class="p">);</span>
-    
     <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="o">&amp;&amp;</span> <span class="nx">args</span><span class="p">.</span><span class="nx">id</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="nx">args</span><span class="p">.</span><span class="nx">id</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">uid</span> <span class="o">=</span> <span class="nx">args</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
       <span class="k">delete</span> <span class="nx">args</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">svg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">uid</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">(</span> <span class="kc">undefined</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
-    <span class="p">}</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>String injection, create a frag and apply it</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">html</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">frag</span>   <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+      <span class="nx">obj</span>    <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">frag</span><span class="p">(</span> <span class="nx">type</span> <span class="p">);</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="o">?</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">childNodes</span> <span class="p">);</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Original syntax</p></div></div><div class="code"><div class="wrapper">    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">svg</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="nx">type</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElementNS</span><span class="p">(</span> <span class="s2">&quot;http://www.w3.org/2000/svg&quot;</span><span class="p">,</span> <span class="nx">type</span> <span class="p">);</span>
+      <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">svg</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">svg</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">type</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="nx">type</span> <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElementNS</span><span class="p">(</span> <span class="s2">&quot;http://www.w3.org/2000/svg&quot;</span><span class="p">,</span> <span class="nx">type</span> <span class="p">);</span>
-    <span class="p">}</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">uid</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">uid</span><span class="p">;</span>
+      <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">uid</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">obj</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">uid</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">element</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">element</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
+      <span class="p">}</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">pos</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">pos</span> <span class="o">===</span> <span class="s2">&quot;last&quot;</span> <span class="p">)</span> <span class="p">{</span>
@@ -177,8 +180,8 @@ An id is generated if not specified with args</p>
     <span class="k">else</span> <span class="p">{</span>
       <span class="nx">target</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="p">}</span>
-    
-    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="o">!</span><span class="nx">frag</span> <span class="o">?</span> <span class="nx">obj</span> <span class="o">:</span> <span class="nx">result</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method css</span></p>
 
 <p>Gets or sets a CSS style attribute on an Element</p>
@@ -675,7 +678,7 @@ An id is generated if not specified with args</p>
 <li><strong>obj can be of any type.</strong><br/>(Element)</li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Object {top: n, right: n, bottom: n, left: n})</p></div></div><div class="code"><div class="wrapper">  <span class="nx">position</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Array</strong><br/>(Coordinates [left, top, right, bottom])</p></div></div><div class="code"><div class="wrapper">  <span class="nx">position</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">obj</span> <span class="o">=</span> <span class="nx">obj</span> <span class="o">||</span> <span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
     <span class="kd">var</span> <span class="nx">left</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">bottom</span><span class="p">,</span> <span class="nx">height</span><span class="p">,</span> <span class="nx">width</span><span class="p">;</span>
 
@@ -700,12 +703,7 @@ An id is generated if not specified with args</p>
       <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">return</span> <span class="p">{</span>
-      <span class="nx">top</span>    <span class="o">:</span> <span class="nx">top</span><span class="p">,</span>
-      <span class="nx">right</span>  <span class="o">:</span> <span class="nx">right</span><span class="p">,</span>
-      <span class="nx">bottom</span> <span class="o">:</span> <span class="nx">bottom</span><span class="p">,</span>
-      <span class="nx">left</span>   <span class="o">:</span> <span class="nx">left</span>
-    <span class="p">};</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nx">left</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">right</span><span class="p">,</span> <span class="nx">bottom</span><span class="p">];</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method prependChild</span></p>
 
 <p>Prepends an Element to an Element</p>
@@ -751,6 +749,19 @@ An id is generated if not specified with args</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method scrollTo</span></p>
+
+<p>Scrolls to the position of an Element</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Element to scroll to)</p></li>
+<li><p><strong>ms must be a Number.</strong><br/>([Optional] Milliseconds to scroll, default is 250, min is 100)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">scrollTo</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">scroll</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">element</span><span class="p">.</span><span class="nx">position</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span> <span class="p">),</span> <span class="nx">ms</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method serialize</span></p>
 
 <p>Serializes the elements of an Element</p>

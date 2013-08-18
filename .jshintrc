@@ -18,6 +18,7 @@
 	"eqnull": true,
 	"expr": true,
 	"browser": true,
+	"loopfunc": true,
 	"globals": {
 		"localStorage": true,
 		"XMLHttpRequest": true,

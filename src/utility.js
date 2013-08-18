@@ -127,6 +127,8 @@ var utility = {
 	 * @return {Object}     Clone of obj
 	 */
 	clone : function ( obj, shallow ) {
+		var clone;
+
 		if ( shallow === true ) {
 			return json.decode( json.encode( obj ) );
 		}
@@ -139,8 +141,28 @@ var utility = {
 		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode( obj ) );
 		}
-		else if ( obj instanceof Object ) {
+		else if ( typeof obj.__proto__ !== "undefined" ) {
 			return utility.extend( obj.__proto__, obj );
+		}
+		else if ( obj instanceof Object ) {
+			// If JSON encoding fails due to recursion, the original Object is returned because it's assumed this is for decoration
+			clone = json.encode( obj, true );
+
+			if ( clone !== undefined ) {
+				clone = json.decode( clone );
+
+				// Decorating Functions that would be lost with JSON encoding/decoding
+				utility.iterate( obj, function ( v, k ) {
+					if ( typeof v === "function" ) {
+						clone[k] = v;
+					}
+				});
+			}
+			else {
+				clone = obj;
+			}
+
+			return clone;
 		}
 		else {
 			return obj;
@@ -467,11 +489,17 @@ var utility = {
 	 *
 	 * @method fib
 	 * @public
-	 * @param  {Number} i Number to calculate
-	 * @return {Number}   Calculated number
+	 * @param  {Number}  i Number to calculate
+	 * @param  {Boolean} r Recursive if `true`
+	 * @return {Number}    Calculated number
 	 */
-	fib : function ( i ) {
-		return i > 1 ? utility.fib( i - 1 ) + utility.fib( i - 2 ) : i;
+	fib : function ( i, r ) {
+		if ( r === true ) {
+			return i > 1 ? utility.fib( i - 1, r ) + utility.fib( i - 2, r ) : i;
+		}
+		else {
+			return array.last( array.fib( i ) );
+		}
 	},
 
 	/**
@@ -825,8 +853,10 @@ var utility = {
 	 * @return {Object}      obj or undefined
 	 */
 	proto : function ( obj, type ) {
+		var target = obj.prototype || obj;
+
 		utility.iterate( prototypes[type], function ( v, k ) {
-			utility.property( obj.prototype, k, {value: v, configurable: true, writable: true} );
+			utility.property( target, k, {value: v, configurable: true, writable: true} );
 		});
 
 		return obj;
@@ -945,33 +975,6 @@ var utility = {
 		}, ms, id, true );
 
 		return id;
-	},
-
-	/**
-	 * Creates a script Element to load an external script
-	 *
-	 * @method script
-	 * @public
-	 * @param  {String} arg    URL to script
-	 * @param  {Object} target [Optional] Element to receive the script
-	 * @param  {String} pos    [Optional] Position to create the script at within the target
-	 * @return {Object}        Script
-	 */
-	script : function ( arg, target, pos ) {
-		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.$( "head" )[0], pos );
-	},
-
-	/**
-	 * Creates a link Element to load an external stylesheet
-	 *
-	 * @method stylesheet
-	 * @public
-	 * @param  {String} arg   URL to stylesheet
-	 * @param  {String} media [Optional] Medias the stylesheet applies to
-	 * @return {Objecct}      Stylesheet
-	 */
-	stylesheet : function ( arg, media ) {
-		return element.create( "link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, utility.$( "head" )[0] );
 	},
 
 	/**

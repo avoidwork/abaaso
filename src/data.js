@@ -2090,7 +2090,7 @@ function DataStore ( obj ) {
 	this.credentials = null;
 	this.datalists   = [];
 	this.depth       = 0;
-	this.events      = true;
+	this.events      = false;
 	this.expires     = null;
 	this.headers     = {Accept: "application/json"};
 	this.ignore      = [];
