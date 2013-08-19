@@ -294,7 +294,7 @@ var array = {
 				for ( i = 0; i < size; i++ ) {
 					idx = i + offset;
 
-					if ( fn.call( obj, obj[idx], idx ) === false ) {
+					if ( idx === nth || fn.call( obj, obj[idx], idx ) === false ) {
 						return false;
 					}
 				}
