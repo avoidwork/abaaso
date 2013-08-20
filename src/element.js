@@ -122,6 +122,10 @@ var element = {
 		if ( type === undefined || string.isEmpty( type ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
+		else {
+			// Removing potential HTML template formatting
+			type = type.replace( /\t|\n|\r/g, "" );
+		}
 
 		if ( target !== undefined ) {
 			svg = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
