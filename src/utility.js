@@ -856,7 +856,9 @@ var utility = {
 		var target = obj.prototype || obj;
 
 		utility.iterate( prototypes[type], function ( v, k ) {
-			utility.property( target, k, {value: v, configurable: true, writable: true} );
+			if ( !target[k] ) {
+				utility.property( target, k, {value: v, configurable: true, writable: true} );
+			}
 		});
 
 		return obj;
