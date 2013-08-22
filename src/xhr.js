@@ -222,7 +222,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		var result = "";
 
-		if ( this.readyState < HEADERS_RECEIVED || this._error ) {
+		if ( this.readyState < HEADERS_RECEIVED ) {
 			throw new Error( label.error.invalidStateNoHeaders );
 		}
 
