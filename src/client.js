@@ -850,8 +850,12 @@ var client = {
 					cache.set( uri, "!permission", client.bit( [type] ) );
 					exception( !server ? new Error( label.error.serverInvalidMethod ) : label.error.serverInvalidMethod, xhr );
 					break;
-				default:
+				case 0:
 					exception( !server ? new Error( label.error.serverError ) : label.error.serverError, xhr );
+					break;
+				default:
+					defer.resolve( r );
+					uri.fire( "after" + typed, r, xhr );
 			}
 
 			try {

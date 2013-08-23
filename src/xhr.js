@@ -81,10 +81,6 @@ var xhr = function () {
 				self._send = false;
 			}
 		});
-
-		res.on( "close", function ( e ) {
-			handlerError.call( self, e );
-		});
 	};
 
 	/**
@@ -100,6 +96,7 @@ var xhr = function () {
 		this.statusText   = e;
 		this.responseText = e !== undefined ? ( e.stack || e ) : e;
 		this._error       = true;
+		this.setRequestHeader( "Content-Type", "text/plain" );
 		this.dispatchEvent( "error" );
 		state.call( this, DONE );
 	};
@@ -222,7 +219,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		var result = "";
 
-		if ( this.readyState < HEADERS_RECEIVED || this._error ) {
+		if ( this.readyState < HEADERS_RECEIVED ) {
 			throw new Error( label.error.invalidStateNoHeaders );
 		}
 
