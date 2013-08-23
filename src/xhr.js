@@ -81,10 +81,6 @@ var xhr = function () {
 				self._send = false;
 			}
 		});
-
-		res.on( "close", function ( e ) {
-			handlerError.call( self, e );
-		});
 	};
 
 	/**
