@@ -376,25 +376,28 @@ DataStore.prototype.crawl = function ( arg ) {
  * @return {Object}          Deferred
  */
 DataStore.prototype.del = function ( record, reindex, batch ) {
-	record     = record.key ? record : this.get ( record );
-	reindex    = ( reindex !== false );
-	batch      = ( batch === true );
-	var self   = this,
-	    events = ( this.events === true ),
-	    defer  = deferred(),
-	    complete, key, uri, p;
+	record    = record.key ? record : this.get ( record );
+	reindex   = ( reindex !== false );
+	batch     = ( batch === true );
+	var self  = this,
+	    defer = deferred();
 
 	if ( record === undefined ) {
 		defer.reject( new Error( label.error.invalidArguments ) );
 	}
 	else {
+		if ( this.events ) {
+			observer.fire( self.parentNode, "beforeDataDelete", record );
+		}
+
 		if ( this.uri === null || this.callback !== null ) {
 			this.delComplete( record, reindex, batch, defer );
 		}
 		else {
 			client.request( "DELETE", this.uri + "/" record.key, function () {
-				this.delComplete( record, reindex, batch, defer );
+				self.delComplete( record, reindex, batch, defer );
 			}, function ( e ) {
+				observer.fire( self.parentNode, "failedDataDelete", e );
 				defer.reject( e );
 			}, undefined, utility.merge( {withCredentials: this.credentials}, this.headers ) );
 		}
@@ -439,6 +442,10 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 
 		if ( self.autosave ) {
 			this.purge( arg.key );
+		}
+
+		if ( this.events ) {
+			observer.fire( self.parentNode, "afterDataDelete", record );
 		}
 	}
 
@@ -938,6 +945,11 @@ DataStore.prototype.set = function ( key, arg, batch ) {
 	    defer2  = deferred(),
 	    partial = false,
 	    data, record, method, events, args, uri, p, reconcile;
+
+	if ( this.uri === null ) {
+		if 
+	}
+
 
 	if ( !( arg instanceof Object ) ) {
 		throw new Error( label.error.invalidArguments );
