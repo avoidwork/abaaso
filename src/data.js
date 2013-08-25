@@ -143,7 +143,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 		});
 	}
 
-	return defer.then;
+	return defer;
 };
 
 /**
@@ -1734,7 +1734,7 @@ DataStore.prototype.teardown = function () {
 					return;
 				}
 
-				if ( v.hasOwnProperty( "data" ) && typeof v.data.teardown === "function" ) {
+				if ( v.data && typeof v.data.teardown === "function" ) {
 					observer.remove( v.id );
 					v.data.teardown();
 				}
