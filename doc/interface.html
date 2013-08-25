@@ -91,14 +91,14 @@
   <span class="nx">compile</span>         <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">compile</span><span class="p">,</span>
   <span class="nx">create</span>          <span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">,</span>
   <span class="nx">css</span>             <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">css</span><span class="p">,</span>
-  <span class="nx">data</span>            <span class="o">:</span> <span class="nx">data</span><span class="p">.</span><span class="nx">decorator</span><span class="p">,</span>
+  <span class="nx">data</span>            <span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
   <span class="nx">datalist</span>        <span class="o">:</span> <span class="nx">datalist</span><span class="p">.</span><span class="nx">factory</span><span class="p">,</span>
   <span class="nx">discard</span>         <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">discard</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
   <span class="p">},</span>
   <span class="nx">debounce</span>        <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">debounce</span><span class="p">,</span>
   <span class="nx">decode</span>          <span class="o">:</span> <span class="nx">json</span><span class="p">.</span><span class="nx">decode</span><span class="p">,</span>
-  <span class="nx">defer</span>           <span class="o">:</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">,</span>
+  <span class="nx">defer</span>           <span class="o">:</span> <span class="nx">deferred</span><span class="p">,</span>
   <span class="nx">define</span>          <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">define</span><span class="p">,</span>
   <span class="nx">del</span>             <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;DELETE&quot;</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">);</span>
@@ -112,7 +112,7 @@
   <span class="nx">expires</span>         <span class="o">:</span> <span class="mi">120000</span><span class="p">,</span>
   <span class="nx">fib</span>             <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">fib</span><span class="p">,</span>
   <span class="nx">extend</span>          <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">extend</span><span class="p">,</span>
-  <span class="nx">filter</span>          <span class="o">:</span> <span class="nx">filter</span><span class="p">.</span><span class="nx">factory</span><span class="p">,</span>
+  <span class="nx">filter</span>          <span class="o">:</span> <span class="nx">filter</span><span class="p">,</span>
   <span class="nx">fire</span>            <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span> <span class="p">)</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">all</span>  <span class="o">=</span> <span class="k">typeof</span> <span class="nx">obj</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
         <span class="nx">o</span>    <span class="o">=</span> <span class="nx">all</span> <span class="o">?</span> <span class="nx">obj</span>   <span class="o">:</span> <span class="k">this</span><span class="p">,</span>
@@ -126,7 +126,7 @@
   <span class="nx">get</span>             <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">);</span>
   <span class="p">},</span>
-  <span class="nx">grid</span>            <span class="o">:</span> <span class="nx">grid</span><span class="p">.</span><span class="nx">factory</span><span class="p">,</span>
+  <span class="nx">grid</span>            <span class="o">:</span> <span class="nx">grid</span><span class="p">,</span>
   <span class="nx">guid</span>            <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">().</span><span class="nx">toUpperCase</span><span class="p">();</span>
   <span class="p">},</span>
@@ -152,7 +152,7 @@
   <span class="nx">listenersTotal</span>  <span class="o">:</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">sum</span><span class="p">,</span>
   <span class="nx">log</span>             <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">log</span><span class="p">,</span>
   <span class="nx">logging</span>         <span class="o">:</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">log</span><span class="p">,</span>
-  <span class="nx">lru</span>             <span class="o">:</span> <span class="nx">lru</span><span class="p">.</span><span class="nx">factory</span><span class="p">,</span>
+  <span class="nx">lru</span>             <span class="o">:</span> <span class="nx">lru</span><span class="p">,</span>
   <span class="nx">merge</span>           <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">,</span>
   <span class="nx">module</span>          <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">module</span><span class="p">,</span>
   <span class="nx">object</span>          <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">object</span><span class="p">,</span>
@@ -253,7 +253,7 @@
   <span class="nx">scrollTo</span>        <span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">scrollTo</span><span class="p">,</span>
   <span class="nx">stylesheet</span>      <span class="o">:</span> <span class="nx">client</span><span class="p">.</span><span class="nx">stylesheet</span><span class="p">,</span>
   <span class="nx">stop</span>            <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">stop</span><span class="p">,</span>
-  <span class="nx">store</span>           <span class="o">:</span> <span class="nx">data</span><span class="p">.</span><span class="nx">decorator</span><span class="p">,</span>
+  <span class="nx">store</span>           <span class="o">:</span> <span class="nx">data</span><span class="p">,</span>
   <span class="nx">target</span>          <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">target</span><span class="p">,</span>
   <span class="nx">tpl</span>             <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">tpl</span><span class="p">,</span>
   <span class="nx">un</span>              <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">event</span><span class="p">,</span> <span class="nx">id</span><span class="p">,</span> <span class="nx">state</span> <span class="p">)</span> <span class="p">{</span>

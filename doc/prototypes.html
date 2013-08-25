@@ -481,11 +481,6 @@
     <span class="nx">series</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">end</span><span class="p">,</span> <span class="nx">offset</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">series</span><span class="p">(</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">end</span><span class="p">,</span> <span class="nx">offset</span> <span class="p">);</span>
     <span class="p">},</span>
-    <span class="nx">show</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">element</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
-      <span class="p">});</span>
-    <span class="p">},</span>
     <span class="nx">size</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
 
@@ -629,7 +624,7 @@
     <span class="p">},</span>
     <span class="nx">get</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">headers</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">self</span>  <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
-          <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">();</span>
+          <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">();</span>
 
       <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">element</span><span class="p">.</span><span class="nx">html</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
@@ -785,9 +780,6 @@
     <span class="p">},</span>
     <span class="nx">serialize</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">encode</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">serialize</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">encode</span> <span class="p">);</span>
-    <span class="p">},</span>
-    <span class="nx">show</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">show</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
     <span class="p">},</span>
     <span class="nx">size</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">size</span><span class="p">(</span> <span class="k">this</span> <span class="p">);</span>
