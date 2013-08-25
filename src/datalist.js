@@ -303,7 +303,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
 
-			return {li: html};
+			return "<li data-key=\"" + i.key + "\">" + html + "</li>";
 		};
 	}
 	else {
@@ -392,21 +392,19 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 	// Preparing the target element
 	if ( redraw ) {
-		element.clear( el );
-
 		if ( this.total === 0 ) {
-			element.create( "li", {innerHTML: this.emptyMsg, "class": "empty"}, el );
+			el.innerHTML = "<li class=\"empty\">" + this.emptyMsg + "</li>";
 		}
 		else {
-			array.each( items, function ( i ) {
-				var obj = utility.tpl( i.template, el );
+			el.innerHTML = items.map( function ( i ) {
+				return i.template;
+			}).join( "\n" );
 
-				element.data( obj, "key", i.key );
-
-				if ( callback ) {
-					self.callback( obj );
-				}
-			});
+			if ( callback ) {
+				array.each( element.find( el, "> li" ), function ( i ) {
+					self.callback( i );
+				});
+			}
 		}
 	}
 	else {

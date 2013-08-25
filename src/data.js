@@ -694,14 +694,19 @@ DataStore.prototype.get = function ( record, offset ) {
 		r = records;
 	}
 	else if ( type === "string" ) {
-		r = array.map( string.explode ( record ), function ( i ) {
-			if ( !isNaN( i ) ) {
-				return records[parseInt( i, 10 )];
-			}
-			else {
-				return self.keys[i] ? records[self.keys[i].index] : undefined;
-			}
-		});
+		if ( record.indexOf( "," ) === -1 ) {
+			r = records[self.keys[record]];
+		}
+		else {
+			r = string.explode( record ).map( function ( i ) {
+				if ( !isNaN( i ) ) {
+					return records[parseInt( i, 10 )];
+				}
+				else {
+					return records[self.keys[i]];
+				}
+			});
+		}
 	}
 	else if ( type === "number" ) {
 		if ( isNaN( offset ) ) {
@@ -1259,7 +1264,7 @@ DataStore.prototype.sort = function ( query, create, sensitivity, where ) {
 
 		array.each( records, function ( r ) {
 			var val = pk ? r.key : r.data[prop],
-			    k   = val === null ? "null" : val.toString();
+			    k   = ( val === null || val === undefined ) ? "null" : val.toString();
 
 			if ( sensitivity === "ci" ) {
 				k = string.toCamelCase( k );
