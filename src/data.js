@@ -92,7 +92,6 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 	var self      = this,
 	    events    = this.events,
 	    defer     = deferred(),
-	    defer2    = undefined,
 	    deferreds = [];
 
 	if ( events ) {
@@ -109,12 +108,12 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 
 		if ( type === "del" ) {
 			array.each( data, function ( i ) {
-				deferreds.push( self.del( i,  ) );
+				deferreds.push( self.del( i, false, true ) );
 			});
 		}
 		else {
 			array.each( data, function ( i ) {
-				deferreds.push( self.set( null, i ) );
+				deferreds.push( self.set( null, i, true ) );
 			});
 		}
 
@@ -136,6 +135,8 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 			if ( self.autosave ) {
 				self.save();
 			}
+
+			defer.resolve( self.records );
 		}, function ( e ) {
 			observer.fire( self.parentNode, "failedDataBatch", e );
 			defer.reject( e );
@@ -394,7 +395,7 @@ DataStore.prototype.del = function ( record, reindex, batch ) {
 			this.delComplete( record, reindex, batch, defer );
 		}
 		else {
-			client.request( "DELETE", this.uri + "/" record.key, function () {
+			client.request( this.uri + "/" + record.key, "DELETE", function () {
 				self.delComplete( record, reindex, batch, defer );
 			}, function ( e ) {
 				observer.fire( self.parentNode, "failedDataDelete", e );
@@ -422,30 +423,21 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 	this.total--;
 	this.views = {};
 
-	// Tearing down on next loop
-	setTimeout( function () {
-		utility.iterate( record.data, function ( v ) {
-			if ( v === null ) {
-				return;
-			}
-
-			if ( v.data !== undefined && typeof v.data.teardown === "function" ) {
-				v.data.teardown();
-			}
-		});
-	}, 0 );
+	array.each( this.collections, function ( i ) {
+		record.data[i].teardown();
+	});
 
 	if ( !batch ) {
 		if ( reindex ) {
 			this.reindex();
 		}
 
-		if ( self.autosave ) {
-			this.purge( arg.key );
+		if ( this.autosave ) {
+			this.purge( record.key );
 		}
 
 		if ( this.events ) {
-			observer.fire( self.parentNode, "afterDataDelete", record );
+			observer.fire( this.parentNode, "afterDataDelete", record );
 		}
 	}
 
@@ -704,9 +696,10 @@ DataStore.prototype.get = function ( record, offset ) {
 	else if ( type === "string" ) {
 		r = array.map( string.explode ( record ), function ( i ) {
 			if ( !isNaN( i ) ) {
-				return this.records[parseInt( i, 10 )];
+				return records[parseInt( i, 10 )];
+			}
 			else {
-				return this.keys[i] ? this.records[this.keys[i].index] : undefined;
+				return self.keys[i] ? records[self.keys[i].index] : undefined;
 			}
 		});
 	}
@@ -932,267 +925,171 @@ DataStore.prototype.select = function ( where ) {
  *
  * @method set
  * @param  {Mixed}   key   [Optional] Integer or String to use as a Primary Key
- * @param  {Object}  arg   Key:Value pairs to set as field values
+ * @param  {Object}  data  Key:Value pairs to set as field values
  * @param  {Boolean} batch [Optional] True if called by data.batch
  * @return {Object}        Deferred
  */
-DataStore.prototype.set = function ( key, arg, batch ) {
-	batch       = ( batch === true );
-	var self    = this,
-	    defer   = deferred(),
-	    defer2  = deferred(),
-	    partial = false,
-	    data, record, method, events, args, uri, p, reconcile;
+DataStore.prototype.set = function ( key, data, batch ) {
+	data       = utility.clone( data, true );
+	batch      = ( batch === true );
+	var self   = this,
+	    events = this.events,
+	    defer  = deferred(),
+	    record = key !== null ? this.get( key ) : null,
+	    method = "POST",
+	    parsed = utility.parse( self.uri ),
+	    uri;
 
-	if ( this.uri === null ) {
-		if 
-	}
-
-
-	if ( !( arg instanceof Object ) ) {
+	if ( record === undefined ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	reconcile = function ( success, arg ) {
-		defer2[success ? "resolve" : "reject"]( arg );
-	};
-
-	// Chaining a promise to return
-	defer.then( function ( arg ) {
-		var data  = {data: arg.data, key: arg.key, record: arg.record, result: arg.result},
-		    defer = deferred(),
-		    record, uri;
-
-		defer.then( function ( arg ) {
-			var success;
-
-			success = function () {
-				array.each( self.datalists, function ( i ) {
-					i.refresh();
-				});
-
-				if ( events ) {
-					observer.fire( self.parentNode, "afterDataSet", arg );
-				}
-
-				reconcile( true, arg );
-			};
-
-			if ( self.retrieve ) {
-				self.crawl( arg );
+	// do url testing here! data might be a string!
+	if ( typeof data === "string" ) {
+		if ( data.indexOf( "//" ) === -1 ) {
+			// Relative path to store, i.e. a child
+			if ( data.charAt( 0 ) !== "/" ) {
+				uri = parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + data;
 			}
-
-			if ( !batch && self.autosave ) {
-				self.save( data.key ).then( success, function ( e ) {
-					if ( events ) {
-						observer.fire( self.parentNode, "failedDataSet", e );
-					}
-
-					reconcile( false, e );
-				});
-			}
-			else {
-				success();
-			}
-		}, function ( e ) {
-			if ( events ) {
-				observer.fire( self.parentNode, "failedDataSet", e );
-			}
-
-			reconcile( false, e );
-		});
-
-		self.views = {};
-
-		// Getting the record again due to scheduling via promises, via data.batch()
-		if ( data.key !== undefined ) {
-			data.record = self.get( data.key );
-		}
-
-		if ( data.record === undefined ) {
-			var index = self.total++;
-
-			if ( data.key === undefined ) {
-				if ( data.result === undefined ) {
-					self.total--;
-					defer.reject( label.error.expectedObject );
-				}
-			
-				if ( self.source !== null ) {
-					data.result = utility.walk( data.result, self.source );
-				}
-			
-				if ( self.key === null ) {
-					data.key = utility.uuid();
-				}
-				else {
-					data.key = data.result[self.key];
-					delete data.result[self.key];
-				}
-			
-				if ( typeof data.key !== "string" ) {
-					data.key = data.key.toString();
-				}
-
-				data.data = data.result;
-			}
-
-			self.keys[data.key] = index;
-			self.records[index] = {key: data.key, data: {}, index: index};
-			record              = self.records[index];
-
-			if ( self.pointer === null || data.data[self.pointer] === undefined ) {
-				record.data = data.data;
-
-				if ( self.key !== null && record.data.hasOwnProperty( self.key ) ) {
-					delete record.data[self.key];
-				}
-
-				defer.resolve( record );
-			}
-			else {
-				uri  = data.data[self.pointer];
-
-				if ( uri === undefined || uri === null ) {
-					delete self.records[index];
-					delete self.keys[data.key];
-					defer.reject( label.error.expectedObject );
-				}
-
-				record.data = {};
-
-				client.request(uri, "GET", function ( args ) {
-					if ( self.source !== null) {
-						args = utility.walk( args, self.source );
-					}
-
-					if ( args[self.key] !== undefined ) {
-						delete args[self.key];
-					}
-
-					record.data = args;
-					defer.resolve( record );
-				}, function ( e ) {
-					defer.reject( e );
-				}, self.headers );
+			// Root path, relative to store, i.e. a domain
+			else if ( self.uri !== null && regex.root.test( data ) ) {
+				uri = parsed.protocol + "//" + parsed.host + data;
 			}
 		}
 		else {
-			record = self.records[self.keys[data.record.key]];
-			record.data = data.data;
-			defer.resolve( record );
+			uri = data;
 		}
 
-		return record;
-	}, function ( e ) {
-		if ( events) {
-			observer.fire( self.parentNode, "failedDataSet", e );
-		}
+		key = uri.replace( regex.not_endpoint, "" );
 
-		throw e;
-	});
-
-	if ( key instanceof Object ) {
-		batch = arg;
-		arg   = key;
-		key   = null;
-	}
-
-	// Cloning data to avoid `by reference` issues
-	data = utility.clone( arg, true );
-
-	// Finding or assigning the record key
-	if ( key === null && this.uri === null ) {
-		if ( this.key === null || data[this.key] === undefined ) {
-			key = utility.uuid();
+		if ( string.isEmpty( key ) ) {
+			defer.reject( new Error( label.error.invalidArguments ) );
 		}
 		else {
-			key = data[this.key];
-			delete data[this.key];
-		}
-	}
-	else if ( key === null ) {
-		key = undefined;
-	}
+			if ( !batch && events ) {
+				observer.fire( self.parentNode, "beforeDataSet", {key: key, data: data} );
+			}
 
-	// Generating a child store
-	if ( data instanceof Array ) {
-		return this.generate( key ).then( function () {
-			self.get( key ).data.batch( "set", data ).then( function ( arg ) {
-				defer.resolve( arg );
+			client.request( uri, "GET", function ( arg ) {
+				self.setComplete( record, key, self.source ? arg[self.source] : arg, batch, defer );
 			}, function ( e ) {
+				observer.fire( self.parentNode, "failedDataSet", e );
 				defer.reject( e );
-			});
-		});
-	}
-
-	// Setting variables for ops
-	record = key === undefined ? undefined : this.get( key );
-	method = key === undefined ? "post" : "put";
-	events = ( this.events === true );
-	args   = {data: {}, key: key, record: undefined};
-	uri    = this.uri;
-
-	// Determining permissions
-	if ( !batch && this.callback === null && uri !== null ) {
-		if ( record !== undefined && uri.replace( regex.not_endpoint, "" ) !== record.key ) {
-			uri += "/" + record.key;
-		}
-
-		// Can we use a PATCH request?
-		if ( method === "put" && client.allows( uri, "patch" ) && ( !client.ie || ( client.version > 8 || client.activex ) ) ) {
-			method = "patch";
-			p = partial = true;
-		}
-
-		if ( p === undefined ) {
-			p = ( client.cors ( uri ) || client.allows( uri, method ) );
+			}, undefined, utility.merge( {withCredentials: self.credentials}, self.headers ) );
 		}
 	}
+	else {
+		if ( record === null ) {
+			if ( this.key === null ) {
+				key = utility.genId();
+			}
+			else if ( data[this.key] ) {
+				key = data[this.key];
+				delete data[this.key];
+			}
+			else {
+				key = utility.genId();
+			}
+		}
 
-	// Setting the data to pass to the promise
-	if ( record !== undefined ) {
-		args.record = this.records[this.keys[record.key]];
+		if ( !batch && events ) {
+			observer.fire( self.parentNode, "beforeDataSet", {key: key, data: data} );
+		}
 
-		// Getting primitive values
-		utility.iterate( args.record.data, function ( v, k ) {
-			if ( !array.contains( self.ignore, k ) ) {
-				args.data[k] = v;
+		if ( batch || this.uri === null ) {
+			this.setComplete( record, key, data, batch, defer );
+		}
+		else {
+			if ( key !== null ) {
+				method = "PUT";
+				uri    = parsed.protocol + "//" + parsed.host + parsed.pathname + "/" + key;
+
+				if ( client.allows( uri, "patch" ) && ( !client.ie || ( client.version > 8 || client.activex ) ) ) {
+					method = "PATCH";
+				}
+				else if ( record !== null ) {
+					utility.iterate( record.data, function ( v, k ) {
+						if ( !array.contains( self.collections, k ) && !data[k] ) {
+							data[k] = v;
+						}
+					});
+				}
+			}
+			else {
+				uri = this.uri;
+			}
+
+			client.request( uri, method, function ( arg ) {
+				self.setComplete( record, key, self.source ? arg[self.source] : arg, batch, defer );
+			}, function ( e ) {
+				observer.fire( self.parentNode, "failedDataSet", e );
+				defer.reject( e );
+			}, data, utility.merge( {withCredentials: this.credentials}, this.headers ) );
+		}
+	}
+
+	return defer;
+};
+
+/**
+ * Set completion
+ *
+ * @method setComplete
+ * @param  {Mixed}   record DataStore record, or `null` if new
+ * @param  {String}  key    Record key
+ * @param  {Object}  data   Record data
+ * @param  {Boolean} batch  `true` if part of a batch operation
+ * @param  {Object}  defer  Deferred instance
+ * @return {Object}         DataStore instance
+ */
+DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
+	var self      = this,
+	    deferreds = [];
+
+	// Create
+	if ( record === null ) {
+		record = {
+			index : this.total++,
+			key   : key,
+			data  : data
+		};
+
+		this.keys[key]             = record.index;
+		this.records[record.index] = record;
+
+		if ( this.retrieve ) {
+			deferreds.push( this.crawl( record ) );
+		}
+	}
+	// Update
+	else {
+		utility.iterate( data, function ( v, k ) {
+			if ( !array.contains( self.collections, k ) ) {
+				record.data[k] = v;
+			}
+			else if ( typeof v === "string" ) {
+				deferreds.push( record.data[k].data.setUri( record.data[k].data.uri + "/" + v, true ) );
+			}
+			else {
+				deferreds.push( record.data[k].data.batch( "set", v, true ) );
 			}
 		});
+	}
 
-		// Merging the difference with the record data
-		utility.merge( args.data, data );
+	if ( !batch && this.events ) {
+		observer.fire( self.parentNode, "afterDataSet", record );
+	}
 
-		// PATCH is not supported, send the entire record
-		if ( !partial ) {
-			data = args.data;
-		}
+	if ( deferreds.length === 0 ) {
+		defer.resolve( record );
 	}
 	else {
-		args.data = data;
+		utility.when( deferreds ).then( function () {
+			defer.resolve( record );
+		});
 	}
 
-	if ( events ) {
-		observer.fire( self.parentNode, "beforeDataSet", {key: key, data: data} );
-	}
-
-	if ( batch || this.callback !== null || this.uri === null ) {
-		defer.resolve( args );
-	}
-	else if ( regex.true_undefined.test( p ) ) {
-		client.request( uri, method.toUpperCase(), function ( arg ) {
-			args.result = arg;
-			defer.resolve( args );
-		}, function ( e ) {
-			defer.reject( e );
-		}, data, utility.merge( {withCredentials: this.credentials}, this.headers ) );
-	}
-	else {
-		defer.reject( args );
-	}
-
-	return defer2;
+	return this;
 };
 
 /**
