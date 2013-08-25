@@ -1131,22 +1131,22 @@ var utility = {
 					if ( ++i === nth && !defer.isResolved()) {
 						if ( args.length > 1 ) {
 							defer.resolve( args.map( function ( obj ) {
-								return obj.outcome || obj.promise.outcome;
+								return obj.value || obj.promise.value;
 							}));
 						}
 						else {
-							defer.resolve( args[0].outcome || args[0].promise.outcome );
+							defer.resolve( args[0].value || args[0].promise.value );
 						}
 					}
 				}, function () {
 					if ( !defer.isResolved() ) {
 						if ( args.length > 1 ) {
 							defer.reject( args.map( function ( obj ) {
-								return obj.outcome || obj.promise.outcome;
+								return obj.value || obj.promise.value;
 							}));
 						}
 						else {
-							defer.reject( args[0].outcome || args[0].promise.outcome );
+							defer.reject( args[0].value || args[0].promise.value );
 						}
 					}
 				});
