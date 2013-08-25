@@ -20,7 +20,9 @@ var promise = {
 			return process.nextTick;
 		}
 		else {
-			return utility.defer;
+			return function ( arg ) {
+				setTimeout( arg, 0 );
+			};
 		}
 	},
 

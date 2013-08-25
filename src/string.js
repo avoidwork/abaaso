@@ -15,7 +15,6 @@ var string = {
 	 * @return {String}      Capitalized String
 	 */
 	capitalize : function ( obj, all ) {
-		obj = string.trim( obj );
 		all = ( all === true );
 
 		var result;
@@ -54,11 +53,9 @@ var string = {
 	 * @return {Array}      Array of the exploded String
 	 */
 	explode : function ( obj, arg ) {
-		if ( arg === undefined || arg.toString() === "" ) {
-			arg = ",";
-		}
+		arg = arg || ",";
 
-		return string.isEmpty( obj ) ? [] : string.trim( obj ).split( new RegExp( "\\s*" + arg + "\\s*" ) );
+		return string.trim( obj ).split( new RegExp( "\\s*" + arg + "\\s*" ) );
 	},
 
 	/**
@@ -149,7 +146,7 @@ var string = {
 	 * @return {Boolean}     Result of test
 	 */
 	isEmpty : function ( obj ) {
-		return obj !== undefined ? ( string.trim( obj ) === "" ) : true;
+		return ( string.trim( obj ) === "" );
 	},
 
 	/**
@@ -237,7 +234,7 @@ var string = {
 		    r = [];
 
 		array.each( s, function ( i, idx ) {
-			r.push( idx === 0 ? i : string.capitalize(i) );
+			r.push( idx === 0 ? i : string.capitalize( i ) );
 		});
 
 		return r.join( "" );
@@ -252,7 +249,7 @@ var string = {
 	 * @return {String}     Trimmed String
 	 */
 	trim : function ( obj ) {
-		return obj.toString().replace( /^(\s+|\t+)|(\s+|\t+)$/g, "" );
+		return obj.replace( /^(\s+|\t|\n|\r+)|(\s+|\t+)$/g, "" );
 	},
 
 	/**
@@ -264,7 +261,7 @@ var string = {
 	 * @return {String}     Uncamelcased String
 	 */
 	unCamelCase : function ( obj ) {
-		return string.trim( obj.replace(/([A-Z])/g, " $1").toLowerCase() );
+		return string.trim( obj.replace( /([A-Z])/g, " $1" ).toLowerCase() );
 	},
 
 	/**
@@ -291,18 +288,13 @@ var string = {
 	 * @return {String}       Unhyphenated String
 	 */
 	unhyphenate : function ( obj, caps ) {
-		caps       = ( caps === true );
-		var result = "";
-
-		if ( obj.indexOf( "-" ) > -1 ) {
-			array.each( string.trim( obj ).split( "-" ), function ( i ) {
-				result += ( caps ? string.capitalize( i ) : i ) + " ";
-			});
+		if ( caps !== true ) {
+			return string.explode( obj, "-" ).join( " " );
 		}
 		else {
-			result = caps ? string.capitalize( obj ) : obj;
+			return string.explode( obj, "-" ).map( function ( i ) {
+				return string.capitalize( i );
+			}).join( " " );
 		}
-
-		return string.trim( result );
 	}
 };
