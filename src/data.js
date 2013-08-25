@@ -949,7 +949,6 @@ DataStore.prototype.set = function ( key, data, batch ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	// do url testing here! data might be a string!
 	if ( typeof data === "string" ) {
 		if ( data.indexOf( "//" ) === -1 ) {
 			// Relative path to store, i.e. a child
@@ -959,6 +958,9 @@ DataStore.prototype.set = function ( key, data, batch ) {
 			// Root path, relative to store, i.e. a domain
 			else if ( self.uri !== null && regex.root.test( data ) ) {
 				uri = parsed.protocol + "//" + parsed.host + data;
+			}
+			else {
+				uri = data;
 			}
 		}
 		else {
