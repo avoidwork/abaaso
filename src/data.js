@@ -371,8 +371,8 @@ DataStore.prototype.crawl = function ( arg ) {
  *
  * @method del
  * @param  {Mixed}   record  Record, key or index
- * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
- * @param  {Boolean} batch   [Optional] True if called by data.batch
+ * @param  {Boolean} reindex [Optional] `true` if DataStore should be reindexed
+ * @param  {Boolean} batch   [Optional] `true` if part of a batch operation
  * @return {Object}          Deferred
  */
 DataStore.prototype.del = function ( record, reindex, batch ) {
@@ -382,40 +382,69 @@ DataStore.prototype.del = function ( record, reindex, batch ) {
 	var self   = this,
 	    events = ( this.events === true ),
 	    defer  = deferred(),
-	    key, uri, p;
+	    complete, key, uri, p;
 
 	if ( record === undefined ) {
 		defer.reject( new Error( label.error.invalidArguments ) );
 	}
 	else {
-		if ( this.uri === null ) {
-			delete this.keys[record.key];
-			this.records.remove( record.index );
-			this.total--;
-			this.views = {};
-
-			if ( !batch ) {
-				if ( reindex ) {
-					this.reindex();
-				}
-
-				if ( this.autosave ) {
-					self.purge( arg.key );
-				}
-			}
-
-			defer.resolve( record.key );
+		if ( this.uri === null || this.callback !== null ) {
+			this.delComplete( record, reindex, batch, defer );
 		}
 		else {
 			client.request( "DELETE", this.uri + "/" record.key, function () {
-				defer.resolve( record.key );
+				this.delComplete( record, reindex, batch, defer );
 			}, function ( e ) {
 				defer.reject( e );
-			}, undefined, this.headers );
+			}, undefined, utility.merge( {withCredentials: this.credentials}, this.headers ) );
 		}
 	}
 
 	return defer;
+};
+
+/**
+ * Delete completion
+ *
+ * @method delComplete
+ * @param  {Object}  record  DataStore record
+ * @param  {Boolean} reindex `true` if DataStore should be reindexed
+ * @param  {Boolean} batch   `true` if part of a batch operation
+ * @param  {Object}  defer   Deferred instance
+ * @return {Object}          DataStore instance
+ */
+DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
+	delete this.keys[record.key];
+	this.records.remove( record.index );
+	this.total--;
+	this.views = {};
+
+	// Tearing down on next loop
+	setTimeout( function () {
+		utility.iterate( record.data, function ( v ) {
+			if ( v === null ) {
+				return;
+			}
+
+			if ( v.data !== undefined && typeof v.data.teardown === "function" ) {
+				v.data.teardown();
+			}
+		});
+	}, 0 );
+
+	if ( !batch ) {
+		if ( reindex ) {
+			this.reindex();
+		}
+
+		if ( self.autosave ) {
+			this.purge( arg.key );
+		}
+	}
+
+	defer.resolve( record.key );
+
+	return this;
 };
 
 /**
