@@ -154,16 +154,24 @@ var promise = {
 			var self  = this,
 			    defer = promise.factory();
 
-			if ( success ) {
-				this.fulfill.push( function ( arg ) {
-					promise.handler( success, arg, self, defer );
-				});
-			}
+			if ( this.state === promise.state.pending ) {
+				if ( success ) {
+					this.fulfill.push( function ( arg ) {
+						promise.handler( success, arg, self, defer );
+					});
+				}
 
-			if ( failure ) {
-				this.error.push( function ( arg ) {
-					promise.handler( failure, arg, self, defer );
-				});
+				if ( failure ) {
+					this.error.push( function ( arg ) {
+						promise.handler( failure, arg, self, defer );
+					});
+				}
+			}
+			else if ( this.state === promise.state.resolved ) {
+				success( this.outcome );
+			}
+			else {
+				failure( this.outcome );
 			}
 
 			return defer;
