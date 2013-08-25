@@ -195,6 +195,9 @@ var utility = {
 		else if ( value === "undefined" ) {
 			return undefined;
 		}
+		else if ( value === "" ) {
+			return value;
+		}
 		else if ( !isNaN( tmp = Number( value ) ) ) {
 			return tmp;
 		}
@@ -1105,7 +1108,7 @@ var utility = {
 	 */
 	when : function () {
 		var i     = 0,
-		    defer = deferred.factory(),
+		    defer = deferred(),
 		    args  = array.cast( arguments ),
 		    nth;
 

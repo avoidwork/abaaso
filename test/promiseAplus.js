@@ -24,27 +24,6 @@ adapter.pending = function() {
 	};
 };
 
-
-/*adapter = {
-	fulfilled : function ( value ) {
-		return promise().resolve( value );
-	},
-	rejected  : function ( reason ) {
-		return promise().reject( reason );
-	},
-	pending   : function () {
-		return {
-			promise : promise(),
-			fulfilled : function ( value ) {
-				return promise().resolve( value );
-			},
-			rejected  : function ( reason ) {
-				return promise().reject( reason );
-			}
-		}
-	}
-};*/
-
 promisesAplusTests( adapter, function ( err ) {
     // All done; output is in the console. Or check `err` for number of failures.
 });

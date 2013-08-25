@@ -632,7 +632,7 @@ var prototypes = {
 		},
 		get : function ( uri, success, failure, headers, timeout ) {
 			var self  = this,
-			    defer = deferred.factory();
+			    defer = deferred();
 
 			defer.then( function ( arg ) {
 				element.html( self, arg );

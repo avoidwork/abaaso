@@ -70,7 +70,7 @@ var data = {
 			    r      = 0,
 			    nth    = data.length,
 			    f      = false,
-			    defer  = deferred.factory(),
+			    defer  = deferred(),
 			    complete, failure, set, del, parsed;
 
 			defer.then( function ( arg ) {
@@ -123,7 +123,7 @@ var data = {
 			// Set handler
 			set = function ( arg, key ) {
 				var data  = utility.clone( arg, true ),
-				    defer = deferred.factory(),
+				    defer = deferred(),
 				    rec   = {};
 
 				if ( typeof data.batch !== "function" ) {
@@ -343,7 +343,7 @@ var data = {
 			    events = ( this.events === true ),
 			    record = ( arg instanceof Object ) ? arg : this.get( arg ),
 			    uri    = this.uri === null ? "" : this.uri,
-			    defer  = deferred.factory(),
+			    defer  = deferred(),
 			    i      = 0,
 			    nth    = 0,
 			    build, complete, setup;
@@ -431,7 +431,7 @@ var data = {
 				}
 
 				nth   = array.cast( record.data ).length;
-				defer = deferred.factory();
+				defer = deferred();
 				defer.then( function ( arg ) {
 					if ( events ) {
 						observer.fire( record.data[k], "afterDataRetrieve", arg );
@@ -499,8 +499,8 @@ var data = {
 			batch      = ( batch === true );
 			var self   = this,
 			    events = ( this.events === true ),
-			    defer  = deferred.factory(),
-			    defer2 = deferred.factory(),
+			    defer  = deferred(),
+			    defer2 = deferred(),
 			    valid  = true,
 			    key, args, uri, p;
 
@@ -770,7 +770,7 @@ var data = {
 		 */
 		generate : function ( key, arg ) {
 			var self  = this,
-			    defer = deferred.factory(),
+			    defer = deferred(),
 			    recs  = null,
 			    fn, idx, params;
 			
@@ -1106,8 +1106,8 @@ var data = {
 		set : function ( key, arg, batch ) {
 			batch       = ( batch === true );
 			var self    = this,
-			    defer   = deferred.factory(),
-			    defer2  = deferred.factory(),
+			    defer   = deferred(),
+			    defer2  = deferred(),
 			    partial = false,
 			    data, record, method, events, args, uri, p, reconcile;
 
@@ -1122,7 +1122,7 @@ var data = {
 			// Chaining a promise to return
 			defer.then( function ( arg ) {
 				var data  = {data: arg.data, key: arg.key, record: arg.record, result: arg.result},
-				    defer = deferred.factory(),
+				    defer = deferred(),
 				    record, uri;
 
 				defer.then( function ( arg ) {
@@ -1408,7 +1408,7 @@ var data = {
 		 * @return {Object}     Deferred
 		 */
 		setUri : function ( arg ) {
-			var defer = deferred.factory(),
+			var defer = deferred(),
 			    result;
 
 			if ( arg !== null && string.isEmpty( arg ) ) {
@@ -1649,7 +1649,7 @@ var data = {
 			    record  = false,
 			    mongo   = !string.isEmpty( this.mongodb ),
 			    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
-			    defer   = deferred.factory(),
+			    defer   = deferred(),
 			    data, deferreds, key, result;
 
 			if ( !regex.number_string_object.test( typeof obj ) || !regex.get_remove_set.test( op ) ) {
@@ -1820,7 +1820,7 @@ var data = {
 
 											array.each( self.records, function ( i ) {
 												var data   = {},
-												    defer2 = deferred.factory();
+												    defer2 = deferred();
 
 												deferreds.push( defer2 );
 
@@ -1884,7 +1884,7 @@ var data = {
 			reindex    = ( reindex === true );
 			var self   = this,
 			    events = ( this.events === true ),
-			    defer  = deferred.factory(),
+			    defer  = deferred(),
 			    success, failure;
 
 			defer.then( function ( arg ) {
@@ -2050,7 +2050,7 @@ var data = {
 		 */
 		update : function ( key, data ) {
 			var record = this.get( key ),
-			    defer  = deferred.factory(),
+			    defer  = deferred(),
 			    args;
 
 			if ( record === undefined ) {

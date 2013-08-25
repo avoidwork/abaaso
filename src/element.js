@@ -437,7 +437,13 @@ var element = {
 	 * @return {Object}     Element
 	 */
 	html : function ( obj, arg ) {
-		return !arg ? obj.innerHTML : obj.innerHTML = arg;
+		if ( !arg ) {
+			return obj.innerHTML;
+		}
+		else {
+			 obj.innerHTML = arg;
+			 return obj;
+		}
 	},
 
 	/**
@@ -915,8 +921,11 @@ var element = {
 			else if ( regex.select.test( obj.type ) ) {
 				output = obj.options[obj.selectedIndex].value;
 			}
+			else if ( has.call( obj, "value" ) ) {
+				output = obj.value;
+			}
 			else {
-				output = obj.value || element.text( obj );
+				output = element.text( obj );
 			}
 
 			if ( output !== undefined ) {
