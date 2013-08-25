@@ -487,11 +487,6 @@ var prototypes = {
 		series : function ( start, end, offset ) {
 			return array.series( start, end, offset );
 		},
-		show : function () {
-			return array.each( this, function ( i ) {
-				element.show( i );
-			});
-		},
 		size : function () {
 			var result = [];
 
@@ -793,9 +788,6 @@ var prototypes = {
 		},
 		serialize : function ( string, encode ) {
 			return element.serialize( this, string, encode );
-		},
-		show : function () {
-			return element.show( this );
 		},
 		size : function () {
 			return element.size( this );

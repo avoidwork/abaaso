@@ -260,15 +260,11 @@ var utility = {
 	 * @return {Undefined}      undefined
 	 */
 	debounce : function ( fn, ms, scope ) {
-		if ( typeof fn !== "function" ) {
-			throw new Error( label.error.invalidArguments );
-		}
-
 		ms    = ms    || 1000;
 		scope = scope || global;
 
 		return function debounced () {
-			utility.defer( function () {
+			setTimeout( function () {
 				fn.apply( scope, arguments );
 			}, ms);
 		};

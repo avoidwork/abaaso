@@ -24,7 +24,7 @@ var promise = {
 				setTimeout( arg, 0 );
 			};
 		}
-	},
+	}(),
 
 	/**
 	 * Promise factory
@@ -43,9 +43,21 @@ var promise = {
 	 * @private
 	 * @return {Boolean} `true` if `Object.freeze` is supported
 	 */
-	freeze : ( function () {
+	freeze : function () {
 		return ( typeof Object.freeze === "function" );
-	})(),
+	}(),
+
+	/**
+	 * Determines if `arg` is a Promise
+	 *
+	 * @method isPromise
+	 * @private
+	 * @param  {Mixed} arg Result of a handler
+	 * @return {Boolean}   `true` if `arg.then` is a Function
+	 */
+	isPromise : function ( arg ) {
+		return ( arg && typeof arg.then === "function" );
+	},
 
 	// Inherited by promises
 	methods : {
@@ -107,89 +119,44 @@ var promise = {
 		 */
 		then : function ( success, failure ) {
 			var self     = this,
-			    deferred = promise.factory(),
-			    fn;
+			    deferred = promise.factory();
 
-			/**
-			 * Vouched handler
-			 *
-			 * @method fn
-			 * @private
-			 * @param  {Boolean} yay `true` if resolved
-			 * @return {Mixed}       Result
-			 */
-			fn = function ( yay ) {
-				var handler = yay ? success : failure,
-				    error   = yay ? false   : true,
+			function handler ( yay, arg ) {
+				var fn = yay ? success : failure,
 				    result;
 
 				try {
-					result = handler.call( undefined, self.outcome );
-					error  = false;
-				}
-				catch ( e ) {
-					result = e;
-					error  = true;
+					result = fn( arg );
 
-					if ( result !== undefined && result !== null && !( result instanceof Error ) ) {
-						// Encoding Array or Object as a JSON string for transmission
-						if ( typeof result === "object" ) {
-							result = json.encode( result );
-						}
-
-						// Casting to an Error to fix context
-						result = new Error( result );
-					}
-
-					// Logging error
-					utility.error( result, [self.outcome], self );
-				}
-				finally {
-					// Not a Promise, passing result & chaining if applicable
-					if ( !( result instanceof Promise ) ) {
-						// This is clearly a mistake on the dev's part
-						if ( error && result === undefined ) {
-							throw new Error( label.error.invalidArguments );
-						}
-						else {
-							deferred[!error ? "resolve" : "reject"]( result || self.outcome );
-						}
-					}
-					// Assuming a `pending` state until `result` is resolved
-					else {
-						self.state        = promise.state.pending;
-						self.outcome      = null;
-						result.parentNode = self;
+					if ( promise.isPromise( result ) ) {
 						result.then( function ( arg ) {
-							array.each( self.childNodes, function ( i ) {
-								i.resolve( arg );
-							});
-						}, function ( e ) {
-							array.each( self.childNodes, function ( i ) {
-								i.reject( e );
-							});
+							self.resolve( arg );
 						});
+					}
+					else {
+						deferred.resolve( result );
 					}
 
 					return result;
 				}
-			};
+				catch ( e ) {
+					deferred.reject( e );
 
-			if ( typeof success === "function" ) {
-				promise.vouch.call( this, promise.state.resolved, function () {
-					return fn( true );
+					return e;
+				}
+			}
+
+			if ( success ) {
+				this.fulfill.push( function ( arg ) {
+					handler( true, arg );
 				});
 			}
 
-			if ( typeof failure === "function" ) {
-				promise.vouch.call( this, promise.state.broken, function () {
-					return fn( false );
+			if ( failure ) {
+				this.error.push( function ( arg ) {
+					handler( false, arg );
 				});
 			}
-
-			// Setting references
-			deferred.parentNode = self;
-			self.childNodes.push( deferred );
 
 			return deferred;
 		}
@@ -206,75 +173,40 @@ var promise = {
 	 */
 	resolve : function ( state, val ) {
 		var handler = state === promise.state.broken ? "error" : "fulfill",
-		    self    = this,
 		    pending = false,
-		    error   = false,
-		    purge   = [],
-		    i, reason, result;
-
-		if ( this.state !== promise.state.pending ) {
-			// Walking "forward" from a reverse chain or a fork, we've already been here...
-			if ( ( this.parentNode !== null && this.parentNode.state === promise.state.resolved ) || this.childNodes.length > 0 ) {
-				return;
-			}
-			else {
-				throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.outcome ) );
-			}
-		}
+		    purge   = -1;
 
 		this.state   = state;
 		this.outcome = val;
 
-		// The state & outcome can mutate here
-		array.each( this[handler], function ( fn, idx ) {
-			result = fn.call( self, val );
-			purge.push( idx );
+		array.each( this[handler], function ( i, idx ) {
+			var outcome = i( val );
 
-			if ( result instanceof Promise ) {
-				pending      = true;
-				self.outcome = null;
-				self.state   = promise.state.pending;
+			if ( promise.isPromise( outcome ) ) {
+				pending    = true;
+				purge      = idx;
 
 				return false;
 			}
-			else if ( result instanceof Error ) {
-				error  = true;
-				reason = result;
-				state  = promise.state.broken;
-			}
+
+			return outcome;
 		});
 
+		// Reconciled
 		if ( !pending ) {
 			this.error   = [];
 			this.fulfill = [];
 
-			// Possible jump to 'resolve' logic
-			if ( !error ) {
-				result = reason;
-				state  = promise.state.resolved;
-			}
-
-			// Reverse chaining
-			if ( this.parentNode !== null && this.parentNode.state === promise.state.pending ) {
-				this.parentNode[state === promise.state.resolved ? "resolve" : "reject"]( result || this.outcome );
-			}
-
-			// Freezing promise
 			if ( promise.freeze ) {
 				Object.freeze( this );
 			}
-
-			return this;
 		}
+		// Removing handlers that have run
 		else {
-			// Removing handlers that have run
-			i = purge.length;
-			while ( i-- ) {
-				array.remove( self[handler], purge[i] );
-			}
-
-			return result;
+			array.remove( this[handler], 0, purge );
 		}
+
+		return this;
 	},
 
 	// States of a promise
@@ -282,30 +214,6 @@ var promise = {
 		broken   : "rejected",
 		pending  : "pending",
 		resolved : "fulfilled"
-	},
-
-	/**
-	 * Vouches for a state
-	 *
-	 * @method vouch
-	 * @public
-	 * @param  {String}   state Promise descriptor
-	 * @param  {Function} fn    Function to execute
-	 * @return {Object}         Promise instance
-	 */
-	vouch : function ( state, fn ) {
-		if ( string.isEmpty( state ) ) {
-			throw new Error( label.error.invalidArguments );
-		}
-
-		if ( this.state === promise.state.pending ) {
-			this[state === promise.state.resolved ? "fulfill" : "error"].push( fn );
-		}
-		else if ( this.state === state ) {
-			fn( this.outcome );
-		}
-
-		return this;
 	}
 };
 
@@ -320,10 +228,8 @@ var promise = {
  * @return {Object} Instance of Promise
  */
 function Promise () {
-	this.childNodes = [];
 	this.error      = [];
 	this.fulfill    = [];
-	this.parentNode = null;
 	this.outcome    = null;
 	this.state      = promise.state.pending;
 }

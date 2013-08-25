@@ -119,13 +119,8 @@ var element = {
 		    frag = false,
 		    obj, uid, result;
 
-		if ( type === undefined || string.isEmpty( type ) ) {
-			throw new Error( label.error.invalidArguments );
-		}
-		else {
-			// Removing potential HTML template formatting
-			type = type.replace( /\t|\n|\r/g, "" );
-		}
+		// Removing potential HTML template formatting
+		type = type.replace( /\t|\n|\r/g, "" );
 
 		if ( target !== undefined ) {
 			svg = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
@@ -208,19 +203,15 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	css : function ( obj, key, value ) {
-		var result;
-
 		key = string.toCamelCase( key );
 
 		if ( value !== undefined ) {
 			obj.style[key] = value;
-			result = obj;
+			return obj;
 		}
 		else {
-			result = obj.style[key];
+			return obj.style[key];
 		}
-
-		return result;
 	},
 
 	/**
@@ -425,26 +416,6 @@ var element = {
 	},
 
 	/**
-	 * Hides an Element if it's visible
-	 *
-	 * @method hide
-	 * @public
-	 * @param  {Mixed} obj Element
-	 * @return {Object}    Element
-	 */
-	hide : function ( obj ) {
-		if ( typeof obj.hidden === "boolean" ) {
-			obj.hidden = true;
-		}
-		else {
-			obj["data-display"] = obj.style.display;
-			obj.style.display = "none";
-		}
-
-		return obj;
-	},
-
-	/**
 	 * Returns a Boolean indidcating if the Object is hidden
 	 *
 	 * @method hidden
@@ -466,7 +437,7 @@ var element = {
 	 * @return {Object}     Element
 	 */
 	html : function ( obj, arg ) {
-		return arg === undefined ? string.trim( obj.innerHTML ) : element.update( obj, {innerHTML: string.trim( arg )} );
+		return !arg ? obj.innerHTML : obj.innerHTML = arg;
 	},
 
 	/**
@@ -822,25 +793,6 @@ var element = {
 	},
 
 	/**
-	 * Shows an Element if it's not visible
-	 *
-	 * @method show
-	 * @public
-	 * @param  {Mixed} obj Element
-	 * @return {Object}    Element
-	 */
-	show : function ( obj ) {
-		if ( typeof obj.hidden === "boolean" ) {
-			obj.hidden = false;
-		}
-		else {
-			obj.style.display = element.data( obj, "display" ) || "inherit";
-		}
-
-		return obj;
-	},
-
-	/**
 	 * Returns the size of the Object
 	 *
 	 * @method size
@@ -915,7 +867,7 @@ var element = {
 			else if ( k === "class" ) {
 				!string.isEmpty( v ) ? element.klass( obj, v ) : element.klass( obj, "*", false );
 			}
-			else if ( k.indexOf( "data-" ) === 0) {
+			else if ( k.indexOf( "data-" ) === 0 ) {
 				element.data( obj, k.replace( "data-", "" ), v );
 			}
 			else if ( k === "id" ) {
@@ -967,7 +919,7 @@ var element = {
 				output = obj.value || element.text( obj );
 			}
 
-			if (output !== undefined ) {
+			if ( output !== undefined ) {
 				output = utility.coerce( output );
 			}
 
