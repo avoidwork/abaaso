@@ -698,27 +698,25 @@ DataStore.prototype.get = function ( record, offset ) {
 	    self    = this,
 	    r;
 
-	if ( type === "undefined" || record.toString().length === 0 ) {
+	if ( type === "undefined" ) {
 		r = records;
 	}
-	else if ( type === "string" && record.indexOf( "," ) > -1 ) {
-		r = [];
-		array.each( string.explode( record ), function ( i ) {
+	else if ( type === "string" ) {
+		r = array.map( string.explode ( record ), function ( i ) {
 			if ( !isNaN( i ) ) {
-				i = number.parse( i, 10 );
+				return this.records[parseInt( i, 10 )];
+			else {
+				return this.keys[i] ? this.records[this.keys[i].index] : undefined;
 			}
-
-			r.push( self.get( i ) );
 		});
 	}
-	else if ( type === "string" && this.keys[record] !== undefined ) {
-		r = records[this.keys[record]];
-	}
-	else if ( type === "number" && offset === undefined) {
-		r = records[number.parse( record, 10 )];
-	}
-	else if ( type === "number" && typeof offset === "number") {
-		r = records.limit( number.parse( record, 10 ), number.parse( offset, 10 ) );
+	else if ( type === "number" ) {
+		if ( isNaN( offset ) ) {
+			r = records[parseInt( record, 10 )];
+		}
+		else {
+			r = array.limit( records, parseInt( record, 10 ), parseInt( offset, 10 ) );
+		}
 	}
 
 	return r;
