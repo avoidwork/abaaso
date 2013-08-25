@@ -78,211 +78,71 @@ DataStore.prototype.constructor = DataStore;
  *         failedDataBatch  Fires when an exception occurs
  *
  * @method batch
- * @param  {String}  type    Type of action to perform ( set/del/delete )
- * @param  {Array}   data    Array of keys or indices to delete, or Object containing multiple records to set
- * @param  {Boolean} sync    [Optional] Syncs store with data, if true everything is erased
- * @param  {Number}  chunk   [Optional] Size to chunk Array to batch set or delete
+ * @param  {String}  type Type of action to perform ( set/del/delete )
+ * @param  {Array}   data Array of keys or indices to delete, or Object containing multiple records to set
+ * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
  * @return {Object}          Deferred
  */
-DataStore.prototype.batch = function ( type, data, sync, chunk ) {
-	type  = type.toString().toLowerCase();
-	sync  = ( sync === true );
-	chunk = chunk || 1000;
-
+DataStore.prototype.batch = function ( type, data, sync ) {
 	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	var self   = this,
-	    events = ( this.events === true ),
-	    r      = 0,
-	    nth    = data.length,
-	    f      = false,
-	    defer  = deferred(),
-	    complete, failure, set, del, parsed;
-
-	defer.then( function ( arg ) {
-		var success;
-
-		success = function () {
-			array.each( self.datalists, function ( i ) {
-				i.refresh( true );
-			});
-
-			if ( events ) {
-				observer.fire( self.parentNode, "afterDataBatch", arg );
-			}
-
-			return self.records;
-		};
-
-		self.loaded = true;
-
-		if ( regex.del.test( type ) ) {
-			self.reindex();
-		}
-
-		if ( self.autosave ) {
-			self.save().then( success, function ( e ) {
-				utility.error( e, arg, self );
-			} );
-		}
-		else {
-			success();
-		}
-	}, function ( e ) {
-		if ( events ) {
-			observer.fire( self.parentNode, "failedDataBatch", e );
-		}
-
-		throw e;
-	});
-
-	// Resolves public deferred
-	complete = function ( arg ) {
-		defer.resolve( arg );
-	};
-
-	// Rejects public deferred
-	failure = function ( arg ) {
-		defer.reject( arg );
-	};
-
-	// Set handler
-	set = function ( arg, key ) {
-		var data  = utility.clone( arg, true ),
-		    defer = deferred(),
-		    rec   = {};
-
-		if ( typeof data.batch !== "function" ) {
-			rec = data;
-		}
-		else {
-			utility.iterate( data, function ( v, k ) {
-				if ( !array.contains( self.collections, k ) ) {
-					rec[k] = v;
-				}
-			});
-		}
-
-		if ( self.key !== null && rec[self.key] !== undefined ) {
-			key = rec[self.key];
-			delete rec[self.key];
-
-			if ( !isNaN( key ) ) {
-				key = key.toString();
-			}
-		}
-
-		defer.then( function () {
-			if ( ++r === nth ) {
-				complete( self.records );
-			}
-		}, function ( e ) {
-			if ( !f ) {
-				f = true;
-				failure( e );
-			}
-		});
-
-		if ( rec instanceof Array && self.uri !== null ) {
-			self.generate( key, undefined ).then( function ( arg ) {
-				defer.resolve( arg );
-			}, function ( e ) {
-				defer.reject( e );
-			});
-		}
-		else {
-			self.set( key, rec, true ).then( function ( arg ) {
-				defer.resolve( arg );
-			}, function ( e ) {
-				defer.reject( e );
-			});
-		}
-	};
-
-	// Delete handler
-	del = function ( i ) {
-		self.del( i, false, true ).then( function () {
-			if ( ++r === nth ) {
-				complete( self.records );
-			}
-		}, function ( e ) {
-			if ( !f ) {
-				f = true;
-				failure( e );
-			}
-		});
-	};
+	sync          = ( sync === true );
+	var self      = this,
+	    events    = this.events,
+	    defer     = deferred(),
+	    defer2    = undefined,
+	    deferreds = [];
 
 	if ( events ) {
 		observer.fire( self.parentNode, "beforeDataBatch", data );
 	}
 
-	if ( sync ) {
-		this.clear( sync );
-	}
-
 	if ( data.length === 0 ) {
-		complete( self.records );
+		defer.resolve( this.records );
 	}
 	else {
-		if ( type === "set" ) {
-			array.each( data, function ( i, idx ) {
-				var id;
+		if ( sync ) {
+			this.clear( sync );
+		}
 
-				if ( typeof i === "string" && array.contains ( self.ignore, i ) || array.contains ( self.leafs, i ) ) {
-					id = i;
-					i  = {};
-				}
-
-				if ( typeof i === "object" ) {
-					set( i, id || utility.uuid() );
-				}
-				else if ( i.indexOf( "//" ) === -1 ) {
-					parsed = utility.parse( self.uri );
-
-					// Relative path to store, i.e. a child
-					if ( i.charAt( 0 ) !== "/" ) {
-						i = parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + i;
-					}
-
-					// Root path, relative to store, i.e. a domain
-					else if ( self.uri !== null && regex.root.test( i ) ) {
-						i = parsed.protocol + "//" + parsed.host + i;
-					}
-
-					idx = i.replace( regex.not_endpoint, "" );
-
-					if ( string.isEmpty( idx ) ) {
-						return;
-					}
-
-					client.request( i, "GET", function ( arg ) {
-						set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
-					}, failure, utility.merge( {withCredentials: self.credentials}, self.headers ) );
-				}
-				else {
-					idx = i.replace( regex.not_endpoint, "" );
-
-					if ( string.isEmpty( idx ) ) {
-						return;
-					}
-
-					client.request( i, "GET", function ( arg ) {
-						set( self.source === null ? arg : utility.walk( arg, self.source ), idx );
-					}, failure, utility.merge( {withCredentials: self.credentials}, self.headers) );
-				}
-			}, true, chunk );
+		if ( type === "del" ) {
+			array.each( data, function ( i ) {
+				deferreds.push( self.del( i,  ) );
+			});
 		}
 		else {
-			array.each( data.sort( array.sort ).reverse(), function ( i ) {
-				del( i );
-			}, true, chunk );
+			array.each( data, function ( i ) {
+				deferreds.push( self.set( null, i ) );
+			});
 		}
+
+		utility.when( deferreds ).then( function () {
+			self.loaded = true;
+
+			if ( events ) {
+				observer.fire( self.parentNode, "afterDataBatch", self.records );
+			}
+
+			array.each( self.datalists, function ( i ) {
+				i.refresh( true );
+			});
+
+			if ( type === "del" ) {
+				self.reindex();
+			}
+
+			if ( self.autosave ) {
+				self.save();
+			}
+		}, function ( e ) {
+			observer.fire( self.parentNode, "failedDataBatch", e );
+			defer.reject( e );
+		});
 	}
 
-	return defer;
+	return defer.then;
 };
 
 /**
@@ -510,128 +370,52 @@ DataStore.prototype.crawl = function ( arg ) {
  *         failedDataDelete  Fires if the store is RESTful and the action is denied
  *
  * @method del
- * @param  {Mixed}   record  Record key or index
+ * @param  {Mixed}   record  Record, key or index
  * @param  {Boolean} reindex Default is true, will re-index the data object after deletion
  * @param  {Boolean} batch   [Optional] True if called by data.batch
  * @return {Object}          Deferred
  */
 DataStore.prototype.del = function ( record, reindex, batch ) {
-	if ( record === undefined || !regex.number_string.test( typeof record ) ) {
-		throw new Error( label.error.invalidArguments );
-	}
-
+	record     = record.key ? record : this.get ( record );
 	reindex    = ( reindex !== false );
 	batch      = ( batch === true );
 	var self   = this,
 	    events = ( this.events === true ),
 	    defer  = deferred(),
-	    defer2 = deferred(),
-	    valid  = true,
-	    key, args, uri, p;
+	    key, uri, p;
 
-	defer.then( function ( arg ) {
-		var record = self.get( arg.record ),
-		    success;
-
-		success = function () {
-			array.each( self.datalists, function ( i ) {
-				i.del( record );
-			});
-
-			if ( events ) {
-				observer.fire( self.parentNode, "afterDataDelete", record );
-			}
-
-			defer2.resolve( record );
-		};
-
-		self.records.remove( self.keys[arg.key] );
-		delete self.keys[arg.key];
-		self.total--;
-		self.views = {};
-
-		utility.iterate( record.data, function ( v ) {
-			if ( v === null ) {
-				return;
-			}
-
-			if ( v.data !== undefined && typeof v.data.teardown === "function") {
-				v.data.teardown();
-			}
-		});
-
-		if ( arg.reindex ) {
-			self.reindex();
-		}
-
-		if ( !batch && self.autosave ) {
-			self.purge( arg.key ).then( success, function ( e ) {
-				if ( events ) {
-					observer.fire( self.parentNode, "failedDataDelete", e );
-				}
-
-				defer2.reject( e );
-			});
-		}
-		else {
-			success();
-		}
-	}, function ( e ) {
-		if ( events ) {
-			observer.fire( self.parentNode, "failedDataDelete", e );
-		}
-
-		defer2.reject( e );
-	});
-
-	if ( typeof record === "string" ) {
-		key    = record;
-		record = this.keys[key];
-
-		if ( record === undefined ) {
-			valid = false;
-			defer.reject( label.error.invalidArguments );
-		}
+	if ( record === undefined ) {
+		defer.reject( new Error( label.error.invalidArguments ) );
 	}
 	else {
-		key = this.records[record];
+		if ( this.uri === null ) {
+			delete this.keys[record.key];
+			this.records.remove( record.index );
+			this.total--;
+			this.views = {};
 
-		if ( key === undefined ) {
-			valid = false;
-			defer.reject( label.error.invalidArguments );
-		}
+			if ( !batch ) {
+				if ( reindex ) {
+					this.reindex();
+				}
 
-		key = key.key;
-	}
+				if ( this.autosave ) {
+					self.purge( arg.key );
+				}
+			}
 
-	if ( valid ) {
-		args = {key: key, record: record, reindex: reindex};
-
-		if ( !batch && this.callback === null && this.uri !== null ) {
-			uri = this.uri + "/" + key;
-			p   = ( client.cors( uri ) || client.allows( uri, "delete" ) );
-		}
-
-		if ( events ) {
-			observer.fire( self.parentNode, "beforeDataDelete", args );
-		}
-
-		if ( batch || this.callback !== null || this.uri === null ) {
-			defer.resolve( args );
-		}
-		else if ( regex.true_undefined.test( p ) ) {
-			client.request(uri, "DELETE", function () {
-				defer.resolve( args );
-			}, function ( e ) {
-				defer.reject( e );
-			}, utility.merge( {withCredentials: this.credentials}, this.headers) );
+			defer.resolve( record.key );
 		}
 		else {
-			defer.reject( args );
+			client.request( "DELETE", this.uri + "/" record.key, function () {
+				defer.resolve( record.key );
+			}, function ( e ) {
+				defer.reject( e );
+			}, undefined, this.headers );
 		}
 	}
 
-	return defer2;
+	return defer;
 };
 
 /**
