@@ -208,7 +208,6 @@ DataList.prototype.pages = function () {
 		}
 	}
 
-	// @todo this should use utility.frag()
 	array.each( string.explode( pos ), function ( i ) {
 		var current = false,
 		    more    = page > 1,

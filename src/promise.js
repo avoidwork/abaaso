@@ -30,7 +30,6 @@ var promise = {
 	 * Promise factory
 	 *
 	 * @method factory
-	 * @public
 	 * @return {Object} Instance of promise
 	 */
 	factory : function () {
@@ -57,6 +56,7 @@ var promise = {
 	/**
 	 * States of a Promise
 	 *
+	 * @private
 	 * @type {Object}
 	 */
 	state : {
@@ -69,8 +69,6 @@ var promise = {
 /**
  * Promise
  *
- * @class Promise
- * @namespace abaaso
  * @method Promise
  * @private
  * @constructor
@@ -90,11 +88,10 @@ Promise.prototype.constructor = Promise;
  * Processes `handlers` queue
  *
  * @method process
- * @public
  * @return {Object} Promise
  */
 Promise.prototype.process = function() {
-	var handlers, result, success, value;
+	var result, success, value;
 
 	this.deferred = false;
 
@@ -102,11 +99,10 @@ Promise.prototype.process = function() {
 		return;
 	}
 
-	value    = this.value;
-	success  = this.state === promise.state.SUCCESS;
-	handlers = this.handlers.slice( 0 );
+	value   = this.value;
+	success = this.state === promise.state.SUCCESS;
 
-	array.each( handlers, function ( i ) {
+	array.each( this.handlers.slice(), function ( i ) {
 		var callback = i[success ? "success" : "failure" ],
 		    child    = i.promise;
 
@@ -149,7 +145,6 @@ Promise.prototype.process = function() {
  * Breaks a Promise
  *
  * @method reject
- * @public
  * @param  {Mixed} arg Promise value
  * @return {Object}    Promise
  */
@@ -178,7 +173,6 @@ Promise.prototype.reject = function ( arg ) {
  * Resolves a Promise
  *
  * @method resolve
- * @public
  * @param  {Mixed} arg Promise value
  * @return {Object}    Promise
  */
@@ -207,7 +201,6 @@ Promise.prototype.resolve = function ( arg ) {
  * Registers handler(s) for a Promise
  *
  * @method then
- * @public
  * @param  {Function} success [Optional] Success handler for eventual value
  * @param  {Function} failure [Optional] Failure handler for eventual value
  * @return {Object}           New Promise instance

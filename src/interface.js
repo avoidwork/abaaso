@@ -96,7 +96,7 @@ return {
 	compile         : utility.compile,
 	create          : element.create,
 	css             : utility.css,
-	data            : data.decorator,
+	data            : data,
 	datalist        : datalist.factory,
 	discard         : function ( arg ) {
 		return observer.discard( arg );
@@ -266,7 +266,7 @@ return {
 	scrollTo        : element.scrollTo,
 	stylesheet      : client.stylesheet,
 	stop            : utility.stop,
-	store           : data.decorator,
+	store           : data,
 	target          : utility.target,
 	tpl             : utility.tpl,
 	un              : function ( obj, event, id, state ) {
