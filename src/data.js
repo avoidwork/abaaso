@@ -342,7 +342,7 @@ DataStore.prototype.crawl = function ( arg ) {
 				});
 			}
 
-			record.data[k].data.batch( "set", v, true, undefined ).then( function ( arg ) {
+			record.data[k].data.batch( "set", v, true ).then( function ( arg ) {
 				defer.resolve( arg );
 			}, function ( e ) {
 				defer.reject( e );
@@ -1144,7 +1144,7 @@ DataStore.prototype.setExpires = function ( arg ) {
  * Sets the RESTful API end point
  *
  * @method setUri
- * @param  {String} arg [Optional] API collection end point
+ * @param  {String} arg API collection end point
  * @return {Object}     Deferred
  */
 DataStore.prototype.setUri = function ( arg ) {
@@ -1168,12 +1168,12 @@ DataStore.prototype.setUri = function ( arg ) {
 
 		if ( this.uri !== null ) {
 			observer.add( this.uri, "expire", function () {
-				this.sync( true );
+				this.sync();
 			}, "dataSync", this);
 
 			cache.expire( this.uri, true );
 
-			this.sync( true ).then( function (arg ) {
+			this.sync().then( function (arg ) {
 				defer.resolve( arg );
 			}, function ( e ) {
 				defer.reject( e );
@@ -1609,35 +1609,17 @@ DataStore.prototype.storage = function ( obj, op, type ) {
  *         failedDataSync  Fires when an exception occurs
  *
  * @method sync
- * @param  {Boolean} reindex [Optional] True will reindex the DataStore
- * @return {Object}          Deferred
+ * @return {Object} Deferred
  */
-DataStore.prototype.sync = function ( reindex ) {
+DataStore.prototype.sync = function () {
 	if ( this.uri === null || string.isEmpty( this.uri ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	reindex    = ( reindex === true );
 	var self   = this,
 	    events = ( this.events === true ),
 	    defer  = deferred(),
 	    success, failure;
-
-	defer.then( function ( arg ) {
-		if ( reindex ) {
-			self.reindex();
-		}
-
-		if ( events ) {
-			observer.fire( self.parentNode, "afterDataSync", arg );
-		}
-	}, function ( e ) {
-		if ( events ) {
-			observer.fire( self.parentNode, "failedDataSync", e );
-		}
-
-		throw e;
-	});
 
 	/**
 	 * Resolves public deferred
@@ -1675,11 +1657,13 @@ DataStore.prototype.sync = function ( reindex ) {
 			data = [arg];
 		}
 
-		self.batch( "set", data, true, true ).then( function ( arg ) {
+		self.batch( "set", data, true ).then( function ( arg ) {
+			if ( events ) {
+				observer.fire( self.parentNode, "afterDataSync", arg );
+			}
+
 			defer.resolve( arg );
-		}, function ( e ) {
-			defer.reject( e );
-		});
+		}, failure);
 	};
 
 	/**
@@ -1691,11 +1675,15 @@ DataStore.prototype.sync = function ( reindex ) {
 	 * @return {Undefined} undefined
 	 */
 	failure = function ( e ) {
+		if ( events ) {
+			observer.fire( self.parentNode, "failedDataSync", e );
+		}
+
 		defer.reject( e );
 	};
 
 	if ( events) {
-		observer.fire( self.parentNode, "beforeDataSync" );
+		observer.fire( this.parentNode, "beforeDataSync", this.uri );
 	}
 
 	if ( this.callback !== null ) {
