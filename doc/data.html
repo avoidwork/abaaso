@@ -326,7 +326,7 @@ Possibly a subset of the collection, so it relies on valid URI paths</p>
         <span class="p">});</span>
       <span class="p">}</span>
 
-      <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">undefined</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">v</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
       <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
@@ -1099,7 +1099,7 @@ Events: beforeDataSet  Fires before the record is set
 <p>Parameters:</p>
 
 <ul>
-<li><strong>arg must be a String.</strong><br/>([Optional] API collection end point)</li>
+<li><strong>arg must be a String.</strong><br/>(API collection end point)</li>
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">setUri</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
@@ -1123,12 +1123,12 @@ Events: beforeDataSet  Fires before the record is set
 
     <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;expire&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">sync</span><span class="p">();</span>
       <span class="p">},</span> <span class="s2">&quot;dataSync&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
 
       <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
 
-      <span class="k">this</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">sync</span><span class="p">().</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
       <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
@@ -1560,38 +1560,15 @@ Events: beforeDataSync  Fires before syncing the DataStore
         afterDataSync   Fires after syncing the DataStore
         failedDataSync  Fires when an exception occurs</p>
 
-<p>Parameters:</p>
-
-<ul>
-<li><strong>reindex must be a Boolean.</strong><br/>([Optional] True will reindex the DataStore)</li>
-</ul>
-
-<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">reindex</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sync</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="nx">reindex</span>    <span class="o">=</span> <span class="p">(</span> <span class="nx">reindex</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
   <span class="kd">var</span> <span class="nx">self</span>   <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
       <span class="nx">events</span> <span class="o">=</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">events</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">),</span>
       <span class="nx">defer</span>  <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
-      <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">;</span>
-
-  <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">reindex</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">reindex</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;afterDataSync&quot;</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;failedDataSync&quot;</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="k">throw</span> <span class="nx">e</span><span class="p">;</span>
-  <span class="p">});</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method success</span></p>
+      <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method success</span></p>
 
 <p>Resolves public deferred</p>
 
@@ -1629,11 +1606,13 @@ Events: beforeDataSync  Fires before syncing the DataStore
       <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
     <span class="p">}</span>
 
-    <span class="nx">self</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;afterDataSync&quot;</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="p">}</span>
+
       <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-    <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-    <span class="p">});</span>
+    <span class="p">},</span> <span class="nx">failure</span><span class="p">);</span>
   <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method failure</span></p>
 
 <p>Rejects public deferred</p>
@@ -1645,11 +1624,15 @@ Events: beforeDataSync  Fires before syncing the DataStore
 </ul>
 
 <p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">failure</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;failedDataSync&quot;</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
+    <span class="p">}</span>
+
     <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
   <span class="p">};</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">events</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;beforeDataSync&quot;</span> <span class="p">);</span>
+    <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;beforeDataSync&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="p">);</span>
   <span class="p">}</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">callback</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
