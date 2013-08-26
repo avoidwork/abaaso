@@ -476,7 +476,7 @@ var client = {
 	 * @return {Object}           Deferred
 	 */
 	jsonp : function ( uri, success, failure, args ) {
-		var defer    = deferred.factory(),
+		var defer    = deferred(),
 		    callback = "callback", cbid, s;
 
 		if ( external === undefined ) {
@@ -568,7 +568,7 @@ var client = {
 		doc         = ( typeof Document !== "undefined" );
 		ab          = ( typeof ArrayBuffer !== "undefined" );
 		blob        = ( typeof Blob !== "undefined" );
-		defer       = deferred.factory();
+		defer       = deferred();
 
 		// Using a deferred to resolve request
 		defer.then( function ( arg ) {
@@ -896,7 +896,7 @@ var client = {
 	 * @return {Object}      Deferred
 	 */
 	scroll : function ( dest, ms ) {
-		var defer = deferred.factory(),
+		var defer = deferred(),
 		    start = client.scrollPos(),
 		    t     = 0;
 

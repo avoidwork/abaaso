@@ -195,6 +195,9 @@ var utility = {
 		else if ( value === "undefined" ) {
 			return undefined;
 		}
+		else if ( value === "" ) {
+			return value;
+		}
 		else if ( !isNaN( tmp = Number( value ) ) ) {
 			return tmp;
 		}
@@ -260,15 +263,11 @@ var utility = {
 	 * @return {Undefined}      undefined
 	 */
 	debounce : function ( fn, ms, scope ) {
-		if ( typeof fn !== "function" ) {
-			throw new Error( label.error.invalidArguments );
-		}
-
 		ms    = ms    || 1000;
 		scope = scope || global;
 
 		return function debounced () {
-			utility.defer( function () {
+			setTimeout( function () {
 				fn.apply( scope, arguments );
 			}, ms);
 		};
@@ -1109,7 +1108,7 @@ var utility = {
 	 */
 	when : function () {
 		var i     = 0,
-		    defer = deferred.factory(),
+		    defer = deferred(),
 		    args  = array.cast( arguments ),
 		    nth;
 
@@ -1132,22 +1131,22 @@ var utility = {
 					if ( ++i === nth && !defer.isResolved()) {
 						if ( args.length > 1 ) {
 							defer.resolve( args.map( function ( obj ) {
-								return obj.outcome || obj.promise.outcome;
+								return obj.value || obj.promise.value;
 							}));
 						}
 						else {
-							defer.resolve( args[0].outcome || args[0].promise.outcome );
+							defer.resolve( args[0].value || args[0].promise.value );
 						}
 					}
 				}, function () {
 					if ( !defer.isResolved() ) {
 						if ( args.length > 1 ) {
 							defer.reject( args.map( function ( obj ) {
-								return obj.outcome || obj.promise.outcome;
+								return obj.value || obj.promise.value;
 							}));
 						}
 						else {
-							defer.reject( args[0].outcome || args[0].promise.outcome );
+							defer.reject( args[0].value || args[0].promise.value );
 						}
 					}
 				});

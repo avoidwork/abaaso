@@ -385,7 +385,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">jsonp</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">defer</span>    <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+    <span class="kd">var</span> <span class="nx">defer</span>    <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
         <span class="nx">callback</span> <span class="o">=</span> <span class="s2">&quot;callback&quot;</span><span class="p">,</span> <span class="nx">cbid</span><span class="p">,</span> <span class="nx">s</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">external</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
@@ -476,7 +476,7 @@ Events: before[type]          Fires before the XmlHttpRequest is made, type spec
     <span class="nx">doc</span>         <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">Document</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">);</span>
     <span class="nx">ab</span>          <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">ArrayBuffer</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">);</span>
     <span class="nx">blob</span>        <span class="o">=</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">Blob</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">);</span>
-    <span class="nx">defer</span>       <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">();</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Using a deferred to resolve request</p></div></div><div class="code"><div class="wrapper">    <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">defer</span>       <span class="o">=</span> <span class="nx">deferred</span><span class="p">();</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Using a deferred to resolve request</p></div></div><div class="code"><div class="wrapper">    <span class="nx">defer</span><span class="p">.</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">success</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">success</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
       <span class="p">}</span>
@@ -721,8 +721,12 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
           <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;!permission&quot;</span><span class="p">,</span> <span class="nx">client</span><span class="p">.</span><span class="nx">bit</span><span class="p">(</span> <span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="p">)</span> <span class="p">);</span>
           <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
           <span class="k">break</span><span class="p">;</span>
-        <span class="k">default</span><span class="o">:</span>
+        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
           <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
+          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
       <span class="p">}</span>
 
       <span class="k">try</span> <span class="p">{</span>
@@ -763,7 +767,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">scroll</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">dest</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+    <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
         <span class="nx">start</span> <span class="o">=</span> <span class="nx">client</span><span class="p">.</span><span class="nx">scrollPos</span><span class="p">(),</span>
         <span class="nx">t</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 

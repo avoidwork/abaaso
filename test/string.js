@@ -49,7 +49,7 @@ exports["explode"] = {
 		test.equal(string.explode(this.v1)[0] === "123", true, "Should be true");
 		test.equal(string.explode(this.v2, " ") instanceof Array, true, "Should be true");
 		test.equal(string.explode(this.v2, " ".escape())[0] === "123", true, "Should be true");
-		test.equal(string.explode(this.v3)[0] === undefined, true, "Should be true");
+		test.equal(string.explode(this.v3)[0] === "", true, "Should be true");
 		test.done();
 	},
 	sugar: function (test) {
@@ -58,7 +58,7 @@ exports["explode"] = {
 		test.equal(this.v1.explode()[0] === "123", true, "Should be true");
 		test.equal(this.v2.explode(" ") instanceof Array, true, "Should be true");
 		test.equal(this.v2.explode(" ")[0] === "123", true, "Should be true");
-		test.equal(this.v3.explode()[0] === undefined, true, "Should be true");
+		test.equal(this.v3.explode()[0] === "", true, "Should be true");
 		test.done();
 	}
 };
@@ -94,8 +94,8 @@ exports["isEmpty"] = {
 	direct: function (test) {
 		test.expect(4);
 		test.equal(string.isEmpty(this.val1), false, "Should be 'false'");
-		test.equal(string.isEmpty(this.val2), false, "Should be 'false'");
-		test.equal(string.isEmpty(this.val3), true,  "Should be 'true'");
+		test.throws(function () { string.isEmpty(this.val2) }, Error, "Invalid arguments");
+		test.throws(function () { string.isEmpty(this.val3) }, Error, "Invalid arguments");
 		test.equal(string.isEmpty(this.val4), true,  "Should be 'true'");
 		test.done();
 	},
@@ -159,7 +159,7 @@ exports["trim"] = {
 	direct: function (test) {
 		test.expect(2);
 		test.equal(string.trim(this.val), "hello world", "Should be 'hello world'");
-		test.equal(string.trim(this.num), this.num, "Should be '" + this.num + "'");
+		test.throws(function () { string.trim(this.num) }, Error, "Invalid arguments");
 		test.done();
 	},
 	sugar: function (test) {

@@ -34,9 +34,6 @@ bootstrap = function () {
 	// Creating error log
 	this.error.log = [];
 
-	// Lazy feature detection
-	promise.delay = promise.delay();
-
 	// Describing the Client
 	if ( !server ) {
 		this.client.version = client.version = client.version();

@@ -96,14 +96,14 @@ return {
 	compile         : utility.compile,
 	create          : element.create,
 	css             : utility.css,
-	data            : data.decorator,
+	data            : data,
 	datalist        : datalist.factory,
 	discard         : function ( arg ) {
 		return observer.discard( arg );
 	},
 	debounce        : utility.debounce,
 	decode          : json.decode,
-	defer           : deferred.factory,
+	defer           : deferred,
 	define          : utility.define,
 	del             : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "DELETE", success, failure, null, headers, timeout );
@@ -117,7 +117,7 @@ return {
 	expires         : 120000,
 	fib             : utility.fib,
 	extend          : utility.extend,
-	filter          : filter.factory,
+	filter          : filter,
 	fire            : function ( obj, event ) {
 		var all  = typeof obj === "object",
 		    o    = all ? obj   : this,
@@ -131,7 +131,7 @@ return {
 	get             : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "GET", success, failure, null, headers, timeout );
 	},
-	grid            : grid.factory,
+	grid            : grid,
 	guid            : function () {
 		return utility.uuid().toUpperCase();
 	},
@@ -165,7 +165,7 @@ return {
 	listenersTotal  : observer.sum,
 	log             : utility.log,
 	logging         : observer.log,
-	lru             : lru.factory,
+	lru             : lru,
 	merge           : utility.merge,
 	module          : utility.module,
 	object          : utility.object,
@@ -266,7 +266,7 @@ return {
 	scrollTo        : element.scrollTo,
 	stylesheet      : client.stylesheet,
 	stop            : utility.stop,
-	store           : data.decorator,
+	store           : data,
 	target          : utility.target,
 	tpl             : utility.tpl,
 	un              : function ( obj, event, id, state ) {

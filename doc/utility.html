@@ -175,6 +175,9 @@
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="kc">undefined</span><span class="p">;</span>
     <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">value</span> <span class="o">===</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+    <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">tmp</span> <span class="o">=</span> <span class="nb">Number</span><span class="p">(</span> <span class="nx">value</span> <span class="p">)</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">tmp</span><span class="p">;</span>
     <span class="p">}</span>
@@ -239,15 +242,11 @@ This is ideal when you need to recompile a regex for use within a conditional st
 </ul>
 
 <p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">debounce</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">fn</span><span class="p">,</span> <span class="nx">ms</span><span class="p">,</span> <span class="nx">scope</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-    <span class="p">}</span>
-
     <span class="nx">ms</span>    <span class="o">=</span> <span class="nx">ms</span>    <span class="o">||</span> <span class="mi">1000</span><span class="p">;</span>
     <span class="nx">scope</span> <span class="o">=</span> <span class="nx">scope</span> <span class="o">||</span> <span class="nx">global</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="kd">function</span> <span class="nx">debounced</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">setTimeout</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
         <span class="nx">fn</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
       <span class="p">},</span> <span class="nx">ms</span><span class="p">);</span>
     <span class="p">};</span>
@@ -815,7 +814,9 @@ Allows hooks to be overwritten</p>
     <span class="kd">var</span> <span class="nx">target</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">;</span>
 
     <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">prototypes</span><span class="p">[</span><span class="nx">type</span><span class="p">],</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">target</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">property</span><span class="p">(</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">k</span><span class="p">,</span> <span class="p">{</span><span class="nx">value</span><span class="o">:</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">configurable</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">writable</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
+      <span class="p">}</span>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
@@ -1051,7 +1052,7 @@ Return false from the function to halt recursion</p>
 
 <p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">when</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">i</span>     <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">.</span><span class="nx">factory</span><span class="p">(),</span>
+        <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
         <span class="nx">args</span>  <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arguments</span> <span class="p">),</span>
         <span class="nx">nth</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Did we receive an Array? if so it overrides any other arguments</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">args</span> <span class="o">=</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
@@ -1063,22 +1064,22 @@ Return false from the function to halt recursion</p>
           <span class="k">if</span> <span class="p">(</span> <span class="o">++</span><span class="nx">i</span> <span class="o">===</span> <span class="nx">nth</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">defer</span><span class="p">.</span><span class="nx">isResolved</span><span class="p">())</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
               <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">value</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
               <span class="p">}));</span>
             <span class="p">}</span>
             <span class="k">else</span> <span class="p">{</span>
-              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span> <span class="p">);</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span> <span class="o">||</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">promise</span><span class="p">.</span><span class="nx">value</span> <span class="p">);</span>
             <span class="p">}</span>
           <span class="p">}</span>
         <span class="p">},</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
           <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">defer</span><span class="p">.</span><span class="nx">isResolved</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
             <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
               <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span><span class="p">;</span>
+                <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">value</span> <span class="o">||</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">promise</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
               <span class="p">}));</span>
             <span class="p">}</span>
             <span class="k">else</span> <span class="p">{</span>
-              <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">outcome</span> <span class="o">||</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">promise</span><span class="p">.</span><span class="nx">outcome</span> <span class="p">);</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">value</span> <span class="o">||</span> <span class="nx">args</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">promise</span><span class="p">.</span><span class="nx">value</span> <span class="p">);</span>
             <span class="p">}</span>
           <span class="p">}</span>
         <span class="p">});</span>
