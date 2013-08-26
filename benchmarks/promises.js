@@ -1,5 +1,5 @@
 // Inspired by http://swannodette.github.io/2013/08/23/make-no-promises/
-var $     = require("./lib/abaaso"),
+var $     = require("../lib/abaaso"),
     first = $.defer(),
     last  = first.promise,
     nth   = 100000,
