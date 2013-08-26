@@ -98,14 +98,14 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 		observer.fire( self.parentNode, "beforeDataBatch", data );
 	}
 
+	if ( sync ) {
+		this.clear( sync );
+	}
+
 	if ( data.length === 0 ) {
 		defer.resolve( this.records );
 	}
 	else {
-		if ( sync ) {
-			this.clear( sync );
-		}
-
 		if ( type === "del" ) {
 			array.each( data, function ( i ) {
 				deferreds.push( self.del( i, false, true ) );
@@ -1148,8 +1148,7 @@ DataStore.prototype.setExpires = function ( arg ) {
  * @return {Object}     Deferred
  */
 DataStore.prototype.setUri = function ( arg ) {
-	var defer = deferred(),
-	    result;
+	var defer = deferred();
 
 	if ( arg !== null && string.isEmpty( arg ) ) {
 		throw new Error( label.error.invalidArguments );
@@ -1158,21 +1157,21 @@ DataStore.prototype.setUri = function ( arg ) {
 	arg = utility.parse( arg ).href;
 
 	if ( this.uri === arg ) {
-		result = this.uri;
+		defer.resolve( this.records );
 	}
 	else {
 		if ( this.uri !== null) {
 			observer.remove( this.uri );
 		}
 
-		result = this.uri = arg;
+		this.uri = arg;
 
-		if ( result !== null ) {
-			observer.add( result, "expire", function () {
+		if ( this.uri !== null ) {
+			observer.add( this.uri, "expire", function () {
 				this.sync( true );
 			}, "dataSync", this);
 
-			cache.expire( result, true );
+			cache.expire( this.uri, true );
 
 			this.sync( true ).then( function (arg ) {
 				defer.resolve( arg );
@@ -1676,7 +1675,7 @@ DataStore.prototype.sync = function ( reindex ) {
 			data = [arg];
 		}
 
-		self.batch( "set", data, true, undefined ).then( function ( arg ) {
+		self.batch( "set", data, true, true ).then( function ( arg ) {
 			defer.resolve( arg );
 		}, function ( e ) {
 			defer.reject( e );
