@@ -730,7 +730,7 @@ var utility = {
 	 * @return {Mixed}     Entity
 	 */
 	object : function ( obj ) {
-		return typeof obj === "object" ? obj : ( obj.toString().charAt( 0 ) === "#" ? utility.$( obj ) : obj );
+		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.$( obj ) : obj );
 	},
 
 	/**
