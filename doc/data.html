@@ -91,14 +91,14 @@ Events: beforeDataBatch  Fires before the batch is queued
     <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;beforeDataBatch&quot;</span><span class="p">,</span> <span class="nx">data</span> <span class="p">);</span>
   <span class="p">}</span>
 
+  <span class="k">if</span> <span class="p">(</span> <span class="nx">sync</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">clear</span><span class="p">(</span> <span class="nx">sync</span> <span class="p">);</span>
+  <span class="p">}</span>
+
   <span class="k">if</span> <span class="p">(</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">sync</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">clear</span><span class="p">(</span> <span class="nx">sync</span> <span class="p">);</span>
-    <span class="p">}</span>
-
     <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;del&quot;</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">del</span><span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="kc">false</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">);</span>
@@ -1103,8 +1103,7 @@ Events: beforeDataSet  Fires before the record is set
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">setUri</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
-      <span class="nx">result</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">();</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
@@ -1113,21 +1112,21 @@ Events: beforeDataSet  Fires before the record is set
   <span class="nx">arg</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">).</span><span class="nx">href</span><span class="p">;</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">;</span>
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
       <span class="nx">observer</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="p">);</span>
     <span class="p">}</span>
 
-    <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="s2">&quot;expire&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="o">!==</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;expire&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
         <span class="k">this</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
       <span class="p">},</span> <span class="s2">&quot;dataSync&quot;</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
 
-      <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="nx">result</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
 
       <span class="k">this</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
@@ -1630,7 +1629,7 @@ Events: beforeDataSync  Fires before syncing the DataStore
       <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
     <span class="p">}</span>
 
-    <span class="nx">self</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">undefined</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
     <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
