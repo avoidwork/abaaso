@@ -942,7 +942,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	    defer  = deferred(),
 	    record = key !== null ? this.get( key ) : null,
 	    method = "POST",
-	    parsed = utility.parse( self.uri ),
+	    parsed = utility.parse( self.uri || "" ),
 	    uri;
 
 	if ( record === undefined ) {

@@ -730,7 +730,7 @@ var utility = {
 	 * @return {Mixed}     Entity
 	 */
 	object : function ( obj ) {
-		return typeof obj === "object" ? obj : ( obj.toString().charAt( 0 ) === "#" ? utility.$( obj ) : obj );
+		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.$( obj ) : obj );
 	},
 
 	/**
@@ -769,7 +769,7 @@ var utility = {
 			auth     : server ? null : regex.auth.exec( uri ),
 			protocol : obj.protocol || "http:",
 			hostname : obj.hostname || "localhost",
-			port     : !string.isEmpty( obj.port ) ? number.parse( obj.port, 10 ) : "",
+			port     : obj.port ? number.parse( obj.port, 10 ) : "",
 			pathname : obj.pathname,
 			search   : obj.search   || "",
 			hash     : obj.hash     || "",
