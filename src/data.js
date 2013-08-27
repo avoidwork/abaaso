@@ -1206,7 +1206,7 @@ DataStore.prototype.sort = function ( query, create, sensitivity, where ) {
 	query        = query.replace( /\s*asc/ig, "" );
 	create       = ( create === true || ( where instanceof Object ) );
 	var queries  = string.explode( query ),
-	    view     = ( queries.join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
+	    view     = string.toCamelCase( queries.join( " " ) ) + sensitivity.toUpperCase(),
 	    key      = this.key,
 	    result   = [],
 	    bucket, crawl, sort, sorting;
