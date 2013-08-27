@@ -1188,186 +1188,49 @@ DataStore.prototype.setUri = function ( arg ) {
  * Returns a view, or creates a view and returns it
  *
  * @method sort
- * @param  {String} query       SQL ( style ) order by
- * @param  {String} create      [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
- * @param  {String} sensitivity [Optional] Sort sensitivity, defaults to "ci" ( insensitive = "ci", sensitive = "cs", mixed = "ms" )
- * @param  {Object} where       [Optional] Object describing the WHERE clause
- * @return {Array}              View of data
+ * @param  {String} query  SQL ( style ) order by
+ * @param  {String} create [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
+ * @param  {Object} where  [Optional] Object describing the WHERE clause
+ * @return {Array}         View of data
  */
-DataStore.prototype.sort = function ( query, create, sensitivity, where ) {
+DataStore.prototype.sort = function ( query, create, where ) {
 	if ( query === undefined || string.isEmpty( query ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	if ( !regex.sensitivity_types.test( sensitivity ) ) {
-		sensitivity = "ci";
-	}
+	query       = query.replace( /\s*asc/g, "" ).replace( /\s*desc/ig, " desc" );
+	create      = ( create === true || ( where instanceof Object ) );
+	var queries = string.explode( query ).map( function ( i ) { return i.split( " " ); }),
+	    view    = string.explode( query ).join( " " ).toCamelCase(),
+	    sorts   = [],
+	    records = !where ? this.records : this.select( where );
 
-	query        = query.replace( /\s*asc/ig, "" );
-	create       = ( create === true || ( where instanceof Object ) );
-	var queries  = string.explode( query ),
-	    view     = ( queries.join( " " ).toCamelCase() ) + sensitivity.toUpperCase(),
-	    key      = this.key,
-	    result   = [],
-	    bucket, crawl, sort, sorting;
-
-	/**
-	 * Recursively crawls queries & data
-	 *
-	 * @method crawl
-	 * @private
-	 * @param  {Array}  q    Queries
-	 * @param  {Object} data Records
-	 * @return {Array}       Sorted records
-	 */
-	crawl = function ( q, data ) {
-		var queries = utility.clone( q ),
-		    query   = q[0],
-		    sorted  = {},
-		    result  = [];
-
-		array.remove( queries, 0 );
-
-		sorted = bucket( query, data, regex.desc.test( query ) );
-
-		array.each( sorted.order, function ( i ) {
-			if ( sorted.registry[i].length < 2 ) {
-				return;
-			}
-
-			if ( queries.length > 0) {
-				sorted.registry[i] = crawl( queries, sorted.registry[i] );
-			}
-		});
-
-		array.each( sorted.order, function ( i ) {
-			result = result.concat( sorted.registry[i] );
-		});
-
-		return result;
-	};
-
-	/**
-	 * Creates a bucket of records
-	 *
-	 * @method bucket
-	 * @private
-	 * @param  {String}  query   Query to execute
-	 * @param  {Array}   records Records to sort
-	 * @param  {Boolean} reverse `true` to reverse records
-	 * @return {Object}          Describes bucket
-	 */
-	bucket = function ( query, records, reverse ) {
-		var prop     = query.replace( regex.desc, "" ),
-		    pk       = ( key === prop ),
-		    order    = [],
-		    registry = {};
-
-		array.each( records, function ( r ) {
-			var val = pk ? r.key : r.data[prop],
-			    k   = ( val === null || val === undefined ) ? "null" : val.toString();
-
-			if ( sensitivity === "ci" ) {
-				k = string.toCamelCase( k );
-			}
-			else if ( sensitivity === "cs" ) {
-				k = string.trim( k );
-			}
-			else if ( sensitivity === "ms" ) {
-				k = string.trim( k ).slice( 0, 1 ).toLowerCase();
-			}
-
-			if ( !( registry[k] instanceof Array ) ) {
-				registry[k] = [];
-				order.push( k );
-			}
-
-			registry[k].push( r );
-		});
-
-		order.sort( sorting );
-
-		if ( reverse) {
-			order.reverse();
-		}
-		
-		array.each( order, function ( k ) {
-			if ( registry[k].length === 1 ) {
-				return;
-			}
-
-			registry[k] = sort( registry[k], query, prop, reverse, pk );
-		});
-
-		return {order: order, registry: registry};
-	};
-
-	/**
-	 * Sorts bucket
-	 *
-	 * @method sort
-	 * @private
-	 * @param  {Object}  data    Records to sort
-	 * @param  {String}  query   Query to execute
-	 * @param  {String}  prop    Property / field
-	 * @param  {Boolean} reverse `true` to reverse records
-	 * @param  {Boolean} pk      `true` if sorting on Primary Key
-	 * @return {Array}           Sorted records
-	 */
-	sort = function ( data, query, prop, reverse, pk ) {
-		var tmp    = [],
-		    sorted = [];
-
-		array.each( data, function ( i, idx ) {
-			var v  = pk ? i.key : i.data[prop] || "!";
-
-			v = string.trim( v.toString() ) + ":::" + idx;
-			tmp.push( v );
-		});
-
-		if ( tmp.length > 1 ) {
-			tmp.sort( sorting );
-
-			if ( reverse ) {
-				tmp.reverse();
-			}
-
-			sorted = tmp.map( function ( i ) {
-				return data[i.replace( regex.sort_needle, "" )];
-			});
-		}
-
-		return sorted;
-	};
-
-	/**
-	 * Sorts based on parsed value
-	 *
-	 * @method sort
-	 * @private
-	 * @param  {String} a [description]
-	 * @param  {String} b [description]
-	 * @return {Number}   -1, 0, or 1
-	 */
-	sorting = function ( a, b ) {
-		a = a.replace( regex.sort_value, "" );
-		b = b.replace( regex.sort_value, "" );
-
-		return array.sort( number.parse( a ) || a, number.parse( b ) || b );
-	};
-
-	if ( !create && this.views[view] instanceof Array ) {
-		return this.views[view];
-	}
-
-	if ( this.total === 0 ) {
+	if ( this.total === 0 || queries.length === 0 ) {
 		return [];
 	}
+	else if ( !create && this.views[view] ) {
+		return this.views[view];
+	}
+	else {
+		array.each( queries, function ( i ) {
+			var desc = i[1] === "desc";
 
-	result           = crawl( queries, where === undefined ? this.records : this.select( where ) );
-	this.views[view] = result;
+			if ( !desc ) {
+				sorts.push( "if ( a.data[\"" + i[0] + "\"] < b.data[\"" + i[0] + "\"] ) return -1;" );
+				sorts.push( "if ( a.data[\"" + i[0] + "\"] > b.data[\"" + i[0] + "\"] ) return 1;" );
+			}
+			else {
+				sorts.push( "if ( a.data[\"" + i[0] + "\"] < b.data[\"" + i[0] + "\"] ) return 1;" );
+				sorts.push( "if ( a.data[\"" + i[0] + "\"] > b.data[\"" + i[0] + "\"] ) return -1;" );
+			}
+		});
 
-	return result;
+		sorts.push( "else return 0;" );
+
+		this.views[view] = records.slice().sort( new Function( "a", "b", sorts.join( "\n" ) ) );
+
+		return this.views[view];
+	}
 };
 
 /**

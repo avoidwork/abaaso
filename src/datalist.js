@@ -103,7 +103,6 @@ function DataList ( element, store, template ) {
 	this.records     = [];
 	this.template    = template;
 	this.total       = 0;
-	this.sensitivity = "ci";
 	this.store       = store;
 	this.where       = null;
 }
@@ -334,10 +333,10 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 	// Consuming records based on sort
 	if ( this.where === null ) {
-		consumed = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create, this.sensitivity );
+		consumed = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create );
 	}
 	else {
-		consumed = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.sensitivity, this.where );
+		consumed = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.where );
 	}
 
 	// Processing ( filtering ) records & generating templates
@@ -438,14 +437,12 @@ DataList.prototype.refresh = function ( redraw, create ) {
  * Sorts data list & refreshes element
  *
  * @method sort
- * @param  {String}  order       SQL "order by" statement
- * @param  {String}  sensitivity [Optional] Defaults to "ci" ( "ci" = insensitive, "cs" = sensitive, "ms" = mixed sensitive )
- * @param  {Boolean} create      [Optional] Recreates cached View of data store
- * @return {Object}              DataList instance
+ * @param  {String}  order  SQL "order by" statement
+ * @param  {Boolean} create [Optional] Recreates cached View of data store
+ * @return {Object}         DataList instance
  */
-DataList.prototype.sort = function ( order, sensitivity, create ) {
-	this.order       = order;
-	this.sensitivity = sensitivity || "ci";
+DataList.prototype.sort = function ( order, create ) {
+	this.order = order;
 	return this.refresh( true, create );
 };
 
