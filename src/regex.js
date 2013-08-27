@@ -90,7 +90,6 @@ var regex = {
 	selector_many           : /\:|\.|\+|\~|\[/,
 	selector_complex        : /\s+|\>|\+|\~|\:|\[/,
 	selector_split          : /\s+|\>|\+|\~/,
-	sensitivity_types       : /ci|cs|ms/,
 	set_del                 : /^(set|del|delete)$/,
 	sort_needle             : /^.*:::/,
 	sort_value              : /:::.*$/,

@@ -23,6 +23,25 @@ store.records.sort( function ( a, b ) {
 console.log( "1 field in " + (new Date() - s).format() + "ms (native)" );
 
 s = new Date();
+store.records.sort( function ( a, b ) {
+	var r1f1 = a.data.exits,
+	    r2f1 = b.data.exits,
+	    r1f2 = a.data.name,
+	    r2f2 = b.data.name;
+
+	if ( r1f1 < r2f1 ) {
+		return 1;
+	}
+	else if (( r1f1 > r2f1 ) || ( r1f2 > r2f2)) {
+		return -1;
+	}
+	else {
+		return 0;
+	}
+} );
+console.log( "2 field in " + (new Date() - s).format() + "ms (native)" );
+
+s = new Date();
 store.sort( "exits desc" );
 console.log( "1 field in " + (new Date() - s).format() + "ms" );
 

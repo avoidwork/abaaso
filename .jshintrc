@@ -19,6 +19,7 @@
 	"expr": true,
 	"browser": true,
 	"loopfunc": true,
+	"evil": true,
 	"globals": {
 		"localStorage": true,
 		"XMLHttpRequest": true,
