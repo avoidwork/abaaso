@@ -61,19 +61,6 @@ return {
 	mouse           : mouse,
 	number          : number,
 	regex           : regex,
-	route           : {
-		enabled : false,
-		current : route.current,
-		del     : route.del,
-		hash    : route.hash,
-		init    : route.init,
-		initial : route.initial,
-		list    : route.list,
-		load    : route.load,
-		reset   : route.reset,
-		server  : route.server,
-		set     : route.set
-	},
 	state           : {},
 	string          : string,
 	xml             : xml,
@@ -135,7 +122,7 @@ return {
 	guid            : function () {
 		return utility.uuid().toUpperCase();
 	},
-	hash            : route.hash,
+	hash            : utility.hash,
 	headers         : function ( uri, success, failure, timeout ) {
 		return client.request( uri, "HEAD", success, failure, null, {}, timeout );
 	},

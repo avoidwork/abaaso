@@ -256,9 +256,6 @@ bootstrap = function () {
 	delete $.init;
 	delete $.loading;
 
-	// Setting default routes
-	route.reset();
-
 	// Hooking abaaso into native Objects
 	utility.proto( Array, "array" );
 
@@ -280,20 +277,6 @@ bootstrap = function () {
 		observer.add( global, "error", function ( e ) {
 			observer.fire( abaaso, "error", e );
 		}, "error", global, "all");
-
-		observer.add( global, "hashchange", function ()  {
-			var hash = location.hash.replace( /^\#\!?|\?.*|\#.*/g, "" );
-
-			if ( $.route.current !== hash || self.route.current !== hash ) {
-				self.route.current = hash;
-
-				if ( $.route.current !== self.route.current ) {
-					$.route.current = self.route.current;
-				}
-
-				observer.fire( abaaso, "beforeHash, hash, afterHash", location.hash );
-			}
-		}, "hash", global, "all");
 
 		observer.add( global, "load", function ()  {
 			observer.fire( abaaso, "render" );
@@ -318,13 +301,6 @@ bootstrap = function () {
 				cleanup( obj );
 			}
 		}, "mutation", global, "all");
-
-		// Routing listener
-		observer.add( abaaso, "hash", function (arg ) {
-			if ( $.route.enabled || self.route.enabled ) {
-				route.load( arg );
-			}
-		}, "route", this.route, "all");
 	}
 
 	// Creating a public facade for `state`

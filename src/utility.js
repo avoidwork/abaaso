@@ -539,6 +539,22 @@ var utility = {
 	},
 
 	/**
+	 * Getter / setter for the hashbang
+	 *
+	 * @method hash
+	 * @public
+	 * @param  {String} arg Route to set
+	 * @return {String}     Current route
+	 */
+	hash : function ( arg ) {
+		if ( arg ) {
+			document.location.hash = arg;
+		}
+
+		return document.location.hash;
+	},
+
+	/**
 	 * Converts RGB to HEX
 	 *
 	 * @method hex

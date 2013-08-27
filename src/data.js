@@ -58,7 +58,6 @@ function DataStore ( obj ) {
 	this.parentNode  = obj;
 	this.pointer     = null;
 	this.records     = [];
-	this.recursive   = false;
 	this.retrieve    = false;
 	this.source      = null;
 	this.total       = 0;
@@ -185,7 +184,6 @@ DataStore.prototype.clear = function ( sync ) {
 		this.maxDepth    = 0;
 		this.pointer     = null;
 		this.records     = [];
-		this.recursive   = false;
 		this.retrieve    = false;
 		this.source      = null;
 		this.total       = 0;
@@ -236,7 +234,7 @@ DataStore.prototype.crawl = function ( arg ) {
 	}
 
 	if ( events ) {
-		observer.fire( self.parentNode, "beforeDataRetrieve", record );
+		observer.fire( this.parentNode, "beforeDataRetrieve", record );
 	}
 
 	// Depth of recursion is controled by `maxDepth`
@@ -249,12 +247,9 @@ DataStore.prototype.crawl = function ( arg ) {
 
 		self.collections.push( k );
 
-		record.data[k] = data( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers} );
+		record.data[k] = data( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers, retrieve: true} );
 
-		if ( !array.contains( self.leafs, k ) && self.recursive && self.retrieve && ( record.data[k].data.maxDepth === 0 || record.data[k].data.depth < record.data[k].data.maxDepth ) ) {
-			record.data[k].data.recursive = true;
-			record.data[k].data.retrieve  = true;
-
+		if ( !array.contains( self.leafs, k ) && ( record.data[k].data.maxDepth === 0 || record.data[k].data.depth < record.data[k].data.maxDepth ) ) {
 			if ( v instanceof Array ) {
 				deferreds.push( record.data[k].data.batch( "set", v ) );
 			}
