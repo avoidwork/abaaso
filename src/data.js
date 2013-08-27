@@ -42,7 +42,6 @@ function DataStore ( obj ) {
 	this.autosave    = false;
 	this.callback    = null;
 	this.collections = [];
-	this.crawled     = false;
 	this.credentials = null;
 	this.datalists   = [];
 	this.depth       = 0;
@@ -172,7 +171,6 @@ DataStore.prototype.clear = function ( sync ) {
 		this.autosave    = false;
 		this.callback    = null;
 		this.collections = [];
-		this.crawled     = false;
 		this.credentials = null;
 		this.datalists   = [];
 		this.depth       = 0;
@@ -200,7 +198,6 @@ DataStore.prototype.clear = function ( sync ) {
 	}
 	else {
 		this.collections = [];
-		this.crawled     = false;
 		this.keys        = {};
 		this.loaded      = false;
 		this.records     = [];
@@ -218,7 +215,8 @@ DataStore.prototype.clear = function ( sync ) {
 /**
  * Crawls a record's properties and creates DataStores when URIs are detected
  *
- * Events: afterDataRetrieve  Fires after the store has retrieved all data from crawling
+ * Events: beforeDataRetrieve Fires before crawling a record
+ *         afterDataRetrieve  Fires after the store has retrieved all data from crawling
  *         failedDataRetrieve Fires if an exception occurs
  *
  * @method crawl
@@ -226,139 +224,82 @@ DataStore.prototype.clear = function ( sync ) {
  * @return {Object}     Deferred
  */
 DataStore.prototype.crawl = function ( arg ) {
-	var self   = this,
-	    events = ( this.events === true ),
-	    record = ( arg instanceof Object ) ? arg : this.get( arg ),
-	    uri    = this.uri === null ? "" : this.uri,
-	    defer  = deferred(),
-	    i      = 0,
-	    nth    = 0,
-	    build, complete, setup;
+	var self      = this,
+	    events    = ( this.events === true ),
+	    record    = ( arg instanceof Object ) ? arg : this.get( arg ),
+	    defer     = deferred(),
+	    deferreds = [],
+	    parsed    = utility.parse( this.uri || "" );
 
-	if ( record === undefined ) {
+	if ( this.uri === null || record === undefined ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	this.crawled = true;
-
-	/**
-	 * Concats URIs together
-	 *
-	 * @method build
-	 * @private
-	 * @param  {String} entity Entity URI
-	 * @param  {String} store  Data store URI
-	 * @return {String}        URI
-	 */
-	build = function ( entity, store ) {
-		var result = "",
-		    parsed;
-
-		if ( regex.double_slash.test( entity ) ) {
-			result = entity;
-		}
-		else if ( entity.charAt( 0 ) === "/" && store.charAt( 0 ) !== "/" ) {
-			parsed = utility.parse( store );
-			result = parsed.protocol + "//" + parsed.host + entity;
-		}
-		else {
-			result = entity;
-		}
-
-		return result;
-	};
-
-	/**
-	 * Crawl complete handler
-	 *
-	 * @method complete
-	 * @private
-	 * @return {Undefined} undefined
-	 */
-	complete = function () {
-		if ( ++i === nth ) {
-			defer.resolve( nth );
-		}
-	};
-
-	/**
-	 * Sets up a DataStore
-	 *
-	 * Possibly a subset of the collection, so it relies on valid URI paths
-	 *
-	 * @method setup
-	 * @private
-	 * @param  {String} key Record key
-	 * @return {Object}     Data store
-	 */
-	setup = function ( key, self ) {
-		var obj = {};
-
-		if ( !array.contains( self.collections, key ) ) {
-			self.collections.push( key );
-		}
-
-		obj = data.decorator( {id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: utility.clone( self.ignore ), leafs: utility.clone( self.leafs ), depth: self.depth + 1, maxDepth: self.maxDepth} );
-		obj.data.headers = utility.merge( obj.data.headers, self.headers );
-
-		if ( !array.contains( self.leafs, key ) && self.recursive && self.retrieve && ( obj.data.maxDepth === 0 || obj.data.depth < obj.data.maxDepth ) ) {
-			obj.data.recursive = true;
-			obj.data.retrieve  = true;
-		}
-
-		return obj;
-	};
+	if ( events ) {
+		observer.fire( self.parentNode, "beforeDataRetrieve", record );
+	}
 
 	// Depth of recursion is controled by `maxDepth`
 	utility.iterate( record.data, function ( v, k ) {
-		var defer;
+		var uri;
 
 		if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) ) {
 			return;
 		}
 
-		nth   = array.cast( record.data ).length;
-		defer = deferred();
-		defer.then( function ( arg ) {
-			if ( events ) {
-				observer.fire( record.data[k], "afterDataRetrieve", arg );
+		self.collections.push( k );
+
+		record.data[k] = data( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers} );
+
+		if ( !array.contains( self.leafs, k ) && self.recursive && self.retrieve && ( record.data[k].data.maxDepth === 0 || record.data[k].data.depth < record.data[k].data.maxDepth ) ) {
+			record.data[k].data.recursive = true;
+			record.data[k].data.retrieve  = true;
+
+			if ( v instanceof Array ) {
+				deferreds.push( record.data[k].data.batch( "set", v ) );
 			}
+			else {
+				if ( v.indexOf( "//" ) === -1 ) {
+					// Relative path to store, i.e. a child
+					if ( v.charAt( 0 ) !== "/" ) {
+						uri = parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + v;
+					}
+					// Root path, relative to store, i.e. a domain
+					else {
+						uri = parsed.protocol + "//" + parsed.host + v;
+					}
+				}
+				else {
+					uri = v;
+				}
 
-			complete();
-		}, function ( e ) {
-			if ( events) {
-				observer.fire( record.data[k], "failedDataRetrieve", e );
+				deferreds.push( record.data[k].data.setUri( uri ) );
 			}
-
-			complete();
-		});
-
-		if ( ( v instanceof Array ) && v.length > 0 ) {
-			record.data[k] = setup( k, self );
-
-			if ( typeof v[0] === "string" ) {
-				array.each( v, function ( i, idx ) {
-					v[idx] = build( i, uri );
-				});
-			}
-
-			record.data[k].data.batch( "set", v, true ).then( function ( arg ) {
-				defer.resolve( arg );
-			}, function ( e ) {
-				defer.reject( e );
-			});
-		}
-		// If either condition is satisified it's assumed that "v" is a URI because it's not ignored
-		else if ( v.charAt( 0 ) === "/" || v.indexOf( "//" ) > -1 ) {
-			record.data[k] = setup( k, self );
-			v = build( v, uri );
-			record.data[k].data.setUri( v ).then( function ( arg ) {
-				defer.resolve( arg );
-			}, function ( e ) {
-				defer.reject( e );
-			});
 		}
 	});
+
+	if ( deferreds.length > 0 ) {
+		utility.when( deferreds ).then( function () {
+			if ( events ) {
+				observer.fire( self.parentNode, "afterDataRetrieve", record );
+			}
+
+			defer.resolve( record );
+		}, function ( e ) {
+			if ( events ) {
+				observer.fire( self.parentNode, "failedDataRetrieve", record );
+			}
+
+			defer.reject( e );
+		});
+	}
+	else {
+		if ( events ) {
+			observer.fire( self.parentNode, "afterDataRetrieve", record );
+		}
+
+		defer.resolve( record );
+	}
 
 	return defer;
 };
@@ -629,7 +570,7 @@ DataStore.prototype.generate = function ( key, arg ) {
 		}
 
 		if ( params.maxDepth === 0 || params.depth <= params.maxDepth ) {
-			self.records[idx] = data.decorator( {id: key}, recs, params );
+			self.records[idx] = data( {id: key}, recs, params );
 
 			// Not batching in a data set
 			if ( recs === null ) {
