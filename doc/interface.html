@@ -59,19 +59,6 @@
   <span class="nx">mouse</span>           <span class="o">:</span> <span class="nx">mouse</span><span class="p">,</span>
   <span class="nx">number</span>          <span class="o">:</span> <span class="nx">number</span><span class="p">,</span>
   <span class="nx">regex</span>           <span class="o">:</span> <span class="nx">regex</span><span class="p">,</span>
-  <span class="nx">route</span>           <span class="o">:</span> <span class="p">{</span>
-    <span class="nx">enabled</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
-    <span class="nx">current</span> <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">current</span><span class="p">,</span>
-    <span class="nx">del</span>     <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">del</span><span class="p">,</span>
-    <span class="nx">hash</span>    <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span>
-    <span class="nx">init</span>    <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">init</span><span class="p">,</span>
-    <span class="nx">initial</span> <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">initial</span><span class="p">,</span>
-    <span class="nx">list</span>    <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">list</span><span class="p">,</span>
-    <span class="nx">load</span>    <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">load</span><span class="p">,</span>
-    <span class="nx">reset</span>   <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">reset</span><span class="p">,</span>
-    <span class="nx">server</span>  <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">server</span><span class="p">,</span>
-    <span class="nx">set</span>     <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">set</span>
-  <span class="p">},</span>
   <span class="nx">state</span>           <span class="o">:</span> <span class="p">{},</span>
   <span class="nx">string</span>          <span class="o">:</span> <span class="nx">string</span><span class="p">,</span>
   <span class="nx">xml</span>             <span class="o">:</span> <span class="nx">xml</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Methods &amp; Properties</p></div></div><div class="code"><div class="wrapper">  <span class="nx">alias</span>           <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">alias</span><span class="p">,</span>
@@ -84,6 +71,7 @@
     <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">type</span><span class="p">,</span> <span class="nx">args</span><span class="p">,</span> <span class="nx">obj</span><span class="p">,</span> <span class="s2">&quot;last&quot;</span> <span class="p">);</span>
   <span class="p">},</span>
   <span class="nx">bootstrap</span>       <span class="o">:</span> <span class="nx">bootstrap</span><span class="p">,</span>
+  <span class="nx">channel</span>         <span class="o">:</span> <span class="nx">channel</span><span class="p">,</span>
   <span class="nx">clear</span>           <span class="o">:</span> <span class="nx">element</span><span class="p">.</span><span class="nx">clear</span><span class="p">,</span>
   <span class="nx">clearTimer</span>      <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clearTimers</span><span class="p">,</span>
   <span class="nx">clone</span>           <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">,</span>
@@ -130,7 +118,7 @@
   <span class="nx">guid</span>            <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">().</span><span class="nx">toUpperCase</span><span class="p">();</span>
   <span class="p">},</span>
-  <span class="nx">hash</span>            <span class="o">:</span> <span class="nx">route</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span>
+  <span class="nx">hash</span>            <span class="o">:</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span>
   <span class="nx">headers</span>         <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="nx">timeout</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">client</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;HEAD&quot;</span><span class="p">,</span> <span class="nx">success</span><span class="p">,</span> <span class="nx">failure</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">timeout</span> <span class="p">);</span>
   <span class="p">},</span>

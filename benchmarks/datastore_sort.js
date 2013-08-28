@@ -1,8 +1,14 @@
-var $     = require("../lib/abaaso"),
-    data  = require("./datastore_data"),
-    store = $.data({id: "test"}, data, {events: false, key: "uuid"}).data,
-    s;
+var $     = require( "../lib/abaaso" ),
+    data  = [],
+    i     = -1, store, s;
 
+console.log( "Preparing 100,000 records");
+
+while ( ++i < 100000 ) {
+	data.push( {uuid: $.uuid(), name: "abc" + i, exits: parseInt( ( i *.3 ).toFixed( 0 ), 10), value: i} );
+}
+ 
+store = $.data({id: "test"}, data, {events: false, key: "uuid"}).data
 console.log( "DataStore.sort() benchmark - Sorting " + store.total.format() + " records" );
 
 s = new Date();

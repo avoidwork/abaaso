@@ -508,6 +508,22 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="k">else</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
     <span class="p">}</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method hash</span></p>
+
+<p>Getter / setter for the hashbang</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>arg must be a String.</strong><br/>(Route to set)</li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(Current route)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">hash</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nb">document</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">hash</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method hex</span></p>
 
 <p>Converts RGB to HEX</p>

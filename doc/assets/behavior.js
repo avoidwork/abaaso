@@ -164,6 +164,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "ignorePrefix": "}",
           "name": "JavaScript"
         },
+        "sourcePath": "/Users/jason/Projects/abaaso/src/channel.js",
+        "projectPath": "src/channel.js",
+        "targetPath": "channel",
+        "title": "channel"
+      },
+      "depth": 1,
+      "outline": []
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".js"],
+          "pygmentsLexer": "javascript",
+          "singleLineComment": ["//"],
+          "multiLineComment": ["/*", "*", "*/"],
+          "ignorePrefix": "}",
+          "name": "JavaScript"
+        },
         "sourcePath": "/Users/jason/Projects/abaaso/src/client.js",
         "projectPath": "src/client.js",
         "targetPath": "client",
@@ -546,24 +564,6 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "projectPath": "src/regex.js",
         "targetPath": "regex",
         "title": "regex"
-      },
-      "depth": 1,
-      "outline": []
-    }, {
-      "type": "file",
-      "data": {
-        "language": {
-          "nameMatchers": [".js"],
-          "pygmentsLexer": "javascript",
-          "singleLineComment": ["//"],
-          "multiLineComment": ["/*", "*", "*/"],
-          "ignorePrefix": "}",
-          "name": "JavaScript"
-        },
-        "sourcePath": "/Users/jason/Projects/abaaso/src/route.js",
-        "projectPath": "src/route.js",
-        "targetPath": "route",
-        "title": "route"
       },
       "depth": 1,
       "outline": []
