@@ -76,6 +76,7 @@ return {
 		return element.create( type, args, obj, "last" );
 	},
 	bootstrap       : bootstrap,
+	channel         : channel,
 	clear           : element.clear,
 	clearTimer      : utility.clearTimers,
 	clone           : utility.clone,

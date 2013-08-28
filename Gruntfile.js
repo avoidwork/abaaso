@@ -20,6 +20,7 @@ module.exports = function (grunt) {
 					"src/regex.js",
 					"src/array.js",
 					"src/cache.js",
+					"src/channel.js",
 					"src/client.js",
 					"src/cookie.js",
 					"src/data.js",
