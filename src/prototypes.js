@@ -364,6 +364,9 @@ var prototypes = {
 		keepIf : function ( fn ) {
 			return array.keepIf( this, fn );
 		},
+		keySort : function ( query, sub ) {
+			return array.keySort( this, query, sub );
+		},
 		keys : function () {
 			return array.keys( this );
 		},

@@ -1044,6 +1044,8 @@ DataStore.prototype.setUri = function ( arg ) {
 /**
  * Returns a view, or creates a view and returns it
  *
+ * Records in a view are not by reference, they are clones
+ *
  * @method sort
  * @param  {String} query  SQL ( style ) order by
  * @param  {String} create [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
@@ -1051,40 +1053,18 @@ DataStore.prototype.setUri = function ( arg ) {
  * @return {Array}         View of data
  */
 DataStore.prototype.sort = function ( query, create, where ) {
-	if ( query === undefined || string.isEmpty( query ) ) {
-		throw new Error( label.error.invalidArguments );
-	}
-
-	query       = query.replace( /\s*asc/g, "" ).replace( /\s*desc/ig, " desc" );
 	create      = ( create === true || ( where instanceof Object ) );
-	var queries = string.explode( query ).map( function ( i ) { return i.split( " " ); }),
-	    view    = string.explode( query ).join( " " ).toCamelCase(),
-	    sorts   = [],
+	var view    = string.explode( query ).join( " " ).toCamelCase(),
 	    records = !where ? this.records : this.select( where );
 
-	if ( this.total === 0 || queries.length === 0 ) {
+	if ( this.total === 0 ) {
 		return [];
 	}
 	else if ( !create && this.views[view] ) {
 		return this.views[view];
 	}
 	else {
-		array.each( queries, function ( i ) {
-			var desc = i[1] === "desc";
-
-			if ( !desc ) {
-				sorts.push( "if ( a.data[\"" + i[0] + "\"] < b.data[\"" + i[0] + "\"] ) return -1;" );
-				sorts.push( "if ( a.data[\"" + i[0] + "\"] > b.data[\"" + i[0] + "\"] ) return 1;" );
-			}
-			else {
-				sorts.push( "if ( a.data[\"" + i[0] + "\"] < b.data[\"" + i[0] + "\"] ) return 1;" );
-				sorts.push( "if ( a.data[\"" + i[0] + "\"] > b.data[\"" + i[0] + "\"] ) return -1;" );
-			}
-		});
-
-		sorts.push( "else return 0;" );
-
-		this.views[view] = records.slice().sort( new Function( "a", "b", sorts.join( "\n" ) ) );
+		this.views[view] = array.keySort( records.slice(), query, "data" );
 
 		return this.views[view];
 	}

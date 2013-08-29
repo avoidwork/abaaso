@@ -1,4 +1,6 @@
-var array = require("../lib/abaaso.js").array;
+var array     = require("../lib/abaaso.js").array,
+    arr       = [{abc: 123124, xyz: 5}, {abc: 123124, xyz: 6}, {abc: 2, xyz: 5}],
+    arrNested = [{data:{abc: 123124, xyz: 5}}, {data:{abc: 123124, xyz: 6}}, {data:{abc: 2, xyz: 5}}];
 
 exports["add"] = {
 	setUp: function (done) {
@@ -406,6 +408,82 @@ exports["keepIf"] = {
 	sugar: function (test) {
 		test.expect(1);
 		test.equal(this.val.keepIf(this.fn).length, 2, "Should be '2'");
+		test.done();
+	}
+};
+
+exports["keySortOne"] = {
+	setUp: function (done) {
+		this.arr = arr.slice();
+		done();
+	},
+	test: function (test) {
+		test.expect(1);
+		test.equal(array.keySort( this.arr.slice(), "abc" )[0].abc, 2, "Should be '2'");
+		test.done();
+	},
+	test: function (test) {
+		test.expect(1);
+		test.equal(this.arr.slice().keySort( "abc" )[0].abc, 2, "Should be '2'");
+		test.done();
+	}
+};
+
+exports["keySortTwo"] = {
+	setUp: function (done) {
+		this.arr = arr.slice();
+		done();
+	},
+	direct: function (test) {
+		test.expect(3);
+		test.equal(array.keySort( this.arr.slice(), "abc, xyz desc" )[0].abc, 2, "Should be '2'");
+		test.equal(array.keySort( this.arr.slice(), "abc, xyz desc" )[1].xyz, 6, "Should be '6'");
+		test.equal(array.keySort( this.arr.slice(), "abc, xyz desc" )[2].xyz, 5, "Should be '5'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(3);
+		test.equal(this.arr.slice().keySort( "abc, xyz desc" )[0].abc, 2, "Should be '2'");
+		test.equal(this.arr.slice().keySort( "abc, xyz desc" )[1].xyz, 6, "Should be '6'");
+		test.equal(this.arr.slice().keySort( "abc, xyz desc" )[2].xyz, 5, "Should be '5'");
+		test.done();
+	}
+};
+
+exports["keySortOneNested"] = {
+	setUp: function (done) {
+		this.arr = arrNested.slice();
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.keySort( this.arr.slice(), "abc", "data" )[0].data.abc, 2, "Should be '2'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.arr.slice().keySort( "abc", "data" )[0].data.abc, 2, "Should be '2'");
+		test.done();
+	}
+};
+
+exports["keySortTwoNested"] = {
+	setUp: function (done) {
+		this.arr = arrNested.slice();
+		done();
+	},
+	direct: function (test) {
+		test.expect(3);
+		test.equal(array.keySort( this.arr.slice(), "abc, xyz desc", "data" )[0].data.abc, 2, "Should be '2'");
+		test.equal(array.keySort( this.arr.slice(), "abc, xyz desc", "data" )[1].data.xyz, 6, "Should be '6'");
+		test.equal(array.keySort( this.arr.slice(), "abc, xyz desc", "data" )[2].data.xyz, 5, "Should be '5'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(3);
+		test.equal(this.arr.slice().keySort( "abc, xyz desc", "data" )[0].data.abc, 2, "Should be '2'");
+		test.equal(this.arr.slice().keySort( "abc, xyz desc", "data" )[1].data.xyz, 6, "Should be '6'");
+		test.equal(this.arr.slice().keySort( "abc, xyz desc", "data" )[2].data.xyz, 5, "Should be '5'");
 		test.done();
 	}
 };
