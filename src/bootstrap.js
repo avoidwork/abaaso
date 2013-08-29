@@ -278,6 +278,10 @@ bootstrap = function () {
 			observer.fire( abaaso, "error", e );
 		}, "error", global, "all");
 
+		observer.add( global, "hashchange", function ()  {
+			observer.fire( abaaso, "beforeHash, hash, afterHash", location.hash );
+		}, "hash", global, "all" );
+
 		observer.add( global, "load", function ()  {
 			observer.fire( abaaso, "render" );
 			observer.remove( abaaso, "render" );
