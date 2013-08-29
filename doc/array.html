@@ -492,6 +492,46 @@ Parameters for fn are 'value', 'index'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sort</span></p>
+
+<p>Sorts an Array based on key values, like an SQL ORDER BY clause</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Array.</strong><br/>(Array to sort)</p></li>
+<li><p><strong>query must be a String.</strong><br/>(Sort query, e.g. "name, age desc, country")</p></li>
+<li><p><strong>sub must be a String.</strong><br/>([Optional] Key which holds data, e.g. "{data: {}}" = "data")</p></li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(Sorted Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">keySort</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">sub</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">query</span>       <span class="o">=</span> <span class="nx">query</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\s*asc/ig</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\s*desc/ig</span><span class="p">,</span> <span class="s2">&quot; desc&quot;</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">queries</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">query</span> <span class="p">).</span><span class="nx">map</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">i</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span> <span class="s2">&quot; &quot;</span> <span class="p">);</span> <span class="p">}),</span>
+        <span class="nx">sorts</span>   <span class="o">=</span> <span class="p">[];</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">sub</span> <span class="o">&amp;&amp;</span> <span class="nx">sub</span> <span class="o">!==</span> <span class="s2">&quot;&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">sub</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nx">sub</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">sub</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">queries</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">desc</span> <span class="o">=</span> <span class="nx">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">===</span> <span class="s2">&quot;desc&quot;</span><span class="p">;</span>
+
+      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">desc</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">sorts</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;if ( a&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] &lt; b&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] ) return -1;&quot;</span> <span class="p">);</span>
+        <span class="nx">sorts</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;if ( a&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] &gt; b&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] ) return 1;&quot;</span> <span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">sorts</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;if ( a&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] &lt; b&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] ) return 1;&quot;</span> <span class="p">);</span>
+        <span class="nx">sorts</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;if ( a&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] &gt; b&quot;</span> <span class="o">+</span> <span class="nx">sub</span> <span class="o">+</span> <span class="s2">&quot;[\&quot;&quot;</span> <span class="o">+</span> <span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;\&quot;] ) return -1;&quot;</span> <span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">});</span>
+
+    <span class="nx">sorts</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="s2">&quot;else return 0;&quot;</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">new</span> <span class="nb">Function</span><span class="p">(</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="nx">sorts</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot;\n&quot;</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method keys</span></p>
 
 <p>Returns the keys in an "Associative Array"</p>
