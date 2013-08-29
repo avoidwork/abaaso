@@ -145,6 +145,19 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 };
 
 /**
+ * Builds a relative URI
+ *
+ * @method buildUri
+ * @param  {String} key Record key
+ * @return {String}     [description]
+ */
+DataStore.prototype.buildUri = function ( key ) {
+	var parsed = utility.parse( this.uri );
+
+	return parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + key;
+};
+
+/**
  * Clears the data object, unsets the uri property
  *
  * Events: beforeDataClear Fires before the data is cleared
@@ -257,7 +270,7 @@ DataStore.prototype.crawl = function ( arg ) {
 				if ( v.indexOf( "//" ) === -1 ) {
 					// Relative path to store, i.e. a child
 					if ( v.charAt( 0 ) !== "/" ) {
-						uri = parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + v;
+						uri = self.buildUri( v );
 					}
 					// Root path, relative to store, i.e. a domain
 					else {
@@ -331,7 +344,7 @@ DataStore.prototype.del = function ( record, reindex, batch ) {
 			this.delComplete( record, reindex, batch, defer );
 		}
 		else {
-			client.request( this.uri + "/" + record.key, "DELETE", function () {
+			client.request( this.buildUri( record.key ), "DELETE", function () {
 				self.delComplete( record, reindex, batch, defer );
 			}, function ( e ) {
 				observer.fire( self.parentNode, "failedDataDelete", e );
@@ -810,7 +823,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 		if ( data.indexOf( "//" ) === -1 ) {
 			// Relative path to store, i.e. a child
 			if ( data.charAt( 0 ) !== "/" ) {
-				uri = parsed.protocol + "//" + parsed.host + parsed.pathname + ( regex.endslash.test( parsed.pathname ) ? "" : "/" ) + data;
+				uri = this.buildUri( data );
 			}
 			// Root path, relative to store, i.e. a domain
 			else if ( self.uri !== null && regex.root.test( data ) ) {
@@ -866,7 +879,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 		else {
 			if ( key !== null ) {
 				method = "PUT";
-				uri    = parsed.protocol + "//" + parsed.host + parsed.pathname + "/" + key;
+				uri    = this.buildUri( key );
 
 				if ( client.allows( uri, "patch" ) && ( !client.ie || ( client.version > 8 || client.activex ) ) ) {
 					method = "PATCH";
