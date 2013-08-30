@@ -810,14 +810,10 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	var self   = this,
 	    events = this.events,
 	    defer  = deferred(),
-	    record = key !== null ? this.get( key ) : null,
+	    record = key !== null ? this.get( key ) || null : null,
 	    method = "POST",
 	    parsed = utility.parse( self.uri || "" ),
 	    uri;
-
-	if ( record === undefined ) {
-		throw new Error( label.error.invalidArguments );
-	}
 
 	if ( typeof data === "string" ) {
 		if ( data.indexOf( "//" ) === -1 ) {
@@ -856,7 +852,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 		}
 	}
 	else {
-		if ( record === null ) {
+		if ( record === null && ( key === null || key === undefined ) ) {
 			if ( this.key === null ) {
 				key = utility.genId();
 			}
