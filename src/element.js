@@ -437,7 +437,7 @@ var element = {
 	 * @return {Object}     Element
 	 */
 	html : function ( obj, arg ) {
-		if ( !arg ) {
+		if ( arg === undefined ) {
 			return obj.innerHTML;
 		}
 		else {
