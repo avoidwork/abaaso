@@ -425,7 +425,7 @@ An id is generated if not specified with args</p>
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Element)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">html</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">innerHTML</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>

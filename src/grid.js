@@ -34,7 +34,7 @@ var grid = function ( element, store, fields, sortable, options, filtered, debou
 function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	var sortOrder;
 
-	if ( options !== undefined && !string.isEmpty( options.order ) ) {
+	if ( options.order && !string.isEmpty( options.order ) ) {
 		sortOrder = string.explode( options.order ).map( function ( i ) {
 			return i.replace( regex.after_space, "" );
 		});
@@ -83,7 +83,7 @@ DataGrid.prototype.init = function ( debounce ) {
 		header    = element.create( "ul", {"class": "header"}, container );
 		width     = ( 100 / this.fields.length ) + "%";
 		css       = "display:inline-block;width:" + width;
-		sort      = string.explode( this.options.order );
+		sort      = this.options.order ? string.explode( this.options.order ) : [];
 
 		// Creating DataList template based on fields
 		array.each( this.fields, function ( i ) {
