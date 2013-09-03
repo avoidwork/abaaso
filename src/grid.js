@@ -34,7 +34,7 @@ var grid = function ( element, store, fields, sortable, options, filtered, debou
 function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	var sortOrder;
 
-	if ( options !== undefined && !string.isEmpty( options.order ) ) {
+	if ( options.order && !string.isEmpty( options.order ) ) {
 		sortOrder = string.explode( options.order ).map( function ( i ) {
 			return i.replace( regex.after_space, "" );
 		});
