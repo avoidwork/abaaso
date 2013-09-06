@@ -136,11 +136,14 @@ var number = {
 	round : function ( arg, direction ) {
 		arg = number.parse( arg );
 
-		if ( direction === undefined || string.isEmpty ( direction ) ) {
+		if ( direction === undefined || string.isEmpty( direction ) ) {
 			return number.parse( arg.toFixed( 0 ) );
 		}
+		else if ( regex.down.test( direction ) ) {
+			return ~~( arg );
+		}
 		else {
-			return Math[!regex.down.test( direction ) ? "ceil" : "floor"]( arg );
+			return Math.ceil( arg );
 		}
 	}
 };
