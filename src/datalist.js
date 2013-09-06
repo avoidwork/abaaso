@@ -285,7 +285,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	if ( !template ) {
 		fn = function ( i ) {
 			var html  = self.template,
-			    items = array.unique( html.match( /\{\{[\w\.\-]+\}\}/g ) );
+			    items = array.unique( html.match( /\{\{[\w\.\-\[\]]+\}\}/g ) );
 
 			// Replacing record key
 			html = html.replace( "{{" + self.store.key + "}}", i.key );
@@ -295,7 +295,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 				var key   = attr.replace( /\{\{|\}\}/g, "" ),
 				    value = utility.walk( i.data, key );
 
-				reg.compile( attr, "g" );
+				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
 			});
 
@@ -308,7 +308,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	else {
 		fn = function ( i ) {
 			var obj   = json.encode( self.template ),
-			    items = array.unique( obj.match( /\{\{[\w\.\-]+\}\}/g ) );
+			    items = array.unique( obj.match( /\{\{[\w\.\-\[\]]+\}\}/g ) );
 
 			// Replacing record key
 			obj = obj.replace( "{{" + self.store.key + "}}", i.key );
@@ -318,7 +318,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 				var key   = attr.replace( /\{\{|\}\}/g, "" ),
 				    value = utility.walk( i.data, key );
 
-				reg.compile( attr, "g" );
+				reg.compile( string.escape( attr ), "g" );
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
@@ -357,8 +357,11 @@ DataList.prototype.refresh = function ( redraw, create ) {
 				key = ( k === self.store.key );
 
 				array.each( v, function ( query ) {
+					var value = !key ? utility.walk( i.data, k ) : "";
+
 					utility.compile( reg, query, "i" );
-					if ( ( key && reg.test( i.key ) ) || ( i.data[k] !== undefined && reg.test( i.data[k] ) ) ) {
+
+					if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
 						registry.push( i.key );
 						items.push( {key: i.key, template: fn( i )} );
 
