@@ -357,8 +357,11 @@ DataList.prototype.refresh = function ( redraw, create ) {
 				key = ( k === self.store.key );
 
 				array.each( v, function ( query ) {
+					var value = !key ? utility.walk( i.data, k ) : "";
+
 					utility.compile( reg, query, "i" );
-					if ( ( key && reg.test( i.key ) ) || ( i.data[k] !== undefined && reg.test( i.data[k] ) ) ) {
+
+					if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
 						registry.push( i.key );
 						items.push( {key: i.key, template: fn( i )} );
 

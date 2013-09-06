@@ -87,7 +87,8 @@ DataGrid.prototype.init = function ( debounce ) {
 
 		// Creating DataList template based on fields
 		array.each( this.fields, function ( i ) {
-			var obj = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( i, true ) ), true ), style: css, "class": i, "data-field": i} );
+			var trimmed =  i.replace( /.*\./g, "" ),
+			    obj     = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( trimmed, true ) ), true ), style: css, "class": trimmed, "data-field": i} );
 
 			// Adding CSS class if "column" is sortable
 			if ( self.sortable.contains( i ) ) {
