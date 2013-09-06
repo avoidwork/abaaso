@@ -1108,7 +1108,7 @@ var utility = {
 	 * @return {Mixed}       arg
 	 */
 	walk : function ( obj, arg ) {
-		array.each( arg.replace( /\]$/, "" ).replace( /\]/g, "." ).split( /\.|\[/ ), function ( i ) {
+		array.each( arg.replace( /\]$/, "" ).replace( /\]/g, "." ).replace( /\.\./g, "." ).split( /\.|\[/ ), function ( i ) {
 			obj = obj[i];
 		});
 
