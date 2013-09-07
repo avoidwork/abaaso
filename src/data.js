@@ -30,13 +30,9 @@ var data = function ( obj, recs, args ) {
 };
 
 /**
- * DataStore factory
+ * DataStore
  *
- * @method DataStore
  * @constructor
- * @private
- * @param  {Object} obj Object being decorated with a DataStore
- * @return {Object}     Instance of DataStore
  */
 function DataStore ( obj ) {
 	this.autosave    = false;

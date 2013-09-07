@@ -1,10 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>client</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="client"><meta name="groc-project-path" content="src/client.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/client.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
-
-<p>Client properties and methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">client</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method activex</span></p>
-
-<p>ActiveX support</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if supported)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">activex</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<!DOCTYPE html><html lang="en"><head><title>client</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="client"><meta name="groc-project-path" content="src/client.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/client.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p></div></div><div class="code"><div class="wrapper">  <span class="nx">activex</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
         <span class="nx">obj</span><span class="p">;</span>
 
@@ -17,53 +11,37 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method android</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Android platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Android)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">android</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Android platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">android</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method blackberry</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Blackberry platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Blackberry)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">blackberry</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Blackberry platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">blackberry</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">blackberry</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method chrome</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Chrome browser</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Chrome)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">chrome</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Chrome browser</p></div></div><div class="code"><div class="wrapper">  <span class="nx">chrome</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">chrome</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method firefox</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Firefox browser</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Firefox)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">firefox</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Firefox browser</p></div></div><div class="code"><div class="wrapper">  <span class="nx">firefox</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">firefox</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method ie</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Internet Explorer browser</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Internet Explorer)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ie</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Internet Explorer browser</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ie</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">ie</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method ios</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>iOS platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if iOS)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ios</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>iOS platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ios</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">ios</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method linux</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Linux Platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Linux)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">linux</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Linux Platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">linux</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">linux</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method mobile</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Mobile platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Mobile)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mobile</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Mobile platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">mobile</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">size</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
@@ -74,36 +52,26 @@
 
       <span class="k">return</span> <span class="p">(</span> <span class="sr">/blackberry|iphone|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="o">||</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method playbook</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Playbook platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Playbook)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">playbook</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Playbook platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">playbook</span><span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">playbook</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method opera</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Opera browser</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Opera)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">opera</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Opera browser</p></div></div><div class="code"><div class="wrapper">  <span class="nx">opera</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">opera</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method osx</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>OSX platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if OSX)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">osx</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>OSX platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">osx</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">osx</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method safari</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Safari browser</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Safari)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">safari</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Safari browser</p></div></div><div class="code"><div class="wrapper">  <span class="nx">safari</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">safari</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/chrome.*/i</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method tablet</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
 <p>Tablet platform
-Modern smartphone resolution makes this a hit/miss scenario</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Tablet)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">tablet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+Modern smartphone resolution makes this a hit/miss scenario</p></div></div><div class="code"><div class="wrapper">  <span class="nx">tablet</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">size</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
@@ -114,23 +82,17 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
 
       <span class="k">return</span> <span class="p">(</span> <span class="sr">/ipad|playbook|webos/i</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">android</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="o">||</span> <span class="nx">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">720</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method webos</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>WebOS platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if WebOS)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">webos</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>WebOS platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">webos</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">webos</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method windows</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Windows platform</p>
-
-<p><strong>Returns a Boolean</strong><br/>(<code>true</code> if Windows)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">windows</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Windows platform</p></div></div><div class="code"><div class="wrapper">  <span class="nx">windows</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">windows</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span> <span class="p">);</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method version</span></p>
+  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Client version</p>
-
-<p><strong>Returns a Number</strong><br/>(Estimated client version)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">version</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p>Client version</p></div></div><div class="code"><div class="wrapper">  <span class="nx">version</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
     <span class="kd">var</span> <span class="nx">version</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">chrome</span> <span class="p">)</span> <span class="p">{</span>
@@ -163,7 +125,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">version</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method allows</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method allows</span></p>
 
 <p>Quick way to see if a URI allows a specific verb</p>
 
@@ -205,7 +167,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method bit</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method bit</span></p>
 
 <p>Gets bit value based on args</p>
 
@@ -236,7 +198,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method cors</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method cors</span></p>
 
 <p>Determines if a URI is a CORS end point</p>
 
@@ -248,7 +210,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
 
 <p><strong>Returns a Boolean</strong><br/>(True if CORS)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">cors</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">uri</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">&amp;&amp;</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;//&quot;</span> <span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="nx">uri</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;//&quot;</span> <span class="o">+</span> <span class="nx">location</span><span class="p">.</span><span class="nx">host</span> <span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method headers</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method headers</span></p>
 
 <p>Caches the headers from the XHR response</p>
 
@@ -305,7 +267,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method parse</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method parse</span></p>
 
 <p>Parses an XHR response</p>
 
@@ -338,7 +300,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method permissions</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method permissions</span></p>
 
 <p>Returns the permission of the cached URI</p>
 
@@ -371,7 +333,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method jsonp</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method jsonp</span></p>
 
 <p>Creates a JSONP request</p>
 
@@ -434,7 +396,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p>
     <span class="p">},</span> <span class="mi">30000</span><span class="p">,</span> <span class="nx">cbid</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method request</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method request</span></p>
 
 <p>Creates an XmlHttpRequest to a URI ( aliased to multiple methods )
 Events: before[type]          Fires before the XmlHttpRequest is made, type specific
@@ -595,7 +557,7 @@ Events: before[type]          Fires before the XmlHttpRequest is made, type spec
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method response</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method response</span></p>
 
 <p>Caches the URI headers &amp; response if received, and fires the relevant events
 If abaaso.state.header is set, an application state change is possible
@@ -741,7 +703,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
       <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
       <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;afterGet&quot;</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method script</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method script</span></p>
 
 <p>Creates a script Element to load an external script</p>
 
@@ -755,7 +717,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
 
 <p><strong>Returns an Object</strong><br/>(Script)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">script</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">pos</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">element</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="s2">&quot;script&quot;</span><span class="p">,</span> <span class="p">{</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;application/javascript&quot;</span><span class="p">,</span> <span class="nx">src</span><span class="o">:</span> <span class="nx">arg</span><span class="p">},</span> <span class="nx">target</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">$</span><span class="p">(</span> <span class="s2">&quot;head&quot;</span> <span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="nx">pos</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method scroll</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method scroll</span></p>
 
 <p>Scrolls to a position in the view using a two point bezier curve</p>
 
@@ -785,7 +747,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
     <span class="p">},</span> <span class="nx">ms</span><span class="p">,</span> <span class="s2">&quot;scrolling&quot;</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method scrollPos</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method scrollPos</span></p>
 
 <p>Returns the current scroll position of the View</p>
 
@@ -794,7 +756,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
       <span class="nb">window</span><span class="p">.</span><span class="nx">scrollX</span> <span class="o">||</span> <span class="mi">0</span><span class="p">,</span>
       <span class="nb">window</span><span class="p">.</span><span class="nx">scrollY</span> <span class="o">||</span> <span class="mi">0</span>
     <span class="p">];</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method size</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method size</span></p>
 
 <p>Returns the visible area of the View</p>
 
@@ -803,7 +765,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
       <span class="nb">document</span><span class="p">[</span><span class="s2">&quot;documentElement&quot;</span> <span class="o">||</span> <span class="s2">&quot;body&quot;</span><span class="p">].</span><span class="nx">clientWidth</span>  <span class="o">||</span> <span class="mi">0</span><span class="p">,</span>
       <span class="nb">document</span><span class="p">[</span><span class="s2">&quot;documentElement&quot;</span> <span class="o">||</span> <span class="s2">&quot;body&quot;</span><span class="p">].</span><span class="nx">clientHeight</span> <span class="o">||</span> <span class="mi">0</span>
     <span class="p">];</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method stylesheet</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method stylesheet</span></p>
 
 <p>Creates a link Element to load an external stylesheet</p>
 

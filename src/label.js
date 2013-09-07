@@ -1,11 +1,4 @@
-/**
- * Labels for localization
- *
- * Override this with another language pack
- *
- * @class label
- * @namespace abaaso
- */
+/** @namespace label */
 var label = {
 	// Common labels
 	common : {

@@ -1,12 +1,4 @@
-/**
- * DataList
- *
- * Provides a reactive View of a DataStore
- * Requires a CSS class named "hidden" to toggle "display:none" of list items
- *
- * @class datalist
- * @namespace abaaso
- */
+/** @namespace datalist */
 var datalist = {
 	/**
 	 * Creates an instance of datalist
@@ -78,15 +70,7 @@ var datalist = {
 /**
  * DataList factory
  *
- * @class DataList
- * @namespace abaaso
  * @constructor
- * @private
- * @method DataList
- * @param  {Object} element  DataList element
- * @param  {Object} store    Data store to feed the DataList
- * @param  {Mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
- * @return {Object}          Instance of DataList
  */
 function DataList ( element, store, template ) {
 	this.callback    = null;

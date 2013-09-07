@@ -1,22 +1,18 @@
-<!DOCTYPE html><html lang="en"><head><title>observer</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="observer"><meta name="groc-project-path" content="src/observer.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/observer.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+<!DOCTYPE html><html lang="en"><head><title>observer</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="observer"><meta name="groc-project-path" content="src/observer.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/observer.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p></div></div><div class="code"><div class="wrapper">  <span class="nx">listeners</span>  <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Global Observer wired to a State Machine</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">observer</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+<p>Array copy of listeners for observer.fire()</p></div></div><div class="code"><div class="wrapper">  <span class="nx">alisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Collection of listeners</p></div></div><div class="code"><div class="wrapper">  <span class="nx">listeners</span>  <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+<p>Event listeners</p></div></div><div class="code"><div class="wrapper">  <span class="nx">elisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Array copy of listeners for observer.fire()</p></div></div><div class="code"><div class="wrapper">  <span class="nx">alisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+<p>Tracks count of listeners per event across all states</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Event listeners</p></div></div><div class="code"><div class="wrapper">  <span class="nx">elisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+<p>Boolean indicating if events are logged to the console</p></div></div><div class="code"><div class="wrapper">  <span class="nx">log</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Tracks count of listeners per event across all states</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clisteners</span> <span class="o">:</span> <span class="p">{},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+<p>Queue of events to fire</p></div></div><div class="code"><div class="wrapper">  <span class="nx">queue</span> <span class="o">:</span> <span class="p">[],</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Boolean indicating if events are logged to the console</p></div></div><div class="code"><div class="wrapper">  <span class="nx">log</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
+<p>If <code>true</code>, events are queued</p></div></div><div class="code"><div class="wrapper">  <span class="nx">silent</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
-<p>Queue of events to fire</p></div></div><div class="code"><div class="wrapper">  <span class="nx">queue</span> <span class="o">:</span> <span class="p">[],</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
-
-<p>If <code>true</code>, events are queued</p></div></div><div class="code"><div class="wrapper">  <span class="nx">silent</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private </span></p>
-
-<p>If <code>true</code>, events are ignored</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ignore</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method add</span></p>
+<p>If <code>true</code>, events are ignored</p></div></div><div class="code"><div class="wrapper">  <span class="nx">ignore</span> <span class="o">:</span> <span class="kc">false</span><span class="p">,</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method add</span></p>
 
 <p>Adds a handler to an event</p>
 
@@ -95,7 +91,7 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method decorate</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method decorate</span></p>
 
 <p>Decorates <code>obj</code> with <code>observer</code> methods</p>
 
@@ -119,7 +115,7 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method discard</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method discard</span></p>
 
 <p>Discard observer events</p>
 
@@ -131,7 +127,7 @@
 
 <p><strong>Returns a Boolean</strong><br/>(Current setting)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">discard</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">?</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">ignore</span> <span class="o">:</span> <span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">ignore</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method fire</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method fire</span></p>
 
 <p>Fires an event</p>
 
@@ -192,7 +188,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method id</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method id</span></p>
 
 <p>Gets the Observer id of arg</p>
 
@@ -220,7 +216,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method list</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method list</span></p>
 
 <p>Gets the listeners for an event</p>
 
@@ -251,7 +247,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method once</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method once</span></p>
 
 <p>Adds a listener for a single execution</p>
 
@@ -282,7 +278,7 @@
     <span class="p">},</span> <span class="nx">uuid</span><span class="p">,</span> <span class="nx">scope</span><span class="p">,</span> <span class="nx">st</span><span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method pause</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method pause</span></p>
 
 <p>Pauses observer events, and queues them</p>
 
@@ -307,7 +303,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">arg</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method remove</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method remove</span></p>
 
 <p>Removes listeners</p>
 
@@ -396,7 +392,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sum</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sum</span></p>
 
 <p>Returns the sum of active listeners for one or all Objects</p>
 
@@ -408,7 +404,7 @@
 
 <p><strong>Returns an Object</strong><br/>(Object with total listeners per event)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sum</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span> <span class="o">?</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span><span class="p">[</span><span class="nx">observer</span><span class="p">.</span><span class="nx">id</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)]</span> <span class="o">:</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">observer</span><span class="p">.</span><span class="nx">clisteners</span> <span class="p">).</span><span class="nx">length</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method sync</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sync</span></p>
 
 <p>Syncs <code>alisteners</code> with <code>listeners</code></p>
 

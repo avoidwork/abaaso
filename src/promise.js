@@ -1,15 +1,9 @@
-/**
- * Promises/A+
- *
- * @class promise
- * @namespace abaaso
- */
+/** @namespace promise */
 var promise = {
 	/**
 	 * Async delay strategy
 	 *
 	 * @method delay
-	 * @private
 	 * @return {Function} Delay method
 	 */
 	delay : function () {
@@ -40,7 +34,6 @@ var promise = {
 	 * Pipes a reconciliation from `parent` to `child`
 	 *
 	 * @method pipe
-	 * @private
 	 * @param  {Object} parent Promise
 	 * @param  {Object} child  Promise
 	 * @return {Undefined}     undefined
@@ -56,7 +49,6 @@ var promise = {
 	/**
 	 * States of a Promise
 	 *
-	 * @private
 	 * @type {Object}
 	 */
 	state : {
@@ -70,9 +62,8 @@ var promise = {
  * Promise
  *
  * @method Promise
- * @private
  * @constructor
- * @return {Object} Instance of Promise
+ * @return {Object} Promise instance
  */
 function Promise () {
 	this.deferred = false;
@@ -88,7 +79,7 @@ Promise.prototype.constructor = Promise;
  * Processes `handlers` queue
  *
  * @method process
- * @return {Object} Promise
+ * @return {Object} Promise instance
  */
 Promise.prototype.process = function() {
 	var result, success, value;
@@ -146,7 +137,7 @@ Promise.prototype.process = function() {
  *
  * @method reject
  * @param  {Mixed} arg Promise value
- * @return {Object}    Promise
+ * @return {Object}    Promise instance
  */
 Promise.prototype.reject = function ( arg ) {
 	var self = this;
@@ -174,7 +165,7 @@ Promise.prototype.reject = function ( arg ) {
  *
  * @method resolve
  * @param  {Mixed} arg Promise value
- * @return {Object}    Promise
+ * @return {Object}    Promise instance
  */
 Promise.prototype.resolve = function ( arg ) {
 	var self = this;

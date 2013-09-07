@@ -1,15 +1,9 @@
-/**
- * Number methods
- *
- * @class number
- * @namespace abaaso
- */
+/** @namespace number */
 var number = {
 	/**
 	 * Returns the difference of arg
 	 *
 	 * @method odd
-	 * @public
 	 * @param {Number} arg Number to compare
 	 * @return {Number}    The absolute difference
 	 */
@@ -25,7 +19,6 @@ var number = {
 	 * Tests if an number is even
 	 *
 	 * @method even
-	 * @public
 	 * @param {Number} arg Number to test
 	 * @return {Boolean}   True if even, or undefined
 	 */
@@ -37,7 +30,6 @@ var number = {
 	 * Formats a Number to a delimited String
 	 *
 	 * @method format
-	 * @public
 	 * @param  {Number} arg       Number to format
 	 * @param  {String} delimiter [Optional] String to delimit the Number with
 	 * @param  {String} every     [Optional] Position to insert the delimiter, default is 3
@@ -76,7 +68,6 @@ var number = {
 	 * Returns half of a, or true if a is half of b
 	 *
 	 * @method half
-	 * @public
 	 * @param  {Number} a Number to divide
 	 * @param  {Number} b [Optional] Number to test a against
 	 * @return {Mixed}    Boolean if b is passed, Number if b is undefined
@@ -101,7 +92,6 @@ var number = {
 	 * Parses the number
 	 *
 	 * @method parse
-	 * @public
 	 * @param  {Mixed}  arg  Number to parse
 	 * @param  {Number} base Integer representing the base or radix
 	 * @return {Number}      Integer or float
@@ -114,7 +104,6 @@ var number = {
 	 * Generates a random number between 0 and arg
 	 *
 	 * @method random
-	 * @public
 	 * @param  {Number} arg Ceiling for random number, default is 100
 	 * @return {Number}     Random number
 	 */
@@ -128,7 +117,6 @@ var number = {
 	 * Rounds a number up or down
 	 *
 	 * @method round
-	 * @public
 	 * @param  {Number} arg       Number to round
 	 * @param  {String} direction [Optional] "up" or "down"
 	 * @return {Number}           Rounded interger

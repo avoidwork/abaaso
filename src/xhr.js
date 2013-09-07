@@ -1,10 +1,8 @@
 /**
  * XMLHttpRequest shim for node.js
  *
- * @namespace abaaso
  * @method xhr
- * @private
- * @return {Object} Instance of xhr
+ * @return {Object} XMLHttpRequest instance
  */
 var xhr = function () {
 	var UNSENT           = 0,
@@ -25,9 +23,8 @@ var xhr = function () {
 	 * Changes the readyState of an XMLHttpRequest
 	 *
 	 * @method state
-	 * @private
 	 * @param  {String} arg New readyState
-	 * @return {Object}     XMLHttpRequest
+	 * @return {Object}     XMLHttpRequest instance
 	 */
 	state = function ( arg ) {
 		if ( this.readyState !== arg ) {
@@ -47,7 +44,6 @@ var xhr = function () {
 	 * Response handler
 	 *
 	 * @method handler
-	 * @private
 	 * @param  {Object} res HTTP(S) Response Object
 	 * @return {undefined}  undefined
 	 */
@@ -87,7 +83,6 @@ var xhr = function () {
 	 * Response error handler
 	 *
 	 * @method handlerError
-	 * @private
 	 * @param  {Object} e Error
 	 * @return {Undefined} undefined
 	 */
@@ -102,12 +97,11 @@ var xhr = function () {
 	};
 
 	/**
-	 * XMLHttpRequest factory
+	 * XMLHttpRequest
 	 *
 	 * @method XMLHttpRequest
-	 * @public
 	 * @constructor
-	 * @return {Object} Instance
+	 * @return {Object} XMLHttpRequest instance
 	 */
 	XMLHttpRequest = function () {
 		this.onabort            = null;
@@ -139,8 +133,7 @@ var xhr = function () {
 	 * Aborts a request
 	 *
 	 * @method abort
-	 * @public
-	 * @return {Object} XMLHttpRequest
+	 * @return {Object} XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.abort = function () {
 		if ( this._request !== null ) {
@@ -168,10 +161,9 @@ var xhr = function () {
 	 * Adds an event listener to an XMLHttpRequest instance
 	 *
 	 * @method addEventListener
-	 * @public
 	 * @param {String}   event Event to listen for
 	 * @param {Function} fn    Event handler
-	 * @return {Object}        XMLHttpRequest
+	 * @return {Object}        XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.addEventListener = function ( event, fn ) {
 		if ( !this._listeners.hasOwnProperty( event ) ) {
@@ -187,9 +179,8 @@ var xhr = function () {
 	 * Dispatches an event
 	 *
 	 * @method dispatchEvent
-	 * @public
 	 * @param  {String} event Name of event
-	 * @return {Object}       XMLHttpRequest
+	 * @return {Object}       XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.dispatchEvent = function ( event ) {
 		var self = this;
@@ -213,7 +204,6 @@ var xhr = function () {
 	 * Gets all response headers
 	 *
 	 * @method getAllResponseHeaders
-	 * @public
 	 * @return {Object} Response headers
 	 */
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
@@ -234,7 +224,6 @@ var xhr = function () {
 	 * Gets a specific response header
 	 *
 	 * @method getResponseHeader
-	 * @public
 	 * @param  {String} header Header to get
 	 * @return {String}        Response header value
 	 */
@@ -254,13 +243,12 @@ var xhr = function () {
 	 * Prepares an XMLHttpRequest instance to make a request
 	 *
 	 * @method open
-	 * @public
 	 * @param  {String}  method   HTTP method
 	 * @param  {String}  url      URL to receive request
 	 * @param  {Boolean} async    [Optional] Asynchronous request
 	 * @param  {String}  user     [Optional] Basic auth username
 	 * @param  {String}  password [Optional] Basic auth password
-	 * @return {Object}           XMLHttpRequest
+	 * @return {Object}           XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.open = function ( method, url, async, user, password ) {
 		var self = this;
@@ -292,9 +280,8 @@ var xhr = function () {
 	 * Overrides the Content-Type of the request
 	 *
 	 * @method overrideMimeType
-	 * @public
 	 * @param  {String} mime Mime type of the request ( media type )
-	 * @return {Object}      XMLHttpRequest
+	 * @return {Object}      XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.overrideMimeType = function ( mime ) {
 		this._headers["Content-Type"] = mime;
@@ -306,10 +293,9 @@ var xhr = function () {
 	 * Removes an event listener from an XMLHttpRequest instance
 	 *
 	 * @method removeEventListener
-	 * @public
 	 * @param {String}   event Event to listen for
 	 * @param {Function} fn    Event handler
-	 * @return {Object}        XMLHttpRequest
+	 * @return {Object}        XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.removeEventListener = function ( event, fn ) {
 		if ( !this._listeners.hasOwnProperty( event ) ) {
@@ -325,9 +311,8 @@ var xhr = function () {
 	 * Sends an XMLHttpRequest request
 	 *
 	 * @method send
-	 * @public
 	 * @param  {Mixed} data [Optional] Payload to send with the request
-	 * @return {Object}     XMLHttpRequest
+	 * @return {Object}     XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.send = function ( data ) {
 		data     = data || null;
@@ -396,10 +381,9 @@ var xhr = function () {
 	 * Sets a request header of an XMLHttpRequest instance
 	 *
 	 * @method setRequestHeader
-	 * @public
 	 * @param {String} header HTTP header
 	 * @param {String} value  Header value
-	 * @return {Object}       XMLHttpRequest
+	 * @return {Object}       XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function ( header, value ) {
 		if ( this.readyState !== OPENED ) {

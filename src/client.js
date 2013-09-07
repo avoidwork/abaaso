@@ -1,16 +1,9 @@
-/**
- * Client properties and methods
- *
- * @class client
- * @namespace abaaso
- */
+/** @namespace client */
 var client = {
 	/**
 	 * ActiveX support
 	 *
-	 * @method activex
-	 * @public
-	 * @return {Boolean} `true` if supported
+	 * @type {Boolean}
 	 */
 	activex : function () {
 		var result = false,
@@ -30,9 +23,7 @@ var client = {
 	/**
 	 * Android platform
 	 *
-	 * @method android
-	 * @public
-	 * @return {Boolean} `true` if Android
+	 * @type {Boolean}
 	 */
 	android : function () {
 		return !server && regex.android.test( navigator.userAgent );
@@ -41,9 +32,7 @@ var client = {
 	/**
 	 * Blackberry platform
 	 *
-	 * @method blackberry
-	 * @public
-	 * @return {Boolean} `true` if Blackberry
+	 * @type {Boolean}
 	 */
 	blackberry : function () {
 		return !server && regex.blackberry.test( navigator.userAgent );
@@ -52,9 +41,7 @@ var client = {
 	/**
 	 * Chrome browser
 	 *
-	 * @method chrome
-	 * @public
-	 * @return {Boolean} `true` if Chrome
+	 * @type {Boolean}
 	 */
 	chrome : function () {
 		return !server && regex.chrome.test( navigator.userAgent );
@@ -63,9 +50,7 @@ var client = {
 	/**
 	 * Firefox browser
 	 *
-	 * @method firefox
-	 * @public
-	 * @return {Boolean} `true` if Firefox
+	 * @type {Boolean}
 	 */
 	firefox : function () {
 		return !server && regex.firefox.test( navigator.userAgent );
@@ -74,9 +59,7 @@ var client = {
 	/**
 	 * Internet Explorer browser
 	 *
-	 * @method ie
-	 * @public
-	 * @return {Boolean} `true` if Internet Explorer
+	 * @type {Boolean}
 	 */
 	ie : function () {
 		return !server && regex.ie.test( navigator.userAgent );
@@ -85,9 +68,7 @@ var client = {
 	/**
 	 * iOS platform
 	 *
-	 * @method ios
-	 * @public
-	 * @return {Boolean} `true` if iOS
+	 * @type {Boolean}
 	 */
 	ios : function () {
 		return !server && regex.ios.test( navigator.userAgent );
@@ -96,9 +77,7 @@ var client = {
 	/**
 	 * Linux Platform
 	 *
-	 * @method linux
-	 * @public
-	 * @return {Boolean} `true` if Linux
+	 * @type {Boolean}
 	 */
 	linux : function () {
 		return !server && regex.linux.test( navigator.userAgent );
@@ -107,9 +86,7 @@ var client = {
 	/**
 	 * Mobile platform
 	 *
-	 * @method mobile
-	 * @public
-	 * @return {Boolean} `true` if Mobile
+	 * @type {Boolean}
 	 */
 	mobile : function () {
 		var size;
@@ -127,9 +104,7 @@ var client = {
 	/**
 	 * Playbook platform
 	 *
-	 * @method playbook
-	 * @public
-	 * @return {Boolean} `true` if Playbook
+	 * @type {Boolean}
 	 */
 	playbook: function () {
 		return !server && regex.playbook.test( navigator.userAgent );
@@ -138,9 +113,7 @@ var client = {
 	/**
 	 * Opera browser
 	 *
-	 * @method opera
-	 * @public
-	 * @return {Boolean} `true` if Opera
+	 * @type {Boolean}
 	 */
 	opera : function () {
 		return !server && regex.opera.test( navigator.userAgent );
@@ -149,9 +122,7 @@ var client = {
 	/**
 	 * OSX platform
 	 *
-	 * @method osx
-	 * @public
-	 * @return {Boolean} `true` if OSX
+	 * @type {Boolean}
 	 */
 	osx : function () {
 		return !server && regex.osx.test( navigator.userAgent );
@@ -160,9 +131,7 @@ var client = {
 	/**
 	 * Safari browser
 	 *
-	 * @method safari
-	 * @public
-	 * @return {Boolean} `true` if Safari
+	 * @type {Boolean}
 	 */
 	safari : function () {
 		return !server && regex.safari.test( navigator.userAgent.replace(/chrome.*/i, "") );
@@ -173,9 +142,7 @@ var client = {
 	 *
 	 * Modern smartphone resolution makes this a hit/miss scenario
 	 *
-	 * @method tablet
-	 * @public
-	 * @return {Boolean} `true` if Tablet
+	 * @type {Boolean}
 	 */
 	tablet : function () {
 		var size;
@@ -193,9 +160,7 @@ var client = {
 	/**
 	 * WebOS platform
 	 *
-	 * @method webos
-	 * @public
-	 * @return {Boolean} `true` if WebOS
+	 * @type {Boolean}
 	 */
 	webos : function () {
 		return !server && regex.webos.test( navigator.userAgent );
@@ -204,9 +169,7 @@ var client = {
 	/**
 	 * Windows platform
 	 *
-	 * @method windows
-	 * @public
-	 * @return {Boolean} `true` if Windows
+	 * @type {Boolean}
 	 */
 	windows : function () {
 		return !server && regex.windows.test( navigator.userAgent );
@@ -215,9 +178,7 @@ var client = {
 	/**
 	 * Client version
 	 *
-	 * @method version
-	 * @public
-	 * @return {Number} Estimated client version
+	 * @type {Boolean}
 	 */
 	version : function () {
 		var version = 0;
@@ -258,7 +219,6 @@ var client = {
 	 * Quick way to see if a URI allows a specific verb
 	 *
 	 * @method allows
-	 * @public
 	 * @param  {String} uri  URI to query
 	 * @param  {String} verb HTTP verb
 	 * @return {Boolean}     `true` if the verb is allowed, undefined if unknown
@@ -300,7 +260,6 @@ var client = {
 	 * Gets bit value based on args
 	 *
 	 * @method bit
-	 * @private
 	 * @param  {Array} args Array of commands the URI accepts
 	 * @return {Number} To be set as a bit
 	 */
@@ -331,7 +290,6 @@ var client = {
 	 * Determines if a URI is a CORS end point
 	 *
 	 * @method cors
-	 * @private
 	 * @param  {String} uri  URI to parse
 	 * @return {Boolean}     True if CORS
 	 */
@@ -343,7 +301,6 @@ var client = {
 	 * Caches the headers from the XHR response
 	 *
 	 * @method headers
-	 * @private
 	 * @param  {Object} xhr  XMLHttpRequest Object
 	 * @param  {String} uri  URI to request
 	 * @param  {String} type Type of request
@@ -402,7 +359,6 @@ var client = {
 	 * Parses an XHR response
 	 *
 	 * @method parse
-	 * @private
 	 * @param  {Object} xhr  XHR Object
 	 * @param  {String} type [Optional] Content-Type header value
 	 * @return {Mixed}       Array, Boolean, Document, Number, Object or String
@@ -435,7 +391,6 @@ var client = {
 	 * Returns the permission of the cached URI
 	 *
 	 * @method permissions
-	 * @public
 	 * @param  {String} uri URI to query
 	 * @return {Object}     Contains an Array of available commands, the permission bit and a map
 	 */
@@ -468,7 +423,6 @@ var client = {
 	 * Creates a JSONP request
 	 *
 	 * @method jsonp
-	 * @public
 	 * @param  {String}   uri     URI to request
 	 * @param  {Function} success A handler function to execute when an appropriate response been received
 	 * @param  {Function} failure [Optional] A handler function to execute on error
@@ -538,7 +492,6 @@ var client = {
 	 *         timeout[type]         Fires when XmlHttpRequest times out
 	 *
 	 * @method request
-	 * @public
 	 * @param  {String}   uri     URI to query
 	 * @param  {String}   type    Type of request ( DELETE/GET/POST/PUT/HEAD )
 	 * @param  {Function} success A handler function to execute when an appropriate response been received
@@ -729,7 +682,6 @@ var client = {
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
 	 * @method response
-	 * @private
 	 * @param  {Object} xhr      XMLHttpRequest Object
 	 * @param  {String} uri      URI to query
 	 * @param  {String} type     Type of request
@@ -876,7 +828,6 @@ var client = {
 	 * Creates a script Element to load an external script
 	 *
 	 * @method script
-	 * @public
 	 * @param  {String} arg    URL to script
 	 * @param  {Object} target [Optional] Element to receive the script
 	 * @param  {String} pos    [Optional] Position to create the script at within the target
@@ -890,7 +841,6 @@ var client = {
 	 * Scrolls to a position in the view using a two point bezier curve
 	 *
 	 * @method scroll
-	 * @public
 	 * @param  {Array}  dest Coordinates
 	 * @param  {Number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
 	 * @return {Object}      Deferred
@@ -920,7 +870,6 @@ var client = {
 	 * Returns the current scroll position of the View
 	 *
 	 * @method scrollPos
-	 * @public
 	 * @return {Array} Describes the scroll position
 	 */
 	scrollPos : function () {
@@ -934,7 +883,6 @@ var client = {
 	 * Returns the visible area of the View
 	 *
 	 * @method size
-	 * @public
 	 * @return {Array} Describes the View
 	 */
 	size : function () {
@@ -948,7 +896,6 @@ var client = {
 	 * Creates a link Element to load an external stylesheet
 	 *
 	 * @method stylesheet
-	 * @public
 	 * @param  {String} arg   URL to stylesheet
 	 * @param  {String} media [Optional] Medias the stylesheet applies to
 	 * @return {Objecct}      Stylesheet

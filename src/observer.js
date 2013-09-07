@@ -1,14 +1,8 @@
-/**
- * Global Observer wired to a State Machine
- *
- * @class observer
- * @namespace abaaso
- */
+/** @namespace observer */
 var observer = {
 	/**
 	 * Collection of listeners
 	 *
-	 * @private
 	 * @type {Object}
 	 */
 	listeners  : {},
@@ -16,7 +10,6 @@ var observer = {
 	/**
 	 * Array copy of listeners for observer.fire()
 	 *
-	 * @private
 	 * @type {Object}
 	 */
 	alisteners : {},
@@ -24,7 +17,6 @@ var observer = {
 	/**
 	 * Event listeners
 	 *
-	 * @private
 	 * @type {Object}
 	 */
 	elisteners : {},
@@ -32,7 +24,6 @@ var observer = {
 	/**
 	 * Tracks count of listeners per event across all states
 	 *
-	 * @private
 	 * @type {Object}
 	 */
 	clisteners : {},
@@ -40,7 +31,6 @@ var observer = {
 	/**
 	 * Boolean indicating if events are logged to the console
 	 *
-	 * @private
 	 * @type {Boolean}
 	 */
 	log : false,
@@ -48,7 +38,6 @@ var observer = {
 	/**
 	 * Queue of events to fire
 	 *
-	 * @private
 	 * @type {Array}
 	 */
 	queue : [],
@@ -56,7 +45,6 @@ var observer = {
 	/**
 	 * If `true`, events are queued
 	 *
-	 * @private
 	 * @type {Boolean}
 	 */
 	silent : false,
@@ -64,7 +52,6 @@ var observer = {
 	/**
 	 * If `true`, events are ignored
 	 *
-	 * @private
 	 * @type {Boolean}
 	 */
 	ignore : false,
@@ -73,7 +60,6 @@ var observer = {
 	 * Adds a handler to an event
 	 *
 	 * @method add
-	 * @public
 	 * @param  {Mixed}    obj   Primitive
 	 * @param  {String}   event Event, or Events being fired ( comma delimited supported )
 	 * @param  {Function} fn    Event handler
@@ -160,7 +146,6 @@ var observer = {
 	 * Decorates `obj` with `observer` methods
 	 *
 	 * @method decorate
-	 * @public
 	 * @param  {Object} obj Object to decorate
 	 * @return {Object}     Object to decorate
 	 */
@@ -184,7 +169,6 @@ var observer = {
 	 * Discard observer events
 	 *
 	 * @method discard
-	 * @public
 	 * @param  {Boolean} arg [Optional] Boolean indicating if events will be ignored
 	 * @return {Boolean}     Current setting
 	 */
@@ -196,7 +180,6 @@ var observer = {
 	 * Fires an event
 	 *
 	 * @method fire
-	 * @public
 	 * @param  {Mixed}  obj   Primitive
 	 * @param  {String} event Event, or Events being fired ( comma delimited supported )
 	 * @return {Mixed}        Primitive
@@ -257,7 +240,6 @@ var observer = {
 	 * Gets the Observer id of arg
 	 *
 	 * @method id
-	 * @private
 	 * @param  {Mixed}  Object or String
 	 * @return {String} Observer id
 	 */
@@ -285,7 +267,6 @@ var observer = {
 	 * Gets the listeners for an event
 	 *
 	 * @method list
-	 * @public
 	 * @param  {Mixed}  obj    Primitive
 	 * @param  {String} event  Event being queried
 	 * @param  {Object} target [Optional] Listeners collection to access, default is `observer.listeners`
@@ -316,7 +297,6 @@ var observer = {
 	 * Adds a listener for a single execution
 	 *
 	 * @method once
-	 * @public
 	 * @param  {Mixed}    obj   Primitive
 	 * @param  {String}   event Event being fired
 	 * @param  {Function} fn    Event handler
@@ -347,7 +327,6 @@ var observer = {
 	 * Pauses observer events, and queues them
 	 *
 	 * @method pause
-	 * @public
 	 * @param  {Boolean} arg Boolean indicating if events will be queued
 	 * @return {Boolean}     Current setting
 	 */
@@ -372,7 +351,6 @@ var observer = {
 	 * Removes listeners
 	 *
 	 * @method remove
-	 * @public
 	 * @param  {Mixed}  obj   Primitive
 	 * @param  {String} event [Optional] Event, or Events being fired ( comma delimited supported )
 	 * @param  {String} id    [Optional] Listener id
@@ -461,7 +439,6 @@ var observer = {
 	 * Returns the sum of active listeners for one or all Objects
 	 *
 	 * @method sum
-	 * @public
 	 * @param  {Mixed} obj [Optional] Entity
 	 * @return {Object}    Object with total listeners per event
 	 */
@@ -473,7 +450,6 @@ var observer = {
 	 * Syncs `alisteners` with `listeners`
 	 *
 	 * @method sync
-	 * @public
 	 * @param  {String} obj   Object ID
 	 * @param  {String} event Event
 	 * @param  {String} st    Application state

@@ -12,8 +12,7 @@ var channel = function () {
  * Channel
  *
  * @constructor
- * @private
- * @namespace abaaso
+ * @return {Object} Channel instance
  */
 function Channel () {
 	this.queue = [];
@@ -27,7 +26,7 @@ Channel.prototype.constructor = Channel;
  *
  * @method put
  * @param  {Mixed} arg Item
- * @return {Array}     Deferred
+ * @return {Object}     Deferred instance
  */
 Channel.prototype.put = function ( arg ) {
 	var defer = deferred();
@@ -48,7 +47,7 @@ Channel.prototype.put = function ( arg ) {
  * Takes an item from the Channel
  *
  * @method take
- * @return {Array} Deferred
+ * @return {Object} Deferred instance
  */
 Channel.prototype.take = function () {
 	var defer = deferred();

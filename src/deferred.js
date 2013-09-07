@@ -2,8 +2,7 @@
  * deferred factory
  *
  * @method deferred
- * @public
- * @return {Object} Deferred
+ * @return {Object} Deferred instance
  */
 var deferred = function () {
 	return new Deferred();
@@ -12,9 +11,6 @@ var deferred = function () {
 /**
  * Deferred
  *
- * @class Deferred
- * @namespace abaaso
- * @method Deferred
  * @constructor
  */
 function Deferred () {
@@ -65,7 +61,7 @@ Deferred.prototype.constructor = Deferred;
  *
  * @method always
  * @param  {Function} arg Function to execute
- * @return {Object}       Deferred
+ * @return {Object}       Deferred instance
  */
 Deferred.prototype.always = function ( arg ) {
 	if ( typeof arg !== "function" ) {
@@ -85,7 +81,7 @@ Deferred.prototype.always = function ( arg ) {
  *
  * @method done
  * @param  {Function} arg Function to execute
- * @return {Object}       Deferred
+ * @return {Object}       Deferred instance
  */
 Deferred.prototype.done = function ( arg ) {
 	if ( typeof arg !== "function" ) {
@@ -105,7 +101,7 @@ Deferred.prototype.done = function ( arg ) {
  *
  * @method fail
  * @param  {Function} arg Function to execute
- * @return {Object}       Deferred
+ * @return {Object}       Deferred instance
  */
 Deferred.prototype.fail = function ( arg ) {
 	if ( typeof arg !== "function" ) {
@@ -145,7 +141,7 @@ Deferred.prototype.isResolved = function () {
  *
  * @method reject
  * @param  {Mixed} arg Rejection outcome
- * @return {Object}    Deferred
+ * @return {Object}    Deferred instance
  */
 Deferred.prototype.reject = function ( arg ) {
 	this.promise.reject.call( this.promise, arg );
@@ -158,7 +154,7 @@ Deferred.prototype.reject = function ( arg ) {
  *
  * @method resolve
  * @param  {Mixed} arg Resolution outcome
- * @return {Object}    Deferred
+ * @return {Object}    Deferred instance
  */
 Deferred.prototype.resolve = function ( arg ) {
 	this.promise.resolve.call( this.promise, arg );

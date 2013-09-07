@@ -26,7 +26,12 @@ if ( server ) {
 	}
 }
 
-abaaso = (function () {
+/**
+ * abaaso
+ *
+ * @namespace
+ */
+abaaso = ( function () {
 "use strict";
 
 var bootstrap, external, has, slice;

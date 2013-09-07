@@ -1,8 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>number</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="number"><meta name="groc-project-path" content="src/number.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/number.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
-
-<p>Number methods</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">number</span> <span class="o">=</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method odd</span></p>
-
-<p>Returns the difference of arg</p>
+<!DOCTYPE html><html lang="en"><head><title>number</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="number"><meta name="groc-project-path" content="src/number.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/number.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method odd </span></p>
 
 <p>Parameters:</p>
 
@@ -16,7 +12,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">abs</span><span class="p">(</span> <span class="nx">num1</span> <span class="o">-</span> <span class="nx">num2</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method even</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method even</span></p>
 
 <p>Tests if an number is even</p>
 
@@ -28,7 +24,7 @@
 
 <p><strong>Returns a Boolean</strong><br/>(True if even, or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">even</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">arg</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">===</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method format</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method format</span></p>
 
 <p>Formats a Number to a delimited String</p>
 
@@ -67,7 +63,7 @@
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">d</span><span class="p">;</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method half</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method half</span></p>
 
 <p>Returns half of a, or true if a is half of b</p>
 
@@ -92,7 +88,7 @@
 
 <p><strong>Returns a Boolean</strong><br/>(True if odd, or undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">odd</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="o">!</span><span class="nx">number</span><span class="p">.</span><span class="nx">even</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method parse</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method parse</span></p>
 
 <p>Parses the number</p>
 
@@ -105,7 +101,7 @@
 
 <p><strong>Returns a Number</strong><br/>(Integer or float)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">parse</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">base</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="p">(</span> <span class="nx">base</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="o">?</span> <span class="nb">parseFloat</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="o">:</span> <span class="nb">parseInt</span><span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">base</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method random</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method random</span></p>
 
 <p>Generates a random number between 0 and arg</p>
 
@@ -119,7 +115,7 @@
     <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arg</span> <span class="o">||</span> <span class="mi">100</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span><span class="p">(</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span> <span class="nx">arg</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">);</span>
-  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method round</span></p>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method round</span></p>
 
 <p>Rounds a number up or down</p>
 
@@ -133,11 +129,14 @@
 <p><strong>Returns a Number</strong><br/>(Rounded interger)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">round</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">direction</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">arg</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">direction</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span> <span class="p">(</span> <span class="nx">direction</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">direction</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">direction</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">return</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">toFixed</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">down</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">direction</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="o">~~</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+    <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="nb">Math</span><span class="p">[</span><span class="o">!</span><span class="nx">regex</span><span class="p">.</span><span class="nx">down</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">direction</span> <span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;ceil&quot;</span> <span class="o">:</span> <span class="s2">&quot;floor&quot;</span><span class="p">](</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
     <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">};</span></div></div></div></div></body></html>

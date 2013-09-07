@@ -2,7 +2,6 @@
  * DataListFilter factory
  *
  * @method factory
- * @public
  * @param  {Object} obj      Element to receive the filter
  * @param  {Object} datalist Data list linked to the data store
  * @param  {String} filters  Comma delimited string of fields to filter by
@@ -23,13 +22,10 @@ var filter = function ( obj, datalist, filters, debounce ) {
 /**
  * DataListFilter
  *
- * @method DataListFilter
- * @private
  * @constructor
  * @param  {Object} obj      Element to receive the filter
  * @param  {Object} datalist Data list linked to the data store
  * @param  {Number} debounce [Optional] Milliseconds to debounce
- * @return {Object}          Filter instance
  */
 function DataListFilter ( element, datalist, debounce ) {
 	this.element  = element;
@@ -60,8 +56,8 @@ DataListFilter.prototype.init = function () {
  * Create an object based on comma separated key string
  *
  * @method set
- * @param {String} fields Comma separated filters
- * @returns {Undefined}   undefined
+ * @param  {String} fields Comma separated filters
+ * @return {Object}        DataListFilter instance
  */
 DataListFilter.prototype.set = function ( fields ) {
 	var obj = {};
