@@ -9,18 +9,18 @@
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(LRU instance)</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">lru</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">max</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">LRU</span><span class="p">();</span>
+  <span class="k">return</span> <span class="k">new</span> <span class="nx">LRU</span><span class="p">(</span> <span class="nx">max</span> <span class="p">);</span>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Constructor</span></p>
 
-  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">max</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">self</span><span class="p">.</span><span class="nx">max</span> <span class="o">=</span> <span class="nx">max</span><span class="p">;</span>
-  <span class="p">}</span>
+<p>Least Recently Used cache</p>
 
-  <span class="k">return</span> <span class="nx">self</span><span class="p">;</span>
-<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private constructor method LRU</span></p>
+<p>Parameters:</p>
 
-<p>Least Recently Used cache</p></div></div><div class="code"><div class="wrapper"><span class="kd">function</span> <span class="nx">LRU</span> <span class="p">()</span> <span class="p">{</span>
+<ul>
+<li><strong>max must be a Number.</strong><br/>([Optional] Max size of cache, default is 1000)</li>
+</ul></div></div><div class="code"><div class="wrapper"><span class="kd">function</span> <span class="nx">LRU</span> <span class="p">(</span> <span class="nx">max</span> <span class="p">)</span> <span class="p">{</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">cache</span>  <span class="o">=</span> <span class="p">{};</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">max</span>    <span class="o">=</span> <span class="mi">1000</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">max</span>    <span class="o">=</span> <span class="nx">max</span> <span class="o">||</span> <span class="mi">1000</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">first</span>  <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">last</span>   <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">length</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -64,7 +64,7 @@
 <li><strong>key must be a String.</strong><br/>(Item key)</li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Item)</p></div></div><div class="code"><div class="wrapper"><span class="nx">LRU</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(LRUItem instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">LRU</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">remove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">item</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">cache</span><span class="p">[</span> <span class="nx">key</span> <span class="p">];</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">item</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
@@ -130,7 +130,7 @@
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private constructor method LRUItem</span></p>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Constructor</span></p>
 
 <p>LRU Item factory</p>
 

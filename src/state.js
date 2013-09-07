@@ -1,9 +1,4 @@
-/**
- * Application state
- *
- * @class state
- * @namespace abaaso
- */
+/** @namespace state */
 var state = ( function () {
 	var prop = {current: "active", previous: null, header: null},
 	    getCurrent, setCurrent, getHeader, setHeader, getPrevious, setPrevious;

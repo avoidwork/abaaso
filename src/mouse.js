@@ -1,9 +1,4 @@
-/**
- * Mouse tracking
- *
- * @class mouse
- * @namespace abaaso
- */
+/** @namespace mouse */
 var mouse = {
 	//Indicates whether mouse tracking is enabled
 	enabled : false,
@@ -25,7 +20,6 @@ var mouse = {
 	 * Enables or disables mouse co-ordinate tracking
 	 *
 	 * @method track
-	 * @public
 	 * @param  {Mixed} arg Boolean to enable/disable tracking, or Mouse Event
 	 * @return {Object}    $.mouse
 	 */

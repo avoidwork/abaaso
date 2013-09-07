@@ -1,15 +1,9 @@
-/**
- * String methods
- *
- * @class string
- * @namespace abaaso
- */
+/** @namespace string */
 var string = {
 	/**
 	 * Capitalizes the String
 	 *
 	 * @method capitalize
-	 * @public
 	 * @param  {String}  obj String to capitalize
 	 * @param  {Boolean} all [Optional] Capitalize each word
 	 * @return {String}      Capitalized String
@@ -35,7 +29,6 @@ var string = {
 	 * Escapes meta characters within a string
 	 *
 	 * @method escape
-	 * @public
 	 * @param  {String} obj String to escape
 	 * @return {String}     Escaped string
 	 */
@@ -47,7 +40,6 @@ var string = {
 	 * Splits a string on comma, or a parameter, and trims each value in the resulting Array
 	 *
 	 * @method explode
-	 * @public
 	 * @param  {String} obj String to capitalize
 	 * @param  {String} arg String to split on
 	 * @return {Array}      Array of the exploded String
@@ -62,7 +54,6 @@ var string = {
 	 * Replaces all spaces in a string with dashes
 	 *
 	 * @method hyphenate
-	 * @public
 	 * @param  {String} obj   String to hyphenate
 	 * @param {Boolean} camel [Optional] Hyphenate camelCase
 	 * @return {String}       String with dashes instead of spaces
@@ -81,7 +72,6 @@ var string = {
 	 * Tests if a string is alpha-numeric
 	 *
 	 * @method isAlphaNum
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -93,7 +83,6 @@ var string = {
 	 * Tests if a string is a boolean
 	 *
 	 * @method isBoolean
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -105,7 +94,6 @@ var string = {
 	 * Tests if a string a date
 	 *
 	 * @method isDate
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -117,7 +105,6 @@ var string = {
 	 * Tests if a string is a domain
 	 *
 	 * @method isDomain
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -129,7 +116,6 @@ var string = {
 	 * Tests if a string is an email address
 	 *
 	 * @method isEmail
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -141,7 +127,6 @@ var string = {
 	 * Tests if a string is empty
 	 *
 	 * @method isEmpty
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -153,7 +138,6 @@ var string = {
 	 * Tests if a string is an IP address
 	 *
 	 * @method isIP
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -165,7 +149,6 @@ var string = {
 	 * Tests if a string is an integer
 	 *
 	 * @method isInt
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -177,7 +160,6 @@ var string = {
 	 * Tests if a string is a number
 	 *
 	 * @method isNumber
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -189,7 +171,6 @@ var string = {
 	 * Tests if a string is a phone number
 	 *
 	 * @method isPhone
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -201,7 +182,6 @@ var string = {
 	 * Tests if a string is a URL
 	 *
 	 * @method isUrl
-	 * @public
 	 * @param  {String}  obj String to test
 	 * @return {Boolean}     Result of test
 	 */
@@ -213,7 +193,6 @@ var string = {
 	 * Returns singular form of the string
 	 *
 	 * @method singular
-	 * @public
 	 * @param  {String} obj String to transform
 	 * @return {String}     Transformed string
 	 */
@@ -225,7 +204,6 @@ var string = {
 	 * Transforms the case of a String into CamelCase
 	 *
 	 * @method toCamelCase
-	 * @public
 	 * @param  {String} obj String to capitalize
 	 * @return {String}     Camel case String
 	 */
@@ -244,7 +222,6 @@ var string = {
 	 * Trims the whitespace around a String
 	 *
 	 * @method trim
-	 * @public
 	 * @param  {String} obj String to capitalize
 	 * @return {String}     Trimmed String
 	 */
@@ -256,7 +233,6 @@ var string = {
 	 * Uncamelcases the String
 	 *
 	 * @method unCamelCase
-	 * @public
 	 * @param  {String} obj String to uncamelcase
 	 * @return {String}     Uncamelcased String
 	 */
@@ -268,7 +244,6 @@ var string = {
 	 * Uncapitalizes the String
 	 *
 	 * @method uncapitalize
-	 * @public
 	 * @param  {String} obj String to uncapitalize
 	 * @return {String}     Uncapitalized String
 	 */
@@ -282,7 +257,6 @@ var string = {
 	 * Replaces all hyphens with spaces
 	 *
 	 * @method unhyphenate
-	 * @public
 	 * @param  {String}  obj  String to unhypenate
 	 * @param  {Boolean} caps [Optional] True to capitalize each word
 	 * @return {String}       Unhyphenated String

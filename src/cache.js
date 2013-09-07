@@ -1,10 +1,4 @@
-/**
- * Cache for RESTful behavior
- *
- * @class cache
- * @namespace abaaso
- * @private
- */
+/** @namespace cache */
 var cache = {
 	// Collection URIs
 	items : {},

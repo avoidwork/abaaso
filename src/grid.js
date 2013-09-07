@@ -9,7 +9,7 @@
  * @param  {Object}  options     [Optional] DataList options
  * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
  * @param  {Number}  debounce    [Optional] DataListFilter input debounce, default is 250
- * @return {Object}              Instance
+ * @return {Object}              DataGrid instance
  */
 var grid = function ( element, store, fields, sortable, options, filtered, debounce ) {
 	var ref = [store];
@@ -20,8 +20,6 @@ var grid = function ( element, store, fields, sortable, options, filtered, debou
 /**
  * DataGrid factory
  *
- * @method DataGrid
- * @private
  * @constructor
  * @param  {Object}  element  Element to receive DataGrid
  * @param  {Object}  store    DataStore
@@ -29,7 +27,6 @@ var grid = function ( element, store, fields, sortable, options, filtered, debou
  * @param  {Array}   sortable [Optional] Array of sortable columns/fields
  * @param  {Object}  options  [Optional] DataList options
  * @param  {Boolean} filtered [Optional] Create an input to filter the DataGrid
- * @return {Object}           Instance
  */
 function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	var sortOrder;
@@ -70,7 +67,7 @@ DataGrid.prototype.dump = function () {
  *
  * @method init
  * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
- * @return {Object}          Instance
+ * @return {Object}          DataGrid instance
  */
 DataGrid.prototype.init = function ( debounce ) {
 	var self, ref, template, container, header, width, css, sort;
@@ -132,7 +129,7 @@ DataGrid.prototype.init = function ( debounce ) {
  * Refreshes the DataGrid
  *
  * @method refresh
- * @return {Object} Instance
+ * @return {Object} DataGrid instance
  */
 DataGrid.prototype.refresh = function () {
 	var sort = [],
@@ -161,7 +158,7 @@ DataGrid.prototype.refresh = function () {
  *
  * @method sort
  * @param  {Object} e Event
- * @return {Object}   Instance
+ * @return {Object}   DataGrid instance
  */
 DataGrid.prototype.sort = function ( e ) {
 	var target = utility.target( e ),
@@ -187,7 +184,7 @@ DataGrid.prototype.sort = function ( e ) {
  * Tears down the DataGrid
  *
  * @method teardown
- * @return {Object} Instance
+ * @return {Object} DataGrid instance
  */
 DataGrid.prototype.teardown = function () {
 	if ( this.filter !== null ) {

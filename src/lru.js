@@ -6,25 +6,18 @@
  * @return {Object}     LRU instance
  */
 var lru = function ( max ) {
-	var self = new LRU();
-
-	if ( !isNaN( max ) ) {
-		self.max = max;
-	}
-
-	return self;
+	return new LRU( max );
 };
 
 /**
  * Least Recently Used cache
  *
- * @method LRU
  * @constructor
- * @private
+ * @param  {Number} max [Optional] Max size of cache, default is 1000
  */
-function LRU () {
+function LRU ( max ) {
 	this.cache  = {};
-	this.max    = 1000;
+	this.max    = max || 1000;
 	this.first  = null;
 	this.last   = null;
 	this.length = 0;
@@ -71,7 +64,7 @@ LRU.prototype.get = function ( key ) {
  *
  * @method remove
  * @param  {String} key Item key
- * @return {Object}     Item
+ * @return {Object}     LRUItem instance
  */
 LRU.prototype.remove = function ( key ) {
 	var item = this.cache[ key ];
@@ -143,9 +136,7 @@ LRU.prototype.set = function ( key, value ) {
 /**
  * LRU Item factory
  *
- * @method LRUItem
  * @constructor
- * @private
  * @param {Mixed} value Item value
  */
 function LRUItem ( value ) {

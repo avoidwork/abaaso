@@ -26,11 +26,11 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Familiar API
 * Evented with a global observer
 * Built on Promises/A+
-* MongoDB for persistent storage
+* MongoDB for persistent storage (node.js)
 
 ## Support
 
-If you're having problems with using the project, use the support forum at CodersClan.
+If you're having problems, use the support forum at CodersClan.
 
 <a href="http://codersclan.net/forum/index.php?repo_id=9"><img src="http://www.codersclan.net/graphics/getSupport_blue_big.png" width="160"></a>
 
