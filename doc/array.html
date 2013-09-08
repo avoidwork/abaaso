@@ -56,56 +56,23 @@
 <li><p><strong>key must be a Boolean.</strong><br/>([Optional] Returns key or value, only applies to Objects without a length property)</p></li>
 </ul>
 
-<p><strong>Returns an Array</strong><br/>(Object as an Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">cast</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="p">(</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">key</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">[];</span>
+<p><strong>Returns an Array</strong><br/>(Object as an Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">cast</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">key</span>   <span class="o">=</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">[];</span>
 
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">o</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">o</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
-          <span class="p">});</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
-      <span class="p">};</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">o</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">o</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">key</span>   <span class="o">=</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
-        <span class="kd">var</span> <span class="nx">o</span> <span class="o">=</span> <span class="p">[];</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nb">isNaN</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">try</span> <span class="p">{</span>
-            <span class="nx">o</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-          <span class="p">}</span>
-          <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">idx</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="k">if</span> <span class="p">(</span> <span class="nx">idx</span> <span class="o">!==</span> <span class="s2">&quot;length&quot;</span> <span class="p">)</span> <span class="p">{</span>
-                <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
-              <span class="p">}</span>
-            <span class="p">});</span>
-          <span class="p">}</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">o</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="p">{</span>
-          <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
-          <span class="p">});</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
-      <span class="p">};</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">o</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">i</span> <span class="p">);</span>
+      <span class="p">});</span>
     <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method chunk</span></p>
 
 <p>Transforms an Array to a 2D Array of chunks</p>
@@ -849,7 +816,7 @@ Parameters for fn are 'value', 'index'</p>
 
 <p><strong>Returns an Array</strong><br/>(Modified Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">remove</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">start</span><span class="p">,</span> <span class="nx">end</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">start</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">start</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">start</span> <span class="p">);</span>
+      <span class="nx">start</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">index</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">start</span> <span class="p">);</span>
 
       <span class="k">if</span> <span class="p">(</span> <span class="nx">start</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
         <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>

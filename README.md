@@ -8,7 +8,7 @@ abaaso is a modern, lightweight Enterprise class RESTful JavaScript application 
 
 All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
 
-* Microsoft Internet Explorer 8+ (standards mode)
+* Microsoft Internet Explorer 9+ (standards mode)
 * Google Chrome 6+ / Android 2.3+
 * Mozilla FireFox 3.6+
 * Apple Safari 5+ / iPhone / iPod Touch / iPad
@@ -19,10 +19,12 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 ## Features
 
 * Automatic RESTful AJAX
+* Easy API abstraction through DataStores
 * Application state driven by custom HTTP header
 * Object Oriented Programming
 * Semantic classes & methods
-* abaaso() for DOM queries & sugar
+* abaaso() for DOM queries
+* abaaso.sugar() to enable syntactic sugar
 * Familiar API
 * Evented with a global observer
 * Built on Promises/A+

@@ -87,7 +87,7 @@
 </ul>
 
 <p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clearTimers</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">id</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
     <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>deferred</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="p">);</span>
@@ -785,31 +785,18 @@ with a class of "loading"</p>
 <li><p><strong>descriptor must be an Object.</strong><br/>(Descriptor of the property)</p></li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Object receiving the property)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">property</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span> <span class="nx">server</span> <span class="o">||</span> <span class="p">(</span> <span class="o">!</span><span class="nx">client</span><span class="p">.</span><span class="nx">ie</span> <span class="o">||</span> <span class="nx">client</span><span class="p">.</span><span class="nx">version</span> <span class="o">&gt;</span> <span class="mi">8</span> <span class="p">)</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">descriptor</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">get</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">delete</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
-        <span class="p">}</span>
-
-        <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">);</span>
-      <span class="p">};</span>
+<p><strong>Returns an Object</strong><br/>(Object receiving the property)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">property</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">descriptor</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">descriptor</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-        <span class="p">}</span>
 
-        <span class="nx">obj</span><span class="p">[</span><span class="nx">prop</span><span class="p">]</span> <span class="o">=</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
-
-        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-      <span class="p">};</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">get</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">delete</span> <span class="nx">descriptor</span><span class="p">.</span><span class="nx">value</span><span class="p">;</span>
     <span class="p">}</span>
+
+    <span class="nb">Object</span><span class="p">.</span><span class="nx">defineProperty</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">prop</span><span class="p">,</span> <span class="nx">descriptor</span> <span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method proto</span></p>
 
 <p>Sets methods on a prototype object
@@ -964,6 +951,21 @@ Return false from the function to halt recursion</p>
     <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Assumed to always be valid, even if it's not decorated on <code>e</code> ( I'm looking at you IE8 )</p></div></div><div class="code"><div class="wrapper">    <span class="nx">e</span><span class="p">.</span><span class="nx">returnValue</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sugar</span></p>
+
+<p>Creates syntactic sugar by hooking abaaso into native Objects</p>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sugar</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">proto</span><span class="p">(</span> <span class="nb">Array</span><span class="p">,</span> <span class="s2">&quot;array&quot;</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">Element</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">proto</span><span class="p">(</span> <span class="nx">Element</span><span class="p">,</span> <span class="s2">&quot;element&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">proto</span><span class="p">(</span> <span class="nb">Function</span><span class="p">,</span> <span class="s2">&quot;function&quot;</span> <span class="p">);</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">proto</span><span class="p">(</span> <span class="nb">Math</span><span class="p">,</span>     <span class="s2">&quot;math&quot;</span> <span class="p">);</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">proto</span><span class="p">(</span> <span class="nb">Number</span><span class="p">,</span>   <span class="s2">&quot;number&quot;</span> <span class="p">);</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">proto</span><span class="p">(</span> <span class="nb">String</span><span class="p">,</span>   <span class="s2">&quot;string&quot;</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method target</span></p>
 
 <p>Returns the Event target</p>
