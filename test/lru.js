@@ -5,7 +5,7 @@ exports["suite"] = {
 		this.cache = lru(2);
 		done();
 	},
-	direct: function (test) {
+	test: function (test) {
 		test.expect(19);
 		test.equal(this.cache.length, 0, "Should be '0'");
 		test.equal(this.cache.max, 2, "Should be '2'");

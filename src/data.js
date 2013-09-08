@@ -873,7 +873,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 				method = "PUT";
 				uri    = this.buildUri( key );
 
-				if ( client.allows( uri, "patch" ) && ( !client.ie || ( client.version > 8 || client.activex ) ) ) {
+				if ( client.allows( uri, "patch" ) && ( !client.ie || client.activex ) ) {
 					method = "PATCH";
 				}
 				else if ( record !== null ) {

@@ -513,7 +513,7 @@ var client = {
 		type        = type.toLowerCase();
 		headers     = headers instanceof Object ? headers : null;
 		cors        = client.cors( uri );
-		xhr         = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : ( !client.ie || ( client.version > 8 || type !== "patch")  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" ) );
+		xhr         = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : ( !client.ie || type !== "patch"  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" ) );
 		payload     = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args !== undefined ? args : null;
 		cached      = type === "get" ? cache.get( uri ) : false;
 		typed       = type.capitalize();

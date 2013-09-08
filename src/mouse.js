@@ -11,11 +11,6 @@ var mouse = {
 	pos  : {x: null, y: null},
 	prev : {x: null, y: null},
 
-	// Caching the view
-	view    : function () {
-		return client.ie && client.version < 9 ? "documentElement" : "body";
-	},
-
 	/**
 	 * Enables or disables mouse co-ordinate tracking
 	 *
@@ -27,7 +22,7 @@ var mouse = {
 		var type = typeof arg;
 
 		if ( type === "object" ) {
-			var v = document[mouse.view],
+			var v = document.body,
 			    x = arg.pageX ? arg.pageX : ( v.scrollLeft + arg.clientX ),
 			    y = arg.pageY ? arg.pageY : ( v.scrollTop  + arg.clientY ),
 			    c = false;

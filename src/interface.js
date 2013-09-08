@@ -255,6 +255,7 @@ return {
 	stylesheet      : client.stylesheet,
 	stop            : utility.stop,
 	store           : data,
+	sugar           : utility.sugar,
 	target          : utility.target,
 	tpl             : utility.tpl,
 	un              : function ( obj, event, id, state ) {

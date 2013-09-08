@@ -55,56 +55,23 @@ var array = {
 	 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
 	 * @return {Array}       Object as an Array
 	 */
-	cast : function () {
-		if ( server || ( !client.ie || client.version > 8 ) ) {
-			return function ( obj, key ) {
-				key = ( key === true );
-				var o = [];
+	cast : function ( obj, key ) {
+		key   = ( key === true );
+		var o = [];
 
-				if ( !isNaN( obj.length ) ) {
-					o = slice.call( obj );
-				}
-				else if ( key ) {
-					o = array.keys( obj );
-				}
-				else {
-					utility.iterate( obj, function ( i ) {
-						o.push( i );
-					});
-				}
-
-				return o;
-			};
+		if ( !isNaN( obj.length ) ) {
+			o = slice.call( obj );
+		}
+		else if ( key ) {
+			o = array.keys( obj );
 		}
 		else {
-			return function ( obj, key ) {
-				key   = ( key === true );
-				var o = [];
-
-				if ( !isNaN( obj.length ) ) {
-					try {
-						o = slice.call( obj );
-					}
-					catch ( e ) {
-						utility.iterate( obj, function ( i, idx ) {
-							if ( idx !== "length" ) {
-								o.push( i );
-							}
-						});
-					}
-				}
-				else if ( key ) {
-					o = array.keys( obj );
-				}
-				else {
-					utility.iterate( obj, function ( i ) {
-						o.push( i );
-					});
-				}
-
-				return o;
-			};
+			utility.iterate( obj, function ( i ) {
+				o.push( i );
+			});
 		}
+
+		return o;
 	},
 
 	/**
@@ -830,7 +797,7 @@ var array = {
 	 */
 	remove : function ( obj, start, end ) {
 		if ( isNaN( start ) ) {
-			start = obj.index( start );
+			start = array.index( obj, start );
 
 			if ( start === -1 ) {
 				return obj;

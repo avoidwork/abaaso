@@ -40,15 +40,10 @@ bootstrap = function () {
 		this.client.mobile  = client.mobile.call( this );
 		this.client.tablet  = client.tablet.call( this );
 
-		// IE7 and older is not supported
-		if ( client.ie && client.version < 8 ) {
+		// IE8 and older is not supported
+		if ( client.ie && client.version < 9 ) {
 			throw new Error( label.error.upgrade );
 		}
-
-		// Strategies
-		this.array.cast = array.cast();
-		this.mouse.view = mouse.view();
-		this.property   = utility.property = utility.property();
 
 		if ( Array.prototype.filter === undefined ) {
 			Array.prototype.filter = function ( fn, self ) {
@@ -211,7 +206,7 @@ bootstrap = function () {
 				if ( Object.defineProperty ) {
 					descriptor = {
 						get          : getter,
-						enumerable   : !client.ie || client.version > 8 ? true : false,
+						enumerable   : true,
 						configurable : true
 					};
 
@@ -238,10 +233,6 @@ bootstrap = function () {
 		}
 	}
 	else {
-		// Strategies
-		this.array.cast = array.cast();
-		this.property   = utility.property = utility.property();
-
 		// XHR shim
 		XMLHttpRequest = xhr();
 	}
@@ -255,22 +246,6 @@ bootstrap = function () {
 	utility.merge( $, this );
 	delete $.init;
 	delete $.loading;
-
-	// Hooking abaaso into native Objects
-	utility.proto( Array, "array" );
-
-	if ( typeof Element !== "undefined" ) {
-		utility.proto( Element, "element" );
-	}
-
-	if ( client.ie && client.version === 8 ) {
-		utility.proto( HTMLDocument, "element" );
-	}
-
-	utility.proto( Function, "function" );
-	utility.proto( Math,     "math" );
-	utility.proto( Number,   "number" );
-	utility.proto( String,   "string" );
 
 	// Setting events & garbage collection
 	if ( !server ) {
@@ -308,20 +283,12 @@ bootstrap = function () {
 	}
 
 	// Creating a public facade for `state`
-	if ( !client.ie || client.version > 8 ) {
-		utility.property( this.state, "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
-		utility.property( this.state, "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
-		utility.property( this.state, "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
-		utility.property( $.state,    "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
-		utility.property( $.state,    "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
-		utility.property( $.state,    "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
-	}
-	else {
-		// Pure hackery, only exists when needed
-		$.state.current   = this.state.current   = this.state._current;
-		$.state.change    = this.state.change    = function ( arg) { return self.state.current = state.setCurrent(arg ); };
-		$.state.setHeader = this.state.setHeader = function ( arg) { return self.state.header  = state.setHeader(arg ); };
-	}
+	utility.property( this.state, "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
+	utility.property( this.state, "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
+	utility.property( this.state, "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
+	utility.property( $.state,    "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
+	utility.property( $.state,    "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
+	utility.property( $.state,    "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
 
 	$.ready = this.ready = true;
 

@@ -92,7 +92,7 @@ var utility = {
 	 * @return {Undefined} undefined
 	 */
 	clearTimers : function ( id ) {
-		if ( id === undefined || id.isEmpty() ) {
+		if ( id === undefined || string.isEmpty( id ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -799,31 +799,18 @@ var utility = {
 	 * @param  {Object} descriptor Descriptor of the property
 	 * @return {Object}            Object receiving the property
 	 */
-	property : function () {
-		if ( ( server || ( !client.ie || client.version > 8 ) ) && typeof Object.defineProperty === "function" ) {
-			return function ( obj, prop, descriptor ) {
-				if ( !( descriptor instanceof Object ) ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				if ( descriptor.value !== undefined && descriptor.get !== undefined ) {
-					delete descriptor.value;
-				}
-
-				Object.defineProperty( obj, prop, descriptor );
-			};
+	property : function ( obj, prop, descriptor ) {
+		if ( !( descriptor instanceof Object ) ) {
+			throw new Error( label.error.invalidArguments );
 		}
-		else {
-			return function ( obj, prop, descriptor ) {
-				if ( !( descriptor instanceof Object ) ) {
-					throw new Error( label.error.invalidArguments );
-				}
 
-				obj[prop] = descriptor.value;
-
-				return obj;
-			};
+		if ( descriptor.value !== undefined && descriptor.get !== undefined ) {
+			delete descriptor.value;
 		}
+
+		Object.defineProperty( obj, prop, descriptor );
+
+		return obj;
 	},
 
 	/**
@@ -984,6 +971,25 @@ var utility = {
 		e.returnValue = false;
 
 		return e;
+	},
+
+	/**
+	 * Creates syntactic sugar by hooking abaaso into native Objects
+	 *
+	 * @method sugar
+	 * @return {Undefined} undefined
+	 */
+	sugar : function () {
+		utility.proto( Array, "array" );
+
+		if ( typeof Element !== "undefined" ) {
+			utility.proto( Element, "element" );
+		}
+
+		utility.proto( Function, "function" );
+		utility.proto( Math,     "math" );
+		utility.proto( Number,   "number" );
+		utility.proto( String,   "string" );
 	},
 
 	/**

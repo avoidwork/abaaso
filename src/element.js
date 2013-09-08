@@ -767,13 +767,11 @@ var element = {
 	 * @return {Object}    Size {height: n, width:n}
 	 */
 	size : function ( obj ) {
-		var parse = function ( arg ) {
-			return number.parse(arg, 10);
-		};
+		var style = window.getComputedStyle( obj );
 
 		return {
-			height : obj.offsetHeight + parse( obj.style.paddingTop  || 0 ) + parse( obj.style.paddingBottom || 0 ) + parse( obj.style.borderTop  || 0 ) + parse( obj.style.borderBottom || 0 ),
-			width  : obj.offsetWidth  + parse( obj.style.paddingLeft || 0 ) + parse( obj.style.paddingRight  || 0 ) + parse( obj.style.borderLeft || 0 ) + parse( obj.style.borderRight  || 0 )
+			height : parseInt( style.height, 10 ),
+			width  : parseInt( style.width, 10 )
 		};
 	},
 

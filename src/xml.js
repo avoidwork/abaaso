@@ -7,32 +7,13 @@ var xml = {
 	 * @param  {String} arg XML String
 	 * @return {Object}     XML Object or undefined
 	 */
-	decode : function () {
-		if ( server || !client.ie || client.version > 8 ) {
-			return function ( arg ) {
-				if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				return new DOMParser().parseFromString( arg, "text/xml" );
-			};
+	decode : function ( arg ) {
+		if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
+			throw new Error( label.error.invalidArguments );
 		}
-		else {
-			return function ( arg ) {
-				var x;
 
-				if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				x = new ActiveXObject( "Microsoft.XMLDOM" );
-				x.async = "false";
-				x.loadXML( arg );
-
-				return x;
-			};
-		}
-	}(),
+		return new DOMParser().parseFromString( arg, "text/xml" );
+	},
 
 	/**
 	 * Returns XML String from an Object or Array
@@ -107,16 +88,7 @@ var xml = {
 	 * @param  {String} arg String to validate
 	 * @return {Boolean}    `true` if valid XML
 	 */
-	valid : function () {
-		if ( server || !client.ie || client.version > 8 ) {
-			return function ( arg ) {
-				return ( xml.decode( arg ).getElementsByTagName( "parsererror" ).length === 0 );
-			};
-		}
-		else {
-			return function ( arg ) {
-				return ( xml.decode( arg ).parseError.errorCode === 0 );
-			};
-		}
-	}()
+	valid : function ( arg ) {
+		return ( xml.decode( arg ).getElementsByTagName( "parsererror" ).length === 0 );
+	}
 };
