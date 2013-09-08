@@ -8,7 +8,7 @@ abaaso is a modern, lightweight Enterprise class RESTful JavaScript application 
 
 All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
 
-* Microsoft Internet Explorer 9+ (standards mode)
+* Microsoft Internet Explorer 10+ (standards mode)
 * Google Chrome 6+ / Android 2.3+
 * Mozilla FireFox 3.6+
 * Apple Safari 5+ / iPhone / iPod Touch / iPad

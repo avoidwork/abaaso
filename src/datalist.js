@@ -164,7 +164,7 @@ DataList.prototype.pages = function () {
 	}
 
 	// Removing the existing controls
-	array.each( utility.$( "#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom" ), function ( i ) {
+	array.each( utility.dom( "#" + obj.id + "-pages-top, #" + obj.id + "-pages-bottom" ), function ( i ) {
 		if ( i ) {
 			element.destroy( i );
 		}
@@ -410,7 +410,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		this.pages();
 	}
 	else {
-		array.each( utility.$( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
+		array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 			element.destroy( i );
 		});
 	}
@@ -447,7 +447,7 @@ DataList.prototype.teardown = function ( destroy ) {
 
 	observer.remove( id );
 
-	array.each( utility.$( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
+	array.each( utility.dom( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
 		observer.remove( i );
 	});
 

@@ -227,7 +227,7 @@ var utility = {
 	css : function ( content, media ) {
 		var ss, css;
 
-		ss = element.create( "style", {type: "text/css", media: media || "print, screen"}, utility.$( "head" )[0] );
+		ss = element.create( "style", {type: "text/css", media: media || "print, screen"}, utility.dom( "head" )[0] );
 
 		if ( ss.styleSheet ) {
 			ss.styleSheet.cssText = content;
@@ -501,7 +501,7 @@ var utility = {
 			do {
 				id = utility.domId( utility.uuid( true) );
 			}
-			while ( utility.$( "#" + id ) !== undefined );
+			while ( utility.dom( "#" + id ) !== undefined );
 		}
 		else {
 			id = utility.domId( utility.uuid( true) );
@@ -718,7 +718,7 @@ var utility = {
 	 * @return {Mixed}     Entity
 	 */
 	object : function ( obj ) {
-		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.$( obj ) : obj );
+		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.dom( obj ) : obj );
 	},
 
 	/**
@@ -1014,12 +1014,12 @@ var utility = {
 	tpl : function ( arg, target ) {
 		var frag;
 
-		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.$( target ) : utility.$( target )[0] ) === undefined ) ) {
+		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) === undefined ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
 		if ( target === undefined ) {
-			target = utility.$( "body" )[0];
+			target = utility.dom( "body" )[0];
 		}
 
 		frag  = document.createDocumentFragment();

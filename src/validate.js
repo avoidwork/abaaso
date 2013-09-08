@@ -19,7 +19,7 @@ var validate = {
 				utility.genId( args );
 			}
 
-			c = utility.$( "#" + args.id + " input, #" + args.id + " select" );
+			c = utility.dom( "#" + args.id + " input, #" + args.id + " select" );
 
 			array.each( c, function ( i ) {
 				var z = {},
@@ -49,7 +49,7 @@ var validate = {
 					return;
 				}
 
-				value = v.toString().charAt( 0 ) === "#" ? ( utility.$( v ) !== undefined ? element.val( utility.$( v ) ) : "" ) : v;
+				value = v.toString().charAt( 0 ) === "#" ? ( utility.dom( v ) !== undefined ? element.val( utility.dom( v ) ) : "" ) : v;
 
 				if ( k === "date" ) {
 					if ( isNaN( new Date( value ).getYear() ) ) {

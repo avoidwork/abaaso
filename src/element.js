@@ -39,17 +39,17 @@ var element = {
 				obj[key] = value;
 			}
 			else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined) {
-				return utility.$( "#" + obj.id + " option[selected=\"selected\"]" )[0] || utility.$( "#" + obj.id + " option" )[0];
+				return utility.dom( "#" + obj.id + " option[selected=\"selected\"]" )[0] || utility.dom( "#" + obj.id + " option" )[0];
 			}
 			else if ( obj.nodeName === "SELECT" && key === "selected" && value !== undefined ) {
-				target = utility.$( "#" + obj.id + " option[selected=\"selected\"]" )[0];
+				target = utility.dom( "#" + obj.id + " option[selected=\"selected\"]" )[0];
 
 				if ( target !== undefined ) {
 					target.selected = false;
 					target.removeAttribute( "selected" );
 				}
 
-				target = utility.$( "#" + obj.id + " option[value=\"" + value + "\"]" )[0];
+				target = utility.dom( "#" + obj.id + " option[value=\"" + value + "\"]" )[0];
 				target.selected = true;
 				target.setAttribute( "selected", "selected" );
 			}
@@ -121,7 +121,7 @@ var element = {
 			target = document.body;
 		}
 		
-		if ( args instanceof Object && args.id !== undefined && utility.$( "#" + args.id ) === undefined ) {
+		if ( args instanceof Object && args.id !== undefined && utility.dom( "#" + args.id ) === undefined ) {
 			uid = args.id;
 			delete args.id;
 		}
@@ -346,7 +346,7 @@ var element = {
 		utility.genId( obj, true );
 
 		array.each( string.explode( arg ), function ( i ) {
-			result = result.concat( utility.$( "#" + obj.id + " " + i ) );
+			result = result.concat( utility.dom( "#" + obj.id + " " + i ) );
 		});
 
 		return result;
@@ -689,7 +689,7 @@ var element = {
 		}
 		else {
 			if ( obj.nodeName === "SELECT" && key === "selected") {
-				target = utility.$( "#" + obj.id + " option[selected=\"selected\"]" )[0];
+				target = utility.dom( "#" + obj.id + " option[selected=\"selected\"]" )[0];
 
 				if ( target !== undefined ) {
 					target.selected = false;
@@ -865,7 +865,7 @@ var element = {
 					throw new Error( label.error.expectedProperty );
 				}
 
-				array.each( utility.$( "input[name='" + obj.name + "']" ), function ( i ) {
+				array.each( utility.dom( "input[name='" + obj.name + "']" ), function ( i ) {
 					if ( i.checked ) {
 						output = i.value;
 						return false;
@@ -896,7 +896,7 @@ var element = {
 			if ( regex.radio_checkbox.test( obj.type ) ) {
 				event = "click";
 
-				array.each( utility.$( "input[name='" + obj.name + "']" ), function ( i ) {
+				array.each( utility.dom( "input[name='" + obj.name + "']" ), function ( i ) {
 					if ( i.value === value ) {
 						i.checked = true;
 						output = i;

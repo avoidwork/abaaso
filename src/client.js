@@ -472,7 +472,7 @@ var client = {
 			element.destroy( s );
 		};
 
-		s = element.create( "script", {src: uri, type: "text/javascript"}, utility.$( "head" )[0] );
+		s = element.create( "script", {src: uri, type: "text/javascript"}, utility.dom( "head" )[0] );
 		
 		utility.defer( function () {
 			defer.reject( undefined );
@@ -513,7 +513,7 @@ var client = {
 		type        = type.toLowerCase();
 		headers     = headers instanceof Object ? headers : null;
 		cors        = client.cors( uri );
-		xhr         = ( client.ie && client.version < 10 && cors ) ? new XDomainRequest() : ( !client.ie || type !== "patch"  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" ) );
+		xhr         = !client.ie || type !== "patch"  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" );
 		payload     = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args !== undefined ? args : null;
 		cached      = type === "get" ? cache.get( uri ) : false;
 		typed       = type.capitalize();
@@ -691,7 +691,6 @@ var client = {
 	response : function ( xhr, uri, type, defer ) {
 		var typed    = string.capitalize( type.toLowerCase() ),
 		    xhrState = null,
-		    xdr      = client.ie && xhr.readyState === undefined,
 		    shared   = true,
 		    exception, o, r, t, redirect;
 
@@ -702,10 +701,10 @@ var client = {
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
 
-		if ( !xdr && xhr.readyState === 2) {
+		if ( xhr.readyState === 2) {
 			uri.fire( "received" + typed, null, xhr );
 		}
-		else if ( !xdr && xhr.readyState === 4 ) {
+		else if ( xhr.readyState === 4 ) {
 			switch ( xhr.status ) {
 				case 200:
 				case 201:
@@ -815,13 +814,6 @@ var client = {
 			}
 			catch ( e ) {}
 		}
-		else if ( xdr ) {
-			r = client.parse( xhr, "text/plain" );
-			cache.set( uri, "permission", client.bit( ["get"] ) );
-			cache.set( uri, "response", r );
-			defer.resolve( r );
-			uri.fire( "afterGet", r, xhr );
-		}
 	},
 
 	/**
@@ -834,7 +826,7 @@ var client = {
 	 * @return {Object}        Script
 	 */
 	script : function ( arg, target, pos ) {
-		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.$( "head" )[0], pos );
+		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.dom( "head" )[0], pos );
 	},
 
 	/**
@@ -901,6 +893,6 @@ var client = {
 	 * @return {Objecct}      Stylesheet
 	 */
 	stylesheet : function ( arg, media ) {
-		return element.create( "link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, utility.$( "head" )[0] );
+		return element.create( "link", {rel: "stylesheet", type: "text/css", href: arg, media: media || "print, screen"}, utility.dom( "head" )[0] );
 	}
 };
