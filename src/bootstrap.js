@@ -45,113 +45,6 @@ bootstrap = function () {
 			throw new Error( label.error.upgrade );
 		}
 
-		if ( Array.prototype.filter === undefined ) {
-			Array.prototype.filter = function ( fn, self ) {
-				self       = self || this;
-				var result = [];
-
-				if ( self === undefined || self === null || typeof fn !== "function" ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				array.each( self, function ( i ) {
-					if ( fn.call( self, i ) ) {
-						result.push( i );
-					}
-				});
-
-				return result;
-			};
-		}
-
-		if ( Array.prototype.forEach === undefined ) {
-			Array.prototype.forEach = function ( fn, self ) {
-				self = self || this;
-
-				if ( this === null || typeof fn !== "function" ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				array.each( self, function ( i ) {
-					fn.call( self, i );
-				});
-			};
-		}
-
-		if ( Array.prototype.indexOf === undefined ) {
-			Array.prototype.indexOf = function( arg, start ) {
-				var nth = this.length >> 0,
-				    i   = ( start || 0 ) -1;
-
-				if ( this === undefined || this === null || arg === undefined ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				while ( ++i < nth ) {
-					if ( this[i] === arg ) {
-						return i;
-					}
-				}
-
-				return -1;
-			};
-		}
-
-		if ( Array.prototype.map === undefined ) {
-			Array.prototype.map = function ( fn, self ) {
-				self       = self || this;
-				var result = [];
-
-				if ( self === undefined || self === null || typeof fn !== "function" ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				array.each( self, function ( i ) {
-					result.push( fn.call( self, i ) );
-				});
-
-				return result;
-			};
-		}
-
-		if ( Array.prototype.reduce === undefined ) {
-			Array.prototype.reduce = function ( fn, x ) {
-				var nth = this.length >> 0,
-				    i   = 0;
-
-				if ( this === undefined || this === null || typeof fn !== "function" ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				if ( x === undefined ) {
-					if ( nth === 0 ) {
-						throw new Error( label.error.invalidArguments );
-					}
-
-					x = this[0];
-					i = 1;
-				}
-
-				i--;
-
-				while ( ++i < nth ) {
-					x = fn.call( this, x, this[i] );
-				}
-
-				return x;
-			};
-		}
-
-		if ( Element.prototype.getElementsByClassName === undefined ) {
-			( function () {
-				var getElementsByClassName = function ( arg ) {
-					return document.querySelectorAll( "." + arg );
-				};
-
-				Element.prototype.getElementsByClassName = HTMLDocument.prototype.getElementsByClassName = getElementsByClassName;
-			})();
-		}
-
 		if ( document.documentElement.classList === undefined ) {
 			( function ( view ) {
 				var ClassList, getter, proto, target, descriptor;
@@ -219,17 +112,6 @@ bootstrap = function () {
 					throw new Error( "Could not create classList shim" );
 				}
 			})( global );
-		}
-
-		if ( Function.prototype.bind === undefined ) {
-			Function.prototype.bind = function ( arg ) {
-				var fn    = this,
-				    args  = slice.call( arguments, 1 );
-
-				return function () {
-					return fn.apply( arg, args.concat( slice.call( arguments ) ) );
-				};
-			};
 		}
 	}
 	else {
