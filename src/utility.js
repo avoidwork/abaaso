@@ -700,13 +700,13 @@ var utility = {
 	 * @return {Object}     Module registered
 	 */
 	module : function ( arg, obj ) {
-		if ( $[arg] !== undefined || !obj instanceof Object ) {
+		if ( abaaso[arg] !== undefined || !obj instanceof Object ) {
 			throw new Error( label.error.invalidArguments );
 		}
 		
-		$[arg] = obj;
+		abaaso[arg] = obj;
 
-		return $[arg];
+		return abaaso[arg];
 	},
 
 	/**

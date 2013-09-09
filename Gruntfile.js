@@ -46,8 +46,8 @@ module.exports = function (grunt) {
 					"src/validate.js",
 					"src/xhr.js",
 					"src/xml.js",
+					"src/abaaso.js",
 					"src/bootstrap.js",
-					"src/interface.js",
 					"src/outro.js"
 				],
 				dest : "lib/<%= pkg.name %>.js"

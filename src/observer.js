@@ -204,7 +204,7 @@ var observer = {
 		}
 		else {
 			s   = state.getCurrent();
-			log = $.logging;
+			log = abaaso.logging;
 
 			array.each( string.explode( event ), function ( e ) {
 				if ( log ) {

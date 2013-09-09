@@ -16,7 +16,7 @@ var mouse = {
 	 *
 	 * @method track
 	 * @param  {Mixed} arg Boolean to enable/disable tracking, or Mouse Event
-	 * @return {Object}    $.mouse
+	 * @return {Object}    abaaso.mouse
 	 */
 	track : function ( arg ) {
 		var type = typeof arg;
@@ -31,27 +31,27 @@ var mouse = {
 				c = true;
 			}
 
-			$.mouse.prev.x = mouse.prev.x = number.parse( mouse.pos.x, 10 );
-			$.mouse.pos.x  = mouse.pos.x  = x;
-			$.mouse.diff.x = mouse.diff.x = mouse.pos.x - mouse.prev.x;
+			abaaso.mouse.prev.x = mouse.prev.x = number.parse( mouse.pos.x, 10 );
+			abaaso.mouse.pos.x  = mouse.pos.x  = x;
+			abaaso.mouse.diff.x = mouse.diff.x = mouse.pos.x - mouse.prev.x;
 
 			if ( mouse.pos.y !== y ) {
 				c = true;
 			}
 
-			$.mouse.prev.y = mouse.prev.y = number.parse( mouse.pos.y, 10 );
-			$.mouse.pos.y  = mouse.pos.y  = y;
-			$.mouse.diff.y = mouse.diff.y = mouse.pos.y - mouse.prev.y;
+			abaaso.mouse.prev.y = mouse.prev.y = number.parse( mouse.pos.y, 10 );
+			abaaso.mouse.pos.y  = mouse.pos.y  = y;
+			abaaso.mouse.diff.y = mouse.diff.y = mouse.pos.y - mouse.prev.y;
 
-			if ( c && $.mouse.log ) {
+			if ( c && abaaso.mouse.log ) {
 				utility.log( [mouse.pos.x, mouse.pos.y, mouse.diff.x, mouse.diff.y] );
 			}
 		}
 		else if ( type === "boolean" ) {
 			arg ? observer.add( document, "mousemove", mouse.track, "tracking" ) : observer.remove( document, "mousemove", "tracking" );
-			$.mouse.enabled = mouse.enabled = arg;
+			abaaso.mouse.enabled = mouse.enabled = arg;
 		}
 
-		return $.mouse;
+		return abaaso.mouse;
 	}
 };

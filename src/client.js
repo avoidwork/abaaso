@@ -339,7 +339,7 @@ var client = {
 			expires = new Date( items.Expires );
 		}
 		else {
-			expires = expires.setSeconds( expires.getSeconds() + $.expires );
+			expires = expires.setSeconds( expires.getSeconds() + abaaso.expires );
 		}
 
 		o.expires    = expires;

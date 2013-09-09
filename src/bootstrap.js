@@ -1,13 +1,12 @@
 /**
- * Bootstraps framework and sets on $
+ * Bootstraps framework
  *
  * @method bootstrap
  * @private
  * @return {Undefined} undefined
  */
 bootstrap = function () {
-	var self = this,
-	    cleanup, fn;
+	var cleanup, fn, init;
 
 	// Removes references to deleted DOM elements, avoiding memory leaks
 	cleanup = function ( obj ) {
@@ -20,25 +19,32 @@ bootstrap = function () {
 	// Repeating function to call init()
 	fn = function () {
 		if ( regex.complete_loaded.test( document.readyState ) ) {
-			if ( typeof self.init === "function" ) {
-				self.init.call( self );
-			}
+			init();
 
 			return false;
 		}
 	};
 
-	// Blocking multiple executions
-	delete this.bootstrap;
+	// Second phase
+	init = function () {
+		// Cache garbage collector (every minute)
+		utility.repeat( function () {
+			cache.clean();
+		}, 60000, "cacheGarbageCollector");
+
+		// Firing events to setup
+		observer.fire( "abaaso", "init, ready" );
+		observer.remove( "abaaso", "init, ready" );
+	};
 
 	// Creating error log
-	this.error.log = [];
+	utility.error.log = [];
 
 	// Describing the Client
 	if ( !server ) {
-		this.client.version = client.version = client.version();
-		this.client.mobile  = client.mobile.call( this );
-		this.client.tablet  = client.tablet.call( this );
+		abaaso.client.version = client.version = client.version();
+		abaaso.client.mobile  = client.mobile  = client.mobile.call( this );
+		abaaso.client.tablet  = client.tablet  = client.tablet.call( this );
 
 		// IE9 and older is not supported
 		if ( client.ie && client.version < 10 ) {
@@ -54,25 +60,19 @@ bootstrap = function () {
 	has   = Object.prototype.hasOwnProperty;
 	slice = Array.prototype.slice;
 
-	// Binding helper & namespace to $
-	$ = utility.$;
-	utility.merge( $, this );
-	delete $.init;
-	delete $.loading;
-
 	// Setting events & garbage collection
 	if ( !server ) {
 		observer.add( global, "error", function ( e ) {
-			observer.fire( abaaso, "error", e );
+			observer.fire( "abaaso", "error", e );
 		}, "error", global, "all");
 
 		observer.add( global, "hashchange", function ()  {
-			observer.fire( abaaso, "beforeHash, hash, afterHash", location.hash );
+			observer.fire( "abaaso", "beforeHash, hash, afterHash", location.hash );
 		}, "hash", global, "all" );
 
 		observer.add( global, "load", function ()  {
-			observer.fire( abaaso, "render" );
-			observer.remove( abaaso, "render" );
+			observer.fire( "abaaso", "render" );
+			observer.remove( "abaaso", "render" );
 			observer.remove( this, "load" );
 		});
 
@@ -96,23 +96,20 @@ bootstrap = function () {
 	}
 
 	// Creating a public facade for `state`
-	utility.property( this.state, "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
-	utility.property( this.state, "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
-	utility.property( this.state, "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
-	utility.property( $.state,    "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
-	utility.property( $.state,    "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
-	utility.property( $.state,    "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
+	utility.property( abaaso.state, "current",  {enumerable: true, get: state.getCurrent,  set: state.setCurrent} );
+	utility.property( abaaso.state, "previous", {enumerable: true, get: state.getPrevious, set: state.setPrevious} );
+	utility.property( abaaso.state, "header",   {enumerable: true, get: state.getHeader,   set: state.setHeader} );
 
-	$.ready = this.ready = true;
+	abaaso.ready = true;
 
 	// Initializing
 	if ( typeof exports !== "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
-		this.init();
+		init();
 	}
 	else if ( typeof document.addEventListener === "function" ) {
 		document.addEventListener( "DOMContentLoaded" , function () {
-			self.init.call( self );
-		}, false);
+			init();
+		}, false );
 	}
 	else if ( typeof document.attachEvent === "function" ) {
 		document.attachEvent( "onreadystatechange" , fn );

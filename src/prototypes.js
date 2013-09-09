@@ -144,7 +144,7 @@ var prototypes = {
 			var result = [];
 
 			array.each( this, function ( i ) {
-				i.find( arg ).each( function ( r ) {
+				element.find( i, arg ).each( function ( r ) {
 					result.add( r );
 				});
 			});
