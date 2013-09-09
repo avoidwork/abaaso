@@ -24,6 +24,7 @@ var utility = {
 
 		if ( arg.indexOf( "," ) === -1 ) {
 			result = utility.dom( arg );
+			result = result ? [result] : [];
 		}
 		else {
 			result = [];

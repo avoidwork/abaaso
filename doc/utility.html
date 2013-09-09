@@ -17,6 +17,7 @@
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span> <span class="s2">&quot;,&quot;</span> <span class="p">)</span> <span class="o">===</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">result</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">dom</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span> <span class="o">?</span> <span class="p">[</span><span class="nx">result</span><span class="p">]</span> <span class="o">:</span> <span class="p">[];</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
       <span class="nx">result</span> <span class="o">=</span> <span class="p">[];</span>
@@ -687,13 +688,13 @@ with a class of "loading"</p>
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Module registered)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">module</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">$</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="o">!</span><span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">abaaso</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="o">!</span><span class="nx">obj</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
     <span class="p">}</span>
     
-    <span class="nx">$</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
+    <span class="nx">abaaso</span><span class="p">[</span><span class="nx">arg</span><span class="p">]</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
 
-    <span class="k">return</span> <span class="nx">$</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
+    <span class="k">return</span> <span class="nx">abaaso</span><span class="p">[</span><span class="nx">arg</span><span class="p">];</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-private"><div class="wrapper"><p><span class='doc-section-header'>Private method object</span></p>
 
 <p>Returns Object, or reference to Element</p>

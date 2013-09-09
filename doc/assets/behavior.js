@@ -110,6 +110,24 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
           "ignorePrefix": "}",
           "name": "JavaScript"
         },
+        "sourcePath": "/Users/jason/Projects/abaaso/src/abaaso.js",
+        "projectPath": "src/abaaso.js",
+        "targetPath": "abaaso",
+        "title": "abaaso"
+      },
+      "depth": 1,
+      "outline": []
+    }, {
+      "type": "file",
+      "data": {
+        "language": {
+          "nameMatchers": [".js"],
+          "pygmentsLexer": "javascript",
+          "singleLineComment": ["//"],
+          "multiLineComment": ["/*", "*", "*/"],
+          "ignorePrefix": "}",
+          "name": "JavaScript"
+        },
         "sourcePath": "/Users/jason/Projects/abaaso/src/array.js",
         "projectPath": "src/array.js",
         "targetPath": "array",
@@ -312,24 +330,6 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
         "projectPath": "src/grid.js",
         "targetPath": "grid",
         "title": "grid"
-      },
-      "depth": 1,
-      "outline": []
-    }, {
-      "type": "file",
-      "data": {
-        "language": {
-          "nameMatchers": [".js"],
-          "pygmentsLexer": "javascript",
-          "singleLineComment": ["//"],
-          "multiLineComment": ["/*", "*", "*/"],
-          "ignorePrefix": "}",
-          "name": "JavaScript"
-        },
-        "sourcePath": "/Users/jason/Projects/abaaso/src/interface.js",
-        "projectPath": "src/interface.js",
-        "targetPath": "interface",
-        "title": "interface"
       },
       "depth": 1,
       "outline": []
