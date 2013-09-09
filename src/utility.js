@@ -24,7 +24,15 @@ var utility = {
 
 		if ( arg.indexOf( "," ) === -1 ) {
 			result = utility.dom( arg );
-			result = result ? [result] : [];
+
+			if ( result ) {
+				if ( isNaN( result.length ) ) {
+					result = [result];
+				}
+			}
+			else {
+				result = [];
+			}
 		}
 		else {
 			result = [];

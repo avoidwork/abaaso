@@ -297,7 +297,7 @@ function Abaaso ( query ) {
 	if ( !string.isEmpty( query ) ) {
 		array.each( utility.$( query ), function ( i ) {
 			self.push( i );
-		} );
+		});
 	}
 }
 
