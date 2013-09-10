@@ -91,6 +91,7 @@ var xhr = function () {
 		this.statusText   = e;
 		this.responseText = e !== undefined ? ( e.stack || e ) : e;
 		this._error       = true;
+		this._send        = false;
 		this.setRequestHeader( "Content-Type", "text/plain" );
 		this.dispatchEvent( "error" );
 		state.call( this, DONE );
