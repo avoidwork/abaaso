@@ -75,7 +75,7 @@ DataStore.prototype.constructor = DataStore;
  * @param  {String}  type Type of action to perform ( set/del/delete )
  * @param  {Array}   data Array of keys or indices to delete, or Object containing multiple records to set
  * @param  {Boolean} sync [Optional] Syncs store with data, if true everything is erased
- * @return {Object}          Deferred
+ * @return {Object}       Deferred
  */
 DataStore.prototype.batch = function ( type, data, sync ) {
 	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
@@ -141,11 +141,11 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 };
 
 /**
- * Builds a relative URI
+ * Builds a URI
  *
  * @method buildUri
  * @param  {String} key Record key
- * @return {String}     [description]
+ * @return {String}     URI
  */
 DataStore.prototype.buildUri = function ( key ) {
 	var parsed = utility.parse( this.uri );
@@ -442,6 +442,7 @@ DataStore.prototype.dump = function ( args, fields ) {
  * @param  {String} haystack  [Optional] Commma delimited string of the field( s ) to search
  * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
  * @return {Array}            Array of results
+ * @todo Move this to a web worker
  */
 DataStore.prototype.find = function ( needle, haystack, modifiers ) {
 	if ( needle === undefined ) {
@@ -595,6 +596,7 @@ DataStore.prototype.get = function ( record, offset ) {
  * @param  {String} field Field in both DataStores
  * @param  {String} join  Type of JOIN to perform, defaults to `inner`
  * @return {Array}        Array of records
+ * @todo Move this to a web worker
  */
 DataStore.prototype.join = function ( arg, field, join ) {
 	join        = join || "inner";
@@ -759,6 +761,7 @@ DataStore.prototype.save = function ( arg ) {
  * @method select
  * @param  {Object} where  Object describing the WHERE clause
  * @return {Array}         Array of records
+ * @todo Move this to a web worker
  */
 DataStore.prototype.select = function ( where ) {
 	var result;
@@ -1056,6 +1059,7 @@ DataStore.prototype.setUri = function ( arg ) {
  * @param  {String} create [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
  * @param  {Object} where  [Optional] Object describing the WHERE clause
  * @return {Array}         View of data
+ * @todo Move this to a web worker
  */
 DataStore.prototype.sort = function ( query, create, where ) {
 	create      = ( create === true || ( where instanceof Object ) );
@@ -1395,7 +1399,7 @@ DataStore.prototype.sync = function () {
  * Tears down a store & expires all records associated to an API
  *
  * @method teardown
- * @return {Undefined} undefined
+ * @return {Object} DataStore instance
  */
 DataStore.prototype.teardown = function () {
 	var uri = this.uri,
