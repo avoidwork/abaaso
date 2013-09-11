@@ -761,9 +761,8 @@ DataStore.prototype.save = function ( arg ) {
  * Note: Records are not by reference!
  *
  * @method select
- * @param  {Object} where  Object describing the WHERE clause
- * @return {Array}         Array of records
- * @todo Move this to a web worker
+ * @param  {Object} where Object describing the WHERE clause
+ * @return {Array}        Array of records
  */
 DataStore.prototype.select = function ( where ) {
 	var defer = deferred(),
@@ -1088,30 +1087,39 @@ DataStore.prototype.sort = function ( query, create, where ) {
 	create      = ( create === true || ( where instanceof Object ) );
 	var self    = this,
 	    view    = string.explode( query ).join( " " ).toCamelCase(),
-	    records = !where ? this.records : this.select( where ),
 	    defer   = deferred(),
-	    blob, worker;
+	    blob, next, worker;
 
-	if ( this.total === 0 ) {
-		defer.resolve( [] );
-	}
-	else if ( !create && this.views[view] ) {
-		defer.resolve( this.views[view] );
-	}
-	else if ( server ) {
-		this.views[view] = array.keySort( records.slice(), query, "data" );
-		defer.resolve( this.views[view] );
+	// Next phase
+	next = function ( records ) {
+		if ( self.total === 0 ) {
+			defer.resolve( [] );
+		}
+		else if ( !create && self.views[view] ) {
+			defer.resolve( self.views[view] );
+		}
+		else if ( server ) {
+			self.views[view] = array.keySort( records.slice(), query, "data" );
+			defer.resolve( self.views[view] );
+		}
+		else {
+			blob   = new Blob( [decodeURIComponent( DATASTORE )] );
+		    worker = new Worker( global.URL.createObjectURL( blob ) );
+
+			worker.onmessage = function ( ev ) {
+				self.views[view] = ev.data;
+				defer.resolve( self.views[view] );
+			};
+
+			worker.postMessage( {cmd: "sort", records: records.slice(), query: query} );
+		}
+	};
+
+	if ( !where ) {
+		next( this.records );
 	}
 	else {
-		blob   = new Blob( [decodeURIComponent( DATASTORE )] );
-	    worker = new Worker( global.URL.createObjectURL( blob ) );
-
-		worker.onmessage = function ( ev ) {
-			self.views[view] = ev.data;
-			defer.resolve( self.views[view] );
-		};
-
-		worker.postMessage( {cmd: "sort", records: records.slice(), query: query} );
+		this.select( where ).then( next );
 	}
 
 	return defer;
