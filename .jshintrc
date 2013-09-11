@@ -37,6 +37,7 @@
 		"define": true,
 		"setImmediate": true,
 		"mongodb": true,
-		"format": true
+		"format": true,
+		"Blob": true
 	}
 }

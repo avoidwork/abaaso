@@ -758,36 +758,60 @@ DataStore.prototype.save = function ( arg ) {
 /**
  * Selects records based on an explcit description
  *
+ * Note: Records are not by reference!
+ *
  * @method select
  * @param  {Object} where  Object describing the WHERE clause
  * @return {Array}         Array of records
  * @todo Move this to a web worker
  */
 DataStore.prototype.select = function ( where ) {
-	var result;
+	var defer = deferred(),
+	    blob, functions, worker;
 
 	if ( !( where instanceof Object ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	result = this.records.filter( function ( rec ) {
-		var match = true;
+	if ( server ) {
+		defer.resolve( this.records.slice().filter( function ( rec ) {
+			var match = true;
+
+			utility.iterate( where, function ( v, k ) {
+				var type = typeof v;
+
+				if ( type !== "function" && rec.data[k] !== v ) {
+					return ( match = false );
+				}
+				else if ( type === "function" && !v( rec.data[k], rec ) ) {
+					return ( match = false );
+				}
+			});
+
+			return match;
+		}));
+	}
+	else {
+		functions = [];
 
 		utility.iterate( where, function ( v, k ) {
-			var type = typeof v;
-
-			if ( type !== "function" && rec.data[k] !== v ) {
-				return ( match = false );
-			}
-			else if ( type === "function" && !v( rec.data[k], rec ) ) {
-				return ( match = false );
+			if ( typeof v === "function" ) {
+				this[k] = v.toString();
+				functions.push( k );
 			}
 		});
 
-		return match;
-	});
+		blob   = new Blob( [decodeURIComponent( DATASTORE )] );
+	    worker = new Worker( global.URL.createObjectURL( blob ) );
 
-	return result;
+		worker.onmessage = function ( ev ) {
+			defer.resolve( ev.data );
+		};
+
+		worker.postMessage( {cmd: "select", records: this.records.slice(), where: json.encode( where ), functions: functions} );
+	}
+
+	return defer;
 };
 
 /**
@@ -1058,25 +1082,39 @@ DataStore.prototype.setUri = function ( arg ) {
  * @param  {String} query  SQL ( style ) order by
  * @param  {String} create [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
  * @param  {Object} where  [Optional] Object describing the WHERE clause
- * @return {Array}         View of data
- * @todo Move this to a web worker
+ * @return {Object}        Deferred
  */
 DataStore.prototype.sort = function ( query, create, where ) {
 	create      = ( create === true || ( where instanceof Object ) );
-	var view    = string.explode( query ).join( " " ).toCamelCase(),
-	    records = !where ? this.records : this.select( where );
+	var self    = this,
+	    view    = string.explode( query ).join( " " ).toCamelCase(),
+	    records = !where ? this.records : this.select( where ),
+	    defer   = deferred(),
+	    blob, worker;
 
 	if ( this.total === 0 ) {
-		return [];
+		defer.resolve( [] );
 	}
 	else if ( !create && this.views[view] ) {
-		return this.views[view];
+		defer.resolve( this.views[view] );
+	}
+	else if ( server ) {
+		this.views[view] = array.keySort( records.slice(), query, "data" );
+		defer.resolve( this.views[view] );
 	}
 	else {
-		this.views[view] = array.keySort( records.slice(), query, "data" );
+		blob   = new Blob( [decodeURIComponent( DATASTORE )] );
+	    worker = new Worker( global.URL.createObjectURL( blob ) );
 
-		return this.views[view];
+		worker.onmessage = function ( ev ) {
+			self.views[view] = ev.data;
+			defer.resolve( self.views[view] );
+		};
+
+		worker.postMessage( {cmd: "sort", records: records.slice(), query: query} );
 	}
+
+	return defer;
 };
 
 /**

@@ -51,6 +51,15 @@ module.exports = function (grunt) {
 					"src/outro.js"
 				],
 				dest : "lib/<%= pkg.name %>.js"
+			},
+			datastore : {
+				src : [
+					"src/array.js",
+					"src/string.js",
+					"src/utility.js",
+					"src/worker_datastore.js"
+				],
+				dest : "lib/datastore.js"
 			}
 		},
 		exec : {
@@ -71,9 +80,14 @@ module.exports = function (grunt) {
 			all : ["test/*.js"]
 		},
 		sed : {
-			"version" : {
+			version : {
 				pattern : "{{VERSION}}",
 				replacement : "<%= pkg.version %>",
+				path : ["<%= concat.dist.dest %>"]
+			},
+			datastore : {
+				pattern : "{{DATASTORE}}",
+				replacement : encodeURIComponent(grunt.file.read("lib/datastore.js")),
 				path : ["<%= concat.dist.dest %>"]
 			}
 		},
@@ -86,6 +100,13 @@ module.exports = function (grunt) {
 				files : "package.json",
 				tasks : "default"
 			}
+		},
+		uglify : {
+			datastore : {
+				files : {
+					"lib/datastore.js" : ["lib/datastore.js"]
+				}
+			}
 		}
 	});
 
@@ -95,10 +116,14 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
-	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks("grunt-contrib-watch");
+	grunt.loadNpmTasks("grunt-contrib-uglify");
 
 	// aliases
+	grunt.registerTask("cleanup", "Erases temporary Worker file(s)", function () {
+		grunt.file.delete("lib/datastore.js");
+	});
 	grunt.registerTask("test", ["nodeunit", "jshint"]);
-	grunt.registerTask("build", ["concat", "sed", "exec"]);
+	grunt.registerTask("build", ["concat", "uglify", "sed", "exec", "cleanup"]);
 	grunt.registerTask("default", ["build", "test"]);
 };

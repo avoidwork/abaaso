@@ -254,14 +254,13 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	create       = ( create === true );
 	var el       = this.element,
 	    template = ( typeof this.template === "object" ),
-	    consumed = [],
 	    items    = [],
 	    self     = this,
 	    callback = ( typeof this.callback === "function" ),
 	    reg      = new RegExp(),
 	    registry = [], // keeps track of records in the list ( for filtering )
 	    limit    = [],
-	    fn, ceiling;
+	    fn, ceiling, next;
 
 	observer.fire( el, "beforeDataListRefresh" );
 
@@ -315,107 +314,110 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		};
 	}
 
-	// Consuming records based on sort
-	if ( this.where === null ) {
-		consumed = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create );
-	}
-	else {
-		consumed = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.where );
-	}
+	// Next step after retrieving records
+	next = function ( consumed ) {
+		// Processing ( filtering ) records & generating templates
+		array.each( consumed, function ( i ) {
+			if ( self.filter === null || !( self.filter instanceof Object ) ) {
+				items.push( {key: i.key, template: fn( i )} );
+			}
+			else {
+				utility.iterate( self.filter, function ( v, k ) {
+					var reg, key;
 
-	// Processing ( filtering ) records & generating templates
-	array.each( consumed, function ( i ) {
-		if ( self.filter === null || !( self.filter instanceof Object ) ) {
-			items.push( {key: i.key, template: fn( i )} );
-		}
-		else {
-			utility.iterate( self.filter, function ( v, k ) {
-				var reg, key;
-
-				if ( array.contains( registry, i.key ) ) {
-					return;
-				}
-				
-				v   = string.explode( v );
-				reg = new RegExp(),
-				key = ( k === self.store.key );
-
-				array.each( v, function ( query ) {
-					var value = !key ? utility.walk( i.data, k ) : "";
-
-					utility.compile( reg, query, "i" );
-
-					if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
-						registry.push( i.key );
-						items.push( {key: i.key, template: fn( i )} );
-
-						return false;
+					if ( array.contains( registry, i.key ) ) {
+						return;
 					}
-				});
-			});
-		}
-	});
+					
+					v   = string.explode( v );
+					reg = new RegExp(),
+					key = ( k === self.store.key );
 
-	// Exposting records & total count of items in the list
-	this.records = items;
-	this.total   = items.length;
+					array.each( v, function ( query ) {
+						var value = !key ? utility.walk( i.data, k ) : "";
 
-	// Pagination ( supports filtering )
-	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
-		ceiling = datalist.pages.call( this );
+						utility.compile( reg, query, "i" );
 
-		// Passed the end, so putting you on the end
-		if ( ceiling > 0 && this.pageIndex > ceiling ) {
-			return this.page( ceiling );
-		}
+						if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
+							registry.push( i.key );
+							items.push( {key: i.key, template: fn( i )} );
 
-		// Paginating the items
-		else if ( this.total > 0 ) {
-			limit = datalist.range.call( this );
-			items = items.limit( limit[0], limit[1] );
-		}
-	}
-
-	// Preparing the target element
-	if ( redraw ) {
-		if ( this.total === 0 ) {
-			el.innerHTML = "<li class=\"empty\">" + this.emptyMsg + "</li>";
-		}
-		else {
-			el.innerHTML = items.map( function ( i ) {
-				return i.template;
-			}).join( "\n" );
-
-			if ( callback ) {
-				array.each( element.find( el, "> li" ), function ( i ) {
-					self.callback( i );
+							return false;
+						}
+					});
 				});
 			}
+		});
+
+		// Exposting records & total count of items in the list
+		self.records = items;
+		self.total   = items.length;
+
+		// Pagination ( supports filtering )
+		if ( typeof self.pageIndex === "number" && typeof self.pageSize === "number" ) {
+			ceiling = datalist.pages.call( self );
+
+			// Passed the end, so putting you on the end
+			if ( ceiling > 0 && self.pageIndex > ceiling ) {
+				return self.page( ceiling );
+			}
+
+			// Paginating the items
+			else if ( self.total > 0 ) {
+				limit = datalist.range.call( self );
+				items = items.limit( limit[0], limit[1] );
+			}
 		}
-	}
-	else {
-		array.each( element.find( el, "> li" ), function ( i ) {
-			element.addClass( i, "hidden" );
-		});
 
-		array.each( items, function ( i ) {
-			array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
-				element.removeClass( o, "hidden" );
+		// Preparing the target element
+		if ( redraw ) {
+			if ( self.total === 0 ) {
+				el.innerHTML = "<li class=\"empty\">" + self.emptyMsg + "</li>";
+			}
+			else {
+				el.innerHTML = items.map( function ( i ) {
+					return i.template;
+				}).join( "\n" );
+
+				if ( callback ) {
+					array.each( element.find( el, "> li" ), function ( i ) {
+						self.callback( i );
+					});
+				}
+			}
+		}
+		else {
+			array.each( element.find( el, "> li" ), function ( i ) {
+				element.addClass( i, "hidden" );
 			});
-		});
-	}
 
-	// Rendering pagination elements
-	if ( regex.top_bottom.test( this.pagination ) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
-		this.pages();
+			array.each( items, function ( i ) {
+				array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
+					element.removeClass( o, "hidden" );
+				});
+			});
+		}
+
+		// Rendering pagination elements
+		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex === "number" && typeof self.pageSize === "number") {
+			self.pages();
+		}
+		else {
+			array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
+				element.destroy( i );
+			});
+		}
+
+		observer.fire( el, "afterDataListRefresh" );
+	};
+
+	// Consuming records based on sort
+	if ( this.where === null ) {
+		string.isEmpty( this.order ) ? next( this.store.get() ) : this.store.sort( this.order, create ).then( next );
 	}
 	else {
-		array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
-			element.destroy( i );
-		});
+		string.isEmpty( this.order ) ? this.store.select( this.where ).then( next ) : this.store.sort( this.order, create, this.where ).then( next );
 	}
-
-	observer.fire( el, "afterDataListRefresh" );
 
 	return this;
 };

@@ -1,6 +1,9 @@
 // Bootstrapping
 bootstrap();
 
+// DataStore Worker script
+DATASTORE = "{{DATASTORE}}";
+
 // Returning namespace
 return abaaso;
 })();
