@@ -1,3 +1,5 @@
+var fs = require("fs");
+
 module.exports = function (grunt) {
 	grunt.initConfig({
 		pkg : grunt.file.readJSON("package.json"),
@@ -84,11 +86,6 @@ module.exports = function (grunt) {
 				pattern : "{{VERSION}}",
 				replacement : "<%= pkg.version %>",
 				path : ["<%= concat.dist.dest %>"]
-			},
-			datastore : {
-				pattern : "{{DATASTORE}}",
-				replacement : encodeURIComponent(grunt.file.read("lib/datastore.js")),
-				path : ["<%= concat.dist.dest %>"]
 			}
 		},
 		watch : {
@@ -119,11 +116,19 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 
-	// aliases
-	grunt.registerTask("cleanup", "Erases temporary Worker file(s)", function () {
-		grunt.file.delete("lib/datastore.js");
+	// injecting worker script (back) into framework
+	grunt.registerTask("inject", function () {
+		var script   = fs.readFileSync("lib/abaaso.js").toString(),
+		    dsWorker = encodeURIComponent(fs.readFileSync("lib/datastore.js"));
+
+		script = script.replace("{{DATASTORE}}", dsWorker);
+		fs.writeFileSync("lib/abaaso.js", script);
+		fs.unlinkSync("lib/datastore.js");
 	});
+
+	// aliases
 	grunt.registerTask("test", ["nodeunit", "jshint"]);
-	grunt.registerTask("build", ["concat", "uglify", "sed", "exec", "cleanup"]);
-	grunt.registerTask("default", ["build", "test"]);
+	grunt.registerTask("build", ["concat", "uglify", "inject"]);
+	grunt.registerTask("finalize", ["sed", "exec"]);
+	grunt.registerTask("default", ["build", "finalize", "test"]);
 };
