@@ -94,7 +94,7 @@ DataListFilter.prototype.update = function () {
 	var self = this;
 
 	utility.defer( function () {
-		var val = element.val( self.element );
+		var val = element.val( self.element ).toString();
 		
 		if ( !string.isEmpty( val ) ) {
 			utility.iterate( self.filters, function ( v, k ) {
