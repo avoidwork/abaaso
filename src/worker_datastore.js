@@ -9,7 +9,13 @@ onmessage = function ( ev ) {
 	var cmd = ev.data.cmd,
 	    result, where;
 
-	if ( cmd === "select" ) {
+	if ( cmd === "find" ) {
+
+	}
+	else if ( cmd === "join" ) {
+		
+	}
+	else if ( cmd === "select" ) {
 		where = JSON.parse( ev.data.where );
 
 		array.each( ev.data.functions, function ( i ) {
