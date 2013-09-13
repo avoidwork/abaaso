@@ -2,7 +2,7 @@
 bootstrap();
 
 // DataStore Worker script
-DATASTORE = "{{DATASTORE}}";
+WORKER = "{{WORKER}}";
 
 // Returning namespace
 return abaaso;

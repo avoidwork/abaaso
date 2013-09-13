@@ -54,15 +54,15 @@ module.exports = function (grunt) {
 				],
 				dest : "lib/<%= pkg.name %>.js"
 			},
-			datastore : {
+			worker : {
 				src : [
 					"src/array.js",
 					"src/regex.js",
 					"src/string.js",
 					"src/utility.js",
-					"src/worker_datastore.js"
+					"src/worker.js"
 				],
-				dest : "lib/datastore.js"
+				dest : "lib/worker.js"
 			}
 		},
 		exec : {
@@ -100,9 +100,9 @@ module.exports = function (grunt) {
 			}
 		},
 		uglify : {
-			datastore : {
+			worker : {
 				files : {
-					"lib/datastore.js" : ["lib/datastore.js"]
+					"lib/worker.js" : ["lib/worker.js"]
 				}
 			}
 		}
@@ -120,11 +120,11 @@ module.exports = function (grunt) {
 	// injecting worker script (back) into framework
 	grunt.registerTask("inject", function () {
 		var script   = fs.readFileSync("lib/abaaso.js").toString(),
-		    dsWorker = encodeURIComponent(fs.readFileSync("lib/datastore.js"));
+		    dsWorker = encodeURIComponent(fs.readFileSync("lib/worker.js"));
 
-		script = script.replace("{{DATASTORE}}", dsWorker);
+		script = script.replace("{{WORKER}}", dsWorker);
 		fs.writeFileSync("lib/abaaso.js", script);
-		fs.unlinkSync("lib/datastore.js");
+		fs.unlinkSync("lib/worker.js");
 	});
 
 	// aliases

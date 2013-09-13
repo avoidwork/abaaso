@@ -693,7 +693,7 @@ DataStore.prototype.select = function ( where ) {
 			}
 		});
 
-		blob   = new Blob( [decodeURIComponent( DATASTORE )] );
+		blob   = new Blob( [decodeURIComponent( WORKER )] );
 	    worker = new Worker( global.URL.createObjectURL( blob ) );
 
 		worker.onmessage = function ( ev ) {
@@ -996,7 +996,7 @@ DataStore.prototype.sort = function ( query, create, where ) {
 			defer.resolve( self.views[view] );
 		}
 		else {
-			blob   = new Blob( [decodeURIComponent( DATASTORE )] );
+			blob   = new Blob( [decodeURIComponent( WORKER )] );
 		    worker = new Worker( global.URL.createObjectURL( blob ) );
 
 			worker.onmessage = function ( ev ) {
