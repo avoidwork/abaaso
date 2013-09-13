@@ -763,7 +763,7 @@ DataStore.prototype.select = function ( where ) {
 		});
 
 		blob   = new Blob( [WORKER] );
-	    worker = new Worker( global.URL.createObjectURL( blob ) );
+		worker = new Worker( global.URL.createObjectURL( blob ) );
 
 		worker.onmessage = function ( ev ) {
 			defer.resolve( ev.data );
@@ -1066,7 +1066,7 @@ DataStore.prototype.sort = function ( query, create, where ) {
 		}
 		else {
 			blob   = new Blob( [WORKER] );
-		    worker = new Worker( global.URL.createObjectURL( blob ) );
+			worker = new Worker( global.URL.createObjectURL( blob ) );
 
 			worker.onmessage = function ( ev ) {
 				self.views[view] = ev.data;
