@@ -443,7 +443,7 @@ var element = {
 			}).length === 1 );
 		}
 		else {
-			return new RegExp( arg ).test( obj.nodeName );
+			return new RegExp( arg, "i" ).test( obj.nodeName );
 		}
 	},
 
@@ -767,11 +767,9 @@ var element = {
 	 * @return {Object}    Size {height: n, width:n}
 	 */
 	size : function ( obj ) {
-		var style = window.getComputedStyle( obj );
-
 		return {
-			height : parseInt( style.height, 10 ),
-			width  : parseInt( style.width, 10 )
+			height : obj.offsetHeight + number.parse( obj.style.paddingTop  || 0 ) + number.parse( obj.style.paddingBottom || 0 ) + number.parse( obj.style.borderTop  || 0 ) + number.parse( obj.style.borderBottom || 0 ),
+			width  : obj.offsetWidth  + number.parse( obj.style.paddingLeft || 0 ) + number.parse( obj.style.paddingRight  || 0 ) + number.parse( obj.style.borderLeft || 0 ) + number.parse( obj.style.borderRight  || 0 )
 		};
 	},
 

@@ -294,7 +294,7 @@ abaaso.when            = utility.when;
 function Abaaso ( query ) {
 	var self = this;
 
-	if ( !string.isEmpty( query ) ) {
+	if ( query && !string.isEmpty( query ) ) {
 		array.each( utility.$( query ), function ( i ) {
 			self.push( i );
 		});
@@ -329,6 +329,14 @@ Abaaso.prototype.append = function ( type, args ) {
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "last" ) );
 	});
+
+	return result;
+};
+
+Abaaso.prototype.at = function ( n ) {
+	var result = new Abaaso();
+
+	result.push( this[n] );
 
 	return result;
 };
@@ -372,9 +380,16 @@ Abaaso.prototype.css = function ( key, value ) {
 };
 
 Abaaso.prototype.data = function ( key, value ) {
-	return array.each( this, function (i) {
-		element.data( i, key, value );
-	});
+	if ( value !== undefined ) {
+		return array.each( this, function (i) {
+			element.data( i, key, value );
+		});
+	}
+	else {
+		return this.map( function (i) {
+			return element.data( i, key );
+		});
+	}
 };
 
 Abaaso.prototype.disable = function () {
@@ -398,7 +413,14 @@ Abaaso.prototype.destroy = function () {
 };
 
 Abaaso.prototype.each = function ( arg, async, size ) {
-	return array.each( this, arg, async, size );
+	var self = this;
+
+	return array.each( this, function ( i, idx ) {
+		var instance = new Abaaso();
+
+		instance.push( i );
+		arg.call( self, instance, idx );
+	}, async, size );
 };
 
 Abaaso.prototype.enable = function () {
@@ -425,6 +447,10 @@ Abaaso.prototype.fire = function () {
 	return array.each( this, function ( i ) {
 		observer.fire.apply( observer, [i].concat( array.cast( args ) ) );
 	});
+};
+
+Abaaso.prototype.forEach = function ( arg, async, size ) {
+	return this.each( arg, async, size );
 };
 
 Abaaso.prototype.genId = function () {
@@ -668,11 +694,16 @@ Abaaso.prototype.isUrl = function () {
 };
 
 Abaaso.prototype.last = function ( arg ) {
-	var result = new Abaaso();
+	var result = new Abaaso(),
+	    tmp    = array.last( this, arg );
 
-	array.each( array.last( this, arg ), function ( i ) {
-		result.push( i );
-	});
+	if ( isNaN( arg ) || arg < 2 ) {
+		tmp = tmp !== undefined ? [tmp] : [];
+	}
+
+	array.each( tmp, function ( i ) {
+		result.push ( i );
+	} );
 
 	return result;
 };
@@ -691,7 +722,7 @@ Abaaso.prototype.listeners = function ( event ) {
 	var result = [];
 
 	array.each( this, function ( i ) {
-		array.merge( result, observer.listeners( i, event ) );
+		result.push( abaaso.listeners( i, event ) );
 	});
 
 	return result;
@@ -772,15 +803,25 @@ Abaaso.prototype.size = function () {
 };
 
 Abaaso.prototype.text = function ( arg ) {
-	return array.each( this, function ( node ) {
-		if ( typeof node !== "object") {
-			node = utility.object( node );
-		}
+	var result;
 
-		if ( typeof node.text === "function") {
-			node.text( arg );
-		}
-	});
+	if ( arg !== undefined ) {
+		return array.each( this, function ( i ) {
+			var tmp;
+
+			tmp = {};
+			tmp[i.innerText ? "innerText" : "text"] = arg;
+			element.update( i, tmp );
+		});
+	}
+	else {
+		result = [];
+		array.each( this, function ( i ) {
+			result.push( string.trim( i[i.innerText ? "innerText" : "text"] ) );
+		});
+
+		return result;
+	}
 };
 
 Abaaso.prototype.tpl = function ( arg ) {
