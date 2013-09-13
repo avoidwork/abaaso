@@ -269,53 +269,18 @@ var element = {
 	 * @param  {Boolean} cancelable [Optional] Determines if the Event can be canceled, defaults to `true`
 	 * @return {Object}             Element which dispatches the Event
 	 */
-	dispatch : function () {
-		if ( typeof CustomEvent === "function" ) {
-			return function ( obj, type, data, bubbles, cancelable ) {
-				var ev = new CustomEvent( type );
+	dispatch : function ( obj, type, data, bubbles, cancelable ) {
+		var ev = new CustomEvent( type );
 
-				bubbles    = ( bubbles    !== false );
-				cancelable = ( cancelable !== false );
+		bubbles    = ( bubbles    !== false );
+		cancelable = ( cancelable !== false );
 
-				ev.initCustomEvent( type, bubbles, cancelable, data || {} );
+		ev.initCustomEvent( type, bubbles, cancelable, data || {} );
 
-				obj.dispatchEvent(ev);
+		obj.dispatchEvent(ev);
 
-				return obj;
-			};
-		}
-		else if ( document !== undefined && typeof document.createEvent === "function" ) {
-			return function ( obj, type, data, bubbles, cancelable ) {
-				var ev = document.createEvent( "HTMLEvents" );
-
-				bubbles    = ( bubbles    !== false );
-				cancelable = ( cancelable !== false );
-
-				ev.initEvent( type, bubbles, cancelable );
-
-				ev.detail = data || {};
-
-				obj.dispatchEvent(ev);
-
-				return obj;
-			};
-		}
-		else if ( document !== undefined && typeof document.createEventObject === "object" ) {
-			return function ( obj, type, data, bubbles ) {
-				var ev = document.createEventObject();
-
-				ev.cancelBubble = ( bubbles !== false );
-				ev.detail       = data || {};
-
-				obj.fireEvent( "on" + type, ev );
-			};
-		}
-		else {
-			return function () {
-				throw new Error( label.error.notSupported );
-			};
-		}
-	}(),
+		return obj;
+	},
 
 	/**
 	 * Enables an Element
