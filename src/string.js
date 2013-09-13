@@ -219,6 +219,20 @@ var string = {
 	},
 
 	/**
+	 * Casts a String to a Function
+	 *
+	 * @method toFunction
+	 * @param  {String} obj String to cast
+	 * @return {Function}   Function
+	 */
+	toFunction : function ( obj ) {
+		var args = obj.match( regex.args )[1],
+		    body = obj.match( regex.body )[1];
+
+		return Function.apply( Function, string.explode( args ).concat( [body] ) );
+	},
+
+	/**
 	 * Trims the whitespace around a String
 	 *
 	 * @method trim

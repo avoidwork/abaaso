@@ -105,6 +105,19 @@ exports["toCamelCase"] = {
 	}
 };
 
+exports["toFunction"] = {
+	setUp: function (done) {
+		this.fn = string.toFunction("function (a, b) { return a + b; }");
+		done();
+	},
+	test: function (test) {
+		test.expect(2);
+		test.equal(typeof this.fn, "function", "Should be 'function'");
+		test.equal(this.fn(1,2), 3, "Should be '3'");
+		test.done();
+	}
+};
+
 exports["trim"] = {
 	setUp: function (done) {
 		this.val = "    hello world     ";
