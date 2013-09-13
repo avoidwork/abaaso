@@ -1,6 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><title>data</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="data"><meta name="groc-project-path" content="src/data.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/data.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method decorator</span></p>
-
-<p>Decorates a DataStore on an Object</p>
+<!DOCTYPE html><html lang="en"><head><title>data</title></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"><meta name="groc-relative-root" content=""><meta name="groc-document-path" content="data"><meta name="groc-project-path" content="src/data.js"><link rel="stylesheet" type="text/css" media="all" href="assets/style.css"><script type="text/javascript" src="assets/behavior.js"></script><body><div id="meta"><div class="file-path">src/data.js</div></div><div id="document"><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method decorator </span></p>
 
 <p>Parameters:</p>
 
@@ -10,20 +8,64 @@
 <li><p><strong>args must be an Object.</strong><br/>([Optional] Arguments to set on the store)</p></li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Decorated Object)</p></div></div><div class="code"><div class="wrapper"><span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">recs</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Decorating observer if not present in prototype chain</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">fire</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">observer</span><span class="p">.</span><span class="nx">decorate</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating store</p></div></div><div class="code"><div class="wrapper">  <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DataStore</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+<p><strong>Returns an Object</strong><br/>(Decorated Object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">decorator</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">recs</span><span class="p">,</span> <span class="nx">args</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Decorating observer if not present in prototype chain</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">fire</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">observer</span><span class="p">.</span><span class="nx">decorate</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+    <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating store</p></div></div><div class="code"><div class="wrapper">    <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DataStore</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
 
-  <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">args</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="nx">args</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">recs</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">recs</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">recs</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method worker</span></p>
+
+<p>DataStore worker handler</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>ev must be an Object.</strong><br/>(Event)</li>
+</ul>
+
+<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">worker</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">ev</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">cmd</span> <span class="o">=</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">cmd</span><span class="p">,</span>
+        <span class="nx">result</span><span class="p">,</span> <span class="nx">where</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">cmd</span> <span class="o">===</span> <span class="s2">&quot;select&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">where</span> <span class="o">=</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">where</span> <span class="p">);</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">functions</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">where</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">toFunction</span><span class="p">(</span> <span class="nx">where</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">});</span>
+
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">where</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">v</span><span class="p">;</span>
+
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">!==</span> <span class="nx">v</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">);</span>
+          <span class="p">}</span>
+          <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">v</span><span class="p">(</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">],</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">);</span>
+          <span class="p">}</span>
+        <span class="p">});</span>
+
+        <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+      <span class="p">});</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">cmd</span> <span class="o">===</span> <span class="s2">&quot;sort&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keySort</span><span class="p">(</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">query</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span> <span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="nx">postMessage</span><span class="p">(</span> <span class="nx">result</span> <span class="p">);</span>
   <span class="p">}</span>
-
-  <span class="k">if</span> <span class="p">(</span> <span class="nx">recs</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">recs</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">obj</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">batch</span><span class="p">(</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="nx">recs</span> <span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Constructor</span></p>
 
 <p>DataStore</p></div></div><div class="code"><div class="wrapper"><span class="kd">function</span> <span class="nx">DataStore</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
@@ -129,7 +171,7 @@ Events: beforeDataBatch  Fires before the batch is queued
   <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method buildUri</span></p>
 
-<p>Builds a relative URI</p>
+<p>Builds a URI</p>
 
 <p>Parameters:</p>
 
@@ -137,7 +179,7 @@ Events: beforeDataBatch  Fires before the batch is queued
 <li><strong>key must be a String.</strong><br/>(Record key)</li>
 </ul>
 
-<p><strong>Returns a String</strong><br/>([description])</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">buildUri</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns a String</strong><br/>(URI)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">buildUri</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">parsed</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span> <span class="p">);</span>
 
   <span class="k">return</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">+</span> <span class="s2">&quot;//&quot;</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">host</span> <span class="o">+</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">+</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">endslash</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">pathname</span> <span class="p">)</span> <span class="o">?</span> <span class="s2">&quot;&quot;</span> <span class="o">:</span> <span class="s2">&quot;/&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="nx">key</span><span class="p">;</span>
@@ -243,7 +285,7 @@ Events: beforeDataRetrieve Fires before crawling a record
 
     <span class="nx">array</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">collections</span><span class="p">,</span> <span class="nx">k</span> <span class="p">);</span>
 
-    <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">data</span><span class="p">(</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">record</span><span class="p">.</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">k</span><span class="p">},</span> <span class="kc">null</span><span class="p">,</span> <span class="p">{</span><span class="nx">key</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span> <span class="nx">pointer</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">pointer</span><span class="p">,</span> <span class="nx">source</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">source</span><span class="p">,</span> <span class="nx">ignore</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">ignore</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">leafs</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">leafs</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">depth</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">maxDepth</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">maxDepth</span><span class="p">,</span> <span class="nx">headers</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">headers</span><span class="p">,</span> <span class="nx">retrieve</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
+    <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">decorator</span><span class="p">(</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="nx">record</span><span class="p">.</span><span class="nx">key</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">+</span> <span class="nx">k</span><span class="p">},</span> <span class="kc">null</span><span class="p">,</span> <span class="p">{</span><span class="nx">key</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span> <span class="nx">pointer</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">pointer</span><span class="p">,</span> <span class="nx">source</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">source</span><span class="p">,</span> <span class="nx">ignore</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">ignore</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">leafs</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">leafs</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">depth</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">maxDepth</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">maxDepth</span><span class="p">,</span> <span class="nx">headers</span><span class="o">:</span> <span class="nx">self</span><span class="p">.</span><span class="nx">headers</span><span class="p">,</span> <span class="nx">retrieve</span><span class="o">:</span> <span class="kc">true</span><span class="p">}</span> <span class="p">);</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">leafs</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">maxDepth</span> <span class="o">===</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">depth</span> <span class="o">&lt;=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">].</span><span class="nx">data</span><span class="p">.</span><span class="nx">maxDepth</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="p">)</span> <span class="p">{</span>
@@ -416,102 +458,6 @@ Events: beforeDataDelete  Fires before the record is deleted
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="nx">args</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span> <span class="nx">fn</span> <span class="p">);</span>
-<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method find</span></p>
-
-<p>Finds needle in the haystack</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><p><strong>needle can be of any type.</strong><br/>(String, Number, RegExp Pattern or Function)</p></li>
-<li><p><strong>haystack must be a String.</strong><br/>([Optional] Commma delimited string of the field( s ) to search)</p></li>
-<li><p><strong>modifiers must be a String.</strong><br/>([Optional] Regex modifiers, defaults to "gi" unless value is null)</p></li>
-</ul>
-
-<p><strong>Returns an Array</strong><br/>(Array of results)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">find</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">needle</span><span class="p">,</span> <span class="nx">haystack</span><span class="p">,</span> <span class="nx">modifiers</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span> <span class="nx">needle</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-  <span class="p">}</span>
-
-  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">[],</span>
-      <span class="nx">keys</span>   <span class="o">=</span> <span class="p">[],</span>
-      <span class="nx">regex</span>  <span class="o">=</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(),</span>
-      <span class="nx">fn</span>     <span class="o">=</span> <span class="k">typeof</span> <span class="nx">needle</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Blocking unnecessary ops</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Preparing parameters</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">needle</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">needle</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="o">?</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">needle</span> <span class="p">)</span> <span class="o">:</span> <span class="p">[</span><span class="nx">needle</span><span class="p">];</span>
-
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">modifiers</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">modifiers</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">modifiers</span> <span class="o">=</span> <span class="s2">&quot;gi&quot;</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">modifiers</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">modifiers</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-
-  <span class="nx">haystack</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">haystack</span> <span class="o">===</span> <span class="s2">&quot;string&quot;</span> <span class="o">?</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">haystack</span> <span class="p">)</span> <span class="o">:</span> <span class="kc">null</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>No haystack, testing everything</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="nx">haystack</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">r</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">keys</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">key</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-          <span class="p">}</span>
-
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">v</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">v</span><span class="p">.</span><span class="nx">data</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="k">return</span><span class="p">;</span>
-          <span class="p">}</span>
-
-          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">needle</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">n</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">utility</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">regex</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">modifiers</span> <span class="p">);</span>
-
-            <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">v</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="nx">keys</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
-              <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
-
-              <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-            <span class="p">}</span>
-          <span class="p">});</span>
-        <span class="p">});</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">needle</span><span class="p">(</span> <span class="nx">r</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">keys</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
-        <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
-      <span class="p">}</span>
-    <span class="p">});</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Looking through the haystack</p></div></div><div class="code"><div class="wrapper">  <span class="k">else</span> <span class="p">{</span>
-    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">r</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">haystack</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">h</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">keys</span><span class="p">,</span> <span class="nx">r</span><span class="p">.</span><span class="nx">key</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">h</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="k">typeof</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">h</span><span class="p">].</span><span class="nx">data</span> <span class="o">===</span> <span class="s2">&quot;object&quot;</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span><span class="p">;</span>
-        <span class="p">}</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">needle</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">n</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">utility</span><span class="p">.</span><span class="nx">compile</span><span class="p">(</span> <span class="nx">regex</span><span class="p">,</span> <span class="nx">n</span><span class="p">,</span> <span class="nx">modifiers</span> <span class="p">);</span>
-
-            <span class="k">if</span> <span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">h</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="nx">keys</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
-              <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
-
-              <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-            <span class="p">}</span>
-          <span class="p">});</span>
-        <span class="p">}</span>
-        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">needle</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">h</span><span class="p">]</span> <span class="p">)</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">keys</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span><span class="p">.</span><span class="nx">key</span> <span class="p">);</span>
-          <span class="nx">result</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
-
-          <span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
-        <span class="p">}</span>
-      <span class="p">});</span>
-    <span class="p">});</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method get</span></p>
 
 <p>Retrieves a record based on key or index
@@ -558,7 +504,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
   <span class="p">}</span>
 
   <span class="k">return</span> <span class="nx">r</span><span class="p">;</span>
-<span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section doc-section-public"><div class="wrapper"><p><span class='doc-section-header'>Public method join</span></p>
+<span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method join</span></p>
 
 <p>Performs an (INNER/LEFT/RIGHT) JOIN on two DataStores</p>
 
@@ -570,86 +516,112 @@ If the key is an integer, cast to a string before sending as an argument!</p>
 <li><p><strong>join must be a String.</strong><br/>(Type of JOIN to perform, defaults to <code>inner</code>)</p></li>
 </ul>
 
-<p><strong>Returns an Array</strong><br/>(Array of records)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">join</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">join</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="nx">join</span>        <span class="o">=</span> <span class="nx">join</span> <span class="o">||</span> <span class="s2">&quot;inner&quot;</span><span class="p">;</span>
-  <span class="kd">var</span> <span class="nx">self</span>    <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
-      <span class="nx">results</span> <span class="o">=</span> <span class="p">[],</span>
-      <span class="nx">key</span>     <span class="o">=</span> <span class="nx">field</span> <span class="o">===</span> <span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span>
-      <span class="nx">keys</span>    <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">),</span>
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">join</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">field</span><span class="p">,</span> <span class="nx">join</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="nx">join</span>          <span class="o">=</span> <span class="nx">join</span> <span class="o">||</span> <span class="s2">&quot;inner&quot;</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">self</span>      <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+      <span class="nx">defer</span>     <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
+      <span class="nx">results</span>   <span class="o">=</span> <span class="p">[],</span>
+      <span class="nx">deferreds</span> <span class="o">=</span> <span class="p">[],</span>
+      <span class="nx">key</span>       <span class="o">=</span> <span class="nx">field</span> <span class="o">===</span> <span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">,</span>
+      <span class="nx">keys</span>      <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">),</span>
     <span class="nx">fn</span><span class="p">;</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">join</span> <span class="o">===</span> <span class="s2">&quot;inner&quot;</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">where</span> <span class="o">=</span> <span class="p">{},</span>
-        <span class="nx">match</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">where</span>  <span class="o">=</span> <span class="p">{},</span>
+          <span class="nx">record</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span>
+          <span class="nx">defer</span>  <span class="o">=</span> <span class="nx">deferred</span><span class="p">();</span>
 
-      <span class="nx">where</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">?</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
-      <span class="nx">match</span>        <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">);</span>
+      <span class="nx">where</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">?</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">record</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
+      
+      <span class="nx">arg</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">match</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">databaseMoreThanOne</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">false</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="p">);</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">databaseMoreThanOne</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">}</span>
+      <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">defer</span> <span class="p">);</span>
     <span class="p">};</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">join</span> <span class="o">===</span> <span class="s2">&quot;left&quot;</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">where</span>  <span class="o">=</span> <span class="p">{},</span>
           <span class="nx">record</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span>
-        <span class="nx">match</span><span class="p">;</span>
+          <span class="nx">defer</span>  <span class="o">=</span> <span class="nx">deferred</span><span class="p">();</span>
 
-      <span class="nx">where</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">?</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
-      <span class="nx">match</span>        <span class="o">=</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">);</span>
+      <span class="nx">where</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">?</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">record</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">databaseMoreThanOne</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">keys</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
+      <span class="nx">arg</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">match</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">databaseMoreThanOne</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">keys</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span>
+          <span class="p">});</span>
 
-        <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">record</span> <span class="p">);</span>
-      <span class="p">}</span>
+          <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">record</span> <span class="p">);</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="p">);</span>
+
+      <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">defer</span> <span class="p">);</span>
     <span class="p">};</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">join</span> <span class="o">===</span> <span class="s2">&quot;right&quot;</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">where</span>  <span class="o">=</span> <span class="p">{},</span>
           <span class="nx">record</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span>
-        <span class="nx">match</span><span class="p">;</span>
+          <span class="nx">defer</span>  <span class="o">=</span> <span class="nx">deferred</span><span class="p">();</span>
 
-      <span class="nx">where</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">?</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
-      <span class="nx">match</span>        <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">);</span>
+      <span class="nx">where</span><span class="p">[</span><span class="nx">field</span><span class="p">]</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">?</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span> <span class="o">:</span> <span class="nx">record</span><span class="p">[</span><span class="nx">field</span><span class="p">];</span>
+      
+      <span class="nx">self</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">match</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">databaseMoreThanOne</span> <span class="p">)</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span> <span class="p">)</span> <span class="p">);</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">keys</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+            <span class="p">}</span>
+          <span class="p">});</span>
 
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">databaseMoreThanOne</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">match</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="kc">true</span> <span class="p">),</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">match</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">data</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">keys</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">record</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-          <span class="p">}</span>
-        <span class="p">});</span>
+          <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">record</span> <span class="p">);</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span> <span class="p">);</span>
 
-        <span class="nx">results</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">record</span> <span class="p">);</span>
-      <span class="p">}</span>
+      <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">defer</span> <span class="p">);</span>
     <span class="p">};</span>
   <span class="p">}</span>
 
-  <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">join</span> <span class="o">===</span> <span class="s2">&quot;right&quot;</span> <span class="o">?</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">records</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="nx">fn</span><span class="p">);</span>
+  <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">join</span> <span class="o">===</span> <span class="s2">&quot;right&quot;</span> <span class="o">?</span> <span class="nx">arg</span><span class="p">.</span><span class="nx">records</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">);</span>
 
-  <span class="k">return</span> <span class="nx">results</span><span class="p">;</span>
+  <span class="nx">utility</span><span class="p">.</span><span class="nx">when</span><span class="p">(</span> <span class="nx">deferreds</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">results</span> <span class="p">);</span>
+  <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+  <span class="p">}</span> <span class="p">);</span>
+  
+  <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method only</span></p>
 
 <p>Retrieves only 1 field/property</p>
@@ -727,7 +699,8 @@ If the key is an integer, cast to a string before sending as an argument!</p>
   <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">storage</span><span class="p">(</span> <span class="nx">arg</span> <span class="o">||</span> <span class="k">this</span><span class="p">,</span> <span class="s2">&quot;set&quot;</span> <span class="p">);</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method select</span></p>
 
-<p>Selects records based on an explcit description</p>
+<p>Selects records based on an explcit description
+Note: Records are not by reference!</p>
 
 <p>Parameters:</p>
 
@@ -736,30 +709,52 @@ If the key is an integer, cast to a string before sending as an argument!</p>
 </ul>
 
 <p><strong>Returns an Array</strong><br/>(Array of records)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">select</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">where</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="kd">var</span> <span class="nx">defer</span> <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
+      <span class="nx">blob</span><span class="p">,</span> <span class="nx">functions</span><span class="p">,</span> <span class="nx">worker</span><span class="p">;</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span> <span class="nx">where</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="nx">result</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">slice</span><span class="p">().</span><span class="nx">filter</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">where</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">v</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">!==</span> <span class="nx">v</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">v</span><span class="p">(</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">],</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">return</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">});</span>
+
+      <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
+    <span class="p">}));</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">functions</span> <span class="o">=</span> <span class="p">[];</span>
 
     <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">where</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">v</span><span class="p">;</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">!==</span> <span class="nx">v</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">);</span>
-      <span class="p">}</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">v</span><span class="p">(</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">],</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="p">(</span> <span class="nx">match</span> <span class="o">=</span> <span class="kc">false</span> <span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">v</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+        <span class="nx">functions</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">k</span> <span class="p">);</span>
       <span class="p">}</span>
     <span class="p">});</span>
 
-    <span class="k">return</span> <span class="nx">match</span><span class="p">;</span>
-  <span class="p">});</span>
+    <span class="nx">blob</span>   <span class="o">=</span> <span class="k">new</span> <span class="nx">Blob</span><span class="p">(</span> <span class="p">[</span><span class="nx">WORKER</span><span class="p">]</span> <span class="p">);</span>
+    <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Worker</span><span class="p">(</span> <span class="nx">global</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span> <span class="nx">blob</span> <span class="p">)</span> <span class="p">);</span>
 
-  <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">ev</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span> <span class="p">);</span>
+    <span class="p">};</span>
+
+    <span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">(</span> <span class="p">{</span><span class="nx">cmd</span><span class="o">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="nx">records</span><span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">where</span><span class="o">:</span> <span class="nx">json</span><span class="p">.</span><span class="nx">encode</span><span class="p">(</span> <span class="nx">where</span> <span class="p">),</span> <span class="nx">functions</span><span class="o">:</span> <span class="nx">functions</span><span class="p">}</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method set</span></p>
 
 <p>Creates or updates an existing record
@@ -821,14 +816,14 @@ Events: beforeDataSet  Fires before the record is set
   <span class="k">else</span> <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="p">(</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">key</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">key</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">key</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
+        <span class="nx">key</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">();</span>
       <span class="p">}</span>
       <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">data</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">key</span> <span class="o">=</span> <span class="nx">data</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">];</span>
         <span class="k">delete</span> <span class="nx">data</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">];</span>
       <span class="p">}</span>
       <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">key</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
+        <span class="nx">key</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">();</span>
       <span class="p">}</span>
     <span class="p">}</span>
 
@@ -1024,22 +1019,43 @@ Records in a view are not by reference, they are clones</p>
 <li><p><strong>where must be an Object.</strong><br/>([Optional] Object describing the WHERE clause)</p></li>
 </ul>
 
-<p><strong>Returns an Array</strong><br/>(View of data)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">create</span><span class="p">,</span> <span class="nx">where</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">query</span><span class="p">,</span> <span class="nx">create</span><span class="p">,</span> <span class="nx">where</span> <span class="p">)</span> <span class="p">{</span>
   <span class="nx">create</span>      <span class="o">=</span> <span class="p">(</span> <span class="nx">create</span> <span class="o">===</span> <span class="kc">true</span> <span class="o">||</span> <span class="p">(</span> <span class="nx">where</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">);</span>
-  <span class="kd">var</span> <span class="nx">view</span>    <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">query</span> <span class="p">).</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot; &quot;</span> <span class="p">).</span><span class="nx">toCamelCase</span><span class="p">(),</span>
-      <span class="nx">records</span> <span class="o">=</span> <span class="o">!</span><span class="nx">where</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">);</span>
+  <span class="kd">var</span> <span class="nx">self</span>    <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+      <span class="nx">view</span>    <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">query</span> <span class="p">).</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot; &quot;</span> <span class="p">).</span><span class="nx">toCamelCase</span><span class="p">(),</span>
+      <span class="nx">defer</span>   <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
+      <span class="nx">blob</span><span class="p">,</span> <span class="nx">next</span><span class="p">,</span> <span class="nx">worker</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Next phase</p></div></div><div class="code"><div class="wrapper">  <span class="nx">next</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">records</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="p">[]</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">create</span> <span class="o">&amp;&amp;</span> <span class="nx">self</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">self</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keySort</span><span class="p">(</span> <span class="nx">records</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">query</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span> <span class="p">);</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">blob</span>   <span class="o">=</span> <span class="k">new</span> <span class="nx">Blob</span><span class="p">(</span> <span class="p">[</span><span class="nx">WORKER</span><span class="p">]</span> <span class="p">);</span>
+      <span class="nx">worker</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Worker</span><span class="p">(</span> <span class="nx">global</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">createObjectURL</span><span class="p">(</span> <span class="nx">blob</span> <span class="p">)</span> <span class="p">);</span>
 
-  <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">[];</span>
-  <span class="p">}</span>
-  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">create</span> <span class="o">&amp;&amp;</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">];</span>
+      <span class="nx">worker</span><span class="p">.</span><span class="nx">onmessage</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">ev</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="o">=</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">data</span><span class="p">;</span>
+        <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="p">);</span>
+      <span class="p">};</span>
+
+      <span class="nx">worker</span><span class="p">.</span><span class="nx">postMessage</span><span class="p">(</span> <span class="p">{</span><span class="nx">cmd</span><span class="o">:</span> <span class="s2">&quot;sort&quot;</span><span class="p">,</span> <span class="nx">records</span><span class="o">:</span> <span class="nx">records</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">query</span><span class="o">:</span> <span class="nx">query</span><span class="p">}</span> <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+
+  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">where</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">next</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="p">{</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">]</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keySort</span><span class="p">(</span> <span class="nx">records</span><span class="p">.</span><span class="nx">slice</span><span class="p">(),</span> <span class="nx">query</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span> <span class="p">);</span>
-
-    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">views</span><span class="p">[</span><span class="nx">view</span><span class="p">];</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="nx">where</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="nx">next</span> <span class="p">);</span>
   <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
 <p>Storage interface
@@ -1353,7 +1369,7 @@ Events: beforeDataSync  Fires before syncing the DataStore
 
 <p>Tears down a store &amp; expires all records associated to an API</p>
 
-<p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">teardown</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(DataStore instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">teardown</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">uri</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">uri</span><span class="p">,</span>
       <span class="nx">id</span><span class="p">;</span>
 

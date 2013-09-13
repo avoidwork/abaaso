@@ -49,6 +49,28 @@
     <span class="nx">arg</span> <span class="o">=</span> <span class="nx">arg</span> <span class="o">||</span> <span class="s2">&quot;,&quot;</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">).</span><span class="nx">split</span><span class="p">(</span> <span class="k">new</span> <span class="nb">RegExp</span><span class="p">(</span> <span class="s2">&quot;\\s*&quot;</span> <span class="o">+</span> <span class="nx">arg</span> <span class="o">+</span> <span class="s2">&quot;\\s*&quot;</span> <span class="p">)</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method fromObject</span></p>
+
+<p>Creates a String representation of an Object, preserving Functions
+Nested Objects are not supported</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Object to convert)</p></li>
+<li><p><strong>name must be a String.</strong><br/>([Optional] Name of Object)</p></li>
+</ul>
+
+<p><strong>Returns a String</strong><br/>(String representation)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fromObject</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">name</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">name</span> <span class="o">?</span> <span class="nx">name</span> <span class="o">+</span> <span class="s2">&quot; = {&quot;</span> <span class="o">:</span> <span class="s2">&quot;{&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;\n&quot;</span><span class="p">;</span>
+
+    <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">result</span> <span class="o">+=</span> <span class="s2">&quot;\&quot;&quot;</span> <span class="o">+</span> <span class="nx">k</span> <span class="o">+</span> <span class="s2">&quot;\&quot;:&quot;</span> <span class="o">+</span> <span class="nx">v</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;,\n&quot;</span><span class="p">;</span>
+    <span class="p">}</span> <span class="p">);</span>
+
+    <span class="nx">result</span> <span class="o">=</span> <span class="nx">result</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/\[object Object\]/g</span><span class="p">,</span> <span class="s2">&quot;{}&quot;</span> <span class="p">).</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/,\n$/</span><span class="p">,</span> <span class="s2">&quot;\n&quot;</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;}&quot;</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method hyphenate</span></p>
 
 <p>Replaces all spaces in a string with dashes</p>
@@ -231,6 +253,21 @@
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">r</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method toFunction</span></p>
+
+<p>Casts a String to a Function</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be a String.</strong><br/>(String to cast)</li>
+</ul>
+
+<p><strong>Returns a Function</strong><br/>(Function)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">toFunction</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">args</span> <span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="nx">body</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span> <span class="nx">regex</span><span class="p">.</span><span class="nx">body</span> <span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
+
+    <span class="k">return</span> <span class="nb">Function</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="nb">Function</span><span class="p">,</span> <span class="nx">string</span><span class="p">.</span><span class="nx">explode</span><span class="p">(</span> <span class="nx">args</span> <span class="p">).</span><span class="nx">concat</span><span class="p">(</span> <span class="p">[</span><span class="nx">body</span><span class="p">]</span> <span class="p">)</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method trim</span></p>
 
 <p>Trims the whitespace around a String</p>

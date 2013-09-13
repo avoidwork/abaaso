@@ -82,7 +82,7 @@ Create an object based on comma separated key string</p>
   <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
 
   <span class="nx">utility</span><span class="p">.</span><span class="nx">defer</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">val</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">element</span> <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">val</span> <span class="o">=</span> <span class="nx">element</span><span class="p">.</span><span class="nx">val</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">element</span> <span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
     
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">val</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filters</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
