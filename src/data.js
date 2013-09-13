@@ -484,93 +484,117 @@ DataStore.prototype.get = function ( record, offset ) {
  * Performs an (INNER/LEFT/RIGHT) JOIN on two DataStores
  *
  * @method join
- * @public
  * @param  {String} arg   DataStore to join
  * @param  {String} field Field in both DataStores
  * @param  {String} join  Type of JOIN to perform, defaults to `inner`
- * @return {Array}        Array of records
- * @todo Move this to a web worker
+ * @return {Object}       Deferred
  */
 DataStore.prototype.join = function ( arg, field, join ) {
-	join        = join || "inner";
-	var self    = this,
-	    results = [],
-	    key     = field === this.key,
-	    keys    = array.merge( array.cast( this.records[0].data, true ), array.cast( arg.data.records[0].data, true ) ),
+	join          = join || "inner";
+	var self      = this,
+	    defer     = deferred(),
+	    results   = [],
+	    deferreds = [],
+	    key       = field === this.key,
+	    keys      = array.merge( array.cast( this.records[0].data, true ), array.cast( arg.records[0].data, true ) ),
 		fn;
 
 	if ( join === "inner" ) {
 		fn = function ( i ) {
-			var where = {},
-				match;
+			var where  = {},
+				record = utility.clone( i.data, true ),
+			    defer  = deferred();
 
-			where[field] = key ? i.key : i.data[field];
-			match        = arg.data.select( where );
+			where[field] = key ? i.key : record[field];
+			
+			arg.select( where ).then( function ( match ) {
+				if ( match.length > 2 ) {
+					defer.reject( new Error( label.error.databaseMoreThanOne ) );
+				}
+				else if ( match.length === 1 ) {
+					results.push( utility.merge( record, match[0].data ) );
+					defer.resolve( true );
+				}
+				else {
+					defer.resolve( false );
+				}
+			} );
 
-			if ( match.length > 2 ) {
-				throw new Error( label.error.databaseMoreThanOne );
-			}
-			else if ( match.length === 1 ) {
-				results.push( utility.merge( utility.clone( i.data, true ), utility.clone( match[0].data, true ) ) );
-			}
+			deferreds.push( defer );
 		};
 	}
 	else if ( join === "left" ) {
 		fn = function ( i ) {
 			var where  = {},
-			    record = utility.clone( i.data, true ),
-				match;
+				record = utility.clone( i.data, true ),
+			    defer  = deferred();
 
-			where[field] = key ? i.key : i.data[field];
-			match        = arg.data.select( where );
+			where[field] = key ? i.key : record[field];
 
-			if ( match.length > 2 ) {
-				throw new Error( label.error.databaseMoreThanOne );
-			}
-			else if ( match.length === 1 ) {
-				results.push( utility.merge( utility.clone( record, true ), utility.clone( match[0].data, true ) ) );
-			}
-			else {
-				array.each( keys, function ( i ) {
-					if ( record[i] === undefined ) {
-						record[i] = null;
-					}
-				});
+			arg.select( where ).then( function ( match ) {
+				if ( match.length > 2 ) {
+					defer.reject( new Error( label.error.databaseMoreThanOne ) );
+				}
+				else if ( match.length === 1 ) {
+					results.push( utility.merge( record, match[0].data ) );
+					defer.resolve( true );
+				}
+				else {
+					array.each( keys, function ( i ) {
+						if ( record[i] === undefined ) {
+							record[i] = null;
+						}
+					});
 
-				results.push( record );
-			}
+					results.push( record );
+					defer.resolve( true );
+				}
+			} );
+
+			deferreds.push( defer );
 		};
 	}
 	else if ( join === "right" ) {
 		fn = function ( i ) {
 			var where  = {},
 			    record = utility.clone( i.data, true ),
-				match;
+				defer  = deferred();
 
-			where[field] = key ? i.key : i.data[field];
-			match        = self.select( where );
+			where[field] = key ? i.key : record[field];
+			
+			self.select( where ).then( function ( match ) {
+				if ( match.length > 2 ) {
+					defer.reject( new Error( label.error.databaseMoreThanOne ) );
+				}
+				else if ( match.length === 1 ) {
+					results.push( utility.merge( record, match[0].data ) );
+					defer.resolve( true );
+				}
+				else {
+					array.each( keys, function ( i ) {
+						if ( record[i] === undefined ) {
+							record[i] = null;
+						}
+					});
 
-			if ( match.length > 2 ) {
-				throw new Error( label.error.databaseMoreThanOne );
-			}
-			else if ( match.length === 1 ) {
-				results.push( utility.merge( utility.clone( record, true ), utility.clone( match[0].data, true ) ) );
-			}
-			else {
-				array.each( keys, function ( i ) {
-					if ( record[i] === undefined ) {
-						record[i] = null;
-					}
-				});
+					results.push( record );
+					defer.resolve( true );
+				}
+			} );
 
-				results.push( record );
-			}
+			deferreds.push( defer );
 		};
 	}
 
-	array.each( join === "right" ? arg.data.records : this.records, fn);
+	array.each( join === "right" ? arg.records : this.records, fn );
 
-	return results;
+	utility.when( deferreds ).then( function () {
+		defer.resolve( results );
+	}, function ( e ) {
+		defer.reject( e );
+	} );
+	
+	return defer;
 };
 
 /**
