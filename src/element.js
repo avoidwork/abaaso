@@ -276,8 +276,7 @@ var element = {
 		cancelable = ( cancelable !== false );
 
 		ev.initCustomEvent( type, bubbles, cancelable, data || {} );
-
-		obj.dispatchEvent(ev);
+		obj.dispatchEvent( ev );
 
 		return obj;
 	},

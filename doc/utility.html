@@ -419,46 +419,21 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
 <li><p><strong>arg must be an Object.</strong><br/>([Optional] Object for decoration)</p></li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Decorated obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">extend</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">o</span><span class="p">;</span>
+<p><strong>Returns an Object</strong><br/>(Decorated obj)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">extend</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">o</span><span class="p">;</span>
 
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="nx">o</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
-      <span class="p">};</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">function</span> <span class="nx">Extended</span> <span class="p">()</span> <span class="p">{}</span>
 
-        <span class="kd">var</span> <span class="nx">o</span><span class="p">;</span>
+    <span class="nx">o</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
 
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="nx">Extended</span><span class="p">.</span><span class="nx">prototype</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">;</span>
-
-        <span class="nx">o</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Extended</span><span class="p">();</span>
-
-        <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
-      <span class="p">};</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">arg</span> <span class="k">instanceof</span> <span class="nb">Object</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">merge</span><span class="p">(</span> <span class="nx">o</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
     <span class="p">}</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method fib</span></p>
+
+    <span class="k">return</span> <span class="nx">o</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method fib</span></p>
 
 <p>Fibonacci calculator</p>
 
@@ -577,45 +552,17 @@ Iteration can be stopped by returning false from fn</p>
 <li><p><strong>fn must be a Function.</strong><br/>(Function to execute against properties)</p></li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(Object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">iterate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span> <span class="o">===</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-        <span class="p">}</span>
-
-        <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span> <span class="p">);</span>
-        <span class="p">});</span>
-
-        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-      <span class="p">};</span>
+<p><strong>Returns an Object</strong><br/>(Object)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">iterate</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
     <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="k">return</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">fn</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="kd">var</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">result</span><span class="p">;</span>
 
-        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">fn</span> <span class="o">!==</span> <span class="s2">&quot;function&quot;</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
-        <span class="p">}</span>
+    <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span> <span class="p">);</span>
+    <span class="p">});</span>
 
-        <span class="k">for</span> <span class="p">(</span> <span class="nx">i</span> <span class="k">in</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
-          <span class="k">if</span> <span class="p">(</span> <span class="nx">has</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">result</span> <span class="o">=</span> <span class="nx">fn</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">obj</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span> <span class="nx">i</span> <span class="p">);</span>
-
-            <span class="k">if</span> <span class="p">(</span> <span class="nx">result</span> <span class="o">===</span> <span class="kc">false</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="k">break</span><span class="p">;</span>
-            <span class="p">}</span>
-          <span class="p">}</span>
-          <span class="k">else</span> <span class="p">{</span>
-            <span class="k">break</span><span class="p">;</span>
-          <span class="p">}</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
-      <span class="p">};</span>
-    <span class="p">}</span>
-  <span class="p">}(),</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method loading</span></p>
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method loading</span></p>
 
 <p>Renders a loading icon in a target element,
 with a class of "loading"</p>
