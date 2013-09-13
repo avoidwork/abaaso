@@ -435,113 +435,6 @@ DataStore.prototype.dump = function ( args, fields ) {
 };
 
 /**
- * Finds needle in the haystack
- *
- * @method find
- * @param  {Mixed}  needle    String, Number, RegExp Pattern or Function
- * @param  {String} haystack  [Optional] Commma delimited string of the field( s ) to search
- * @param  {String} modifiers [Optional] Regex modifiers, defaults to "gi" unless value is null
- * @return {Array}            Array of results
- * @todo Move this to a web worker
- */
-DataStore.prototype.find = function ( needle, haystack, modifiers ) {
-	if ( needle === undefined ) {
-		throw new Error( label.error.invalidArguments );
-	}
-
-	var result = [],
-	    keys   = [],
-	    regex  = new RegExp(),
-	    fn     = typeof needle === "function";
-
-	// Blocking unnecessary ops
-	if ( this.total === 0 ) {
-		return result;
-	}
-
-	// Preparing parameters
-	if ( !fn ) {
-		needle = typeof needle === "string" ? string.explode( needle ) : [needle];
-
-		if ( modifiers === undefined || string.isEmpty( modifiers ) ) {
-			modifiers = "gi";
-		}
-		else if ( modifiers === null ) {
-			modifiers = "";
-		}
-	}
-
-	haystack = typeof haystack === "string" ? string.explode( haystack ) : null;
-
-	// No haystack, testing everything
-	if ( haystack === null ) {
-		array.each( this.records, function ( r ) {
-			if ( !fn ) {
-				utility.iterate( r.data, function ( v ) {
-					if ( array.contains( keys, r.key ) ) {
-						return false;
-					}
-
-					if ( v === null || typeof v.data === "object" ) {
-						return;
-					}
-
-					array.each( needle, function ( n ) {
-						utility.compile( regex, n, modifiers );
-
-						if ( regex.test( v ) ) {
-							keys.push( r.key );
-							result.push( r );
-
-							return false;
-						}
-					});
-				});
-			}
-			else if ( needle( r ) === true ) {
-				keys.push( r.key );
-				result.push( r );
-			}
-		});
-	}
-	// Looking through the haystack
-	else {
-		array.each( this.records, function ( r ) {
-			array.each( haystack, function ( h ) {
-				if ( array.contains( keys, r.key ) ) {
-					return false;
-				}
-
-				if ( r.data[h] === undefined || typeof r.data[h].data === "object" ) {
-					return;
-				}
-
-				if ( !fn ) {
-					array.each( needle, function ( n ) {
-						utility.compile( regex, n, modifiers );
-
-						if ( regex.test( r.data[h] ) ) {
-							keys.push( r.key );
-							result.push( r );
-
-							return false;
-						}
-					});
-				}
-				else if ( needle( r.data[h] ) === true ) {
-					keys.push( r.key );
-					result.push( r );
-
-					return false;
-				}
-			});
-		});
-	}
-
-	return result;
-};
-
-/**
  * Retrieves a record based on key or index
  *
  * If the key is an integer, cast to a string before sending as an argument!
@@ -876,14 +769,14 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	else {
 		if ( record === null && ( key === null || key === undefined ) ) {
 			if ( this.key === null ) {
-				key = utility.genId();
+				key = utility.uuid();
 			}
 			else if ( data[this.key] ) {
 				key = data[this.key];
 				delete data[this.key];
 			}
 			else {
-				key = utility.genId();
+				key = utility.uuid();
 			}
 		}
 

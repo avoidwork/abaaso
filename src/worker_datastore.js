@@ -7,22 +7,13 @@
  */
 onmessage = function ( ev ) {
 	var cmd = ev.data.cmd,
-	    result, where;
+	    fn, haystack, needle, modifiers, keys, regex, result, where;
 
-	if ( cmd === "find" ) {
-
-	}
-	else if ( cmd === "join" ) {
-		
-	}
-	else if ( cmd === "select" ) {
+	if ( cmd === "select" ) {
 		where = JSON.parse( ev.data.where );
 
 		array.each( ev.data.functions, function ( i ) {
-			var args = where[i].match( /\((.*)\)/ )[1],
-			    body = where[i].match( /\{(.*)\}/ )[1];
-
-			where[i] = Function.apply( Function, string.explode( args ).concat( [body] ) );
+			where[i] = string.toFunction( i );
 		});
 
 		result = ev.data.records.filter( function ( rec ) {
