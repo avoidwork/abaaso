@@ -790,6 +790,10 @@ var client = {
 							break;
 					}
 					break;
+				case 304:
+					defer.resolve( r );
+					uri.fire( "after" + typed, r, xhr );
+					break;
 				case 401:
 					exception( !server ? new Error( label.error.serverUnauthorized ) : label.error.serverUnauthorized, xhr );
 					break;
@@ -801,12 +805,9 @@ var client = {
 					cache.set( uri, "!permission", client.bit( [type] ) );
 					exception( !server ? new Error( label.error.serverInvalidMethod ) : label.error.serverInvalidMethod, xhr );
 					break;
-				case 0:
+				default:
 					exception( !server ? new Error( label.error.serverError ) : label.error.serverError, xhr );
 					break;
-				default:
-					defer.resolve( r );
-					uri.fire( "after" + typed, r, xhr );
 			}
 
 			try {
