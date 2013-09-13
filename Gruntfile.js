@@ -57,6 +57,7 @@ module.exports = function (grunt) {
 			datastore : {
 				src : [
 					"src/array.js",
+					"src/regex.js",
 					"src/string.js",
 					"src/utility.js",
 					"src/worker_datastore.js"

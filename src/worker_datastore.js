@@ -7,13 +7,13 @@
  */
 onmessage = function ( ev ) {
 	var cmd = ev.data.cmd,
-	    fn, haystack, needle, modifiers, keys, regex, result, where;
+	    result, where;
 
 	if ( cmd === "select" ) {
 		where = JSON.parse( ev.data.where );
 
 		array.each( ev.data.functions, function ( i ) {
-			where[i] = string.toFunction( i );
+			where[i] = string.toFunction( where[i] );
 		});
 
 		result = ev.data.records.filter( function ( rec ) {
