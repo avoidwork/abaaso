@@ -502,7 +502,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 	if ( join === "inner" ) {
 		fn = function ( i ) {
 			var where  = {},
-				record = utility.clone( i.data, true ),
+			    record = utility.clone( i.data, true ),
 			    defer  = deferred();
 
 			where[field] = key ? i.key : record[field];
@@ -526,7 +526,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 	else if ( join === "left" ) {
 		fn = function ( i ) {
 			var where  = {},
-				record = utility.clone( i.data, true ),
+			    record = utility.clone( i.data, true ),
 			    defer  = deferred();
 
 			where[field] = key ? i.key : record[field];
@@ -558,7 +558,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 		fn = function ( i ) {
 			var where  = {},
 			    record = utility.clone( i.data, true ),
-				defer  = deferred();
+			    defer  = deferred();
 
 			where[field] = key ? i.key : record[field];
 			
