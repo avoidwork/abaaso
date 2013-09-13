@@ -432,46 +432,21 @@ var utility = {
 	 * @param  {Object} arg [Optional] Object for decoration
 	 * @return {Object}     Decorated obj
 	 */
-	extend : function () {
-		if ( typeof Object.create === "function" ) {
-			return function ( obj, arg ) {
-				var o;
+	extend : function ( obj, arg ) {
+		var o;
 
-				if ( obj === undefined ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				o = Object.create( obj );
-
-				if ( arg instanceof Object ) {
-					utility.merge( o, arg );
-				}
-
-				return o;
-			};
+		if ( obj === undefined ) {
+			throw new Error( label.error.invalidArguments );
 		}
-		else {
-			return function ( obj, arg ) {
-				function Extended () {}
 
-				var o;
+		o = Object.create( obj );
 
-				if ( obj === undefined ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				Extended.prototype = obj;
-
-				o = new Extended();
-
-				if ( arg instanceof Object ) {
-					utility.merge( o, arg );
-				}
-
-				return o;
-			};
+		if ( arg instanceof Object ) {
+			utility.merge( o, arg );
 		}
-	}(),
+
+		return o;
+	},
 
 	/**
 	 * Fibonacci calculator
@@ -586,45 +561,17 @@ var utility = {
 	 * @param  {Function} fn  Function to execute against properties
 	 * @return {Object}       Object
 	 */
-	iterate : function () {
-		if ( typeof Object.keys === "function" ) {
-			return function ( obj, fn ) {
-				if ( typeof fn !== "function" ) {
-					throw new Error( label.error.invalidArguments );
-				}
-
-				array.each( Object.keys( obj ), function ( i ) {
-					return fn.call( obj, obj[i], i );
-				});
-
-				return obj;
-			};
+	iterate : function ( obj, fn ) {
+		if ( typeof fn !== "function" ) {
+			throw new Error( label.error.invalidArguments );
 		}
-		else {
-			return function ( obj, fn ) {
-				var i, result;
 
-				if ( typeof fn !== "function" ) {
-					throw new Error( label.error.invalidArguments );
-				}
+		array.each( Object.keys( obj ), function ( i ) {
+			return fn.call( obj, obj[i], i );
+		});
 
-				for ( i in obj ) {
-					if ( has.call( obj, i ) ) {
-						result = fn.call( obj, obj[i], i );
-
-						if ( result === false ) {
-							break;
-						}
-					}
-					else {
-						break;
-					}
-				}
-
-				return obj;
-			};
-		}
-	}(),
+		return obj;
+	},
 
 	/**
 	 * Renders a loading icon in a target element,

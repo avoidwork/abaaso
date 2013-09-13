@@ -487,24 +487,9 @@ var array = {
 	 * @param  {Mixed} obj Array or Object to extract keys from
 	 * @return {Array}     Array of the keys
 	 */
-	keys : function () {
-		if ( typeof Object.keys === "function" ) {
-			return function ( obj ) {
-				return Object.keys( obj );
-			};
-		}
-		else {
-			return function ( obj ) {
-				var keys = [];
-
-				utility.iterate( obj, function ( v, k ) {
-					keys.push( k );
-				});
-
-				return keys;
-			};
-		}
-	}(),
+	keys : function ( obj ) {
+		return Object.keys( obj );
+	},
 
 	/**
 	 * Returns the last index of the Array

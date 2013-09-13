@@ -873,7 +873,7 @@ var element = {
 			else if ( regex.select.test( obj.type ) ) {
 				output = obj.options[obj.selectedIndex].value;
 			}
-			else if ( has.call( obj, "value" ) ) {
+			else if ( obj.value ) {
 				output = obj.value;
 			}
 			else {
