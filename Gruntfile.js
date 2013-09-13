@@ -53,16 +53,6 @@ module.exports = function (grunt) {
 					"src/outro.js"
 				],
 				dest : "lib/<%= pkg.name %>.js"
-			},
-			worker : {
-				src : [
-					"src/array.js",
-					"src/regex.js",
-					"src/string.js",
-					"src/utility.js",
-					"src/worker.js"
-				],
-				dest : "lib/worker.js"
 			}
 		},
 		exec : {
@@ -98,13 +88,6 @@ module.exports = function (grunt) {
 				files : "package.json",
 				tasks : "default"
 			}
-		},
-		uglify : {
-			worker : {
-				files : {
-					"lib/worker.js" : ["lib/worker.js"]
-				}
-			}
 		}
 	});
 
@@ -115,21 +98,9 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-watch");
-	grunt.loadNpmTasks("grunt-contrib-uglify");
-
-	// injecting worker script (back) into framework
-	grunt.registerTask("inject", function () {
-		var script   = fs.readFileSync("lib/abaaso.js").toString(),
-		    dsWorker = encodeURIComponent(fs.readFileSync("lib/worker.js"));
-
-		script = script.replace("{{WORKER}}", dsWorker);
-		fs.writeFileSync("lib/abaaso.js", script);
-		fs.unlinkSync("lib/worker.js");
-	});
 
 	// aliases
 	grunt.registerTask("test", ["nodeunit", "jshint"]);
-	grunt.registerTask("build", ["concat", "uglify", "inject"]);
-	grunt.registerTask("finalize", ["sed", "exec"]);
-	grunt.registerTask("default", ["build", "finalize", "test"]);
+	grunt.registerTask("build", ["concat", "sed", "exec"]);
+	grunt.registerTask("default", ["build", "test"]);
 };

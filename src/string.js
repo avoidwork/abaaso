@@ -51,6 +51,28 @@ var string = {
 	},
 
 	/**
+	 * Creates a String representation of an Object, preserving Functions
+	 *
+	 * Nested Objects are not supported
+	 *
+	 * @method fromObject
+	 * @param  {Object} obj  Object to convert
+	 * @param  {String} name [Optional] Name of Object
+	 * @return {String}      String representation
+	 */
+	fromObject : function ( obj, name ) {
+		var result = ( name ? name + " = {" : "{" ) + "\n";
+
+		utility.iterate( obj, function ( v, k ) {
+			result += "\"" + k + "\":" + v.toString() + ",\n";
+		} );
+
+		result = result.replace( /\[object Object\]/g, "{}" ).replace( /,\n$/, "\n" ) + "}";
+
+		return result;
+	},
+
+	/**
 	 * Replaces all spaces in a string with dashes
 	 *
 	 * @method hyphenate

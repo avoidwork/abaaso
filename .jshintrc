@@ -38,6 +38,7 @@
 		"setImmediate": true,
 		"mongodb": true,
 		"format": true,
-		"Blob": true
+		"Blob": true,
+		"postMessage": true
 	}
 }

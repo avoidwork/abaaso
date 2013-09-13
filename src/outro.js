@@ -1,8 +1,8 @@
 // Bootstrapping
 bootstrap();
 
-// DataStore Worker script
-WORKER = "{{WORKER}}";
+// DataStore Worker "script"
+WORKER = "var " + string.fromObject( array, "array" ) + ", " + string.fromObject( regex, "regex" ) + ", " + string.fromObject( string, "string" ) + ", " + string.fromObject( utility, "utility" ) + "; onmessage = " + data.worker.toString() + ";";
 
 // Returning namespace
 return abaaso;

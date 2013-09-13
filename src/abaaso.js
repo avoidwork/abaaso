@@ -97,7 +97,7 @@ abaaso.coerce          = utility.coerce;
 abaaso.compile         = utility.compile;
 abaaso.create          = element.create;
 abaaso.css             = utility.css;
-abaaso.data            = data;
+abaaso.data            = data.decorator;
 abaaso.datalist        = datalist.factory;
 abaaso.discard         = function ( arg ) {
 	return observer.discard( arg );

@@ -1,32 +1,77 @@
-/**
- * Decorates a DataStore on an Object
- *
- * @method decorator
- * @param  {Object} obj  Object
- * @param  {Mixed}  recs [Optional] Data to set with this.batch
- * @param  {Object} args [Optional] Arguments to set on the store
- * @return {Object}      Decorated Object
- */
-var data = function ( obj, recs, args ) {
-	utility.genId( obj );
+/** @namespace data */
+var data = {
+	/**
+	 * Decorates a DataStore on an Object
+	 *
+	 * @method decorator
+	 * @param  {Object} obj  Object
+	 * @param  {Mixed}  recs [Optional] Data to set with this.batch
+	 * @param  {Object} args [Optional] Arguments to set on the store
+	 * @return {Object}      Decorated Object
+	 */
+	decorator : function ( obj, recs, args ) {
+		utility.genId( obj );
 
-	// Decorating observer if not present in prototype chain
-	if ( typeof obj.fire !== "function" ) {
-		observer.decorate( obj );
+		// Decorating observer if not present in prototype chain
+		if ( typeof obj.fire !== "function" ) {
+			observer.decorate( obj );
+		}
+
+		// Creating store
+		obj.data = new DataStore( obj );
+
+		if ( args instanceof Object ) {
+			utility.merge( obj.data, args );
+		}
+
+		if ( recs !== null && typeof recs === "object" ) {
+			obj.data.batch( "set", recs );
+		}
+
+		return obj;
+	},
+
+	/**
+	 * DataStore worker handler
+	 *
+	 * @method worker
+	 * @param  {Object} ev Event
+	 * @return {Undefined} undefined
+	 */
+	worker : function ( ev ) {
+		var cmd = ev.data.cmd,
+		    result, where;
+
+		if ( cmd === "select" ) {
+			where = JSON.parse( ev.data.where );
+
+			array.each( ev.data.functions, function ( i ) {
+				where[i] = string.toFunction( where[i] );
+			});
+
+			result = ev.data.records.filter( function ( rec ) {
+				var match = true;
+
+				utility.iterate( where, function ( v, k ) {
+					var type = typeof v;
+
+					if ( type !== "function" && rec.data[k] !== v ) {
+						return ( match = false );
+					}
+					else if ( type === "function" && !v( rec.data[k], rec ) ) {
+						return ( match = false );
+					}
+				});
+
+				return match;
+			});
+		}
+		else if ( cmd === "sort" ) {
+			result = array.keySort( ev.data.records, ev.data.query, "data" );
+		}
+
+		postMessage( result );
 	}
-
-	// Creating store
-	obj.data = new DataStore( obj );
-
-	if ( args instanceof Object ) {
-		utility.merge( obj.data, args );
-	}
-
-	if ( recs !== null && typeof recs === "object" ) {
-		obj.data.batch( "set", recs );
-	}
-
-	return obj;
 };
 
 /**
@@ -256,7 +301,7 @@ DataStore.prototype.crawl = function ( arg ) {
 
 		array.add( self.collections, k );
 
-		record.data[k] = data( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers, retrieve: true} );
+		record.data[k] = data.decorator( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers, retrieve: true} );
 
 		if ( !array.contains( self.leafs, k ) && ( record.data[k].data.maxDepth === 0 || record.data[k].data.depth <= record.data[k].data.maxDepth ) ) {
 			if ( v instanceof Array ) {
@@ -717,7 +762,7 @@ DataStore.prototype.select = function ( where ) {
 			}
 		});
 
-		blob   = new Blob( [decodeURIComponent( WORKER )] );
+		blob   = new Blob( [WORKER] );
 	    worker = new Worker( global.URL.createObjectURL( blob ) );
 
 		worker.onmessage = function ( ev ) {
@@ -1020,7 +1065,7 @@ DataStore.prototype.sort = function ( query, create, where ) {
 			defer.resolve( self.views[view] );
 		}
 		else {
-			blob   = new Blob( [decodeURIComponent( WORKER )] );
+			blob   = new Blob( [WORKER] );
 		    worker = new Worker( global.URL.createObjectURL( blob ) );
 
 			worker.onmessage = function ( ev ) {
