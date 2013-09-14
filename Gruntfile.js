@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 					"src/channel.js",
 					"src/client.js",
 					"src/cookie.js",
-					"src/data.js",
+					"src/datastore.js",
 					"src/datalist.js",
 					"src/deferred.js",
 					"src/element.js",

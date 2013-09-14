@@ -1,12 +1,13 @@
 /**
  * DataListFilter factory
  *
- * @method factory
- * @param  {Object} obj      Element to receive the filter
- * @param  {Object} datalist Data list linked to the data store
- * @param  {String} filters  Comma delimited string of fields to filter by
- * @param  {Number} debounce [Optional] Milliseconds to debounce
- * @return {Object}          DataListFilter instance
+ * @method filter
+ * @memberOf abaaso
+ * @param  {object} obj      Element to receive the filter
+ * @param  {object} datalist Data list linked to the data store
+ * @param  {string} filters  Comma delimited string of fields to filter by
+ * @param  {number} debounce [Optional] Milliseconds to debounce
+ * @return {@link abaaso.DataListFilter}
  */
 var filter = function ( obj, datalist, filters, debounce ) {
 	debounce = debounce || 250;
@@ -20,12 +21,13 @@ var filter = function ( obj, datalist, filters, debounce ) {
 };
 
 /**
- * DataListFilter
+ * Creates a new DataListFilter
  *
  * @constructor
- * @param  {Object} obj      Element to receive the filter
- * @param  {Object} datalist Data list linked to the data store
- * @param  {Number} debounce [Optional] Milliseconds to debounce
+ * @memberOf abaaso
+ * @param  {object} obj      Element to receive the filter
+ * @param  {object} datalist Data list linked to the data store
+ * @param  {number} debounce [Optional] Milliseconds to debounce
  */
 function DataListFilter ( element, datalist, debounce ) {
 	this.element  = element;
@@ -34,14 +36,22 @@ function DataListFilter ( element, datalist, debounce ) {
 	this.filters  = {};
 }
 
-// Setting constructor loop
+/**
+ * Setting constructor loop
+ *
+ * @method constructor
+ * @memberOf abaaso.DataListFilter
+ * @private
+ * @type {function}
+ */
 DataListFilter.prototype.constructor = DataListFilter;
 
 /**
  * Initiate all event listeners
  *
  * @method init
- * @return {Object} DataListFilter instance
+ * @memberOf abaaso.DataListFilter
+ * @return {@link abaaso.DataListFilter}
  */
 DataListFilter.prototype.init = function () {
 	observer.add( this.element, "keyup", this.update, "filter", this );
@@ -56,8 +66,9 @@ DataListFilter.prototype.init = function () {
  * Create an object based on comma separated key string
  *
  * @method set
- * @param  {String} fields Comma separated filters
- * @return {Object}        DataListFilter instance
+ * @memberOf abaaso.DataListFilter
+ * @param  {string} fields Comma separated filters
+ * @return {@link abaaso.DataListFilter}
  */
 DataListFilter.prototype.set = function ( fields ) {
 	var obj = {};
@@ -75,7 +86,8 @@ DataListFilter.prototype.set = function ( fields ) {
  * Cancel all event listeners
  *
  * @method teardown
- * @return {Object} DataListFilter instance
+ * @memberOf abaaso.DataListFilter
+ * @return {@link abaaso.DataListFilter}
  */
 DataListFilter.prototype.teardown = function () {
 	observer.remove( this.element, "keyup", "filter" );
@@ -88,7 +100,8 @@ DataListFilter.prototype.teardown = function () {
  * Update the results list
  *
  * @method update
- * @return {Object} DataListFilter instance
+ * @memberOf abaaso.DataListFilter
+ * @return {@link abaaso.DataListFilter}
  */
 DataListFilter.prototype.update = function () {
 	var self = this;

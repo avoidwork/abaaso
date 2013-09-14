@@ -1,14 +1,24 @@
-/** @namespace cache */
+/**
+ * RESTful cache
+ *
+ * @namespace abaaso.cache
+ * @private
+ */
 var cache = {
-	// Collection URIs
+	/**
+	 * Collection URIs
+	 *
+	 * @memberOf abaaso.cache
+	 * @type {Object}
+	 */
 	items : {},
 
 	/**
 	 * Garbage collector for the cached items
 	 *
 	 * @method clean
-	 * @private
-	 * @return {Undefined} undefined
+	 * @memberOf abaaso.cache
+	 * @return {undefined} undefined
 	 */
 	clean : function () {
 		return utility.iterate( cache.items, function ( v, k ) {
@@ -24,10 +34,10 @@ var cache = {
 	 * Events: expire    Fires when the URI expires
 	 *
 	 * @method expire
-	 * @private
-	 * @param  {String}  uri    URI of the local representation
-	 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
-	 * @return {Undefined}      undefined
+	 * @memberOf abaaso.cache
+	 * @param  {string}  uri    URI of the local representation
+	 * @param  {boolean} silent [Optional] If 'true', the event will not fire
+	 * @return {undefined}      undefined
 	 */
 	expire : function ( uri, silent ) {
 		silent = ( silent === true );
@@ -49,9 +59,9 @@ var cache = {
 	 * Determines if a URI has expired
 	 *
 	 * @method expired
-	 * @private
-	 * @param  {Object} uri Cached URI object
-	 * @return {Boolean}    True if the URI has expired
+	 * @memberOf abaaso.cache
+	 * @param  {object} uri Cached URI object
+	 * @return {boolean}    True if the URI has expired
 	 */
 	expired : function ( uri ) {
 		var item = cache.items[uri];
@@ -63,11 +73,11 @@ var cache = {
 	 * Returns the cached object {headers, response} of the URI or false
 	 *
 	 * @method get
-	 * @private
-	 * @param  {String}  uri    URI/Identifier for the resource to retrieve from cache
-	 * @param  {Boolean} expire [Optional] If 'false' the URI will not expire
-	 * @param  {Boolean} silent [Optional] If 'true', the event will not fire
-	 * @return {Mixed}          URI Object {headers, response} or False
+	 * @memberOf abaaso.cache
+	 * @param  {string}  uri    URI/Identifier for the resource to retrieve from cache
+	 * @param  {boolean} expire [Optional] If 'false' the URI will not expire
+	 * @param  {boolean} silent [Optional] If 'true', the event will not fire
+	 * @return {mixed}          URI Object {headers, response} or False
 	 */
 	get : function ( uri, expire ) {
 		uri    = utility.parse( uri ).href;
@@ -90,11 +100,11 @@ var cache = {
 	 * Sets, or updates an item in cache.items
 	 *
 	 * @method set
-	 * @private
-	 * @param  {String} uri      URI to set or update
-	 * @param  {String} property Property of the cached URI to set
-	 * @param  {Mixed} value     Value to set
-	 * @return {Mixed}           URI Object {headers, response} or undefined
+	 * @memberOf abaaso.cache
+	 * @param  {string} uri      URI to set or update
+	 * @param  {string} property Property of the cached URI to set
+	 * @param  {mixed} value     Value to set
+	 * @return {mixed}           URI Object {headers, response} or undefined
 	 */
 	set : function ( uri, property, value ) {
 		uri = utility.parse( uri ).href;

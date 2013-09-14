@@ -1,11 +1,12 @@
-/** @namespace validate */
+/** @namespace abaaso.validate */
 var validate = {
 	/**
 	 * Validates args based on the type or pattern specified
 	 *
 	 * @method test
-	 * @param  {Object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
-	 * @return {Object}      Results
+	 * @memberOf abaaso.validate
+	 * @param  {object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
+	 * @return {object}      Results
 	 */
 	test : function ( args ) {
 		var exception = false,

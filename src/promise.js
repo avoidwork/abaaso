@@ -1,10 +1,11 @@
-/** @namespace promise */
+/** @namespace abaaso.promise */
 var promise = {
 	/**
 	 * Async delay strategy
 	 *
 	 * @method delay
-	 * @return {Function} Delay method
+	 * @memberOf abaaso.promise
+	 * @return {function} Delay method
 	 */
 	delay : function () {
 		if ( typeof setImmediate !== "undefined" ) {
@@ -24,7 +25,8 @@ var promise = {
 	 * Promise factory
 	 *
 	 * @method factory
-	 * @return {Object} Instance of promise
+	 * @memberOf abaaso.promise
+	 * @return {object} Instance of promise
 	 */
 	factory : function () {
 		return new Promise();
@@ -34,9 +36,10 @@ var promise = {
 	 * Pipes a reconciliation from `parent` to `child`
 	 *
 	 * @method pipe
-	 * @param  {Object} parent Promise
-	 * @param  {Object} child  Promise
-	 * @return {Undefined}     undefined
+	 * @memberOf abaaso.promise
+	 * @param  {object} parent Promise
+	 * @param  {object} child  Promise
+	 * @return {undefined}     undefined
 	 */
 	pipe : function ( parent, child ) {
 		parent.then( function ( arg ) {
@@ -49,7 +52,8 @@ var promise = {
 	/**
 	 * States of a Promise
 	 *
-	 * @type {Object}
+	 * @memberOf abaaso.promise
+	 * @type {object}
 	 */
 	state : {
 		PENDING : 0,
@@ -59,11 +63,11 @@ var promise = {
 };
 
 /**
- * Promise
+ * Creates a new Promise
  *
- * @method Promise
  * @constructor
- * @return {Object} Promise instance
+ * @memberOf abaaso
+ * @return {object} Promise instance
  */
 function Promise () {
 	this.deferred = false;
@@ -72,14 +76,22 @@ function Promise () {
 	this.value    = null;
 }
 
-// Setting constructor loop
+/**
+ * Setting constructor loop
+ *
+ * @method constructor
+ * @memberOf abaaso.Promise
+ * @private
+ * @type {function}
+ */
 Promise.prototype.constructor = Promise;
 
 /**
  * Processes `handlers` queue
  *
  * @method process
- * @return {Object} Promise instance
+ * @memberOf abaaso.Promise
+ * @return {object} Promise instance
  */
 Promise.prototype.process = function() {
 	var result, success, value;
@@ -136,8 +148,9 @@ Promise.prototype.process = function() {
  * Breaks a Promise
  *
  * @method reject
- * @param  {Mixed} arg Promise value
- * @return {Object}    Promise instance
+ * @memberOf abaaso.Promise
+ * @param  {mixed} arg Promise value
+ * @return {object}    Promise instance
  */
 Promise.prototype.reject = function ( arg ) {
 	var self = this;
@@ -164,8 +177,9 @@ Promise.prototype.reject = function ( arg ) {
  * Resolves a Promise
  *
  * @method resolve
- * @param  {Mixed} arg Promise value
- * @return {Object}    Promise instance
+ * @memberOf abaaso.Promise
+ * @param  {mixed} arg Promise value
+ * @return {object}    Promise instance
  */
 Promise.prototype.resolve = function ( arg ) {
 	var self = this;
@@ -192,9 +206,10 @@ Promise.prototype.resolve = function ( arg ) {
  * Registers handler(s) for a Promise
  *
  * @method then
- * @param  {Function} success [Optional] Success handler for eventual value
- * @param  {Function} failure [Optional] Failure handler for eventual value
- * @return {Object}           New Promise instance
+ * @memberOf abaaso.Promise
+ * @param  {function} success [Optional] Success handler for eventual value
+ * @param  {function} failure [Optional] Failure handler for eventual value
+ * @return {object}           New Promise instance
  */
 Promise.prototype.then = function ( success, failure ) {
 	var self  = this,

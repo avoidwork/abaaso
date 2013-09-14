@@ -2,14 +2,15 @@
  * DataGrid factory
  *
  * @method grid
- * @param  {Object}  element     Element to receive DataGrid
- * @param  {Object}  store       DataStore
- * @param  {Array}   fields      Array of fields to display
- * @param  {Array}   sortable    [Optional] Array of sortable columns/fields
- * @param  {Object}  options     [Optional] DataList options
- * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
- * @param  {Number}  debounce    [Optional] DataListFilter input debounce, default is 250
- * @return {Object}              DataGrid instance
+ * @memberOf abaaso
+ * @param  {object}  element     Element to receive DataGrid
+ * @param  {object}  store       DataStore
+ * @param  {array}   fields      Array of fields to display
+ * @param  {array}   sortable    [Optional] Array of sortable columns/fields
+ * @param  {object}  options     [Optional] DataList options
+ * @param  {boolean} filtered    [Optional] Create an input to filter the data grid
+ * @param  {number}  debounce    [Optional] DataListFilter input debounce, default is 250
+ * @return {@link abaaso.DataGrid}
  */
 var grid = function ( element, store, fields, sortable, options, filtered, debounce ) {
 	var ref = [store];
@@ -18,15 +19,16 @@ var grid = function ( element, store, fields, sortable, options, filtered, debou
 };
 
 /**
- * DataGrid factory
+ * Creates a new DataGrid
  *
  * @constructor
- * @param  {Object}  element  Element to receive DataGrid
- * @param  {Object}  store    DataStore
- * @param  {Array}   fields   Array of fields to display
- * @param  {Array}   sortable [Optional] Array of sortable columns/fields
- * @param  {Object}  options  [Optional] DataList options
- * @param  {Boolean} filtered [Optional] Create an input to filter the DataGrid
+ * @memberOf abaaso
+ * @param  {object}  element  Element to receive DataGrid
+ * @param  {object}  store    DataStore
+ * @param  {array}   fields   Array of fields to display
+ * @param  {array}   sortable [Optional] Array of sortable columns/fields
+ * @param  {object}  options  [Optional] DataList options
+ * @param  {boolean} filtered [Optional] Create an input to filter the DataGrid
  */
 function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	var sortOrder;
@@ -49,14 +51,22 @@ function DataGrid ( element, store, fields, sortable, options, filtered ) {
 	this.sortOrder   = sortOrder || sortable || [];
 }
 
-// Setting constructor loop
+/**
+ * Setting constructor loop
+ *
+ * @method constructor
+ * @memberOf abaaso.DataGrid
+ * @private
+ * @type {function}
+ */
 DataGrid.prototype.constructor = DataGrid;
 
 /**
  * Exports data grid records
  *
  * @method dump
- * @return {Array} Record set
+ * @memberOf abaaso.DataGrid
+ * @return {array} Record set
  */
 DataGrid.prototype.dump = function () {
 	return this.store.dump( this.list.records, this.fields );
@@ -66,8 +76,9 @@ DataGrid.prototype.dump = function () {
  * Initializes DataGrid
  *
  * @method init
- * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
- * @return {Object}          DataGrid instance
+ * @memberOf abaaso.DataGrid
+ * @param  {number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
+ * @return {@link abaaso.DataGrid}
  */
 DataGrid.prototype.init = function ( debounce ) {
 	var self, ref, template, container, header, width, css, sort;
@@ -129,7 +140,8 @@ DataGrid.prototype.init = function ( debounce ) {
  * Refreshes the DataGrid
  *
  * @method refresh
- * @return {Object} DataGrid instance
+ * @memberOf abaaso.DataGrid
+ * @return {@link abaaso.DataGrid}
  */
 DataGrid.prototype.refresh = function () {
 	var sort = [],
@@ -157,8 +169,9 @@ DataGrid.prototype.refresh = function () {
  * Sorts the DataGrid when a column header is clicked
  *
  * @method sort
- * @param  {Object} e Event
- * @return {Object}   DataGrid instance
+ * @memberOf abaaso.DataGrid
+ * @param  {object} e Event
+ * @return {@link abaaso.DataGrid}
  */
 DataGrid.prototype.sort = function ( e ) {
 	var target = utility.target( e ),
@@ -184,7 +197,8 @@ DataGrid.prototype.sort = function ( e ) {
  * Tears down the DataGrid
  *
  * @method teardown
- * @return {Object} DataGrid instance
+ * @memberOf abaaso.DataGrid
+ * @return {@link abaaso.DataGrid}
  */
 DataGrid.prototype.teardown = function () {
 	if ( this.filter !== null ) {

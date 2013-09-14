@@ -1,13 +1,14 @@
-/** @namespace json */
+/** @namespace abaaso.json */
 var json = {
 	/**
 	 * Transforms JSON to CSV
 	 *
 	 * @method csv
-	 * @param  {String}  arg JSON  string to transform
-	 * @param  {String}  delimiter [Optional] Character to separate fields
-	 * @param  {Boolean} header    [Optional] False to not include field names as first row
-	 * @return {String}            CSV string
+	 * @memberOf abaaso.json
+	 * @param  {string}  arg JSON  string to transform
+	 * @param  {string}  delimiter [Optional] Character to separate fields
+	 * @param  {boolean} header    [Optional] False to not include field names as first row
+	 * @return {string}            CSV string
 	 */
 	csv : function ( arg, delimiter, header ) {
 		delimiter  = delimiter || ",";
@@ -70,9 +71,10 @@ var json = {
 	 * Decodes the argument
 	 *
 	 * @method decode
-	 * @param  {String}  arg    String to parse
-	 * @param  {Boolean} silent [Optional] Silently fail
-	 * @return {Mixed}          Entity resulting from parsing JSON, or undefined
+	 * @memberOf abaaso.json
+	 * @param  {string}  arg    String to parse
+	 * @param  {boolean} silent [Optional] Silently fail
+	 * @return {mixed}          Entity resulting from parsing JSON, or undefined
 	 */
 	decode : function ( arg, silent ) {
 		try {
@@ -91,9 +93,10 @@ var json = {
 	 * Encodes the argument as JSON
 	 *
 	 * @method encode
-	 * @param  {Mixed}   arg    Entity to encode
-	 * @param  {Boolean} silent [Optional] Silently fail
-	 * @return {String}         JSON, or undefined
+	 * @memberOf abaaso.json
+	 * @param  {mixed}   arg    Entity to encode
+	 * @param  {boolean} silent [Optional] Silently fail
+	 * @return {string}         JSON, or undefined
 	 */
 	encode : function ( arg, silent ) {
 		try {

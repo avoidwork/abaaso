@@ -4,7 +4,7 @@ var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof exports !== "undefined",
-    abaaso, http, https, url, WORKER;
+    framework, http, https, url, WORKER;
 
 if ( global.abaaso !== undefined ) {
 	return;
@@ -26,12 +26,7 @@ if ( server ) {
 	}
 }
 
-/**
- * abaaso
- *
- * @namespace
- */
-abaaso = ( function () {
+framework = ( function () {
 "use strict";
 
 var bootstrap, external, has, slice;

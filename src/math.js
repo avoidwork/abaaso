@@ -1,4 +1,4 @@
-/** @namespace map */
+/** @namespace abaaso.math */
 var math = {
 	/**
 	 * Generates bezier curve coordinates for up to 4 points, last parameter is `t`
@@ -6,7 +6,8 @@ var math = {
 	 * Two point example: (0, 10, 0, 0, 1) means move straight up
 	 *
 	 * @method bezier
-	 * @return {Array} Coordinates
+	 * @memberOf abaaso.math
+	 * @return {array} Coordinates
 	 */
 	bezier : function () {
 		var a = array.cast( arguments ),
@@ -53,9 +54,10 @@ var math = {
 	 * Finds the distance between 2 Arrays of coordinates
 	 *
 	 * @method dist
-	 * @param  {Array} a Coordinates [x, y]
-	 * @param  {Array} b Coordinates [x, y]
-	 * @return {Number}  Distance between `a` & `b`
+	 * @memberOf abaaso.math
+	 * @param  {array} a Coordinates [x, y]
+	 * @param  {array} b Coordinates [x, y]
+	 * @return {number}  Distance between `a` & `b`
 	 */
 	dist : function ( a, b ) {
 		return Math.sqrt( math.sqr( b[0] - a[0] ) + math.sqr( b[1] - a[1] ) );
@@ -65,8 +67,9 @@ var math = {
 	 * Squares a Number
 	 *
 	 * @method sqr
-	 * @param  {Number} n Number to square
-	 * @return {Number}   Squared value
+	 * @memberOf abaaso.math
+	 * @param  {number} n Number to square
+	 * @return {number}   Squared value
 	 */
 	sqr : function ( n ) {
 		return n * n;

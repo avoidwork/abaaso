@@ -1,10 +1,11 @@
-/** @namespace message */
+/** @namespace abaaso.message */
 var message = {
 	/**
 	 * Clears the message listener
 	 *
 	 * @method clear
-	 * @return {Object} abaaso
+	 * @memberOf abaaso.message
+	 * @return {object} abaaso
 	 */
 	clear : function ( state ) {
 		state = state || "all";
@@ -16,9 +17,10 @@ var message = {
 	 * Posts a message to the target
 	 *
 	 * @method send
-	 * @param  {Object} target Object to receive message
-	 * @param  {Mixed}  arg    Entity to send as message
-	 * @return {Object}        target
+	 * @memberOf abaaso.message
+	 * @param  {object} target Object to receive message
+	 * @param  {mixed}  arg    Entity to send as message
+	 * @return {object}        target
 	 */
 	send : function ( target, arg ) {
 		try {
@@ -35,8 +37,9 @@ var message = {
 	 * Sets a handler for recieving a message
 	 *
 	 * @method recv
-	 * @param  {Function} fn Callback function
-	 * @return {Object}      abaaso
+	 * @memberOf abaaso.message
+	 * @param  {function} fn Callback function
+	 * @return {object}      abaaso
 	 */
 	recv : function ( fn, state ) {
 		state = state || "all";

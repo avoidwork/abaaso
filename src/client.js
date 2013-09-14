@@ -1,9 +1,14 @@
-/** @namespace client */
+/**
+ * Client properties & methods
+ *
+ * @namespace abaaso.client
+ */
 var client = {
 	/**
 	 * ActiveX support
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	activex : function () {
 		var result = false,
@@ -23,7 +28,8 @@ var client = {
 	/**
 	 * Android platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	android : function () {
 		return !server && regex.android.test( navigator.userAgent );
@@ -32,7 +38,8 @@ var client = {
 	/**
 	 * Blackberry platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	blackberry : function () {
 		return !server && regex.blackberry.test( navigator.userAgent );
@@ -41,7 +48,8 @@ var client = {
 	/**
 	 * Chrome browser
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	chrome : function () {
 		return !server && regex.chrome.test( navigator.userAgent );
@@ -50,7 +58,8 @@ var client = {
 	/**
 	 * Firefox browser
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	firefox : function () {
 		return !server && regex.firefox.test( navigator.userAgent );
@@ -59,7 +68,8 @@ var client = {
 	/**
 	 * Internet Explorer browser
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	ie : function () {
 		return !server && regex.ie.test( navigator.userAgent );
@@ -68,7 +78,8 @@ var client = {
 	/**
 	 * iOS platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	ios : function () {
 		return !server && regex.ios.test( navigator.userAgent );
@@ -77,7 +88,8 @@ var client = {
 	/**
 	 * Linux Platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	linux : function () {
 		return !server && regex.linux.test( navigator.userAgent );
@@ -86,7 +98,8 @@ var client = {
 	/**
 	 * Mobile platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	mobile : function () {
 		var size;
@@ -104,7 +117,8 @@ var client = {
 	/**
 	 * Playbook platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	playbook: function () {
 		return !server && regex.playbook.test( navigator.userAgent );
@@ -113,7 +127,8 @@ var client = {
 	/**
 	 * Opera browser
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	opera : function () {
 		return !server && regex.opera.test( navigator.userAgent );
@@ -122,7 +137,8 @@ var client = {
 	/**
 	 * OSX platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	osx : function () {
 		return !server && regex.osx.test( navigator.userAgent );
@@ -131,7 +147,8 @@ var client = {
 	/**
 	 * Safari browser
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	safari : function () {
 		return !server && regex.safari.test( navigator.userAgent.replace(/chrome.*/i, "") );
@@ -142,7 +159,8 @@ var client = {
 	 *
 	 * Modern smartphone resolution makes this a hit/miss scenario
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	tablet : function () {
 		var size;
@@ -160,7 +178,8 @@ var client = {
 	/**
 	 * WebOS platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	webos : function () {
 		return !server && regex.webos.test( navigator.userAgent );
@@ -169,7 +188,8 @@ var client = {
 	/**
 	 * Windows platform
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {boolean}
 	 */
 	windows : function () {
 		return !server && regex.windows.test( navigator.userAgent );
@@ -178,7 +198,8 @@ var client = {
 	/**
 	 * Client version
 	 *
-	 * @type {Boolean}
+	 * @memberOf abaaso.client
+	 * @type {number}
 	 */
 	version : function () {
 		var version = 0;
@@ -219,9 +240,10 @@ var client = {
 	 * Quick way to see if a URI allows a specific verb
 	 *
 	 * @method allows
-	 * @param  {String} uri  URI to query
-	 * @param  {String} verb HTTP verb
-	 * @return {Boolean}     `true` if the verb is allowed, undefined if unknown
+	 * @memberOf abaaso.client
+	 * @param  {string} uri  URI to query
+	 * @param  {string} verb HTTP verb
+	 * @return {boolean}     `true` if the verb is allowed, undefined if unknown
 	 */
 	allows : function ( uri, verb ) {
 		if ( string.isEmpty( uri ) || string.isEmpty( verb ) ) {
@@ -260,8 +282,9 @@ var client = {
 	 * Gets bit value based on args
 	 *
 	 * @method bit
-	 * @param  {Array} args Array of commands the URI accepts
-	 * @return {Number} To be set as a bit
+	 * @memberOf abaaso.client
+	 * @param  {array} args Array of commands the URI accepts
+	 * @return {number} To be set as a bit
 	 */
 	bit : function ( args ) {
 		var result = 0;
@@ -290,8 +313,9 @@ var client = {
 	 * Determines if a URI is a CORS end point
 	 *
 	 * @method cors
-	 * @param  {String} uri  URI to parse
-	 * @return {Boolean}     True if CORS
+	 * @memberOf abaaso.client
+	 * @param  {string} uri  URI to parse
+	 * @return {boolean}     True if CORS
 	 */
 	cors : function ( uri ) {
 		return ( !server && uri.indexOf( "//" ) > -1 && uri.indexOf( "//" + location.host ) === -1 );
@@ -301,10 +325,11 @@ var client = {
 	 * Caches the headers from the XHR response
 	 *
 	 * @method headers
-	 * @param  {Object} xhr  XMLHttpRequest Object
-	 * @param  {String} uri  URI to request
-	 * @param  {String} type Type of request
-	 * @return {Object}      Cached URI representation
+	 * @memberOf abaaso.client
+	 * @param  {object} xhr  XMLHttpRequest Object
+	 * @param  {string} uri  URI to request
+	 * @param  {string} type Type of request
+	 * @return {object}      Cached URI representation
 	 */
 	headers : function ( xhr, uri, type ) {
 		var headers = string.trim( xhr.getAllResponseHeaders() ).split( "\n" ),
@@ -359,9 +384,10 @@ var client = {
 	 * Parses an XHR response
 	 *
 	 * @method parse
-	 * @param  {Object} xhr  XHR Object
-	 * @param  {String} type [Optional] Content-Type header value
-	 * @return {Mixed}       Array, Boolean, Document, Number, Object or String
+	 * @memberOf abaaso.client
+	 * @param  {object} xhr  XHR Object
+	 * @param  {string} type [Optional] Content-Type header value
+	 * @return {mixed}       Array, Boolean, Document, Number, Object or String
 	 */
 	parse : function ( xhr, type ) {
 		type = type || "";
@@ -391,8 +417,9 @@ var client = {
 	 * Returns the permission of the cached URI
 	 *
 	 * @method permissions
-	 * @param  {String} uri URI to query
-	 * @return {Object}     Contains an Array of available commands, the permission bit and a map
+	 * @memberOf abaaso.client
+	 * @param  {string} uri URI to query
+	 * @return {object}     Contains an Array of available commands, the permission bit and a map
 	 */
 	permissions : function ( uri ) {
 		var cached = cache.get( uri, false ),
@@ -423,11 +450,12 @@ var client = {
 	 * Creates a JSONP request
 	 *
 	 * @method jsonp
-	 * @param  {String}   uri     URI to request
-	 * @param  {Function} success A handler function to execute when an appropriate response been received
-	 * @param  {Function} failure [Optional] A handler function to execute on error
-	 * @param  {Mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request ( CORS )
-	 * @return {Object}           Deferred
+	 * @memberOf abaaso.client
+	 * @param  {string}   uri     URI to request
+	 * @param  {function} success A handler function to execute when an appropriate response been received
+	 * @param  {function} failure [Optional] A handler function to execute on error
+	 * @param  {mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request ( CORS )
+	 * @return {object}           Deferred
 	 */
 	jsonp : function ( uri, success, failure, args ) {
 		var defer    = deferred(),
@@ -492,14 +520,15 @@ var client = {
 	 *         timeout[type]         Fires when XmlHttpRequest times out
 	 *
 	 * @method request
-	 * @param  {String}   uri     URI to query
-	 * @param  {String}   type    Type of request ( DELETE/GET/POST/PUT/HEAD )
-	 * @param  {Function} success A handler function to execute when an appropriate response been received
-	 * @param  {Function} failure [Optional] A handler function to execute on error
-	 * @param  {Mixed}    args    [Optional] Data to send with the request
-	 * @param  {Object}   headers [Optional] Custom request headers ( can be used to set withCredentials )
-	 * @param  {Number}   timeout [Optional] Timeout in milliseconds, default is 30000
-	 * @return {Object}           Deferred
+	 * @memberOf abaaso.client
+	 * @param  {string}   uri     URI to query
+	 * @param  {string}   type    Type of request ( DELETE/GET/POST/PUT/HEAD )
+	 * @param  {function} success A handler function to execute when an appropriate response been received
+	 * @param  {function} failure [Optional] A handler function to execute on error
+	 * @param  {mixed}    args    [Optional] Data to send with the request
+	 * @param  {object}   headers [Optional] Custom request headers ( can be used to set withCredentials )
+	 * @param  {number}   timeout [Optional] Timeout in milliseconds, default is 30000
+	 * @return {object}           Deferred
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
@@ -682,11 +711,12 @@ var client = {
 	 *         headers      Fires after a possible state change, with the headers from the response
 	 *
 	 * @method response
-	 * @param  {Object} xhr      XMLHttpRequest Object
-	 * @param  {String} uri      URI to query
-	 * @param  {String} type     Type of request
-	 * @param  {Object} defer    Deferred to reconcile with the response
-	 * @return {Undefined}       undefined
+	 * @memberOf abaaso.client
+	 * @param  {object} xhr      XMLHttpRequest Object
+	 * @param  {string} uri      URI to query
+	 * @param  {string} type     Type of request
+	 * @param  {object} defer    Deferred to reconcile with the response
+	 * @return {undefined}       undefined
 	 */
 	response : function ( xhr, uri, type, defer ) {
 		var typed    = string.capitalize( type.toLowerCase() ),
@@ -821,10 +851,11 @@ var client = {
 	 * Creates a script Element to load an external script
 	 *
 	 * @method script
-	 * @param  {String} arg    URL to script
-	 * @param  {Object} target [Optional] Element to receive the script
-	 * @param  {String} pos    [Optional] Position to create the script at within the target
-	 * @return {Object}        Script
+	 * @memberOf abaaso.client
+	 * @param  {string} arg    URL to script
+	 * @param  {object} target [Optional] Element to receive the script
+	 * @param  {string} pos    [Optional] Position to create the script at within the target
+	 * @return {object}        Script
 	 */
 	script : function ( arg, target, pos ) {
 		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.dom( "head" )[0], pos );
@@ -834,9 +865,10 @@ var client = {
 	 * Scrolls to a position in the view using a two point bezier curve
 	 *
 	 * @method scroll
-	 * @param  {Array}  dest Coordinates
-	 * @param  {Number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
-	 * @return {Object}      Deferred
+	 * @memberOf abaaso.client
+	 * @param  {array}  dest Coordinates
+	 * @param  {number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
+	 * @return {object}      Deferred
 	 */
 	scroll : function ( dest, ms ) {
 		var defer = deferred(),
@@ -863,7 +895,8 @@ var client = {
 	 * Returns the current scroll position of the View
 	 *
 	 * @method scrollPos
-	 * @return {Array} Describes the scroll position
+	 * @memberOf abaaso.client
+	 * @return {array} Describes the scroll position
 	 */
 	scrollPos : function () {
 		return [
@@ -876,7 +909,8 @@ var client = {
 	 * Returns the visible area of the View
 	 *
 	 * @method size
-	 * @return {Array} Describes the View
+	 * @memberOf abaaso.client
+	 * @return {array} Describes the View
 	 */
 	size : function () {
 		return [
@@ -889,8 +923,9 @@ var client = {
 	 * Creates a link Element to load an external stylesheet
 	 *
 	 * @method stylesheet
-	 * @param  {String} arg   URL to stylesheet
-	 * @param  {String} media [Optional] Medias the stylesheet applies to
+	 * @memberOf abaaso.client
+	 * @param  {string} arg   URL to stylesheet
+	 * @param  {string} media [Optional] Medias the stylesheet applies to
 	 * @return {Objecct}      Stylesheet
 	 */
 	stylesheet : function ( arg, media ) {

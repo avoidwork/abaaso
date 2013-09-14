@@ -2,31 +2,40 @@
  * Channel factory
  *
  * @method channel
- * @return {Object} Channel instance
+ * @memberOf abaaso
+ * @return {@link abaaso.Channel}
  */
 var channel = function () {
 	return new Channel();
 };
 
 /**
- * Channel
+ * Creates a new Channel
  *
  * @constructor
- * @return {Object} Channel instance
+ * @namespace abaaso.Channel
  */
 function Channel () {
 	this.queue = [];
 }
 
-// Setting constructor loop
+/**
+ * Setting constructor loop
+ *
+ * @method constructor
+ * @private
+ * @memberOf abaaso.Channel
+ * @type {function}
+ */
 Channel.prototype.constructor = Channel;
 
 /**
  * Puts an item into the Channel
  *
  * @method put
- * @param  {Mixed} arg Item
- * @return {Object}     Deferred instance
+ * @memberOf abaaso.Channel
+ * @param  {mixed} arg Item
+ * @return {@link abaaso.Deferred}
  */
 Channel.prototype.put = function ( arg ) {
 	var defer = deferred();
@@ -47,7 +56,8 @@ Channel.prototype.put = function ( arg ) {
  * Takes an item from the Channel
  *
  * @method take
- * @return {Object} Deferred instance
+ * @memberOf abaaso.Channel
+ * @return {@link abaaso.Deferred}
  */
 Channel.prototype.take = function () {
 	var defer = deferred();

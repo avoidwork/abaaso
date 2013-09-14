@@ -4,20 +4,20 @@ bootstrap();
 // DataStore Worker "script"
 WORKER = "var " + string.fromObject( array, "array" ) + ", " + string.fromObject( regex, "regex" ) + ", " + string.fromObject( string, "string" ) + ", " + string.fromObject( utility, "utility" ) + "; onmessage = " + data.worker.toString() + ";";
 
-// Returning namespace
+// Returning factory
 return abaaso;
 })();
 
 // Node, AMD & window supported
 if ( typeof exports !== "undefined" ) {
-	module.exports = abaaso;
+	module.exports = framework;
 }
 else if ( typeof define === "function" ) {
-	define( "abaaso", function () {
-		return abaaso;
+	define( function () {
+		return framework;
 	});
 }
 else {
-	global.abaaso = abaaso;
+	global.abaaso = framework;
 }
 })( this );

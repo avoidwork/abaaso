@@ -1,8 +1,10 @@
 /**
- * Prototype hooks
+ * Prototype hooks for syntactic sugar
  *
+ * @memberOf abaaso
+ * @name prototypes
  * @private
- * @type {Object}
+ * @type {object}
  */
 var prototypes = {
 	// Array.prototype

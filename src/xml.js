@@ -1,11 +1,12 @@
-/** @namespace xml */
+/** @namespace abaaso.xml */
 var xml = {
 	/**
 	 * Returns XML (Document) Object from a String
 	 *
 	 * @method decode
-	 * @param  {String} arg XML String
-	 * @return {Object}     XML Object or undefined
+	 * @memberOf abaaso.xml
+	 * @param  {string} arg XML String
+	 * @return {object}     XML Object or undefined
 	 */
 	decode : function ( arg ) {
 		if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
@@ -19,8 +20,9 @@ var xml = {
 	 * Returns XML String from an Object or Array
 	 *
 	 * @method encode
-	 * @param  {Mixed} arg Object or Array to cast to XML String
-	 * @return {String}    XML String or undefined
+	 * @memberOf abaaso.xml
+	 * @param  {mixed} arg Object or Array to cast to XML String
+	 * @return {string}    XML String or undefined
 	 */
 	encode : function ( arg, wrap ) {
 		try {
@@ -38,9 +40,9 @@ var xml = {
 			 *
 			 * @method node
 			 * @private
-			 * @param  {String} name  Node name
-			 * @param  {Value}  value Node value
-			 * @return {String}       Node
+			 * @param  {string} name  Node name
+			 * @param  {string} value Node value
+			 * @return {string}       Node
 			 */
 			node = function ( name, value ) {
 				var output = "<n>v</n>";
@@ -85,8 +87,9 @@ var xml = {
 	 * Validates `arg` is XML
 	 *
 	 * @method valid
-	 * @param  {String} arg String to validate
-	 * @return {Boolean}    `true` if valid XML
+	 * @memberOf abaaso.xml
+	 * @param  {string} arg String to validate
+	 * @return {boolean}    `true` if valid XML
 	 */
 	valid : function ( arg ) {
 		return ( xml.decode( arg ).getElementsByTagName( "parsererror" ).length === 0 );

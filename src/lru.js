@@ -2,18 +2,20 @@
  * LRU factory
  *
  * @method lru
- * @param  {Number} max [Optional] Max size of cache, default is 1000
- * @return {Object}     LRU instance
+ * @memberOf abaaso
+ * @param  {number} max [Optional] Max size of cache, default is 1000
+ * @return {@link abaaso.LRU}
  */
 var lru = function ( max ) {
 	return new LRU( max );
 };
 
 /**
- * Least Recently Used cache
+ * Creates a new Least Recently Used cache
  *
  * @constructor
- * @param  {Number} max [Optional] Max size of cache, default is 1000
+ * @memberOf abaaso
+ * @param  {number} max [Optional] Max size of cache, default is 1000
  */
 function LRU ( max ) {
 	this.cache  = {};
@@ -23,14 +25,22 @@ function LRU ( max ) {
 	this.length = 0;
 }
 
-// Setting constructor loop
+/**
+ * Setting constructor loop
+ *
+ * @method constructor
+ * @memberOf abaaso.LRU
+ * @private
+ * @type {function}
+ */
 LRU.prototype.constructor = LRU;
 
 /**
  * Evicts the least recently used item from cache
  *
  * @method evict
- * @return {Object} LRU instance
+ * @memberOf abaaso.LRU
+ * @return {@link abaaso.LRU}
  */
 LRU.prototype.evict = function () {
 	if ( this.last !== null ) {
@@ -44,8 +54,9 @@ LRU.prototype.evict = function () {
  * Gets cached item and moves it to the front
  *
  * @method get
- * @param  {String} key Item key
- * @return {Mixed}      Undefined or Item value
+ * @memberOf abaaso.LRU
+ * @param  {string} key Item key
+ * @return {@link abaaso.LRUItem}
  */
 LRU.prototype.get = function ( key ) {
 	var item = this.cache[key];
@@ -63,8 +74,9 @@ LRU.prototype.get = function ( key ) {
  * Removes item from cache
  *
  * @method remove
- * @param  {String} key Item key
- * @return {Object}     LRUItem instance
+ * @memberOf abaaso.LRU
+ * @param  {string} key Item key
+ * @return {@link abaaso.LRUItem}
  */
 LRU.prototype.remove = function ( key ) {
 	var item = this.cache[ key ];
@@ -98,9 +110,10 @@ LRU.prototype.remove = function ( key ) {
  * Sets item in cache as `first`
  *
  * @method set
- * @param  {String} key   Item key
- * @param  {Mixed}  value Item value
- * @return {Object}       LRU instance
+ * @memberOf abaaso.LRU
+ * @param  {string} key   Item key
+ * @param  {mixed}  value Item value
+ * @return {@link abaaso.LRU}
  */
 LRU.prototype.set = function ( key, value ) {
 	var item = this.remove( key );
@@ -134,10 +147,11 @@ LRU.prototype.set = function ( key, value ) {
 };
 
 /**
- * LRU Item factory
+ * Creates a new LRUItem
  *
  * @constructor
- * @param {Mixed} value Item value
+ * @memberOf abaaso
+ * @param {mixed} value Item value
  */
 function LRUItem ( value ) {
 	this.next     = null;
@@ -145,5 +159,12 @@ function LRUItem ( value ) {
 	this.value    = value;
 }
 
-// Setting prototype & constructor loop
+/**
+ * Setting constructor loop
+ *
+ * @method constructor
+ * @memberOf abaaso.LRUItem
+ * @private
+ * @type {function}
+ */
 LRUItem.prototype.constructor = LRUItem;

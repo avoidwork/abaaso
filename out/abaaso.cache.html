@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: cache</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Namespace: cache</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+        <span class="ancestors"><a href="abaaso.html">abaaso</a>.</span>
+    
+    cache
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description">Private RESTful cache</div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1366">line 1366</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+        
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="items"><span class="type-signature">&lt;static> </span>items<span class="type-signature"> :Object</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Collection URIs
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1378">line 1378</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="clean"><span class="type-signature">&lt;static> </span>clean<span class="signature">()</span><span class="type-signature"> &rarr; {undefined}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Garbage collector for the cached items
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1380">line 1380</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    undefined
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">undefined</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="expire"><span class="type-signature">&lt;static> </span>expire<span class="signature">(uri, silent)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Expires a URI from the local cache
+
+Events: expire    Fires when the URI expires
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="string.html">string</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URI of the local representation</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>silent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] If 'true', the event will not fire</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1395">line 1395</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    undefined
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">undefined</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="expired"><span class="type-signature">&lt;static> </span>expired<span class="signature">(uri)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Determines if a URI has expired
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Cached URI object</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1422">line 1422</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the URI has expired
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="get"><span class="type-signature">&lt;static> </span>get<span class="signature">(uri, expire, silent)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the cached object {headers, response} of the URI or false
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="string.html">string</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URI/Identifier for the resource to retrieve from cache</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>expire</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] If 'false' the URI will not expire</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>silent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] If 'true', the event will not fire</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1436">line 1436</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    URI Object {headers, response} or False
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">mixed</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="set"><span class="type-signature">&lt;static> </span>set<span class="signature">(uri, property, value)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets, or updates an item in cache.items
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="string.html">string</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URI to set or update</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>property</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="string.html">string</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Property of the cached URI to set</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Value to set</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1463">line 1463</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    URI Object {headers, response} or undefined
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">mixed</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.cache.html">cache</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.data.html">data</a></li><li><a href="abaaso.datalist.html">datalist</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.promise.html">promise</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="string.html">string</a></li><li><a href="utility.html">utility</a></li><li><a href="validate.html">validate</a></li><li><a href="xml.html">xml</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$">$</a></li><li><a href="global.html#abort">abort</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#alias">alias</a></li><li><a href="global.html#capitalize">capitalize</a></li><li><a href="global.html#clearTimers">clearTimers</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#coerce">coerce</a></li><li><a href="global.html#compile">compile</a></li><li><a href="global.html#css">css</a></li><li><a href="global.html#debounce">debounce</a></li><li><a href="global.html#decode">decode</a></li><li><a href="global.html#defer">defer</a></li><li><a href="global.html#define">define</a></li><li><a href="global.html#discard">discard</a></li><li><a href="global.html#dispatchEvent">dispatchEvent</a></li><li><a href="global.html#dom">dom</a></li><li><a href="global.html#domId">domId</a></li><li><a href="global.html#encode">encode</a></li><li><a href="global.html#error">error</a></li><li><a href="global.html#escape">escape</a></li><li><a href="global.html#explode">explode</a></li><li><a href="global.html#extend">extend</a></li><li><a href="global.html#factory">factory</a></li><li><a href="global.html#fib">fib</a></li><li><a href="global.html#fromObject">fromObject</a></li><li><a href="global.html#genId">genId</a></li><li><a href="global.html#getAllResponseHeaders">getAllResponseHeaders</a></li><li><a href="global.html#getResponseHeader">getResponseHeader</a></li><li><a href="global.html#handler">handler</a></li><li><a href="global.html#handlerError">handlerError</a></li><li><a href="global.html#hash">hash</a></li><li><a href="global.html#hex">hex</a></li><li><a href="global.html#hyphenate">hyphenate</a></li><li><a href="global.html#isAlphaNum">isAlphaNum</a></li><li><a href="global.html#isBoolean">isBoolean</a></li><li><a href="global.html#isDate">isDate</a></li><li><a href="global.html#isDomain">isDomain</a></li><li><a href="global.html#isEmail">isEmail</a></li><li><a href="global.html#isEmpty">isEmpty</a></li><li><a href="global.html#isInt">isInt</a></li><li><a href="global.html#isIP">isIP</a></li><li><a href="global.html#isNumber">isNumber</a></li><li><a href="global.html#isPhone">isPhone</a></li><li><a href="global.html#isUrl">isUrl</a></li><li><a href="global.html#iterate">iterate</a></li><li><a href="global.html#loading">loading</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#merge">merge</a></li><li><a href="global.html#module">module</a></li><li><a href="global.html#odd">odd</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#overrideMimeType">overrideMimeType</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#property">property</a></li><li><a href="global.html#proto">proto</a></li><li><a href="global.html#queryString">queryString</a></li><li><a href="global.html#reflect">reflect</a></li><li><a href="global.html#removeEventListener">removeEventListener</a></li><li><a href="global.html#repeat">repeat</a></li><li><a href="global.html#send">send</a></li><li><a href="global.html#setRequestHeader">setRequestHeader</a></li><li><a href="global.html#singular">singular</a></li><li><a href="global.html#state">state</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#sugar">sugar</a></li><li><a href="global.html#target">target</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#toCamelCase">toCamelCase</a></li><li><a href="global.html#toFunction">toFunction</a></li><li><a href="global.html#tpl">tpl</a></li><li><a href="global.html#trim">trim</a></li><li><a href="global.html#unCamelCase">unCamelCase</a></li><li><a href="global.html#uncapitalize">uncapitalize</a></li><li><a href="global.html#unhyphenate">unhyphenate</a></li><li><a href="global.html#uuid">uuid</a></li><li><a href="global.html#valid">valid</a></li><li><a href="global.html#walk">walk</a></li><li><a href="global.html#when">when</a></li><li><a href="global.html#xhr">xhr</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri Sep 13 2013 20:41:59 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

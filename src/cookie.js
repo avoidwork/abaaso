@@ -1,15 +1,20 @@
-/** @namespace cookie */
+/**
+ * Cookie methods
+ *
+ * @namespace abaaso.cookie
+ */
 var cookie = {
 	/**
 	 * Expires a cookie if it exists
 	 *
 	 * @method expire
-	 * @param  {String}  name   Name of the cookie to expire
-	 * @param  {String}  domain [Optional] Domain to set the cookie for
-	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
-	 * @param  {String}  path   [Optional] Path the cookie is for
-	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
-	 * @return {String}        Name of the expired cookie
+	 * @memberOf abaaso.cookie
+	 * @param  {string}  name   Name of the cookie to expire
+	 * @param  {string}  domain [Optional] Domain to set the cookie for
+	 * @param  {boolean} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {string}  path   [Optional] Path the cookie is for
+	 * @param  {string}  jar    [Optional] Cookie jar, defaults to document.cookie
+	 * @return {string}        Name of the expired cookie
 	 */
 	expire : function ( name, domain, secure, path, jar ) {
 		cookie.set( name, "", "-1s", domain, secure, path, jar );
@@ -20,9 +25,10 @@ var cookie = {
 	 * Gets a cookie
 	 *
 	 * @method get
-	 * @param  {String} name Name of the cookie to get
-	 * @param  {String} jar  [Optional] Cookie jar, defaults to document.cookie
-	 * @return {Mixed}       Cookie or undefined
+	 * @memberOf abaaso.cookie
+	 * @param  {string} name Name of the cookie to get
+	 * @param  {string} jar  [Optional] Cookie jar, defaults to document.cookie
+	 * @return {mixed}       Cookie or undefined
 	 */
 	get : function ( name, jar ) {
 		return utility.coerce( cookie.list( jar )[name] );
@@ -32,8 +38,9 @@ var cookie = {
 	 * Gets the cookies for the domain
 	 *
 	 * @method list
-	 * @param  {String} jar [Optional] Cookie jar, defaults to document.cookie
-	 * @return {Object}                Collection of cookies
+	 * @memberOf abaaso.cookie
+	 * @param  {string} jar [Optional] Cookie jar, defaults to document.cookie
+	 * @return {object}                Collection of cookies
 	 */
 	list : function ( jar ) {
 		var result = {};
@@ -59,14 +66,15 @@ var cookie = {
 	 * The offset specifies a positive or negative span of time as day, hour, minute or second
 	 *
 	 * @method set
-	 * @param  {String}  name   Name of the cookie to create
-	 * @param  {String}  value  Value to set
-	 * @param  {String}  offset A positive or negative integer followed by "d", "h", "m" or "s"
-	 * @param  {String}  domain [Optional] Domain to set the cookie for
-	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
-	 * @param  {String}  path   [Optional] Path the cookie is for
-	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
-	 * @return {Undefined}      undefined
+	 * @memberOf abaaso.cookie
+	 * @param  {string}  name   Name of the cookie to create
+	 * @param  {string}  value  Value to set
+	 * @param  {string}  offset A positive or negative integer followed by "d", "h", "m" or "s"
+	 * @param  {string}  domain [Optional] Domain to set the cookie for
+	 * @param  {boolean} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {string}  path   [Optional] Path the cookie is for
+	 * @param  {string}  jar    [Optional] Cookie jar, defaults to document.cookie
+	 * @return {undefined}      undefined
 	 */
 	set : function ( name, value, offset, domain, secure, path, jar ) {
 		value      = ( value || "" ) + ";";

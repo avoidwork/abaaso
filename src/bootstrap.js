@@ -1,9 +1,9 @@
 /**
  * Bootstraps framework
  *
- * @method bootstrap
- * @private
- * @return {Undefined} undefined
+ * @function bootstrap
+ * @memberOf abaaso
+ * @return {undefined} undefined
  */
 bootstrap = function () {
 	var cleanup, fn, init;

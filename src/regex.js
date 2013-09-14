@@ -3,7 +3,10 @@
  *
  * `url` was authored by Diego Perini
  *
- * @type {Object}
+ * @namespace abaaso.regex
+ * @private
+ * @memberOf abaaso
+ * @type {object}
  */
 var regex = {
 	after_space             : /\s+.*/,

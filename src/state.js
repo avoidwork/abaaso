@@ -1,4 +1,4 @@
-/** @namespace state */
+/** @namespace abaaso.state */
 var state = ( function () {
 	var prop = {current: "active", previous: null, header: null},
 	    getCurrent, setCurrent, getHeader, setHeader, getPrevious, setPrevious;
@@ -7,8 +7,8 @@ var state = ( function () {
 	 * Gets current application state
 	 *
 	 * @method getCurrent
-	 * @private
-	 * @return {String} Application state
+	 * @memberOf abaaso.state
+	 * @return {string} Application state
 	 */
 	getCurrent = function () {
 		return prop.current;
@@ -18,9 +18,9 @@ var state = ( function () {
 	 * Sets current application state
 	 *
 	 * @method setCurrent
-	 * @private
-	 * @param  {String} arg New application state
-	 * @return {String}     Application state
+	 * @memberOf abaaso.state
+	 * @param  {string} arg New application state
+	 * @return {string}     Application state
 	 */
 	setCurrent = function ( arg ) {
 		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) {
@@ -30,7 +30,7 @@ var state = ( function () {
 		prop.previous = prop.current;
 		prop.current  = arg;
 
-		observer.fire( abaaso, "state", arg );
+		observer.fire( "abaaso", "state", arg );
 
 		return arg;
 	};
@@ -39,8 +39,8 @@ var state = ( function () {
 	 * Gets current application state header
 	 *
 	 * @method getHeader
-	 * @private
-	 * @return {String} Application state header
+	 * @memberOf abaaso.state
+	 * @return {string} Application state header
 	 */
 	getHeader = function () {
 		return prop.header;
@@ -50,9 +50,9 @@ var state = ( function () {
 	 * Sets current application state header
 	 *
 	 * @method setHeader
-	 * @private
-	 * @param  {String} arg New application state header
-	 * @return {String}     Application state header
+	 * @memberOf abaaso.state
+	 * @param  {string} arg New application state header
+	 * @return {string}     Application state header
 	 */
 	setHeader = function ( arg ) {
 		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
@@ -68,8 +68,8 @@ var state = ( function () {
 	 * Gets previous application state
 	 *
 	 * @method getPrevious
-	 * @private
-	 * @return {String} Previous application state
+	 * @memberOf abaaso.state
+	 * @return {string} Previous application state
 	 */
 	getPrevious = function () {
 		return prop.previous;
@@ -79,8 +79,8 @@ var state = ( function () {
 	 * Exists because you can't mix accessor & data descriptors
 	 *
 	 * @method setPrevious
-	 * @private
-	 * @return {Undefined} undefined
+	 * @memberOf abaaso.state
+	 * @return {undefined} undefined
 	 */
 	setPrevious = function () {
 		throw new Error( label.error.readOnly );

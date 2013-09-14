@@ -1,17 +1,28 @@
-/** @namespace utility */
+/** @namespace abaaso.utility */
 var utility = {
-	// Collection of timers
+	/**
+	 * Collection of timers
+	 *
+	 * @memberOf abaaso.utility
+	 * @type {Object}
+	 */
 	timer : {},
 
-	// Collection of repeating functions
+	/**
+	 * Collection of repeating functions
+	 *
+	 * @memberOf abaaso.utility
+	 * @type {Object}
+	 */
 	repeating: {},
 
 	/**
 	 * Queries the DOM using CSS selectors and returns an Element or Array of Elements
 	 *
 	 * @method $
-	 * @param  {String} arg Comma delimited string of CSS selectors
-	 * @return {Mixed}      Element or Array of Elements
+	 * @memberOf abaaso.utility
+	 * @param  {string} arg Comma delimited string of CSS selectors
+	 * @return {mixed}      Element or Array of Elements
 	 */
 	$ : function ( arg ) {
 		var result;
@@ -56,9 +67,10 @@ var utility = {
 	 * Aliases origin onto obj
 	 *
 	 * @method alias
-	 * @param  {Object} obj    Object receiving aliasing
-	 * @param  {Object} origin Object providing structure to obj
-	 * @return {Object}        Object receiving aliasing
+	 * @memberOf abaaso.utility
+	 * @param  {object} obj    Object receiving aliasing
+	 * @param  {object} origin Object providing structure to obj
+	 * @return {object}        Object receiving aliasing
 	 */
 	alias : function ( obj, origin ) {
 		var o = obj,
@@ -97,8 +109,9 @@ var utility = {
 	 * Clears deferred & repeating functions
 	 *
 	 * @method clearTimers
-	 * @param  {String} id ID of timer( s )
-	 * @return {Undefined} undefined
+	 * @memberOf abaaso.utility
+	 * @param  {string} id ID of timer( s )
+	 * @return {undefined} undefined
 	 */
 	clearTimers : function ( id ) {
 		if ( id === undefined || string.isEmpty( id ) ) {
@@ -122,9 +135,10 @@ var utility = {
 	 * Clones an Object
 	 *
 	 * @method clone
-	 * @param {Object}  obj     Object to clone
-	 * @param {Boolean} shallow [Optional] Create a shallow clone, which doesn't maintain prototypes, default is `false`
-	 * @return {Object}     Clone of obj
+	 * @memberOf abaaso.utility
+	 * @param  {object}  obj     Object to clone
+	 * @param  {boolean} shallow [Optional] Create a shallow clone, which doesn't maintain prototypes, default is `false`
+	 * @return {object}          Clone of obj
 	 */
 	clone : function ( obj, shallow ) {
 		var clone;
@@ -173,8 +187,9 @@ var utility = {
 	 * Coerces a String to a Type
 	 *
 	 * @method coerce
-	 * @param  {String} value String to coerce
-	 * @return {Mixed}        Primitive version of the String
+	 * @memberOf abaaso.utility
+	 * @param  {string} value String to coerce
+	 * @return {mixed}        Primitive version of the String
 	 */
 	coerce : function ( value ) {
 		var tmp;
@@ -214,10 +229,11 @@ var utility = {
 	 * This is ideal when you need to recompile a regex for use within a conditional statement
 	 *
 	 * @method compile
-	 * @param  {Object} regex     RegExp
-	 * @param  {String} pattern   Regular expression pattern
-	 * @param  {String} modifiers Modifiers to apply to the pattern
-	 * @return {Boolean}          true
+	 * @memberOf abaaso.utility
+	 * @param  {object} regex     RegExp
+	 * @param  {string} pattern   Regular expression pattern
+	 * @param  {string} modifiers Modifiers to apply to the pattern
+	 * @return {boolean}          true
 	 */
 	compile : function ( reg, pattern, modifiers ) {
 		reg.compile( pattern, modifiers );
@@ -229,9 +245,10 @@ var utility = {
 	 * Creates a CSS stylesheet in the View
 	 *
 	 * @method css
-	 * @param  {String} content CSS to put in a style tag
-	 * @param  {String} media   [Optional] Medias the stylesheet applies to
-	 * @return {Object}         Element created or undefined
+	 * @memberOf abaaso.utility
+	 * @param  {string} content CSS to put in a style tag
+	 * @param  {string} media   [Optional] Medias the stylesheet applies to
+	 * @return {object}         Element created or undefined
 	 */
 	css : function ( content, media ) {
 		var ss, css;
@@ -253,10 +270,11 @@ var utility = {
 	 * Debounces a function
 	 *
 	 * @method debounce
-	 * @param  {Function} fn    Function to execute
-	 * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 1000
-	 * @param  {Mixed}    scope `this` context during execution, default is `global`
-	 * @return {Undefined}      undefined
+	 * @memberOf abaaso.utility
+	 * @param  {function} fn    Function to execute
+	 * @param  {number}   ms    Time to wait to execute in milliseconds, default is 1000
+	 * @param  {mixed}    scope `this` context during execution, default is `global`
+	 * @return {undefined}      undefined
 	 */
 	debounce : function ( fn, ms, scope ) {
 		ms    = ms    || 1000;
@@ -274,10 +292,11 @@ var utility = {
 	 * if the structure is valid
 	 *
 	 * @method define
-	 * @param  {String} args  Dot delimited string of the structure
-	 * @param  {Mixed}  value Value to set
-	 * @param  {Object} obj   Object receiving value
-	 * @return {Object}       Object receiving value
+	 * @memberOf abaaso.utility
+	 * @param  {string} args  Dot delimited string of the structure
+	 * @param  {mixed}  value Value to set
+	 * @param  {object} obj   Object receiving value
+	 * @return {object}       Object receiving value
 	 */
 	define : function ( args, value, obj ) {
 		args    = args.split( "." );
@@ -329,11 +348,12 @@ var utility = {
 	 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine
 	 *
 	 * @method defer
-	 * @param  {Function} fn     Function to defer execution of
-	 * @param  {Number}   ms     Milliseconds to defer execution
-	 * @param  {Number}   id     [Optional] ID of the deferred function
-	 * @param  {Boolean}  repeat [Optional] Describes the execution, default is `false`
-	 * @return {String}          ID of the timer
+	 * @memberOf abaaso.utility
+	 * @param  {function} fn     Function to defer execution of
+	 * @param  {number}   ms     Milliseconds to defer execution
+	 * @param  {number}   id     [Optional] ID of the deferred function
+	 * @param  {boolean}  repeat [Optional] Describes the execution, default is `false`
+	 * @return {string}          ID of the timer
 	 */
 	defer : function ( fn, ms, id, repeat ) {
 		var op;
@@ -357,8 +377,9 @@ var utility = {
 	 * Queries DOM with fastest method
 	 *
 	 * @method dom
-	 * @param  {String} arg DOM query
-	 * @return {Mixed}      undefined, Element, or Array of Elements
+	 * @memberOf abaaso.utility
+	 * @param  {string} arg DOM query
+	 * @return {mixed}      undefined, Element, or Array of Elements
 	 */
 	dom : function ( arg ) {
 		var result;
@@ -388,8 +409,9 @@ var utility = {
 	 * Encodes a UUID to a DOM friendly ID
 	 *
 	 * @method domId
-	 * @param  {String} UUID
-	 * @return {String} DOM friendly ID
+	 * @memberOf abaaso.utility
+	 * @param  {string} UUID
+	 * @return {string} DOM friendly ID
 	 */
 	domId : function ( arg ) {
 		return "a" + arg.replace( /-/g, "" ).slice( 1 );
@@ -399,11 +421,12 @@ var utility = {
 	 * Error handling, with history in .log
 	 *
 	 * @method error
-	 * @param  {Mixed}   e       Error object or message to display
-	 * @param  {Array}   args    Array of arguments from the callstack
-	 * @param  {Mixed}   scope   Entity that was "this"
-	 * @param  {Boolean} warning [Optional] Will display as console warning if true
-	 * @return {Undefined}       undefined
+	 * @memberOf abaaso.utility
+	 * @param  {mixed}   e       Error object or message to display
+	 * @param  {array}   args    Array of arguments from the callstack
+	 * @param  {mixed}   scope   Entity that was "this"
+	 * @param  {boolean} warning [Optional] Will display as console warning if true
+	 * @return {undefined}       undefined
 	 */
 	error : function ( e, args, scope, warning ) {
 		warning = ( warning === true );
@@ -419,7 +442,7 @@ var utility = {
 
 		utility.log( o.stack || o.message, !warning ? "error" : "warn" );
 		utility.error.log.push( o );
-		observer.fire( abaaso, "error", o );
+		observer.fire( "abaaso", "error", o );
 
 		return undefined;
 	},
@@ -428,9 +451,10 @@ var utility = {
 	 * Creates a "class" extending Object, with optional decoration
 	 *
 	 * @method extend
-	 * @param  {Object} obj Object to extend
-	 * @param  {Object} arg [Optional] Object for decoration
-	 * @return {Object}     Decorated obj
+	 * @memberOf abaaso.utility
+	 * @param  {object} obj Object to extend
+	 * @param  {object} arg [Optional] Object for decoration
+	 * @return {object}     Decorated obj
 	 */
 	extend : function ( obj, arg ) {
 		var o;
@@ -452,9 +476,10 @@ var utility = {
 	 * Fibonacci calculator
 	 *
 	 * @method fib
-	 * @param  {Number}  i Number to calculate
-	 * @param  {Boolean} r Recursive if `true`
-	 * @return {Number}    Calculated number
+	 * @memberOf abaaso.utility
+	 * @param  {number}  i Number to calculate
+	 * @param  {boolean} r Recursive if `true`
+	 * @return {number}    Calculated number
 	 */
 	fib : function ( i, r ) {
 		if ( r === true ) {
@@ -469,9 +494,10 @@ var utility = {
 	 * Generates an ID value
 	 *
 	 * @method genId
-	 * @param  {Mixed}   obj [Optional] Object to receive id
-	 * @param  {Boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
-	 * @return {Mixed}       Object or id
+	 * @memberOf abaaso.utility
+	 * @param  {mixed}   obj [Optional] Object to receive id
+	 * @param  {boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
+	 * @return {mixed}       Object or id
 	 */
 	genId : function ( obj, dom ) {
 		dom = ( dom === true );
@@ -505,8 +531,9 @@ var utility = {
 	 * Getter / setter for the hashbang
 	 *
 	 * @method hash
-	 * @param  {String} arg Route to set
-	 * @return {String}     Current route
+	 * @memberOf abaaso.utility
+	 * @param  {string} arg Route to set
+	 * @return {string}     Current route
 	 */
 	hash : function ( arg ) {
 		if ( arg ) {
@@ -520,8 +547,9 @@ var utility = {
 	 * Converts RGB to HEX
 	 *
 	 * @method hex
-	 * @param  {String} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
-	 * @return {String}       Color as HEX
+	 * @memberOf abaaso.utility
+	 * @param  {string} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
+	 * @return {string}       Color as HEX
 	 */
 	hex : function ( color ) {
 		var digits, red, green, blue, result, i, nth;
@@ -557,9 +585,10 @@ var utility = {
 	 * Iteration can be stopped by returning false from fn
 	 *
 	 * @method iterate
-	 * @param  {Object}   obj Object to iterate
-	 * @param  {Function} fn  Function to execute against properties
-	 * @return {Object}       Object
+	 * @memberOf abaaso.utility
+	 * @param  {object}   obj Object to iterate
+	 * @param  {function} fn  Function to execute against properties
+	 * @return {object}       Object
 	 */
 	iterate : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
@@ -578,8 +607,9 @@ var utility = {
 	 * with a class of "loading"
 	 *
 	 * @method loading
-	 * @param  {Mixed} obj Element
-	 * @return {Mixed}     Element
+	 * @memberOf abaaso.utility
+	 * @param  {mixed} obj Element
+	 * @return {mixed}     Element
 	 */
 	loading : function ( obj ) {
 		var l = abaaso.loading;
@@ -607,9 +637,10 @@ var utility = {
 	 * Writes argument to the console
 	 *
 	 * @method log
-	 * @param  {String} arg    String to write to the console
-	 * @param  {String} target [Optional] Target console, default is "log"
-	 * @return {Undefined}     undefined
+	 * @memberOf abaaso.utility
+	 * @param  {string} arg    String to write to the console
+	 * @param  {string} target [Optional] Target console, default is "log"
+	 * @return {undefined}     undefined
 	 */
 	log : function ( arg, target ) {
 		var ts, msg;
@@ -625,9 +656,10 @@ var utility = {
 	 * Merges obj with arg
 	 *
 	 * @method merge
-	 * @param  {Object} obj Object to decorate
-	 * @param  {Object} arg Decoration
-	 * @return {Object}     Decorated Object
+	 * @memberOf abaaso.utility
+	 * @param  {object} obj Object to decorate
+	 * @param  {object} arg Decoration
+	 * @return {object}     Decorated Object
 	 */
 	merge : function ( obj, arg ) {
 		utility.iterate( arg, function ( v, k ) {
@@ -651,9 +683,10 @@ var utility = {
 	 * Registers a module on abaaso
 	 *
 	 * @method module
-	 * @param  {String} arg Module name
-	 * @param  {Object} obj Module structure
-	 * @return {Object}     Module registered
+	 * @memberOf abaaso.utility
+	 * @param  {string} arg Module name
+	 * @param  {object} obj Module structure
+	 * @return {object}     Module registered
 	 */
 	module : function ( arg, obj ) {
 		if ( abaaso[arg] !== undefined || !obj instanceof Object ) {
@@ -669,9 +702,9 @@ var utility = {
 	 * Returns Object, or reference to Element
 	 *
 	 * @method object
-	 * @private
-	 * @param  {Mixed} obj Entity or $ query
-	 * @return {Mixed}     Entity
+	 * @memberOf abaaso.utility
+	 * @param  {mixed} obj Entity or $ query
+	 * @return {mixed}     Entity
 	 */
 	object : function ( obj ) {
 		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.dom( obj ) : obj );
@@ -681,8 +714,9 @@ var utility = {
 	 * Parses a URI into an Object
 	 *
 	 * @method parse
-	 * @param  {String} uri URI to parse
-	 * @return {Object}     Parsed URI
+	 * @memberOf abaaso.utility
+	 * @param  {string} uri URI to parse
+	 * @return {object}     Parsed URI
 	 */
 	parse : function ( uri ) {
 		var obj    = {},
@@ -750,10 +784,11 @@ var utility = {
 	 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
 	 *
 	 * @method property
-	 * @param  {Object} obj        Object to decorate
-	 * @param  {String} prop       Name of property to set
-	 * @param  {Object} descriptor Descriptor of the property
-	 * @return {Object}            Object receiving the property
+	 * @memberOf abaaso.utility
+	 * @param  {object} obj        Object to decorate
+	 * @param  {string} prop       Name of property to set
+	 * @param  {object} descriptor Descriptor of the property
+	 * @return {object}            Object receiving the property
 	 */
 	property : function ( obj, prop, descriptor ) {
 		if ( !( descriptor instanceof Object ) ) {
@@ -775,9 +810,10 @@ var utility = {
 	 * Allows hooks to be overwritten
 	 *
 	 * @method proto
-	 * @param  {Object} obj  Object receiving prototype extension
-	 * @param  {String} type Identifier of obj, determines what Arrays to apply
-	 * @return {Object}      obj or undefined
+	 * @memberOf abaaso.utility
+	 * @param  {object} obj  Object receiving prototype extension
+	 * @param  {string} type Identifier of obj, determines what Arrays to apply
+	 * @return {object}      obj or undefined
 	 */
 	proto : function ( obj, type ) {
 		var target = obj.prototype || obj;
@@ -795,9 +831,10 @@ var utility = {
 	 * Parses a query string & coerces values
 	 *
 	 * @method queryString
-	 * @param  {String} arg     [Optional] Key to find in the querystring
-	 * @param  {String} qstring [Optional] Query string to parse
-	 * @return {Mixed}          Value or Object of key:value pairs
+	 * @memberOf abaaso.utility
+	 * @param  {string} arg     [Optional] Key to find in the querystring
+	 * @param  {string} qstring [Optional] Query string to parse
+	 * @return {mixed}          Value or Object of key:value pairs
 	 */
 	queryString : function ( arg, qstring ) {
 		var obj    = {},
@@ -847,8 +884,9 @@ var utility = {
 	 * Returns an Array of parameters of a Function
 	 *
 	 * @method reflect
-	 * @param  {Function} arg Function to reflect
-	 * @return {Array}        Array of parameters
+	 * @memberOf abaaso.utility
+	 * @param  {function} arg Function to reflect
+	 * @return {array}        Array of parameters
 	 */
 	reflect : function ( arg ) {
 		if ( arg === undefined ) {
@@ -866,11 +904,12 @@ var utility = {
 	 * Return false from the function to halt recursion
 	 *
 	 * @method repeat
-	 * @param  {Function} fn  Function to execute repeatedly
-	 * @param  {Number}   ms  Milliseconds to stagger the execution
-	 * @param  {String}   id  [Optional] Timeout ID
-	 * @param  {Boolean}  now Executes `fn` and then setup repetition, default is `true`
-	 * @return {String}       Timeout ID
+	 * @memberOf abaaso.utility
+	 * @param  {function} fn  Function to execute repeatedly
+	 * @param  {number}   ms  Milliseconds to stagger the execution
+	 * @param  {string}   id  [Optional] Timeout ID
+	 * @param  {boolean}  now Executes `fn` and then setup repetition, default is `true`
+	 * @return {string}       Timeout ID
 	 */
 	repeat : function ( fn, ms, id, now ) {
 		ms  = ms || 10;
@@ -907,8 +946,9 @@ var utility = {
 	 * Stops an Event from bubbling
 	 *
 	 * @method stop
-	 * @param  {Object} e Event
-	 * @return {Object}   Event
+	 * @memberOf abaaso.utility
+	 * @param  {object} e Event
+	 * @return {object}   Event
 	 */
 	stop : function ( e ) {
 		if ( e.cancelBubble !== undefined ) {
@@ -933,7 +973,8 @@ var utility = {
 	 * Creates syntactic sugar by hooking abaaso into native Objects
 	 *
 	 * @method sugar
-	 * @return {Undefined} undefined
+	 * @memberOf abaaso.utility
+	 * @return {undefined} undefined
 	 */
 	sugar : function () {
 		utility.proto( Array, "array" );
@@ -952,8 +993,9 @@ var utility = {
 	 * Returns the Event target
 	 *
 	 * @method target
-	 * @param  {Object} e Event
-	 * @return {Object}   Event target
+	 * @memberOf abaaso.utility
+	 * @param  {object} e Event
+	 * @return {object}   Event target
 	 */
 	target : function ( e ) {
 		return e.target || e.srcElement;
@@ -963,9 +1005,10 @@ var utility = {
 	 * Transforms JSON to HTML and appends to Body or target Element
 	 *
 	 * @method tpl
-	 * @param  {Object} data   JSON Object describing HTML
-	 * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
-	 * @return {Object}        New Element created from the template
+	 * @memberOf abaaso.utility
+	 * @param  {object} data   JSON Object describing HTML
+	 * @param  {mixed}  target [Optional] Target Element or Element.id to receive the HTML
+	 * @return {object}        New Element created from the template
 	 */
 	tpl : function ( arg, target ) {
 		var frag;
@@ -1005,8 +1048,9 @@ var utility = {
 	 * Generates a version 4 UUID
 	 *
 	 * @method uuid
-	 * @param  {Boolean} safe [Optional] Strips - from UUID
-	 * @return {String}       UUID
+	 * @memberOf abaaso.utility
+	 * @param  {boolean} safe [Optional] Strips - from UUID
+	 * @return {string}       UUID
 	 */
 	uuid : function ( safe ) {
 		var s = function () { return ( ( ( 1 + Math.random() ) * 0x10000 ) | 0 ).toString( 16 ).substring( 1 ); },
@@ -1026,9 +1070,10 @@ var utility = {
 	 * Walks a structure and returns arg
 	 *
 	 * @method  walk
-	 * @param  {Mixed}  obj  Object or Array
-	 * @param  {String} arg  String describing the property to return
-	 * @return {Mixed}       arg
+	 * @memberOf abaaso.utility
+	 * @param  {mixed}  obj  Object or Array
+	 * @param  {string} arg  String describing the property to return
+	 * @return {mixed}       arg
 	 */
 	walk : function ( obj, arg ) {
 		array.each( arg.replace( /\]$/, "" ).replace( /\]/g, "." ).replace( /\.\./g, "." ).split( /\.|\[/ ), function ( i ) {
@@ -1042,7 +1087,8 @@ var utility = {
 	 * Accepts Deferreds or Promises as arguments or an Array
 	 *
 	 * @method when
-	 * @return {Object} Deferred
+	 * @memberOf abaaso.utility
+	 * @return {object} Deferred
 	 */
 	when : function () {
 		var i     = 0,
