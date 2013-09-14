@@ -295,6 +295,9 @@ abaaso.css             = utility.css;
 
 /**
  * @method data
+ * @param  {object} obj  Object
+ * @param  {mixed}  recs [Optional] Data to set with this.batch
+ * @param  {object} args [Optional] Arguments to set on the store
  * @memberOf abaaso
  * @see {@link abaaso.datastore.decorator}
  * @type {function}
@@ -955,12 +958,15 @@ abaaso.stop            = utility.stop;
 
 /**
  * @method store
+ * @param  {object} obj  Object
+ * @param  {mixed}  recs [Optional] Data to set with this.batch
+ * @param  {object} args [Optional] Arguments to set on the store
  * @deprecated Use `abaaso.data()`
  * @memberOf abaaso
  * @see {@link abaaso.datastore.decorator}
  * @type {function}
  */
-abaaso.store           = data.factory;
+abaaso.store           = datastore.decorator;
 
 /**
  * @method sugar
@@ -969,8 +975,33 @@ abaaso.store           = data.factory;
  * @type {function}
  */
 abaaso.sugar           = utility.sugar;
+
+/**
+ * @method target
+ * @memberOf abaaso
+ * @see {@link abaaso.utility.target}
+ * @type {function}
+ */
 abaaso.target          = utility.target;
+
+/**
+ * @method tpl
+ * @memberOf abaaso
+ * @see {@link abaaso.utility.tpl}
+ * @type {function}
+ */
 abaaso.tpl             = utility.tpl;
+
+/**
+ * @method un
+ * @param  {mixed}  obj   Primitive
+ * @param  {string} event [Optional] Event, or Events being fired ( comma delimited supported )
+ * @param  {string} id    [Optional] Listener id
+ * @param  {string} state [Optional] Application state, default is current
+ * @memberOf abaaso
+ * @see {@link abaaso.observer.remove}
+ * @type {function}
+ */
 abaaso.un              = function ( obj, event, id, state ) {
 	var all = typeof obj === "object",
 	    o, e, i, s;
@@ -990,11 +1021,47 @@ abaaso.un              = function ( obj, event, id, state ) {
 
 	return observer.remove( o, e, i, s );
 };
+
+/**
+ * @method update
+ * @memberOf abaaso
+ * @see {@link abaaso.element.update}
+ * @type {function}
+ */
 abaaso.update          = element.update;
+
+/**
+ * @method uuid
+ * @memberOf abaaso
+ * @see {@link abaaso.utility.uuid}
+ * @type {function}
+ */
 abaaso.uuid            = utility.uuid;
+
 abaaso.validate        = validate.test;
+
+/**
+ * Version of abaaso
+ *
+ * @memberOf abaaso
+ * @type {String}
+ */
 abaaso.version         = "{{VERSION}}";
+
+/**
+ * @method walk
+ * @memberOf abaaso
+ * @see {@link abaaso.utility.walk}
+ * @type {function}
+ */
 abaaso.walk            = utility.walk;
+
+/**
+ * @method when
+ * @memberOf abaaso
+ * @see {@link abaaso.utility.when}
+ * @type {function}
+ */
 abaaso.when            = utility.when;
 
 /**

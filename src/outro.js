@@ -2,7 +2,7 @@
 bootstrap();
 
 // DataStore Worker "script"
-WORKER = "var " + string.fromObject( array, "array" ) + ", " + string.fromObject( regex, "regex" ) + ", " + string.fromObject( string, "string" ) + ", " + string.fromObject( utility, "utility" ) + "; onmessage = " + data.worker.toString() + ";";
+WORKER = "var " + string.fromObject( array, "array" ) + ", " + string.fromObject( regex, "regex" ) + ", " + string.fromObject( string, "string" ) + ", " + string.fromObject( utility, "utility" ) + "; onmessage = " + datastore.worker.toString() + ";";
 
 // Returning factory
 return abaaso;
