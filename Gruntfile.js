@@ -62,6 +62,14 @@ module.exports = function (grunt) {
 				cmd : "echo //@ sourceMappingURL=<%= pkg.name %>.map >> lib/<%= pkg.name %>.min.js"
 			}
 		},
+		jsdoc : {
+			dist : {
+				src: ["lib/<%= pkg.name %>.js"],
+				options: {
+				    destination: "doc"
+				}
+			}
+		},
 		jshint : {
 			options : {
 				jshintrc : ".jshintrc"
@@ -93,6 +101,7 @@ module.exports = function (grunt) {
 	// tasks
 	grunt.loadNpmTasks("grunt-sed");
 	grunt.loadNpmTasks("grunt-exec");
+	grunt.loadNpmTasks("grunt-jsdoc");
 	grunt.loadNpmTasks("grunt-contrib-concat");
 	grunt.loadNpmTasks("grunt-contrib-nodeunit");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
@@ -101,5 +110,5 @@ module.exports = function (grunt) {
 	// aliases
 	grunt.registerTask("test", ["nodeunit", "jshint"]);
 	grunt.registerTask("build", ["concat", "sed", "exec"]);
-	grunt.registerTask("default", ["build", "test"]);
+	grunt.registerTask("default", ["build", "test", "jsdoc"]);
 };

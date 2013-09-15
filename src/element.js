@@ -107,7 +107,7 @@ var element = {
 	 * @method create
 	 * @memberOf abaaso.element
 	 * @param  {string} type   Type of Element to create, or HTML String
-	 * @param  {object} args   [Optional] Collection of properties to apply to the new element
+	 * @param  {object} args   [Optional] Properties to set
 	 * @param  {mixed}  target [Optional] Target Element
 	 * @param  {mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
 	 * @return {mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
@@ -819,7 +819,7 @@ var element = {
 	 * @method update
 	 * @memberOf abaaso.element
 	 * @param  {mixed}  obj  Element
-	 * @param  {object} args Collection of properties
+	 * @param  {object} args Properties to set
 	 * @return {object}      Element
 	 */
 	update : function ( obj, args ) {

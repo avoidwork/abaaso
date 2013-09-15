@@ -254,7 +254,7 @@ abaaso.allows          = client.allows;
  *
  * @method append
  * @param  {string} type Type of Element to create, or HTML string
- * @param  {object} args [Optional] Collection of properties to apply to the new element
+ * @param  {object} args [Optional] Properties to set
  * @param  {mixed}  obj  [Optional] Target Element
  * @memberOf abaaso
  * @see {@link abaaso.element.create}
@@ -338,7 +338,7 @@ abaaso.compile         = utility.compile;
  * @memberOf abaaso
  * @see {@link abaaso.element.create}
  * @param  {string} type   Type of Element to create, or HTML String
- * @param  {object} args   [Optional] Collection of properties to apply to the new element
+ * @param  {object} args   [Optional] Properties to set
  * @param  {mixed}  target [Optional] Target Element
  * @param  {mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
  * @return {mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
@@ -1035,7 +1035,7 @@ abaaso.post            = function ( uri, success, failure, args, headers, timeou
  *
  * @method prepend
  * @param  {string} type Type of Element to create, or HTML string
- * @param  {object} args [Optional] Collection of properties to apply to the new element
+ * @param  {object} args [Optional] Properties to set
  * @param  {mixed}  obj  [Optional] Target Element
  * @memberOf abaaso
  * @see {@link abaaso.element.create}
@@ -1316,7 +1316,7 @@ abaaso.un              = function ( obj, event, id, state ) {
  * @memberOf abaaso
  * @see {@link abaaso.element.update}
  * @param  {mixed}  obj  Element
- * @param  {object} args Collection of properties
+ * @param  {object} args Properties to set
  * @return {object}      Element
  */
 abaaso.update          = element.update;
