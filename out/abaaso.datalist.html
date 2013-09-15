@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: datalist</title>
+    <title>JSDoc: Class: DataList</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Namespace: datalist</h1>
+    <h1 class="page-title">Class: DataList</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="abaaso.html">abaaso</a>.</span>
     
-    datalist
+    DataList
     </h2>
     
 </header>  
@@ -40,8 +40,26 @@
     
     
         
-        
-        
+<dt>
+    <h4 class="name" id="DataList"><span class="type-signature"></span>new DataList<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Creates a new DataList
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
 <dl class="details">
     
         
@@ -64,7 +82,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4171">line 4171</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4267">line 4267</a>
     </li></ul></dd>
     
     
@@ -75,8 +93,20 @@
     
 </dl>
 
-        
-        
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
     
     </div>
     
@@ -98,7 +128,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="factory"><span class="type-signature">&lt;static> </span>factory<span class="signature">(target, store, template, options)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    <h4 class="name" id="del"><span class="type-signature">&lt;static> </span>del<span class="signature">(rec)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -106,7 +136,7 @@
     
     
     <div class="description">
-        Creates an instance of datalist
+        Delete sync handler
     </div>
     
 
@@ -140,7 +170,7 @@
 	
         <tr>
             
-                <td class="name"><code>target</code></td>
+                <td class="name"><code>rec</code></td>
             
             
             <td class="type">
@@ -156,76 +186,7 @@
             
             
             
-            <td class="description last">Element to receive the DataList</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>store</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Data store to feed the DataList</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>template</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">mixed</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Optional parameters to set on the DataList</td>
+            <td class="description last">Record</td>
         </tr>
 	
 	
@@ -256,7 +217,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4173">line 4173</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4296">line 4296</a>
     </li></ul></dd>
     
     
@@ -281,7 +242,7 @@
     
             
 <div class="param-desc">
-    DataList instance
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
 </div>
 
 
@@ -306,7 +267,7 @@
         
             
 <dt>
-    <h4 class="name" id="pages"><span class="type-signature">&lt;static> </span>pages<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="dump"><span class="type-signature">&lt;static> </span>dump<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
     
     
 </dt>
@@ -314,7 +275,7 @@
     
     
     <div class="description">
-        Calculates the total pages
+        Exports data list records
     </div>
     
 
@@ -347,7 +308,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4211">line 4211</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4321">line 4321</a>
     </li></ul></dd>
     
     
@@ -372,7 +333,7 @@
     
             
 <div class="param-desc">
-    Total pages
+    Record set
 </div>
 
 
@@ -383,7 +344,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">number</span>
+<span class="param-type">array</span>
 
 
 	</dd>
@@ -397,7 +358,7 @@
         
             
 <dt>
-    <h4 class="name" id="range"><span class="type-signature">&lt;static> </span>range<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id="page"><span class="type-signature">&lt;static> </span>page<span class="signature">(redraw, create)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -405,7 +366,169 @@
     
     
     <div class="description">
-        Calculates the page size as an Array of start & finish
+        Changes the page index of the DataList
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>redraw</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>create</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Recreates cached View of data</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4332">line 4332</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="pages"><span class="type-signature">&lt;static> </span>pages<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Adds pagination Elements to the View
     </div>
     
 
@@ -438,7 +561,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4226">line 4226</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4346">line 4346</a>
     </li></ul></dd>
     
     
@@ -463,7 +586,7 @@
     
             
 <div class="param-desc">
-    Array of start & end numbers
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
 </div>
 
 
@@ -474,7 +597,473 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">array</span>
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="refresh"><span class="type-signature">&lt;static> </span>refresh<span class="signature">(redraw, create)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Refreshes element
+
+Events: beforeDataListRefresh  Fires from the element containing the DataList
+        afterDataListRefresh   Fires from the element containing the DataList
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>redraw</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>create</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Recreates cached View of data</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4444">line 4444</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="sort"><span class="type-signature">&lt;static> </span>sort<span class="signature">(order, create)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sorts data list & refreshes element
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>order</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">SQL "order by" statement</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>create</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Recreates cached View of data store</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4629">line 4629</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="teardown"><span class="type-signature">&lt;static> </span>teardown<span class="signature">(destroy)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Tears down references to the DataList
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>destroy</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] `true` will remove the DataList from the DOM</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4643">line 4643</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -501,13 +1090,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.data.html">data</a></li><li><a href="abaaso.datalist.html">datalist</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.promise.html">promise</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.validate.html">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri Sep 13 2013 21:15:42 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Sep 15 2013 10:05:40 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

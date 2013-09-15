@@ -1,4 +1,7 @@
-/** @namespace abaaso.datastore */
+/**
+ * @namespace abaaso.datastore
+ * @private
+ */
 var datastore = {
 	/**
 	 * Decorates a DataStore on an Object
@@ -131,7 +134,7 @@ DataStore.prototype.constructor = DataStore;
  * @param  {string}  type Type of action to perform ( set/del/delete )
  * @param  {array}   data Array of keys or indices to delete, or Object containing multiple records to set
  * @param  {boolean} sync [Optional] Syncs store with data, if true everything is erased
- * @return {object}       Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.batch = function ( type, data, sync ) {
 	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
@@ -219,7 +222,7 @@ DataStore.prototype.buildUri = function ( key ) {
  * @method clear
  * @memberOf abaaso.DataStore
  * @param  {boolean} sync [Optional] Boolean to limit clearing of properties
- * @return {object}       Data store
+ * @return {object} {@link abaaso.DataStore}
  */
 DataStore.prototype.clear = function ( sync ) {
 	sync       = ( sync === true );
@@ -287,7 +290,7 @@ DataStore.prototype.clear = function ( sync ) {
  * @method crawl
  * @memberOf abaaso.DataStore
  * @param  {mixed}  arg Record, key or index
- * @return {object}     Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.crawl = function ( arg ) {
 	var self      = this,
@@ -379,7 +382,7 @@ DataStore.prototype.crawl = function ( arg ) {
  * @param  {mixed}   record  Record, key or index
  * @param  {boolean} reindex [Optional] `true` if DataStore should be reindexed
  * @param  {boolean} batch   [Optional] `true` if part of a batch operation
- * @return {object}          Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.del = function ( record, reindex, batch ) {
 	record    = record.key ? record : this.get ( record );
@@ -421,7 +424,7 @@ DataStore.prototype.del = function ( record, reindex, batch ) {
  * @param  {boolean} reindex `true` if DataStore should be reindexed
  * @param  {boolean} batch   `true` if part of a batch operation
  * @param  {object}  defer   Deferred instance
- * @return {object}          DataStore instance
+ * @return {object} {@link abaaso.DataStore}
  */
 DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 	delete this.keys[record.key];
@@ -550,7 +553,7 @@ DataStore.prototype.get = function ( record, offset ) {
  * @param  {string} arg   DataStore to join
  * @param  {string} field Field in both DataStores
  * @param  {string} join  Type of JOIN to perform, defaults to `inner`
- * @return {object}       Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.join = function ( arg, field, join ) {
 	join          = join || "inner";
@@ -698,7 +701,7 @@ DataStore.prototype.purge = function ( arg ) {
  *
  * @method reindex
  * @memberOf abaaso.DataStore
- * @return {object} Data store
+ * @return {object} {@link abaaso.DataStore}
  */
 DataStore.prototype.reindex = function () {
 	var nth = this.total,
@@ -734,7 +737,7 @@ DataStore.prototype.restore = function ( arg ) {
  * @method save
  * @memberOf abaaso.DataStore
  * @param  {mixed} arg  [Optional] String or Number for record
- * @return {object}     Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.save = function ( arg ) {
 	return this.storage( arg || this, "set" );
@@ -811,7 +814,7 @@ DataStore.prototype.select = function ( where ) {
  * @param  {mixed}   key   [Optional] Integer or String to use as a Primary Key
  * @param  {object}  data  Key:Value pairs to set as field values
  * @param  {boolean} batch [Optional] True if called by data.batch
- * @return {object}        Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.set = function ( key, data, batch ) {
 	data       = utility.clone( data, true );
@@ -923,7 +926,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
  * @param  {object}  data   Record data
  * @param  {boolean} batch  `true` if part of a batch operation
  * @param  {object}  defer  Deferred instance
- * @return {object}         DataStore instance
+ * @return {object} {@link abaaso.DataStore}
  */
 DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	var self      = this,
@@ -981,7 +984,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
  * @method setExpires
  * @memberOf abaaso.DataStore
  * @param  {number} arg  Milliseconds until data is stale
- * @return {object}      Data store
+ * @return {object} {@link abaaso.DataStore}
  */
 DataStore.prototype.setExpires = function ( arg ) {
 	// Expiry cannot be less than a second, and must be a valid scenario for consumption; null will disable repetitive expiration
@@ -1023,7 +1026,7 @@ DataStore.prototype.setExpires = function ( arg ) {
  * @method setUri
  * @memberOf abaaso.DataStore
  * @param  {string} arg API collection end point
- * @return {object}     Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.setUri = function ( arg ) {
 	var defer = deferred();
@@ -1072,7 +1075,7 @@ DataStore.prototype.setUri = function ( arg ) {
  * @param  {string} query  SQL ( style ) order by
  * @param  {string} create [Optional, default behavior is true, value is false] Boolean determines whether to recreate a view if it exists
  * @param  {object} where  [Optional] Object describing the WHERE clause
- * @return {object}        Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.sort = function ( query, create, where ) {
 	create      = ( create === true || ( where instanceof Object ) );
@@ -1126,7 +1129,7 @@ DataStore.prototype.sort = function ( query, create, where ) {
  * @param  {mixed}  obj  Record ( Object, key or index ) or store
  * @param  {object} op   Operation to perform ( get, remove or set )
  * @param  {string} type [Optional] Type of Storage to use ( local, session [local] )
- * @return {object}      Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.storage = function ( obj, op, type ) {
 	var self    = this,
@@ -1357,7 +1360,7 @@ DataStore.prototype.storage = function ( obj, op, type ) {
  *
  * @method sync
  * @memberOf abaaso.DataStore
- * @return {object} Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.sync = function () {
 	if ( this.uri === null || string.isEmpty( this.uri ) ) {
@@ -1439,7 +1442,7 @@ DataStore.prototype.sync = function () {
  *
  * @method teardown
  * @memberOf abaaso.DataStore
- * @return {object} DataStore instance
+ * @return {object} {@link abaaso.DataStore}
  */
 DataStore.prototype.teardown = function () {
 	var uri = this.uri,
@@ -1504,7 +1507,7 @@ DataStore.prototype.unique = function ( key ) {
  * @memberOf abaaso.DataStore
  * @param  {mixed}  key  Key or index
  * @param  {object} data Key:Value pairs to set as field values
- * @return {object}      Deferred
+ * @return {object} {@link abaaso.Deferred}
  */
 DataStore.prototype.update = function ( key, data ) {
 	var record = this.get( key ),

@@ -101,13 +101,12 @@ var element = {
 	},
 
 	/**
-	 * Creates an Element in document.body or a target Element
-	 *
-	 * An id is generated if not specified with args
+	 * Creates an Element in document.body or a target Element.
+	 * An id is generated if not specified with args.
 	 *
 	 * @method create
 	 * @memberOf abaaso.element
-	 * @param  {string} type   Type of Element to create
+	 * @param  {string} type   Type of Element to create, or HTML String
 	 * @param  {object} args   [Optional] Collection of properties to apply to the new element
 	 * @param  {mixed}  target [Optional] Target Element
 	 * @param  {mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
@@ -385,7 +384,7 @@ var element = {
 	 * @method hidden
 	 * @memberOf abaaso.element
 	 * @param  {mixed} obj Element
-	 * @return {boolean}   True if hidden
+	 * @return {boolean}   `true` if hidden
 	 */
 	hidden : function ( obj ) {
 		return obj.style.display === "none" || ( typeof obj.hidden === "boolean" && obj.hidden );
@@ -625,7 +624,7 @@ var element = {
 	},
 
 	/**
-	 * Finds the position of an element
+	 * Finds the position of an Element
 	 *
 	 * @method position
 	 * @memberOf abaaso.element
@@ -712,7 +711,7 @@ var element = {
 	 * @memberOf abaaso.element
 	 * @param  {object} obj Element to scroll to
 	 * @param  {number} ms  [Optional] Milliseconds to scroll, default is 250, min is 100
-	 * @return {object}     Deferred
+	 * @return {object} {@link abaaso.Deferred}
 	 */
 	scrollTo : function ( obj, ms ) {
 		return client.scroll( array.remove( element.position( obj ), 2, 3 ), ms );

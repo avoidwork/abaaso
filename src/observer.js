@@ -65,15 +65,15 @@ var observer = {
 	ignore : false,
 
 	/**
-	 * Adds a handler to an event
+	 * Adds a handler for an event
 	 *
 	 * @method add
 	 * @memberOf abaaso.observer
 	 * @param  {mixed}    obj   Primitive
 	 * @param  {string}   event Event, or Events being fired ( comma delimited supported )
 	 * @param  {function} fn    Event handler
-	 * @param  {string}   id    [Optional / Recommended] The id for the listener
-	 * @param  {string}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
+	 * @param  {string}   id    [Optional / Recommended] ID for the listener
+	 * @param  {string}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
 	 * @param  {string}   st    [Optional] Application state, default is current
 	 * @return {mixed}          Primitive
 	 */
@@ -315,8 +315,8 @@ var observer = {
 	 * @param  {mixed}    obj   Primitive
 	 * @param  {string}   event Event being fired
 	 * @param  {function} fn    Event handler
-	 * @param  {string}   id    [Optional / Recommended] The id for the listener
-	 * @param  {string}   scope [Optional / Recommended] The id of the object or element to be set as 'this'
+	 * @param  {string}   id    [Optional / Recommended] ID for the listener
+	 * @param  {string}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
 	 * @param  {string}   st    [Optional] Application state, default is current
 	 * @return {mixed}          Primitive
 	 */

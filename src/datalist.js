@@ -1,4 +1,7 @@
-/** @namespace abaaso.datalist */
+/**
+ * @namespace abaaso.datalist
+ * @private
+ */
 var datalist = {
 	/**
 	 * Creates an instance of datalist
@@ -9,7 +12,7 @@ var datalist = {
 	 * @param  {object} store    Data store to feed the DataList
 	 * @param  {mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
 	 * @param  {object} options  Optional parameters to set on the DataList
-	 * @return {@link abaaso.DataList}
+	 * @return {object} {@link abaaso.DataList}
 	 */
 	factory : function ( target, store, template, options ) {
 		var ref = [store],
@@ -109,7 +112,7 @@ DataList.prototype.constructor = DataList;
  * @method del
  * @memberOf abaaso.DataList
  * @param  {object} rec Record
- * @return {@link abaaso.DataList}
+ * @return {object} {@link abaaso.DataList}
  */
 DataList.prototype.del = function ( rec ) {
 	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
@@ -146,7 +149,7 @@ DataList.prototype.dump = function () {
  * @memberOf abaaso.DataList
  * @param  {boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
  * @param  {boolean} create [Optional] Recreates cached View of data
- * @return {@link abaaso.DataList}
+ * @return {object} {@link abaaso.DataList}
  */
 DataList.prototype.page = function ( arg, redraw, create ) {
 	this.pageIndex = arg;
@@ -158,7 +161,7 @@ DataList.prototype.page = function ( arg, redraw, create ) {
  *
  * @method pages
  * @memberOf abaaso.DataList
- * @return {@link abaaso.DataList}
+ * @return {object} {@link abaaso.DataList}
  */
 DataList.prototype.pages = function () {
 	var obj   = this.element,
@@ -261,7 +264,7 @@ DataList.prototype.pages = function () {
  * @memberOf abaaso.DataList
  * @param  {boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
  * @param  {boolean} create [Optional] Recreates cached View of data
- * @return {@link abaaso.DataList}
+ * @return {object} {@link abaaso.DataList}
  */
 DataList.prototype.refresh = function ( redraw, create ) {
 	redraw       = ( redraw !== false );
@@ -443,7 +446,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
  * @memberOf abaaso.DataList
  * @param  {string}  order  SQL "order by" statement
  * @param  {boolean} create [Optional] Recreates cached View of data store
- * @return {@link abaaso.DataList}
+ * @return {object} {@link abaaso.DataList}
  */
 DataList.prototype.sort = function ( order, create ) {
 	this.order = order;
@@ -456,7 +459,7 @@ DataList.prototype.sort = function ( order, create ) {
  * @method teardown
  * @memberOf abaaso.DataList
  * @param  {boolean} destroy [Optional] `true` will remove the DataList from the DOM
- * @return {@link abaaso.DataList}
+ * @return {object} {@link abaaso.DataList}
  */
 DataList.prototype.teardown = function ( destroy ) {
 	destroy  = ( destroy === true );

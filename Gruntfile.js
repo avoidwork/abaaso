@@ -47,6 +47,7 @@ module.exports = function (grunt) {
 					"src/xhr.js",
 					"src/xml.js",
 					"src/abaaso.js",
+					"src/namespace.js",
 					"src/bootstrap.js",
 					"src/outro.js"
 				],

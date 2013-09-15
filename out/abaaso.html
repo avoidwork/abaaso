@@ -64,7 +64,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11372">line 11372</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12182">line 12182</a>
     </li></ul></dd>
     
     
@@ -93,16 +93,19 @@
             <dt><a href="abaaso.Abaaso.html">Abaaso</a></dt>
             <dd></dd>
         
+            <dt><a href="abaaso.Channel.html">Channel</a></dt>
+            <dd></dd>
+        
             <dt><a href="abaaso.DataGrid.html">DataGrid</a></dt>
             <dd></dd>
         
-            <dt><a href="abaaso.DataList_.html">DataList</a></dt>
+            <dt><a href="abaaso.DataList.html">DataList</a></dt>
             <dd></dd>
         
             <dt><a href="abaaso.DataListFilter.html">DataListFilter</a></dt>
             <dd></dd>
         
-            <dt><a href="abaaso.DataStore_.html">DataStore</a></dt>
+            <dt><a href="abaaso.DataStore.html">DataStore</a></dt>
             <dd></dd>
         
             <dt><a href="abaaso.Deferred.html">Deferred</a></dt>
@@ -114,7 +117,7 @@
             <dt><a href="abaaso.LRUItem.html">LRUItem</a></dt>
             <dd></dd>
         
-            <dt><a href="abaaso.Promise_.html">Promise</a></dt>
+            <dt><a href="abaaso.Promise.html">Promise</a></dt>
             <dd></dd>
         
             <dt><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></dt>
@@ -129,28 +132,25 @@
             <dt><a href="namespaces.html#abaaso.array"><a href="abaaso.array.html">array</a></a></dt>
             <dd></dd>
         
-            <dt><a href="namespaces.html#abaaso.Channel"><a href="abaaso.Channel.html">Channel</a></a></dt>
-            <dd></dd>
-        
             <dt><a href="namespaces.html#abaaso.client"><a href="abaaso.client.html">client</a></a></dt>
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.cookie"><a href="abaaso.cookie.html">cookie</a></a></dt>
             <dd></dd>
         
-            <dt><a href="namespaces.html#abaaso.datalist"><a href="abaaso.html#datalist">datalist</a></a></dt>
-            <dd></dd>
-        
-            <dt><a href="namespaces.html#abaaso.datastore"><a href="abaaso.datastore.html">datastore</a></a></dt>
-            <dd></dd>
-        
             <dt><a href="namespaces.html#abaaso.element"><a href="abaaso.element.html">element</a></a></dt>
+            <dd></dd>
+        
+            <dt><a href="namespaces.html#abaaso.fn"><a href="abaaso.fn.html">fn</a></a></dt>
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.json"><a href="abaaso.json.html">json</a></a></dt>
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.label"><a href="abaaso.label.html">label</a></a></dt>
+            <dd></dd>
+        
+            <dt><a href="namespaces.html#abaaso.loading"><a href="abaaso.loading.html">loading</a></a></dt>
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.math"><a href="abaaso.math.html">math</a></a></dt>
@@ -168,7 +168,7 @@
             <dt><a href="namespaces.html#abaaso.observer"><a href="abaaso.observer.html">observer</a></a></dt>
             <dd></dd>
         
-            <dt><a href="namespaces.html#abaaso.promise"><a href="abaaso.html#promise">promise</a></a></dt>
+            <dt><a href="namespaces.html#abaaso.state"><a href="abaaso.state.html">state</a></a></dt>
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.state"><a href="abaaso.state.html">state</a></a></dt>
@@ -178,9 +178,6 @@
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.utility"><a href="abaaso.utility.html">utility</a></a></dt>
-            <dd></dd>
-        
-            <dt><a href="namespaces.html#abaaso.validate"><a href="abaaso.validate.html">validate</a></a></dt>
             <dd></dd>
         
             <dt><a href="namespaces.html#abaaso.xml"><a href="abaaso.xml.html">xml</a></a></dt>
@@ -194,6 +191,70 @@
         <dl>
             
 <dt>
+    <h4 class="name" id="callback"><span class="type-signature">&lt;static> </span>callback<span class="type-signature"> :Object</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        JSONP callback registry
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">Object</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12212">line 12212</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="expires"><span class="type-signature">&lt;static> </span>expires<span class="type-signature"> :number</span></h4>
     
     
@@ -201,7 +262,7 @@
 <dd>
     
     <div class="description">
-        Milliseconds until `cache.items` is garabage collected
+        Milliseconds until private HTTP cache is garbage collected
     </div>
     
     
@@ -240,7 +301,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11796">line 11796</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12729">line 12729</a>
     </li></ul></dd>
     
     
@@ -304,7 +365,71 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11929">line 11929</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12918">line 12918</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="logging"><span class="type-signature">&lt;static> </span>logging<span class="type-signature"> :boolean</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Enables console output of events as they fire
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">boolean</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12986">line 12986</a>
     </li></ul></dd>
     
     
@@ -368,7 +493,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12261">line 12261</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13318">line 13318</a>
     </li></ul></dd>
     
     
@@ -432,7 +557,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12420">line 12420</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13532">line 13532</a>
     </li></ul></dd>
     
     
@@ -456,18 +581,93 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="alias"><span class="type-signature">&lt;static> </span>alias<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="alias"><span class="type-signature">&lt;static> </span>alias<span class="signature">(obj, origin)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates an alias
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object receiving aliasing</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>origin</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object providing structure to obj</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -493,7 +693,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11575">line 11575</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12409">line 12409</a>
     </li></ul></dd>
     
     
@@ -524,6 +724,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object receiving aliasing
+</div>
+
 
 
 <dl>
@@ -532,7 +736,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -546,18 +750,93 @@
         
             
 <dt>
-    <h4 class="name" id="allows"><span class="type-signature">&lt;static> </span>allows<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="allows"><span class="type-signature">&lt;static> </span>allows<span class="signature">(uri, verb)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Determines if an HTTP method is allowed
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URI to query</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>verb</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">HTTP verb</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -583,7 +862,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11583">line 11583</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12421">line 12421</a>
     </li></ul></dd>
     
     
@@ -614,6 +893,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    `true` if the verb is allowed, undefined if unknown
+</div>
+
 
 
 <dl>
@@ -622,7 +905,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">boolean</span>
 
 
 	</dd>
@@ -636,12 +919,16 @@
         
             
 <dt>
-    <h4 class="name" id="append"><span class="type-signature">&lt;static> </span>append<span class="signature">(type, args, obj)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="append"><span class="type-signature">&lt;static> </span>append<span class="signature">(type, args, obj)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Appends an HTML Element or String
+    </div>
     
 
     
@@ -690,7 +977,7 @@
             
             
             
-            <td class="description last">Type of Element to create</td>
+            <td class="description last">Type of Element to create, or HTML string</td>
         </tr>
 	
 	
@@ -767,7 +1054,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11591">line 11591</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12433">line 12433</a>
     </li></ul></dd>
     
     
@@ -795,24 +1082,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -861,7 +1130,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13028">line 13028</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13552">line 13552</a>
     </li></ul></dd>
     
     
@@ -911,7 +1180,7 @@
         
             
 <dt>
-    <h4 class="name" id="channel"><span class="type-signature">&lt;static> </span>channel<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="channel"><span class="type-signature">&lt;static> </span>channel<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -952,7 +1221,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1495">line 1495</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1509">line 1509</a>
     </li></ul></dd>
     
     
@@ -982,6 +1251,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -990,18 +1271,70 @@
         
             
 <dt>
-    <h4 class="name" id="clear"><span class="type-signature">&lt;static> </span>clear<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="clear"><span class="type-signature">&lt;static> </span>clear<span class="signature">(obj)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Clears an object's innerHTML, or resets it's state
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1027,7 +1360,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11611">line 11611</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12454">line 12454</a>
     </li></ul></dd>
     
     
@@ -1058,6 +1391,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Element
+</div>
+
 
 
 <dl>
@@ -1066,7 +1403,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -1080,18 +1417,70 @@
         
             
 <dt>
-    <h4 class="name" id="clearTimer"><span class="type-signature">&lt;static> </span>clearTimer<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="clearTimer"><span class="type-signature">&lt;static> </span>clearTimer<span class="signature">(id)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Clears deferred & repeating functions
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">ID of timer( s )</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1117,7 +1506,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11619">line 11619</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12465">line 12465</a>
     </li></ul></dd>
     
     
@@ -1148,6 +1537,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    undefined
+</div>
+
 
 
 <dl>
@@ -1156,7 +1549,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">undefined</span>
 
 
 	</dd>
@@ -1170,18 +1563,93 @@
         
             
 <dt>
-    <h4 class="name" id="clone"><span class="type-signature">&lt;static> </span>clone<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="clone"><span class="type-signature">&lt;static> </span>clone<span class="signature">(obj, shallow)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Clones an Object
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to clone</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>shallow</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Create a shallow clone, which doesn't maintain prototypes, default is `false`</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1207,7 +1675,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11627">line 11627</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12476">line 12476</a>
     </li></ul></dd>
     
     
@@ -1238,6 +1706,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Clone of obj
+</div>
+
 
 
 <dl>
@@ -1246,7 +1718,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -1260,18 +1732,70 @@
         
             
 <dt>
-    <h4 class="name" id="coerce"><span class="type-signature">&lt;static> </span>coerce<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="coerce"><span class="type-signature">&lt;static> </span>coerce<span class="signature">(value)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Coerces a String to a Type
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">String to coerce</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1297,7 +1821,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11635">line 11635</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12488">line 12488</a>
     </li></ul></dd>
     
     
@@ -1328,6 +1852,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Primitive version of the String
+</div>
+
 
 
 <dl>
@@ -1336,7 +1864,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">mixed</span>
 
 
 	</dd>
@@ -1350,18 +1878,118 @@
         
             
 <dt>
-    <h4 class="name" id="compile"><span class="type-signature">&lt;static> </span>compile<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="compile"><span class="type-signature">&lt;static> </span>compile<span class="signature">(regex, pattern, modifiers)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Recompiles a RegExp by reference
+
+This is ideal when you need to recompile a regex for use within a conditional statement
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>regex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">RegExp</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>pattern</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Regular expression pattern</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>modifiers</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Modifiers to apply to the pattern</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1387,7 +2015,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11643">line 11643</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12499">line 12499</a>
     </li></ul></dd>
     
     
@@ -1418,6 +2046,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    true
+</div>
+
 
 
 <dl>
@@ -1426,7 +2058,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">boolean</span>
 
 
 	</dd>
@@ -1440,18 +2072,140 @@
         
             
 <dt>
-    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">(type, args, target, pos)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates an Element in document.body or a target Element.
+An id is generated if not specified with args
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Type of Element to create, or HTML String</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Collection of properties to apply to the new element</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Target Element</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1477,7 +2231,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11651">line 11651</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12514">line 12514</a>
     </li></ul></dd>
     
     
@@ -1508,6 +2262,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Element that was created, or an Array if `type` is a String of multiple Elements (frag)
+</div>
+
 
 
 <dl>
@@ -1516,7 +2274,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">mixed</span>
 
 
 	</dd>
@@ -1530,18 +2288,93 @@
         
             
 <dt>
-    <h4 class="name" id="css"><span class="type-signature">&lt;static> </span>css<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="css"><span class="type-signature">&lt;static> </span>css<span class="signature">(content, media)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates a CSS stylesheet in the View
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">CSS to put in a style tag</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>media</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Medias the stylesheet applies to</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1567,7 +2400,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11659">line 11659</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12529">line 12529</a>
     </li></ul></dd>
     
     
@@ -1598,6 +2431,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Element created or undefined
+</div>
+
 
 
 <dl>
@@ -1606,7 +2443,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -1620,12 +2457,16 @@
         
             
 <dt>
-    <h4 class="name" id="data"><span class="type-signature">&lt;static> </span>data<span class="signature">(obj, recs, args)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="data"><span class="type-signature">&lt;static> </span>data<span class="signature">(obj, recs, args)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Decorates a DataStore on an Object
+    </div>
     
 
     
@@ -1751,7 +2592,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11667">line 11667</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12541">line 12541</a>
     </li></ul></dd>
     
     
@@ -1761,7 +2602,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="abaaso.datastore.html#decorator">abaaso.datastore.decorator</a></li>
+            <li><a href="abaaso.DataStore.html">abaaso.DataStore</a></li>
         </ul>
     </dd>
     
@@ -1782,6 +2623,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Decorated Object
+</div>
+
 
 
 <dl>
@@ -1790,7 +2635,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -1804,18 +2649,139 @@
         
             
 <dt>
-    <h4 class="name" id="datalist"><span class="type-signature">&lt;static> </span>datalist<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="datalist"><span class="type-signature">&lt;static> </span>datalist<span class="signature">(target, store, template, options)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates a DataList
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element to receive the DataList</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>store</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Data store to feed the DataList</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>template</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Optional parameters to set on the DataList</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1841,7 +2807,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11678">line 11678</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12554">line 12554</a>
     </li></ul></dd>
     
     
@@ -1851,7 +2817,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="abaaso.html#datalist#factory">abaaso.datalist.factory</a></li>
+            <li><a href="abaaso.DataList.html">abaaso.DataList</a></li>
         </ul>
     </dd>
     
@@ -1872,6 +2838,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    <a href="abaaso.DataList.html">abaaso.DataList</a>
+</div>
+
 
 
 <dl>
@@ -1880,7 +2850,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -1894,18 +2864,116 @@
         
             
 <dt>
-    <h4 class="name" id="debounce"><span class="type-signature">&lt;static> </span>debounce<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="debounce"><span class="type-signature">&lt;static> </span>debounce<span class="signature">(fn, ms, scope)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Debounces a function
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to execute</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ms</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Time to wait to execute in milliseconds, default is 1000</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>scope</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">`this` context during execution, default is `global`</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -1931,7 +2999,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11696">line 11696</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12582">line 12582</a>
     </li></ul></dd>
     
     
@@ -1962,6 +3030,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    undefined
+</div>
+
 
 
 <dl>
@@ -1970,7 +3042,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">undefined</span>
 
 
 	</dd>
@@ -1984,18 +3056,93 @@
         
             
 <dt>
-    <h4 class="name" id="decode"><span class="type-signature">&lt;static> </span>decode<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="decode"><span class="type-signature">&lt;static> </span>decode<span class="signature">(arg, silent)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Decodes the argument
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">String to parse</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>silent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Silently fail</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2021,7 +3168,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11704">line 11704</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12595">line 12595</a>
     </li></ul></dd>
     
     
@@ -2052,6 +3199,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Entity resulting from parsing JSON, or undefined
+</div>
+
 
 
 <dl>
@@ -2060,7 +3211,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">mixed</span>
 
 
 	</dd>
@@ -2074,97 +3225,7 @@
         
             
 <dt>
-    <h4 class="name" id="defer"><span class="type-signature">&lt;static> </span>defer<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11712">line 11712</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="abaaso.html#deferred">abaaso.deferred</a></li>
-        </ul>
-    </dd>
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="deferred"><span class="type-signature">&lt;static> </span>deferred<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="defer"><span class="type-signature">&lt;static> </span>defer<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -2172,7 +3233,7 @@
     
     
     <div class="description">
-        deferred factory
+        Creates a new Deferred
     </div>
     
 
@@ -2205,7 +3266,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4658">line 4658</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12607">line 12607</a>
     </li></ul></dd>
     
     
@@ -2235,6 +3296,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -2243,18 +3316,117 @@
         
             
 <dt>
-    <h4 class="name" id="define"><span class="type-signature">&lt;static> </span>define<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="define"><span class="type-signature">&lt;static> </span>define<span class="signature">(args, value, obj)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Allows deep setting of properties without knowing
+if the structure is valid
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Dot delimited string of the structure</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Value to set</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object receiving value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2280,7 +3452,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11720">line 11720</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12616">line 12616</a>
     </li></ul></dd>
     
     
@@ -2311,6 +3483,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object receiving value
+</div>
+
 
 
 <dl>
@@ -2319,7 +3495,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -2333,7 +3509,7 @@
         
             
 <dt>
-    <h4 class="name" id="del"><span class="type-signature">&lt;static> </span>del<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="del"><span class="type-signature">&lt;static> </span>del<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -2341,7 +3517,7 @@
     
     
     <div class="description">
-        #method del
+        Makes a DELETE request
     </div>
     
 
@@ -2514,7 +3690,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11739">line 11739</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12630">line 12630</a>
     </li></ul></dd>
     
     
@@ -2551,6 +3727,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -2559,18 +3747,140 @@
         
             
 <dt>
-    <h4 class="name" id="delay"><span class="type-signature">&lt;static> </span>delay<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="delay"><span class="type-signature">&lt;static> </span>delay<span class="signature">(fn, ms, id, repeat)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Defers the execution of Function by at least the supplied milliseconds.
+Timing may vary under "heavy load" relative to the CPU & client JavaScript engine.
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to defer execution of</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ms</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Milliseconds to defer execution</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] ID of the deferred function</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>repeat</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Describes the execution, default is `false`</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2596,7 +3906,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11743">line 11743</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12647">line 12647</a>
     </li></ul></dd>
     
     
@@ -2627,6 +3937,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    ID of the timer
+</div>
+
 
 
 <dl>
@@ -2635,7 +3949,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
 	</dd>
@@ -2649,18 +3963,70 @@
         
             
 <dt>
-    <h4 class="name" id="destroy"><span class="type-signature">&lt;static> </span>destroy<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="destroy"><span class="type-signature">&lt;static> </span>destroy<span class="signature">(obj)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Destroys an Element
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2686,7 +4052,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11751">line 11751</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12662">line 12662</a>
     </li></ul></dd>
     
     
@@ -2717,6 +4083,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    undefined
+</div>
+
 
 
 <dl>
@@ -2725,7 +4095,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">undefined</span>
 
 
 	</dd>
@@ -2739,18 +4109,93 @@
         
             
 <dt>
-    <h4 class="name" id="discard"><span class="type-signature">&lt;static> </span>discard<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="discard"><span class="type-signature">&lt;static> </span>discard<span class="signature">(`true`, arg)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Discards observer events
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>`true`</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">to discard events, `false` to re-enable</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Boolean indicating if events will be ignored</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2776,7 +4221,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11686">line 11686</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12568">line 12568</a>
     </li></ul></dd>
     
     
@@ -2807,6 +4252,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Current setting
+</div>
+
 
 
 <dl>
@@ -2815,7 +4264,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">boolean</span>
 
 
 	</dd>
@@ -2829,18 +4278,140 @@
         
             
 <dt>
-    <h4 class="name" id="each"><span class="type-signature">&lt;static> </span>each<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="each"><span class="type-signature">&lt;static> </span>each<span class="signature">(obj, fn, async, size)</span><span class="type-signature"> &rarr; {array}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Iterates `obj` and executes `fn` with arguments [`value`, `index`].
+Returning `false` halts iteration.
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Array to iterate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to execute on index values</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>async</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Asynchronous iteration</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Batch size for async iteration, default is 10</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2866,7 +4437,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11759">line 11759</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12673">line 12673</a>
     </li></ul></dd>
     
     
@@ -2897,6 +4468,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Array
+</div>
+
 
 
 <dl>
@@ -2905,7 +4480,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">array</span>
 
 
 	</dd>
@@ -2919,18 +4494,93 @@
         
             
 <dt>
-    <h4 class="name" id="encode"><span class="type-signature">&lt;static> </span>encode<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="encode"><span class="type-signature">&lt;static> </span>encode<span class="signature">(arg, silent)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Encodes the argument as JSON
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Entity to encode</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>silent</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Silently fail</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -2956,7 +4606,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11767">line 11767</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12688">line 12688</a>
     </li></ul></dd>
     
     
@@ -2987,6 +4637,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    JSON, or undefined
+</div>
+
 
 
 <dl>
@@ -2995,7 +4649,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
 	</dd>
@@ -3009,18 +4663,139 @@
         
             
 <dt>
-    <h4 class="name" id="error"><span class="type-signature">&lt;static> </span>error<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="error"><span class="type-signature">&lt;static> </span>error<span class="signature">(e, args, scope, warning)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Error handling, with history in `error.log`
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Error object or message to display</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Array of arguments from the callstack</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>scope</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Entity that was "this"</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>warning</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Will display as console warning if true</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3046,7 +4821,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11775">line 11775</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12700">line 12700</a>
     </li></ul></dd>
     
     
@@ -3077,6 +4852,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    undefined
+</div>
+
 
 
 <dl>
@@ -3085,7 +4864,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">undefined</span>
 
 
 	</dd>
@@ -3099,12 +4878,16 @@
         
             
 <dt>
-    <h4 class="name" id="expire"><span class="type-signature">&lt;static> </span>expire<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="expire"><span class="type-signature">&lt;static> </span>expire<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Garbage collector for the cached items
+    </div>
     
 
     
@@ -3136,7 +4919,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11783">line 11783</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12714">line 12714</a>
     </li></ul></dd>
     
     
@@ -3164,24 +4947,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -3189,18 +4954,93 @@
         
             
 <dt>
-    <h4 class="name" id="extend"><span class="type-signature">&lt;static> </span>extend<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="extend"><span class="type-signature">&lt;static> </span>extend<span class="signature">(obj, arg)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates a "class" extending Object, with optional decoration
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to extend</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Object for decoration</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3226,7 +5066,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11806">line 11806</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12731">line 12731</a>
     </li></ul></dd>
     
     
@@ -3257,6 +5097,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Decorated obj
+</div>
+
 
 
 <dl>
@@ -3265,7 +5109,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -3279,18 +5123,93 @@
         
             
 <dt>
-    <h4 class="name" id="fib"><span class="type-signature">&lt;static> </span>fib<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="fib"><span class="type-signature">&lt;static> </span>fib<span class="signature">(i, r)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Fibonacci calculator
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>i</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Number to calculate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>r</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Recursive if `true`</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3316,7 +5235,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11798">line 11798</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12743">line 12743</a>
     </li></ul></dd>
     
     
@@ -3347,6 +5266,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Calculated number
+</div>
+
 
 
 <dl>
@@ -3355,7 +5278,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">number</span>
 
 
 	</dd>
@@ -3369,7 +5292,7 @@
         
             
 <dt>
-    <h4 class="name" id="filter"><span class="type-signature">&lt;static> </span>filter<span class="signature">(obj, datalist, filters, debounce)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="filter"><span class="type-signature">&lt;static> </span>filter<span class="signature">(obj, datalist, filters, debounce)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -3527,7 +5450,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line5810">line 5810</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line5830">line 5830</a>
     </li></ul></dd>
     
     
@@ -3557,6 +5480,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -3565,12 +5500,16 @@
         
             
 <dt>
-    <h4 class="name" id="fire"><span class="type-signature">&lt;static> </span>fire<span class="signature">(obj, event)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="fire"><span class="type-signature">&lt;static> </span>fire<span class="signature">(obj, event)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Fires an event
+    </div>
     
 
     
@@ -3673,7 +5612,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11816">line 11816</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12757">line 12757</a>
     </li></ul></dd>
     
     
@@ -3701,24 +5640,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -3726,18 +5647,140 @@
         
             
 <dt>
-    <h4 class="name" id="frag"><span class="type-signature">&lt;static> </span>frag<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="forEach"><span class="type-signature">&lt;static> </span>forEach<span class="signature">(obj, fn, async, size)</span><span class="type-signature"> &rarr; {array}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Iterates `obj` and executes `fn` with arguments [`value`, `index`].
+Returning `false` halts iteration.
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Array to iterate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to execute on index values</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>async</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Asynchronous iteration</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Batch size for async iteration, default is 10</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3763,7 +5806,153 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11833">line 11833</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12775">line 12775</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="abaaso.array.html#each">abaaso.array.each</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Array
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="frag"><span class="type-signature">&lt;static> </span>frag<span class="signature">(arg)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Creates a document fragment
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] innerHTML</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12790">line 12790</a>
     </li></ul></dd>
     
     
@@ -3794,6 +5983,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Document fragment
+</div>
+
 
 
 <dl>
@@ -3802,7 +5995,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -3816,18 +6009,93 @@
         
             
 <dt>
-    <h4 class="name" id="genId"><span class="type-signature">&lt;static> </span>genId<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="genId"><span class="type-signature">&lt;static> </span>genId<span class="signature">(obj, dom)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Generates an ID value
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Object to receive id</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>dom</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Verify the ID is unique in the DOM, default is false</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -3853,7 +6121,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11841">line 11841</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12810">line 12810</a>
     </li></ul></dd>
     
     
@@ -3884,6 +6152,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object or id
+</div>
+
 
 
 <dl>
@@ -3892,7 +6164,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">mixed</span>
 
 
 	</dd>
@@ -3906,12 +6178,16 @@
         
             
 <dt>
-    <h4 class="name" id="get"><span class="type-signature">&lt;static> </span>get<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="get"><span class="type-signature">&lt;static> </span>get<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes a GET request
+    </div>
     
 
     
@@ -4083,7 +6359,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11849">line 11849</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12822">line 12822</a>
     </li></ul></dd>
     
     
@@ -4120,6 +6396,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -4128,7 +6416,7 @@
         
             
 <dt>
-    <h4 class="name" id="grid"><span class="type-signature">&lt;static> </span>grid<span class="signature">(element, store, fields, sortable, options, filtered, debounce)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="grid"><span class="type-signature">&lt;static> </span>grid<span class="signature">(element, store, fields, sortable, options, filtered, debounce)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -4355,7 +6643,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line5951">line 5951</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line5971">line 5971</a>
     </li></ul></dd>
     
     
@@ -4385,6 +6673,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -4393,12 +6693,16 @@
         
             
 <dt>
-    <h4 class="name" id="guid"><span class="type-signature">&lt;static> </span>guid<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="guid"><span class="type-signature">&lt;static> </span>guid<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Generates a capital case version 4 UUID
+    </div>
     
 
     
@@ -4430,7 +6734,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11866">line 11866</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12841">line 12841</a>
     </li></ul></dd>
     
     
@@ -4458,24 +6762,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -4483,18 +6769,70 @@
         
             
 <dt>
-    <h4 class="name" id="hash"><span class="type-signature">&lt;static> </span>hash<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="hash"><span class="type-signature">&lt;static> </span>hash<span class="signature">(arg)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Getter / setter for location.hash
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Hash to set</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -4520,7 +6858,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11876">line 11876</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12852">line 12852</a>
     </li></ul></dd>
     
     
@@ -4551,6 +6889,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Current hash
+</div>
+
 
 
 <dl>
@@ -4559,7 +6901,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
 	</dd>
@@ -4573,12 +6915,16 @@
         
             
 <dt>
-    <h4 class="name" id="headers"><span class="type-signature">&lt;static> </span>headers<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="headers"><span class="type-signature">&lt;static> </span>headers<span class="signature">(uri, success, failure, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes a HEAD request
+    </div>
     
 
     
@@ -4680,29 +7026,6 @@
 	
         <tr>
             
-                <td class="name"><code>headers</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">[Optional] HTTP headers</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
                 <td class="name"><code>timeout</code></td>
             
             
@@ -4750,7 +7073,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11884">line 11884</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12863">line 12863</a>
     </li></ul></dd>
     
     
@@ -4787,6 +7110,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -4795,18 +7130,70 @@
         
             
 <dt>
-    <h4 class="name" id="hex"><span class="type-signature">&lt;static> </span>hex<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="hex"><span class="type-signature">&lt;static> </span>hex<span class="signature">(color)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Converts RGB to HEX
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">RGB as `rgb(255, 255, 255)` or `255, 255, 255`</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -4832,7 +7219,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11899">line 11899</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12879">line 12879</a>
     </li></ul></dd>
     
     
@@ -4863,6 +7250,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Color as HEX
+</div>
+
 
 
 <dl>
@@ -4871,7 +7262,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
 	</dd>
@@ -4885,18 +7276,70 @@
         
             
 <dt>
-    <h4 class="name" id="hidden"><span class="type-signature">&lt;static> </span>hidden<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="hidden"><span class="type-signature">&lt;static> </span>hidden<span class="signature">(obj)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Returns a Boolean indidcating if the Object is hidden
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -4922,7 +7365,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11907">line 11907</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12890">line 12890</a>
     </li></ul></dd>
     
     
@@ -4953,6 +7396,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    `true` if hidden
+</div>
+
 
 
 <dl>
@@ -4961,7 +7408,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">boolean</span>
 
 
 	</dd>
@@ -4975,18 +7422,70 @@
         
             
 <dt>
-    <h4 class="name" id="hook"><span class="type-signature">&lt;static> </span>hook<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="hook"><span class="type-signature">&lt;static> </span>hook<span class="signature">(obj)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Decorates `obj` with `observer` methods
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to decorate</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -5012,7 +7511,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11915">line 11915</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12901">line 12901</a>
     </li></ul></dd>
     
     
@@ -5043,6 +7542,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object to decorate
+</div>
+
 
 
 <dl>
@@ -5051,7 +7554,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -5065,18 +7568,94 @@
         
             
 <dt>
-    <h4 class="name" id="iterate"><span class="type-signature">&lt;static> </span>iterate<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="iterate"><span class="type-signature">&lt;static> </span>iterate<span class="signature">(obj, fn)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Iterates an Object and executes a function against the properties.
+Returning `false` halts iteration.
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to iterate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to execute against properties</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -5102,7 +7681,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11931">line 11931</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12920">line 12920</a>
     </li></ul></dd>
     
     
@@ -5133,6 +7712,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object
+</div>
+
 
 
 <dl>
@@ -5141,7 +7724,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -5155,12 +7738,16 @@
         
             
 <dt>
-    <h4 class="name" id="jsonp"><span class="type-signature">&lt;static> </span>jsonp<span class="signature">(uri, success, failure, callback)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="jsonp"><span class="type-signature">&lt;static> </span>jsonp<span class="signature">(uri, success, failure, callback)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes a JSONP request
+    </div>
     
 
     
@@ -5309,7 +7896,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11939">line 11939</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12933">line 12933</a>
     </li></ul></dd>
     
     
@@ -5346,6 +7933,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -5354,12 +7953,16 @@
         
             
 <dt>
-    <h4 class="name" id="listeners"><span class="type-signature">&lt;static> </span>listeners<span class="signature">(obj, event)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="listeners"><span class="type-signature">&lt;static> </span>listeners<span class="signature">(obj, event)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Gets the listeners for an event
+    </div>
     
 
     
@@ -5462,7 +8065,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11953">line 11953</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12949">line 12949</a>
     </li></ul></dd>
     
     
@@ -5490,24 +8093,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -5515,18 +8100,70 @@
         
             
 <dt>
-    <h4 class="name" id="listenersTotal"><span class="type-signature">&lt;static> </span>listenersTotal<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="listenersTotal"><span class="type-signature">&lt;static> </span>listenersTotal<span class="signature">(obj)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Returns the sum of active listeners for one or all Objects
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Entity</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -5552,7 +8189,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11965">line 11965</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12963">line 12963</a>
     </li></ul></dd>
     
     
@@ -5583,6 +8220,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object with total listeners per event
+</div>
+
 
 
 <dl>
@@ -5591,7 +8232,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -5605,18 +8246,93 @@
         
             
 <dt>
-    <h4 class="name" id="log"><span class="type-signature">&lt;static> </span>log<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="log"><span class="type-signature">&lt;static> </span>log<span class="signature">(arg, target)</span><span class="type-signature"> &rarr; {undefined}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Writes argument to the console
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">String to write to the console</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Target console, default is "log"</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -5642,7 +8358,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11973">line 11973</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12974">line 12974</a>
     </li></ul></dd>
     
     
@@ -5673,6 +8389,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    undefined
+</div>
+
 
 
 <dl>
@@ -5681,7 +8401,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">undefined</span>
 
 
 	</dd>
@@ -5695,97 +8415,7 @@
         
             
 <dt>
-    <h4 class="name" id="logging"><span class="type-signature">&lt;static> </span>logging<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11981">line 11981</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="abaaso.observer.html#log">abaaso.observer.log</a></li>
-        </ul>
-    </dd>
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="lru"><span class="type-signature">&lt;static> </span>lru<span class="signature">(max)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="lru"><span class="type-signature">&lt;static> </span>lru<span class="signature">(max)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
@@ -5793,7 +8423,7 @@
     
     
     <div class="description">
-        LRU factory
+        LRU cache factory
     </div>
     
 
@@ -5874,7 +8504,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line6926">line 6926</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line6946">line 6946</a>
     </li></ul></dd>
     
     
@@ -5904,6 +8534,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -5912,18 +8554,93 @@
         
             
 <dt>
-    <h4 class="name" id="merge"><span class="type-signature">&lt;static> </span>merge<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="merge"><span class="type-signature">&lt;static> </span>merge<span class="signature">(obj, arg)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Merges obj with arg
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to decorate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Decoration</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -5949,7 +8666,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11991">line 11991</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12997">line 12997</a>
     </li></ul></dd>
     
     
@@ -5980,6 +8697,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Decorated Object
+</div>
+
 
 
 <dl>
@@ -5988,7 +8709,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -6002,18 +8723,70 @@
         
             
 <dt>
-    <h4 class="name" id="module"><span class="type-signature">&lt;static> </span>module<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="object"><span class="type-signature">&lt;static> </span>object<span class="signature">(obj)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Returns Object, or reference to Element
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Entity or $ query</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -6039,97 +8812,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line11999">line 11999</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="abaaso.utility.html#module">abaaso.utility.module</a></li>
-        </ul>
-    </dd>
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="object"><span class="type-signature">&lt;static> </span>object<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12007">line 12007</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13009">line 13009</a>
     </li></ul></dd>
     
     
@@ -6160,6 +8843,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Entity
+</div>
+
 
 
 <dl>
@@ -6168,7 +8855,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">mixed</span>
 
 
 	</dd>
@@ -6182,18 +8869,70 @@
         
             
 <dt>
-    <h4 class="name" id="observerable"><span class="type-signature">&lt;static> </span>observerable<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="observerable"><span class="type-signature">&lt;static> </span>observerable<span class="signature">(obj)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Decorates `obj` with `observer` methods
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to decorate</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -6207,6 +8946,8 @@
     
     
     
+        <dt class="important tag-deprecated">Deprecated:</dt><dd><ul class="dummy"><li>Use `abaaso.hook()`</li><ul></dd>
+    
     
     
     
@@ -6219,7 +8960,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12015">line 12015</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13020">line 13020</a>
     </li></ul></dd>
     
     
@@ -6250,6 +8991,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object to decorate
+</div>
+
 
 
 <dl>
@@ -6258,7 +9003,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -6272,12 +9017,16 @@
         
             
 <dt>
-    <h4 class="name" id="on"><span class="type-signature">&lt;static> </span>on<span class="signature">(obj, event, listener, id, scope, st)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="on"><span class="type-signature">&lt;static> </span>on<span class="signature">(obj, event, listener, id, scope, st)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Adds a handler for an event
+    </div>
     
 
     
@@ -6395,7 +9144,7 @@
             
             
             
-            <td class="description last">[Optional / Recommended] The id for the listener</td>
+            <td class="description last">[Optional / Recommended] ID for the listener</td>
         </tr>
 	
 	
@@ -6418,7 +9167,7 @@
             
             
             
-            <td class="description last">[Optional / Recommended] The id of the object or element to be set as 'this'</td>
+            <td class="description last">[Optional / Recommended] ID of the object or element to be set as 'this'</td>
         </tr>
 	
 	
@@ -6472,7 +9221,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12023">line 12023</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13032">line 13032</a>
     </li></ul></dd>
     
     
@@ -6500,24 +9249,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -6525,12 +9256,16 @@
         
             
 <dt>
-    <h4 class="name" id="once"><span class="type-signature">&lt;static> </span>once<span class="signature">(obj, event, listener, id, scope, st)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="once"><span class="type-signature">&lt;static> </span>once<span class="signature">(obj, event, listener, id, scope, st)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Adds a listener for a single execution
+    </div>
     
 
     
@@ -6648,7 +9383,7 @@
             
             
             
-            <td class="description last">[Optional / Recommended] The id for the listener</td>
+            <td class="description last">[Optional / Recommended] ID for the listener</td>
         </tr>
 	
 	
@@ -6671,7 +9406,7 @@
             
             
             
-            <td class="description last">[Optional / Recommended] The id of the object or element to be set as 'this'</td>
+            <td class="description last">[Optional / Recommended] ID of the object or element to be set as 'this'</td>
         </tr>
 	
 	
@@ -6725,7 +9460,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12063">line 12063</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13073">line 13073</a>
     </li></ul></dd>
     
     
@@ -6753,24 +9488,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -6778,12 +9495,16 @@
         
             
 <dt>
-    <h4 class="name" id="options"><span class="type-signature">&lt;static> </span>options<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="options"><span class="type-signature">&lt;static> </span>options<span class="signature">(uri, success, failure, headers, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes an OPTIONS request
+    </div>
     
 
     
@@ -6955,7 +9676,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12103">line 12103</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13114">line 13114</a>
     </li></ul></dd>
     
     
@@ -6992,6 +9713,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -7000,18 +9733,70 @@
         
             
 <dt>
-    <h4 class="name" id="parse"><span class="type-signature">&lt;static> </span>parse<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="parse"><span class="type-signature">&lt;static> </span>parse<span class="signature">(uri)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Parses a URI into an Object
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URI to parse</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -7037,7 +9822,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12118">line 12118</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13131">line 13131</a>
     </li></ul></dd>
     
     
@@ -7068,6 +9853,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Parsed URI
+</div>
+
 
 
 <dl>
@@ -7076,7 +9865,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -7090,12 +9879,16 @@
         
             
 <dt>
-    <h4 class="name" id="patch"><span class="type-signature">&lt;static> </span>patch<span class="signature">(uri, success, failure, args, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="patch"><span class="type-signature">&lt;static> </span>patch<span class="signature">(uri, success, failure, args, headers, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes a PATCH request
+    </div>
     
 
     
@@ -7290,7 +10083,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12126">line 12126</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13142">line 13142</a>
     </li></ul></dd>
     
     
@@ -7327,6 +10120,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -7335,12 +10140,16 @@
         
             
 <dt>
-    <h4 class="name" id="pause"><span class="type-signature">&lt;static> </span>pause<span class="signature">(arg)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="pause"><span class="type-signature">&lt;static> </span>pause<span class="signature">(arg, arg)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Pauses observer events, and queues them
+    </div>
     
 
     
@@ -7389,7 +10198,30 @@
             
             
             
-            <td class="description last">`true` to pause events</td>
+            <td class="description last">`true` to pause events, defaults to `true`</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Boolean indicating if events will be queued</td>
         </tr>
 	
 	
@@ -7420,7 +10252,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12142">line 12142</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13160">line 13160</a>
     </li></ul></dd>
     
     
@@ -7451,6 +10283,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Current setting
+</div>
+
 
 
 <dl>
@@ -7459,7 +10295,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">boolean</span>
 
 
 	</dd>
@@ -7473,18 +10309,70 @@
         
             
 <dt>
-    <h4 class="name" id="permissions"><span class="type-signature">&lt;static> </span>permissions<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="permissions"><span class="type-signature">&lt;static> </span>permissions<span class="signature">(uri)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Returns the permission of the cached URI
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>uri</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URI to query</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -7510,7 +10398,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12153">line 12153</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13174">line 13174</a>
     </li></ul></dd>
     
     
@@ -7541,6 +10429,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Contains an Array of available commands, the permission bit and a map
+</div>
+
 
 
 <dl>
@@ -7549,7 +10441,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -7563,18 +10455,70 @@
         
             
 <dt>
-    <h4 class="name" id="position"><span class="type-signature">&lt;static> </span>position<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="position"><span class="type-signature">&lt;static> </span>position<span class="signature">(obj)</span><span class="type-signature"> &rarr; {array}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Finds the position of an element
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -7600,7 +10544,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12161">line 12161</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13185">line 13185</a>
     </li></ul></dd>
     
     
@@ -7631,6 +10575,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Coordinates [left, top, right, bottom]
+</div>
+
 
 
 <dl>
@@ -7639,7 +10587,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">array</span>
 
 
 	</dd>
@@ -7653,12 +10601,16 @@
         
             
 <dt>
-    <h4 class="name" id="post"><span class="type-signature">&lt;static> </span>post<span class="signature">(uri, success, failure, args, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="post"><span class="type-signature">&lt;static> </span>post<span class="signature">(uri, success, failure, args, headers, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes a POST request
+    </div>
     
 
     
@@ -7853,7 +10805,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12169">line 12169</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13196">line 13196</a>
     </li></ul></dd>
     
     
@@ -7890,6 +10842,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -7898,12 +10862,16 @@
         
             
 <dt>
-    <h4 class="name" id="prepend"><span class="type-signature">&lt;static> </span>prepend<span class="signature">(type, args, obj)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="prepend"><span class="type-signature">&lt;static> </span>prepend<span class="signature">(type, args, obj)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Prepends an HTML Element or String
+    </div>
     
 
     
@@ -7952,7 +10920,7 @@
             
             
             
-            <td class="description last">Type of Element to create</td>
+            <td class="description last">Type of Element to create, or HTML string</td>
         </tr>
 	
 	
@@ -8029,7 +10997,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12185">line 12185</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13214">line 13214</a>
     </li></ul></dd>
     
     
@@ -8057,24 +11025,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -8082,18 +11032,70 @@
         
             
 <dt>
-    <h4 class="name" id="promise"><span class="type-signature">&lt;static> </span>promise<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="prevent"><span class="type-signature">&lt;static> </span>prevent<span class="signature">(e)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Prevents default behavior of an Event
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Event</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -8119,7 +11121,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12203">line 12203</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13232">line 13232</a>
     </li></ul></dd>
     
     
@@ -8129,7 +11131,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="abaaso.Promise_.html">abaaso.Promise</a></li>
+            <li><a href="abaaso.utility.html#prevent">abaaso.utility.prevent</a></li>
         </ul>
     </dd>
     
@@ -8150,6 +11152,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Event
+</div>
+
 
 
 <dl>
@@ -8158,7 +11164,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -8172,12 +11178,16 @@
         
             
 <dt>
-    <h4 class="name" id="property"><span class="type-signature">&lt;static> </span>property<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="promise"><span class="type-signature">&lt;static> </span>promise<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Creates a new Promise
+    </div>
     
 
     
@@ -8209,7 +11219,199 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12211">line 12211</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13244">line 13244</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="abaaso.Promise.html">abaaso.Promise</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <a href="abaaso.Promise.html">abaaso.Promise</a>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="property"><span class="type-signature">&lt;static> </span>property<span class="signature">(obj, prop, descriptor)</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets a property on an Object
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to decorate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>prop</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Name of property to set</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>descriptor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Descriptor of the property</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13254">line 13254</a>
     </li></ul></dd>
     
     
@@ -8240,6 +11442,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Object receiving the property
+</div>
+
 
 
 <dl>
@@ -8248,7 +11454,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -8262,12 +11468,16 @@
         
             
 <dt>
-    <h4 class="name" id="put"><span class="type-signature">&lt;static> </span>put<span class="signature">(uri, success, failure, args, headers, timeout)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="put"><span class="type-signature">&lt;static> </span>put<span class="signature">(uri, success, failure, args, headers, timeout)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Makes a PUT request
+    </div>
     
 
     
@@ -8462,7 +11672,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12219">line 12219</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13267">line 13267</a>
     </li></ul></dd>
     
     
@@ -8499,6 +11709,18 @@
 
 
 
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
         
     
     
@@ -8507,12 +11729,16 @@
         
             
 <dt>
-    <h4 class="name" id="queryString"><span class="type-signature">&lt;static> </span>queryString<span class="signature">(key, string)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="queryString"><span class="type-signature">&lt;static> </span>queryString<span class="signature">(key, string, arg, qstring)</span><span class="type-signature"> &rarr; {mixed}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Parses a query string & coerces values
+    </div>
     
 
     
@@ -8588,6 +11814,52 @@
         </tr>
 	
 	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Key to find in the querystring</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>qstring</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Query string to parse</td>
+        </tr>
+	
+	
 	</tbody>
 </table>
     
@@ -8615,7 +11887,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12235">line 12235</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13285">line 13285</a>
     </li></ul></dd>
     
     
@@ -8646,6 +11918,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Value or Object of key:value pairs
+</div>
+
 
 
 <dl>
@@ -8654,7 +11930,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">mixed</span>
 
 
 	</dd>
@@ -8668,18 +11944,70 @@
         
             
 <dt>
-    <h4 class="name" id="random"><span class="type-signature">&lt;static> </span>random<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="random"><span class="type-signature">&lt;static> </span>random<span class="signature">(arg)</span><span class="type-signature"> &rarr; {number}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Generates a random number between 0 and `arg`
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Ceiling for random number, default is 100</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -8705,7 +12033,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12247">line 12247</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13301">line 13301</a>
     </li></ul></dd>
     
     
@@ -8736,6 +12064,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Random number
+</div>
+
 
 
 <dl>
@@ -8744,7 +12076,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">number</span>
 
 
 	</dd>
@@ -8758,18 +12090,70 @@
         
             
 <dt>
-    <h4 class="name" id="reflect"><span class="type-signature">&lt;static> </span>reflect<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="reflect"><span class="type-signature">&lt;static> </span>reflect<span class="signature">(arg)</span><span class="type-signature"> &rarr; {array}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Returns an Array of parameters of a Function
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to reflect</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -8795,7 +12179,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12263">line 12263</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13320">line 13320</a>
     </li></ul></dd>
     
     
@@ -8826,6 +12210,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Array of parameters
+</div>
+
 
 
 <dl>
@@ -8834,7 +12222,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">array</span>
 
 
 	</dd>
@@ -8848,18 +12236,139 @@
         
             
 <dt>
-    <h4 class="name" id="repeat"><span class="type-signature">&lt;static> </span>repeat<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="repeat"><span class="type-signature">&lt;static> </span>repeat<span class="signature">(fn, ms, id, now)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates a recursive function. Return false from the function to halt recursion.
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to execute repeatedly</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ms</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Milliseconds to stagger the execution</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Timeout ID</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>now</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Executes `fn` and then setup repetition, default is `true`</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -8885,7 +12394,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12271">line 12271</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13331">line 13331</a>
     </li></ul></dd>
     
     
@@ -8916,6 +12425,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Timeout ID
+</div>
+
 
 
 <dl>
@@ -8924,7 +12437,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
 	</dd>
@@ -8979,7 +12492,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12279">line 12279</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13345">line 13345</a>
     </li></ul></dd>
     
     
@@ -9029,18 +12542,116 @@
         
             
 <dt>
-    <h4 class="name" id="script"><span class="type-signature">&lt;static> </span>script<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="script"><span class="type-signature">&lt;static> </span>script<span class="signature">(arg, target, pos)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates a script Element to load an external script
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URL to script</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Element to receive the script</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Position to create the script at within the target</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9066,7 +12677,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12290">line 12290</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13356">line 13356</a>
     </li></ul></dd>
     
     
@@ -9097,6 +12708,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Element
+</div>
+
 
 
 <dl>
@@ -9105,7 +12720,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9119,18 +12734,93 @@
         
             
 <dt>
-    <h4 class="name" id="scroll"><span class="type-signature">&lt;static> </span>scroll<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="scroll"><span class="type-signature">&lt;static> </span>scroll<span class="signature">(dest, ms)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Scrolls to a position in the view using a two point bezier curve
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>dest</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Coordinates</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ms</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Milliseconds to scroll, default is 250, min is 100</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9156,7 +12846,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12298">line 12298</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13369">line 13369</a>
     </li></ul></dd>
     
     
@@ -9187,6 +12877,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    <a href="abaaso.Deferred.html">abaaso.Deferred</a>
+</div>
+
 
 
 <dl>
@@ -9195,7 +12889,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9209,18 +12903,93 @@
         
             
 <dt>
-    <h4 class="name" id="scrollTo"><span class="type-signature">&lt;static> </span>scrollTo<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="scrollTo"><span class="type-signature">&lt;static> </span>scrollTo<span class="signature">(obj, ms)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Scrolls to the position of an Element
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element to scroll to</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>ms</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Milliseconds to scroll, default is 250, min is 100</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9246,7 +13015,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12306">line 12306</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13381">line 13381</a>
     </li></ul></dd>
     
     
@@ -9277,6 +13046,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    <a href="abaaso.Deferred.html">abaaso.Deferred</a>
+</div>
+
 
 
 <dl>
@@ -9285,7 +13058,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9299,18 +13072,70 @@
         
             
 <dt>
-    <h4 class="name" id="stop"><span class="type-signature">&lt;static> </span>stop<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="stop"><span class="type-signature">&lt;static> </span>stop<span class="signature">(e)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Stops an Event from bubbling, & prevents default behavior
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Event</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9336,7 +13161,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12322">line 12322</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13405">line 13405</a>
     </li></ul></dd>
     
     
@@ -9367,6 +13192,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Event
+</div>
+
 
 
 <dl>
@@ -9375,7 +13204,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9389,12 +13218,16 @@
         
             
 <dt>
-    <h4 class="name" id="store"><span class="type-signature">&lt;static> </span>store<span class="signature">(obj, recs, args)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="store"><span class="type-signature">&lt;static> </span>store<span class="signature">(obj, recs, args)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Decorates a DataStore on an Object
+    </div>
     
 
     
@@ -9522,7 +13355,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12330">line 12330</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13416">line 13416</a>
     </li></ul></dd>
     
     
@@ -9532,7 +13365,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="abaaso.datastore.html#decorator">abaaso.datastore.decorator</a></li>
+            <li><a href="abaaso.datastore_.html#decorator">abaaso.datastore.decorator</a></li>
         </ul>
     </dd>
     
@@ -9553,6 +13386,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Decorated Object
+</div>
+
 
 
 <dl>
@@ -9561,7 +13398,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9575,18 +13412,93 @@
         
             
 <dt>
-    <h4 class="name" id="stylesheet"><span class="type-signature">&lt;static> </span>stylesheet<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="stylesheet"><span class="type-signature">&lt;static> </span>stylesheet<span class="signature">(arg, media)</span><span class="type-signature"> &rarr; {Objecct}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Creates a link Element to load an external stylesheet
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">URL to stylesheet</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>media</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Medias the stylesheet applies to</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9612,7 +13524,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12314">line 12314</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13393">line 13393</a>
     </li></ul></dd>
     
     
@@ -9643,6 +13555,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Stylesheet
+</div>
+
 
 
 <dl>
@@ -9651,7 +13567,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">Objecct</span>
 
 
 	</dd>
@@ -9665,12 +13581,16 @@
         
             
 <dt>
-    <h4 class="name" id="sugar"><span class="type-signature">&lt;static> </span>sugar<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="sugar"><span class="type-signature">&lt;static> </span>sugar<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Creates syntactic sugar by hooking abaaso into native Objects
+    </div>
     
 
     
@@ -9702,7 +13622,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12342">line 12342</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13430">line 13430</a>
     </li></ul></dd>
     
     
@@ -9730,24 +13650,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -9755,18 +13657,70 @@
         
             
 <dt>
-    <h4 class="name" id="target"><span class="type-signature">&lt;static> </span>target<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="target"><span class="type-signature">&lt;static> </span>target<span class="signature">(e)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Returns the Event target
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Event</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9792,7 +13746,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12350">line 12350</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13439">line 13439</a>
     </li></ul></dd>
     
     
@@ -9823,6 +13777,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Event target
+</div>
+
 
 
 <dl>
@@ -9831,7 +13789,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9845,18 +13803,93 @@
         
             
 <dt>
-    <h4 class="name" id="tpl"><span class="type-signature">&lt;static> </span>tpl<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="tpl"><span class="type-signature">&lt;static> </span>tpl<span class="signature">(data, target)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Transforms JSON to HTML and appends to Body or target Element
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">JSON Object describing HTML</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>target</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Target Element or Element.id to receive the HTML</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -9882,7 +13915,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12358">line 12358</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13450">line 13450</a>
     </li></ul></dd>
     
     
@@ -9913,6 +13946,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    New Element created from the template
+</div>
+
 
 
 <dl>
@@ -9921,7 +13958,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -9935,12 +13972,16 @@
         
             
 <dt>
-    <h4 class="name" id="un"><span class="type-signature">&lt;static> </span>un<span class="signature">(obj, event, id, state)</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="un"><span class="type-signature">&lt;static> </span>un<span class="signature">(obj, event, id, state)</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Removes listeners
+    </div>
     
 
     
@@ -10089,7 +14130,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12366">line 12366</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13462">line 13462</a>
     </li></ul></dd>
     
     
@@ -10117,24 +14158,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -10142,18 +14165,93 @@
         
             
 <dt>
-    <h4 class="name" id="update"><span class="type-signature">&lt;static> </span>update<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="update"><span class="type-signature">&lt;static> </span>update<span class="signature">(obj, args)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Updates an Element
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">mixed</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Element</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Collection of properties</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -10179,7 +14277,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12396">line 12396</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13493">line 13493</a>
     </li></ul></dd>
     
     
@@ -10210,6 +14308,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    Element
+</div>
+
 
 
 <dl>
@@ -10218,7 +14320,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">object</span>
 
 
 	</dd>
@@ -10232,18 +14334,70 @@
         
             
 <dt>
-    <h4 class="name" id="uuid"><span class="type-signature">&lt;static> </span>uuid<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="uuid"><span class="type-signature">&lt;static> </span>uuid<span class="signature">(safe)</span><span class="type-signature"> &rarr; {string}</span></h4>
     
     
 </dt>
 <dd>
     
     
+    <div class="description">
+        Generates a version 4 UUID
+    </div>
+    
 
     
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>safe</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Strips - from UUID</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -10269,7 +14423,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12404">line 12404</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13505">line 13505</a>
     </li></ul></dd>
     
     
@@ -10300,6 +14454,10 @@
     <h5>Returns:</h5>
     
             
+<div class="param-desc">
+    UUID
+</div>
+
 
 
 <dl>
@@ -10308,7 +14466,7 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">function</span>
+<span class="param-type">string</span>
 
 
 	</dd>
@@ -10322,12 +14480,155 @@
         
             
 <dt>
-    <h4 class="name" id="walk"><span class="type-signature">&lt;static> </span>walk<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="validate"><span class="type-signature">&lt;static> </span>validate<span class="signature">(args)</span><span class="type-signature"> &rarr; {object}</span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Validates input
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Object to test {( pattern[name] || /pattern/) : (value || #object.id )}</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13516">line 13516</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Results
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="walk"><span class="type-signature">&lt;static> </span>walk<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Walks `obj` and returns `arg`
+    </div>
     
 
     
@@ -10359,7 +14660,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12422">line 12422</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13534">line 13534</a>
     </li></ul></dd>
     
     
@@ -10387,24 +14688,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -10412,12 +14695,16 @@
         
             
 <dt>
-    <h4 class="name" id="when"><span class="type-signature">&lt;static> </span>when<span class="signature">()</span><span class="type-signature"> &rarr; {function}</span></h4>
+    <h4 class="name" id="when"><span class="type-signature">&lt;static> </span>when<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
 <dd>
     
+    
+    <div class="description">
+        Accepts Deferreds or Promises as arguments, or an Array of either
+    </div>
     
 
     
@@ -10449,7 +14736,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12430">line 12430</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line13543">line 13543</a>
     </li></ul></dd>
     
     
@@ -10477,24 +14764,6 @@
     
     
     
-    <h5>Returns:</h5>
-    
-            
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">function</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>
@@ -10543,7 +14812,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line10856">line 10856</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line10873">line 10873</a>
     </li></ul></dd>
     
     
@@ -10606,13 +14875,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore_.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.html#datalist">datalist</a></li><li><a href="abaaso.datastore.html">datastore</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.html#promise">promise</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.validate.html">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri Sep 13 2013 22:34:34 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Sep 15 2013 10:05:39 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

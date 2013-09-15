@@ -3,7 +3,7 @@
  *
  * @method channel
  * @memberOf abaaso
- * @return {@link abaaso.Channel}
+ * @return {object} {@link abaaso.Channel}
  */
 var channel = function () {
 	return new Channel();
@@ -13,7 +13,7 @@ var channel = function () {
  * Creates a new Channel
  *
  * @constructor
- * @namespace abaaso.Channel
+ * @memberOf abaaso
  */
 function Channel () {
 	this.queue = [];
@@ -35,7 +35,7 @@ Channel.prototype.constructor = Channel;
  * @method put
  * @memberOf abaaso.Channel
  * @param  {mixed} arg Item
- * @return {@link abaaso.Deferred}
+ * @return {object} {@link abaaso.Deferred}
  */
 Channel.prototype.put = function ( arg ) {
 	var defer = deferred();
@@ -57,7 +57,7 @@ Channel.prototype.put = function ( arg ) {
  *
  * @method take
  * @memberOf abaaso.Channel
- * @return {@link abaaso.Deferred}
+ * @return {object} {@link abaaso.Deferred}
  */
 Channel.prototype.take = function () {
 	var defer = deferred();

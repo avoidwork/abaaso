@@ -455,7 +455,7 @@ var client = {
 	 * @param  {function} success A handler function to execute when an appropriate response been received
 	 * @param  {function} failure [Optional] A handler function to execute on error
 	 * @param  {mixed}    args    Custom JSONP handler parameter name, default is "callback"; or custom headers for GET request ( CORS )
-	 * @return {object}           Deferred
+	 * @return {object} {@link abaaso.Deferred}
 	 */
 	jsonp : function ( uri, success, failure, args ) {
 		var defer    = deferred(),
@@ -528,7 +528,7 @@ var client = {
 	 * @param  {mixed}    args    [Optional] Data to send with the request
 	 * @param  {object}   headers [Optional] Custom request headers ( can be used to set withCredentials )
 	 * @param  {number}   timeout [Optional] Timeout in milliseconds, default is 30000
-	 * @return {object}           Deferred
+	 * @return {object} {@link abaaso.Deferred}
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
@@ -855,7 +855,7 @@ var client = {
 	 * @param  {string} arg    URL to script
 	 * @param  {object} target [Optional] Element to receive the script
 	 * @param  {string} pos    [Optional] Position to create the script at within the target
-	 * @return {object}        Script
+	 * @return {object}        Element
 	 */
 	script : function ( arg, target, pos ) {
 		return element.create( "script", {type: "application/javascript", src: arg}, target || utility.dom( "head" )[0], pos );
@@ -868,7 +868,7 @@ var client = {
 	 * @memberOf abaaso.client
 	 * @param  {array}  dest Coordinates
 	 * @param  {number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
-	 * @return {object}      Deferred
+	 * @return {object} {@link abaaso.Deferred}
 	 */
 	scroll : function ( dest, ms ) {
 		var defer = deferred(),

@@ -1,6 +1,4 @@
 /**
- * RESTful cache
- *
  * @namespace abaaso.cache
  * @private
  */

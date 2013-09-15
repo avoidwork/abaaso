@@ -222,9 +222,8 @@ var array = {
 	},
 
 	/**
-	 * Iterates obj and executes fn
-	 *
-	 * Parameters for fn are 'value', 'index'
+	 * Iterates `obj` and executes `fn` with arguments [`value`, `index`].
+	 * Returning `false` halts iteration.
 	 *
 	 * @method each
 	 * @memberOf abaaso.array
@@ -371,6 +370,23 @@ var array = {
 	 */
 	first : function ( obj ) {
 		return obj[0];
+	},
+
+	/**
+	 * Iterates `obj` and executes `fn` with arguments [`value`, `index`].
+	 * Returning `false` halts iteration.
+	 *
+	 * @method forEach
+	 * @memberOf abaaso.array
+	 * @see abaaso.array.each
+	 * @param  {array}    obj   Array to iterate
+	 * @param  {function} fn    Function to execute on index values
+	 * @param  {boolean}  async [Optional] Asynchronous iteration
+	 * @param  {number}   size  [Optional] Batch size for async iteration, default is 10
+	 * @return {array}          Array
+	 */
+	forEach : function ( obj, fn, async, size ) {
+		return array.each( obj, fn, async, size );
 	},
 
 	/**

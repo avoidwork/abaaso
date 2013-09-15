@@ -1,4 +1,7 @@
-/** @namespace abaaso.promise */
+/**
+ * @namespace abaaso.promise
+ * @private
+ */
 var promise = {
 	/**
 	 * Async delay strategy
@@ -26,7 +29,7 @@ var promise = {
 	 *
 	 * @method factory
 	 * @memberOf abaaso.promise
-	 * @return {object} Instance of promise
+	 * @return {object} {@link abaaso.Promise}
 	 */
 	factory : function () {
 		return new Promise();
@@ -67,7 +70,6 @@ var promise = {
  *
  * @constructor
  * @memberOf abaaso
- * @return {object} Promise instance
  */
 function Promise () {
 	this.deferred = false;
@@ -91,7 +93,7 @@ Promise.prototype.constructor = Promise;
  *
  * @method process
  * @memberOf abaaso.Promise
- * @return {object} Promise instance
+ * @return {object} {@link abaaso.Promise}
  */
 Promise.prototype.process = function() {
 	var result, success, value;
@@ -150,7 +152,7 @@ Promise.prototype.process = function() {
  * @method reject
  * @memberOf abaaso.Promise
  * @param  {mixed} arg Promise value
- * @return {object}    Promise instance
+ * @return {object} {@link abaaso.Promise}
  */
 Promise.prototype.reject = function ( arg ) {
 	var self = this;
@@ -179,7 +181,7 @@ Promise.prototype.reject = function ( arg ) {
  * @method resolve
  * @memberOf abaaso.Promise
  * @param  {mixed} arg Promise value
- * @return {object}    Promise instance
+ * @return {object} {@link abaaso.Promise}
  */
 Promise.prototype.resolve = function ( arg ) {
 	var self = this;
@@ -209,7 +211,7 @@ Promise.prototype.resolve = function ( arg ) {
  * @memberOf abaaso.Promise
  * @param  {function} success [Optional] Success handler for eventual value
  * @param  {function} failure [Optional] Failure handler for eventual value
- * @return {object}           New Promise instance
+ * @return {object} {@link abaaso.Promise}
  */
 Promise.prototype.then = function ( success, failure ) {
 	var self  = this,

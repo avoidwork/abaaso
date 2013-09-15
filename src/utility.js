@@ -344,8 +344,8 @@ var utility = {
 	},
 
 	/**
-	 * Defers the execution of Function by at least the supplied milliseconds
-	 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine
+	 * Defers the execution of Function by at least the supplied milliseconds.
+	 * Timing may vary under "heavy load" relative to the CPU & client JavaScript engine.
 	 *
 	 * @method defer
 	 * @memberOf abaaso.utility
@@ -418,7 +418,7 @@ var utility = {
 	},
 
 	/**
-	 * Error handling, with history in .log
+	 * Error handling, with history in `error.log`
 	 *
 	 * @method error
 	 * @memberOf abaaso.utility
@@ -528,12 +528,12 @@ var utility = {
 	},
 
 	/**
-	 * Getter / setter for the hashbang
+	 * Getter / setter for location.hash
 	 *
 	 * @method hash
 	 * @memberOf abaaso.utility
-	 * @param  {string} arg Route to set
-	 * @return {string}     Current route
+	 * @param  {string} arg Hash to set
+	 * @return {string}     Current hash
 	 */
 	hash : function ( arg ) {
 		if ( arg ) {
@@ -580,9 +580,8 @@ var utility = {
 	},
 
 	/**
-	 * Iterates an Object and executes a function against the properties
-	 *
-	 * Iteration can be stopped by returning false from fn
+	 * Iterates an Object and executes a function against the properties.
+	 * Returning `false` halts iteration.
 	 *
 	 * @method iterate
 	 * @memberOf abaaso.utility
@@ -678,25 +677,6 @@ var utility = {
 
 		return obj;
 	},
-	
-	/**
-	 * Registers a module on abaaso
-	 *
-	 * @method module
-	 * @memberOf abaaso.utility
-	 * @param  {string} arg Module name
-	 * @param  {object} obj Module structure
-	 * @return {object}     Module registered
-	 */
-	module : function ( arg, obj ) {
-		if ( abaaso[arg] !== undefined || !obj instanceof Object ) {
-			throw new Error( label.error.invalidArguments );
-		}
-		
-		abaaso[arg] = obj;
-
-		return abaaso[arg];
-	},
 
 	/**
 	 * Returns Object, or reference to Element
@@ -781,7 +761,27 @@ var utility = {
 	},
 
 	/**
-	 * Sets a property on an Object, if defineProperty cannot be used the value will be set classically
+	 * Prevents default behavior of an Event
+	 *
+	 * @method prevent
+	 * @memberOf abaaso.utility
+	 * @param  {object} e Event
+	 * @return {object}   Event
+	 */
+	prevent : function ( e ) {
+		if ( typeof e.preventDefault === "function" ) {
+			e.preventDefault();
+		}
+
+		if ( typeof e.stopPropagation === "function" ) {
+			e.stopPropagation();
+		}
+
+		return e;
+	},
+
+	/**
+	 * Sets a property on an Object
 	 *
 	 * @method property
 	 * @memberOf abaaso.utility
@@ -899,9 +899,7 @@ var utility = {
 	},
 
 	/**
-	 * Creates a recursive function
-	 *
-	 * Return false from the function to halt recursion
+	 * Creates a recursive function. Return false from the function to halt recursion.
 	 *
 	 * @method repeat
 	 * @memberOf abaaso.utility
@@ -943,7 +941,7 @@ var utility = {
 	},
 
 	/**
-	 * Stops an Event from bubbling
+	 * Stops an Event from bubbling, & prevents default behavior
 	 *
 	 * @method stop
 	 * @memberOf abaaso.utility
@@ -955,13 +953,7 @@ var utility = {
 			e.cancelBubble = true;
 		}
 
-		if ( typeof e.preventDefault === "function" ) {
-			e.preventDefault();
-		}
-
-		if ( typeof e.stopPropagation === "function" ) {
-			e.stopPropagation();
-		}
+		utility.prevent( e );
 
 		// Assumed to always be valid, even if it's not decorated on `e` ( I'm looking at you IE8 )
 		e.returnValue = false;
@@ -1067,7 +1059,7 @@ var utility = {
 	},
 
 	/**
-	 * Walks a structure and returns arg
+	 * Walks `obj` and returns `arg`
 	 *
 	 * @method  walk
 	 * @memberOf abaaso.utility
@@ -1084,11 +1076,11 @@ var utility = {
 	},
 
 	/**
-	 * Accepts Deferreds or Promises as arguments or an Array
+	 * Accepts Deferreds or Promises as arguments, or an Array of either
 	 *
 	 * @method when
 	 * @memberOf abaaso.utility
-	 * @return {object} Deferred
+	 * @return {object} {@link abaaso.Deferred}
 	 */
 	when : function () {
 		var i     = 0,

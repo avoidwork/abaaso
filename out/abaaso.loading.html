@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: math</title>
+    <title>JSDoc: Namespace: loading</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Namespace: math</h1>
+    <h1 class="page-title">Namespace: loading</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="abaaso.html">abaaso</a>.</span>
     
-    math
+    loading
     </h2>
     
 </header>  
@@ -40,6 +40,8 @@
     
     
         
+            <div class="description">Decorates an Element with a `loading` image</div>
+        
         
         
 <dl class="details">
@@ -64,7 +66,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line7117">line 7117</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12365">line 12365</a>
     </li></ul></dd>
     
     
@@ -90,6 +92,74 @@
     
     
     
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="url"><span class="type-signature">&lt;static> </span>url<span class="type-signature"> :url</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        URL to loading icon/image
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">url</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12382">line 12382</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
     
     
     
@@ -98,7 +168,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="bezier"><span class="type-signature">&lt;static> </span>bezier<span class="signature">()</span><span class="type-signature"> &rarr; {array}</span></h4>
+    <h4 class="name" id="create"><span class="type-signature">&lt;static> </span>create<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -106,9 +176,8 @@
     
     
     <div class="description">
-        Generates bezier curve coordinates for up to 4 points, last parameter is `t`
-
-Two point example: (0, 10, 0, 0, 1) means move straight up
+        Renders a loading icon in a target element,
+with a class of "loading"
     </div>
     
 
@@ -141,174 +210,19 @@ Two point example: (0, 10, 0, 0, 1) means move straight up
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line7119">line 7119</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line12372">line 12372</a>
     </li></ul></dd>
     
     
     
     
     
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Coordinates
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">array</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="dist"><span class="type-signature">&lt;static> </span>dist<span class="signature">(a, b)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Finds the distance between 2 Arrays of coordinates
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>a</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Coordinates [x, y]</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>b</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Coordinates [x, y]</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line7169">line 7169</a>
-    </li></ul></dd>
-    
-    
-    
-    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="abaaso.utility.html#loading">abaaso.utility.loading</a></li>
+        </ul>
+    </dd>
     
     
     
@@ -324,167 +238,6 @@ Two point example: (0, 10, 0, 0, 1) means move straight up
     
     
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Distance between `a` & `b`
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="sqr"><span class="type-signature">&lt;static> </span>sqr<span class="signature">(n)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Squares a Number
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>n</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Number to square</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line7182">line 7182</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Squared value
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">number</span>
-
-
-	</dd>
-</dl>
-
-        
     
     
 </dd>

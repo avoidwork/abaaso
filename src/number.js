@@ -106,7 +106,7 @@ var number = {
 	},
 
 	/**
-	 * Generates a random number between 0 and arg
+	 * Generates a random number between 0 and `arg`
 	 *
 	 * @method random
 	 * @memberOf abaaso.number

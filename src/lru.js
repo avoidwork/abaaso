@@ -1,10 +1,10 @@
 /**
- * LRU factory
+ * LRU cache factory
  *
  * @method lru
  * @memberOf abaaso
  * @param  {number} max [Optional] Max size of cache, default is 1000
- * @return {@link abaaso.LRU}
+ * @return {object} {@link abaaso.LRU}
  */
 var lru = function ( max ) {
 	return new LRU( max );
@@ -40,7 +40,7 @@ LRU.prototype.constructor = LRU;
  *
  * @method evict
  * @memberOf abaaso.LRU
- * @return {@link abaaso.LRU}
+ * @return {object} {@link abaaso.LRU}
  */
 LRU.prototype.evict = function () {
 	if ( this.last !== null ) {
@@ -56,7 +56,7 @@ LRU.prototype.evict = function () {
  * @method get
  * @memberOf abaaso.LRU
  * @param  {string} key Item key
- * @return {@link abaaso.LRUItem}
+ * @return {object} {@link abaaso.LRUItem}
  */
 LRU.prototype.get = function ( key ) {
 	var item = this.cache[key];
@@ -76,7 +76,7 @@ LRU.prototype.get = function ( key ) {
  * @method remove
  * @memberOf abaaso.LRU
  * @param  {string} key Item key
- * @return {@link abaaso.LRUItem}
+ * @return {object} {@link abaaso.LRUItem}
  */
 LRU.prototype.remove = function ( key ) {
 	var item = this.cache[ key ];
@@ -113,7 +113,7 @@ LRU.prototype.remove = function ( key ) {
  * @memberOf abaaso.LRU
  * @param  {string} key   Item key
  * @param  {mixed}  value Item value
- * @return {@link abaaso.LRU}
+ * @return {object} {@link abaaso.LRU}
  */
 LRU.prototype.set = function ( key, value ) {
 	var item = this.remove( key );

@@ -10,7 +10,7 @@
  * @param  {object}  options     [Optional] DataList options
  * @param  {boolean} filtered    [Optional] Create an input to filter the data grid
  * @param  {number}  debounce    [Optional] DataListFilter input debounce, default is 250
- * @return {@link abaaso.DataGrid}
+ * @return {object} {@link abaaso.DataGrid}
  */
 var grid = function ( element, store, fields, sortable, options, filtered, debounce ) {
 	var ref = [store];
@@ -78,7 +78,7 @@ DataGrid.prototype.dump = function () {
  * @method init
  * @memberOf abaaso.DataGrid
  * @param  {number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
- * @return {@link abaaso.DataGrid}
+ * @return {object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.init = function ( debounce ) {
 	var self, ref, template, container, header, width, css, sort;
@@ -141,7 +141,7 @@ DataGrid.prototype.init = function ( debounce ) {
  *
  * @method refresh
  * @memberOf abaaso.DataGrid
- * @return {@link abaaso.DataGrid}
+ * @return {object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.refresh = function () {
 	var sort = [],
@@ -171,7 +171,7 @@ DataGrid.prototype.refresh = function () {
  * @method sort
  * @memberOf abaaso.DataGrid
  * @param  {object} e Event
- * @return {@link abaaso.DataGrid}
+ * @return {object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.sort = function ( e ) {
 	var target = utility.target( e ),
@@ -198,7 +198,7 @@ DataGrid.prototype.sort = function ( e ) {
  *
  * @method teardown
  * @memberOf abaaso.DataGrid
- * @return {@link abaaso.DataGrid}
+ * @return {object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.teardown = function () {
 	if ( this.filter !== null ) {

@@ -1,4 +1,7 @@
-/** @namespace abaaso.validate */
+/**
+ * @namespace abaaso.validate
+ * @private
+ */
 var validate = {
 	/**
 	 * Validates args based on the type or pattern specified

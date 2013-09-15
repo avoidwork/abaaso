@@ -1844,9 +1844,8 @@
     
     
     <div class="description">
-        Iterates obj and executes fn
-
-Parameters for fn are 'value', 'index'
+        Iterates `obj` and executes `fn` with arguments [`value`, `index`].
+Returning `false` halts iteration.
     </div>
     
 
@@ -2135,7 +2134,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line434">line 434</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line433">line 433</a>
     </li></ul></dd>
     
     
@@ -2297,7 +2296,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line446">line 446</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line445">line 445</a>
     </li></ul></dd>
     
     
@@ -2436,7 +2435,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line459">line 459</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line458">line 458</a>
     </li></ul></dd>
     
     
@@ -2644,7 +2643,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line490">line 490</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line489">line 489</a>
     </li></ul></dd>
     
     
@@ -2783,7 +2782,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line519">line 519</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line518">line 518</a>
     </li></ul></dd>
     
     
@@ -2922,7 +2921,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line531">line 531</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line547">line 547</a>
     </li></ul></dd>
     
     
@@ -2948,6 +2947,222 @@ Parameters for fn are 'value', 'index'
             
 <div class="param-desc">
     Flatten Array
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="forEach"><span class="type-signature">&lt;static> </span>forEach<span class="signature">(obj, fn, async, size)</span><span class="type-signature"> &rarr; {array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Iterates `obj` and executes `fn` with arguments [`value`, `index`].
+Returning `false` halts iteration.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>obj</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Array to iterate</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>fn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Function to execute on index values</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>async</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Asynchronous iteration</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">[Optional] Batch size for async iteration, default is 10</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line530">line 530</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="abaaso.array.html#each">abaaso.array.each</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Array
 </div>
 
 
@@ -3084,7 +3299,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line549">line 549</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line565">line 565</a>
     </li></ul></dd>
     
     
@@ -3223,7 +3438,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line562">line 562</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line578">line 578</a>
     </li></ul></dd>
     
     
@@ -3385,7 +3600,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line580">line 580</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line596">line 596</a>
     </li></ul></dd>
     
     
@@ -3547,7 +3762,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line598">line 598</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line614">line 614</a>
     </li></ul></dd>
     
     
@@ -3686,7 +3901,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line665">line 665</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line681">line 681</a>
     </li></ul></dd>
     
     
@@ -3848,7 +4063,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line677">line 677</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line693">line 693</a>
     </li></ul></dd>
     
     
@@ -4033,7 +4248,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line700">line 700</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line716">line 716</a>
     </li></ul></dd>
     
     
@@ -4172,7 +4387,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line725">line 725</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line741">line 741</a>
     </li></ul></dd>
     
     
@@ -4311,7 +4526,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line737">line 737</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line753">line 753</a>
     </li></ul></dd>
     
     
@@ -4450,7 +4665,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line749">line 749</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line765">line 765</a>
     </li></ul></dd>
     
     
@@ -4612,7 +4827,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line765">line 765</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line781">line 781</a>
     </li></ul></dd>
     
     
@@ -4751,7 +4966,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line782">line 782</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line798">line 798</a>
     </li></ul></dd>
     
     
@@ -4913,7 +5128,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line794">line 794</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line810">line 810</a>
     </li></ul></dd>
     
     
@@ -5052,7 +5267,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line813">line 813</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line829">line 829</a>
     </li></ul></dd>
     
     
@@ -5237,7 +5452,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line858">line 858</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line874">line 874</a>
     </li></ul></dd>
     
     
@@ -5376,7 +5591,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line905">line 905</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line921">line 921</a>
     </li></ul></dd>
     
     
@@ -5538,7 +5753,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line917">line 917</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line933">line 933</a>
     </li></ul></dd>
     
     
@@ -5700,7 +5915,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line940">line 940</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line956">line 956</a>
     </li></ul></dd>
     
     
@@ -5885,7 +6100,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line971">line 971</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line987">line 987</a>
     </li></ul></dd>
     
     
@@ -6047,7 +6262,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1002">line 1002</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1018">line 1018</a>
     </li></ul></dd>
     
     
@@ -6209,7 +6424,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1027">line 1027</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1043">line 1043</a>
     </li></ul></dd>
     
     
@@ -6371,7 +6586,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line953">line 953</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line969">line 969</a>
     </li></ul></dd>
     
     
@@ -6533,7 +6748,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1059">line 1059</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1075">line 1075</a>
     </li></ul></dd>
     
     
@@ -6695,7 +6910,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1078">line 1078</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1094">line 1094</a>
     </li></ul></dd>
     
     
@@ -6857,7 +7072,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1099">line 1099</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1115">line 1115</a>
     </li></ul></dd>
     
     
@@ -7042,7 +7257,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1130">line 1130</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1146">line 1146</a>
     </li></ul></dd>
     
     
@@ -7227,7 +7442,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line625">line 625</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line641">line 641</a>
     </li></ul></dd>
     
     
@@ -7389,7 +7604,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1196">line 1196</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1212">line 1212</a>
     </li></ul></dd>
     
     
@@ -7528,7 +7743,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1236">line 1236</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1252">line 1252</a>
     </li></ul></dd>
     
     
@@ -7690,7 +7905,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1156">line 1156</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1172">line 1172</a>
     </li></ul></dd>
     
     
@@ -7829,7 +8044,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1248">line 1248</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1264">line 1264</a>
     </li></ul></dd>
     
     
@@ -7991,7 +8206,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1268">line 1268</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1284">line 1284</a>
     </li></ul></dd>
     
     
@@ -8130,7 +8345,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1293">line 1293</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1309">line 1309</a>
     </li></ul></dd>
     
     
@@ -8269,7 +8484,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1281">line 1281</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1297">line 1297</a>
     </li></ul></dd>
     
     
@@ -8408,7 +8623,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1312">line 1312</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1328">line 1328</a>
     </li></ul></dd>
     
     
@@ -8570,7 +8785,7 @@ Parameters for fn are 'value', 'index'
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1330">line 1330</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line1346">line 1346</a>
     </li></ul></dd>
     
     
@@ -8633,13 +8848,13 @@ Parameters for fn are 'value', 'index'
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore_.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.html#datalist">datalist</a></li><li><a href="abaaso.datastore.html">datastore</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.html#promise">promise</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.validate.html">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri Sep 13 2013 22:34:35 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Sun Sep 15 2013 10:05:39 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
