@@ -40,7 +40,6 @@
     "grunt-contrib-jshint": "~0.1",
     "grunt-contrib-nodeunit": "~0.1.2",
     "grunt-contrib-watch": "~0.2",
-    "promises-aplus-tests": "*",
     "grunt-jsdoc": "~0.4.0"
   },
   "keywords": [
