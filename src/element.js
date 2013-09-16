@@ -709,12 +709,24 @@ var element = {
 	 *
 	 * @method scrollTo
 	 * @memberOf abaaso.element
-	 * @param  {object} obj Element to scroll to
-	 * @param  {number} ms  [Optional] Milliseconds to scroll, default is 250, min is 100
+	 * @param  {object} obj        Element to scroll to
+	 * @param  {number} ms         [Optional] Milliseconds to scroll, default is 250, min is 100
+	 * @param  {number} offsetTop  [Optional] Offset from top of Element
+	 * @param  {number} offsetLeft [Optional] Offset from left of Element
 	 * @return {object} {@link abaaso.Deferred}
 	 */
-	scrollTo : function ( obj, ms ) {
-		return client.scroll( array.remove( element.position( obj ), 2, 3 ), ms );
+	scrollTo : function ( obj, ms, offsetTop, offsetLeft ) {
+		var pos = array.remove( element.position( obj ), 2, 3 );
+
+		if ( !isNaN( offsetTop ) ) {
+			pos[0] += offsetTop;
+		}
+
+		if ( !isNaN( offsetLeft ) ) {
+			pos[1] += offsetLeft;
+		}
+
+		return client.scroll( pos, ms );
 	},
 
 	/**

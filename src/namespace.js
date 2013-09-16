@@ -1203,8 +1203,10 @@ abaaso.scroll          = client.scroll;
  * @method scrollTo
  * @memberOf abaaso
  * @see {@link abaaso.client.scrollTo}
- * @param  {object} obj Element to scroll to
- * @param  {number} ms  [Optional] Milliseconds to scroll, default is 250, min is 100
+ * @param  {object} obj        Element to scroll to
+ * @param  {number} ms         [Optional] Milliseconds to scroll, default is 250, min is 100
+ * @param  {number} offsetTop  [Optional] Offset from top of Element
+ * @param  {number} offsetLeft [Optional] Offset from left of Element
  * @return {object} {@link abaaso.Deferred}
  */
 abaaso.scrollTo        = element.scrollTo;

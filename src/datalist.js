@@ -246,7 +246,7 @@ DataList.prototype.pages = function () {
 
 			if ( target.nodeName === "A" ) {
 				self.page( element.data( target, "page") );
-				element.scrollTo( obj );
+				element.scrollTo( obj, 100, -10 );
 			}
 		}, "pagination");
 	});

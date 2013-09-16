@@ -788,8 +788,8 @@ var prototypes = {
 		removeClass : function ( arg ) {
 			return element.klass( this, arg, false );
 		},
-		scrollTo  : function ( ms ) {
-			return element.scrollTo( this, ms );
+		scrollTo  : function ( ms, offsetTop, offsetLeft ) {
+			return element.scrollTo( this, ms, offsetTop, offsetLeft );
 		},
 		serialize : function ( string, encode ) {
 			return element.serialize( this, string, encode );
