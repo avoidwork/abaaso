@@ -8,7 +8,7 @@
 function Abaaso ( query ) {
 	var self = this;
 
-	if ( query && !string.isEmpty( query ) ) {
+	if ( query ) {
 		array.each( utility.$( query ), function ( i ) {
 			self.push( i );
 		});
