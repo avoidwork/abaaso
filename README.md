@@ -34,7 +34,7 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Familiar API
 * Evented with a global observer
 * Built on Promises/A+
-* MongoDB for persistent storage (node.js)
+* localStorage / MongoDB for persistent storage
 
 ## Support
 
