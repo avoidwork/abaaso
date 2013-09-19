@@ -29,7 +29,7 @@ All standards compliant browsers and platforms such as Desktops, Tablets, Smartp
 * Application state driven by custom HTTP header
 * Object Oriented Programming
 * Semantic classes & methods
-* abaaso() for DOM queries
+* abaaso() for DOM queries / helper
 * abaaso.sugar() to enable syntactic sugar
 * Familiar API
 * Evented with a global observer
