@@ -5,6 +5,21 @@
  */
 var element = {
 	/**
+	 * Appends `a` in `b`
+	 *
+	 * @memberOf appendTo
+	 * @memberOf abaaso.eleement
+	 * @param  {Object} a Element being appended
+	 * @param  {Object} b Element being appended to
+	 * @return {Object}   Element being appended to
+	 */
+	appendTo : function ( a, b ) {
+		b.appendChild( a );
+
+		return b;
+	},
+
+	/**
 	 * Gets or sets an Element attribute
 	 *
 	 * @method attr
