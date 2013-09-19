@@ -39,6 +39,7 @@ var xml = {
 			 * Encodes a value as a node
 			 *
 			 * @method node
+			 * @memberOf abaaso.xml.encode
 			 * @private
 			 * @param  {string} name  Node name
 			 * @param  {string} value Node value

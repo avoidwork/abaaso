@@ -1376,6 +1376,7 @@ DataStore.prototype.sync = function () {
 	 * Resolves public deferred
 	 *
 	 * @method success
+	 * @memberOf abaaso.DataStore.sync
 	 * @private
 	 * @param  {object} arg API response
 	 * @return {undefined}  undefined
@@ -1411,6 +1412,7 @@ DataStore.prototype.sync = function () {
 	 * Rejects public deferred
 	 *
 	 * @method failure
+	 * @memberOf abaaso.DataStore.sync
 	 * @private
 	 * @param  {object} e Error instance
 	 * @return {undefined} undefined

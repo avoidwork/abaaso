@@ -390,6 +390,7 @@ var observer = {
 		 * Removes DOM event hook
 		 *
 		 * @method fn
+		 * @memberOf abaaso.observer.remove
 		 * @private
 		 * @param  {mixed}  event String or null
 		 * @param  {number} i     Amount of listeners being removed
