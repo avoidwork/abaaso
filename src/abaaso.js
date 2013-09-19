@@ -1,15 +1,15 @@
 /**
- * Creates a custom Array of Elements by using `abaaso("selector")`
+ * Creates a custom Array of Elements via `abaaso()`
  *
  * @constructor
  * @memberOf abaaso
- * @param {string} query Comma delimited DOM query
+ * @param {mixed} arg Element, HTML, or comma delimited DOM query
  */
-function Abaaso ( query ) {
+function Abaaso ( arg ) {
 	var self = this;
 
-	if ( query ) {
-		array.each( utility.$( query ), function ( i ) {
+	if ( arg ) {
+		array.each( utility.$( arg ), function ( i ) {
 			self.push( i );
 		});
 	}
@@ -226,6 +226,23 @@ Abaaso.prototype.data = function ( key, value ) {
 };
 
 /**
+ * Creates DataLists in indices
+ *
+ * @method datalist
+ * @memberOf abaaso.Abaaso
+ * @see {@link abaaso.DataList}
+ * @param  {object} store    Data store to feed the DataList
+ * @param  {mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+ * @param  {object} options  Optional parameters to set on the DataList
+ * @return {object} {@link abaaso.Abaaso}
+ */
+Abaaso.prototype.datalist = function ( store, template, options ) {
+	return array.each( this, function ( i ) {
+		datalist( i, store, template, options );
+	} );
+};
+
+/**
  * Disables indices
  *
  * @method disable
@@ -347,6 +364,23 @@ Abaaso.prototype.fire = function () {
 };
 
 /**
+ * Creates DataListFilters in indices
+ *
+ * @method filter
+ * @memberOf abaaso.Abaaso
+ * @param  {object} datalist Data list linked to the data store
+ * @param  {string} filters  Comma delimited string of fields to filter by
+ * @param  {number} debounce [Optional] Milliseconds to debounce
+ * @see {@link abaaso.DataListFilter}
+ * @return {object} {@link abaaso.Abaaso}
+ */
+Abaaso.prototype.filter = function ( datalist, filters, debounce ) {
+	return array.each( this, function ( i ) {
+		filter( i, datalist, filters, debounce );
+	} );
+};
+
+/**
  * Iterates & executes a function against indices; returning `false` will halt iteration
  *
  * @method forEach
@@ -393,6 +427,26 @@ Abaaso.prototype.get = function ( uri, headers ) {
 			element.html( i, e );
 		});
 	});
+};
+
+/**
+ * Creates DataGrids in indices
+ *
+ * @method grid
+ * @memberOf abaaso.Abaaso
+ * @param  {object}  store       DataStore
+ * @param  {array}   fields      Array of fields to display
+ * @param  {array}   sortable    [Optional] Array of sortable columns/fields
+ * @param  {object}  options     [Optional] DataList options
+ * @param  {boolean} filtered    [Optional] Create an input to filter the data grid
+ * @param  {number}  debounce    [Optional] DataListFilter input debounce, default is 250
+ * @see {@link abaaso.DataGrid}
+ * @return {object} {@link abaaso.Abaaso}
+ */
+Abaaso.prototype.grid = function ( store, fields, sortable, options, filtered, debounce ) {
+	return array.each( this, function ( i ) {
+		grid( i, store, fields, sortable, options, filtered, debounce );
+	} );
 };
 
 /**

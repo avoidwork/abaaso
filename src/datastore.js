@@ -23,6 +23,7 @@ var datastore = {
 
 		// Creating store
 		obj.data = new DataStore( obj );
+		abaaso.datastores[obj.data.id] = obj.data;
 
 		if ( args instanceof Object ) {
 			utility.merge( obj.data, args );
@@ -95,6 +96,7 @@ function DataStore ( obj ) {
 	this.events      = false;
 	this.expires     = null;
 	this.headers     = {Accept: "application/json"};
+	this.id          = utility.uuid();
 	this.ignore      = [];
 	this.key         = null;
 	this.keys        = {};
@@ -1457,10 +1459,6 @@ DataStore.prototype.teardown = function () {
 		id = this.parentNode.id + "DataExpire";
 		utility.clearTimers( id );
 
-		array.each( this.datalists, function (i ) {
-			i.teardown();
-		});
-
 		array.each( this.records, function ( i ) {
 			var recordUri = uri + "/" + i.key;
 
@@ -1479,6 +1477,12 @@ DataStore.prototype.teardown = function () {
 			});
 		});
 	}
+
+	delete abaaso.datastores[this.id];
+
+	array.each( this.datalists, function (i ) {
+		i.teardown();
+	});
 
 	this.clear( true );
 	observer.fire( this.parentNode, "afterDataTeardown" );

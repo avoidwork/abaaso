@@ -3,11 +3,11 @@
  *
  * @method abaaso
  * @namespace abaaso
- * @param  {string} query Comma delimited DOM query
- * @return {object}       Abaaso instance
+ * @param  {mixed} arg Element, HTML, or comma delimited DOM query
+ * @return {object}    Abaaso instance
  */
-function abaaso ( query ) {
-	return new Abaaso( query );
+function abaaso ( arg ) {
+	return new Abaaso( arg );
 }
 
 /**
@@ -383,6 +383,14 @@ abaaso.data            = datastore.decorator;
  * @return {object} {@link abaaso.DataList}
  */
 abaaso.datalist        = datalist.factory;
+
+/**
+ * DataStores
+ *
+ * @memberOf abaaso
+ * @type {Object}
+ */
+abaaso.datastores      = {};
 
 /**
  * Discards observer events

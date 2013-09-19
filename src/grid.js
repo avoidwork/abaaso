@@ -3,7 +3,7 @@
  *
  * @method grid
  * @memberOf abaaso
- * @param  {object}  element     Element to receive DataGrid
+ * @param  {object}  obj         Element to receive DataGrid
  * @param  {object}  store       DataStore
  * @param  {array}   fields      Array of fields to display
  * @param  {array}   sortable    [Optional] Array of sortable columns/fields
@@ -12,10 +12,10 @@
  * @param  {number}  debounce    [Optional] DataListFilter input debounce, default is 250
  * @return {object} {@link abaaso.DataGrid}
  */
-var grid = function ( element, store, fields, sortable, options, filtered, debounce ) {
+var grid = function ( obj, store, fields, sortable, options, filtered, debounce ) {
 	var ref = [store];
 
-	return new DataGrid( element, ref[0], fields, sortable, options, filtered ).init( debounce );
+	return new DataGrid( obj, ref[0], fields, sortable, options, filtered ).init( debounce );
 };
 
 /**
@@ -23,14 +23,14 @@ var grid = function ( element, store, fields, sortable, options, filtered, debou
  *
  * @constructor
  * @memberOf abaaso
- * @param  {object}  element  Element to receive DataGrid
+ * @param  {object}  obj      Element to receive DataGrid
  * @param  {object}  store    DataStore
  * @param  {array}   fields   Array of fields to display
  * @param  {array}   sortable [Optional] Array of sortable columns/fields
  * @param  {object}  options  [Optional] DataList options
  * @param  {boolean} filtered [Optional] Create an input to filter the DataGrid
  */
-function DataGrid ( element, store, fields, sortable, options, filtered ) {
+function DataGrid ( obj, store, fields, sortable, options, filtered ) {
 	var sortOrder;
 
 	if ( options.order && !string.isEmpty( options.order ) ) {
@@ -39,7 +39,7 @@ function DataGrid ( element, store, fields, sortable, options, filtered ) {
 		});
 	}
 
-	this.element     = element;
+	this.element     = obj;
 	this.fields      = fields;
 	this.filter      = null;
 	this.filtered    = ( filtered === true );

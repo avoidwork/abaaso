@@ -8,7 +8,7 @@ var element = {
 	 * Appends `a` in `b`
 	 *
 	 * @memberOf appendTo
-	 * @memberOf abaaso.eleement
+	 * @memberOf abaaso.element
 	 * @param  {Object} a Element being appended
 	 * @param  {Object} b Element being appended to
 	 * @return {Object}   Element being appended to
