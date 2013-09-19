@@ -443,7 +443,7 @@ var element = {
 			}).length === 1 );
 		}
 		else {
-			return new RegExp( arg ).test( obj.nodeName );
+			return new RegExp( arg, "i" ).test( obj.nodeName );
 		}
 	},
 
