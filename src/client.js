@@ -499,7 +499,7 @@ var client = {
 	 * @param  {Mixed}    args    [Optional] Data to send with the request
 	 * @param  {Object}   headers [Optional] Custom request headers ( can be used to set withCredentials )
 	 * @param  {Number}   timeout [Optional] Timeout in milliseconds, default is 30000
-	 * @return {Object}           Deferred
+	 * @return {Object}           XHR
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
@@ -665,7 +665,7 @@ var client = {
 			payload !== null ? xhr.send( payload ) : xhr.send();
 		}
 
-		return defer;
+		return xhr;
 	},
 
 	/**
