@@ -528,7 +528,7 @@ var client = {
 	 * @param  {mixed}    args    [Optional] Data to send with the request
 	 * @param  {object}   headers [Optional] Custom request headers ( can be used to set withCredentials )
 	 * @param  {number}   timeout [Optional] Timeout in milliseconds, default is 30000
-	 * @return {object} {@link abaaso.Deferred}
+	 * @return {object}   XHR
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		timeout = timeout || 30000;
@@ -694,7 +694,7 @@ var client = {
 			payload !== null ? xhr.send( payload ) : xhr.send();
 		}
 
-		return defer;
+		return xhr;
 	},
 
 	/**
