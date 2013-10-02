@@ -2,6 +2,8 @@ var $     = require( "../lib/abaaso" ),
     data  = [],
     i     = -1, store, s;
 
+$.sugar();
+
 console.log( "Preparing 100,000 records");
 
 while ( ++i < 100000 ) {
