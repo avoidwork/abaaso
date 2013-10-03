@@ -484,6 +484,8 @@ var client = {
 	/**
 	 * Creates an XmlHttpRequest to a URI ( aliased to multiple methods )
 	 *
+	 * The returned Deferred will have an .xhr property decorated
+	 *
 	 * Events: before[type]          Fires before the XmlHttpRequest is made, type specific
 	 *         failed[type]          Fires on error
 	 *         progress[type]        Fires on progress
@@ -664,6 +666,8 @@ var client = {
 			// Firing event & sending request
 			payload !== null ? xhr.send( payload ) : xhr.send();
 		}
+
+		defer.xhr = xhr;
 
 		return defer;
 	},
