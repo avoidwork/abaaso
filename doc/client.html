@@ -399,6 +399,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p></div></div><div 
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method request</span></p>
 
 <p>Creates an XmlHttpRequest to a URI ( aliased to multiple methods )
+The returned Deferred will have an .xhr property decorated
 Events: before[type]          Fires before the XmlHttpRequest is made, type specific
         failed[type]          Fires on error
         progress[type]        Fires on progress
@@ -555,6 +556,8 @@ Events: before[type]          Fires before the XmlHttpRequest is made, type spec
         <span class="nx">xhr</span><span class="p">.</span><span class="nx">withCredentials</span> <span class="o">=</span> <span class="nx">headers</span><span class="p">.</span><span class="nx">withCredentials</span><span class="p">;</span>
       <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Firing event &amp; sending request</p></div></div><div class="code"><div class="wrapper">      <span class="nx">payload</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span> <span class="nx">payload</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
     <span class="p">}</span>
+
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">xhr</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">;</span>
 
     <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method response</span></p>
