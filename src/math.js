@@ -7,7 +7,7 @@ var math = {
 	 *
 	 * @method bezier
 	 * @memberOf abaaso.math
-	 * @return {array} Coordinates
+	 * @return {Array} Coordinates
 	 */
 	bezier : function () {
 		var a = array.cast( arguments ),
@@ -55,9 +55,9 @@ var math = {
 	 *
 	 * @method dist
 	 * @memberOf abaaso.math
-	 * @param  {array} a Coordinates [x, y]
-	 * @param  {array} b Coordinates [x, y]
-	 * @return {number}  Distance between `a` & `b`
+	 * @param  {Array} a Coordinates [x, y]
+	 * @param  {Array} b Coordinates [x, y]
+	 * @return {Number}  Distance between `a` & `b`
 	 */
 	dist : function ( a, b ) {
 		return Math.sqrt( math.sqr( b[0] - a[0] ) + math.sqr( b[1] - a[1] ) );
@@ -68,8 +68,8 @@ var math = {
 	 *
 	 * @method sqr
 	 * @memberOf abaaso.math
-	 * @param  {number} n Number to square
-	 * @return {number}   Squared value
+	 * @param  {Number} n Number to square
+	 * @return {Number}   Squared value
 	 */
 	sqr : function ( n ) {
 		return n * n;

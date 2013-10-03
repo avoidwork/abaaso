@@ -4,7 +4,7 @@
  * @method deferred
  * @memberOf abaaso
  * @private
- * @return {object} {@link abaaso.Deferred}
+ * @return {Object} {@link abaaso.Deferred}
  */
 var deferred = function () {
 	return new Deferred();
@@ -62,7 +62,7 @@ function Deferred () {
  * @method constructor
  * @private
  * @memberOf abaaso.Deferred
- * @type {function}
+ * @type {Function}
  */
 Deferred.prototype.constructor = Deferred;
 
@@ -71,8 +71,8 @@ Deferred.prototype.constructor = Deferred;
  *
  * @method always
  * @memberOf abaaso.Deferred
- * @param  {function} arg Function to execute
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Function} arg Function to execute
+ * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.always = function ( arg ) {
 	if ( typeof arg !== "function" ) {
@@ -92,8 +92,8 @@ Deferred.prototype.always = function ( arg ) {
  *
  * @method done
  * @memberOf abaaso.Deferred
- * @param  {function} arg Function to execute
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Function} arg Function to execute
+ * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.done = function ( arg ) {
 	if ( typeof arg !== "function" ) {
@@ -113,8 +113,8 @@ Deferred.prototype.done = function ( arg ) {
  *
  * @method fail
  * @memberOf abaaso.Deferred
- * @param  {function} arg Function to execute
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Function} arg Function to execute
+ * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.fail = function ( arg ) {
 	if ( typeof arg !== "function" ) {
@@ -134,7 +134,7 @@ Deferred.prototype.fail = function ( arg ) {
  *
  * @method isRejected
  * @memberOf abaaso.Deferred
- * @return {boolean} `true` if rejected
+ * @return {Boolean} `true` if rejected
  */
 Deferred.prototype.isRejected = function () {
 	return ( this.promise.state === promise.state.FAILED );
@@ -145,7 +145,7 @@ Deferred.prototype.isRejected = function () {
  *
  * @method isResolved
  * @memberOf abaaso.Deferred
- * @return {boolean} `true` if resolved
+ * @return {Boolean} `true` if resolved
  */
 Deferred.prototype.isResolved = function () {
 	return ( this.promise.state === promise.state.SUCCESS );
@@ -156,8 +156,8 @@ Deferred.prototype.isResolved = function () {
  *
  * @method reject
  * @memberOf abaaso.Deferred
- * @param  {mixed} arg Rejection outcome
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Mixed} arg Rejection outcome
+ * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.reject = function ( arg ) {
 	this.promise.reject.call( this.promise, arg );
@@ -170,8 +170,8 @@ Deferred.prototype.reject = function ( arg ) {
  *
  * @method resolve
  * @memberOf abaaso.Deferred
- * @param  {mixed} arg Resolution outcome
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Mixed} arg Resolution outcome
+ * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.resolve = function ( arg ) {
 	this.promise.resolve.call( this.promise, arg );
@@ -184,7 +184,7 @@ Deferred.prototype.resolve = function ( arg ) {
  *
  * @method state
  * @memberOf abaaso.Deferred
- * @return {string} Describes the state
+ * @return {String} Describes the state
  */
 Deferred.prototype.state = function () {
 	return this.promise.state;
@@ -195,9 +195,9 @@ Deferred.prototype.state = function () {
  *
  * @method then
  * @memberOf abaaso.Deferred
- * @param  {function} success Executed when/if promise is resolved
- * @param  {function} failure [Optional] Executed when/if promise is broken
- * @return {object} {@link abaaso.Promise}
+ * @param  {Function} success Executed when/if promise is resolved
+ * @param  {Function} failure [Optional] Executed when/if promise is broken
+ * @return {Object} {@link abaaso.Promise}
  */
 Deferred.prototype.then = function ( success, failure ) {
 	return this.promise.then( success, failure );

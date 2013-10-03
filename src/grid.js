@@ -3,14 +3,14 @@
  *
  * @method grid
  * @memberOf abaaso
- * @param  {object}  obj         Element to receive DataGrid
- * @param  {object}  store       DataStore
- * @param  {array}   fields      Array of fields to display
- * @param  {array}   sortable    [Optional] Array of sortable columns/fields
- * @param  {object}  options     [Optional] DataList options
- * @param  {boolean} filtered    [Optional] Create an input to filter the data grid
- * @param  {number}  debounce    [Optional] DataListFilter input debounce, default is 250
- * @return {object} {@link abaaso.DataGrid}
+ * @param  {Object}  obj         Element to receive DataGrid
+ * @param  {Object}  store       DataStore
+ * @param  {Array}   fields      Array of fields to display
+ * @param  {Array}   sortable    [Optional] Array of sortable columns/fields
+ * @param  {Object}  options     [Optional] DataList options
+ * @param  {Boolean} filtered    [Optional] Create an input to filter the data grid
+ * @param  {Number}  debounce    [Optional] DataListFilter input debounce, default is 250
+ * @return {Object} {@link abaaso.DataGrid}
  */
 var grid = function ( obj, store, fields, sortable, options, filtered, debounce ) {
 	var ref = [store];
@@ -23,12 +23,12 @@ var grid = function ( obj, store, fields, sortable, options, filtered, debounce 
  *
  * @constructor
  * @memberOf abaaso
- * @param  {object}  obj      Element to receive DataGrid
- * @param  {object}  store    DataStore
- * @param  {array}   fields   Array of fields to display
- * @param  {array}   sortable [Optional] Array of sortable columns/fields
- * @param  {object}  options  [Optional] DataList options
- * @param  {boolean} filtered [Optional] Create an input to filter the DataGrid
+ * @param  {Object}  obj      Element to receive DataGrid
+ * @param  {Object}  store    DataStore
+ * @param  {Array}   fields   Array of fields to display
+ * @param  {Array}   sortable [Optional] Array of sortable columns/fields
+ * @param  {Object}  options  [Optional] DataList options
+ * @param  {Boolean} filtered [Optional] Create an input to filter the DataGrid
  */
 function DataGrid ( obj, store, fields, sortable, options, filtered ) {
 	var sortOrder;
@@ -57,7 +57,7 @@ function DataGrid ( obj, store, fields, sortable, options, filtered ) {
  * @method constructor
  * @memberOf abaaso.DataGrid
  * @private
- * @type {function}
+ * @type {Function}
  */
 DataGrid.prototype.constructor = DataGrid;
 
@@ -66,7 +66,7 @@ DataGrid.prototype.constructor = DataGrid;
  *
  * @method dump
  * @memberOf abaaso.DataGrid
- * @return {array} Record set
+ * @return {Array} Record set
  */
 DataGrid.prototype.dump = function () {
 	return this.store.dump( this.list.records, this.fields );
@@ -77,8 +77,8 @@ DataGrid.prototype.dump = function () {
  *
  * @method init
  * @memberOf abaaso.DataGrid
- * @param  {number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
- * @return {object} {@link abaaso.DataGrid}
+ * @param  {Number} debounce [Optional] Debounce value for DataListFilter, defaults to 250
+ * @return {Object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.init = function ( debounce ) {
 	var self, ref, template, container, header, width, css, sort;
@@ -141,7 +141,7 @@ DataGrid.prototype.init = function ( debounce ) {
  *
  * @method refresh
  * @memberOf abaaso.DataGrid
- * @return {object} {@link abaaso.DataGrid}
+ * @return {Object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.refresh = function () {
 	var sort = [],
@@ -170,8 +170,8 @@ DataGrid.prototype.refresh = function () {
  *
  * @method sort
  * @memberOf abaaso.DataGrid
- * @param  {object} e Event
- * @return {object} {@link abaaso.DataGrid}
+ * @param  {Object} e Event
+ * @return {Object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.sort = function ( e ) {
 	var target = utility.target( e ),
@@ -198,7 +198,7 @@ DataGrid.prototype.sort = function ( e ) {
  *
  * @method teardown
  * @memberOf abaaso.DataGrid
- * @return {object} {@link abaaso.DataGrid}
+ * @return {Object} {@link abaaso.DataGrid}
  */
 DataGrid.prototype.teardown = function () {
 	if ( this.filter !== null ) {

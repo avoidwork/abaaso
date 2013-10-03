@@ -3,8 +3,8 @@
  *
  * @method abaaso
  * @namespace abaaso
- * @param  {mixed} arg Element, HTML, or comma delimited DOM query
- * @return {object}    Abaaso instance
+ * @param  {Mixed} arg Element, HTML, or comma delimited DOM query
+ * @return {Object}    Abaaso instance
  */
 function abaaso ( arg ) {
 	return new Abaaso( arg );
@@ -16,7 +16,7 @@ function abaaso ( arg ) {
  * @method constructor
  * @memberOf abaaso
  * @private
- * @type {function}
+ * @type {Function}
  */
 abaaso.prototype.constructor = abaaso;
 
@@ -54,12 +54,12 @@ abaaso.client          = {
 	 * @method del
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
-	 * @param  {object}   headers [Optional] HTTP headers
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
+	 * @param  {Object}   headers [Optional] HTTP headers
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	del         : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "DELETE", success, failure, null, headers, timeout );
@@ -71,12 +71,12 @@ abaaso.client          = {
 	 * @method get
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
-	 * @param  {object}   headers [Optional] HTTP headers
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
+	 * @param  {Object}   headers [Optional] HTTP headers
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	get         : function ( uri, success, failure, headers, timeout ) {
 		return client.request( uri, "GET", success, failure, null, headers, timeout );
@@ -88,11 +88,11 @@ abaaso.client          = {
 	 * @method headers
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	headers     : function ( uri, success, failure, timeout ) {
 		return client.request( uri, "HEAD", success, failure, null, null, timeout );
@@ -104,13 +104,13 @@ abaaso.client          = {
 	 * @method patch
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
 	 * @param  {Mixed}    args    Request body
-	 * @param  {object}   headers [Optional] HTTP headers
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {Object}   headers [Optional] HTTP headers
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	patch       : function ( uri, success, failure, args, headers, timeout ) {
 		return client.request( uri, "PATCH", success, failure, args, headers, timeout );
@@ -122,13 +122,13 @@ abaaso.client          = {
 	 * @method post
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
 	 * @param  {Mixed}    args    Request body
-	 * @param  {object}   headers [Optional] HTTP headers
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {Object}   headers [Optional] HTTP headers
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	post        : function ( uri, success, failure, args, headers, timeout ) {
 		return client.request( uri, "POST", success, failure, args, headers, timeout );
@@ -140,13 +140,13 @@ abaaso.client          = {
 	 * @method put
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
 	 * @param  {Mixed}    args    Request body
-	 * @param  {object}   headers [Optional] HTTP headers
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {Object}   headers [Optional] HTTP headers
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	put         : function ( uri, success, failure, args, headers, timeout ) {
 		return client.request( uri, "PUT", success, failure, args, headers, timeout );
@@ -163,11 +163,11 @@ abaaso.client          = {
 	 * @method options
 	 * @memberOf abaaso.client
 	 * @see {@link abaaso.client.request}
-	 * @param  {string}   uri     URI to request
-	 * @param  {function} success Success handler
-	 * @param  {function} failure Failure handler
-	 * @param  {number}   timeout [Optional] Timeout
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {String}   uri     URI to request
+	 * @param  {Function} success Success handler
+	 * @param  {Function} failure Failure handler
+	 * @param  {Number}   timeout [Optional] Timeout
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	options     : function ( uri, success, failure, timeout ) {
 		return client.request(uri, "OPTIONS", success, failure, null, null, timeout );
@@ -230,9 +230,9 @@ abaaso.xml             = xml;
  *
  * @method alias
  * @memberOf abaaso
- * @param  {object} obj    Object receiving aliasing
- * @param  {object} origin Object providing structure to obj
- * @return {object}        Object receiving aliasing
+ * @param  {Object} obj    Object receiving aliasing
+ * @param  {Object} origin Object providing structure to obj
+ * @return {Object}        Object receiving aliasing
  * @see {@link abaaso.utility.alias}
  */
 abaaso.alias           = utility.alias;
@@ -243,9 +243,9 @@ abaaso.alias           = utility.alias;
  * @method allows
  * @memberOf abaaso
  * @see {@link abaaso.client.allows}
- * @param  {string} uri  URI to query
- * @param  {string} verb HTTP verb
- * @return {boolean}     `true` if the verb is allowed, undefined if unknown
+ * @param  {String} uri  URI to query
+ * @param  {String} verb HTTP verb
+ * @return {Boolean}     `true` if the verb is allowed, undefined if unknown
  */
 abaaso.allows          = client.allows;
 
@@ -253,9 +253,9 @@ abaaso.allows          = client.allows;
  * Appends an HTML Element or String
  *
  * @method append
- * @param  {string} type Type of Element to create, or HTML string
- * @param  {object} args [Optional] Properties to set
- * @param  {mixed}  obj  [Optional] Target Element
+ * @param  {String} type Type of Element to create, or HTML string
+ * @param  {Object} args [Optional] Properties to set
+ * @param  {Mixed}  obj  [Optional] Target Element
  * @memberOf abaaso
  * @see {@link abaaso.element.create}
  */
@@ -275,8 +275,8 @@ abaaso.channel         = channel;
  *
  * @method clear
  * @memberOf abaaso
- * @param  {mixed} obj Element
- * @return {object}    Element
+ * @param  {Mixed} obj Element
+ * @return {Object}    Element
  * @see {@link abaaso.element.clear}
  */
 abaaso.clear           = element.clear;
@@ -287,8 +287,8 @@ abaaso.clear           = element.clear;
  * @method clearTimer
  * @memberOf abaaso
  * @see {@link abaaso.utility.clearTimers}
- * @param  {string} id ID of timer( s )
- * @return {undefined} undefined
+ * @param  {String} id ID of timer( s )
+ * @return {Undefined} undefined
  */
 abaaso.clearTimer      = utility.clearTimers;
 
@@ -298,9 +298,9 @@ abaaso.clearTimer      = utility.clearTimers;
  * @method clone
  * @memberOf abaaso
  * @see {@link abaaso.utility.clone}
- * @param  {object}  obj     Object to clone
- * @param  {boolean} shallow [Optional] Create a shallow clone, which doesn't maintain prototypes, default is `false`
- * @return {object}          Clone of obj
+ * @param  {Object}  obj     Object to clone
+ * @param  {Boolean} shallow [Optional] Create a shallow clone, which doesn't maintain prototypes, default is `false`
+ * @return {Object}          Clone of obj
  */
 abaaso.clone           = utility.clone;
 
@@ -310,8 +310,8 @@ abaaso.clone           = utility.clone;
  * @method coerce
  * @memberOf abaaso
  * @see {@link abaaso.utility.coerce}
- * @param  {string} value String to coerce
- * @return {mixed}        Primitive version of the String
+ * @param  {String} value String to coerce
+ * @return {Mixed}        Primitive version of the String
  */
 abaaso.coerce          = utility.coerce;
 
@@ -323,10 +323,10 @@ abaaso.coerce          = utility.coerce;
  * @method compile
  * @memberOf abaaso
  * @see {@link abaaso.utility.compile}
- * @param  {object} regex     RegExp
- * @param  {string} pattern   Regular expression pattern
- * @param  {string} modifiers Modifiers to apply to the pattern
- * @return {boolean}          true
+ * @param  {Object} regex     RegExp
+ * @param  {String} pattern   Regular expression pattern
+ * @param  {String} modifiers Modifiers to apply to the pattern
+ * @return {Boolean}          true
  */
 abaaso.compile         = utility.compile;
 
@@ -337,11 +337,11 @@ abaaso.compile         = utility.compile;
  * @method create
  * @memberOf abaaso
  * @see {@link abaaso.element.create}
- * @param  {string} type   Type of Element to create, or HTML String
- * @param  {object} args   [Optional] Properties to set
- * @param  {mixed}  target [Optional] Target Element
- * @param  {mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
- * @return {mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
+ * @param  {String} type   Type of Element to create, or HTML String
+ * @param  {Object} args   [Optional] Properties to set
+ * @param  {Mixed}  target [Optional] Target Element
+ * @param  {Mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
+ * @return {Mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
  */
 abaaso.create          = element.create;
 
@@ -351,9 +351,9 @@ abaaso.create          = element.create;
  * @method css
  * @memberOf abaaso
  * @see {@link abaaso.utility.css}
- * @param  {string} content CSS to put in a style tag
- * @param  {string} media   [Optional] Medias the stylesheet applies to
- * @return {object}         Element created or undefined
+ * @param  {String} content CSS to put in a style tag
+ * @param  {String} media   [Optional] Medias the stylesheet applies to
+ * @return {Object}         Element created or undefined
  */
 abaaso.css             = utility.css;
 
@@ -361,10 +361,10 @@ abaaso.css             = utility.css;
  * Decorates a DataStore on an Object
  *
  * @method data
- * @param  {object} obj  Object
- * @param  {mixed}  recs [Optional] Data to set with this.batch
- * @param  {object} args [Optional] Arguments to set on the store
- * @return {object}      Decorated Object
+ * @param  {Object} obj  Object
+ * @param  {Mixed}  recs [Optional] Data to set with this.batch
+ * @param  {Object} args [Optional] Arguments to set on the store
+ * @return {Object}      Decorated Object
  * @memberOf abaaso
  * @see {@link abaaso.DataStore}
  */
@@ -376,11 +376,11 @@ abaaso.data            = datastore.decorator;
  * @method datalist
  * @memberOf abaaso
  * @see {@link abaaso.DataList}
- * @param  {object} target   Element to receive the DataList
- * @param  {object} store    Data store to feed the DataList
- * @param  {mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
- * @param  {object} options  Optional parameters to set on the DataList
- * @return {object} {@link abaaso.DataList}
+ * @param  {Object} target   Element to receive the DataList
+ * @param  {Object} store    Data store to feed the DataList
+ * @param  {Mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+ * @param  {Object} options  Optional parameters to set on the DataList
+ * @return {Object} {@link abaaso.DataList}
  */
 abaaso.datalist        = datalist.factory;
 
@@ -397,10 +397,10 @@ abaaso.datastores      = {};
  *
  * @method discard
  * @memberOf abaaso
- * @param {boolean} `true` to discard events, `false` to re-enable
+ * @param {Boolean} `true` to discard events, `false` to re-enable
  * @see {@link abaaso.observer.discard}
- * @param  {boolean} arg [Optional] Boolean indicating if events will be ignored
- * @return {boolean}     Current setting
+ * @param  {Boolean} arg [Optional] Boolean indicating if events will be ignored
+ * @return {Boolean}     Current setting
  */
 abaaso.discard         = function ( arg ) {
 	return observer.discard( arg );
@@ -412,10 +412,10 @@ abaaso.discard         = function ( arg ) {
  * @method debounce
  * @memberOf abaaso
  * @see {@link abaaso.utility.debounce}
- * @param  {function} fn    Function to execute
- * @param  {number}   ms    Time to wait to execute in milliseconds, default is 1000
- * @param  {mixed}    scope `this` context during execution, default is `global`
- * @return {undefined}      undefined
+ * @param  {Function} fn    Function to execute
+ * @param  {Number}   ms    Time to wait to execute in milliseconds, default is 1000
+ * @param  {Mixed}    scope `this` context during execution, default is `global`
+ * @return {Undefined}      undefined
  */
 abaaso.debounce        = utility.debounce;
 
@@ -425,9 +425,9 @@ abaaso.debounce        = utility.debounce;
  * @method decode
  * @memberOf abaaso
  * @see {@link abaaso.json.decode}
- * @param  {string}  arg    String to parse
- * @param  {boolean} silent [Optional] Silently fail
- * @return {mixed}          Entity resulting from parsing JSON, or undefined
+ * @param  {String}  arg    String to parse
+ * @param  {Boolean} silent [Optional] Silently fail
+ * @return {Mixed}          Entity resulting from parsing JSON, or undefined
  */
 abaaso.decode          = json.decode;
 
@@ -436,7 +436,7 @@ abaaso.decode          = json.decode;
  *
  * @method defer
  * @memberOf abaaso
- * @return {object} {@link abaaso.Deferred}
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.defer           = deferred;
 
@@ -447,10 +447,10 @@ abaaso.defer           = deferred;
  * @method define
  * @memberOf abaaso
  * @see {@link abaaso.utility.define}
- * @param  {string} args  Dot delimited string of the structure
- * @param  {mixed}  value Value to set
- * @param  {object} obj   Object receiving value
- * @return {object}       Object receiving value
+ * @param  {String} args  Dot delimited string of the structure
+ * @param  {Mixed}  value Value to set
+ * @param  {Object} obj   Object receiving value
+ * @return {Object}       Object receiving value
  */
 abaaso.define          = utility.define;
 
@@ -460,12 +460,12 @@ abaaso.define          = utility.define;
  * @method del
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {object}   headers [Optional] HTTP headers
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Object}   headers [Optional] HTTP headers
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.del             = function ( uri, success, failure, headers, timeout ) {
 	return client.request( uri, "DELETE", success, failure, null, headers, timeout );
@@ -478,11 +478,11 @@ abaaso.del             = function ( uri, success, failure, headers, timeout ) {
  * @method delay
  * @memberOf abaaso
  * @see {@link abaaso.utility.defer}
- * @param  {function} fn     Function to defer execution of
- * @param  {number}   ms     Milliseconds to defer execution
- * @param  {number}   id     [Optional] ID of the deferred function
- * @param  {boolean}  repeat [Optional] Describes the execution, default is `false`
- * @return {string}          ID of the timer
+ * @param  {Function} fn     Function to defer execution of
+ * @param  {Number}   ms     Milliseconds to defer execution
+ * @param  {Number}   id     [Optional] ID of the deferred function
+ * @param  {Boolean}  repeat [Optional] Describes the execution, default is `false`
+ * @return {String}          ID of the timer
  */
 abaaso.delay           = utility.defer;
 
@@ -492,8 +492,8 @@ abaaso.delay           = utility.defer;
  * @method destroy
  * @memberOf abaaso
  * @see {@link abaaso.element.destroy}
- * @param  {mixed} obj Element
- * @return {undefined} undefined
+ * @param  {Mixed} obj Element
+ * @return {Undefined} undefined
  */
 abaaso.destroy         = element.destroy;
 
@@ -504,11 +504,11 @@ abaaso.destroy         = element.destroy;
  * @method each
  * @memberOf abaaso
  * @see {@link abaaso.array.each}
- * @param  {array}    obj   Array to iterate
- * @param  {function} fn    Function to execute on index values
- * @param  {boolean}  async [Optional] Asynchronous iteration
- * @param  {number}   size  [Optional] Batch size for async iteration, default is 10
- * @return {array}          Array
+ * @param  {Array}    obj   Array to iterate
+ * @param  {Function} fn    Function to execute on index values
+ * @param  {Boolean}  async [Optional] Asynchronous iteration
+ * @param  {Number}   size  [Optional] Batch size for async iteration, default is 10
+ * @return {Array}          Array
  */
 abaaso.each            = array.each;
 
@@ -518,9 +518,9 @@ abaaso.each            = array.each;
  * @method encode
  * @memberOf abaaso
  * @see {@link abaaso.json.encode}
- * @param  {mixed}   arg    Entity to encode
- * @param  {boolean} silent [Optional] Silently fail
- * @return {string}         JSON, or undefined
+ * @param  {Mixed}   arg    Entity to encode
+ * @param  {Boolean} silent [Optional] Silently fail
+ * @return {String}         JSON, or undefined
  */
 abaaso.encode          = json.encode;
 
@@ -530,11 +530,11 @@ abaaso.encode          = json.encode;
  * @method error
  * @memberOf abaaso
  * @see {@link abaaso.utility.error}
- * @param  {mixed}   e       Error object or message to display
- * @param  {array}   args    Array of arguments from the callstack
- * @param  {mixed}   scope   Entity that was "this"
- * @param  {boolean} warning [Optional] Will display as console warning if true
- * @return {undefined}       undefined
+ * @param  {Mixed}   e       Error object or message to display
+ * @param  {Array}   args    Array of arguments from the callstack
+ * @param  {Mixed}   scope   Entity that was "this"
+ * @param  {Boolean} warning [Optional] Will display as console warning if true
+ * @return {Undefined}       undefined
  */
 abaaso.error           = utility.error;
 
@@ -551,7 +551,7 @@ abaaso.expire          = cache.clean;
  * Milliseconds until private HTTP cache is garbage collected
  *
  * @memberOf abaaso
- * @type {number}
+ * @type {Number}
  */
 abaaso.expires         = 120000;
 
@@ -561,9 +561,9 @@ abaaso.expires         = 120000;
  * @method extend
  * @memberOf abaaso
  * @see {@link abaaso.utility.extend}
- * @param  {object} obj Object to extend
- * @param  {object} arg [Optional] Object for decoration
- * @return {object}     Decorated obj
+ * @param  {Object} obj Object to extend
+ * @param  {Object} arg [Optional] Object for decoration
+ * @return {Object}     Decorated obj
  */
 abaaso.extend          = utility.extend;
 
@@ -573,9 +573,9 @@ abaaso.extend          = utility.extend;
  * @method fib
  * @memberOf abaaso
  * @see {@link abaaso.utility.fib}
- * @param  {number}  i Number to calculate
- * @param  {boolean} r Recursive if `true`
- * @return {number}    Calculated number
+ * @param  {Number}  i Number to calculate
+ * @param  {Boolean} r Recursive if `true`
+ * @return {Number}    Calculated number
  */
 abaaso.fib             = utility.fib;
 
@@ -585,8 +585,8 @@ abaaso.filter          = filter;
  * Fires an event
  *
  * @method fire
- * @param {mixed}  obj   Instance firing event
- * @param {string} event Event name
+ * @param {Mixed}  obj   Instance firing event
+ * @param {String} event Event name
  * @memberOf abaaso
  * @see {@link abaaso.observer.fire}
  */
@@ -606,11 +606,11 @@ abaaso.fire            = function ( obj, event ) {
  * @method forEach
  * @memberOf abaaso
  * @see {@link abaaso.array.each}
- * @param  {array}    obj   Array to iterate
- * @param  {function} fn    Function to execute on index values
- * @param  {boolean}  async [Optional] Asynchronous iteration
- * @param  {number}   size  [Optional] Batch size for async iteration, default is 10
- * @return {array}          Array
+ * @param  {Array}    obj   Array to iterate
+ * @param  {Function} fn    Function to execute on index values
+ * @param  {Boolean}  async [Optional] Asynchronous iteration
+ * @param  {Number}   size  [Optional] Batch size for async iteration, default is 10
+ * @return {Array}          Array
  */
 abaaso.forEach            = array.each;
 
@@ -620,8 +620,8 @@ abaaso.forEach            = array.each;
  * @method frag
  * @memberOf abaaso
  * @see {@link abaaso.elemeent.frag}
- * @param  {string} arg [Optional] innerHTML
- * @return {object}     Document fragment
+ * @param  {String} arg [Optional] innerHTML
+ * @return {Object}     Document fragment
  */
 abaaso.frag            = element.frag;
 
@@ -630,7 +630,7 @@ abaaso.frag            = element.frag;
  *
  * @namespace abaaso.fn
  * @memberOf abaaso
- * @type {object}
+ * @type {Object}
  */
 abaaso.fn              = Abaaso.prototype;
 
@@ -640,9 +640,9 @@ abaaso.fn              = Abaaso.prototype;
  * @method genId
  * @memberOf abaaso
  * @see {@link abaaso.utility.genId}
- * @param  {mixed}   obj [Optional] Object to receive id
- * @param  {boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
- * @return {mixed}       Object or id
+ * @param  {Mixed}   obj [Optional] Object to receive id
+ * @param  {Boolean} dom [Optional] Verify the ID is unique in the DOM, default is false
+ * @return {Mixed}       Object or id
  */
 abaaso.genId           = utility.genId;
 
@@ -652,12 +652,12 @@ abaaso.genId           = utility.genId;
  * @method get
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {object}   headers [Optional] HTTP headers
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Object}   headers [Optional] HTTP headers
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.get             = function ( uri, success, failure, headers, timeout ) {
 	return client.request( uri, "GET", success, failure, null, headers, timeout );
@@ -682,8 +682,8 @@ abaaso.guid            = function () {
  * @method hash
  * @memberOf abaaso
  * @see {@link abaaso.utility.hash}
- * @param  {string} arg Hash to set
- * @return {string}     Current hash
+ * @param  {String} arg Hash to set
+ * @return {String}     Current hash
  */
 abaaso.hash            = utility.hash,
 
@@ -693,11 +693,11 @@ abaaso.hash            = utility.hash,
  * @method headers
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.headers         = function ( uri, success, failure, timeout ) {
 	return client.request( uri, "HEAD", success, failure, null, {}, timeout );
@@ -709,8 +709,8 @@ abaaso.headers         = function ( uri, success, failure, timeout ) {
  * @method hex
  * @memberOf abaaso
  * @see {@link abaaso.utility.hex}
- * @param  {string} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
- * @return {string}       Color as HEX
+ * @param  {String} color RGB as `rgb(255, 255, 255)` or `255, 255, 255`
+ * @return {String}       Color as HEX
  */
 abaaso.hex             = utility.hex;
 
@@ -720,8 +720,8 @@ abaaso.hex             = utility.hex;
  * @method hidden
  * @memberOf abaaso
  * @see {@link abaaso.element.hidden}
- * @param  {mixed} obj Element
- * @return {boolean}   `true` if hidden
+ * @param  {Mixed} obj Element
+ * @return {Boolean}   `true` if hidden
  */
 abaaso.hidden          = element.hidden;
 
@@ -731,8 +731,8 @@ abaaso.hidden          = element.hidden;
  * @method hook
  * @memberOf abaaso
  * @see {@link abaaso.observer.decorate}
- * @param  {object} obj Object to decorate
- * @return {object}     Object to decorate
+ * @param  {Object} obj Object to decorate
+ * @return {Object}     Object to decorate
  */
 abaaso.hook            = observer.decorate;
 
@@ -740,7 +740,7 @@ abaaso.hook            = observer.decorate;
  * "abaaso"
  *
  * @memberOf abaaso
- * @type {string}
+ * @type {String}
  */
 abaaso.id              = "abaaso";
 
@@ -751,9 +751,9 @@ abaaso.id              = "abaaso";
  * @method iterate
  * @memberOf abaaso
  * @see {@link abaaso.utility.iterate}
- * @param  {object}   obj Object to iterate
- * @param  {function} fn  Function to execute against properties
- * @return {object}       Object
+ * @param  {Object}   obj Object to iterate
+ * @param  {Function} fn  Function to execute against properties
+ * @return {Object}       Object
  */
 abaaso.iterate         = utility.iterate;
 
@@ -763,11 +763,11 @@ abaaso.iterate         = utility.iterate;
  * @method jsonp
  * @memberOf abaaso
  * @see {@link abaaso.client.jsonp}
- * @param  {string}   uri      URI to request
- * @param  {function} success  Success handler
- * @param  {function} failure  Failure handler
- * @param  {function} callback Callback function
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri      URI to request
+ * @param  {Function} success  Success handler
+ * @param  {Function} failure  Failure handler
+ * @param  {Function} callback Callback function
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.jsonp           = function ( uri, success, failure, callback) {
 	return client.jsonp( uri, success, failure, callback );
@@ -777,8 +777,8 @@ abaaso.jsonp           = function ( uri, success, failure, callback) {
  * Gets the listeners for an event
  *
  * @method listeners
- * @param  {mixed}  obj   Primitive
- * @param  {string} event Event being queried
+ * @param  {Mixed}  obj   Primitive
+ * @param  {String} event Event being queried
  * @method listeners
  * @memberOf abaaso
  * @see {@link abaaso.observer.list}
@@ -793,8 +793,8 @@ abaaso.listeners       = function ( obj, event ) {
  * @method listenersTotal
  * @memberOf abaaso
  * @see {@link abaaso.observer.sum}
- * @param  {mixed} obj [Optional] Entity
- * @return {object}    Object with total listeners per event
+ * @param  {Mixed} obj [Optional] Entity
+ * @return {Object}    Object with total listeners per event
  */
 abaaso.listenersTotal  = observer.sum;
 
@@ -804,9 +804,9 @@ abaaso.listenersTotal  = observer.sum;
  * @method log
  * @memberOf abaaso
  * @see {@link abaaso.utility.log}
- * @param  {string} arg    String to write to the console
- * @param  {string} target [Optional] Target console, default is "log"
- * @return {undefined}     undefined
+ * @param  {String} arg    String to write to the console
+ * @param  {String} target [Optional] Target console, default is "log"
+ * @return {Undefined}     undefined
  */
 abaaso.log             = utility.log;
 
@@ -815,7 +815,7 @@ abaaso.log             = utility.log;
  *
  * @name logging
  * @memberOf abaaso
- * @type {boolean}
+ * @type {Boolean}
  */
 abaaso.logging         = observer.log;
 
@@ -827,9 +827,9 @@ abaaso.lru             = lru;
  * @method merge
  * @memberOf abaaso
  * @see {@link abaaso.utility.merge}
- * @param  {object} obj Object to decorate
- * @param  {object} arg Decoration
- * @return {object}     Decorated Object
+ * @param  {Object} obj Object to decorate
+ * @param  {Object} arg Decoration
+ * @return {Object}     Decorated Object
  */
 abaaso.merge           = utility.merge;
 
@@ -839,8 +839,8 @@ abaaso.merge           = utility.merge;
  * @method object
  * @memberOf abaaso
  * @see {@link abaaso.utility.object}
- * @param  {mixed} obj Entity or $ query
- * @return {mixed}     Entity
+ * @param  {Mixed} obj Entity or $ query
+ * @return {Mixed}     Entity
  */
 abaaso.object          = utility.object;
 
@@ -851,8 +851,8 @@ abaaso.object          = utility.object;
  * @memberOf abaaso
  * @see {@link abaaso.observer.decorate}
  * @deprecated Use `abaaso.hook()`
- * @param  {object} obj Object to decorate
- * @return {object}     Object to decorate
+ * @param  {Object} obj Object to decorate
+ * @return {Object}     Object to decorate
  */
 abaaso.observerable    = observer.decorate;
 
@@ -860,12 +860,12 @@ abaaso.observerable    = observer.decorate;
  * Adds a handler for an event
  *
  * @method on
- * @param  {mixed}    obj      Primitive
- * @param  {string}   event    Event, or Events being fired ( comma delimited supported )
- * @param  {function} listener Event handler
- * @param  {string}   id       [Optional / Recommended] ID for the listener
- * @param  {string}   scope    [Optional / Recommended] ID of the object or element to be set as 'this'
- * @param  {string}   st       [Optional] Application state, default is current
+ * @param  {Mixed}    obj      Primitive
+ * @param  {String}   event    Event, or Events being fired ( comma delimited supported )
+ * @param  {Function} listener Event handler
+ * @param  {String}   id       [Optional / Recommended] ID for the listener
+ * @param  {String}   scope    [Optional / Recommended] ID of the object or element to be set as 'this'
+ * @param  {String}   st       [Optional] Application state, default is current
  * @memberOf abaaso
  * @see {@link abaaso.observer.add}
  */
@@ -901,12 +901,12 @@ abaaso.on              = function ( obj, event, listener, id, scope, state ) {
  * Adds a listener for a single execution
  *
  * @method once
- * @param  {mixed}    obj      Primitive
- * @param  {string}   event    Event, or Events being fired ( comma delimited supported )
- * @param  {function} listener Event handler
- * @param  {string}   id       [Optional / Recommended] ID for the listener
- * @param  {string}   scope    [Optional / Recommended] ID of the object or element to be set as 'this'
- * @param  {string}   st       [Optional] Application state, default is current
+ * @param  {Mixed}    obj      Primitive
+ * @param  {String}   event    Event, or Events being fired ( comma delimited supported )
+ * @param  {Function} listener Event handler
+ * @param  {String}   id       [Optional / Recommended] ID for the listener
+ * @param  {String}   scope    [Optional / Recommended] ID of the object or element to be set as 'this'
+ * @param  {String}   st       [Optional] Application state, default is current
  * @memberOf abaaso
  * @see {@link abaaso.observer.once}
  */
@@ -944,12 +944,12 @@ abaaso.once            = function ( obj, event, listener, id, scope, state ) {
  * @method options
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {object}   headers [Optional] HTTP headers
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Object}   headers [Optional] HTTP headers
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.options         = function ( uri, success, failure, timeout ) {
 	return client.request( uri, "OPTIONS", success, failure, null, null, timeout );
@@ -961,8 +961,8 @@ abaaso.options         = function ( uri, success, failure, timeout ) {
  * @method parse
  * @memberOf abaaso
  * @see {@link abaaso.utility.parse}
- * @param  {string} uri URI to parse
- * @return {object}     Parsed URI
+ * @param  {String} uri URI to parse
+ * @return {Object}     Parsed URI
  */
 abaaso.parse           = utility.parse;
 
@@ -972,13 +972,13 @@ abaaso.parse           = utility.parse;
  * @method patch
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {mixed}    args    Request body
- * @param  {object}   headers [Optional] HTTP headers
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Mixed}    args    Request body
+ * @param  {Object}   headers [Optional] HTTP headers
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.patch           = function ( uri, success, failure, args, headers, timeout ) {
 	return client.request( uri, "PATCH", success, failure, args, headers, timeout );
@@ -988,11 +988,11 @@ abaaso.patch           = function ( uri, success, failure, args, headers, timeou
  * Pauses observer events, and queues them
  *
  * @method pause
- * @param {boolean} arg `true` to pause events, defaults to `true`
+ * @param {Boolean} arg `true` to pause events, defaults to `true`
  * @memberOf abaaso
  * @see {@link abaaso.observer.pause}
- * @param  {boolean} arg Boolean indicating if events will be queued
- * @return {boolean}     Current setting
+ * @param  {Boolean} arg Boolean indicating if events will be queued
+ * @return {Boolean}     Current setting
  */
 abaaso.pause           = function ( arg ) {
 	return observer.pause( arg !== false );
@@ -1004,8 +1004,8 @@ abaaso.pause           = function ( arg ) {
  * @method permissions
  * @memberOf abaaso
  * @see {@link abaaso.client.permissions}
- * @param  {string} uri URI to query
- * @return {object}     Contains an Array of available commands, the permission bit and a map
+ * @param  {String} uri URI to query
+ * @return {Object}     Contains an Array of available commands, the permission bit and a map
  */
 abaaso.permissions     = client.permissions;
 
@@ -1015,8 +1015,8 @@ abaaso.permissions     = client.permissions;
  * @method position
  * @memberOf abaaso
  * @see {@link abaaso.element.position}
- * @param  {mixed} obj Element
- * @return {array}     Coordinates [left, top, right, bottom]
+ * @param  {Mixed} obj Element
+ * @return {Array}     Coordinates [left, top, right, bottom]
  */
 abaaso.position        = element.position;
 
@@ -1026,13 +1026,13 @@ abaaso.position        = element.position;
  * @method post
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {mixed}    args    Request body
- * @param  {object}   headers [Optional] HTTP headers
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Mixed}    args    Request body
+ * @param  {Object}   headers [Optional] HTTP headers
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.post            = function ( uri, success, failure, args, headers, timeout ) {
 	return client.request( uri, "POST", success, failure, args, headers, timeout );
@@ -1042,9 +1042,9 @@ abaaso.post            = function ( uri, success, failure, args, headers, timeou
  * Prepends an HTML Element or String
  *
  * @method prepend
- * @param  {string} type Type of Element to create, or HTML string
- * @param  {object} args [Optional] Properties to set
- * @param  {mixed}  obj  [Optional] Target Element
+ * @param  {String} type Type of Element to create, or HTML string
+ * @param  {Object} args [Optional] Properties to set
+ * @param  {Mixed}  obj  [Optional] Target Element
  * @memberOf abaaso
  * @see {@link abaaso.element.create}
  */
@@ -1061,8 +1061,8 @@ abaaso.prepend         = function ( type, args, obj ) {
  *
  * @method prevent
  * @memberOf abaaso.utility
- * @param  {object} e Event
- * @return {object}   Event
+ * @param  {Object} e Event
+ * @return {Object}   Event
  * @memberOf abaaso
  * @see {@link abaaso.utility.prevent}
  */
@@ -1074,7 +1074,7 @@ abaaso.prevent         = utility.prevent;
  * @method promise
  * @memberOf abaaso
  * @see {@link abaaso.Promise}
- * @return {object} {@link abaaso.Promise}
+ * @return {Object} {@link abaaso.Promise}
  */
 abaaso.promise         = promise.factory;
 
@@ -1084,10 +1084,10 @@ abaaso.promise         = promise.factory;
  * @method property
  * @memberOf abaaso
  * @see {@link abaaso.utility.property}
- * @param  {object} obj        Object to decorate
- * @param  {string} prop       Name of property to set
- * @param  {object} descriptor Descriptor of the property
- * @return {object}            Object receiving the property
+ * @param  {Object} obj        Object to decorate
+ * @param  {String} prop       Name of property to set
+ * @param  {Object} descriptor Descriptor of the property
+ * @return {Object}            Object receiving the property
  */
 abaaso.property        = utility.property;
 
@@ -1097,13 +1097,13 @@ abaaso.property        = utility.property;
  * @method put
  * @memberOf abaaso
  * @see {@link abaaso.client.request}
- * @param  {string}   uri     URI to request
- * @param  {function} success Success handler
- * @param  {function} failure Failure handler
- * @param  {mixed}    args    Request body
- * @param  {object}   headers [Optional] HTTP headers
- * @param  {number}   timeout [Optional] Timeout
- * @return {object} {@link abaaso.Deferred}
+ * @param  {String}   uri     URI to request
+ * @param  {Function} success Success handler
+ * @param  {Function} failure Failure handler
+ * @param  {Mixed}    args    Request body
+ * @param  {Object}   headers [Optional] HTTP headers
+ * @param  {Number}   timeout [Optional] Timeout
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.put             = function ( uri, success, failure, args, headers, timeout ) {
 	return client.request( uri, "PUT", success, failure, args, headers, timeout );
@@ -1113,13 +1113,13 @@ abaaso.put             = function ( uri, success, failure, args, headers, timeou
  * Parses a query string & coerces values
  *
  * @method queryString
- * @param {string} key    Query string key
- * @param {string} string [Optional] Query string to parse
+ * @param {String} key    Query string key
+ * @param {String} string [Optional] Query string to parse
  * @memberOf abaaso
  * @see {@link abaaso.utility.queryString}
- * @param  {string} arg     [Optional] Key to find in the querystring
- * @param  {string} qstring [Optional] Query string to parse
- * @return {mixed}          Value or Object of key:value pairs
+ * @param  {String} arg     [Optional] Key to find in the querystring
+ * @param  {String} qstring [Optional] Query string to parse
+ * @return {Mixed}          Value or Object of key:value pairs
  */
 abaaso.queryString     = function ( key, string ) {
 	return utility.queryString( key, string );
@@ -1131,8 +1131,8 @@ abaaso.queryString     = function ( key, string ) {
  * @method random
  * @memberOf abaaso
  * @see {@link abaaso.number.random}
- * @param  {number} arg Ceiling for random number, default is 100
- * @return {number}     Random number
+ * @param  {Number} arg Ceiling for random number, default is 100
+ * @return {Number}     Random number
  */
 abaaso.random          = number.random;
 
@@ -1140,7 +1140,7 @@ abaaso.random          = number.random;
  * Ready status
  *
  * @memberOf abaaso
- * @type {boolean}
+ * @type {Boolean}
  */
 abaaso.ready           = false;
 
@@ -1150,8 +1150,8 @@ abaaso.ready           = false;
  * @method reflect
  * @memberOf abaaso
  * @see {@link abaaso.utility.reflect}
- * @param  {function} arg Function to reflect
- * @return {array}        Array of parameters
+ * @param  {Function} arg Function to reflect
+ * @return {Array}        Array of parameters
  */
 abaaso.reflect         = utility.reflect;
 
@@ -1161,11 +1161,11 @@ abaaso.reflect         = utility.reflect;
  * @method repeat
  * @memberOf abaaso
  * @see {@link abaaso.utility.repeat}
- * @param  {function} fn  Function to execute repeatedly
- * @param  {number}   ms  Milliseconds to stagger the execution
- * @param  {string}   id  [Optional] Timeout ID
- * @param  {boolean}  now Executes `fn` and then setup repetition, default is `true`
- * @return {string}       Timeout ID
+ * @param  {Function} fn  Function to execute repeatedly
+ * @param  {Number}   ms  Milliseconds to stagger the execution
+ * @param  {String}   id  [Optional] Timeout ID
+ * @param  {Boolean}  now Executes `fn` and then setup repetition, default is `true`
+ * @return {String}       Timeout ID
  */
 abaaso.repeat          = utility.repeat;
 
@@ -1174,7 +1174,7 @@ abaaso.repeat          = utility.repeat;
  *
  * @method repeating
  * @memberOf abaaso
- * @return {array} IDs of repeating timers
+ * @return {Array} IDs of repeating timers
  */
 abaaso.repeating       = function () {
 	return array.keys( utility.repeating );
@@ -1186,10 +1186,10 @@ abaaso.repeating       = function () {
  * @method script
  * @memberOf abaaso
  * @see {@link abaaso.client.script}
- * @param  {string} arg    URL to script
- * @param  {object} target [Optional] Element to receive the script
- * @param  {string} pos    [Optional] Position to create the script at within the target
- * @return {object}        Element
+ * @param  {String} arg    URL to script
+ * @param  {Object} target [Optional] Element to receive the script
+ * @param  {String} pos    [Optional] Position to create the script at within the target
+ * @return {Object}        Element
  */
 abaaso.script          = client.script;
 
@@ -1199,9 +1199,9 @@ abaaso.script          = client.script;
  * @method scroll
  * @memberOf abaaso
  * @see {@link abaaso.client.scroll}
- * @param  {array}  dest Coordinates
- * @param  {number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Array}  dest Coordinates
+ * @param  {Number} ms   [Optional] Milliseconds to scroll, default is 250, min is 100
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.scroll          = client.scroll;
 
@@ -1211,11 +1211,11 @@ abaaso.scroll          = client.scroll;
  * @method scrollTo
  * @memberOf abaaso
  * @see {@link abaaso.client.scrollTo}
- * @param  {object} obj        Element to scroll to
- * @param  {number} ms         [Optional] Milliseconds to scroll, default is 250, min is 100
- * @param  {number} offsetTop  [Optional] Offset from top of Element
- * @param  {number} offsetLeft [Optional] Offset from left of Element
- * @return {object} {@link abaaso.Deferred}
+ * @param  {Object} obj        Element to scroll to
+ * @param  {Number} ms         [Optional] Milliseconds to scroll, default is 250, min is 100
+ * @param  {Number} offsetTop  [Optional] Offset from top of Element
+ * @param  {Number} offsetLeft [Optional] Offset from left of Element
+ * @return {Object} {@link abaaso.Deferred}
  */
 abaaso.scrollTo        = element.scrollTo;
 
@@ -1225,9 +1225,9 @@ abaaso.scrollTo        = element.scrollTo;
  * @method stylesheet
  * @memberOf abaaso
  * @see {@link abaaso.client.stylesheet}
- * @param  {string} arg   URL to stylesheet
- * @param  {string} media [Optional] Medias the stylesheet applies to
- * @return {Objecct}      Stylesheet
+ * @param  {String} arg   URL to stylesheet
+ * @param  {String} media [Optional] Medias the stylesheet applies to
+ * @return {Object}      Stylesheet
  */
 abaaso.stylesheet      = client.stylesheet;
 
@@ -1237,8 +1237,8 @@ abaaso.stylesheet      = client.stylesheet;
  * @method stop
  * @memberOf abaaso
  * @see {@link abaaso.utility.stop}
- * @param  {object} e Event
- * @return {object}   Event
+ * @param  {Object} e Event
+ * @return {Object}   Event
  */
 abaaso.stop            = utility.stop;
 
@@ -1246,10 +1246,10 @@ abaaso.stop            = utility.stop;
  * Decorates a DataStore on an Object
  *
  * @method store
- * @param  {object} obj  Object
- * @param  {mixed}  recs [Optional] Data to set with this.batch
- * @param  {object} args [Optional] Arguments to set on the store
- * @return {object}      Decorated Object
+ * @param  {Object} obj  Object
+ * @param  {Mixed}  recs [Optional] Data to set with this.batch
+ * @param  {Object} args [Optional] Arguments to set on the store
+ * @return {Object}      Decorated Object
  * @deprecated Use `abaaso.data()`
  * @memberOf abaaso
  * @see {@link abaaso.datastore.decorator}
@@ -1271,8 +1271,8 @@ abaaso.sugar           = utility.sugar;
  * @method target
  * @memberOf abaaso
  * @see {@link abaaso.utility.target}
- * @param  {object} e Event
- * @return {object}   Event target
+ * @param  {Object} e Event
+ * @return {Object}   Event target
  */
 abaaso.target          = utility.target;
 
@@ -1282,9 +1282,9 @@ abaaso.target          = utility.target;
  * @method tpl
  * @memberOf abaaso
  * @see {@link abaaso.utility.tpl}
- * @param  {object} data   JSON Object describing HTML
- * @param  {mixed}  target [Optional] Target Element or Element.id to receive the HTML
- * @return {object}        New Element created from the template
+ * @param  {Object} data   JSON Object describing HTML
+ * @param  {Mixed}  target [Optional] Target Element or Element.id to receive the HTML
+ * @return {Object}        New Element created from the template
  */
 abaaso.tpl             = utility.tpl;
 
@@ -1292,10 +1292,10 @@ abaaso.tpl             = utility.tpl;
  * Removes listeners
  *
  * @method un
- * @param  {mixed}  obj   Primitive
- * @param  {string} event [Optional] Event, or Events being fired ( comma delimited supported )
- * @param  {string} id    [Optional] Listener id
- * @param  {string} state [Optional] Application state, default is current
+ * @param  {Mixed}  obj   Primitive
+ * @param  {String} event [Optional] Event, or Events being fired ( comma delimited supported )
+ * @param  {String} id    [Optional] Listener id
+ * @param  {String} state [Optional] Application state, default is current
  * @memberOf abaaso
  * @see {@link abaaso.observer.remove}
  */
@@ -1325,9 +1325,9 @@ abaaso.un              = function ( obj, event, id, state ) {
  * @method update
  * @memberOf abaaso
  * @see {@link abaaso.element.update}
- * @param  {mixed}  obj  Element
- * @param  {object} args Properties to set
- * @return {object}      Element
+ * @param  {Mixed}  obj  Element
+ * @param  {Object} args Properties to set
+ * @return {Object}      Element
  */
 abaaso.update          = element.update;
 
@@ -1337,8 +1337,8 @@ abaaso.update          = element.update;
  * @method uuid
  * @memberOf abaaso
  * @see {@link abaaso.utility.uuid}
- * @param  {boolean} safe [Optional] Strips - from UUID
- * @return {string}       UUID
+ * @param  {Boolean} safe [Optional] Strips - from UUID
+ * @return {String}       UUID
  */
 abaaso.uuid            = utility.uuid;
 
@@ -1347,8 +1347,8 @@ abaaso.uuid            = utility.uuid;
  *
  * @method validate
  * @memberOf abaaso
- * @param  {object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
- * @return {object}      Results
+ * @param  {Object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
+ * @return {Object}      Results
  */
 abaaso.validate        = validate.test;
 

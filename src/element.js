@@ -24,10 +24,10 @@ var element = {
 	 *
 	 * @method attr
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj   Element
-	 * @param  {string} name  Attribute name
-	 * @param  {mixed}  value Attribute value
-	 * @return {object}       Element
+	 * @param  {Mixed}  obj   Element
+	 * @param  {String} name  Attribute name
+	 * @param  {Mixed}  value Attribute value
+	 * @return {Object}       Element
 	 */
 	attr : function ( obj, key, value ) {
 		var target, result;
@@ -98,8 +98,8 @@ var element = {
 	 *
 	 * @method clear
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {object}    Element
+	 * @param  {Mixed} obj Element
+	 * @return {Object}    Element
 	 */
 	clear : function ( obj ) {
 		if ( typeof obj.reset === "function" ) {
@@ -121,11 +121,11 @@ var element = {
 	 *
 	 * @method create
 	 * @memberOf abaaso.element
-	 * @param  {string} type   Type of Element to create, or HTML String
-	 * @param  {object} args   [Optional] Properties to set
-	 * @param  {mixed}  target [Optional] Target Element
-	 * @param  {mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
-	 * @return {mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
+	 * @param  {String} type   Type of Element to create, or HTML String
+	 * @param  {Object} args   [Optional] Properties to set
+	 * @param  {Mixed}  target [Optional] Target Element
+	 * @param  {Mixed}  pos    [Optional] "first", "last" or Object describing how to add the new Element, e.g. {before: referenceElement}
+	 * @return {Mixed}         Element that was created, or an Array if `type` is a String of multiple Elements (frag)
 	 */
 	create : function ( type, args, target, pos ) {
 		var svg  = false,
@@ -210,10 +210,10 @@ var element = {
 	 *
 	 * @method css
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj   Element
-	 * @param  {string} key   CSS to put in a style tag
-	 * @param  {string} value [Optional] Value to set
-	 * @return {object}       Element
+	 * @param  {Mixed}  obj   Element
+	 * @param  {String} key   CSS to put in a style tag
+	 * @param  {String} value [Optional] Value to set
+	 * @return {Object}       Element
 	 */
 	css : function ( obj, key, value ) {
 		key = string.toCamelCase( key );
@@ -232,10 +232,10 @@ var element = {
 	 *
 	 * @method data
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj   Element
-	 * @param  {string} key   Data key
-	 * @param  {mixed}  value Boolean, Number or String to set
-	 * @return {mixed}        undefined, Element or value
+	 * @param  {Mixed}  obj   Element
+	 * @param  {String} key   Data key
+	 * @param  {Mixed}  value Boolean, Number or String to set
+	 * @return {Mixed}        undefined, Element or value
 	 */
 	data : function ( obj, key, value ) {
 		if ( value !== undefined ) {
@@ -252,8 +252,8 @@ var element = {
 	 *
 	 * @method destroy
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {undefined} undefined
+	 * @param  {Mixed} obj Element
+	 * @return {Undefined} undefined
 	 */
 	destroy : function ( obj ) {
 		observer.remove( obj );
@@ -270,8 +270,8 @@ var element = {
 	 *
 	 * @method disable
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {object}    Element
+	 * @param  {Mixed} obj Element
+	 * @return {Object}    Element
 	 */
 	disable : function ( obj ) {
 		if ( typeof obj.disabled === "boolean" && !obj.disabled ) {
@@ -288,12 +288,12 @@ var element = {
 	 *
 	 * @method dispatch
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj        Element which dispatches the Event
-	 * @param  {string}  type       Type of Event to dispatch
-	 * @param  {object}  data       Data to include with the Event
-	 * @param  {boolean} bubbles    [Optional] Determines if the Event bubbles, defaults to `true`
-	 * @param  {boolean} cancelable [Optional] Determines if the Event can be canceled, defaults to `true`
-	 * @return {object}             Element which dispatches the Event
+	 * @param  {Object}  obj        Element which dispatches the Event
+	 * @param  {String}  type       Type of Event to dispatch
+	 * @param  {Object}  data       Data to include with the Event
+	 * @param  {Boolean} bubbles    [Optional] Determines if the Event bubbles, defaults to `true`
+	 * @param  {Boolean} cancelable [Optional] Determines if the Event can be canceled, defaults to `true`
+	 * @return {Object}             Element which dispatches the Event
 	 */
 	dispatch : function ( obj, type, data, bubbles, cancelable ) {
 		var ev = new CustomEvent( type );
@@ -312,8 +312,8 @@ var element = {
 	 *
 	 * @method enable
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {object}    Element
+	 * @param  {Mixed} obj Element
+	 * @return {Object}    Element
 	 */
 	enable : function ( obj ) {
 		if ( typeof obj.disabled === "boolean" && obj.disabled ) {
@@ -328,9 +328,9 @@ var element = {
 	 *
 	 * @method find
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj Element to search
-	 * @param  {string} arg Comma delimited string of descendant selectors
-	 * @return {mixed}      Array of Elements or undefined
+	 * @param  {Mixed}  obj Element to search
+	 * @param  {String} arg Comma delimited string of descendant selectors
+	 * @return {Mixed}      Array of Elements or undefined
 	 */
 	find : function ( obj, arg ) {
 		var result = [];
@@ -349,8 +349,8 @@ var element = {
 	 *
 	 * @method frag
 	 * @memberOf abaaso.element
-	 * @param  {string} arg [Optional] innerHTML
-	 * @return {object}     Document fragment
+	 * @param  {String} arg [Optional] innerHTML
+	 * @return {Object}     Document fragment
 	 */
 	frag : function ( arg ) {
 		var obj = document.createDocumentFragment();
@@ -371,9 +371,9 @@ var element = {
 	 *
 	 * @method has
 	 * @memberOf abaaso.element
-	 * @param  {mixed}   obj Element or Array of Elements or $ queries
-	 * @param  {string}  arg Type of Element to find
-	 * @return {boolean}     True if 1 or more Elements are found
+	 * @param  {Mixed}   obj Element or Array of Elements or $ queries
+	 * @param  {String}  arg Type of Element to find
+	 * @return {Boolean}     True if 1 or more Elements are found
 	 */
 	has : function ( obj, arg ) {
 		var result = element.find( obj, arg );
@@ -386,8 +386,8 @@ var element = {
 	 *
 	 * @method hasClass
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {mixed}     Element, Array of Elements or undefined
+	 * @param  {Mixed} obj Element
+	 * @return {Mixed}     Element, Array of Elements or undefined
 	 */
 	hasClass : function ( obj, klass ) {
 		return obj.classList.contains( klass );
@@ -398,8 +398,8 @@ var element = {
 	 *
 	 * @method hidden
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {boolean}   `true` if hidden
+	 * @param  {Mixed} obj Element
+	 * @return {Boolean}   `true` if hidden
 	 */
 	hidden : function ( obj ) {
 		return obj.style.display === "none" || ( typeof obj.hidden === "boolean" && obj.hidden );
@@ -410,9 +410,9 @@ var element = {
 	 *
 	 * @method html
 	 * @memberOf abaaso.element
-	 * @param  {object} obj Element
-	 * @param  {string} arg [Optional] innerHTML value
-	 * @return {object}     Element
+	 * @param  {Object} obj Element
+	 * @param  {String} arg [Optional] innerHTML value
+	 * @return {Object}     Element
 	 */
 	html : function ( obj, arg ) {
 		if ( arg === undefined ) {
@@ -429,9 +429,9 @@ var element = {
 	 *
 	 * @method is
 	 * @memberOf abaaso.element
-	 * @param  {mixed}   obj Element
-	 * @param  {string}  arg Property to query
-	 * @return {boolean}     True if a match
+	 * @param  {Mixed}   obj Element
+	 * @param  {String}  arg Property to query
+	 * @return {Boolean}     True if a match
 	 */
 	is : function ( obj, arg ) {
 		if ( regex.selector_is.test( arg ) ) {
@@ -450,8 +450,8 @@ var element = {
 	 *
 	 * @method isAlphaNum
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isAlphaNum : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : validate.test( {alphanum  : obj.value || element.text( obj )} ).pass;
@@ -462,8 +462,8 @@ var element = {
 	 *
 	 * @method isBoolean
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isBoolean : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : validate.test( {"boolean" : obj.value || element.text( obj )} ).pass;
@@ -474,8 +474,8 @@ var element = {
 	 *
 	 * @method isChecked
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isChecked : function ( obj ) {
 		return obj.nodeName !== "INPUT" ? false : element.attr( obj, "checked" );
@@ -486,8 +486,8 @@ var element = {
 	 *
 	 * @method isDate
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isDate : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isDate( obj.value   || element.text( obj ) );
@@ -498,8 +498,8 @@ var element = {
 	 *
 	 * @method isDisabled
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isDisabled: function ( obj ) {
 		return obj.nodeName !== "INPUT" ? false : element.attr( obj, "disabled" );
@@ -510,8 +510,8 @@ var element = {
 	 *
 	 * @method isDomain
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isDomain : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isDomain( obj.value || element.text( obj ) );
@@ -522,8 +522,8 @@ var element = {
 	 *
 	 * @method isEmail
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isEmail  : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isEmail( obj.value || element.text( obj ) );
@@ -534,8 +534,8 @@ var element = {
 	 *
 	 * @method isEmpty
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isEmpty  : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isEmpty( obj.value || element.text( obj ) );
@@ -546,8 +546,8 @@ var element = {
 	 *
 	 * @method isIP
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isIP : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isIP( obj.value || element.text( obj ) );
@@ -558,8 +558,8 @@ var element = {
 	 *
 	 * @method isInt
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isInt : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isInt( obj.value || element.text( obj ) );
@@ -570,8 +570,8 @@ var element = {
 	 *
 	 * @method isNumber
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isNumber : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isNumber( obj.value || element.text( obj ) );
@@ -582,8 +582,8 @@ var element = {
 	 *
 	 * @method isPhone
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isPhone : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isPhone( obj.value || element.text( obj ) );
@@ -594,8 +594,8 @@ var element = {
 	 *
 	 * @method isUrl
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj Element to test
-	 * @return {boolean}     Result of test
+	 * @param  {Object}  obj Element to test
+	 * @return {Boolean}     Result of test
 	 */
 	isUrl : function ( obj ) {
 		return obj.nodeName === "FORM" ? false : string.isUrl( obj.value || element.text( obj ) );
@@ -606,10 +606,10 @@ var element = {
 	 *
 	 * @method klass
 	 * @memberOf abaaso.element
-	 * @param  {mixed}   obj Element
-	 * @param  {string}  arg Class to add or remove ( can be a wildcard )
-	 * @param  {boolean} add Boolean to add or remove, defaults to true
-	 * @return {object}      Element
+	 * @param  {Mixed}   obj Element
+	 * @param  {String}  arg Class to add or remove ( can be a wildcard )
+	 * @param  {Boolean} add Boolean to add or remove, defaults to true
+	 * @return {Object}      Element
 	 */
 	klass : function ( obj, arg, add ) {
 		add = ( add !== false );
@@ -643,8 +643,8 @@ var element = {
 	 *
 	 * @method position
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {array}     Coordinates [left, top, right, bottom]
+	 * @param  {Mixed} obj Element
+	 * @return {Array}     Coordinates [left, top, right, bottom]
 	 */
 	position : function ( obj ) {
 		obj = obj || document.body;
@@ -679,9 +679,9 @@ var element = {
 	 *
 	 * @method prependChild
 	 * @memberOf abaaso.element
-	 * @param  {object} obj   Element
-	 * @param  {object} child Child Element
-	 * @return {object}       Element
+	 * @param  {Object} obj   Element
+	 * @param  {Object} child Child Element
+	 * @return {Object}       Element
 	 */
 	prependChild : function ( obj, child ) {
 		return obj.childNodes.length === 0 ? obj.appendChild( child ) : obj.insertBefore( child, obj.childNodes[0] );
@@ -692,9 +692,9 @@ var element = {
 	 *
 	 * @method removeAttr
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj Element
-	 * @param  {string} key Attribute name
-	 * @return {object}     Element
+	 * @param  {Mixed}  obj Element
+	 * @param  {String} key Attribute name
+	 * @return {Object}     Element
 	 */
 	removeAttr : function ( obj, key ) {
 		var target;
@@ -724,11 +724,11 @@ var element = {
 	 *
 	 * @method scrollTo
 	 * @memberOf abaaso.element
-	 * @param  {object} obj        Element to scroll to
-	 * @param  {number} ms         [Optional] Milliseconds to scroll, default is 250, min is 100
-	 * @param  {number} offsetTop  [Optional] Offset from top of Element
-	 * @param  {number} offsetLeft [Optional] Offset from left of Element
-	 * @return {object} {@link abaaso.Deferred}
+	 * @param  {Object} obj        Element to scroll to
+	 * @param  {Number} ms         [Optional] Milliseconds to scroll, default is 250, min is 100
+	 * @param  {Number} offsetTop  [Optional] Offset from top of Element
+	 * @param  {Number} offsetLeft [Optional] Offset from left of Element
+	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	scrollTo : function ( obj, ms, offsetTop, offsetLeft ) {
 		var pos = array.remove( element.position( obj ), 2, 3 );
@@ -749,10 +749,10 @@ var element = {
 	 *
 	 * @method serialize
 	 * @memberOf abaaso.element
-	 * @param  {object}  obj    Element
-	 * @param  {boolean} string [Optional] true if you want a query string, default is false ( JSON )
-	 * @param  {boolean} encode [Optional] true if you want to URI encode the value, default is true
-	 * @return {mixed}          String or Object
+	 * @param  {Object}  obj    Element
+	 * @param  {Boolean} string [Optional] true if you want a query string, default is false ( JSON )
+	 * @param  {Boolean} encode [Optional] true if you want to URI encode the value, default is true
+	 * @return {Mixed}          String or Object
 	 */
 	serialize : function ( obj, string, encode ) {
 		string       = ( string === true );
@@ -793,8 +793,8 @@ var element = {
 	 *
 	 * @method size
 	 * @memberOf abaaso.element
-	 * @param  {mixed} obj Element
-	 * @return {object}    Size {height: n, width:n}
+	 * @param  {Mixed} obj Element
+	 * @return {Object}    Size {height: n, width:n}
 	 */
 	size : function ( obj ) {
 		return {
@@ -808,9 +808,9 @@ var element = {
 	 *
 	 * @method text
 	 * @memberOf abaaso.element
-	 * @param  {object} obj Element
-	 * @param  {string} arg [Optional] Value to set
-	 * @return {object}     Element
+	 * @param  {Object} obj Element
+	 * @param  {String} arg [Optional] Value to set
+	 * @return {Object}     Element
 	 */
 	text : function ( obj, arg ) {
 		var key     = obj.textContent !== undefined ? "textContent" : "innerText",
@@ -830,9 +830,9 @@ var element = {
 	 *
 	 * @method toggleClass
 	 * @memberOf abaaso.element
-	 * @param  {object} obj Element, or $ query
-	 * @param  {string} arg CSS class to toggle
-	 * @return {object}     Element
+	 * @param  {Object} obj Element, or $ query
+	 * @param  {String} arg CSS class to toggle
+	 * @return {Object}     Element
 	 */
 	toggleClass : function ( obj, arg ) {
 		obj.classList.toggle( arg );
@@ -845,9 +845,9 @@ var element = {
 	 *
 	 * @method update
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj  Element
-	 * @param  {object} args Properties to set
-	 * @return {object}      Element
+	 * @param  {Mixed}  obj  Element
+	 * @param  {Object} args Properties to set
+	 * @return {Object}      Element
 	 */
 	update : function ( obj, args ) {
 		args = args || {};
@@ -883,9 +883,9 @@ var element = {
 	 *
 	 * @method val
 	 * @memberOf abaaso.element
-	 * @param  {mixed}  obj   Element
-	 * @param  {mixed}  value [Optional] Value to set
-	 * @return {object}       Element
+	 * @param  {Mixed}  obj   Element
+	 * @param  {Mixed}  value [Optional] Value to set
+	 * @return {Object}       Element
 	 */
 	val : function ( obj, value ) {
 		var event = "input",
@@ -964,8 +964,8 @@ var element = {
 	 *
 	 * @method validate
 	 * @memberOf abaaso.element
-	 * @param  {object} obj Element to test
-	 * @return {object}     Result of test
+	 * @param  {Object} obj Element to test
+	 * @return {Object}     Result of test
 	 */
 	validate : function ( obj ) {
 		return obj.nodeName === "FORM" ? validate.test( obj ) : !string.isEmpty( obj.value || element.text( obj ) );

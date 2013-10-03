@@ -3,7 +3,7 @@
  *
  * @function bootstrap
  * @memberOf abaaso
- * @return {undefined} undefined
+ * @return {Undefined} undefined
  */
 bootstrap = function () {
 	var cleanup, fn, init;

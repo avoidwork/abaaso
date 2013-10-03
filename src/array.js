@@ -9,9 +9,9 @@ var array = {
 	 *
 	 * @method add
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to receive 'arg'
-	 * @param  {mixed} arg Argument to set in 'obj'
-	 * @return {array}     Array that was queried
+	 * @param  {Array} obj Array to receive 'arg'
+	 * @param  {Mixed} arg Argument to set in 'obj'
+	 * @return {Array}     Array that was queried
 	 */
 	add : function ( obj, arg ) {
 		if ( !array.contains( obj, arg ) ) {
@@ -26,9 +26,9 @@ var array = {
 	 *
 	 * @method binIndex
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to search
-	 * @param  {mixed} arg Value to find index of
-	 * @return {number}    Index of `arg` within `obj`
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Value to find index of
+	 * @return {Number}    Index of `arg` within `obj`
 	 */
 	binIndex : function ( obj, arg ) {
 		var min = 0,
@@ -58,9 +58,9 @@ var array = {
 	 *
 	 * @method cast
 	 * @memberOf abaaso.array
-	 * @param  {object}  obj Object to cast
-	 * @param  {boolean} key [Optional] Returns key or value, only applies to Objects without a length property
-	 * @return {array}       Object as an Array
+	 * @param  {Object}  obj Object to cast
+	 * @param  {Boolean} key [Optional] Returns key or value, only applies to Objects without a length property
+	 * @return {Array}       Object as an Array
 	 */
 	cast : function ( obj, key ) {
 		key   = ( key === true );
@@ -86,9 +86,9 @@ var array = {
 	 *
 	 * @method chunk
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj  Array to parse
-	 * @param  {number} size Chunk size ( integer )
-	 * @return {array}       Chunked Array
+	 * @param  {Array}  obj  Array to parse
+	 * @param  {Number} size Chunk size ( integer )
+	 * @return {Array}       Chunked Array
 	 */
 	chunk : function ( obj, size ) {
 		var result = [],
@@ -109,8 +109,8 @@ var array = {
 	 *
 	 * @method clear
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to clear
-	 * @return {array}     Cleared Array
+	 * @param  {Array} obj Array to clear
+	 * @return {Array}     Cleared Array
 	 */
 	clear : function ( obj ) {
 		return obj.length > 0 ? array.remove( obj, 0, obj.length ) : obj;
@@ -121,8 +121,8 @@ var array = {
 	 *
 	 * @method clone
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to clone
-	 * @return {array}     Clone of Array
+	 * @param  {Array} obj Array to clone
+	 * @return {Array}     Clone of Array
 	 */
 	clone : function ( obj ) {
 		return obj.slice();
@@ -133,9 +133,9 @@ var array = {
 	 *
 	 * @method contains
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to search
-	 * @param  {mixed} arg Value to look for
-	 * @return {boolean}   True if found, false if not
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Value to look for
+	 * @return {Boolean}   True if found, false if not
 	 */
 	contains : function ( obj, arg ) {
 		return ( array.index( obj, arg ) > -1 );
@@ -146,9 +146,9 @@ var array = {
 	 *
 	 * @method collect
 	 * @memberOf abaaso.array
-	 * @param  {array}    obj Array to iterate
-	 * @param  {function} fn  Function to execute against indices
-	 * @return {array}        New Array
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to execute against indices
+	 * @return {Array}        New Array
 	 */
 	collect : function ( obj, fn ) {
 		var result = [];
@@ -165,9 +165,9 @@ var array = {
 	 *
 	 * @method compact
 	 * @memberOf abaaso.array
-	 * @param  {array} obj    Array to compact
-	 * @param  {boolean} diff Indicates to return resulting Array only if there's a difference
-	 * @return {array}        Compacted copy of `obj`, or null ( if `diff` is passed & no diff is found )
+	 * @param  {Array} obj    Array to compact
+	 * @param  {Boolean} diff Indicates to return resulting Array only if there's a difference
+	 * @return {Array}        Compacted copy of `obj`, or null ( if `diff` is passed & no diff is found )
 	 */
 	compact : function ( obj, diff ) {
 		var result = [];
@@ -184,9 +184,9 @@ var array = {
 	 *
 	 * @method count
 	 * @memberOf abaaso.array
-	 * @param  {array} obj   Array to search
-	 * @param  {mixed} value Value to compare
-	 * @return {array}       Array of counts
+	 * @param  {Array} obj   Array to search
+	 * @param  {Mixed} value Value to compare
+	 * @return {Array}       Array of counts
 	 */
 	count : function ( obj, value ) {
 		return obj.filter( function ( i ) {
@@ -199,9 +199,9 @@ var array = {
 	 *
 	 * @method diff
 	 * @memberOf abaaso.array
-	 * @param  {array} array1 Source Array
-	 * @param  {array} array2 Comparison Array
-	 * @return {array}        Array of the differences
+	 * @param  {Array} array1 Source Array
+	 * @param  {Array} array2 Comparison Array
+	 * @return {Array}        Array of the differences
 	 */
 	diff : function ( array1, array2 ) {
 		var result = [];
@@ -227,11 +227,11 @@ var array = {
 	 *
 	 * @method each
 	 * @memberOf abaaso.array
-	 * @param  {array}    obj   Array to iterate
-	 * @param  {function} fn    Function to execute on index values
-	 * @param  {boolean}  async [Optional] Asynchronous iteration
-	 * @param  {number}   size  [Optional] Batch size for async iteration, default is 10
-	 * @return {array}          Array
+	 * @param  {Array}    obj   Array to iterate
+	 * @param  {Function} fn    Function to execute on index values
+	 * @param  {Boolean}  async [Optional] Asynchronous iteration
+	 * @param  {Number}   size  [Optional] Batch size for async iteration, default is 10
+	 * @return {Array}          Array
 	 */
 	each : function ( obj, fn, async, size ) {
 		var nth = obj.length,
@@ -280,8 +280,8 @@ var array = {
 	 *
 	 * @method empty
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to inspect
-	 * @return {boolean}   `true` if there's no indices
+	 * @param  {Array} obj Array to inspect
+	 * @return {Boolean}   `true` if there's no indices
 	 */
 	empty : function ( obj ) {
 		return ( obj.length === 0 );
@@ -292,9 +292,9 @@ var array = {
 	 *
 	 * @method equal
 	 * @memberOf abaaso.array
-	 * @param  {array} a Array to compare
-	 * @param  {array} b Array to compare
-	 * @return {boolean} `true` if the Arrays match
+	 * @param  {Array} a Array to compare
+	 * @param  {Array} b Array to compare
+	 * @return {Boolean} `true` if the Arrays match
 	 */
 	equal : function ( a, b ) {
 		return ( json.encode( a ) === json.encode( b ) );
@@ -305,8 +305,8 @@ var array = {
 	 *
 	 * @method fib
 	 * @memberOf abaaso.array
-	 * @param  {number} arg [Optional] Amount of numbers to generate, default is 100
-	 * @return {array}      Array of numbers
+	 * @param  {Number} arg [Optional] Amount of numbers to generate, default is 100
+	 * @return {Array}      Array of numbers
 	 */
 	fib : function ( arg ) {
 		var result = [1, 1],
@@ -336,11 +336,11 @@ var array = {
 	 *
 	 * @method fill
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj   Array to fill
-	 * @param  {mixed}  arg   String, Number of Function to fill with
-	 * @param  {number} start [Optional] Index to begin filling at
-	 * @param  {number} end   [Optional] Offset from start to stop filling at
-	 * @return {array}        Filled Array
+	 * @param  {Array}  obj   Array to fill
+	 * @param  {Mixed}  arg   String, Number of Function to fill with
+	 * @param  {Number} start [Optional] Index to begin filling at
+	 * @param  {Number} end   [Optional] Offset from start to stop filling at
+	 * @return {Array}        Filled Array
 	 */
 	fill : function ( obj, arg, start, offset ) {
 		var fn  = typeof arg === "function",
@@ -365,8 +365,8 @@ var array = {
 	 *
 	 * @method first
 	 * @memberOf abaaso.array
-	 * @param  {array} obj The array
-	 * @return {mixed}     The first node of the array
+	 * @param  {Array} obj The array
+	 * @return {Mixed}     The first node of the array
 	 */
 	first : function ( obj ) {
 		return obj[0];
@@ -379,11 +379,11 @@ var array = {
 	 * @method forEach
 	 * @memberOf abaaso.array
 	 * @see abaaso.array.each
-	 * @param  {array}    obj   Array to iterate
-	 * @param  {function} fn    Function to execute on index values
-	 * @param  {boolean}  async [Optional] Asynchronous iteration
-	 * @param  {number}   size  [Optional] Batch size for async iteration, default is 10
-	 * @return {array}          Array
+	 * @param  {Array}    obj   Array to iterate
+	 * @param  {Function} fn    Function to execute on index values
+	 * @param  {Boolean}  async [Optional] Asynchronous iteration
+	 * @param  {Number}   size  [Optional] Batch size for async iteration, default is 10
+	 * @return {Array}          Array
 	 */
 	forEach : function ( obj, fn, async, size ) {
 		return array.each( obj, fn, async, size );
@@ -394,8 +394,8 @@ var array = {
 	 *
 	 * @method flat
 	 * @memberOf abaaso.array
-	 * @param  {array} obj 2D Array to flatten
-	 * @return {array}     Flatten Array
+	 * @param  {Array} obj 2D Array to flatten
+	 * @return {Array}     Flatten Array
 	 */
 	flat : function ( obj ) {
 		var result = [];
@@ -412,9 +412,9 @@ var array = {
 	 *
 	 * @method index
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to search
-	 * @param  {mixed} arg Value to find index of
-	 * @return {number}    The position of arg in instance
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Value to find index of
+	 * @return {Number}    The position of arg in instance
 	 */
 	index : function ( obj, arg ) {
 		return obj.indexOf( arg );
@@ -425,8 +425,8 @@ var array = {
 	 *
 	 * @method indexed
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to index
-	 * @return {array}     Indexed Array
+	 * @param  {Array} obj Array to index
+	 * @return {Array}     Indexed Array
 	 */
 	indexed : function ( obj ) {
 		var indexed = [];
@@ -443,9 +443,9 @@ var array = {
 	 *
 	 * @method intersect
 	 * @memberOf abaaso.array
-	 * @param  {array} array1 Source Array
-	 * @param  {array} array2 Comparison Array
-	 * @return {array}        Array of the intersections
+	 * @param  {Array} array1 Source Array
+	 * @param  {Array} array2 Comparison Array
+	 * @return {Array}        Array of the intersections
 	 */
 	intersect : function ( array1, array2 ) {
 		var a = array1.length > array2.length ? array1 : array2,
@@ -461,9 +461,9 @@ var array = {
 	 *
 	 * @method keepIf
 	 * @memberOf abaaso.array
-	 * @param  {array}    obj Array to iterate
-	 * @param  {function} fn  Function to test indices against
-	 * @return {array}        Array
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
 	 */
 	keepIf : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
@@ -488,10 +488,10 @@ var array = {
 	 *
 	 * @method sort
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj   Array to sort
-	 * @param  {string} query Sort query, e.g. "name, age desc, country"
-	 * @param  {string} sub   [Optional] Key which holds data, e.g. "{data: {}}" = "data"
-	 * @return {array}        Sorted Array
+	 * @param  {Array}  obj   Array to sort
+	 * @param  {String} query Sort query, e.g. "name, age desc, country"
+	 * @param  {String} sub   [Optional] Key which holds data, e.g. "{data: {}}" = "data"
+	 * @return {Array}        Sorted Array
 	 */
 	keySort : function ( obj, query, sub ) {
 		query       = query.replace( /\s*asc/ig, "" ).replace( /\s*desc/ig, " desc" );
@@ -528,8 +528,8 @@ var array = {
 	 *
 	 * @method keys
 	 * @memberOf abaaso.array
-	 * @param  {mixed} obj Array or Object to extract keys from
-	 * @return {array}     Array of the keys
+	 * @param  {Mixed} obj Array or Object to extract keys from
+	 * @return {Array}     Array of the keys
 	 */
 	keys : function ( obj ) {
 		return Object.keys( obj );
@@ -540,9 +540,9 @@ var array = {
 	 *
 	 * @method last
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj Array
-	 * @param  {number} arg [Optional] Negative offset from last index to return
-	 * @return {mixed}      Last index( s ) of Array
+	 * @param  {Array}  obj Array
+	 * @param  {Number} arg [Optional] Negative offset from last index to return
+	 * @return {Mixed}      Last index( s ) of Array
 	 */
 	last : function ( obj, arg ) {
 		var n = obj.length - 1;
@@ -563,10 +563,10 @@ var array = {
 	 *
 	 * @method limit
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj    Array to iterate
-	 * @param  {number} start  Starting index
-	 * @param  {number} offset Number of indices to return
-	 * @return {array}         Array of indices
+	 * @param  {Array}  obj    Array to iterate
+	 * @param  {Number} start  Starting index
+	 * @param  {Number} offset Number of indices to return
+	 * @return {Array}         Array of indices
 	 */
 	limit : function ( obj, start, offset ) {
 		var result = [],
@@ -588,8 +588,8 @@ var array = {
 	 *
 	 * @method max
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {mixed}     Number, String, etc.
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Number, String, etc.
 	 */
 	max : function ( obj ) {
 		return array.last( obj.sort( array.sort ) );
@@ -600,8 +600,8 @@ var array = {
 	 *
 	 * @method mean
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {number}    Mean of the Array ( float or integer )
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Mean of the Array ( float or integer )
 	 */
 	mean : function ( obj ) {
 		return obj.length > 0 ? ( array.sum( obj ) / obj.length ) : undefined;
@@ -612,8 +612,8 @@ var array = {
 	 *
 	 * @method median
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {number}    Median number of the Array ( float or integer )
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Median number of the Array ( float or integer )
 	 */
 	median : function ( obj ) {
 		var nth    = obj.length,
@@ -628,9 +628,9 @@ var array = {
 	 *
 	 * @method merge
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to receive indices
-	 * @param  {array} arg Array to merge
-	 * @return {array}     obj
+	 * @param  {Array} obj Array to receive indices
+	 * @param  {Array} arg Array to merge
+	 * @return {Array}     obj
 	 */
 	merge : function ( obj, arg ) {
 		array.each( arg, function ( i ) {
@@ -645,8 +645,8 @@ var array = {
 	 *
 	 * @method min
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {mixed}     Number, String, etc.
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Number, String, etc.
 	 */
 	min : function ( obj ) {
 		return obj.sort( array.sort )[0];
@@ -657,9 +657,9 @@ var array = {
 	 *
 	 * @method mingle
 	 * @memberOf abaaso.array
-	 * @param  {array} obj1 Array to mingle
-	 * @param  {array} obj2 Array to mingle
-	 * @return {array}      2D Array
+	 * @param  {Array} obj1 Array to mingle
+	 * @param  {Array} obj2 Array to mingle
+	 * @return {Array}      2D Array
 	 */
 	mingle : function ( obj1, obj2 ) {
 		var result;
@@ -676,8 +676,8 @@ var array = {
 	 *
 	 * @method mode
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {mixed}     Mode value of the Array
+	 * @param  {Array} obj Array to parse
+	 * @return {Mixed}     Mode value of the Array
 	 */
 	mode : function ( obj ) {
 		var values = {},
@@ -721,10 +721,10 @@ var array = {
 	 *
 	 * @method percents
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj       Array to iterate
-	 * @param  {number} precision [Optional] Rounding precision
-	 * @param  {number} total     [Optional] Value to compare against
-	 * @return {array}            Array of percents
+	 * @param  {Array}  obj       Array to iterate
+	 * @param  {Number} precision [Optional] Rounding precision
+	 * @param  {Number} total     [Optional] Value to compare against
+	 * @return {Array}            Array of percents
 	 */
 	percents : function ( obj, precision, total ) {
 		var result = [],
@@ -768,8 +768,8 @@ var array = {
 	 *
 	 * @method range
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {number}    Range of the array ( float or integer )
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Range of the array ( float or integer )
 	 */
 	range : function ( obj ) {
 		return array.max( obj ) - array.min( obj );
@@ -780,9 +780,9 @@ var array = {
 	 *
 	 * @method rassoc
 	 * @memberOf abaaso.array
-	 * @param  {array} obj 2D Array to search
-	 * @param  {mixed} arg Primitive to find
-	 * @return {mixed}     Array or undefined
+	 * @param  {Array} obj 2D Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Array or undefined
 	 */
 	rassoc : function ( obj, arg ) {
 		var result;
@@ -803,9 +803,9 @@ var array = {
 	 *
 	 * @method reject
 	 * @memberOf abaaso.array
-	 * @param  {array}    obj Array to iterate
-	 * @param  {function} fn  Function to execute against `obj` indices
-	 * @return {array}        Array of indices which fn() is not true
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to execute against `obj` indices
+	 * @return {Array}        Array of indices which fn() is not true
 	 */
 	reject : function ( obj, fn ) {
 		return array.diff( obj, obj.filter( fn ) );
@@ -816,9 +816,9 @@ var array = {
 	 *
 	 * @method replace
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to modify
-	 * @param  {array} arg Array to become `obj`
-	 * @return {array}     New version of `obj`
+	 * @param  {Array} obj Array to modify
+	 * @param  {Array} arg Array to become `obj`
+	 * @return {Array}     New version of `obj`
 	 */
 	replace : function ( obj, arg ) {
 		array.remove( obj, 0, obj.length );
@@ -834,10 +834,10 @@ var array = {
 	 *
 	 * @method remove
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj   Array to remove from
-	 * @param  {mixed}  start Starting index, or value to find within obj
-	 * @param  {number} end   [Optional] Ending index
-	 * @return {array}        Modified Array
+	 * @param  {Array}  obj   Array to remove from
+	 * @param  {Mixed}  start Starting index, or value to find within obj
+	 * @param  {Number} end   [Optional] Ending index
+	 * @return {Array}        Modified Array
 	 */
 	remove : function ( obj, start, end ) {
 		if ( isNaN( start ) ) {
@@ -865,9 +865,9 @@ var array = {
 	 *
 	 * @method removeIf
 	 * @memberOf abaaso.array
-	 * @param  {array}    obj Array to iterate
-	 * @param  {function} fn  Function to test indices against
-	 * @return {array}        Array
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
 	 */
 	removeIf : function ( obj, fn ) {
 		var remove;
@@ -890,9 +890,9 @@ var array = {
 	 *
 	 * @method removeWhile
 	 * @memberOf abaaso.array
-	 * @param  {array}    obj Array to iterate
-	 * @param  {function} fn  Function to test indices against
-	 * @return {array}        Array
+	 * @param  {Array}    obj Array to iterate
+	 * @param  {Function} fn  Function to test indices against
+	 * @return {Array}        Array
 	 */
 	removeWhile : function ( obj, fn ) {
 		if ( typeof fn !== "function" ) {
@@ -922,9 +922,9 @@ var array = {
 	 *
 	 * @method rest
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj Array to parse
-	 * @param  {number} arg [Optional] Start position of subset of `obj` ( positive number only )
-	 * @return {array}      Array of a subset of `obj`
+	 * @param  {Array}  obj Array to parse
+	 * @param  {Number} arg [Optional] Start position of subset of `obj` ( positive number only )
+	 * @return {Array}      Array of a subset of `obj`
 	 */
 	rest : function ( obj, arg ) {
 		arg = arg || 1;
@@ -941,9 +941,9 @@ var array = {
 	 *
 	 * @method rindex
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to search
-	 * @param  {mixed} arg Primitive to find
-	 * @return {mixed}     Index or undefined
+	 * @param  {Array} obj Array to search
+	 * @param  {Mixed} arg Primitive to find
+	 * @return {Mixed}     Index or undefined
 	 */
 	rindex : function ( obj, arg ) {
 		var result = -1;
@@ -962,9 +962,9 @@ var array = {
 	 *
 	 * @method rotate
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj Array to rotate
-	 * @param  {number} arg Index to become the first index, if negative the rotation is in the opposite direction
-	 * @return {array}      Newly rotated Array
+	 * @param  {Array}  obj Array to rotate
+	 * @param  {Number} arg Index to become the first index, if negative the rotation is in the opposite direction
+	 * @return {Array}      Newly rotated Array
 	 */
 	rotate : function ( obj, arg ) {
 		var nth = obj.length,
@@ -993,10 +993,10 @@ var array = {
 	 *
 	 * @method series
 	 * @memberOf abaaso.array
-	 * @param  {number} start  Start value the series
-	 * @param  {number} end    [Optional] The end of the series
-	 * @param  {number} offset [Optional] Offset for indices, default is 1
-	 * @return {array}         Array of new series
+	 * @param  {Number} start  Start value the series
+	 * @param  {Number} end    [Optional] The end of the series
+	 * @param  {Number} offset [Optional] Offset for indices, default is 1
+	 * @return {Array}         Array of new series
 	 */
 	series : function ( start, end, offset ) {
 		start      = start  || 0;
@@ -1019,9 +1019,9 @@ var array = {
 	 *
 	 * @method split
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj     Array to parse
-	 * @param  {number} divisor Integer to divide the Array by
-	 * @return {array}          Split Array
+	 * @param  {Array}  obj     Array to parse
+	 * @param  {Number} divisor Integer to divide the Array by
+	 * @return {Array}          Split Array
 	 */
 	split : function ( obj, divisor ) {
 		var result  = [],
@@ -1059,9 +1059,9 @@ var array = {
 	 *
 	 * @method sort
 	 * @memberOf abaaso.array
-	 * @param  {mixed} a Argument to compare
-	 * @param  {mixed} b Argument to compare
-	 * @return {number}  Number indicating sort order
+	 * @param  {Mixed} a Argument to compare
+	 * @param  {Mixed} b Argument to compare
+	 * @return {Number}  Number indicating sort order
 	 */
 	sort : function ( a, b ) {
 		var types = {a: typeof a, b: typeof b},
@@ -1099,8 +1099,8 @@ var array = {
 	 *
 	 * @method sorted
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to sort
-	 * @return {array}     Sorted Array
+	 * @param  {Array} obj Array to sort
+	 * @return {Array}     Sorted Array
 	 */
 	sorted : function ( obj ) {
 		return obj.sort( array.sort );
@@ -1111,8 +1111,8 @@ var array = {
 	 *
 	 * @method sum
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to sum
-	 * @return {number}    Summation of Array
+	 * @param  {Array} obj Array to sum
+	 * @return {Number}    Summation of Array
 	 */
 	sum : function ( obj ) {
 		var result = 0;
@@ -1131,9 +1131,9 @@ var array = {
 	 *
 	 * @method take
 	 * @memberOf abaaso.array
-	 * @param  {array}  obj Array to parse
-	 * @param  {number} arg Offset from 0 to return
-	 * @return {array}      Subset of `obj`
+	 * @param  {Array}  obj Array to parse
+	 * @param  {Number} arg Offset from 0 to return
+	 * @return {Array}      Subset of `obj`
 	 */
 	take : function ( obj, arg ) {
 		return array.limit( obj, 0, arg );
@@ -1144,8 +1144,8 @@ var array = {
 	 *
 	 * @method total
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to find the length of
-	 * @return {number}    Number of keys in Array
+	 * @param  {Array} obj Array to find the length of
+	 * @return {Number}    Number of keys in Array
 	 */
 	total : function ( obj ) {
 		return array.indexed( obj ).length;
@@ -1156,8 +1156,8 @@ var array = {
 	 *
 	 * @method toObject
 	 * @memberOf abaaso.array
-	 * @param  {array} ar Array to transform
-	 * @return {object}   New object
+	 * @param  {Array} ar Array to transform
+	 * @return {Object}   New object
 	 */
 	toObject : function ( ar ) {
 		var obj = {},
@@ -1175,8 +1175,8 @@ var array = {
 	 *
 	 * @method unique
 	 * @memberOf abaaso.array
-	 * @param  {array} obj Array to parse
-	 * @return {array}     Array of unique indices
+	 * @param  {Array} obj Array to parse
+	 * @return {Array}     Array of unique indices
 	 */
 	unique : function ( obj ) {
 		var result = [];
@@ -1193,9 +1193,9 @@ var array = {
 	 *
 	 * @method zip
 	 * @memberOf abaaso.array
-	 * @param  {array} obj  Array to transform
-	 * @param  {mixed} args Argument instance or Array to merge
-	 * @return {array}      Array
+	 * @param  {Array} obj  Array to transform
+	 * @param  {Mixed} args Argument instance or Array to merge
+	 * @return {Array}      Array
 	 */
 	zip : function ( obj, args ) {
 		var result = [];

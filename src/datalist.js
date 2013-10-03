@@ -8,11 +8,11 @@ var datalist = {
 	 *
 	 * @method factory
 	 * @memberOf abaaso.datalist
-	 * @param  {object} target   Element to receive the DataList
-	 * @param  {object} store    Data store to feed the DataList
-	 * @param  {mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
-	 * @param  {object} options  Optional parameters to set on the DataList
-	 * @return {object} {@link abaaso.DataList}
+	 * @param  {Object} target   Element to receive the DataList
+	 * @param  {Object} store    Data store to feed the DataList
+	 * @param  {Mixed}  template Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}
+	 * @param  {Object} options  Optional parameters to set on the DataList
+	 * @return {Object} {@link abaaso.DataList}
 	 */
 	factory : function ( target, store, template, options ) {
 		var ref = [store],
@@ -46,7 +46,7 @@ var datalist = {
 	 *
 	 * @method pages
 	 * @memberOf abaaso.datalist
-	 * @return {number} Total pages
+	 * @return {Number} Total pages
 	 */
 	pages : function () {
 		if ( isNaN( this.pageSize ) ) {
@@ -61,7 +61,7 @@ var datalist = {
 	 *
 	 * @method range
 	 * @memberOf abaaso.datalist
-	 * @return {array}  Array of start & end numbers
+	 * @return {Array}  Array of start & end numbers
 	 */
 	range : function () {
 		var start = ( this.pageIndex * this.pageSize ) - this.pageSize,
@@ -102,7 +102,7 @@ function DataList ( element, store, template ) {
  * @method constructor
  * @private
  * @memberOf abaaso.DataList
- * @type {function}
+ * @type {Function}
  */
 DataList.prototype.constructor = DataList;
 
@@ -111,8 +111,8 @@ DataList.prototype.constructor = DataList;
  *
  * @method del
  * @memberOf abaaso.DataList
- * @param  {object} rec Record
- * @return {object} {@link abaaso.DataList}
+ * @param  {Object} rec Record
+ * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.del = function ( rec ) {
 	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
@@ -136,7 +136,7 @@ DataList.prototype.del = function ( rec ) {
  *
  * @method dump
  * @memberOf abaaso.DataList
- * @return {array} Record set
+ * @return {Array} Record set
  */
 DataList.prototype.dump = function () {
 	return this.store.dump( this.records );
@@ -147,9 +147,9 @@ DataList.prototype.dump = function () {
  *
  * @method page
  * @memberOf abaaso.DataList
- * @param  {boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
- * @param  {boolean} create [Optional] Recreates cached View of data
- * @return {object} {@link abaaso.DataList}
+ * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
+ * @param  {Boolean} create [Optional] Recreates cached View of data
+ * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.page = function ( arg, redraw, create ) {
 	this.pageIndex = arg;
@@ -161,7 +161,7 @@ DataList.prototype.page = function ( arg, redraw, create ) {
  *
  * @method pages
  * @memberOf abaaso.DataList
- * @return {object} {@link abaaso.DataList}
+ * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.pages = function () {
 	var obj   = this.element,
@@ -262,9 +262,9 @@ DataList.prototype.pages = function () {
  *
  * @method refresh
  * @memberOf abaaso.DataList
- * @param  {boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
- * @param  {boolean} create [Optional] Recreates cached View of data
- * @return {object} {@link abaaso.DataList}
+ * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
+ * @param  {Boolean} create [Optional] Recreates cached View of data
+ * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.refresh = function ( redraw, create ) {
 	redraw       = ( redraw !== false );
@@ -444,9 +444,9 @@ DataList.prototype.refresh = function ( redraw, create ) {
  *
  * @method sort
  * @memberOf abaaso.DataList
- * @param  {string}  order  SQL "order by" statement
- * @param  {boolean} create [Optional] Recreates cached View of data store
- * @return {object} {@link abaaso.DataList}
+ * @param  {String}  order  SQL "order by" statement
+ * @param  {Boolean} create [Optional] Recreates cached View of data store
+ * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.sort = function ( order, create ) {
 	this.order = order;
@@ -458,8 +458,8 @@ DataList.prototype.sort = function ( order, create ) {
  *
  * @method teardown
  * @memberOf abaaso.DataList
- * @param  {boolean} destroy [Optional] `true` will remove the DataList from the DOM
- * @return {object} {@link abaaso.DataList}
+ * @param  {Boolean} destroy [Optional] `true` will remove the DataList from the DOM
+ * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.teardown = function ( destroy ) {
 	destroy  = ( destroy === true );

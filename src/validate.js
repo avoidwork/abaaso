@@ -8,8 +8,8 @@ var validate = {
 	 *
 	 * @method test
 	 * @memberOf abaaso.validate
-	 * @param  {object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
-	 * @return {object}      Results
+	 * @param  {Object} args Object to test {( pattern[name] || /pattern/) : (value || #object.id )}
+	 * @return {Object}      Results
 	 */
 	test : function ( args ) {
 		var exception = false,

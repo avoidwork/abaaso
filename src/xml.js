@@ -5,8 +5,8 @@ var xml = {
 	 *
 	 * @method decode
 	 * @memberOf abaaso.xml
-	 * @param  {string} arg XML String
-	 * @return {object}     XML Object or undefined
+	 * @param  {String} arg XML String
+	 * @return {Object}     XML Object or undefined
 	 */
 	decode : function ( arg ) {
 		if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
@@ -21,8 +21,8 @@ var xml = {
 	 *
 	 * @method encode
 	 * @memberOf abaaso.xml
-	 * @param  {mixed} arg Object or Array to cast to XML String
-	 * @return {string}    XML String or undefined
+	 * @param  {Mixed} arg Object or Array to cast to XML String
+	 * @return {String}    XML String or undefined
 	 */
 	encode : function ( arg, wrap ) {
 		try {
@@ -41,9 +41,9 @@ var xml = {
 			 * @method node
 			 * @memberOf abaaso.xml.encode
 			 * @private
-			 * @param  {string} name  Node name
-			 * @param  {string} value Node value
-			 * @return {string}       Node
+			 * @param  {String} name  Node name
+			 * @param  {String} value Node value
+			 * @return {String}       Node
 			 */
 			node = function ( name, value ) {
 				var output = "<n>v</n>";
@@ -89,8 +89,8 @@ var xml = {
 	 *
 	 * @method valid
 	 * @memberOf abaaso.xml
-	 * @param  {string} arg String to validate
-	 * @return {boolean}    `true` if valid XML
+	 * @param  {String} arg String to validate
+	 * @return {Boolean}    `true` if valid XML
 	 */
 	valid : function ( arg ) {
 		return ( xml.decode( arg ).getElementsByTagName( "parsererror" ).length === 0 );

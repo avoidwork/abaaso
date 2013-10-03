@@ -5,7 +5,7 @@ var mouse = {
 	 *
 	 * @name enabled
 	 * @memberOf abaaso.mouse
-	 * @type {boolean}
+	 * @type {Boolean}
 	 */
 	enabled : false,
 
@@ -14,7 +14,7 @@ var mouse = {
 	 *
 	 * @name log
 	 * @memberOf abaaso.mouse
-	 * @type {boolean}
+	 * @type {Boolean}
 	 */
 	log : false,
 
@@ -23,7 +23,7 @@ var mouse = {
 	 *
 	 * @name diff
 	 * @memberOf abaaso.mouse
-	 * @type {object}
+	 * @type {Object}
 	 */
 	diff : {
 		x: null,
@@ -35,7 +35,7 @@ var mouse = {
 	 *
 	 * @name pos
 	 * @memberOf abaaso.mouse
-	 * @type {object}
+	 * @type {Object}
 	 */
 	pos  : {
 		x: null,
@@ -47,7 +47,7 @@ var mouse = {
 	 *
 	 * @name prev
 	 * @memberOf abaaso.mouse
-	 * @type {object}
+	 * @type {Object}
 	 */
 	prev : {
 		x: null,
@@ -59,8 +59,8 @@ var mouse = {
 	 *
 	 * @method track
 	 * @memberOf abaaso.mouse
-	 * @param  {mixed} arg Boolean to enable/disable tracking, or Mouse Event
-	 * @return {object}    abaaso.mouse
+	 * @param  {Mixed} arg Boolean to enable/disable tracking, or Mouse Event
+	 * @return {Object}    abaaso.mouse
 	 */
 	track : function ( arg ) {
 		var type = typeof arg;

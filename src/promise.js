@@ -8,7 +8,7 @@ var promise = {
 	 *
 	 * @method delay
 	 * @memberOf abaaso.promise
-	 * @return {function} Delay method
+	 * @return {Function} Delay method
 	 */
 	delay : function () {
 		if ( typeof setImmediate !== "undefined" ) {
@@ -29,7 +29,7 @@ var promise = {
 	 *
 	 * @method factory
 	 * @memberOf abaaso.promise
-	 * @return {object} {@link abaaso.Promise}
+	 * @return {Object} {@link abaaso.Promise}
 	 */
 	factory : function () {
 		return new Promise();
@@ -40,9 +40,9 @@ var promise = {
 	 *
 	 * @method pipe
 	 * @memberOf abaaso.promise
-	 * @param  {object} parent Promise
-	 * @param  {object} child  Promise
-	 * @return {undefined}     undefined
+	 * @param  {Object} parent Promise
+	 * @param  {Object} child  Promise
+	 * @return {Undefined}     undefined
 	 */
 	pipe : function ( parent, child ) {
 		parent.then( function ( arg ) {
@@ -56,7 +56,7 @@ var promise = {
 	 * States of a Promise
 	 *
 	 * @memberOf abaaso.promise
-	 * @type {object}
+	 * @type {Object}
 	 */
 	state : {
 		PENDING : 0,
@@ -84,7 +84,7 @@ function Promise () {
  * @method constructor
  * @memberOf abaaso.Promise
  * @private
- * @type {function}
+ * @type {Function}
  */
 Promise.prototype.constructor = Promise;
 
@@ -93,7 +93,7 @@ Promise.prototype.constructor = Promise;
  *
  * @method process
  * @memberOf abaaso.Promise
- * @return {object} {@link abaaso.Promise}
+ * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.process = function() {
 	var result, success, value;
@@ -151,8 +151,8 @@ Promise.prototype.process = function() {
  *
  * @method reject
  * @memberOf abaaso.Promise
- * @param  {mixed} arg Promise value
- * @return {object} {@link abaaso.Promise}
+ * @param  {Mixed} arg Promise value
+ * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.reject = function ( arg ) {
 	var self = this;
@@ -180,8 +180,8 @@ Promise.prototype.reject = function ( arg ) {
  *
  * @method resolve
  * @memberOf abaaso.Promise
- * @param  {mixed} arg Promise value
- * @return {object} {@link abaaso.Promise}
+ * @param  {Mixed} arg Promise value
+ * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.resolve = function ( arg ) {
 	var self = this;
@@ -209,9 +209,9 @@ Promise.prototype.resolve = function ( arg ) {
  *
  * @method then
  * @memberOf abaaso.Promise
- * @param  {function} success [Optional] Success handler for eventual value
- * @param  {function} failure [Optional] Failure handler for eventual value
- * @return {object} {@link abaaso.Promise}
+ * @param  {Function} success [Optional] Success handler for eventual value
+ * @param  {Function} failure [Optional] Failure handler for eventual value
+ * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.then = function ( success, failure ) {
 	var self  = this,

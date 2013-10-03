@@ -5,8 +5,8 @@ var number = {
 	 *
 	 * @method odd
 	 * @memberOf abaaso.number
-	 * @param {number} arg Number to compare
-	 * @return {number}    The absolute difference
+	 * @param {Number} arg Number to compare
+	 * @return {Number}    The absolute difference
 	 */
 	diff : function ( num1, num2 ) {
 		if ( isNaN( num1 ) || isNaN( num2 ) ) {
@@ -21,8 +21,8 @@ var number = {
 	 *
 	 * @method even
 	 * @memberOf abaaso.number
-	 * @param {number} arg Number to test
-	 * @return {boolean}   True if even, or undefined
+	 * @param {Number} arg Number to test
+	 * @return {Boolean}   True if even, or undefined
 	 */
 	even : function ( arg ) {
 		return arg % 2 === 0;
@@ -33,10 +33,10 @@ var number = {
 	 *
 	 * @method format
 	 * @memberOf abaaso.number
-	 * @param  {number} arg       Number to format
-	 * @param  {string} delimiter [Optional] String to delimit the Number with
-	 * @param  {string} every     [Optional] Position to insert the delimiter, default is 3
-	 * @return {string}           Number represented as a comma delimited String
+	 * @param  {Number} arg       Number to format
+	 * @param  {String} delimiter [Optional] String to delimit the Number with
+	 * @param  {String} every     [Optional] Position to insert the delimiter, default is 3
+	 * @return {String}           Number represented as a comma delimited String
 	 */
 	format : function ( arg, delimiter, every ) {
 		if ( isNaN( arg ) ) {
@@ -72,9 +72,9 @@ var number = {
 	 *
 	 * @method half
 	 * @memberOf abaaso.number
-	 * @param  {number} a Number to divide
-	 * @param  {number} b [Optional] Number to test a against
-	 * @return {mixed}    Boolean if b is passed, Number if b is undefined
+	 * @param  {Number} a Number to divide
+	 * @param  {Number} b [Optional] Number to test a against
+	 * @return {Mixed}    Boolean if b is passed, Number if b is undefined
 	 */
 	half : function ( a, b ) {
 		return b !== undefined ? ( ( a / b ) === 0.5 ) : ( a / 2 );
@@ -85,8 +85,8 @@ var number = {
 	 *
 	 * @method odd
 	 * @memberOf abaaso.number
-	 * @param  {number} arg Number to test
-	 * @return {boolean}    True if odd, or undefined
+	 * @param  {Number} arg Number to test
+	 * @return {Boolean}    True if odd, or undefined
 	 */
 	odd : function ( arg ) {
 		return !number.even( arg );
@@ -97,9 +97,9 @@ var number = {
 	 *
 	 * @method parse
 	 * @memberOf abaaso.number
-	 * @param  {mixed}  arg  Number to parse
-	 * @param  {number} base Integer representing the base or radix
-	 * @return {number}      Integer or float
+	 * @param  {Mixed}  arg  Number to parse
+	 * @param  {Number} base Integer representing the base or radix
+	 * @return {Number}      Integer or float
 	 */
 	parse : function ( arg, base ) {
 		return ( base === undefined ) ? parseFloat( arg ) : parseInt( arg, base );
@@ -110,8 +110,8 @@ var number = {
 	 *
 	 * @method random
 	 * @memberOf abaaso.number
-	 * @param  {number} arg Ceiling for random number, default is 100
-	 * @return {number}     Random number
+	 * @param  {Number} arg Ceiling for random number, default is 100
+	 * @return {Number}     Random number
 	 */
 	random : function ( arg ) {
 		arg = arg || 100;
@@ -124,9 +124,9 @@ var number = {
 	 *
 	 * @method round
 	 * @memberOf abaaso.number
-	 * @param  {number} arg       Number to round
-	 * @param  {string} direction [Optional] "up" or "down"
-	 * @return {number}           Rounded interger
+	 * @param  {Number} arg       Number to round
+	 * @param  {String} direction [Optional] "up" or "down"
+	 * @return {Number}           Rounded interger
 	 */
 	round : function ( arg, direction ) {
 		arg = number.parse( arg );

@@ -9,12 +9,12 @@ var cookie = {
 	 *
 	 * @method expire
 	 * @memberOf abaaso.cookie
-	 * @param  {string}  name   Name of the cookie to expire
-	 * @param  {string}  domain [Optional] Domain to set the cookie for
-	 * @param  {boolean} secure [Optional] Make the cookie only accessible via SSL
-	 * @param  {string}  path   [Optional] Path the cookie is for
-	 * @param  {string}  jar    [Optional] Cookie jar, defaults to document.cookie
-	 * @return {string}        Name of the expired cookie
+	 * @param  {String}  name   Name of the cookie to expire
+	 * @param  {String}  domain [Optional] Domain to set the cookie for
+	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {String}  path   [Optional] Path the cookie is for
+	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
+	 * @return {String}        Name of the expired cookie
 	 */
 	expire : function ( name, domain, secure, path, jar ) {
 		cookie.set( name, "", "-1s", domain, secure, path, jar );
@@ -26,9 +26,9 @@ var cookie = {
 	 *
 	 * @method get
 	 * @memberOf abaaso.cookie
-	 * @param  {string} name Name of the cookie to get
-	 * @param  {string} jar  [Optional] Cookie jar, defaults to document.cookie
-	 * @return {mixed}       Cookie or undefined
+	 * @param  {String} name Name of the cookie to get
+	 * @param  {String} jar  [Optional] Cookie jar, defaults to document.cookie
+	 * @return {Mixed}       Cookie or undefined
 	 */
 	get : function ( name, jar ) {
 		return utility.coerce( cookie.list( jar )[name] );
@@ -39,8 +39,8 @@ var cookie = {
 	 *
 	 * @method list
 	 * @memberOf abaaso.cookie
-	 * @param  {string} jar [Optional] Cookie jar, defaults to document.cookie
-	 * @return {object}                Collection of cookies
+	 * @param  {String} jar [Optional] Cookie jar, defaults to document.cookie
+	 * @return {Object}                Collection of cookies
 	 */
 	list : function ( jar ) {
 		var result = {};
@@ -67,14 +67,14 @@ var cookie = {
 	 *
 	 * @method set
 	 * @memberOf abaaso.cookie
-	 * @param  {string}  name   Name of the cookie to create
-	 * @param  {string}  value  Value to set
-	 * @param  {string}  offset A positive or negative integer followed by "d", "h", "m" or "s"
-	 * @param  {string}  domain [Optional] Domain to set the cookie for
-	 * @param  {boolean} secure [Optional] Make the cookie only accessible via SSL
-	 * @param  {string}  path   [Optional] Path the cookie is for
-	 * @param  {string}  jar    [Optional] Cookie jar, defaults to document.cookie
-	 * @return {undefined}      undefined
+	 * @param  {String}  name   Name of the cookie to create
+	 * @param  {String}  value  Value to set
+	 * @param  {String}  offset A positive or negative integer followed by "d", "h", "m" or "s"
+	 * @param  {String}  domain [Optional] Domain to set the cookie for
+	 * @param  {Boolean} secure [Optional] Make the cookie only accessible via SSL
+	 * @param  {String}  path   [Optional] Path the cookie is for
+	 * @param  {String}  jar    [Optional] Cookie jar, defaults to document.cookie
+	 * @return {Undefined}      undefined
 	 */
 	set : function ( name, value, offset, domain, secure, path, jar ) {
 		value      = ( value || "" ) + ";";

@@ -4,7 +4,7 @@
  * @memberOf abaaso
  * @name prototypes
  * @private
- * @type {object}
+ * @type {Object}
  */
 var prototypes = {
 	// Array.prototype

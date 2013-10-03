@@ -5,9 +5,9 @@ var string = {
 	 *
 	 * @method capitalize
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to capitalize
-	 * @param  {boolean} all [Optional] Capitalize each word
-	 * @return {string}      Capitalized String
+	 * @param  {String}  obj String to capitalize
+	 * @param  {Boolean} all [Optional] Capitalize each word
+	 * @return {String}      Capitalized String
 	 */
 	capitalize : function ( obj, all ) {
 		all = ( all === true );
@@ -31,8 +31,8 @@ var string = {
 	 *
 	 * @method escape
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to escape
-	 * @return {string}     Escaped string
+	 * @param  {String} obj String to escape
+	 * @return {String}     Escaped string
 	 */
 	escape : function ( obj ) {
 		return obj.replace( /[\-\[\]{}()*+?.,\\\^\$|#\s]/g, "\\$&" );
@@ -43,9 +43,9 @@ var string = {
 	 *
 	 * @method explode
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to capitalize
-	 * @param  {string} arg String to split on
-	 * @return {array}      Array of the exploded String
+	 * @param  {String} obj String to capitalize
+	 * @param  {String} arg String to split on
+	 * @return {Array}      Array of the exploded String
 	 */
 	explode : function ( obj, arg ) {
 		arg = arg || ",";
@@ -60,9 +60,9 @@ var string = {
 	 *
 	 * @method fromObject
 	 * @memberOf abaaso.string
-	 * @param  {object} obj  Object to convert
-	 * @param  {string} name [Optional] Name of Object
-	 * @return {string}      String representation
+	 * @param  {Object} obj  Object to convert
+	 * @param  {String} name [Optional] Name of Object
+	 * @return {String}      String representation
 	 */
 	fromObject : function ( obj, name ) {
 		var result = ( name ? name + " = {" : "{" ) + "\n";
@@ -81,9 +81,9 @@ var string = {
 	 *
 	 * @method hyphenate
 	 * @memberOf abaaso.string
-	 * @param  {string} obj   String to hyphenate
-	 * @param {boolean} camel [Optional] Hyphenate camelCase
-	 * @return {string}       String with dashes instead of spaces
+	 * @param  {String} obj   String to hyphenate
+	 * @param {Boolean} camel [Optional] Hyphenate camelCase
+	 * @return {String}       String with dashes instead of spaces
 	 */
 	hyphenate : function ( obj, camel ) {
 		var result = string.trim( obj ).replace( /\s+/g, "-" );
@@ -100,8 +100,8 @@ var string = {
 	 *
 	 * @method isAlphaNum
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isAlphaNum : function ( obj ) {
 		return validate.test( {alphanum: obj} ).pass;
@@ -112,8 +112,8 @@ var string = {
 	 *
 	 * @method isBoolean
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isBoolean : function ( obj ) {
 		return validate.test( {"boolean": obj} ).pass;
@@ -124,8 +124,8 @@ var string = {
 	 *
 	 * @method isDate
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isDate : function ( obj ) {
 		return validate.test( {date: obj} ).pass;
@@ -136,8 +136,8 @@ var string = {
 	 *
 	 * @method isDomain
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isDomain : function ( obj ) {
 		return validate.test( {domain: obj} ).pass;
@@ -148,8 +148,8 @@ var string = {
 	 *
 	 * @method isEmail
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isEmail : function ( obj ) {
 		return validate.test( {email: obj} ).pass;
@@ -160,8 +160,8 @@ var string = {
 	 *
 	 * @method isEmpty
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isEmpty : function ( obj ) {
 		return ( string.trim( obj ) === "" );
@@ -172,8 +172,8 @@ var string = {
 	 *
 	 * @method isIP
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isIP : function ( obj ) {
 		return validate.test( {ip: obj} ).pass;
@@ -184,8 +184,8 @@ var string = {
 	 *
 	 * @method isInt
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isInt : function ( obj ) {
 		return validate.test( {integer: obj} ).pass;
@@ -196,8 +196,8 @@ var string = {
 	 *
 	 * @method isNumber
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isNumber : function ( obj ) {
 		return validate.test( {number: obj} ).pass;
@@ -208,8 +208,8 @@ var string = {
 	 *
 	 * @method isPhone
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isPhone : function ( obj ) {
 		return validate.test( {phone: obj} ).pass;
@@ -220,8 +220,8 @@ var string = {
 	 *
 	 * @method isUrl
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj String to test
-	 * @return {boolean}     Result of test
+	 * @param  {String}  obj String to test
+	 * @return {Boolean}     Result of test
 	 */
 	isUrl : function ( obj ) {
 		return validate.test( {url: obj} ).pass;
@@ -232,8 +232,8 @@ var string = {
 	 *
 	 * @method singular
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to transform
-	 * @return {string}     Transformed string
+	 * @param  {String} obj String to transform
+	 * @return {String}     Transformed string
 	 */
 	singular : function ( obj ) {
 		return regex.plural.test( obj ) ? obj.slice( 0, -1 ) : obj;
@@ -244,8 +244,8 @@ var string = {
 	 *
 	 * @method toCamelCase
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to capitalize
-	 * @return {string}     Camel case String
+	 * @param  {String} obj String to capitalize
+	 * @return {String}     Camel case String
 	 */
 	toCamelCase : function ( obj ) {
 		var s = string.trim( obj ).replace( /\.|_|-|\@|\[|\]|\(|\)|\#|\$|\%|\^|\&|\*|\s+/g, " " ).toLowerCase().split( regex.space_hyphen ),
@@ -263,8 +263,8 @@ var string = {
 	 *
 	 * @method toFunction
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to cast
-	 * @return {function}   Function
+	 * @param  {String} obj String to cast
+	 * @return {Function}   Function
 	 */
 	toFunction : function ( obj ) {
 		var args = string.trim( obj.replace( /^.*\(/, "" ).replace(/[\t|\r|\n|\"|\']+/g, "").replace(/\).*/, "") ),
@@ -278,8 +278,8 @@ var string = {
 	 *
 	 * @method trim
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to capitalize
-	 * @return {string}     Trimmed String
+	 * @param  {String} obj String to capitalize
+	 * @return {String}     Trimmed String
 	 */
 	trim : function ( obj ) {
 		return obj.replace( /^(\s+|\t+)|(\s+|\t+)$/g, "" );
@@ -290,8 +290,8 @@ var string = {
 	 *
 	 * @method unCamelCase
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to uncamelcase
-	 * @return {string}     Uncamelcased String
+	 * @param  {String} obj String to uncamelcase
+	 * @return {String}     Uncamelcased String
 	 */
 	unCamelCase : function ( obj ) {
 		return string.trim( obj.replace( /([A-Z])/g, " $1" ).toLowerCase() );
@@ -302,8 +302,8 @@ var string = {
 	 *
 	 * @method uncapitalize
 	 * @memberOf abaaso.string
-	 * @param  {string} obj String to uncapitalize
-	 * @return {string}     Uncapitalized String
+	 * @param  {String} obj String to uncapitalize
+	 * @return {String}     Uncapitalized String
 	 */
 	uncapitalize : function ( obj ) {
 		obj = string.trim( obj );
@@ -316,9 +316,9 @@ var string = {
 	 *
 	 * @method unhyphenate
 	 * @memberOf abaaso.string
-	 * @param  {string}  obj  String to unhypenate
-	 * @param  {boolean} caps [Optional] True to capitalize each word
-	 * @return {string}       Unhyphenated String
+	 * @param  {String}  obj  String to unhypenate
+	 * @param  {Boolean} caps [Optional] True to capitalize each word
+	 * @return {String}       Unhyphenated String
 	 */
 	unhyphenate : function ( obj, caps ) {
 		if ( caps !== true ) {

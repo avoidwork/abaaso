@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: json</title>
+    <title>JSDoc: Namespace: datalist</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Namespace: json</h1>
+    <h1 class="page-title">Namespace: datalist</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="abaaso.html">abaaso</a>.</span>
     
-    json
+    datalist
     </h2>
     
 </header>  
@@ -64,7 +64,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line6222">line 6222</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4194">line 4194</a>
     </li></ul></dd>
     
     
@@ -98,7 +98,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="csv"><span class="type-signature">&lt;static> </span>csv<span class="signature">(arg, delimiter, header)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    <h4 class="name" id="factory"><span class="type-signature">&lt;static> </span>factory<span class="signature">(target, store, template, options)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -106,7 +106,7 @@
     
     
     <div class="description">
-        Transforms JSON to CSV
+        Creates an instance of datalist
     </div>
     
 
@@ -140,13 +140,13 @@
 	
         <tr>
             
-                <td class="name"><code>arg</code></td>
+                <td class="name"><code>target</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -156,20 +156,20 @@
             
             
             
-            <td class="description last">JSON  string to transform</td>
+            <td class="description last">Element to receive the DataList</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>delimiter</code></td>
+                <td class="name"><code>store</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
 
 
             
@@ -179,315 +179,14 @@
             
             
             
-            <td class="description last">[Optional] Character to separate fields</td>
+            <td class="description last">Data store to feed the DataList</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>header</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">[Optional] False to not include field names as first row</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line6224">line 6224</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    CSV string
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">String</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="decode"><span class="type-signature">&lt;static> </span>decode<span class="signature">(arg, silent)</span><span class="type-signature"> &rarr; {Mixed}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Decodes the argument
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>arg</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">String to parse</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>silent</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">[Optional] Silently fail</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line6291">line 6291</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    Entity resulting from parsing JSON, or undefined
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Mixed</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="encode"><span class="type-signature">&lt;static> </span>encode<span class="signature">(arg, silent)</span><span class="type-signature"> &rarr; {String}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Encodes the argument as JSON
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>arg</code></td>
+                <td class="name"><code>template</code></td>
             
             
             <td class="type">
@@ -503,20 +202,20 @@
             
             
             
-            <td class="description last">Entity to encode</td>
+            <td class="description last">Record field, template ( $.tpl ), or String, e.g. "<p>this is a {{field}} sample.</p>", fields are marked with {{ }}</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>silent</code></td>
+                <td class="name"><code>options</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">Object</span>
 
 
             
@@ -526,7 +225,7 @@
             
             
             
-            <td class="description last">[Optional] Silently fail</td>
+            <td class="description last">Optional parameters to set on the DataList</td>
         </tr>
 	
 	
@@ -557,7 +256,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line6313">line 6313</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4199">line 4199</a>
     </li></ul></dd>
     
     
@@ -582,7 +281,7 @@
     
             
 <div class="param-desc">
-    JSON, or undefined
+    <a href="abaaso.DataList_.html">abaaso.DataList</a>
 </div>
 
 
@@ -593,7 +292,189 @@
 	</dt>
 	<dd>
 		
-<span class="param-type">String</span>
+<span class="param-type">Object</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="pages"><span class="type-signature">&lt;static> </span>pages<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Calculates the total pages
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4237">line 4237</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Total pages
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="range"><span class="type-signature">&lt;static> </span>range<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Calculates the page size as an Array of start & finish
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4252">line 4252</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Array of start & end numbers
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
 
 
 	</dd>
@@ -626,7 +507,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Thu Oct 03 2013 05:51:19 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Thu Oct 03 2013 05:51:18 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

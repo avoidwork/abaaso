@@ -6,7 +6,7 @@
  * @namespace abaaso.regex
  * @private
  * @memberOf abaaso
- * @type {object}
+ * @type {Object}
  */
 var regex = {
 	after_space             : /\s+.*/,

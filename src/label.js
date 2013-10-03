@@ -13,7 +13,7 @@ var label = {
 		/**
 		 * Back
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		back        : "Back",
@@ -21,7 +21,7 @@ var label = {
 		/**
 		 * Cancel
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		cancel      : "Cancel",
@@ -29,7 +29,7 @@ var label = {
 		/**
 		 * Clear
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		clear       : "Clear",
@@ -37,7 +37,7 @@ var label = {
 		/**
 		 * Close
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		close       : "Close",
@@ -45,7 +45,7 @@ var label = {
 		/**
 		 * Continue
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		cont        : "Continue",
@@ -53,7 +53,7 @@ var label = {
 		/**
 		 * Create
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		create	    : "Create",
@@ -61,7 +61,7 @@ var label = {
 		/**
 		 * Custom Range
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		customRange : "Custom Range",
@@ -69,7 +69,7 @@ var label = {
 		/**
 		 * Delete
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		del         : "Delete",
@@ -77,7 +77,7 @@ var label = {
 		/**
 		 * Edit
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		edit        : "Edit",
@@ -85,7 +85,7 @@ var label = {
 		/**
 		 * Find
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		find        : "Find",
@@ -93,7 +93,7 @@ var label = {
 		/**
 		 * From
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		from        : "From",
@@ -101,7 +101,7 @@ var label = {
 		/**
 		 * Generate
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		gen         : "Generate",
@@ -109,7 +109,7 @@ var label = {
 		/**
 		 * Go
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		go          : "Go",
@@ -117,7 +117,7 @@ var label = {
 		/**
 		 * Loading
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		loading     : "Loading",
@@ -125,7 +125,7 @@ var label = {
 		/**
 		 * Next
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		next        : "Next",
@@ -133,7 +133,7 @@ var label = {
 		/**
 		 * Login
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		login       : "Login",
@@ -141,7 +141,7 @@ var label = {
 		/**
 		 * Random
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		ran         : "Random",
@@ -149,7 +149,7 @@ var label = {
 		/**
 		 * Reset
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		reset       : "Reset",
@@ -157,7 +157,7 @@ var label = {
 		/**
 		 * Save
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		save        : "Save",
@@ -165,7 +165,7 @@ var label = {
 		/**
 		 * Search
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		search      : "Search",
@@ -173,7 +173,7 @@ var label = {
 		/**
 		 * Send
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		send        : "Send",
@@ -181,7 +181,7 @@ var label = {
 		/**
 		 * Submit
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		submit      : "Submit",
@@ -189,7 +189,7 @@ var label = {
 		/**
 		 * To
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		to          : "To",
@@ -197,7 +197,7 @@ var label = {
 		/**
 		 * Today
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		today       : "Today",
@@ -205,7 +205,7 @@ var label = {
 		/**
 		 * Yesterday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.common
 		 */
 		yesterday   : "Yesterday"
@@ -220,7 +220,7 @@ var label = {
 		/**
 		 * Sunday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		0 : "Sunday",
@@ -228,7 +228,7 @@ var label = {
 		/**
 		 * Monday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		1 : "Monday",
@@ -236,7 +236,7 @@ var label = {
 		/**
 		 * Tuesday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		2 : "Tuesday",
@@ -244,7 +244,7 @@ var label = {
 		/**
 		 * Wednesday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		3 : "Wednesday",
@@ -252,7 +252,7 @@ var label = {
 		/**
 		 * Thursday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		4 : "Thursday",
@@ -260,7 +260,7 @@ var label = {
 		/**
 		 * Friday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		5 : "Friday",
@@ -268,7 +268,7 @@ var label = {
 		/**
 		 * Saturday
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.day
 		 */
 		6 : "Saturday"
@@ -283,7 +283,7 @@ var label = {
 		/**
 		 * Failed to open the Database, possibly exceeded Domain quota
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		databaseNotOpen       : "Failed to open the Database, possibly exceeded Domain quota",
@@ -291,7 +291,7 @@ var label = {
 		/**
 		 * Client does not support local database storage
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		databaseNotSupported  : "Client does not support local database storage",
@@ -299,7 +299,7 @@ var label = {
 		/**
 		 * Possible SQL injection in database transaction, use the &#63; placeholder
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder",
@@ -307,7 +307,7 @@ var label = {
 		/**
 		 * More than one match found
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		databaseMoreThanOne   : "More than one match found",
@@ -315,7 +315,7 @@ var label = {
 		/**
 		 * Could not create the Element
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		elementNotCreated     : "Could not create the Element",
@@ -323,7 +323,7 @@ var label = {
 		/**
 		 * Could not find the Element
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		elementNotFound       : "Could not find the Element",
@@ -331,7 +331,7 @@ var label = {
 		/**
 		 * Expected an Array
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		expectedArray         : "Expected an Array",
@@ -339,7 +339,7 @@ var label = {
 		/**
 		 * Expected an Array or Object
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		expectedArrayObject   : "Expected an Array or Object",
@@ -347,7 +347,7 @@ var label = {
 		/**
 		 * Expected a Boolean value
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		expectedBoolean       : "Expected a Boolean value",
@@ -355,7 +355,7 @@ var label = {
 		/**
 		 * Expected a Number
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		expectedNumber        : "Expected a Number",
@@ -363,7 +363,7 @@ var label = {
 		/**
 		 * Expected a property, and it was not set
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		expectedProperty      : "Expected a property, and it was not set",
@@ -371,7 +371,7 @@ var label = {
 		/**
 		 * Expected an Object
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		expectedObject        : "Expected an Object",
@@ -379,7 +379,7 @@ var label = {
 		/**
 		 * One or more arguments is invalid
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidArguments      : "One or more arguments is invalid",
@@ -387,7 +387,7 @@ var label = {
 		/**
 		 * Invalid Date
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidDate           : "Invalid Date",
@@ -395,7 +395,7 @@ var label = {
 		/**
 		 * The following required fields are invalid:
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidFields         : "The following required fields are invalid: ",
@@ -403,7 +403,7 @@ var label = {
 		/**
 		 * The route could not be found
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidRoute          : "The route could not be found",
@@ -411,7 +411,7 @@ var label = {
 		/**
 		 * INVALID_STATE_ERR: Headers have not been received
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidStateNoHeaders : "INVALID_STATE_ERR: Headers have not been received",
@@ -419,7 +419,7 @@ var label = {
 		/**
 		 * Synchronous XMLHttpRequest requests are not supported
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidStateNoSync    : "Synchronous XMLHttpRequest requests are not supported",
@@ -427,7 +427,7 @@ var label = {
 		/**
 		 * INVALID_STATE_ERR: Object is not open
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidStateNotOpen   : "INVALID_STATE_ERR: Object is not open",
@@ -435,7 +435,7 @@ var label = {
 		/**
 		 * INVALID_STATE_ERR: Object is sending
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidStateNotSending: "INVALID_STATE_ERR: Object is sending",
@@ -443,7 +443,7 @@ var label = {
 		/**
 		 * INVALID_STATE_ERR: Object is not usable
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		invalidStateNotUsable : "INVALID_STATE_ERR: Object is not usable",
@@ -451,7 +451,7 @@ var label = {
 		/**
 		 * Requested method is not available
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		notAvailable          : "Requested method is not available",
@@ -459,7 +459,7 @@ var label = {
 		/**
 		 * This feature is not supported by this platform
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		notSupported          : "This feature is not supported by this platform",
@@ -467,7 +467,7 @@ var label = {
 		/**
 		 * Could not find the requested property
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		propertyNotFound      : "Could not find the requested property",
@@ -475,7 +475,7 @@ var label = {
 		/**
 		 * The promise cannot be resolved while pending result
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		promisePending        : "The promise cannot be resolved while pending result",
@@ -483,7 +483,7 @@ var label = {
 		/**
 		 * The promise has been resolved: {{outcome}}
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		promiseResolved       : "The promise has been resolved: {{outcome}}",
@@ -491,7 +491,7 @@ var label = {
 		/**
 		 * Server error has occurred
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		serverError           : "Server error has occurred",
@@ -499,7 +499,7 @@ var label = {
 		/**
 		 * Forbidden to access URI
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		serverForbidden       : "Forbidden to access URI",
@@ -507,7 +507,7 @@ var label = {
 		/**
 		 * Method not allowed
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		serverInvalidMethod   : "Method not allowed",
@@ -515,7 +515,7 @@ var label = {
 		/**
 		 * Authorization required to access URI
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		serverUnauthorized    : "Authorization required to access URI",
@@ -523,7 +523,7 @@ var label = {
 		/**
 		 * Property is read only
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		readOnly              : "Property is read only",
@@ -531,7 +531,7 @@ var label = {
 		/**
 		 * Your browser is too old to use abaaso, please upgrade
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.error
 		 */
 		upgrade               : "Your browser is too old to use abaaso, please upgrade"
@@ -546,7 +546,7 @@ var label = {
 		/**
 		 * January
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		0  : "January",
@@ -554,7 +554,7 @@ var label = {
 		/**
 		 * February
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		1  : "February",
@@ -562,7 +562,7 @@ var label = {
 		/**
 		 * March
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		2  : "March",
@@ -570,7 +570,7 @@ var label = {
 		/**
 		 * April
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		3  : "April",
@@ -578,7 +578,7 @@ var label = {
 		/**
 		 * May
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		4  : "May",
@@ -586,7 +586,7 @@ var label = {
 		/**
 		 * June
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		5  : "June",
@@ -594,7 +594,7 @@ var label = {
 		/**
 		 * July
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		6  : "July",
@@ -602,7 +602,7 @@ var label = {
 		/**
 		 * August
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		7  : "August",
@@ -610,7 +610,7 @@ var label = {
 		/**
 		 * September
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		8  : "September",
@@ -618,7 +618,7 @@ var label = {
 		/**
 		 * October
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		9  : "October",
@@ -626,7 +626,7 @@ var label = {
 		/**
 		 * November
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		10 : "November",
@@ -634,7 +634,7 @@ var label = {
 		/**
 		 * December
 		 *
-		 * @type {string}
+		 * @type {String}
 		 * @memberOf abaaso.label.month
 		 */
 		11 : "December"

@@ -4,7 +4,7 @@ var observer = {
 	 * Collection of listeners
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {object}
+	 * @type {Object}
 	 */
 	listeners  : {},
 
@@ -12,7 +12,7 @@ var observer = {
 	 * Array copy of listeners for observer.fire()
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {object}
+	 * @type {Object}
 	 */
 	alisteners : {},
 
@@ -20,7 +20,7 @@ var observer = {
 	 * Event listeners
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {object}
+	 * @type {Object}
 	 */
 	elisteners : {},
 
@@ -28,7 +28,7 @@ var observer = {
 	 * Tracks count of listeners per event across all states
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {object}
+	 * @type {Object}
 	 */
 	clisteners : {},
 
@@ -36,7 +36,7 @@ var observer = {
 	 * Boolean indicating if events are logged to the console
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {boolean}
+	 * @type {Boolean}
 	 */
 	log : false,
 
@@ -44,7 +44,7 @@ var observer = {
 	 * Queue of events to fire
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {array}
+	 * @type {Array}
 	 */
 	queue : [],
 
@@ -52,7 +52,7 @@ var observer = {
 	 * If `true`, events are queued
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {boolean}
+	 * @type {Boolean}
 	 */
 	silent : false,
 
@@ -60,7 +60,7 @@ var observer = {
 	 * If `true`, events are ignored
 	 *
 	 * @memberOf abaaso.observer
-	 * @type {boolean}
+	 * @type {Boolean}
 	 */
 	ignore : false,
 
@@ -69,13 +69,13 @@ var observer = {
 	 *
 	 * @method add
 	 * @memberOf abaaso.observer
-	 * @param  {mixed}    obj   Primitive
-	 * @param  {string}   event Event, or Events being fired ( comma delimited supported )
-	 * @param  {function} fn    Event handler
-	 * @param  {string}   id    [Optional / Recommended] ID for the listener
-	 * @param  {string}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
-	 * @param  {string}   st    [Optional] Application state, default is current
-	 * @return {mixed}          Primitive
+	 * @param  {Mixed}    obj   Primitive
+	 * @param  {String}   event Event, or Events being fired ( comma delimited supported )
+	 * @param  {Function} fn    Event handler
+	 * @param  {String}   id    [Optional / Recommended] ID for the listener
+	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
+	 * @param  {String}   st    [Optional] Application state, default is current
+	 * @return {Mixed}          Primitive
 	 */
 	add : function ( obj, event, fn, id, scope, st ) {
 		scope = scope || obj;
@@ -156,8 +156,8 @@ var observer = {
 	 *
 	 * @method decorate
 	 * @memberOf abaaso.observer
-	 * @param  {object} obj Object to decorate
-	 * @return {object}     Object to decorate
+	 * @param  {Object} obj Object to decorate
+	 * @return {Object}     Object to decorate
 	 */
 	decorate : function ( obj ) {
 		var methods = [
@@ -180,8 +180,8 @@ var observer = {
 	 *
 	 * @method discard
 	 * @memberOf abaaso.observer
-	 * @param  {boolean} arg [Optional] Boolean indicating if events will be ignored
-	 * @return {boolean}     Current setting
+	 * @param  {Boolean} arg [Optional] Boolean indicating if events will be ignored
+	 * @return {Boolean}     Current setting
 	 */
 	discard : function ( arg ) {
 		return arg === undefined ? observer.ignore : ( observer.ignore = ( arg === true ) );
@@ -192,9 +192,9 @@ var observer = {
 	 *
 	 * @method fire
 	 * @memberOf abaaso.observer
-	 * @param  {mixed}  obj   Primitive
-	 * @param  {string} event Event, or Events being fired ( comma delimited supported )
-	 * @return {mixed}        Primitive
+	 * @param  {Mixed}  obj   Primitive
+	 * @param  {String} event Event, or Events being fired ( comma delimited supported )
+	 * @return {Mixed}        Primitive
 	 */
 	fire : function ( obj, event ) {
 		var quit = false,
@@ -253,8 +253,8 @@ var observer = {
 	 *
 	 * @method id
 	 * @memberOf abaaso.observer
-	 * @param  {mixed}  Object or String
-	 * @return {string} Observer id
+	 * @param  {Mixed}  Object or String
+	 * @return {String} Observer id
 	 */
 	id : function ( arg ) {
 		var id;
@@ -281,10 +281,10 @@ var observer = {
 	 *
 	 * @method list
 	 * @memberOf abaaso.observer
-	 * @param  {mixed}  obj    Primitive
-	 * @param  {string} event  Event being queried
-	 * @param  {object} target [Optional] Listeners collection to access, default is `observer.listeners`
-	 * @return {mixed}         Primitive
+	 * @param  {Mixed}  obj    Primitive
+	 * @param  {String} event  Event being queried
+	 * @param  {Object} target [Optional] Listeners collection to access, default is `observer.listeners`
+	 * @return {Mixed}         Primitive
 	 */
 	list : function ( obj, event, target ) {
 		var l = target || observer.listeners,
@@ -312,13 +312,13 @@ var observer = {
 	 *
 	 * @method once
 	 * @memberOf abaaso.observer
-	 * @param  {mixed}    obj   Primitive
-	 * @param  {string}   event Event being fired
-	 * @param  {function} fn    Event handler
-	 * @param  {string}   id    [Optional / Recommended] ID for the listener
-	 * @param  {string}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
-	 * @param  {string}   st    [Optional] Application state, default is current
-	 * @return {mixed}          Primitive
+	 * @param  {Mixed}    obj   Primitive
+	 * @param  {String}   event Event being fired
+	 * @param  {Function} fn    Event handler
+	 * @param  {String}   id    [Optional / Recommended] ID for the listener
+	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
+	 * @param  {String}   st    [Optional] Application state, default is current
+	 * @return {Mixed}          Primitive
 	 */
 	once : function ( obj, event, fn, id, scope, st ) {
 		var uuid = id || utility.genId();
@@ -343,8 +343,8 @@ var observer = {
 	 *
 	 * @method pause
 	 * @memberOf abaaso.observer
-	 * @param  {boolean} arg Boolean indicating if events will be queued
-	 * @return {boolean}     Current setting
+	 * @param  {Boolean} arg Boolean indicating if events will be queued
+	 * @return {Boolean}     Current setting
 	 */
 	pause : function ( arg ) {
 		if ( arg === true ) {
@@ -368,11 +368,11 @@ var observer = {
 	 *
 	 * @method remove
 	 * @memberOf abaaso.observer
-	 * @param  {mixed}  obj   Primitive
-	 * @param  {string} event [Optional] Event, or Events being fired ( comma delimited supported )
-	 * @param  {string} id    [Optional] Listener id
-	 * @param  {string} st    [Optional] Application state, default is current
-	 * @return {mixed}        Primitive
+	 * @param  {Mixed}  obj   Primitive
+	 * @param  {String} event [Optional] Event, or Events being fired ( comma delimited supported )
+	 * @param  {String} id    [Optional] Listener id
+	 * @param  {String} st    [Optional] Application state, default is current
+	 * @return {Mixed}        Primitive
 	 */
 	remove : function ( obj, event, id, st ) {
 		st = st || state.getCurrent();
@@ -392,9 +392,9 @@ var observer = {
 		 * @method fn
 		 * @memberOf abaaso.observer.remove
 		 * @private
-		 * @param  {mixed}  event String or null
-		 * @param  {number} i     Amount of listeners being removed
-		 * @return {undefined}    undefined
+		 * @param  {Mixed}  event String or null
+		 * @param  {Number} i     Amount of listeners being removed
+		 * @return {Undefined}    undefined
 		 */
 		fn = function ( event, i ) {
 			var unhook = ( typeof i === "number" && ( cl[o][event] = ( cl[o][event] - i ) ) === 0 );
@@ -458,8 +458,8 @@ var observer = {
 	 *
 	 * @method sum
 	 * @memberOf abaaso.observer
-	 * @param  {mixed} obj [Optional] Entity
-	 * @return {object}    Object with total listeners per event
+	 * @param  {Mixed} obj [Optional] Entity
+	 * @return {Object}    Object with total listeners per event
 	 */
 	sum : function ( obj ) {
 		return obj ? observer.clisteners[observer.id( obj )] : array.keys( observer.clisteners ).length;
@@ -470,10 +470,10 @@ var observer = {
 	 *
 	 * @method sync
 	 * @memberOf abaaso.observer
-	 * @param  {string} obj   Object ID
-	 * @param  {string} event Event
-	 * @param  {string} st    Application state
-	 * @return {undefined}    undefined
+	 * @param  {String} obj   Object ID
+	 * @param  {String} event Event
+	 * @param  {String} st    Application state
+	 * @return {Undefined}    undefined
 	 */
 	sync : function ( obj, event, st ) {
 		observer.alisteners[obj][event][st] = array.cast( observer.listeners[obj][event][st] );

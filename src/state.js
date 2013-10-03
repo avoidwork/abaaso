@@ -8,7 +8,7 @@ var state = ( function () {
 	 *
 	 * @method getCurrent
 	 * @memberOf abaaso.state
-	 * @return {string} Application state
+	 * @return {String} Application state
 	 */
 	getCurrent = function () {
 		return prop.current;
@@ -19,8 +19,8 @@ var state = ( function () {
 	 *
 	 * @method setCurrent
 	 * @memberOf abaaso.state
-	 * @param  {string} arg New application state
-	 * @return {string}     Application state
+	 * @param  {String} arg New application state
+	 * @return {String}     Application state
 	 */
 	setCurrent = function ( arg ) {
 		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) {
@@ -40,7 +40,7 @@ var state = ( function () {
 	 *
 	 * @method getHeader
 	 * @memberOf abaaso.state
-	 * @return {string} Application state header
+	 * @return {String} Application state header
 	 */
 	getHeader = function () {
 		return prop.header;
@@ -51,8 +51,8 @@ var state = ( function () {
 	 *
 	 * @method setHeader
 	 * @memberOf abaaso.state
-	 * @param  {string} arg New application state header
-	 * @return {string}     Application state header
+	 * @param  {String} arg New application state header
+	 * @return {String}     Application state header
 	 */
 	setHeader = function ( arg ) {
 		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
@@ -69,7 +69,7 @@ var state = ( function () {
 	 *
 	 * @method getPrevious
 	 * @memberOf abaaso.state
-	 * @return {string} Previous application state
+	 * @return {String} Previous application state
 	 */
 	getPrevious = function () {
 		return prop.previous;
@@ -80,7 +80,7 @@ var state = ( function () {
 	 *
 	 * @method setPrevious
 	 * @memberOf abaaso.state
-	 * @return {undefined} undefined
+	 * @return {Undefined} undefined
 	 */
 	setPrevious = function () {
 		throw new Error( label.error.readOnly );

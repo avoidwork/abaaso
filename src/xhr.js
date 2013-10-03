@@ -3,7 +3,7 @@
  *
  * @method xhr
  * @memberOf abaaso
- * @return {object} XMLHttpRequest instance
+ * @return {Object} XMLHttpRequest instance
  */
 var xhr = function () {
 	var UNSENT           = 0,
@@ -25,8 +25,8 @@ var xhr = function () {
 	 *
 	 * @method state
 	 * @memberOf abaaso.xhr
-	 * @param  {string} arg New readyState
-	 * @return {object}     XMLHttpRequest instance
+	 * @param  {String} arg New readyState
+	 * @return {Object}     XMLHttpRequest instance
 	 */
 	state = function ( arg ) {
 		if ( this.readyState !== arg ) {
@@ -47,8 +47,8 @@ var xhr = function () {
 	 *
 	 * @method handler
 	 * @memberOf abaaso.xhr
-	 * @param  {object} res HTTP(S) Response Object
-	 * @return {undefined}  undefined
+	 * @param  {Object} res HTTP(S) Response Object
+	 * @return {Undefined}  undefined
 	 */
 	handler = function ( res ) {
 		var self = this;
@@ -87,8 +87,8 @@ var xhr = function () {
 	 *
 	 * @method handlerError
 	 * @memberOf abaaso.xhr
-	 * @param  {object} e Error
-	 * @return {undefined} undefined
+	 * @param  {Object} e Error
+	 * @return {Undefined} undefined
 	 */
 	handlerError = function ( e ) {
 		this.status       = 503;
@@ -106,7 +106,7 @@ var xhr = function () {
 	 *
 	 * @constructor
 	 * @memberOf abaaso
-	 * @return {object} XMLHttpRequest instance
+	 * @return {Object} XMLHttpRequest instance
 	 */
 	XMLHttpRequest = function () {
 		this.onabort            = null;
@@ -139,7 +139,7 @@ var xhr = function () {
 	 *
 	 * @method abort
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @return {object} XMLHttpRequest instance
+	 * @return {Object} XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.abort = function () {
 		if ( this._request !== null ) {
@@ -168,9 +168,9 @@ var xhr = function () {
 	 *
 	 * @method addEventListener
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param {string}   event Event to listen for
-	 * @param {function} fn    Event handler
-	 * @return {object}        XMLHttpRequest instance
+	 * @param {String}   event Event to listen for
+	 * @param {Function} fn    Event handler
+	 * @return {Object}        XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.addEventListener = function ( event, fn ) {
 		if ( !this._listeners.hasOwnProperty( event ) ) {
@@ -187,8 +187,8 @@ var xhr = function () {
 	 *
 	 * @method dispatchEvent
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param  {string} event Name of event
-	 * @return {object}       XMLHttpRequest instance
+	 * @param  {String} event Name of event
+	 * @return {Object}       XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.dispatchEvent = function ( event ) {
 		var self = this;
@@ -213,7 +213,7 @@ var xhr = function () {
 	 *
 	 * @method getAllResponseHeaders
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @return {object} Response headers
+	 * @return {Object} Response headers
 	 */
 	XMLHttpRequest.prototype.getAllResponseHeaders = function () {
 		var result = "";
@@ -234,8 +234,8 @@ var xhr = function () {
 	 *
 	 * @method getResponseHeader
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param  {string} header Header to get
-	 * @return {string}        Response header value
+	 * @param  {String} header Header to get
+	 * @return {String}        Response header value
 	 */
 	XMLHttpRequest.prototype.getResponseHeader = function ( header ) {
 		var result;
@@ -254,12 +254,12 @@ var xhr = function () {
 	 *
 	 * @method open
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param  {string}  method   HTTP method
-	 * @param  {string}  url      URL to receive request
-	 * @param  {boolean} async    [Optional] Asynchronous request
-	 * @param  {string}  user     [Optional] Basic auth username
-	 * @param  {string}  password [Optional] Basic auth password
-	 * @return {object}           XMLHttpRequest instance
+	 * @param  {String}  method   HTTP method
+	 * @param  {String}  url      URL to receive request
+	 * @param  {Boolean} async    [Optional] Asynchronous request
+	 * @param  {String}  user     [Optional] Basic auth username
+	 * @param  {String}  password [Optional] Basic auth password
+	 * @return {Object}           XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.open = function ( method, url, async, user, password ) {
 		var self = this;
@@ -292,8 +292,8 @@ var xhr = function () {
 	 *
 	 * @method overrideMimeType
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param  {string} mime Mime type of the request ( media type )
-	 * @return {object}      XMLHttpRequest instance
+	 * @param  {String} mime Mime type of the request ( media type )
+	 * @return {Object}      XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.overrideMimeType = function ( mime ) {
 		this._headers["Content-Type"] = mime;
@@ -306,9 +306,9 @@ var xhr = function () {
 	 *
 	 * @method removeEventListener
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param {string}   event Event to listen for
-	 * @param {function} fn    Event handler
-	 * @return {object}        XMLHttpRequest instance
+	 * @param {String}   event Event to listen for
+	 * @param {Function} fn    Event handler
+	 * @return {Object}        XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.removeEventListener = function ( event, fn ) {
 		if ( !this._listeners.hasOwnProperty( event ) ) {
@@ -325,8 +325,8 @@ var xhr = function () {
 	 *
 	 * @method send
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param  {mixed} data [Optional] Payload to send with the request
-	 * @return {object}     XMLHttpRequest instance
+	 * @param  {Mixed} data [Optional] Payload to send with the request
+	 * @return {Object}     XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.send = function ( data ) {
 		data     = data || null;
@@ -396,9 +396,9 @@ var xhr = function () {
 	 *
 	 * @method setRequestHeader
 	 * @memberOf abaaso.XMLHttpRequest
-	 * @param {string} header HTTP header
-	 * @param {string} value  Header value
-	 * @return {object}       XMLHttpRequest instance
+	 * @param {String} header HTTP header
+	 * @param {String} value  Header value
+	 * @return {Object}       XMLHttpRequest instance
 	 */
 	XMLHttpRequest.prototype.setRequestHeader = function ( header, value ) {
 		if ( this.readyState !== OPENED ) {
