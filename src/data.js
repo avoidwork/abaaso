@@ -770,7 +770,7 @@ DataStore.prototype.select = function ( where ) {
 	if ( clauses.length > 1 ) {
 		array.each( clauses, function ( i, idx ) {
 			var b1 = "( ",
-				b2 = " )";
+			    b2 = " )";
 
 			if ( idx > 0 ) {
 				b1 = " && ( ";
