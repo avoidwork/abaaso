@@ -761,7 +761,7 @@ DataStore.prototype.save = function ( arg ) {
  * @return {Array}         Array of records
  */
 DataStore.prototype.select = function ( where ) {
-	var clauses = array.mingle( array.keys( where ), array.cast( where ) ),
+	var clauses = array.fromObject( where ),
 	    cond    = "return ( ";
 
 	if ( clauses.length > 1 ) {

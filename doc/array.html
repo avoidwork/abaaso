@@ -412,6 +412,18 @@ Parameters for fn are 'value', 'index'</p>
     <span class="p">},</span> <span class="nx">result</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method fromObject</span></p>
+
+<p>Creates a 2D Array from an Object</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Object.</strong><br/>(Object to convert)</li>
+</ul>
+
+<p><strong>Returns an Array</strong><br/>(2D Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">fromObject</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">array</span><span class="p">.</span><span class="nx">mingle</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">),</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method index</span></p>
 
 <p>Facade to indexOf for shorter syntax</p>

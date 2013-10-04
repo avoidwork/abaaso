@@ -403,6 +403,17 @@ var array = {
 	},
 
 	/**
+	 * Creates a 2D Array from an Object
+	 *
+	 * @method fromObject
+	 * @param  {Object} obj Object to convert
+	 * @return {Array}      2D Array
+	 */
+	fromObject : function ( obj ) {
+		return array.mingle( array.keys( obj ), array.cast( obj ) );
+	},
+
+	/**
 	 * Facade to indexOf for shorter syntax
 	 *
 	 * @method index
