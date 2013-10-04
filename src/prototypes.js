@@ -164,6 +164,9 @@ var prototypes = {
 		flat : function () {
 			return array.flat( this );
 		},
+		fromObject : function ( arg ) {
+			return array.fromObject( arg );
+		},
 		genId : function () {
 			return array.each( this, function ( i ) {
 				utility.genId( i );

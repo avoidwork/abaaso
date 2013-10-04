@@ -736,7 +736,7 @@ If the key is an integer, cast to a string before sending as an argument!</p>
 </ul>
 
 <p><strong>Returns an Array</strong><br/>(Array of records)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">select</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">where</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">clauses</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">mingle</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span> <span class="nx">where</span> <span class="p">),</span> <span class="nx">array</span><span class="p">.</span><span class="nx">cast</span><span class="p">(</span> <span class="nx">where</span> <span class="p">)</span> <span class="p">),</span>
+  <span class="kd">var</span> <span class="nx">clauses</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">fromObject</span><span class="p">(</span> <span class="nx">where</span> <span class="p">),</span>
       <span class="nx">cond</span>    <span class="o">=</span> <span class="s2">&quot;return ( &quot;</span><span class="p">;</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">clauses</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">{</span>
