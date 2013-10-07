@@ -46,27 +46,47 @@ var datastore = {
 	 */
 	worker : function ( ev ) {
 		var cmd = ev.data.cmd,
-		    logic, result, where;
+		    clauses, cond, result, where;
 
 		if ( cmd === "select" ) {
-			logic = [];
-			where = JSON.parse( ev.data.where );
+			where   = JSON.parse( ev.data.where );
+			clauses = array.fromObject( where );
+			cond    = "return ( ";
 
-			utility.iterate( where, function ( v, k ) {
-				if ( array.contains( ev.data.functions, k ) ) {
-					logic.push( "if (" + v + "(rec.data[\"" + k + "\"])) return true;");
+			if ( clauses.length > 1 ) {
+				array.each( clauses, function ( i, idx ) {
+					var b1 = "( ";
+
+					if ( idx > 0 ) {
+						b1 = " && ( ";
+					}
+
+					if ( i[1] instanceof Function ) {
+						cond += b1 + i[1].toString() + "( rec.data[\"" + i[0] + "\"] ) )";
+					}
+					else if ( !isNaN( i[1] ) ) {
+						cond += b1 + "rec.data[\"" + i[0] + "\"] === " + i[1] + " )";
+					}
+					else {
+						cond += b1 + "rec.data[\"" + i[0] + "\"] === \"" + i[1] + "\" )";
+					}
+				} );
+			}
+			else {
+				if ( clauses[0][1] instanceof Function ) {
+					cond += clauses[0][1].toString() + "( rec.data[\"" + clauses[0][0] + "\"] )";
 				}
-				else if ( !isNaN( v ) ) {
-					logic.push( "if (rec.data[\"" + k + "\"] === " + v + ") return true;" );
+				else if ( !isNaN( clauses[0][1] ) ) {
+					cond += "rec.data[\"" + clauses[0][0] + "\"] === " + clauses[0][1];
 				}
 				else {
-					logic.push( "if (rec.data[\"" + k + "\"] === \"" + v + "\") return true;" );
+					cond += "rec.data[\"" + clauses[0][0] + "\"] === \"" + clauses[0][1] + "\"";
 				}
-			} );
+			}
 
-			logic.push( "return false;" );
+			cond += " );";
 
-			result = ev.data.records.filter( new Function( "rec", logic.join( "\n" ) ) );
+			result = ev.data.records.filter( new Function( "rec", cond ) );
 		}
 		else if ( cmd === "sort" ) {
 			result = array.keySort( ev.data.records, ev.data.query, "data" );
@@ -753,30 +773,50 @@ DataStore.prototype.save = function ( arg ) {
  */
 DataStore.prototype.select = function ( where ) {
 	var defer = deferred(),
-	    blob, functions, logic, worker;
+	    blob, clauses, cond, functions, worker;
 
 	if ( !( where instanceof Object ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
 	if ( server ) {
-		logic = [];
+		clauses = array.fromObject( where );
+		cond    = "return ( ";
 
-		utility.iterate( where, function ( v, k ) {
-			if ( v instanceof Function ) {
-				logic.push( "if (" + v.toString() + "(rec.data[\"" + k + "\"])) return true;");
+		if ( clauses.length > 1 ) {
+			array.each( clauses, function ( i, idx ) {
+				var b1 = "( ";
+
+				if ( idx > 0 ) {
+					b1 = " && ( ";
+				}
+
+				if ( i[1] instanceof Function ) {
+					cond += b1 + i[1].toString() + "( rec.data[\"" + i[0] + "\"] ) )";
+				}
+				else if ( !isNaN( i[1] ) ) {
+					cond += b1 + "rec.data[\"" + i[0] + "\"] === " + i[1] + " )";
+				}
+				else {
+					cond += b1 + "rec.data[\"" + i[0] + "\"] === \"" + i[1] + "\" )";
+				}
+			} );
+		}
+		else {
+			if ( clauses[0][1] instanceof Function ) {
+				cond += clauses[0][1].toString() + "( rec.data[\"" + clauses[0][0] + "\"] )";
 			}
-			else if ( !isNaN( v ) ) {
-				logic.push( "if (rec.data[\"" + k + "\"] === " + v + ") return true;" );
+			else if ( !isNaN( clauses[0][1] ) ) {
+				cond += "rec.data[\"" + clauses[0][0] + "\"] === " + clauses[0][1];
 			}
 			else {
-				logic.push( "if (rec.data[\"" + k + "\"] === \"" + v + "\") return true;" );
+				cond += "rec.data[\"" + clauses[0][0] + "\"] === \"" + clauses[0][1] + "\"";
 			}
-		} );
+		}
 
-		logic.push( "return false;" );
+		cond += " );";
 
-		defer.resolve( this.records.slice().filter( new Function( "rec", logic.join( "\n" ) ) ) );
+		defer.resolve( this.records.slice().filter( new Function( "rec", cond ) ) );
 	}
 	else {
 		functions = [];

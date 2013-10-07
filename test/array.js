@@ -240,6 +240,19 @@ exports["flat"] = {
 	}
 };
 
+exports["fromObject"] = {
+	setUp: function (done) {
+		this.val = {abc: true, xyz: false};
+		done();
+	},
+	direct: function (test) {
+		test.expect(2);
+		test.equal(array.fromObject(this.val).length, 2, "Should be an Array of 2 indices");
+		test.equal(array.fromObject(this.val)[0].length, 2, "Should be an Array of 2 indices");
+		test.done();
+	}
+};
+
 exports["index"] = {
 	setUp: function (done) {
 		this.val = ["abc", "xyz"];

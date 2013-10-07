@@ -1,3 +1,118 @@
+var observer = {
+	/**
+	 * If `true`, events are ignored
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Boolean}
+	 */
+	ignore : false,
+
+	/**
+	 * Collection of listeners
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Object}
+	 */
+	listeners : {},
+
+	/**
+	 * Boolean indicating if events are logged to the console
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Boolean}
+	 */
+	log : false,
+
+	/**
+	 * Maximum amount of handlers per event
+	 *
+	 * @type {Number}
+	 */
+	maxListeners : 25,
+
+	/**
+	 * Queue of events to fire
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Array}
+	 */
+	queue : [],
+
+	/**
+	 * If `true`, events are queued
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Boolean}
+	 */
+	silent : false,
+
+	/**
+	 * Adds a handler for an event
+	 *
+	 * @method add
+	 * @memberOf abaaso.observer
+	 * @param  {Mixed}    obj   Primitive
+	 * @param  {String}   event Event, or Events being fired ( comma delimited supported )
+	 * @param  {Function} fn    Event handler
+	 * @param  {String}   id    [Optional / Recommended] ID for the listener
+	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
+	 * @param  {String}   st    [Optional] Application state, default is current
+	 * @return {Mixed}          Primitive
+	 */
+	add : function ( obj, event, fn, id, scope, st ) {
+		var oId = observer.id( obj ),
+		    cache;
+
+		// Preparing variables
+		id      = id    || utility.genId();
+		scope   = scope || obj;
+		st      = st    || state.getCurrent();
+
+		// Creating cache if not present
+		if ( !observer.listeners[oId] ) {
+			observer.listeners[oId]     = {};
+			observer.listeners[oId][st] = new lru( observer.maxListeners );
+		}
+
+		array.each( array.split( event ), function ( ev ) {
+
+		} );
+	},
+
+	decorate : function () {
+
+	},
+
+	discard : function () {
+
+	},
+
+	fire : function () {
+
+	},
+
+	id : function () {
+
+	},
+
+	list : function () {
+
+	},
+
+	once : function () {
+
+	},
+
+	pause : function () {
+
+	},
+
+	remove : function () {
+
+	}
+}
+
+
 /** @namespace abaaso.observer */
 var observer = {
 	/**
