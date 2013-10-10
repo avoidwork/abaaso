@@ -26,9 +26,10 @@ var observer = {
 	/**
 	 * Maximum amount of handlers per event
 	 *
+	 * @memberOf abaaso.observer
 	 * @type {Number}
 	 */
-	maxListeners : 25,
+	maxListeners : 10,
 
 	/**
 	 * Queue of events to fire
@@ -52,7 +53,7 @@ var observer = {
 	 * @method add
 	 * @memberOf abaaso.observer
 	 * @param  {Mixed}    obj   Primitive
-	 * @param  {String}   event Event, or Events being fired ( comma delimited supported )
+	 * @param  {String}   event Comma delimited string of events
 	 * @param  {Function} fn    Event handler
 	 * @param  {String}   id    [Optional / Recommended] ID for the listener
 	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
@@ -60,8 +61,9 @@ var observer = {
 	 * @return {Mixed}          Primitive
 	 */
 	add : function ( obj, event, fn, id, scope, st ) {
-		var oId = observer.id( obj ),
-		    cache;
+		var oId      = observer.id( obj ),
+		    instance = ( regex.observer_globals.test( oId ) || ( !/\//g.test( oId ) && oId !== "abaaso" ) ) ? obj : null,
+		    cache, instance;
 
 		// Preparing variables
 		id      = id    || utility.genId();
@@ -71,40 +73,161 @@ var observer = {
 		// Creating cache if not present
 		if ( !observer.listeners[oId] ) {
 			observer.listeners[oId]     = {};
-			observer.listeners[oId][st] = new lru( observer.maxListeners );
+			observer.listeners[oId][st] = lru( observer.maxListeners );
 		}
 
-		array.each( array.split( event ), function ( ev ) {
+		// Setting event listeners (with DOM hooks if applicable)
+		array.each( array.explode( event ), function ( ev ) {
+			var eId = oId + "_" + ev,
+			    add, reg;
 
+			if ( instance && ev.toLowerCase() !== "afterjsonp" && !observer.listeners[oId][st].get( eId ) && ( regex.observer_globals.test( o ) ) {
+				add = ( typeof instance.addEventListener === "function" );
+				reg = ( typeof instance.attachEvent === "object" || add );
+
+				if ( reg ) {
+					// Registering event listener
+					observer.listeners[oId][st].set( eId, function ( e ) {
+						if ( !regex.observer_allowed.test( e.type ) ) {
+							utility.stop( e );
+						}
+
+						observer.fire( oId, ev, e );
+					} );
+
+					// Hooking event listener
+					instance[add ? "addEventListener" : "attachEvent"]( ( add ? "" : "on" ) + ev, observer.listeners[oId][st].cache[eId].value.fn, false );
+				}
+			}
+
+			observer.listeners[oId][st].set( id, {fn: fn, scope: scope} );
 		} );
 	},
 
+	/**
+	 * Decorates `obj` with `observer` methods
+	 *
+	 * @method decorate
+	 * @memberOf abaaso.observer
+	 * @param  {Object} obj Object to decorate
+	 * @return {Object}     Object to decorate
+	 */
 	decorate : function () {
+		var methods = [
+			["fire",      function () { return observer.fire.apply( observer, [this].concat( array.cast( arguments ) ) ); }],
+			["listeners", function ( event ) { return observer.list(this, event ); }],
+			["on",        function ( event, listener, id, scope, standby ) { return observer.add( this, event, listener, id, scope, standby ); }],
+			["once",      function ( event, listener, id, scope, standby ) { return observer.once( this, event, listener, id, scope, standby ); }],
+			["un",        function ( event, id ) { return observer.remove( this, event, id ); }]
+		];
 
+		array.each( methods, function ( i ) {
+			utility.property( obj, i[0], {value: i[1], configurable: true, enumerable: true, writable: true} );
+		});
+
+		return obj;
 	},
 
-	discard : function () {
-
+	/**
+	 * Discard observer events
+	 *
+	 * @method discard
+	 * @memberOf abaaso.observer
+	 * @param  {Boolean} arg [Optional] Boolean indicating if events will be ignored
+	 * @return {Boolean}     Current setting
+	 */
+	discard : function ( arg ) {
+		return arg === undefined ? observer.ignore : ( observer.ignore = ( arg === true ) );
 	},
 
 	fire : function () {
 
 	},
 
-	id : function () {
+	/**
+	 * Gets the Observer id of arg
+	 *
+	 * @method id
+	 * @memberOf abaaso.observer
+	 * @param  {Mixed}  Object or String
+	 * @return {String} Observer id
+	 */
+	id : function ( arg ) {
+		var id;
 
+		if ( arg === global ) {
+			id = "window";
+		}
+		else if ( !server && arg === document ) {
+			id = "document";
+		}
+		else if ( !server && arg === document.body ) {
+			id = "body";
+		}
+		else {
+			utility.genId( arg );
+			id = arg.id || ( typeof arg.toString === "function" ? arg.toString() : arg );
+		}
+
+		return id;
 	},
 
 	list : function () {
 
 	},
 
-	once : function () {
+	/**
+	 * Adds a listener for a single execution
+	 *
+	 * @method once
+	 * @memberOf abaaso.observer
+	 * @param  {Mixed}    obj   Primitive
+	 * @param  {String}   event Comma delimited string of events being fired
+	 * @param  {Function} fn    Event handler
+	 * @param  {String}   id    [Optional / Recommended] ID for the listener
+	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
+	 * @param  {String}   st    [Optional] Application state, default is current
+	 * @return {Mixed}          Primitive
+	 */
+	once : function ( obj, event, fn, id, scope, st ) {
+		// Preparing variables
+		id    = id    || utility.genId();
+		scope = scope || obj;
+		st    = st    || state.getCurrent();
 
+		array.each( array.explode( event ), function ( ev ) {
+			observer.add( obj, ev, function () {
+				fn.apply( scope, arguments );
+				observer.remove( obj, ev, id, st );
+			}, id, scope, st);
+		} );
+
+		return obj;
 	},
 
-	pause : function () {
+	/**
+	 * Pauses observer events, and queues them
+	 *
+	 * @method pause
+	 * @memberOf abaaso.observer
+	 * @param  {Boolean} arg Boolean indicating if events will be queued
+	 * @return {Boolean}     Current setting
+	 */
+	pause : function ( arg ) {
+		if ( arg === true ) {
+			observer.silent = arg;
+		}
+		else if ( arg === false ) {
+			observer.silent = arg;
 
+			array.each( observer.queue, function ( i ) {
+				observer.fire.apply( observer, i );
+			} );
+
+			observer.queue = [];
+		}
+
+		return observer.silent;
 	},
 
 	remove : function () {
