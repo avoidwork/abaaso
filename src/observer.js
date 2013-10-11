@@ -70,10 +70,14 @@ var observer = {
 		scope   = scope || obj;
 		st      = st    || state.getCurrent();
 
-		// Creating cache if not present
+		// Preparing
 		if ( !observer.listeners[oId] ) {
 			observer.listeners[oId]     = {};
-			observer.listeners[oId][st] = lru( observer.maxListeners );
+			observer.listeners[oId].all = {};
+		}
+
+		if ( st !== "all" && !observer.listeners[oId][st] ) {
+			observer.listeners[oId][st] = {};
 		}
 
 		// Setting event listeners (with DOM hooks if applicable)
@@ -81,7 +85,16 @@ var observer = {
 			var eId = oId + "_" + ev,
 			    add, reg;
 
-			if ( instance && ev.toLowerCase() !== "afterjsonp" && !observer.listeners[oId][st].get( eId ) && ( regex.observer_globals.test( o ) ) {
+			// Creating caches if not present
+			if ( !observer.listeners[oId].all[ev] ) {
+				observer.listeners[oId].all[ev] = lru( observer.maxListeners );
+			}
+
+			if ( st !== "all" && !observer.listeners[oId][st][ev] ) {
+				observer.listeners[oId][st][ev] = lru( observer.maxListeners );
+			}
+
+			if ( instance && ev.toLowerCase() !== "afterjsonp" && !observer.listeners[oId].all[ev].get( eId ) && !observer.listeners[oId][st][ev].get( eId ) && ( regex.observer_globals.test( o ) ) {
 				add = ( typeof instance.addEventListener === "function" );
 				reg = ( typeof instance.attachEvent === "object" || add );
 
@@ -140,8 +153,58 @@ var observer = {
 		return arg === undefined ? observer.ignore : ( observer.ignore = ( arg === true ) );
 	},
 
-	fire : function () {
+	/**
+	 * Fires an event
+	 *
+	 * @method fire
+	 * @memberOf abaaso.observer
+	 * @param  {Mixed}  obj   Primitive
+	 * @param  {String} event Comma delimited string of events
+	 * @return {Mixed}        Primitive
+	 */
+	fire : function ( obj, event ) {
+		var quit, args, log, done, cache, item, oId;
 
+		if ( !observer.ignore ) {
+			quit = false;
+			oId  = observer.id( obj );
+			args = array.remove( array.cast( arguments ), 0, 1 );
+			log  = abaaso.logging;
+			done = false;
+
+			if ( observer.silent ) {
+				observer.queue.push( {obj: obj, event: event, args: args} );
+			}
+			else {
+				array.each( string.explode( event ), function ( e ) {
+					if ( log ) {
+						utility.log( oId + " fired " + e );
+					}
+
+					if ( observer.listeners[oId] ) {
+						array.each( observer.states(), function ( st ) {
+							if ( !done && observer.listeners[oId][st] && observer.listeners[oId][st][e] ) {
+								cache = observer.listeners[oId][st][e];
+								item  = cache.get( cache.last );
+
+								do {
+									if ( item.fn.apply( item.scope, args ) !== false ) {
+										item = cache.get( item.previous );
+									}
+									else {
+										done = true;
+										break;
+									}
+								}
+								while ( item );
+							}
+						} );
+					}
+				} );
+			}
+		}
+
+		return obj;
 	},
 
 	/**
@@ -172,8 +235,41 @@ var observer = {
 		return id;
 	},
 
-	list : function () {
+	/**
+	 * Gets the listeners for an event
+	 *
+	 * @method list
+	 * @memberOf abaaso.observer
+	 * @param  {Mixed}  obj   Primitive
+	 * @param  {String} event Event being queried
+	 * @return {Mixed}        Primitive
+	 */
+	list : function ( obj, event ) {
+		var oId    = observer.id( obj ),
+		    states = observer.states(),
+		    result = {};
 
+		if ( !observer.listeners[oId] ) {
+			// do nothing
+		}
+		else if ( !event || string.isEmpty( event ) ) {
+			array.each( observer.states(), function ( st ) {
+				if ( observer.listeners[oId][st] ) {
+					array.each( array.keys( observer.listeners[oId][st] ), function ( event ) {
+						result[st] = observer.listeners[oId][st][event].cache;
+					} );
+				}
+			} );
+		}
+		else {
+			array.each( observer.states(), function ( st ) {
+				if ( observer.listeners[oId][st] && observer.listeners[oId][st][event] ) {
+					result[st] = observer.listeners[oId][st][event].cache;
+				}
+			} );
+		}
+
+		return result;
 	},
 
 	/**
@@ -232,6 +328,17 @@ var observer = {
 
 	remove : function () {
 
+	},
+
+	/**
+	 * Returns an Array of active observer states
+	 *
+	 * @method states
+	 * @memberOf abaaso.observer
+	 * @return {Array} Array of active states
+	 */
+	states : function () {
+		return ["all", state.getCurrent()];
 	}
 }
 
