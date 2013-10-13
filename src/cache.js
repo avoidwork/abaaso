@@ -23,7 +23,7 @@ var cache = {
 			if ( cache.expired( k ) ) {
 				cache.expire( k, true );
 			}
-		});
+		} );
 	},
 
 	/**

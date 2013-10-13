@@ -304,7 +304,7 @@ var client = {
 			else if ( regex.del.test( verb ) ) {
 				result |= 1;
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -352,7 +352,7 @@ var client = {
 					allow = value;
 				}
 			}
-		});
+		} );
 
 		if ( regex.no.test( items["Cache-Control"] ) ) {
 			// Do nothing
@@ -483,7 +483,7 @@ var client = {
 			}
 
 			throw e;
-		});
+		} );
 
 		do {
 			cbid = utility.genId().slice( 0, 10 );
@@ -569,7 +569,7 @@ var client = {
 			xhr = null;
 
 			throw e;
-		});
+		} );
 
 		uri.fire( "before" + typed );
 
@@ -684,7 +684,7 @@ var client = {
 					if ( v !== null && k !== "withCredentials") {
 						xhr.setRequestHeader( k, v );
 					}
-				});
+				} );
 			}
 
 			// Cross Origin Resource Sharing ( CORS )
@@ -810,7 +810,7 @@ var client = {
 									uri.fire( "after" + typed, arg, xhr );
 								}, function ( e ) {
 									exception( e, xhr );
-								});
+								} );
 								break;
 							}
 							break;

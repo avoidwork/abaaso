@@ -15,14 +15,14 @@ var prototypes = {
 		addClass : function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.klass( i, arg );
-			});
+			} );
 		},
 		after : function ( type, args ) {
 			var result = [];
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "after" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -31,7 +31,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "last" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -40,7 +40,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.attr( i, key, value ) );
-			});
+			} );
 
 			return result;
 		},
@@ -49,7 +49,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "before" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -84,21 +84,21 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, position ) );
-			});
+			} );
 
 			return result;
 		},
 		css : function ( key, value ) {
 			return array.each( this, function ( i ) {
 				element.css( i, key, value );
-			});
+			} );
 		},
 		data : function ( key, value ) {
 			var result = [];
 
 			array.each( this, function (i) {
 				result.push( element.data( i, key, value ) );
-			});
+			} );
 
 			return result;
 		},
@@ -108,17 +108,17 @@ var prototypes = {
 		disable : function () {
 			return array.each( this, function ( i ) {
 				element.disable( i );
-			});
+			} );
 		},
 		dispatch : function ( event, data, bubbles, cancelable ) {
 			return array.each( this, function ( i ) {
 				element.dispatch( i, event, data, bubbles, cancelable );
-			});
+			} );
 		},
 		destroy : function () {
 			array.each( this, function ( i ) {
 				element.destroy( i );
-			});
+			} );
 
 			return [];
 		},
@@ -131,7 +131,7 @@ var prototypes = {
 		enable : function () {
 			return array.each( this, function ( i ) {
 				element.enable( i );
-			});
+			} );
 		},
 		equal : function ( arg ) {
 			return array.equal( this, arg );
@@ -148,8 +148,8 @@ var prototypes = {
 			array.each( this, function ( i ) {
 				element.find( i, arg ).each( function ( r ) {
 					result.add( r );
-				});
-			});
+				} );
+			} );
 
 			return result;
 		},
@@ -158,7 +158,7 @@ var prototypes = {
 
 			return array.each( this, function ( i ) {
 				observer.fire.apply( observer, [i].concat( array.cast( args ) ) );
-			});
+			} );
 		},
 		first : function () {
 			return array.first( this );
@@ -169,7 +169,7 @@ var prototypes = {
 		genId : function () {
 			return array.each( this, function ( i ) {
 				utility.genId( i );
-			});
+			} );
 		},
 		get : function ( uri, headers ) {
 			var result = [];
@@ -179,8 +179,8 @@ var prototypes = {
 					result[idx] = arg;
 				}, function ( e ) {
 					result[idx] = e;
-				});
-			});
+				} );
+			} );
 
 			return result;
 		},
@@ -189,7 +189,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.has( i, arg ) );
-			});
+			} );
 
 			return result;
 		},
@@ -198,7 +198,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.hasClass( i, arg ) );
-			});
+			} );
 
 			return result;
 		},
@@ -208,13 +208,13 @@ var prototypes = {
 			if ( arg !== undefined ) {
 				return array.each( this, function ( i ) {
 					element.html( i, arg );
-				});
+				} );
 			}
 			else {
 				result = [];
 				array.each( this, function ( i ) {
 					result.push( element.html( i ) );
-				});
+				} );
 
 				return result;
 			}
@@ -233,7 +233,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.is( i, arg ) );
-			});
+			} );
 
 			return result;
 		},
@@ -242,7 +242,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isAlphaNum() );
-			});
+			} );
 
 			return result;
 		},
@@ -251,7 +251,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isBoolean() );
-			});
+			} );
 
 			return result;
 		},
@@ -260,7 +260,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isChecked() );
-			});
+			} );
 
 			return result;
 		},
@@ -269,7 +269,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isDate() );
-			});
+			} );
 
 			return result;
 		},
@@ -278,7 +278,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.isDisabled( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -287,7 +287,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isDomain() );
-			});
+			} );
 
 			return result;
 		},
@@ -296,7 +296,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isEmail() );
-			});
+			} );
 
 			return result;
 		},
@@ -305,7 +305,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isEmpty() );
-			});
+			} );
 
 			return result;
 		},
@@ -314,7 +314,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.isHidden( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -323,7 +323,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isIP() );
-			});
+			} );
 
 			return result;
 		},
@@ -332,7 +332,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isInt() );
-			});
+			} );
 
 			return result;
 		},
@@ -341,7 +341,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isNumber() );
-			});
+			} );
 
 			return result;
 		},
@@ -350,7 +350,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isPhone() );
-			});
+			} );
 
 			return result;
 		},
@@ -359,7 +359,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isUrl() );
-			});
+			} );
 
 			return result;
 		},
@@ -383,14 +383,14 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				array.merge(result, observer.listeners( i, event ) );
-			});
+			} );
 
 			return result;
 		},
 		loading : function () {
 			return array.each( this, function ( i ) {
 				utility.loading( i );
-			});
+			} );
 		},
 		max : function () {
 			return array.max( this );
@@ -416,12 +416,12 @@ var prototypes = {
 		on : function ( event, listener, id, scope, state ) {
 			return array.each( this, function ( i ) {
 				observer.add( i, event, listener, id, scope || i, state );
-			});
+			} );
 		},
 		once : function ( event, listener, id, scope, state ) {
 			return array.each( this, function ( i ) {
 				observer.once( i, event, listener, id, scope || i, state );
-			});
+			} );
 		},
 		percents : function ( precision, total ) {
 			return array.percents( this, precision, total );
@@ -431,7 +431,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.position( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -440,7 +440,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "first" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -465,14 +465,14 @@ var prototypes = {
 		removeAttr : function ( key ) {
 			array.each( this, function ( i ) {
 				element.removeAttr( i, key );
-			});
+			} );
 
 			return this;
 		},
 		removeClass: function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.klass( i, arg, false );
-			});
+			} );
 		},
 		replace : function ( arg ) {
 			return array.replace( this, arg );
@@ -497,7 +497,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.size( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -522,17 +522,17 @@ var prototypes = {
 				if ( typeof node.text === "function") {
 					node.text( arg );
 				}
-			});
+			} );
 		},
 		tpl : function ( arg ) {
 			return array.each( this, function ( i ) {
 				utility.tpl ( arg, i );
-			});
+			} );
 		},
 		toggleClass : function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.toggleClass( i, arg );
-			});
+			} );
 		},
 		total : function () {
 			return array.total( this );
@@ -543,7 +543,7 @@ var prototypes = {
 		un : function ( event, id, state ) {
 			return array.each( this, function ( i ) {
 				observer.remove( i, event, id, state );
-			});
+			} );
 		},
 		unique : function () {
 			return array.unique( this );
@@ -551,7 +551,7 @@ var prototypes = {
 		update : function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.update( i, arg );
-			});
+			} );
 		},
 		val : function ( arg ) {
 			var a    = [],
@@ -568,7 +568,7 @@ var prototypes = {
 				if ( typeof i.val === "function" ) {
 					a.push( element.val( i, arg ) );
 				}
-			});
+			} );
 
 			return same ? a[0] : a;
 		},
@@ -577,7 +577,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.validate( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -655,7 +655,7 @@ var prototypes = {
 				}
 
 				throw e;
-			});
+			} );
 
 			observer.fire( this, "beforeGet" );
 
@@ -741,7 +741,7 @@ var prototypes = {
 							if ( node === undefined ) {
 								throw new Error( label.error.propertyNotFound );
 							}
-						});
+						} );
 
 						result = node;
 					}

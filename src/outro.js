@@ -6,7 +6,7 @@ WORKER = "var " + string.fromObject( array, "array" ) + ", " + string.fromObject
 
 // Returning factory
 return abaaso;
-})();
+} )();
 
 // Node, AMD & window supported
 if ( typeof exports !== "undefined" ) {
@@ -15,9 +15,9 @@ if ( typeof exports !== "undefined" ) {
 else if ( typeof define === "function" ) {
 	define( function () {
 		return framework;
-	});
+	} );
 }
 else {
 	global.abaaso = framework;
 }
-})( this );
+} )( this );

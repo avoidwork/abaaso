@@ -11,7 +11,7 @@ function Abaaso ( arg ) {
 	if ( arg ) {
 		array.each( utility.$( arg ), function ( i ) {
 			self.push( i );
-		});
+		} );
 	}
 }
 
@@ -40,7 +40,7 @@ Abaaso.prototype.constructor = Abaaso;
 Abaaso.prototype.addClass = function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.klass( i, arg );
-	});
+	} );
 };
 
 /**
@@ -58,7 +58,7 @@ Abaaso.prototype.after = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "after" ) );
-	});
+	} );
 
 	return result;
 };
@@ -78,7 +78,7 @@ Abaaso.prototype.append = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "last" ) );
-	});
+	} );
 
 	return result;
 };
@@ -128,7 +128,7 @@ Abaaso.prototype.at = function ( n ) {
 Abaaso.prototype.attr = function ( key, value ) {
 	return array.each( this, function ( i ) {
 		element.attr( i, key, value );
-	});
+	} );
 };
 
 /**
@@ -146,7 +146,7 @@ Abaaso.prototype.before = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "before" ) );
-	});
+	} );
 
 	return result;
 };
@@ -162,7 +162,7 @@ Abaaso.prototype.before = function ( type, args ) {
 Abaaso.prototype.clear = function () {
 	return array.each( this, function ( i ) {
 		element.clear( i );
-	});
+	} );
 };
 
 /**
@@ -181,7 +181,7 @@ Abaaso.prototype.create = function ( type, args, position ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, position ) );
-	});
+	} );
 
 	return result;
 };
@@ -199,7 +199,7 @@ Abaaso.prototype.create = function ( type, args, position ) {
 Abaaso.prototype.css = function ( key, value ) {
 	return array.each( this, function ( i ) {
 		element.css( i, key, value );
-	});
+	} );
 };
 
 /**
@@ -216,12 +216,12 @@ Abaaso.prototype.data = function ( key, value ) {
 	if ( value !== undefined ) {
 		return array.each( this, function (i) {
 			element.data( i, key, value );
-		});
+		} );
 	}
 	else {
 		return this.map( function (i) {
 			return element.data( i, key );
-		});
+		} );
 	}
 };
 
@@ -253,7 +253,7 @@ Abaaso.prototype.datalist = function ( store, template, options ) {
 Abaaso.prototype.disable = function () {
 	return array.each( this, function ( i ) {
 		element.disable( i );
-	});
+	} );
 };
 
 /**
@@ -271,7 +271,7 @@ Abaaso.prototype.disable = function () {
 Abaaso.prototype.dispatch = function ( event, data, bubbles, cancelable ) {
 	return array.each( this, function ( i ) {
 		element.dispatch( i, event, data, bubbles, cancelable );
-	});
+	} );
 };
 
 /**
@@ -285,7 +285,7 @@ Abaaso.prototype.dispatch = function ( event, data, bubbles, cancelable ) {
 Abaaso.prototype.destroy = function () {
 	array.each( this, function ( i ) {
 		element.destroy( i );
-	});
+	} );
 
 	return new Abaaso();
 };
@@ -323,7 +323,7 @@ Abaaso.prototype.each = function ( arg, async, size ) {
 Abaaso.prototype.enable = function () {
 	return array.each( this, function ( i ) {
 		element.enable( i );
-	});
+	} );
 };
 
 /**
@@ -341,8 +341,8 @@ Abaaso.prototype.find = function ( arg ) {
 	array.each( this, function ( i ) {
 		array.each( element.find( i, arg ), function ( r ) {
 			result.push( r );
-		});
-	});
+		} );
+	} );
 
 	return result;
 };
@@ -360,7 +360,7 @@ Abaaso.prototype.fire = function () {
 
 	return array.each( this, function ( i ) {
 		observer.fire.apply( observer, [i].concat( array.cast( args ) ) );
-	});
+	} );
 };
 
 /**
@@ -406,7 +406,7 @@ Abaaso.prototype.forEach = function ( arg, async, size ) {
 Abaaso.prototype.genId = function () {
 	return array.each( this, function ( i ) {
 		utility.genId( i );
-	});
+	} );
 };
 
 /**
@@ -425,8 +425,8 @@ Abaaso.prototype.get = function ( uri, headers ) {
 			element.html( i, arg );
 		}, function ( e ) {
 			element.html( i, e );
-		});
-	});
+		} );
+	} );
 };
 
 /**
@@ -465,7 +465,7 @@ Abaaso.prototype.has = function ( arg ) {
 		return element.has( i, arg );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -486,7 +486,7 @@ Abaaso.prototype.hasClass = function ( arg ) {
 		return element.hasClass( i, arg );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -506,7 +506,7 @@ Abaaso.prototype.html = function ( arg ) {
 	if ( arg !== undefined ) {
 		array.each( this, function ( i ) {
 			element.html( i, arg );
-		});
+		} );
 
 		return this;
 	}
@@ -514,7 +514,7 @@ Abaaso.prototype.html = function ( arg ) {
 		result = [];
 		array.each( this, function ( i ) {
 			result.push( element.html( i ) );
-		});
+		} );
 
 		return result;
 	}
@@ -536,7 +536,7 @@ Abaaso.prototype.is = function ( arg ) {
 		return element.is( i, arg );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -556,7 +556,7 @@ Abaaso.prototype.isAlphaNum = function () {
 		return element.isAlphaNum( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -576,7 +576,7 @@ Abaaso.prototype.isBoolean = function () {
 		return element.isBoolean( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -596,7 +596,7 @@ Abaaso.prototype.isChecked = function () {
 		return element.isChecked( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -616,7 +616,7 @@ Abaaso.prototype.isDate = function () {
 		return element.isDate( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -636,7 +636,7 @@ Abaaso.prototype.isDisabled = function () {
 		return element.isDisabled( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -656,7 +656,7 @@ Abaaso.prototype.isDomain = function () {
 		return element.isDomain( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -676,7 +676,7 @@ Abaaso.prototype.isEmail = function () {
 		return element.isEmail( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -696,7 +696,7 @@ Abaaso.prototype.isEmpty = function () {
 		return element.isEmpty( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -716,7 +716,7 @@ Abaaso.prototype.isHidden = function () {
 		return element.isHidden( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -736,7 +736,7 @@ Abaaso.prototype.isIP = function () {
 		return element.isIP( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -756,7 +756,7 @@ Abaaso.prototype.isInt = function () {
 		return element.isInt( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -776,7 +776,7 @@ Abaaso.prototype.isNumber = function () {
 		return element.isNumber( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -796,7 +796,7 @@ Abaaso.prototype.isPhone = function () {
 		return element.isPhone( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -816,7 +816,7 @@ Abaaso.prototype.isUrl = function () {
 		return element.isUrl( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -860,7 +860,7 @@ Abaaso.prototype.limit = function ( start, offset ) {
 
 	array.each( array.limit( this, start, offset ), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -879,7 +879,7 @@ Abaaso.prototype.listeners = function ( event ) {
 
 	array.each( this, function ( i ) {
 		result.push( abaaso.listeners( i, event ) );
-	});
+	} );
 
 	return result;
 };
@@ -896,7 +896,7 @@ Abaaso.prototype.listeners = function ( event ) {
 Abaaso.prototype.loading = function () {
 	return array.each( this, function ( i ) {
 		utility.loading( i );
-	});
+	} );
 };
 
 /**
@@ -915,7 +915,7 @@ Abaaso.prototype.loading = function () {
 Abaaso.prototype.on = function ( event, listener, id, scope, state ) {
 	return array.each( this, function ( i ) {
 		observer.add( i, event, listener, id, scope || i, state );
-	});
+	} );
 };
 
 /**
@@ -935,7 +935,7 @@ Abaaso.prototype.on = function ( event, listener, id, scope, state ) {
 Abaaso.prototype.once = function ( event, listener, id, scope, state ) {
 	return array.each( this, function ( i ) {
 		observer.once( i, event, listener, id, scope || i, state );
-	});
+	} );
 };
 
 /**
@@ -952,7 +952,7 @@ Abaaso.prototype.position = function () {
 
 	array.each( this, function ( i ) {
 		result.push( element.position( i ) );
-	});
+	} );
 
 	return result;
 };
@@ -972,7 +972,7 @@ Abaaso.prototype.prepend = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "first" ) );
-	});
+	} );
 
 	return result;
 };
@@ -1029,7 +1029,7 @@ Abaaso.prototype.removeWhile= function ( fn ) {
 Abaaso.prototype.removeAttr = function ( key ) {
 	return array.each( this, function ( i ) {
 		element.removeAttr( i, key );
-	});
+	} );
 };
 
 /**
@@ -1044,7 +1044,7 @@ Abaaso.prototype.removeAttr = function ( key ) {
 Abaaso.prototype.removeClass= function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.klass( i, arg, false );
-	});
+	} );
 };
 
 /**
@@ -1060,7 +1060,7 @@ Abaaso.prototype.removeClass= function ( arg ) {
 Abaaso.prototype.serialize = function ( string, encode ) {
 	return this.map( function ( i ) {
 		element.serialize( i, string, encode );
-	});
+	} );
 };
 
 /**
@@ -1074,7 +1074,7 @@ Abaaso.prototype.serialize = function ( string, encode ) {
 Abaaso.prototype.size = function () {
 	return this.map( function ( i ) {
 		return element.size( i );
-	});
+	} );
 };
 
 /**
@@ -1096,13 +1096,13 @@ Abaaso.prototype.text = function ( arg ) {
 			tmp = {};
 			tmp[i.innerText ? "innerText" : "text"] = arg;
 			element.update( i, tmp );
-		});
+		} );
 	}
 	else {
 		result = [];
 		array.each( this, function ( i ) {
 			result.push( string.trim( i[i.innerText ? "innerText" : "text"] ) );
-		});
+		} );
 
 		return result;
 	}
@@ -1120,7 +1120,7 @@ Abaaso.prototype.text = function ( arg ) {
 Abaaso.prototype.tpl = function ( arg ) {
 	return array.each( this, function ( i ) {
 		utility.tpl ( arg, i );
-	});
+	} );
 };
 
 /**
@@ -1135,7 +1135,7 @@ Abaaso.prototype.tpl = function ( arg ) {
 Abaaso.prototype.toggleClass = function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.toggleClass( i, arg );
-	});
+	} );
 };
 
 /**
@@ -1152,7 +1152,7 @@ Abaaso.prototype.toggleClass = function ( arg ) {
 Abaaso.prototype.un = function ( event, id, state ) {
 	return array.each( this, function ( i ) {
 		observer.remove( i, event, id, state );
-	});
+	} );
 };
 
 /**
@@ -1167,7 +1167,7 @@ Abaaso.prototype.un = function ( event, id, state ) {
 Abaaso.prototype.update = function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.update( i, arg );
-	});
+	} );
 };
 
 /**
@@ -1183,12 +1183,12 @@ Abaaso.prototype.val = function ( arg ) {
 	if ( arg === undefined ) {
 		return this.map( function ( i ) {
 			return element.val( i );
-		});
+		} );
 	}
 	else {
 		return array.each( this, function ( i ) {
 			return element.val( i, arg );
-		});
+		} );
 	}
 };
 
@@ -1203,5 +1203,5 @@ Abaaso.prototype.val = function ( arg ) {
 Abaaso.prototype.validate = function () {
 	return this.map( function ( i ) {
 		return element.validate( i );
-	});
+	} );
 };

@@ -43,7 +43,7 @@ var validate = {
 					invalid.push( {element: i, test: p, value: v} );
 					exception = true;
 				}
-			});
+			} );
 		}
 		else {
 			utility.iterate( args, function ( v, k ) {
@@ -81,7 +81,7 @@ var validate = {
 						exception = true;
 					}
 				}
-			});
+			} );
 		}
 
 		return {pass: !exception, invalid: invalid};

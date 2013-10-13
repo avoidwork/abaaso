@@ -180,12 +180,12 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 		if ( type === "del" ) {
 			array.each( data, function ( i ) {
 				deferreds.push( self.del( i, false, true ) );
-			});
+			} );
 		}
 		else {
 			array.each( data, function ( i ) {
 				deferreds.push( self.set( null, i, true ) );
-			});
+			} );
 		}
 
 		utility.when( deferreds ).then( function () {
@@ -197,7 +197,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 
 			array.each( self.datalists, function ( i ) {
 				i.refresh( true );
-			});
+			} );
 
 			if ( type === "del" ) {
 				self.reindex();
@@ -211,7 +211,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 		}, function ( e ) {
 			observer.fire( self.parentNode, "failedDataBatch", e );
 			defer.reject( e );
-		});
+		} );
 	}
 
 	return defer;
@@ -253,7 +253,7 @@ DataStore.prototype.clear = function ( sync ) {
 
 		array.each( this.datalists, function ( i ) {
 			i.teardown( true );
-		});
+		} );
 
 		this.autosave    = false;
 		this.callback    = null;
@@ -292,7 +292,7 @@ DataStore.prototype.clear = function ( sync ) {
 
 		array.each( this.datalists, function ( i ) {
 			i.refresh( true, true );
-		});
+		} );
 	}
 
 	return this;
@@ -360,7 +360,7 @@ DataStore.prototype.crawl = function ( arg ) {
 				deferreds.push( record.data[k].data.setUri( uri ) );
 			}
 		}
-	});
+	} );
 
 	if ( deferreds.length > 0 ) {
 		utility.when( deferreds ).then( function () {
@@ -375,7 +375,7 @@ DataStore.prototype.crawl = function ( arg ) {
 			}
 
 			defer.reject( e );
-		});
+		} );
 	}
 	else {
 		if ( events ) {
@@ -452,7 +452,7 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 
 	array.each( this.collections, function ( i ) {
 		record.data[i].teardown();
-	});
+	} );
 
 	if ( !batch ) {
 		if ( reindex ) {
@@ -494,7 +494,7 @@ DataStore.prototype.dump = function ( args, fields ) {
 
 			array.each( fields, function ( f ) {
 				record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f], true ) : i.data[f].data.uri );
-			});
+			} );
 
 			return record;
 		};
@@ -507,7 +507,7 @@ DataStore.prototype.dump = function ( args, fields ) {
 
 			utility.iterate( i.data, function ( v, k ) {
 				record[k] = !array.contains( self.collections, k ) ? utility.clone( v, true ) : v.data.uri;
-			});
+			} );
 
 			return record;
 		};
@@ -548,7 +548,7 @@ DataStore.prototype.get = function ( record, offset ) {
 				else {
 					return records[self.keys[i]];
 				}
-			});
+			} );
 		}
 	}
 	else if ( type === "number" ) {
@@ -628,7 +628,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 						if ( record[i] === undefined ) {
 							record[i] = null;
 						}
-					});
+					} );
 
 					results.push( record );
 					defer.resolve( true );
@@ -659,7 +659,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 						if ( record[i] === undefined ) {
 							record[i] = null;
 						}
-					});
+					} );
 
 					results.push( record );
 					defer.resolve( true );
@@ -693,12 +693,12 @@ DataStore.prototype.only = function ( arg ) {
 	if ( arg === this.key ) {
 		return this.records.map( function ( i ) {
 			return i.key;
-		});
+		} );
 	}
 	else {
 		return this.records.map( function ( i ) {
 			return i.data[arg];
-		});
+		} );
 	}
 };
 
@@ -826,7 +826,7 @@ DataStore.prototype.select = function ( where ) {
 				this[k] = v.toString();
 				functions.push( k );
 			}
-		});
+		} );
 
 		blob   = new Blob( [WORKER] );
 		worker = new Worker( global.URL.createObjectURL( blob ) );
@@ -936,7 +936,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 						if ( !array.contains( self.collections, k ) && !data[k] ) {
 							data[k] = v;
 						}
-					});
+					} );
 				}
 			}
 			else {
@@ -998,7 +998,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			else {
 				deferreds.push( record.data[k].data.batch( "set", v, true ) );
 			}
-		});
+		} );
 	}
 
 	if ( !batch && this.events ) {
@@ -1011,7 +1011,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	else {
 		utility.when( deferreds ).then( function () {
 			defer.resolve( record );
-		});
+		} );
 	}
 
 	return this;
@@ -1097,7 +1097,7 @@ DataStore.prototype.setUri = function ( arg ) {
 				defer.resolve( arg );
 			}, function ( e ) {
 				defer.reject( e );
-			});
+			} );
 		}
 	}
 
@@ -1511,15 +1511,15 @@ DataStore.prototype.teardown = function () {
 					observer.remove( v.id );
 					v.data.teardown();
 				}
-			});
-		});
+			} );
+		} );
 	}
 
 	delete abaaso.datastores[this.id];
 
 	array.each( this.datalists, function (i ) {
 		i.teardown();
-	});
+	} );
 
 	this.clear( true );
 	observer.fire( this.parentNode, "afterDataTeardown" );
@@ -1562,13 +1562,13 @@ DataStore.prototype.update = function ( key, data ) {
 
 	utility.iterate( record.data, function ( v, k ) {
 		data[v] = k;
-	});
+	} );
 	
 	this.set( key, data ).then( function ( arg ) {
 		defer.resolve( arg );
 	}, function ( e ) {
 		defer.reject( e );
-	});
+	} );
 
 	return defer;
 };

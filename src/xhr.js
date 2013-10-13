@@ -72,14 +72,14 @@ var xhr = function () {
 
 				state.call( self, LOADING );
 			}
-		});
+		} );
 
 		res.on( "end", function () {
 			if ( self._send ) {
 				state.call( self, DONE );
 				self._send = false;
 			}
-		});
+		} );
 	};
 
 	/**
@@ -202,7 +202,7 @@ var xhr = function () {
 				if ( typeof i === "function" ) {
 					i.call( self );
 				}
-			});
+			} );
 		}
 
 		return this;
@@ -224,7 +224,7 @@ var xhr = function () {
 
 		utility.iterate( this._resheaders, function ( v, k ) {
 			result += k + ": " + v + "\n";
-		});
+		} );
 
 		return result;
 	};
@@ -280,7 +280,7 @@ var xhr = function () {
 
 		utility.iterate( headers, function ( v, k ) {
 			self._headers[k] = v;
-		});
+		} );
 
 		this.readyState = OPENED;
 
@@ -380,7 +380,7 @@ var xhr = function () {
 			handler.call( self, arg );
 		}).on( "error", function ( e ) {
 			handlerError.call( self, e );
-		});
+		} );
 
 		data === null ? request.setSocketKeepAlive( true, 10000 ) : request.write( data, "utf8" );
 		this._request = request;

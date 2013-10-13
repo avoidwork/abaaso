@@ -123,7 +123,7 @@ DataList.prototype.del = function ( rec ) {
 		
 		array.each( this.element.find( "> li[data-key='" + rec.key + "']" ), function ( i ) {
 			element.destroy( i );
-		});
+		} );
 
 		observer.fire( this.element, "afterDataListRefresh" );
 	}
@@ -184,7 +184,7 @@ DataList.prototype.pages = function () {
 		if ( i ) {
 			element.destroy( i );
 		}
-	});
+	} );
 	
 	// Halting because there's 1 page, or nothing
 	if ( this.total === 0 || total === 1 ) {
@@ -249,7 +249,7 @@ DataList.prototype.pages = function () {
 				element.scrollTo( obj, 100, -10 );
 			}
 		}, "pagination");
-	});
+	} );
 
 	return this;
 };
@@ -297,7 +297,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
-			});
+			} );
 
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
@@ -322,7 +322,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-			});
+			} );
 
 			// Filling in placeholder value
 			obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
@@ -361,10 +361,10 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 							return false;
 						}
-					});
-				});
+					} );
+				} );
 			}
-		});
+		} );
 
 		// Exposting records & total count of items in the list
 		self.records = items;
@@ -399,20 +399,20 @@ DataList.prototype.refresh = function ( redraw, create ) {
 				if ( callback ) {
 					array.each( element.find( el, "> li" ), function ( i ) {
 						self.callback( i );
-					});
+					} );
 				}
 			}
 		}
 		else {
 			array.each( element.find( el, "> li" ), function ( i ) {
 				element.addClass( i, "hidden" );
-			});
+			} );
 
 			array.each( items, function ( i ) {
 				array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
 					element.removeClass( o, "hidden" );
-				});
-			});
+				} );
+			} );
 		}
 
 		// Rendering pagination elements
@@ -422,7 +422,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		else {
 			array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 				element.destroy( i );
-			});
+			} );
 		}
 
 		observer.fire( el, "afterDataListRefresh" );
@@ -470,7 +470,7 @@ DataList.prototype.teardown = function ( destroy ) {
 
 	array.each( utility.dom( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
 		observer.remove( i );
-	});
+	} );
 
 	array.each( this.store.datalists, function ( i, idx ) {
 		if ( i.id === self.id ) {
@@ -478,7 +478,7 @@ DataList.prototype.teardown = function ( destroy ) {
 
 			return false;
 		}
-	});
+	} );
 
 	if ( destroy ) {
 		element.destroy( this.element );

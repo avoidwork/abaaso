@@ -54,7 +54,7 @@ var cookie = {
 				var item = string.explode( i, "=" );
 
 				result[item[0]] = utility.coerce( item[1] );
-			});
+			} );
 		}
 
 		return result;

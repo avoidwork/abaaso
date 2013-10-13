@@ -95,4 +95,4 @@ var state = ( function () {
 		getPrevious : getPrevious,
 		setPrevious : setPrevious
 	};
-})();
+} )();

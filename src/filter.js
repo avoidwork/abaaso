@@ -75,7 +75,7 @@ DataListFilter.prototype.set = function ( fields ) {
 
 	array.each( string.explode( fields ), function ( v ) {
 		obj[v] = "";
-	});
+	} );
 
 	this.filters = obj;
 
@@ -116,15 +116,15 @@ DataListFilter.prototype.update = function () {
 				// Ignoring trailing commas
 				queries = queries.filter( function ( i ) {
 					return !string.isEmpty( i );
-				});
+				} );
 
 				// Shaping valid pattern
 				array.each( queries, function ( i, idx ) {
 					this[idx] = "^" + string.escape( i ).replace( "\\*", ".*" );
-				});
+				} );
 
 				this[k] = queries.join( "," );
-			});
+			} );
 
 			self.datalist.filter = self.filters;
 		}

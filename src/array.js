@@ -75,7 +75,7 @@ var array = {
 		else {
 			utility.iterate( obj, function ( i ) {
 				o.push( i );
-			});
+			} );
 		}
 
 		return o;
@@ -155,7 +155,7 @@ var array = {
 
 		array.each( obj, function ( i ) {
 			result.push( fn( i ) );
-		});
+		} );
 
 		return result;
 	},
@@ -174,7 +174,7 @@ var array = {
 
 		result = obj.filter( function ( i ) {
 			return !regex.null_undefined.test( i );
-		});
+		} );
 
 		return !diff ? result : ( result.length < obj.length ? result : null );
 	},
@@ -210,13 +210,13 @@ var array = {
 			if ( !array.contains( array2, i ) ) {
 				array.add( result, i );
 			}
-		});
+		} );
 
 		array.each( array2, function ( i ) {
 			if ( !array.contains( array1, i ) ) {
 				array.add( result, i );
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -444,7 +444,7 @@ var array = {
 
 		utility.iterate( obj, function ( v ) {
 			indexed.push( v );
-		});
+		} );
 
 		return indexed;
 	},
@@ -464,7 +464,7 @@ var array = {
 
 		return a.filter( function ( key ) {
 			return array.contains( b, key );
-		});
+		} );
 	},
 
 	/**
@@ -489,7 +489,7 @@ var array = {
 
 		array.each( remove, function ( i ) {
 			array.remove( obj, array.index( obj, i ) );
-		});
+		} );
 
 		return obj;
 	},
@@ -527,7 +527,7 @@ var array = {
 				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] < b" + sub + "[\"" + i[0] + "\"] ) return 1;" );
 				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] > b" + sub + "[\"" + i[0] + "\"] ) return -1;" );
 			}
-		});
+		} );
 
 		sorts.push( "else return 0;" );
 
@@ -646,7 +646,7 @@ var array = {
 	merge : function ( obj, arg ) {
 		array.each( arg, function ( i ) {
 			array.add( obj, i );
-		});
+		} );
 
 		return obj;
 	},
@@ -677,7 +677,7 @@ var array = {
 
 		result = obj1.map( function ( i, idx ) {
 			return [i, obj2[idx]];
-		});
+		} );
 
 		return result;
 	},
@@ -705,7 +705,7 @@ var array = {
 			else {
 				values[i] = 1;
 			}
-		});
+		} );
 
 		// Finding the highest occurring count
 		count = array.max( array.cast( values ) );
@@ -715,7 +715,7 @@ var array = {
 			if ( v === count ) {
 				mode.push( number.parse( k ) );
 			}
-		});
+		} );
 
 		// Determining the result
 		nth = mode.length;
@@ -804,7 +804,7 @@ var array = {
 
 				return false;
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -835,7 +835,7 @@ var array = {
 		array.remove( obj, 0, obj.length );
 		array.each( arg, function ( i ) {
 			obj.push( i );
-		});
+		} );
 
 		return obj;
 	},
@@ -891,7 +891,7 @@ var array = {
 
 		array.each( remove, function ( i ) {
 			array.remove( obj, array.index ( obj, i ) );
-		});
+		} );
 
 		return obj;
 	},
@@ -919,11 +919,11 @@ var array = {
 			else {
 				return false;
 			}
-		});
+		} );
 
 		array.each( remove, function ( i ) {
 			array.remove( obj, array.index( obj, i) );
-		});
+		} );
 
 		return obj;
 	},
@@ -963,7 +963,7 @@ var array = {
 			if ( i === arg ) {
 				result = idx;
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -1131,7 +1131,7 @@ var array = {
 		if ( obj.length > 0 ) {
 			result = obj.reduce( function ( prev, cur ) {
 				return prev + cur;
-			});
+			} );
 		}
 
 		return result;
@@ -1194,7 +1194,7 @@ var array = {
 
 		array.each( obj, function ( i ) {
 			array.add( result, i );
-		});
+		} );
 
 		return result;
 	},
@@ -1220,15 +1220,15 @@ var array = {
 			if ( !( i instanceof Array ) ) {
 				this[idx] = [i];
 			}
-		});
+		} );
 
 		// Building result Array
 		array.each( obj, function ( i, idx ) {
 			result[idx] = [i];
 			array.each( args, function ( x ) {
 				result[idx].push( x[idx] || null );
-			});
-		});
+			} );
+		} );
 
 		return result;
 	}

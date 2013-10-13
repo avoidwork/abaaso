@@ -49,7 +49,7 @@ var promise = {
 			child.resolve( arg );
 		}, function ( e ) {
 			child.reject( e );
-		});
+		} );
 	},
 
 	/**
@@ -141,7 +141,7 @@ Promise.prototype.process = function() {
 		else {
 			child.resolve( result );
 		}
-	});
+	} );
 
 	return this;
 };
@@ -167,7 +167,7 @@ Promise.prototype.reject = function ( arg ) {
 	if ( !this.deferred ) {
 		promise.delay( function () {
 			self.process();
-		});
+		} );
 
 		this.deferred = true;
 	}
@@ -226,7 +226,7 @@ Promise.prototype.then = function ( success, failure ) {
 	if ( this.state > promise.state.PENDING && !this.deferred ) {
 		promise.delay( function () {
 			self.process();
-		});
+		} );
 
 		this.deferred = true;
 	}

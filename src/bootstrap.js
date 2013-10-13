@@ -13,7 +13,7 @@ bootstrap = function () {
 		observer.remove( obj );
 		array.each( array.cast( obj.childNodes ), function ( i ) {
 			cleanup( i );
-		});
+		} );
 	};
 
 	// Repeating function to call init()
@@ -74,7 +74,7 @@ bootstrap = function () {
 			observer.fire( "abaaso", "render" );
 			observer.remove( "abaaso", "render" );
 			observer.remove( this, "load" );
-		});
+		} );
 
 		if ( typeof Object.observe === "function" ) {
 			observer.add( global, "DOMNodeInserted", function ( e ) {
@@ -82,7 +82,7 @@ bootstrap = function () {
 
 				Object.observe( obj, function ( arg ) {
 					observer.fire( obj, "change", arg );
-				});
+				} );
 			}, "mutation", global, "all");
 		}
 

@@ -36,7 +36,7 @@ function DataGrid ( obj, store, fields, sortable, options, filtered ) {
 	if ( options.order && !string.isEmpty( options.order ) ) {
 		sortOrder = string.explode( options.order ).map( function ( i ) {
 			return i.replace( regex.after_space, "" );
-		});
+		} );
 	}
 
 	this.element     = obj;
@@ -109,7 +109,7 @@ DataGrid.prototype.init = function ( debounce ) {
 			}
 
 			template += "<span class=\"" + i + "\" data-field=\"" + i + "\" style=\"" + css + "\">{{" + i + "}}</span>";
-		});
+		} );
 
 		// Setting click handler on sortable "columns"
 		if ( this.sortable.length > 0 ) {
@@ -152,7 +152,7 @@ DataGrid.prototype.refresh = function () {
 			var obj = element.find( self.element, ".header span[data-field='" + i + "']" )[0];
 
 			sort.push( string.trim( i + " " + ( element.data( obj, "sort" ) || "" ) ) );
-		});
+		} );
 
 		this.options.order = this.list.order = sort.join( ", " );
 	}

@@ -339,7 +339,7 @@ var element = {
 
 		array.each( string.explode( arg ), function ( i ) {
 			result = result.concat( utility.dom( "#" + obj.id + " " + i ) );
-		});
+		} );
 
 		return result;
 	},
@@ -358,7 +358,7 @@ var element = {
 		if ( arg ) {
 			array.each( array.cast( element.create( "div", {innerHTML: arg}, obj ).childNodes ), function ( i ) {
 				obj.appendChild( i );
-			});
+			} );
 
 			obj.removeChild( obj.childNodes[0] );
 		}
@@ -618,7 +618,7 @@ var element = {
 		if ( add ) {
 			array.each( arg, function ( i ) {
 				obj.classList.add( i );
-			});
+			} );
 		}
 		else {
 			array.each( arg, function ( i ) {
@@ -628,11 +628,11 @@ var element = {
 				else {
 					array.each( obj.classList, function ( x ) {
 						this.remove( x );
-					});
+					} );
 
 					return false;
 				}
-			});
+			} );
 		}
 
 		return obj;
@@ -770,7 +770,7 @@ var element = {
 			else if ( registry[i.name] === undefined ) {
 				registry[i.name] = element.val( i );
 			}
-		});
+		} );
 
 		if ( !string ) {
 			result = json.encode( registry );
@@ -780,7 +780,7 @@ var element = {
 
 			utility.iterate( registry, function ( v, k ) {
 				encode ? result += "&" + encodeURIComponent( k ) + "=" + encodeURIComponent( v ) : result += "&" + k + "=" + v;
-			});
+			} );
 
 			result = result.replace( regex.and, "?" );
 		}
@@ -873,7 +873,7 @@ var element = {
 			else {
 				element.attr ( obj, k, v );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -902,7 +902,7 @@ var element = {
 						output = i.value;
 						return false;
 					}
-				});
+				} );
 			}
 			else if ( regex.select.test( obj.type ) ) {
 				output = obj.options[obj.selectedIndex].value;
@@ -934,7 +934,7 @@ var element = {
 						output = i;
 						return false;
 					}
-				});
+				} );
 			}
 			else if ( regex.select.test( obj.type ) ) {
 				event = "change";
@@ -945,7 +945,7 @@ var element = {
 						output = i;
 						return false;
 					}
-				});
+				} );
 			}
 			else {
 				obj.value !== undefined ? obj.value = value : element.text( obj, value );

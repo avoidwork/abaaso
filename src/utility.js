@@ -66,7 +66,7 @@ var utility = {
 					else if ( obj ) {
 						result.push( obj );
 					}
-				});
+				} );
 			}
 		}
 
@@ -110,7 +110,7 @@ var utility = {
 
 				utility.property( o, k, {enumerable: true, get: getter, set: setter, value: s[k]} );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -180,7 +180,7 @@ var utility = {
 					if ( typeof v === "function" ) {
 						clone[k] = v;
 					}
-				});
+				} );
 			}
 			else {
 				clone = obj;
@@ -348,7 +348,7 @@ var utility = {
 
 			// Setting reference or value
 			idx + 1 === nth ? p[i] = val : p = p[i];
-		});
+		} );
 
 		return obj;
 	},
@@ -606,7 +606,7 @@ var utility = {
 
 		array.each( Object.keys( obj ), function ( i ) {
 			return fn.call( obj, obj[i], i );
-		});
+		} );
 
 		return obj;
 	},
@@ -678,12 +678,12 @@ var utility = {
 			else if ( ( obj[k] instanceof Object ) && ( v instanceof Object ) ) {
 				utility.iterate( v, function ( x, y ) {
 					obj[k][y] = utility.clone( x );
-				});
+				} );
 			}
 			else {
 				obj[k] = utility.clone( v );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -729,7 +729,7 @@ var utility = {
 				if ( v === null ) {
 					obj[k] = undefined;
 				}
-			});
+			} );
 		}
 
 		parsed = {
@@ -832,7 +832,7 @@ var utility = {
 			if ( !target[k] ) {
 				utility.property( target, k, {value: v, configurable: true, writable: true} );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -880,7 +880,7 @@ var utility = {
 				else {
 					obj[item[0]].push( item[1] );
 				}
-			});
+			} );
 		}
 
 		if ( arg !== null && arg !== undefined ) {
@@ -1032,7 +1032,7 @@ var utility = {
 		if ( arg instanceof Array ) {
 			array.each( arg, function ( i ) {
 				element.html(element.create( array.cast( i, true )[0], frag ), array.cast(i)[0] );
-			});
+			} );
 		}
 		else {
 			utility.iterate( arg, function ( v, k ) {
@@ -1042,7 +1042,7 @@ var utility = {
 				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) {
 					utility.tpl( v, element.create( k, undefined, frag ) );
 				}
-			});
+			} );
 		}
 
 		target.appendChild( frag );
@@ -1084,7 +1084,7 @@ var utility = {
 	walk : function ( obj, arg ) {
 		array.each( arg.replace( /\]$/, "" ).replace( /\]/g, "." ).replace( /\.\./g, "." ).split( /\.|\[/ ), function ( i ) {
 			obj = obj[i];
-		});
+		} );
 
 		return obj;
 	},
@@ -1139,8 +1139,8 @@ var utility = {
 							defer.reject( args[0].value || args[0].promise.value );
 						}
 					}
-				});
-			});
+				} );
+			} );
 		}
 
 		return defer;

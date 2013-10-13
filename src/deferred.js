@@ -29,31 +29,31 @@ function Deferred () {
 		promise.delay( function () {
 			array.each( self.onDone, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			array.each( self.onAlways, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			self.onAlways = [];
 			self.onDone   = [];
 			self.onFail   = [];
-		});
+		} );
 	}, function ( arg ) {
 		promise.delay( function () {
 			array.each( self.onFail, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			array.each( self.onAlways, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			self.onAlways = [];
 			self.onDone   = [];
 			self.onFail   = [];
-		});
-	});
+		} );
+	} );
 }
 
 /**

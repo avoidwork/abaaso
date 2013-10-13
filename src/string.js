@@ -253,7 +253,7 @@ var string = {
 
 		array.each( s, function ( i, idx ) {
 			r.push( idx === 0 ? i : string.capitalize( i ) );
-		});
+		} );
 
 		return r.join( "" );
 	},
