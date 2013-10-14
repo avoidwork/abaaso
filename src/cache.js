@@ -38,11 +38,10 @@ var cache = {
 	 * @return {Undefined}      undefined
 	 */
 	expire : function ( uri, silent ) {
-		silent = ( silent === true );
 		if ( cache.items[uri] !== undefined ) {
 			delete cache.items[uri];
 
-			if ( !silent ) {
+			if ( silent !== true ) {
 				observer.fire( uri, "beforeExpire, expire, afterExpire" );
 			}
 
@@ -64,7 +63,7 @@ var cache = {
 	expired : function ( uri ) {
 		var item = cache.items[uri];
 
-		return item !== undefined && item.expires !== undefined && item.expires < new Date();
+		return item && item.expires < new Date();
 	},
 
 	/**
@@ -78,14 +77,13 @@ var cache = {
 	 * @return {Mixed}          URI Object {headers, response} or False
 	 */
 	get : function ( uri, expire ) {
-		uri    = utility.parse( uri ).href;
-		expire = ( expire !== false );
+		uri = utility.parse( uri ).href;
 
-		if ( cache.items[uri] === undefined ) {
+		if ( !cache.items[uri] ) {
 			return false;
 		}
 
-		if ( expire && cache.expired( uri ) ) {
+		if ( expire !== false && cache.expired( uri ) ) {
 			cache.expire( uri );
 
 			return false;
@@ -107,7 +105,7 @@ var cache = {
 	set : function ( uri, property, value ) {
 		uri = utility.parse( uri ).href;
 
-		if ( cache.items[uri] === undefined ) {
+		if ( !cache.items[uri] ) {
 			cache.items[uri] = {};
 			cache.items[uri].permission = 0;
 		}
