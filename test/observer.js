@@ -65,7 +65,7 @@ exports["once"] = {
 		test.throws(function () { $.once(sample.obj, sample.event, undefined, sample.id, sample.scope, sample.state); }, Error, "Handler is not a function");
 		test.equal($.once(sample.obj, sample.event, sample.fn, sample.id, sample.scope, sample.state), sample.obj, "Should match");
 		test.equal($.fire(sample.obj, sample.event), sample.obj, "Should match");
-		test.equal($.listeners(sample.obj, sample.event)[sample.state].hasOwnProperty(sample.id), false, "Should be false");
+		test.equal($.listeners(sample.obj, sample.event).hasOwnProperty(sample.state), false, "Should be false");
 		test.done();
 	}
 };

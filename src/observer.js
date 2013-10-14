@@ -136,7 +136,7 @@ var observer = {
 	 * @param  {Object} obj Object to decorate
 	 * @return {Object}     Object to decorate
 	 */
-	decorate : function () {
+	decorate : function ( obj ) {
 		var methods = [
 			[
 				"fire",

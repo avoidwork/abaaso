@@ -138,7 +138,6 @@ var regex = {
 	number_string           : /number|string/i,
 	number_string_object    : /number|object|string/i,
 	null_undefined          : /null|undefined/,
-	observer_allowed        : /click|error|key|mousedown|mouseup|submit/i,
 	observer_globals        : /body|document|window/i,
 	object_type             : /\[object Object\]/,
 	object_undefined        : /object|undefined/,
@@ -257,7 +256,7 @@ var array = {
 		else {
 			utility.iterate( obj, function ( i ) {
 				o.push( i );
-			});
+			} );
 		}
 
 		return o;
@@ -337,7 +336,7 @@ var array = {
 
 		array.each( obj, function ( i ) {
 			result.push( fn( i ) );
-		});
+		} );
 
 		return result;
 	},
@@ -356,7 +355,7 @@ var array = {
 
 		result = obj.filter( function ( i ) {
 			return !regex.null_undefined.test( i );
-		});
+		} );
 
 		return !diff ? result : ( result.length &lt; obj.length ? result : null );
 	},
@@ -392,13 +391,13 @@ var array = {
 			if ( !array.contains( array2, i ) ) {
 				array.add( result, i );
 			}
-		});
+		} );
 
 		array.each( array2, function ( i ) {
 			if ( !array.contains( array1, i ) ) {
 				array.add( result, i );
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -626,7 +625,7 @@ var array = {
 
 		utility.iterate( obj, function ( v ) {
 			indexed.push( v );
-		});
+		} );
 
 		return indexed;
 	},
@@ -646,7 +645,7 @@ var array = {
 
 		return a.filter( function ( key ) {
 			return array.contains( b, key );
-		});
+		} );
 	},
 
 	/**
@@ -671,7 +670,7 @@ var array = {
 
 		array.each( remove, function ( i ) {
 			array.remove( obj, array.index( obj, i ) );
-		});
+		} );
 
 		return obj;
 	},
@@ -709,7 +708,7 @@ var array = {
 				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] &lt; b" + sub + "[\"" + i[0] + "\"] ) return 1;" );
 				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] > b" + sub + "[\"" + i[0] + "\"] ) return -1;" );
 			}
-		});
+		} );
 
 		sorts.push( "else return 0;" );
 
@@ -828,7 +827,7 @@ var array = {
 	merge : function ( obj, arg ) {
 		array.each( arg, function ( i ) {
 			array.add( obj, i );
-		});
+		} );
 
 		return obj;
 	},
@@ -859,7 +858,7 @@ var array = {
 
 		result = obj1.map( function ( i, idx ) {
 			return [i, obj2[idx]];
-		});
+		} );
 
 		return result;
 	},
@@ -887,7 +886,7 @@ var array = {
 			else {
 				values[i] = 1;
 			}
-		});
+		} );
 
 		// Finding the highest occurring count
 		count = array.max( array.cast( values ) );
@@ -897,7 +896,7 @@ var array = {
 			if ( v === count ) {
 				mode.push( number.parse( k ) );
 			}
-		});
+		} );
 
 		// Determining the result
 		nth = mode.length;
@@ -986,7 +985,7 @@ var array = {
 
 				return false;
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -1017,7 +1016,7 @@ var array = {
 		array.remove( obj, 0, obj.length );
 		array.each( arg, function ( i ) {
 			obj.push( i );
-		});
+		} );
 
 		return obj;
 	},
@@ -1073,7 +1072,7 @@ var array = {
 
 		array.each( remove, function ( i ) {
 			array.remove( obj, array.index ( obj, i ) );
-		});
+		} );
 
 		return obj;
 	},
@@ -1101,11 +1100,11 @@ var array = {
 			else {
 				return false;
 			}
-		});
+		} );
 
 		array.each( remove, function ( i ) {
 			array.remove( obj, array.index( obj, i) );
-		});
+		} );
 
 		return obj;
 	},
@@ -1145,7 +1144,7 @@ var array = {
 			if ( i === arg ) {
 				result = idx;
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -1313,7 +1312,7 @@ var array = {
 		if ( obj.length > 0 ) {
 			result = obj.reduce( function ( prev, cur ) {
 				return prev + cur;
-			});
+			} );
 		}
 
 		return result;
@@ -1376,7 +1375,7 @@ var array = {
 
 		array.each( obj, function ( i ) {
 			array.add( result, i );
-		});
+		} );
 
 		return result;
 	},
@@ -1402,15 +1401,15 @@ var array = {
 			if ( !( i instanceof Array ) ) {
 				this[idx] = [i];
 			}
-		});
+		} );
 
 		// Building result Array
 		array.each( obj, function ( i, idx ) {
 			result[idx] = [i];
 			array.each( args, function ( x ) {
 				result[idx].push( x[idx] || null );
-			});
-		});
+			} );
+		} );
 
 		return result;
 	}
@@ -1441,7 +1440,7 @@ var cache = {
 			if ( cache.expired( k ) ) {
 				cache.expire( k, true );
 			}
-		});
+		} );
 	},
 
 	/**
@@ -1924,7 +1923,7 @@ var client = {
 			else if ( regex.del.test( verb ) ) {
 				result |= 1;
 			}
-		});
+		} );
 
 		return result;
 	},
@@ -1972,7 +1971,7 @@ var client = {
 					allow = value;
 				}
 			}
-		});
+		} );
 
 		if ( regex.no.test( items["Cache-Control"] ) ) {
 			// Do nothing
@@ -2103,7 +2102,7 @@ var client = {
 			}
 
 			throw e;
-		});
+		} );
 
 		do {
 			cbid = utility.genId().slice( 0, 10 );
@@ -2189,7 +2188,7 @@ var client = {
 			xhr = null;
 
 			throw e;
-		});
+		} );
 
 		uri.fire( "before" + typed );
 
@@ -2304,7 +2303,7 @@ var client = {
 					if ( v !== null && k !== "withCredentials") {
 						xhr.setRequestHeader( k, v );
 					}
-				});
+				} );
 			}
 
 			// Cross Origin Resource Sharing ( CORS )
@@ -2430,7 +2429,7 @@ var client = {
 									uri.fire( "after" + typed, arg, xhr );
 								}, function ( e ) {
 									exception( e, xhr );
-								});
+								} );
 								break;
 							}
 							break;
@@ -2612,8 +2611,8 @@ var cookie = {
 			array.each( string.explode( jar, ";" ), function ( i ) {
 				var item = string.explode( i, "=" );
 
-				result[decodeURIComponent( item[0] )] = utility.coerce( decodeURIComponent( item[1] ) );
-			});
+				result[item[0]] = utility.coerce( item[1] );
+			} );
 		}
 
 		return result;
@@ -2743,27 +2742,47 @@ var datastore = {
 	 */
 	worker : function ( ev ) {
 		var cmd = ev.data.cmd,
-		    logic, result, where;
+		    clauses, cond, result, where;
 
 		if ( cmd === "select" ) {
-			logic = [];
-			where = JSON.parse( ev.data.where );
+			where   = JSON.parse( ev.data.where );
+			clauses = array.fromObject( where );
+			cond    = "return ( ";
 
-			utility.iterate( where, function ( v, k ) {
-				if ( array.contains( ev.data.functions, k ) ) {
-					logic.push( "if (" + v + "(rec.data[\"" + k + "\"])) return true;");
+			if ( clauses.length > 1 ) {
+				array.each( clauses, function ( i, idx ) {
+					var b1 = "( ";
+
+					if ( idx > 0 ) {
+						b1 = " && ( ";
+					}
+
+					if ( i[1] instanceof Function ) {
+						cond += b1 + i[1].toString() + "( rec.data[\"" + i[0] + "\"] ) )";
+					}
+					else if ( !isNaN( i[1] ) ) {
+						cond += b1 + "rec.data[\"" + i[0] + "\"] === " + i[1] + " )";
+					}
+					else {
+						cond += b1 + "rec.data[\"" + i[0] + "\"] === \"" + i[1] + "\" )";
+					}
+				} );
+			}
+			else {
+				if ( clauses[0][1] instanceof Function ) {
+					cond += clauses[0][1].toString() + "( rec.data[\"" + clauses[0][0] + "\"] )";
 				}
-				else if ( !isNaN( v ) ) {
-					logic.push( "if (rec.data[\"" + k + "\"] === " + v + ") return true;" );
+				else if ( !isNaN( clauses[0][1] ) ) {
+					cond += "rec.data[\"" + clauses[0][0] + "\"] === " + clauses[0][1];
 				}
 				else {
-					logic.push( "if (rec.data[\"" + k + "\"] === \"" + v + "\") return true;" );
+					cond += "rec.data[\"" + clauses[0][0] + "\"] === \"" + clauses[0][1] + "\"";
 				}
-			} );
+			}
 
-			logic.push( "return false;" );
+			cond += " );";
 
-			result = ev.data.records.filter( new Function( "rec", logic.join( "\n" ) ) );
+			result = ev.data.records.filter( new Function( "rec", cond ) );
 		}
 		else if ( cmd === "sort" ) {
 			result = array.keySort( ev.data.records, ev.data.query, "data" );
@@ -2857,12 +2876,12 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 		if ( type === "del" ) {
 			array.each( data, function ( i ) {
 				deferreds.push( self.del( i, false, true ) );
-			});
+			} );
 		}
 		else {
 			array.each( data, function ( i ) {
 				deferreds.push( self.set( null, i, true ) );
-			});
+			} );
 		}
 
 		utility.when( deferreds ).then( function () {
@@ -2874,7 +2893,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 
 			array.each( self.datalists, function ( i ) {
 				i.refresh( true );
-			});
+			} );
 
 			if ( type === "del" ) {
 				self.reindex();
@@ -2888,7 +2907,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 		}, function ( e ) {
 			observer.fire( self.parentNode, "failedDataBatch", e );
 			defer.reject( e );
-		});
+		} );
 	}
 
 	return defer;
@@ -2930,7 +2949,7 @@ DataStore.prototype.clear = function ( sync ) {
 
 		array.each( this.datalists, function ( i ) {
 			i.teardown( true );
-		});
+		} );
 
 		this.autosave    = false;
 		this.callback    = null;
@@ -2969,7 +2988,7 @@ DataStore.prototype.clear = function ( sync ) {
 
 		array.each( this.datalists, function ( i ) {
 			i.refresh( true, true );
-		});
+		} );
 	}
 
 	return this;
@@ -3037,7 +3056,7 @@ DataStore.prototype.crawl = function ( arg ) {
 				deferreds.push( record.data[k].data.setUri( uri ) );
 			}
 		}
-	});
+	} );
 
 	if ( deferreds.length > 0 ) {
 		utility.when( deferreds ).then( function () {
@@ -3052,7 +3071,7 @@ DataStore.prototype.crawl = function ( arg ) {
 			}
 
 			defer.reject( e );
-		});
+		} );
 	}
 	else {
 		if ( events ) {
@@ -3129,7 +3148,7 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 
 	array.each( this.collections, function ( i ) {
 		record.data[i].teardown();
-	});
+	} );
 
 	if ( !batch ) {
 		if ( reindex ) {
@@ -3171,7 +3190,7 @@ DataStore.prototype.dump = function ( args, fields ) {
 
 			array.each( fields, function ( f ) {
 				record[f] = f === self.key ? i.key : ( !array.contains( self.collections, f ) ? utility.clone( i.data[f], true ) : i.data[f].data.uri );
-			});
+			} );
 
 			return record;
 		};
@@ -3184,7 +3203,7 @@ DataStore.prototype.dump = function ( args, fields ) {
 
 			utility.iterate( i.data, function ( v, k ) {
 				record[k] = !array.contains( self.collections, k ) ? utility.clone( v, true ) : v.data.uri;
-			});
+			} );
 
 			return record;
 		};
@@ -3225,7 +3244,7 @@ DataStore.prototype.get = function ( record, offset ) {
 				else {
 					return records[self.keys[i]];
 				}
-			});
+			} );
 		}
 	}
 	else if ( type === "number" ) {
@@ -3305,7 +3324,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 						if ( record[i] === undefined ) {
 							record[i] = null;
 						}
-					});
+					} );
 
 					results.push( record );
 					defer.resolve( true );
@@ -3336,7 +3355,7 @@ DataStore.prototype.join = function ( arg, field, join ) {
 						if ( record[i] === undefined ) {
 							record[i] = null;
 						}
-					});
+					} );
 
 					results.push( record );
 					defer.resolve( true );
@@ -3370,12 +3389,12 @@ DataStore.prototype.only = function ( arg ) {
 	if ( arg === this.key ) {
 		return this.records.map( function ( i ) {
 			return i.key;
-		});
+		} );
 	}
 	else {
 		return this.records.map( function ( i ) {
 			return i.data[arg];
-		});
+		} );
 	}
 };
 
@@ -3450,30 +3469,50 @@ DataStore.prototype.save = function ( arg ) {
  */
 DataStore.prototype.select = function ( where ) {
 	var defer = deferred(),
-	    blob, functions, logic, worker;
+	    blob, clauses, cond, functions, worker;
 
 	if ( !( where instanceof Object ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
 	if ( server ) {
-		logic = [];
+		clauses = array.fromObject( where );
+		cond    = "return ( ";
 
-		utility.iterate( where, function ( v, k ) {
-			if ( v instanceof Function ) {
-				logic.push( "if (" + v.toString() + "(rec.data[\"" + k + "\"])) return true;");
+		if ( clauses.length > 1 ) {
+			array.each( clauses, function ( i, idx ) {
+				var b1 = "( ";
+
+				if ( idx > 0 ) {
+					b1 = " && ( ";
+				}
+
+				if ( i[1] instanceof Function ) {
+					cond += b1 + i[1].toString() + "( rec.data[\"" + i[0] + "\"] ) )";
+				}
+				else if ( !isNaN( i[1] ) ) {
+					cond += b1 + "rec.data[\"" + i[0] + "\"] === " + i[1] + " )";
+				}
+				else {
+					cond += b1 + "rec.data[\"" + i[0] + "\"] === \"" + i[1] + "\" )";
+				}
+			} );
+		}
+		else {
+			if ( clauses[0][1] instanceof Function ) {
+				cond += clauses[0][1].toString() + "( rec.data[\"" + clauses[0][0] + "\"] )";
 			}
-			else if ( !isNaN( v ) ) {
-				logic.push( "if (rec.data[\"" + k + "\"] === " + v + ") return true;" );
+			else if ( !isNaN( clauses[0][1] ) ) {
+				cond += "rec.data[\"" + clauses[0][0] + "\"] === " + clauses[0][1];
 			}
 			else {
-				logic.push( "if (rec.data[\"" + k + "\"] === \"" + v + "\") return true;" );
+				cond += "rec.data[\"" + clauses[0][0] + "\"] === \"" + clauses[0][1] + "\"";
 			}
-		} );
+		}
 
-		logic.push( "return false;" );
+		cond += " );";
 
-		defer.resolve( this.records.slice().filter( new Function( "rec", logic.join( "\n" ) ) ) );
+		defer.resolve( this.records.slice().filter( new Function( "rec", cond ) ) );
 	}
 	else {
 		functions = [];
@@ -3483,7 +3522,7 @@ DataStore.prototype.select = function ( where ) {
 				this[k] = v.toString();
 				functions.push( k );
 			}
-		});
+		} );
 
 		blob   = new Blob( [WORKER] );
 		worker = new Worker( global.URL.createObjectURL( blob ) );
@@ -3593,7 +3632,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 						if ( !array.contains( self.collections, k ) && !data[k] ) {
 							data[k] = v;
 						}
-					});
+					} );
 				}
 			}
 			else {
@@ -3655,7 +3694,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			else {
 				deferreds.push( record.data[k].data.batch( "set", v, true ) );
 			}
-		});
+		} );
 	}
 
 	if ( !batch && this.events ) {
@@ -3668,7 +3707,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	else {
 		utility.when( deferreds ).then( function () {
 			defer.resolve( record );
-		});
+		} );
 	}
 
 	return this;
@@ -3754,7 +3793,7 @@ DataStore.prototype.setUri = function ( arg ) {
 				defer.resolve( arg );
 			}, function ( e ) {
 				defer.reject( e );
-			});
+			} );
 		}
 	}
 
@@ -4168,15 +4207,15 @@ DataStore.prototype.teardown = function () {
 					observer.remove( v.id );
 					v.data.teardown();
 				}
-			});
-		});
+			} );
+		} );
 	}
 
 	delete abaaso.datastores[this.id];
 
 	array.each( this.datalists, function (i ) {
 		i.teardown();
-	});
+	} );
 
 	this.clear( true );
 	observer.fire( this.parentNode, "afterDataTeardown" );
@@ -4219,13 +4258,13 @@ DataStore.prototype.update = function ( key, data ) {
 
 	utility.iterate( record.data, function ( v, k ) {
 		data[v] = k;
-	});
+	} );
 	
 	this.set( key, data ).then( function ( arg ) {
 		defer.resolve( arg );
 	}, function ( e ) {
 		defer.reject( e );
-	});
+	} );
 
 	return defer;
 };
@@ -4355,7 +4394,7 @@ DataList.prototype.del = function ( rec ) {
 		
 		array.each( this.element.find( "> li[data-key='" + rec.key + "']" ), function ( i ) {
 			element.destroy( i );
-		});
+		} );
 
 		observer.fire( this.element, "afterDataListRefresh" );
 	}
@@ -4416,7 +4455,7 @@ DataList.prototype.pages = function () {
 		if ( i ) {
 			element.destroy( i );
 		}
-	});
+	} );
 	
 	// Halting because there's 1 page, or nothing
 	if ( this.total === 0 || total === 1 ) {
@@ -4481,7 +4520,7 @@ DataList.prototype.pages = function () {
 				element.scrollTo( obj, 100, -10 );
 			}
 		}, "pagination");
-	});
+	} );
 
 	return this;
 };
@@ -4529,7 +4568,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
-			});
+			} );
 
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
@@ -4554,7 +4593,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-			});
+			} );
 
 			// Filling in placeholder value
 			obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
@@ -4593,10 +4632,10 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 							return false;
 						}
-					});
-				});
+					} );
+				} );
 			}
-		});
+		} );
 
 		// Exposting records & total count of items in the list
 		self.records = items;
@@ -4631,20 +4670,20 @@ DataList.prototype.refresh = function ( redraw, create ) {
 				if ( callback ) {
 					array.each( element.find( el, "> li" ), function ( i ) {
 						self.callback( i );
-					});
+					} );
 				}
 			}
 		}
 		else {
 			array.each( element.find( el, "> li" ), function ( i ) {
 				element.addClass( i, "hidden" );
-			});
+			} );
 
 			array.each( items, function ( i ) {
 				array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
 					element.removeClass( o, "hidden" );
-				});
-			});
+				} );
+			} );
 		}
 
 		// Rendering pagination elements
@@ -4654,7 +4693,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		else {
 			array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 				element.destroy( i );
-			});
+			} );
 		}
 
 		observer.fire( el, "afterDataListRefresh" );
@@ -4702,7 +4741,7 @@ DataList.prototype.teardown = function ( destroy ) {
 
 	array.each( utility.dom( "#" + id + "-pages-top, #" + id + "-pages-bottom" ), function ( i ) {
 		observer.remove( i );
-	});
+	} );
 
 	array.each( this.store.datalists, function ( i, idx ) {
 		if ( i.id === self.id ) {
@@ -4710,7 +4749,7 @@ DataList.prototype.teardown = function ( destroy ) {
 
 			return false;
 		}
-	});
+	} );
 
 	if ( destroy ) {
 		element.destroy( this.element );
@@ -4751,31 +4790,31 @@ function Deferred () {
 		promise.delay( function () {
 			array.each( self.onDone, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			array.each( self.onAlways, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			self.onAlways = [];
 			self.onDone   = [];
 			self.onFail   = [];
-		});
+		} );
 	}, function ( arg ) {
 		promise.delay( function () {
 			array.each( self.onFail, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			array.each( self.onAlways, function ( i ) {
 				i( arg );
-			});
+			} );
 
 			self.onAlways = [];
 			self.onDone   = [];
 			self.onFail   = [];
-		});
-	});
+		} );
+	} );
 }
 
 /**
@@ -5266,7 +5305,7 @@ var element = {
 
 		array.each( string.explode( arg ), function ( i ) {
 			result = result.concat( utility.dom( "#" + obj.id + " " + i ) );
-		});
+		} );
 
 		return result;
 	},
@@ -5285,7 +5324,7 @@ var element = {
 		if ( arg ) {
 			array.each( array.cast( element.create( "div", {innerHTML: arg}, obj ).childNodes ), function ( i ) {
 				obj.appendChild( i );
-			});
+			} );
 
 			obj.removeChild( obj.childNodes[0] );
 		}
@@ -5545,7 +5584,7 @@ var element = {
 		if ( add ) {
 			array.each( arg, function ( i ) {
 				obj.classList.add( i );
-			});
+			} );
 		}
 		else {
 			array.each( arg, function ( i ) {
@@ -5555,11 +5594,11 @@ var element = {
 				else {
 					array.each( obj.classList, function ( x ) {
 						this.remove( x );
-					});
+					} );
 
 					return false;
 				}
-			});
+			} );
 		}
 
 		return obj;
@@ -5697,7 +5736,7 @@ var element = {
 			else if ( registry[i.name] === undefined ) {
 				registry[i.name] = element.val( i );
 			}
-		});
+		} );
 
 		if ( !string ) {
 			result = json.encode( registry );
@@ -5707,7 +5746,7 @@ var element = {
 
 			utility.iterate( registry, function ( v, k ) {
 				encode ? result += "&" + encodeURIComponent( k ) + "=" + encodeURIComponent( v ) : result += "&" + k + "=" + v;
-			});
+			} );
 
 			result = result.replace( regex.and, "?" );
 		}
@@ -5800,7 +5839,7 @@ var element = {
 			else {
 				element.attr ( obj, k, v );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -5829,7 +5868,7 @@ var element = {
 						output = i.value;
 						return false;
 					}
-				});
+				} );
 			}
 			else if ( regex.select.test( obj.type ) ) {
 				output = obj.options[obj.selectedIndex].value;
@@ -5861,7 +5900,7 @@ var element = {
 						output = i;
 						return false;
 					}
-				});
+				} );
 			}
 			else if ( regex.select.test( obj.type ) ) {
 				event = "change";
@@ -5872,7 +5911,7 @@ var element = {
 						output = i;
 						return false;
 					}
-				});
+				} );
 			}
 			else {
 				obj.value !== undefined ? obj.value = value : element.text( obj, value );
@@ -5976,7 +6015,7 @@ DataListFilter.prototype.set = function ( fields ) {
 
 	array.each( string.explode( fields ), function ( v ) {
 		obj[v] = "";
-	});
+	} );
 
 	this.filters = obj;
 
@@ -6017,15 +6056,15 @@ DataListFilter.prototype.update = function () {
 				// Ignoring trailing commas
 				queries = queries.filter( function ( i ) {
 					return !string.isEmpty( i );
-				});
+				} );
 
 				// Shaping valid pattern
 				array.each( queries, function ( i, idx ) {
 					this[idx] = "^" + string.escape( i ).replace( "\\*", ".*" );
-				});
+				} );
 
 				this[k] = queries.join( "," );
-			});
+			} );
 
 			self.datalist.filter = self.filters;
 		}
@@ -6078,7 +6117,7 @@ function DataGrid ( obj, store, fields, sortable, options, filtered ) {
 	if ( options.order && !string.isEmpty( options.order ) ) {
 		sortOrder = string.explode( options.order ).map( function ( i ) {
 			return i.replace( regex.after_space, "" );
-		});
+		} );
 	}
 
 	this.element     = obj;
@@ -6151,7 +6190,7 @@ DataGrid.prototype.init = function ( debounce ) {
 			}
 
 			template += "&lt;span class=\"" + i + "\" data-field=\"" + i + "\" style=\"" + css + "\">{{" + i + "}}&lt;/span>";
-		});
+		} );
 
 		// Setting click handler on sortable "columns"
 		if ( this.sortable.length > 0 ) {
@@ -6194,7 +6233,7 @@ DataGrid.prototype.refresh = function () {
 			var obj = element.find( self.element, ".header span[data-field='" + i + "']" )[0];
 
 			sort.push( string.trim( i + " " + ( element.data( obj, "sort" ) || "" ) ) );
-		});
+		} );
 
 		this.options.order = this.list.order = sort.join( ", " );
 	}
@@ -7564,23 +7603,7 @@ var number = {
 /** @namespace abaaso.observer */
 var observer = {
 	/**
-	 * Collection of listeners
-	 *
-	 * @memberOf abaaso.observer
-	 * @type {Object}
-	 */
-	listeners  : {},
-
-	/**
-	 * Array copy of listeners for observer.fire()
-	 *
-	 * @memberOf abaaso.observer
-	 * @type {Object}
-	 */
-	alisteners : {},
-
-	/**
-	 * Event listeners
+	 * Collection of external event listeners
 	 *
 	 * @memberOf abaaso.observer
 	 * @type {Object}
@@ -7588,12 +7611,20 @@ var observer = {
 	elisteners : {},
 
 	/**
-	 * Tracks count of listeners per event across all states
+	 * If `true`, events are ignored
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Boolean}
+	 */
+	ignore : false,
+
+	/**
+	 * Collection of listeners
 	 *
 	 * @memberOf abaaso.observer
 	 * @type {Object}
 	 */
-	clisteners : {},
+	listeners : {},
 
 	/**
 	 * Boolean indicating if events are logged to the console
@@ -7602,6 +7633,14 @@ var observer = {
 	 * @type {Boolean}
 	 */
 	log : false,
+
+	/**
+	 * Maximum amount of handlers per event
+	 *
+	 * @memberOf abaaso.observer
+	 * @type {Number}
+	 */
+	maxListeners : 10,
 
 	/**
 	 * Queue of events to fire
@@ -7620,96 +7659,73 @@ var observer = {
 	silent : false,
 
 	/**
-	 * If `true`, events are ignored
-	 *
-	 * @memberOf abaaso.observer
-	 * @type {Boolean}
-	 */
-	ignore : false,
-
-	/**
 	 * Adds a handler for an event
 	 *
 	 * @method add
 	 * @memberOf abaaso.observer
-	 * @param  {Mixed}    obj   Primitive
-	 * @param  {String}   event Event, or Events being fired ( comma delimited supported )
-	 * @param  {Function} fn    Event handler
-	 * @param  {String}   id    [Optional / Recommended] ID for the listener
-	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
-	 * @param  {String}   st    [Optional] Application state, default is current
-	 * @return {Mixed}          Primitive
+	 * @param  {Mixed}    obj    Primitive
+	 * @param  {String}   events Comma delimited string of events
+	 * @param  {Function} fn     Event handler
+	 * @param  {String}   id     [Optional / Recommended] ID for the listener
+	 * @param  {String}   scope  [Optional / Recommended] ID of the object or element to be set as 'this'
+	 * @param  {String}   st     [Optional] Application state, default is current
+	 * @return {Mixed}           Primitive
 	 */
-	add : function ( obj, event, fn, id, scope, st ) {
-		scope = scope || obj;
-		st    = st    || state.getCurrent();
+	add : function ( obj, events, fn, id, scope, st ) {
+		var oId      = observer.id( obj ),
+		    instance = regex.observer_globals.test( oId ) || ( !/\//g.test( oId ) && oId !== "abaaso" ) ? obj : null,
+		    jsonp    = /^afterjsonp$/i,
+		    add      = false,
+		    reg      = false;
 
-		if ( event !== undefined ) {
-			event = string.explode( event );
-		}
-
-		id = id || utility.genId();
-
-		var instance = null,
-		    l        = observer.listeners,
-		    a        = observer.alisteners,
-		    ev       = observer.elisteners,
-		    cl       = observer.clisteners,
-		    gr       = regex.observer_globals,
-		    ar       = regex.observer_allowed,
-		    o        = observer.id( obj ),
-		    add, reg;
-
-		if ( o === undefined || event === null || event === undefined || typeof fn !== "function" ) {
+		if ( !oId || !events || typeof fn !== "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
-		if ( l[o] === undefined ) {
-			l[o]  = {};
-			a[o]  = {};
-			cl[o] = {};
+		// Preparing variables
+		id    = id    || utility.uuid();
+		scope = scope || obj;
+		st    = st    || state.getCurrent();
+
+		if ( instance ) {
+			add = typeof instance.addEventListener === "function";
+			reg = typeof instance.attachEvent === "object" || add;
 		}
 
-		array.each( event, function ( i ) {
-			var eid = o + "_" + i;
+		// Preparing
+		if ( !observer.listeners[oId] ) {
+			observer.listeners[oId]     = {};
+			observer.listeners[oId].all = {};
+		}
 
-			if ( l[o][i] === undefined ) {
-				l[o][i]  = {};
-				a[o][i]  = {};
-				cl[o][i] = 0;
+		if ( st !== "all" && !observer.listeners[oId][st] ) {
+			observer.listeners[oId][st] = {};
+		}
+
+		// Setting event listeners (with DOM hooks if applicable)
+		array.each( string.explode( events ), function ( ev ) {
+			var eId = oId + "_" + ev;
+
+			// Creating caches if not present
+			if ( !observer.listeners[oId].all[ev] ) {
+				observer.listeners[oId].all[ev] = lru( observer.maxListeners );
 			}
 
-			if ( l[o][i][st] === undefined ) {
-				l[o][i][st] = {};
-				a[o][i][st] = [];
+			if ( st !== "all" && !observer.listeners[oId][st][ev] ) {
+				observer.listeners[oId][st][ev] = lru( observer.maxListeners );
 			}
 
-			instance = ( gr.test( o ) || (!/\//g.test( o ) && o !== "abaaso" ) ) ? obj : null;
+			// Hooking event listener
+			if ( reg && !jsonp.test( ev ) && !observer.elisteners[eId] ) {
+				observer.elisteners[eId] = function ( e ) {
+					observer.fire( oId, ev, e );
+				};
 
-			// Setting up event listener if valid
-			if ( instance !== null && instance !== undefined && i.toLowerCase() !== "afterjsonp" && ev[eid] === undefined && ( gr.test( o ) || typeof instance.listeners === "function" ) ) {
-				add = ( typeof instance.addEventListener === "function" );
-				reg = ( typeof instance.attachEvent === "object" || add );
-
-				if ( reg ) {
-					// Registering event listener
-					ev[eid] = function ( e ) {
-						if ( !ar.test( e.type ) ) {
-							utility.stop( e );
-						}
-
-						observer.fire( obj, i, e );
-					};
-
-					// Hooking event listener
-					instance[add ? "addEventListener" : "attachEvent"]( ( add ? "" : "on" ) + i, ev[eid], false );
-				}
+				instance[add ? "addEventListener" : "attachEvent"]( ( add ? "" : "on" ) + ev, observer.elisteners[eId], false );
 			}
 
-			l[o][i][st][id] = {fn: fn, scope: scope};
-			observer.sync( o, i, st );
-			cl[o][i]++;
-		});
+			observer.listeners[oId][st][ev].set( id, {fn: fn, scope: scope} );
+		} );
 
 		return obj;
 	},
@@ -7724,16 +7740,41 @@ var observer = {
 	 */
 	decorate : function ( obj ) {
 		var methods = [
-			["fire",      function () { return observer.fire.apply( observer, [this].concat( array.cast( arguments ) ) ); }],
-			["listeners", function ( event ) { return observer.list(this, event ); }],
-			["on",        function ( event, listener, id, scope, standby ) { return observer.add( this, event, listener, id, scope, standby ); }],
-			["once",      function ( event, listener, id, scope, standby ) { return observer.once( this, event, listener, id, scope, standby ); }],
-			["un",        function ( event, id ) { return observer.remove( this, event, id ); }]
+			[
+				"fire",
+				function () {
+					return observer.fire.apply( observer, [this].concat( array.cast( arguments ) ) );
+				}
+			],
+			[
+				"listeners",
+				function ( e ) {
+					return observer.list( this, e );
+				}
+			],
+			[
+				"on",
+				function ( e, listener, id, scope, standby ) {
+					return observer.add( this, e, listener, id, scope, standby );
+				}
+			],
+			[
+				"once",
+				function ( e, listener, id, scope, standby ) {
+					return observer.once( this, e, listener, id, scope, standby );
+				}
+			],
+			[
+				"un",
+				function ( e, id ) {
+					return observer.remove( this, e, id );
+				}
+			]
 		];
 
 		array.each( methods, function ( i ) {
 			utility.property( obj, i[0], {value: i[1], configurable: true, enumerable: true, writable: true} );
-		});
+		} );
 
 		return obj;
 	},
@@ -7755,57 +7796,51 @@ var observer = {
 	 *
 	 * @method fire
 	 * @memberOf abaaso.observer
-	 * @param  {Mixed}  obj   Primitive
-	 * @param  {String} event Event, or Events being fired ( comma delimited supported )
-	 * @return {Mixed}        Primitive
+	 * @param  {Mixed}  obj    Primitive
+	 * @param  {String} events Comma delimited string of events
+	 * @return {Mixed}         Primitive
 	 */
-	fire : function ( obj, event ) {
-		var quit = false,
-		    a    = array.remove( array.cast( arguments ), 0, 1 ),
-		    o, s, log, list;
+	fire : function ( obj, events ) {
+		var args, log, cache, item, oId;
 
-		if ( observer.ignore ) {
-			return obj;
-		}
+		if ( !observer.ignore ) {
+			if ( observer.silent ) {
+				observer.queue.push( array.cast( arguments ) );
+			}
+			else {
+				oId = observer.id( obj );
 
-		o = observer.id( obj );
+				if ( observer.listeners[oId] ) {
+					args = array.remove( array.cast( arguments ), 0, 1 );
+					log  = abaaso.logging;
 
-		if ( o === undefined || event === undefined ) {
-			throw new Error( label.error.invalidArguments );
-		}
-
-		if ( observer.silent ) {
-			observer.queue.push( {obj: obj, event: event} );
-		}
-		else {
-			s   = state.getCurrent();
-			log = abaaso.logging;
-
-			array.each( string.explode( event ), function ( e ) {
-				if ( log ) {
-					utility.log(o + " firing " + e );
-				}
-
-				list = observer.list( obj, e, observer.alisteners );
-
-				if ( list.all !== undefined ) {
-					array.each( list.all, function ( i ) {
-						var result = i.fn.apply( i.scope, a );
-
-						if ( result === false ) {
-							quit = true;
-
-							return result;
+					array.each( string.explode( events ), function ( ev ) {
+						if ( log ) {
+							utility.log( oId + " fired " + ev );
 						}
-					});
-				}
 
-				if ( !quit && s !== "all" && list[s] !== undefined ) {
-					array.each( list[s], function ( i ) {
-						return i.fn.apply( i.scope, a );
-					});
+						array.each( observer.states(), function ( st ) {
+							if ( observer.listeners[oId][st] && observer.listeners[oId][st][ev] ) {
+								cache = observer.listeners[oId][st][ev];
+
+								if ( cache.length > 0 ) {
+									item  = cache.cache[cache.last];
+
+									do {
+										if ( item.value.fn.apply( item.value.scope, args ) !== false && item.next ) {
+											item = cache.cache[item.next];
+										}
+										else {
+											return false;
+										}
+									}
+									while ( item );
+								}
+							}
+						} );
+					} );
 				}
-			});
+			}
 		}
 
 		return obj;
@@ -7844,30 +7879,59 @@ var observer = {
 	 *
 	 * @method list
 	 * @memberOf abaaso.observer
-	 * @param  {Mixed}  obj    Primitive
-	 * @param  {String} event  Event being queried
-	 * @param  {Object} target [Optional] Listeners collection to access, default is `observer.listeners`
-	 * @return {Mixed}         Primitive
+	 * @param  {Mixed}  obj Primitive
+	 * @param  {String} ev  Event being queried
+	 * @return {Mixed}      Primitive
 	 */
-	list : function ( obj, event, target ) {
-		var l = target || observer.listeners,
-		    o = observer.id( obj ),
-		    r;
+	list : function ( obj, ev ) {
+		var oId    = observer.id( obj ),
+		    result = {},
+		    events, states;
 
-		if ( l[o] === undefined && event === undefined ) {
-			r = {};
+		// Do nothing
+		if ( !observer.listeners[oId] ) {
 		}
-		else if ( l[o] !== undefined && ( event === undefined || string.isEmpty( event ) ) ) {
-			r = l[o];
+		// All events
+		else if ( !ev ) {
+			events = [];
+			states = array.keys( observer.listeners[oId] );
+
+			array.each( states, function ( st ) {
+				array.merge( events, array.keys( observer.listeners[oId][st] ) );
+			} );
+
+			array.each( events, function ( ev ) {
+				result[ev] = {};
+			} );
+
+			array.each( states, function ( st ) {
+				if ( observer.listeners[oId][st] ) {
+					array.each( array.keys( observer.listeners[oId][st] ), function ( ev ) {
+						if ( observer.listeners[oId][st][ev].length > 0 ) {
+							result[ev][st] = {};
+
+							utility.iterate( observer.listeners[oId][st][ev].cache, function ( v, k ) {
+								result[ev][st][k] = v.value;
+							} );
+						}
+					} );
+				}
+			} );
 		}
-		else if ( l[o] !== undefined && l[o][event] !== undefined ) {
-			r = l[o][event];
-		}
+		// Specific event
 		else {
-			r = {};
+			array.each( observer.states(), function ( st ) {
+				if ( observer.listeners[oId][st] && observer.listeners[oId][st][ev] && observer.listeners[oId][st][ev].length > 0 ) {
+					result[st] = {};
+
+					utility.iterate( observer.listeners[oId][st][ev].cache, function ( v, k ) {
+						result[st][k] = v.value;
+					} );
+				}
+			} );
 		}
 
-		return r;
+		return result;
 	},
 
 	/**
@@ -7875,28 +7939,29 @@ var observer = {
 	 *
 	 * @method once
 	 * @memberOf abaaso.observer
-	 * @param  {Mixed}    obj   Primitive
-	 * @param  {String}   event Event being fired
-	 * @param  {Function} fn    Event handler
-	 * @param  {String}   id    [Optional / Recommended] ID for the listener
-	 * @param  {String}   scope [Optional / Recommended] ID of the object or element to be set as 'this'
-	 * @param  {String}   st    [Optional] Application state, default is current
-	 * @return {Mixed}          Primitive
+	 * @param  {Mixed}    obj    Primitive
+	 * @param  {String}   events Comma delimited string of events being fired
+	 * @param  {Function} fn     Event handler
+	 * @param  {String}   id     [Optional / Recommended] ID for the listener
+	 * @param  {String}   scope  [Optional / Recommended] ID of the object or element to be set as 'this'
+	 * @param  {String}   st     [Optional] Application state, default is current
+	 * @return {Mixed}           Primitive
 	 */
-	once : function ( obj, event, fn, id, scope, st ) {
-		var uuid = id || utility.genId();
-
+	once : function ( obj, events, fn, id, scope, st ) {
+		id    = id    || utility.uuid();
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
-		if ( obj === undefined || event === null || event === undefined || typeof fn !== "function" ) {
+		if ( !obj || !events || typeof fn !== "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
-		observer.add( obj, event, function () {
-			fn.apply( scope, arguments );
-			observer.remove( obj, event, uuid, st );
-		}, uuid, scope, st);
+		array.each( string.explode( events ), function ( ev ) {
+			observer.add( obj, ev, function () {
+				fn.apply( scope, arguments );
+				observer.remove( obj, ev, id, st );
+			}, id, scope, st);
+		} );
 
 		return obj;
 	},
@@ -7917,13 +7982,13 @@ var observer = {
 			observer.silent = arg;
 
 			array.each( observer.queue, function ( i ) {
-				observer.fire( i.obj, i.event );
-			});
+				observer.fire.apply( observer, i );
+			} );
 
 			observer.queue = [];
 		}
 
-		return arg;
+		return observer.silent;
 	},
 
 	/**
@@ -7931,115 +7996,102 @@ var observer = {
 	 *
 	 * @method remove
 	 * @memberOf abaaso.observer
-	 * @param  {Mixed}  obj   Primitive
-	 * @param  {String} event [Optional] Event, or Events being fired ( comma delimited supported )
-	 * @param  {String} id    [Optional] Listener id
-	 * @param  {String} st    [Optional] Application state, default is current
-	 * @return {Mixed}        Primitive
+	 * @param  {Mixed}  obj    Primitive
+	 * @param  {String} events [Optional] Comma delimited string of events being removed
+	 * @param  {String} id     [Optional] Listener id
+	 * @param  {String} st     [Optional] Application state, default is current
+	 * @return {Mixed}         Primitive
 	 */
-	remove : function ( obj, event, id, st ) {
-		st = st || state.getCurrent();
+	remove : function ( obj, events, id, st ) {
+		var oId   = observer.id( obj ),
+		    add   = typeof obj.addEventListener === "function",
+		    reg   = typeof obj.attachEvent === "object" || add,
+		    regex = /.*_/,
+		    states, total, unhook;
 
-		var l   = observer.listeners,
-		    a   = observer.alisteners,
-		    ev  = observer.elisteners,
-		    cl  = observer.clisteners,
-		    o   = observer.id( obj ),
-		    add = ( typeof obj.addEventListener === "function" ),
-		    reg = ( typeof obj.attachEvent === "object" || add ),
-		    fn;
+		st = st || state.getCurrent();
 
 		/**
 		 * Removes DOM event hook
 		 *
-		 * @method fn
+		 * @method unhook
 		 * @memberOf abaaso.observer.remove
 		 * @private
-		 * @param  {Mixed}  event String or null
-		 * @param  {Number} i     Amount of listeners being removed
-		 * @return {Undefined}    undefined
+		 * @param  {Mixed}  eId Event ID
+		 * @param  {Number} ev  Event
+		 * @return {Undefined}  undefined
 		 */
-		fn = function ( event, i ) {
-			var unhook = ( typeof i === "number" && ( cl[o][event] = ( cl[o][event] - i ) ) === 0 );
-
-			if ( unhook && reg ) {
-				obj[add ? "removeEventListener" : "detachEvent"]( ( add ? "" : "on" ) + event, ev[o + "_" + event], false );
-				delete ev[o + "_" + event];
+		unhook = function ( eId, ev ) {
+			if ( reg ) {
+				obj[add ? "removeEventListener" : "detachEvent"]( ( add ? "" : "on" ) + ev, this[eId], false );
 			}
+
+			delete this[eId];
 		};
 
-		if ( l[o] === undefined ) {
-			return obj;
-		}
-
-		if ( event === undefined || event === null ) {
-			if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) {
-				utility.iterate( ev, function ( v, k ) {
-					if ( k.indexOf( o + "_" ) === 0) {
-						fn( k.replace( /.*_/, "" ), 1 );
+		if ( observer.listeners[oId] ) {
+			if ( !events ) {
+				utility.iterate( observer.elisteners, function ( v, k ) {
+					if ( k.indexOf( oId + "_" ) === 0 ) {
+						unhook.call( this, k, k.replace( regex, "" ) );
 					}
-				});
+				} );
+
+				delete observer.listeners[oId];
 			}
+			else {
+				events = string.explode( events );
+				states = array.keys( observer.listeners[oId] );
+				total  = 0;
 
-			delete l[o];
-			delete a[o];
-			delete cl[o];
-		}
-		else {
-			array.each( string.explode( event ), function ( e ) {
-				var sync = false;
+				// Total listeners
+				array.each( states, function ( s ) {
+					array.each( events, function ( e ) {
+						if ( observer.listeners[oId][s][e] ) {
+							total += observer.listeners[oId][s][e].length;
+						}
+					} );
+				} );
 
-				if ( l[o][e] === undefined ) {
-					return;
-				}
+				array.each( events, function ( ev ) {
+					if ( observer.listeners[oId][st][ev] ) {
+						// Specific listener
+						if ( id ) {
+							observer.listeners[oId][st][ev].remove( id );
 
-				if ( id === undefined ) {
-					if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) {
-						fn( e, array.keys( l[o][e][st] ).length );
+							if ( --total === 0 ) {
+								array.each( states, function ( s ) {
+									delete observer.listeners[oId][s][ev];
+								} );
+
+								unhook.call( observer.elisteners, oId + "_" + ev, ev );
+							}
+						}
+						// All listeners for the event
+						else {
+							array.each( states, function ( s ) {
+								delete observer.listeners[oId][s][ev];
+							} );
+
+							unhook.call( observer.elisteners, oId + "_" + ev, ev );
+						}
 					}
-
-					l[o][e][st] = {};
-					sync = true;
-				}
-				else if ( l[o][e][st][id] !== undefined ) {
-					fn( e, 1 );
-					delete l[o][e][st][id];
-					sync = true;
-				}
-
-				if ( sync ) {
-					observer.sync( o, e, st );
-				}
-			});
+				} );
+			}
 		}
 
 		return obj;
 	},
 
 	/**
-	 * Returns the sum of active listeners for one or all Objects
+	 * Returns an Array of active observer states
 	 *
-	 * @method sum
+	 * @method states
 	 * @memberOf abaaso.observer
-	 * @param  {Mixed} obj [Optional] Entity
-	 * @return {Object}    Object with total listeners per event
+	 * @return {Array} Array of active states
 	 */
-	sum : function ( obj ) {
-		return obj ? observer.clisteners[observer.id( obj )] : array.keys( observer.clisteners ).length;
-	},
-
-	/**
-	 * Syncs `alisteners` with `listeners`
-	 *
-	 * @method sync
-	 * @memberOf abaaso.observer
-	 * @param  {String} obj   Object ID
-	 * @param  {String} event Event
-	 * @param  {String} st    Application state
-	 * @return {Undefined}    undefined
-	 */
-	sync : function ( obj, event, st ) {
-		observer.alisteners[obj][event][st] = array.cast( observer.listeners[obj][event][st] );
+	states : function () {
+		return ["all", state.getCurrent()];
 	}
 };
 
@@ -8094,7 +8146,7 @@ var promise = {
 			child.resolve( arg );
 		}, function ( e ) {
 			child.reject( e );
-		});
+		} );
 	},
 
 	/**
@@ -8186,7 +8238,7 @@ Promise.prototype.process = function() {
 		else {
 			child.resolve( result );
 		}
-	});
+	} );
 
 	return this;
 };
@@ -8212,7 +8264,7 @@ Promise.prototype.reject = function ( arg ) {
 	if ( !this.deferred ) {
 		promise.delay( function () {
 			self.process();
-		});
+		} );
 
 		this.deferred = true;
 	}
@@ -8271,7 +8323,7 @@ Promise.prototype.then = function ( success, failure ) {
 	if ( this.state > promise.state.PENDING && !this.deferred ) {
 		promise.delay( function () {
 			self.process();
-		});
+		} );
 
 		this.deferred = true;
 	}
@@ -8296,14 +8348,14 @@ var prototypes = {
 		addClass : function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.klass( i, arg );
-			});
+			} );
 		},
 		after : function ( type, args ) {
 			var result = [];
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "after" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8312,7 +8364,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "last" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8321,7 +8373,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.attr( i, key, value ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8330,7 +8382,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "before" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8365,21 +8417,21 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, position ) );
-			});
+			} );
 
 			return result;
 		},
 		css : function ( key, value ) {
 			return array.each( this, function ( i ) {
 				element.css( i, key, value );
-			});
+			} );
 		},
 		data : function ( key, value ) {
 			var result = [];
 
 			array.each( this, function (i) {
 				result.push( element.data( i, key, value ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8389,17 +8441,17 @@ var prototypes = {
 		disable : function () {
 			return array.each( this, function ( i ) {
 				element.disable( i );
-			});
+			} );
 		},
 		dispatch : function ( event, data, bubbles, cancelable ) {
 			return array.each( this, function ( i ) {
 				element.dispatch( i, event, data, bubbles, cancelable );
-			});
+			} );
 		},
 		destroy : function () {
 			array.each( this, function ( i ) {
 				element.destroy( i );
-			});
+			} );
 
 			return [];
 		},
@@ -8412,7 +8464,7 @@ var prototypes = {
 		enable : function () {
 			return array.each( this, function ( i ) {
 				element.enable( i );
-			});
+			} );
 		},
 		equal : function ( arg ) {
 			return array.equal( this, arg );
@@ -8429,8 +8481,8 @@ var prototypes = {
 			array.each( this, function ( i ) {
 				element.find( i, arg ).each( function ( r ) {
 					result.add( r );
-				});
-			});
+				} );
+			} );
 
 			return result;
 		},
@@ -8439,7 +8491,7 @@ var prototypes = {
 
 			return array.each( this, function ( i ) {
 				observer.fire.apply( observer, [i].concat( array.cast( args ) ) );
-			});
+			} );
 		},
 		first : function () {
 			return array.first( this );
@@ -8450,7 +8502,7 @@ var prototypes = {
 		genId : function () {
 			return array.each( this, function ( i ) {
 				utility.genId( i );
-			});
+			} );
 		},
 		get : function ( uri, headers ) {
 			var result = [];
@@ -8460,8 +8512,8 @@ var prototypes = {
 					result[idx] = arg;
 				}, function ( e ) {
 					result[idx] = e;
-				});
-			});
+				} );
+			} );
 
 			return result;
 		},
@@ -8470,7 +8522,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.has( i, arg ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8479,7 +8531,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.hasClass( i, arg ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8489,13 +8541,13 @@ var prototypes = {
 			if ( arg !== undefined ) {
 				return array.each( this, function ( i ) {
 					element.html( i, arg );
-				});
+				} );
 			}
 			else {
 				result = [];
 				array.each( this, function ( i ) {
 					result.push( element.html( i ) );
-				});
+				} );
 
 				return result;
 			}
@@ -8514,7 +8566,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.is( i, arg ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8523,7 +8575,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isAlphaNum() );
-			});
+			} );
 
 			return result;
 		},
@@ -8532,7 +8584,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isBoolean() );
-			});
+			} );
 
 			return result;
 		},
@@ -8541,7 +8593,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isChecked() );
-			});
+			} );
 
 			return result;
 		},
@@ -8550,7 +8602,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isDate() );
-			});
+			} );
 
 			return result;
 		},
@@ -8559,7 +8611,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.isDisabled( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8568,7 +8620,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isDomain() );
-			});
+			} );
 
 			return result;
 		},
@@ -8577,7 +8629,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isEmail() );
-			});
+			} );
 
 			return result;
 		},
@@ -8586,7 +8638,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isEmpty() );
-			});
+			} );
 
 			return result;
 		},
@@ -8595,7 +8647,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.isHidden( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8604,7 +8656,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isIP() );
-			});
+			} );
 
 			return result;
 		},
@@ -8613,7 +8665,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isInt() );
-			});
+			} );
 
 			return result;
 		},
@@ -8622,7 +8674,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isNumber() );
-			});
+			} );
 
 			return result;
 		},
@@ -8631,7 +8683,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isPhone() );
-			});
+			} );
 
 			return result;
 		},
@@ -8640,7 +8692,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( i.isUrl() );
-			});
+			} );
 
 			return result;
 		},
@@ -8664,14 +8716,14 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				array.merge(result, observer.listeners( i, event ) );
-			});
+			} );
 
 			return result;
 		},
 		loading : function () {
 			return array.each( this, function ( i ) {
 				utility.loading( i );
-			});
+			} );
 		},
 		max : function () {
 			return array.max( this );
@@ -8697,12 +8749,12 @@ var prototypes = {
 		on : function ( event, listener, id, scope, state ) {
 			return array.each( this, function ( i ) {
 				observer.add( i, event, listener, id, scope || i, state );
-			});
+			} );
 		},
 		once : function ( event, listener, id, scope, state ) {
 			return array.each( this, function ( i ) {
 				observer.once( i, event, listener, id, scope || i, state );
-			});
+			} );
 		},
 		percents : function ( precision, total ) {
 			return array.percents( this, precision, total );
@@ -8712,7 +8764,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.position( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8721,7 +8773,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.create( type, args, i, "first" ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8746,14 +8798,14 @@ var prototypes = {
 		removeAttr : function ( key ) {
 			array.each( this, function ( i ) {
 				element.removeAttr( i, key );
-			});
+			} );
 
 			return this;
 		},
 		removeClass: function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.klass( i, arg, false );
-			});
+			} );
 		},
 		replace : function ( arg ) {
 			return array.replace( this, arg );
@@ -8778,7 +8830,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.size( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8803,17 +8855,17 @@ var prototypes = {
 				if ( typeof node.text === "function") {
 					node.text( arg );
 				}
-			});
+			} );
 		},
 		tpl : function ( arg ) {
 			return array.each( this, function ( i ) {
 				utility.tpl ( arg, i );
-			});
+			} );
 		},
 		toggleClass : function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.toggleClass( i, arg );
-			});
+			} );
 		},
 		total : function () {
 			return array.total( this );
@@ -8824,7 +8876,7 @@ var prototypes = {
 		un : function ( event, id, state ) {
 			return array.each( this, function ( i ) {
 				observer.remove( i, event, id, state );
-			});
+			} );
 		},
 		unique : function () {
 			return array.unique( this );
@@ -8832,7 +8884,7 @@ var prototypes = {
 		update : function ( arg ) {
 			return array.each( this, function ( i ) {
 				element.update( i, arg );
-			});
+			} );
 		},
 		val : function ( arg ) {
 			var a    = [],
@@ -8849,7 +8901,7 @@ var prototypes = {
 				if ( typeof i.val === "function" ) {
 					a.push( element.val( i, arg ) );
 				}
-			});
+			} );
 
 			return same ? a[0] : a;
 		},
@@ -8858,7 +8910,7 @@ var prototypes = {
 
 			array.each( this, function ( i ) {
 				result.push( element.validate( i ) );
-			});
+			} );
 
 			return result;
 		},
@@ -8936,7 +8988,7 @@ var prototypes = {
 				}
 
 				throw e;
-			});
+			} );
 
 			observer.fire( this, "beforeGet" );
 
@@ -9022,7 +9074,7 @@ var prototypes = {
 							if ( node === undefined ) {
 								throw new Error( label.error.propertyNotFound );
 							}
-						});
+						} );
 
 						result = node;
 					}
@@ -9250,7 +9302,7 @@ var prototypes = {
 			return observer.add( this, event, listener, id, scope, state );
 		},
 		once : function ( event, listener, id, scope, state ) {
-			return observer.add( this, event, listener, id, scope, state );
+			return observer.once( this, event, listener, id, scope, state );
 		},
 		options : function ( success, failure ) {
 			return client.request( this, "OPTIONS", success, failure );
@@ -9382,7 +9434,7 @@ var state = ( function () {
 		getPrevious : getPrevious,
 		setPrevious : setPrevious
 	};
-})();
+} )();
 
 /** @namespace abaaso.string */
 var string = {
@@ -9639,7 +9691,7 @@ var string = {
 
 		array.each( s, function ( i, idx ) {
 			r.push( idx === 0 ? i : string.capitalize( i ) );
-		});
+		} );
 
 		return r.join( "" );
 	},
@@ -9786,7 +9838,7 @@ var utility = {
 					else if ( obj ) {
 						result.push( obj );
 					}
-				});
+				} );
 			}
 		}
 
@@ -9830,7 +9882,7 @@ var utility = {
 
 				utility.property( o, k, {enumerable: true, get: getter, set: setter, value: s[k]} );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -9900,7 +9952,7 @@ var utility = {
 					if ( typeof v === "function" ) {
 						clone[k] = v;
 					}
-				});
+				} );
 			}
 			else {
 				clone = obj;
@@ -10068,7 +10120,7 @@ var utility = {
 
 			// Setting reference or value
 			idx + 1 === nth ? p[i] = val : p = p[i];
-		});
+		} );
 
 		return obj;
 	},
@@ -10326,7 +10378,7 @@ var utility = {
 
 		array.each( Object.keys( obj ), function ( i ) {
 			return fn.call( obj, obj[i], i );
-		});
+		} );
 
 		return obj;
 	},
@@ -10398,12 +10450,12 @@ var utility = {
 			else if ( ( obj[k] instanceof Object ) && ( v instanceof Object ) ) {
 				utility.iterate( v, function ( x, y ) {
 					obj[k][y] = utility.clone( x );
-				});
+				} );
 			}
 			else {
 				obj[k] = utility.clone( v );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -10449,7 +10501,7 @@ var utility = {
 				if ( v === null ) {
 					obj[k] = undefined;
 				}
-			});
+			} );
 		}
 
 		parsed = {
@@ -10552,7 +10604,7 @@ var utility = {
 			if ( !target[k] ) {
 				utility.property( target, k, {value: v, configurable: true, writable: true} );
 			}
-		});
+		} );
 
 		return obj;
 	},
@@ -10600,7 +10652,7 @@ var utility = {
 				else {
 					obj[item[0]].push( item[1] );
 				}
-			});
+			} );
 		}
 
 		if ( arg !== null && arg !== undefined ) {
@@ -10752,7 +10804,7 @@ var utility = {
 		if ( arg instanceof Array ) {
 			array.each( arg, function ( i ) {
 				element.html(element.create( array.cast( i, true )[0], frag ), array.cast(i)[0] );
-			});
+			} );
 		}
 		else {
 			utility.iterate( arg, function ( v, k ) {
@@ -10762,7 +10814,7 @@ var utility = {
 				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) {
 					utility.tpl( v, element.create( k, undefined, frag ) );
 				}
-			});
+			} );
 		}
 
 		target.appendChild( frag );
@@ -10804,7 +10856,7 @@ var utility = {
 	walk : function ( obj, arg ) {
 		array.each( arg.replace( /\]$/, "" ).replace( /\]/g, "." ).replace( /\.\./g, "." ).split( /\.|\[/ ), function ( i ) {
 			obj = obj[i];
-		});
+		} );
 
 		return obj;
 	},
@@ -10859,8 +10911,8 @@ var utility = {
 							defer.reject( args[0].value || args[0].promise.value );
 						}
 					}
-				});
-			});
+				} );
+			} );
 		}
 
 		return defer;
@@ -10912,7 +10964,7 @@ var validate = {
 					invalid.push( {element: i, test: p, value: v} );
 					exception = true;
 				}
-			});
+			} );
 		}
 		else {
 			utility.iterate( args, function ( v, k ) {
@@ -10950,7 +11002,7 @@ var validate = {
 						exception = true;
 					}
 				}
-			});
+			} );
 		}
 
 		return {pass: !exception, invalid: invalid};
@@ -11031,14 +11083,14 @@ var xhr = function () {
 
 				state.call( self, LOADING );
 			}
-		});
+		} );
 
 		res.on( "end", function () {
 			if ( self._send ) {
 				state.call( self, DONE );
 				self._send = false;
 			}
-		});
+		} );
 	};
 
 	/**
@@ -11161,7 +11213,7 @@ var xhr = function () {
 				if ( typeof i === "function" ) {
 					i.call( self );
 				}
-			});
+			} );
 		}
 
 		return this;
@@ -11183,7 +11235,7 @@ var xhr = function () {
 
 		utility.iterate( this._resheaders, function ( v, k ) {
 			result += k + ": " + v + "\n";
-		});
+		} );
 
 		return result;
 	};
@@ -11239,7 +11291,7 @@ var xhr = function () {
 
 		utility.iterate( headers, function ( v, k ) {
 			self._headers[k] = v;
-		});
+		} );
 
 		this.readyState = OPENED;
 
@@ -11339,7 +11391,7 @@ var xhr = function () {
 			handler.call( self, arg );
 		}).on( "error", function ( e ) {
 			handlerError.call( self, e );
-		});
+		} );
 
 		data === null ? request.setSocketKeepAlive( true, 10000 ) : request.write( data, "utf8" );
 		this._request = request;
@@ -11443,7 +11495,7 @@ var xml = {
 			else if ( typeof arg === "object" ) {
 				utility.iterate( arg, function ( v, k ) {
 					x += xml.encode( v, ( typeof v === "object" ), false ).replace( /item|xml/g, isNaN( k ) ? k : "item" );
-				});
+				} );
 			}
 
 			x += wrap ? "&lt;/xml>" : "";
@@ -11487,7 +11539,7 @@ function Abaaso ( arg ) {
 	if ( arg ) {
 		array.each( utility.$( arg ), function ( i ) {
 			self.push( i );
-		});
+		} );
 	}
 }
 
@@ -11516,7 +11568,7 @@ Abaaso.prototype.constructor = Abaaso;
 Abaaso.prototype.addClass = function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.klass( i, arg );
-	});
+	} );
 };
 
 /**
@@ -11534,7 +11586,7 @@ Abaaso.prototype.after = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "after" ) );
-	});
+	} );
 
 	return result;
 };
@@ -11554,7 +11606,7 @@ Abaaso.prototype.append = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "last" ) );
-	});
+	} );
 
 	return result;
 };
@@ -11604,7 +11656,7 @@ Abaaso.prototype.at = function ( n ) {
 Abaaso.prototype.attr = function ( key, value ) {
 	return array.each( this, function ( i ) {
 		element.attr( i, key, value );
-	});
+	} );
 };
 
 /**
@@ -11622,7 +11674,7 @@ Abaaso.prototype.before = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "before" ) );
-	});
+	} );
 
 	return result;
 };
@@ -11638,7 +11690,7 @@ Abaaso.prototype.before = function ( type, args ) {
 Abaaso.prototype.clear = function () {
 	return array.each( this, function ( i ) {
 		element.clear( i );
-	});
+	} );
 };
 
 /**
@@ -11657,7 +11709,7 @@ Abaaso.prototype.create = function ( type, args, position ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, position ) );
-	});
+	} );
 
 	return result;
 };
@@ -11675,7 +11727,7 @@ Abaaso.prototype.create = function ( type, args, position ) {
 Abaaso.prototype.css = function ( key, value ) {
 	return array.each( this, function ( i ) {
 		element.css( i, key, value );
-	});
+	} );
 };
 
 /**
@@ -11692,12 +11744,12 @@ Abaaso.prototype.data = function ( key, value ) {
 	if ( value !== undefined ) {
 		return array.each( this, function (i) {
 			element.data( i, key, value );
-		});
+		} );
 	}
 	else {
 		return this.map( function (i) {
 			return element.data( i, key );
-		});
+		} );
 	}
 };
 
@@ -11729,7 +11781,7 @@ Abaaso.prototype.datalist = function ( store, template, options ) {
 Abaaso.prototype.disable = function () {
 	return array.each( this, function ( i ) {
 		element.disable( i );
-	});
+	} );
 };
 
 /**
@@ -11747,7 +11799,7 @@ Abaaso.prototype.disable = function () {
 Abaaso.prototype.dispatch = function ( event, data, bubbles, cancelable ) {
 	return array.each( this, function ( i ) {
 		element.dispatch( i, event, data, bubbles, cancelable );
-	});
+	} );
 };
 
 /**
@@ -11761,7 +11813,7 @@ Abaaso.prototype.dispatch = function ( event, data, bubbles, cancelable ) {
 Abaaso.prototype.destroy = function () {
 	array.each( this, function ( i ) {
 		element.destroy( i );
-	});
+	} );
 
 	return new Abaaso();
 };
@@ -11799,7 +11851,7 @@ Abaaso.prototype.each = function ( arg, async, size ) {
 Abaaso.prototype.enable = function () {
 	return array.each( this, function ( i ) {
 		element.enable( i );
-	});
+	} );
 };
 
 /**
@@ -11817,8 +11869,8 @@ Abaaso.prototype.find = function ( arg ) {
 	array.each( this, function ( i ) {
 		array.each( element.find( i, arg ), function ( r ) {
 			result.push( r );
-		});
-	});
+		} );
+	} );
 
 	return result;
 };
@@ -11836,7 +11888,7 @@ Abaaso.prototype.fire = function () {
 
 	return array.each( this, function ( i ) {
 		observer.fire.apply( observer, [i].concat( array.cast( args ) ) );
-	});
+	} );
 };
 
 /**
@@ -11882,7 +11934,7 @@ Abaaso.prototype.forEach = function ( arg, async, size ) {
 Abaaso.prototype.genId = function () {
 	return array.each( this, function ( i ) {
 		utility.genId( i );
-	});
+	} );
 };
 
 /**
@@ -11901,8 +11953,8 @@ Abaaso.prototype.get = function ( uri, headers ) {
 			element.html( i, arg );
 		}, function ( e ) {
 			element.html( i, e );
-		});
-	});
+		} );
+	} );
 };
 
 /**
@@ -11941,7 +11993,7 @@ Abaaso.prototype.has = function ( arg ) {
 		return element.has( i, arg );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -11962,7 +12014,7 @@ Abaaso.prototype.hasClass = function ( arg ) {
 		return element.hasClass( i, arg );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -11982,7 +12034,7 @@ Abaaso.prototype.html = function ( arg ) {
 	if ( arg !== undefined ) {
 		array.each( this, function ( i ) {
 			element.html( i, arg );
-		});
+		} );
 
 		return this;
 	}
@@ -11990,7 +12042,7 @@ Abaaso.prototype.html = function ( arg ) {
 		result = [];
 		array.each( this, function ( i ) {
 			result.push( element.html( i ) );
-		});
+		} );
 
 		return result;
 	}
@@ -12012,7 +12064,7 @@ Abaaso.prototype.is = function ( arg ) {
 		return element.is( i, arg );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12032,7 +12084,7 @@ Abaaso.prototype.isAlphaNum = function () {
 		return element.isAlphaNum( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12052,7 +12104,7 @@ Abaaso.prototype.isBoolean = function () {
 		return element.isBoolean( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12072,7 +12124,7 @@ Abaaso.prototype.isChecked = function () {
 		return element.isChecked( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12092,7 +12144,7 @@ Abaaso.prototype.isDate = function () {
 		return element.isDate( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12112,7 +12164,7 @@ Abaaso.prototype.isDisabled = function () {
 		return element.isDisabled( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12132,7 +12184,7 @@ Abaaso.prototype.isDomain = function () {
 		return element.isDomain( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12152,7 +12204,7 @@ Abaaso.prototype.isEmail = function () {
 		return element.isEmail( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12172,7 +12224,7 @@ Abaaso.prototype.isEmpty = function () {
 		return element.isEmpty( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12192,7 +12244,7 @@ Abaaso.prototype.isHidden = function () {
 		return element.isHidden( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12212,7 +12264,7 @@ Abaaso.prototype.isIP = function () {
 		return element.isIP( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12232,7 +12284,7 @@ Abaaso.prototype.isInt = function () {
 		return element.isInt( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12252,7 +12304,7 @@ Abaaso.prototype.isNumber = function () {
 		return element.isNumber( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12272,7 +12324,7 @@ Abaaso.prototype.isPhone = function () {
 		return element.isPhone( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12292,7 +12344,7 @@ Abaaso.prototype.isUrl = function () {
 		return element.isUrl( i );
 	}), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12336,7 +12388,7 @@ Abaaso.prototype.limit = function ( start, offset ) {
 
 	array.each( array.limit( this, start, offset ), function ( i ) {
 		result.push( i );
-	});
+	} );
 
 	return result;
 };
@@ -12355,7 +12407,7 @@ Abaaso.prototype.listeners = function ( event ) {
 
 	array.each( this, function ( i ) {
 		result.push( abaaso.listeners( i, event ) );
-	});
+	} );
 
 	return result;
 };
@@ -12372,7 +12424,7 @@ Abaaso.prototype.listeners = function ( event ) {
 Abaaso.prototype.loading = function () {
 	return array.each( this, function ( i ) {
 		utility.loading( i );
-	});
+	} );
 };
 
 /**
@@ -12391,7 +12443,7 @@ Abaaso.prototype.loading = function () {
 Abaaso.prototype.on = function ( event, listener, id, scope, state ) {
 	return array.each( this, function ( i ) {
 		observer.add( i, event, listener, id, scope || i, state );
-	});
+	} );
 };
 
 /**
@@ -12411,7 +12463,7 @@ Abaaso.prototype.on = function ( event, listener, id, scope, state ) {
 Abaaso.prototype.once = function ( event, listener, id, scope, state ) {
 	return array.each( this, function ( i ) {
 		observer.once( i, event, listener, id, scope || i, state );
-	});
+	} );
 };
 
 /**
@@ -12428,7 +12480,7 @@ Abaaso.prototype.position = function () {
 
 	array.each( this, function ( i ) {
 		result.push( element.position( i ) );
-	});
+	} );
 
 	return result;
 };
@@ -12448,7 +12500,7 @@ Abaaso.prototype.prepend = function ( type, args ) {
 
 	array.each( this, function ( i ) {
 		result.push( element.create( type, args, i, "first" ) );
-	});
+	} );
 
 	return result;
 };
@@ -12505,7 +12557,7 @@ Abaaso.prototype.removeWhile= function ( fn ) {
 Abaaso.prototype.removeAttr = function ( key ) {
 	return array.each( this, function ( i ) {
 		element.removeAttr( i, key );
-	});
+	} );
 };
 
 /**
@@ -12520,7 +12572,7 @@ Abaaso.prototype.removeAttr = function ( key ) {
 Abaaso.prototype.removeClass= function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.klass( i, arg, false );
-	});
+	} );
 };
 
 /**
@@ -12536,7 +12588,7 @@ Abaaso.prototype.removeClass= function ( arg ) {
 Abaaso.prototype.serialize = function ( string, encode ) {
 	return this.map( function ( i ) {
 		element.serialize( i, string, encode );
-	});
+	} );
 };
 
 /**
@@ -12550,7 +12602,7 @@ Abaaso.prototype.serialize = function ( string, encode ) {
 Abaaso.prototype.size = function () {
 	return this.map( function ( i ) {
 		return element.size( i );
-	});
+	} );
 };
 
 /**
@@ -12572,13 +12624,13 @@ Abaaso.prototype.text = function ( arg ) {
 			tmp = {};
 			tmp[i.innerText ? "innerText" : "text"] = arg;
 			element.update( i, tmp );
-		});
+		} );
 	}
 	else {
 		result = [];
 		array.each( this, function ( i ) {
 			result.push( string.trim( i[i.innerText ? "innerText" : "text"] ) );
-		});
+		} );
 
 		return result;
 	}
@@ -12596,7 +12648,7 @@ Abaaso.prototype.text = function ( arg ) {
 Abaaso.prototype.tpl = function ( arg ) {
 	return array.each( this, function ( i ) {
 		utility.tpl ( arg, i );
-	});
+	} );
 };
 
 /**
@@ -12611,7 +12663,7 @@ Abaaso.prototype.tpl = function ( arg ) {
 Abaaso.prototype.toggleClass = function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.toggleClass( i, arg );
-	});
+	} );
 };
 
 /**
@@ -12628,7 +12680,7 @@ Abaaso.prototype.toggleClass = function ( arg ) {
 Abaaso.prototype.un = function ( event, id, state ) {
 	return array.each( this, function ( i ) {
 		observer.remove( i, event, id, state );
-	});
+	} );
 };
 
 /**
@@ -12643,7 +12695,7 @@ Abaaso.prototype.un = function ( event, id, state ) {
 Abaaso.prototype.update = function ( arg ) {
 	return array.each( this, function ( i ) {
 		element.update( i, arg );
-	});
+	} );
 };
 
 /**
@@ -12659,12 +12711,12 @@ Abaaso.prototype.val = function ( arg ) {
 	if ( arg === undefined ) {
 		return this.map( function ( i ) {
 			return element.val( i );
-		});
+		} );
 	}
 	else {
 		return array.each( this, function ( i ) {
 			return element.val( i, arg );
-		});
+		} );
 	}
 };
 
@@ -12679,7 +12731,7 @@ Abaaso.prototype.val = function ( arg ) {
 Abaaso.prototype.validate = function () {
 	return this.map( function ( i ) {
 		return element.validate( i );
-	});
+	} );
 };
 
 /**
@@ -14077,7 +14129,7 @@ bootstrap = function () {
 		observer.remove( obj );
 		array.each( array.cast( obj.childNodes ), function ( i ) {
 			cleanup( i );
-		});
+		} );
 	};
 
 	// Repeating function to call init()
@@ -14138,15 +14190,16 @@ bootstrap = function () {
 			observer.fire( "abaaso", "render" );
 			observer.remove( "abaaso", "render" );
 			observer.remove( this, "load" );
-		});
+		} );
 
 		if ( typeof Object.observe === "function" ) {
 			observer.add( global, "DOMNodeInserted", function ( e ) {
 				var obj = utility.target( e );
 
+				// @todo change to a MutationObserver: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 				Object.observe( obj, function ( arg ) {
 					observer.fire( obj, "change", arg );
-				});
+				} );
 			}, "mutation", global, "all");
 		}
 
@@ -14191,7 +14244,7 @@ WORKER = "var " + string.fromObject( array, "array" ) + ", " + string.fromObject
 
 // Returning factory
 return abaaso;
-})();
+} )();
 
 // Node, AMD & window supported
 if ( typeof exports !== "undefined" ) {
@@ -14200,12 +14253,12 @@ if ( typeof exports !== "undefined" ) {
 else if ( typeof define === "function" ) {
 	define( function () {
 		return framework;
-	});
+	} );
 }
 else {
 	global.abaaso = framework;
 }
-})( this );
+} )( this );
 </code></pre>
         </article>
     </section>
@@ -14222,7 +14275,7 @@ else {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Oct 05 2013 08:06:43 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Oct 14 2013 12:30:07 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
