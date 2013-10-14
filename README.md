@@ -12,29 +12,26 @@ abaaso foregoes MVC in favor of the native OOP design of JavaScript with custom 
 
 ## What is Supported?
 
-All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
+All HTML5 compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
 
 * Microsoft Internet Explorer 10+ (standards mode)
 * Google Chrome 6+ / Android 2.3+
 * Mozilla FireFox 3.6+
 * Apple Safari 5+ / iPhone / iPod Touch / iPad
-* HTML5 browsers (smart phones, TVs, etc.)
 * AMD loaders (require.js, cujo.js)
 * node.js & npm (npm install abaaso)
 
 ## Features
 
-* Automatic RESTful AJAX
-* Easy API abstraction through DataStores
+* abaaso() for DOM queries & namespace
+* API abstraction through DataStores
+* Automatic RESTful AJAX, avoids "over the wire" requests if possible
 * Application state driven by custom HTTP header
-* Object Oriented Programming
-* Semantic classes & methods
-* abaaso() for DOM queries / helper
 * abaaso.sugar() to enable syntactic sugar
 * Familiar API
-* Evented with a global observer
-* Built on Promises/A+
-* localStorage / MongoDB for persistent storage
+* Evented with a global observer, Elements fire "change" events via `MutationObservers`
+* I/O built on Promises/A+
+* localStorage or MongoDB for persistent storage
 
 ## Support
 
