@@ -112,7 +112,7 @@ Promise.prototype.process = function() {
 		    child    = i.promise;
 
 		if ( !callback || typeof callback != "function" ) {
-			if ( value && typeof value.then === "function" ) {
+			if ( value && typeof value.then == "function" ) {
 				promise.pipe( value, child );
 			}
 			else {
@@ -135,7 +135,7 @@ Promise.prototype.process = function() {
 			return;
 		}
 
-		if ( result && typeof result.then === "function" ) {
+		if ( result && typeof result.then == "function" ) {
 			promise.pipe( result, promise );
 		}
 		else {

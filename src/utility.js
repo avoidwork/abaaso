@@ -165,7 +165,7 @@ var utility = {
 		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode( obj ) );
 		}
-		else if ( typeof obj.__proto__ !== "undefined" ) {
+		else if ( typeof obj.__proto__ != "undefined" ) {
 			return utility.extend( obj.__proto__, obj );
 		}
 		else if ( obj instanceof Object ) {
@@ -779,12 +779,8 @@ var utility = {
 	 * @return {Object}   Event
 	 */
 	prevent : function ( e ) {
-		if ( typeof e.preventDefault === "function" ) {
+		if ( typeof e.preventDefault == "function" ) {
 			e.preventDefault();
-		}
-
-		if ( typeof e.stopPropagation === "function" ) {
-			e.stopPropagation();
 		}
 
 		return e;
@@ -959,8 +955,8 @@ var utility = {
 	 * @return {Object}   Event
 	 */
 	stop : function ( e ) {
-		if ( e.cancelBubble !== undefined ) {
-			e.cancelBubble = true;
+		if ( typeof e.stopPropagation == "function" ) {
+			e.stopPropagation();
 		}
 
 		utility.prevent( e );

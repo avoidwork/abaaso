@@ -519,7 +519,7 @@ var prototypes = {
 					node = utility.object( node );
 				}
 
-				if ( typeof node.text === "function") {
+				if ( typeof node.text == "function") {
 					node.text( arg );
 				}
 			} );
@@ -565,7 +565,7 @@ var prototypes = {
 
 				type = i.type;
 
-				if ( typeof i.val === "function" ) {
+				if ( typeof i.val == "function" ) {
 					a.push( element.val( i, arg ) );
 				}
 			} );

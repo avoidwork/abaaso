@@ -17,7 +17,7 @@ var datastore = {
 		utility.genId( obj );
 
 		// Decorating observer if not present in prototype chain
-		if ( typeof obj.fire !== "function" ) {
+		if ( typeof obj.fire != "function" ) {
 			observer.decorate( obj );
 		}
 
@@ -1507,7 +1507,7 @@ DataStore.prototype.teardown = function () {
 					return;
 				}
 
-				if ( v.data && typeof v.data.teardown === "function" ) {
+				if ( v.data && typeof v.data.teardown == "function" ) {
 					observer.remove( v.id );
 					v.data.teardown();
 				}

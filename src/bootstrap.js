@@ -76,7 +76,7 @@ bootstrap = function () {
 			observer.remove( this, "load" );
 		} );
 
-		if ( typeof Object.observe === "function" ) {
+		if ( typeof Object.observe == "function" ) {
 			observer.add( global, "DOMNodeInserted", function ( e ) {
 				var obj = utility.target( e );
 
@@ -107,12 +107,12 @@ bootstrap = function () {
 	if ( typeof exports != "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
 		init();
 	}
-	else if ( typeof document.addEventListener === "function" ) {
+	else if ( typeof document.addEventListener == "function" ) {
 		document.addEventListener( "DOMContentLoaded" , function () {
 			init();
 		}, false );
 	}
-	else if ( typeof document.attachEvent === "function" ) {
+	else if ( typeof document.attachEvent == "function" ) {
 		document.attachEvent( "onreadystatechange" , fn );
 	}
 	else {

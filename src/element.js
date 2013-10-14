@@ -102,7 +102,7 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	clear : function ( obj ) {
-		if ( typeof obj.reset === "function" ) {
+		if ( typeof obj.reset == "function" ) {
 			obj.reset();
 		}
 		else if ( obj.value !== undefined ) {
@@ -274,7 +274,7 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	disable : function ( obj ) {
-		if ( typeof obj.disabled === "boolean" && !obj.disabled ) {
+		if ( typeof obj.disabled == "boolean" && !obj.disabled ) {
 			obj.disabled = true;
 		}
 
@@ -316,7 +316,7 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	enable : function ( obj ) {
-		if ( typeof obj.disabled === "boolean" && obj.disabled ) {
+		if ( typeof obj.disabled == "boolean" && obj.disabled ) {
 			obj.disabled = false;
 		}
 
@@ -402,7 +402,7 @@ var element = {
 	 * @return {Boolean}   `true` if hidden
 	 */
 	hidden : function ( obj ) {
-		return obj.style.display === "none" || ( typeof obj.hidden === "boolean" && obj.hidden );
+		return obj.style.display === "none" || ( typeof obj.hidden == "boolean" && obj.hidden );
 	},
 
 	/**

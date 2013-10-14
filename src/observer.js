@@ -86,8 +86,8 @@ var observer = {
 		st    = st    || state.getCurrent();
 
 		if ( instance ) {
-			add = typeof instance.addEventListener === "function";
-			reg = typeof instance.attachEvent === "object" || add;
+			add = typeof instance.addEventListener == "function";
+			reg = typeof instance.attachEvent == "object" || add;
 		}
 
 		// Preparing
@@ -266,7 +266,7 @@ var observer = {
 		}
 		else {
 			utility.genId( arg );
-			id = arg.id || ( typeof arg.toString === "function" ? arg.toString() : arg );
+			id = arg.id || ( typeof arg.toString == "function" ? arg.toString() : arg );
 		}
 
 		return id;
@@ -402,12 +402,10 @@ var observer = {
 	 */
 	remove : function ( obj, events, id, st ) {
 		var oId   = observer.id( obj ),
-		    add   = typeof obj.addEventListener === "function",
-		    reg   = typeof obj.attachEvent === "object" || add,
+		    add   = typeof obj.addEventListener == "function",
+		    reg   = typeof obj.attachEvent == "object" || add,
 		    regex = /.*_/,
 		    states, total, unhook;
-
-		st = st || state.getCurrent();
 
 		/**
 		 * Removes DOM event hook
@@ -439,6 +437,7 @@ var observer = {
 			}
 			else {
 				events = string.explode( events );
+				st     = st || state.getCurrent();
 				states = array.keys( observer.listeners[oId] );
 				total  = 0;
 

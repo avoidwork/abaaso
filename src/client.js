@@ -592,7 +592,7 @@ var client = {
 			uri.fire( "afterGet", cached.response, xhr );
 		}
 		else {
-			xhr[typeof xhr.onreadystatechange !== "undefined" ? "onreadystatechange" : "onload"] = function () {
+			xhr[typeof xhr.onreadystatechange != "undefined" ? "onreadystatechange" : "onload"] = function () {
 				client.response( xhr, uri, type, defer );
 			};
 
@@ -663,7 +663,7 @@ var client = {
 			}
 
 			// Setting headers (using typeof for PATCH support in IE8)
-			if ( typeof xhr.setRequestHeader !== "undefined" ) {
+			if ( typeof xhr.setRequestHeader != "undefined" ) {
 				if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
 					xhr.setRequestHeader( "ETag", cached.headers.ETag );
 				}
@@ -688,7 +688,7 @@ var client = {
 			}
 
 			// Cross Origin Resource Sharing ( CORS )
-			if ( typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean" ) {
+			if ( typeof xhr.withCredentials == "boolean" && headers !== null && typeof headers.withCredentials == "boolean" ) {
 				xhr.withCredentials = headers.withCredentials;
 			}
 

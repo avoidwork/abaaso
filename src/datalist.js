@@ -115,7 +115,7 @@ DataList.prototype.constructor = DataList;
  * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.del = function ( rec ) {
-	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
+	if ( typeof this.pageIndex == "number" && typeof this.pageSize == "number" ) {
 		this.refresh();
 	}
 	else {
@@ -270,10 +270,10 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	redraw       = ( redraw !== false );
 	create       = ( create === true );
 	var el       = this.element,
-	    template = ( typeof this.template === "object" ),
+	    template = ( typeof this.template == "object" ),
 	    items    = [],
 	    self     = this,
-	    callback = ( typeof this.callback === "function" ),
+	    callback = ( typeof this.callback == "function" ),
 	    reg      = new RegExp(),
 	    registry = [], // keeps track of records in the list ( for filtering )
 	    limit    = [],
@@ -371,7 +371,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		self.total   = items.length;
 
 		// Pagination ( supports filtering )
-		if ( typeof self.pageIndex === "number" && typeof self.pageSize === "number" ) {
+		if ( typeof self.pageIndex == "number" && typeof self.pageSize == "number" ) {
 			ceiling = datalist.pages.call( self );
 
 			// Passed the end, so putting you on the end
@@ -416,7 +416,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		}
 
 		// Rendering pagination elements
-		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex === "number" && typeof self.pageSize === "number") {
+		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex == "number" && typeof self.pageSize == "number") {
 			self.pages();
 		}
 		else {

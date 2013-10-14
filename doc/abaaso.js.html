@@ -2209,7 +2209,7 @@ var client = {
 			uri.fire( "afterGet", cached.response, xhr );
 		}
 		else {
-			xhr[typeof xhr.onreadystatechange !== "undefined" ? "onreadystatechange" : "onload"] = function () {
+			xhr[typeof xhr.onreadystatechange != "undefined" ? "onreadystatechange" : "onload"] = function () {
 				client.response( xhr, uri, type, defer );
 			};
 
@@ -2280,7 +2280,7 @@ var client = {
 			}
 
 			// Setting headers (using typeof for PATCH support in IE8)
-			if ( typeof xhr.setRequestHeader !== "undefined" ) {
+			if ( typeof xhr.setRequestHeader != "undefined" ) {
 				if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
 					xhr.setRequestHeader( "ETag", cached.headers.ETag );
 				}
@@ -2305,7 +2305,7 @@ var client = {
 			}
 
 			// Cross Origin Resource Sharing ( CORS )
-			if ( typeof xhr.withCredentials === "boolean" && headers !== null && typeof headers.withCredentials === "boolean" ) {
+			if ( typeof xhr.withCredentials == "boolean" && headers !== null && typeof headers.withCredentials == "boolean" ) {
 				xhr.withCredentials = headers.withCredentials;
 			}
 
@@ -2711,7 +2711,7 @@ var datastore = {
 		utility.genId( obj );
 
 		// Decorating observer if not present in prototype chain
-		if ( typeof obj.fire !== "function" ) {
+		if ( typeof obj.fire != "function" ) {
 			observer.decorate( obj );
 		}
 
@@ -4201,7 +4201,7 @@ DataStore.prototype.teardown = function () {
 					return;
 				}
 
-				if ( v.data && typeof v.data.teardown === "function" ) {
+				if ( v.data && typeof v.data.teardown == "function" ) {
 					observer.remove( v.id );
 					v.data.teardown();
 				}
@@ -4384,7 +4384,7 @@ DataList.prototype.constructor = DataList;
  * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.del = function ( rec ) {
-	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
+	if ( typeof this.pageIndex == "number" && typeof this.pageSize == "number" ) {
 		this.refresh();
 	}
 	else {
@@ -4539,10 +4539,10 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	redraw       = ( redraw !== false );
 	create       = ( create === true );
 	var el       = this.element,
-	    template = ( typeof this.template === "object" ),
+	    template = ( typeof this.template == "object" ),
 	    items    = [],
 	    self     = this,
-	    callback = ( typeof this.callback === "function" ),
+	    callback = ( typeof this.callback == "function" ),
 	    reg      = new RegExp(),
 	    registry = [], // keeps track of records in the list ( for filtering )
 	    limit    = [],
@@ -4640,7 +4640,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		self.total   = items.length;
 
 		// Pagination ( supports filtering )
-		if ( typeof self.pageIndex === "number" && typeof self.pageSize === "number" ) {
+		if ( typeof self.pageIndex == "number" && typeof self.pageSize == "number" ) {
 			ceiling = datalist.pages.call( self );
 
 			// Passed the end, so putting you on the end
@@ -4685,7 +4685,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		}
 
 		// Rendering pagination elements
-		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex === "number" && typeof self.pageSize === "number") {
+		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex == "number" && typeof self.pageSize == "number") {
 			self.pages();
 		}
 		else {
@@ -5066,7 +5066,7 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	clear : function ( obj ) {
-		if ( typeof obj.reset === "function" ) {
+		if ( typeof obj.reset == "function" ) {
 			obj.reset();
 		}
 		else if ( obj.value !== undefined ) {
@@ -5238,7 +5238,7 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	disable : function ( obj ) {
-		if ( typeof obj.disabled === "boolean" && !obj.disabled ) {
+		if ( typeof obj.disabled == "boolean" && !obj.disabled ) {
 			obj.disabled = true;
 		}
 
@@ -5280,7 +5280,7 @@ var element = {
 	 * @return {Object}    Element
 	 */
 	enable : function ( obj ) {
-		if ( typeof obj.disabled === "boolean" && obj.disabled ) {
+		if ( typeof obj.disabled == "boolean" && obj.disabled ) {
 			obj.disabled = false;
 		}
 
@@ -5366,7 +5366,7 @@ var element = {
 	 * @return {Boolean}   `true` if hidden
 	 */
 	hidden : function ( obj ) {
-		return obj.style.display === "none" || ( typeof obj.hidden === "boolean" && obj.hidden );
+		return obj.style.display === "none" || ( typeof obj.hidden == "boolean" && obj.hidden );
 	},
 
 	/**
@@ -7686,8 +7686,8 @@ var observer = {
 		st    = st    || state.getCurrent();
 
 		if ( instance ) {
-			add = typeof instance.addEventListener === "function";
-			reg = typeof instance.attachEvent === "object" || add;
+			add = typeof instance.addEventListener == "function";
+			reg = typeof instance.attachEvent == "object" || add;
 		}
 
 		// Preparing
@@ -7866,7 +7866,7 @@ var observer = {
 		}
 		else {
 			utility.genId( arg );
-			id = arg.id || ( typeof arg.toString === "function" ? arg.toString() : arg );
+			id = arg.id || ( typeof arg.toString == "function" ? arg.toString() : arg );
 		}
 
 		return id;
@@ -8002,12 +8002,10 @@ var observer = {
 	 */
 	remove : function ( obj, events, id, st ) {
 		var oId   = observer.id( obj ),
-		    add   = typeof obj.addEventListener === "function",
-		    reg   = typeof obj.attachEvent === "object" || add,
+		    add   = typeof obj.addEventListener == "function",
+		    reg   = typeof obj.attachEvent == "object" || add,
 		    regex = /.*_/,
 		    states, total, unhook;
-
-		st = st || state.getCurrent();
 
 		/**
 		 * Removes DOM event hook
@@ -8039,6 +8037,7 @@ var observer = {
 			}
 			else {
 				events = string.explode( events );
+				st     = st || state.getCurrent();
 				states = array.keys( observer.listeners[oId] );
 				total  = 0;
 
@@ -8207,7 +8206,7 @@ Promise.prototype.process = function() {
 		    child    = i.promise;
 
 		if ( !callback || typeof callback != "function" ) {
-			if ( value && typeof value.then === "function" ) {
+			if ( value && typeof value.then == "function" ) {
 				promise.pipe( value, child );
 			}
 			else {
@@ -8230,7 +8229,7 @@ Promise.prototype.process = function() {
 			return;
 		}
 
-		if ( result && typeof result.then === "function" ) {
+		if ( result && typeof result.then == "function" ) {
 			promise.pipe( result, promise );
 		}
 		else {
@@ -8850,7 +8849,7 @@ var prototypes = {
 					node = utility.object( node );
 				}
 
-				if ( typeof node.text === "function") {
+				if ( typeof node.text == "function") {
 					node.text( arg );
 				}
 			} );
@@ -8896,7 +8895,7 @@ var prototypes = {
 
 				type = i.type;
 
-				if ( typeof i.val === "function" ) {
+				if ( typeof i.val == "function" ) {
 					a.push( element.val( i, arg ) );
 				}
 			} );
@@ -9935,7 +9934,7 @@ var utility = {
 		else if ( !server && !client.ie && obj instanceof Document ) {
 			return xml.decode( xml.encode( obj ) );
 		}
-		else if ( typeof obj.__proto__ !== "undefined" ) {
+		else if ( typeof obj.__proto__ != "undefined" ) {
 			return utility.extend( obj.__proto__, obj );
 		}
 		else if ( obj instanceof Object ) {
@@ -10549,12 +10548,8 @@ var utility = {
 	 * @return {Object}   Event
 	 */
 	prevent : function ( e ) {
-		if ( typeof e.preventDefault === "function" ) {
+		if ( typeof e.preventDefault == "function" ) {
 			e.preventDefault();
-		}
-
-		if ( typeof e.stopPropagation === "function" ) {
-			e.stopPropagation();
 		}
 
 		return e;
@@ -10729,8 +10724,8 @@ var utility = {
 	 * @return {Object}   Event
 	 */
 	stop : function ( e ) {
-		if ( e.cancelBubble !== undefined ) {
-			e.cancelBubble = true;
+		if ( typeof e.stopPropagation == "function" ) {
+			e.stopPropagation();
 		}
 
 		utility.prevent( e );
@@ -14190,7 +14185,7 @@ bootstrap = function () {
 			observer.remove( this, "load" );
 		} );
 
-		if ( typeof Object.observe === "function" ) {
+		if ( typeof Object.observe == "function" ) {
 			observer.add( global, "DOMNodeInserted", function ( e ) {
 				var obj = utility.target( e );
 
@@ -14221,12 +14216,12 @@ bootstrap = function () {
 	if ( typeof exports != "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
 		init();
 	}
-	else if ( typeof document.addEventListener === "function" ) {
+	else if ( typeof document.addEventListener == "function" ) {
 		document.addEventListener( "DOMContentLoaded" , function () {
 			init();
 		}, false );
 	}
-	else if ( typeof document.attachEvent === "function" ) {
+	else if ( typeof document.attachEvent == "function" ) {
 		document.attachEvent( "onreadystatechange" , fn );
 	}
 	else {
@@ -14273,7 +14268,7 @@ else {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Oct 14 2013 13:33:51 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Oct 14 2013 13:58:43 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
