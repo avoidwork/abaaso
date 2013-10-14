@@ -6,10 +6,6 @@ var document  = global.document,
     server    = typeof exports != "undefined",
     framework, http, https, url, WORKER;
 
-if ( global.abaaso !== undefined ) {
-	return;
-}
-
 if ( server ) {
 	url     = require( "url" );
 	http    = require( "http" );

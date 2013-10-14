@@ -11,6 +11,11 @@ bootstrap = function () {
 	// Removes references to deleted DOM elements, avoiding memory leaks
 	cleanup = function ( obj ) {
 		observer.remove( obj );
+
+		if ( utility.observers[obj.id] ) {
+			delete utility.observers[obj.id];
+		}
+
 		array.each( array.cast( obj.childNodes ), function ( i ) {
 			cleanup( i );
 		} );
@@ -76,24 +81,44 @@ bootstrap = function () {
 			observer.remove( this, "load" );
 		} );
 
-		if ( typeof Object.observe == "function" ) {
-			observer.add( global, "DOMNodeInserted", function ( e ) {
+		// DOM 4+
+		if ( typeof MutationObserver == "function" ) {
+			utility.observers.body = new MutationObserver( function ( arg ) {
+				array.each( arg, function ( record ) {
+					// Added Elements
+					array.each( array.cast( record.addedNodes ).filter( function ( obj ) {
+						return obj.id !== undefined;
+					} ), function( obj ) {
+						utility.genId( obj, true );
+
+						if ( !utility.observers[obj.id] ) {
+							utility.observers[obj.id] = new MutationObserver( function ( arg ) {
+								observer.fire( obj, "change", arg );
+							} );
+
+							utility.observers[obj.id].observe( obj, {attributes: true, attributeOldValue: true, childList: true, characterData: true, characterDataOldValue: true, subtree: true} );
+						}
+					} );
+
+					// Removed Elements
+					array.each( array.cast( record.removedNodes ), function ( obj ) {
+						cleanup( obj );
+					} );
+				} );
+			} );
+
+			utility.observers.body.observe( document, {childList: true, subtree: true} );
+		}
+		// DOM 3 (slow!)
+		else {
+			observer.add( global, "DOMNodeRemoved", function ( e ) {
 				var obj = utility.target( e );
 
-				// @todo change to a MutationObserver: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
-				Object.observe( obj, function ( arg ) {
-					observer.fire( obj, "change", arg );
-				} );
+				if ( obj.id && ( e.relatedNode instanceof Element ) ) {
+					cleanup( obj );
+				}
 			}, "mutation", global, "all");
 		}
-
-		observer.add( global, "DOMNodeRemoved", function (e ) {
-			var obj = utility.target( e );
-
-			if ( obj.id !== undefined && !string.isEmpty( obj.id ) && ( e.relatedNode instanceof Element ) ) {
-				cleanup( obj );
-			}
-		}, "mutation", global, "all");
 	}
 
 	// Creating a public facade for `state`

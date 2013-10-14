@@ -199,7 +199,8 @@ var observer = {
 	 * @return {Mixed}         Primitive
 	 */
 	fire : function ( obj, events ) {
-		var args, log, cache, item, oId;
+		var log = abaaso.logging,
+		    args, cache, item, oId;
 
 		if ( !observer.ignore ) {
 			if ( observer.silent ) {
@@ -210,7 +211,6 @@ var observer = {
 
 				if ( observer.listeners[oId] ) {
 					args = array.remove( array.cast( arguments ), 0, 1 );
-					log  = abaaso.logging;
 
 					array.each( string.explode( events ), function ( ev ) {
 						if ( log ) {
@@ -236,6 +236,11 @@ var observer = {
 								}
 							}
 						} );
+					} );
+				}
+				else if ( log ) {
+					array.each( string.explode( events ), function ( ev ) {
+						utility.log( oId + " fired " + ev );
 					} );
 				}
 			}
@@ -358,7 +363,7 @@ var observer = {
 			observer.add( obj, ev, function () {
 				fn.apply( scope, arguments );
 				observer.remove( obj, ev, id, st );
-			}, id, scope, st);
+			}, id, scope, st );
 		} );
 
 		return obj;

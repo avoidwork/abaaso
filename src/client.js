@@ -224,7 +224,7 @@ var client = {
 			version = navigator.userAgent.replace( /(.*version\/|safari.*)/gi, "" );
 		}
 		else {
-			version = ( navigator !== undefined ) ? navigator.appVersion : 0;
+			version = navigator.appVersion || 0;
 		}
 
 		version = number.parse( string.trim( version ) );
@@ -348,7 +348,7 @@ var client = {
 			items[header] = value;
 
 			if ( allow === null ) {
-				if ( ( !cors && regex.allow.test( header) ) || ( cors && regex.allow_cors.test( header) ) ) {
+				if ( ( !cors && regex.allow.test( header ) ) || ( cors && regex.allow_cors.test( header ) ) ) {
 					allow = value;
 				}
 			}
@@ -357,10 +357,10 @@ var client = {
 		if ( regex.no.test( items["Cache-Control"] ) ) {
 			// Do nothing
 		}
-		else if ( items["Cache-Control"] !== undefined && regex.number_present.test( items["Cache-Control"] ) ) {
+		else if ( items["Cache-Control"] && regex.number_present.test( items["Cache-Control"] ) ) {
 			expires = expires.setSeconds( expires.getSeconds() + number.parse( regex.number_present.exec( items["Cache-Control"] )[0], 10 ) );
 		}
-		else if ( items.Expires !== undefined ) {
+		else if ( items.Expires ) {
 			expires = new Date( items.Expires );
 		}
 		else {
@@ -403,7 +403,7 @@ var client = {
 
 			result = xhr.responseXML;
 		}
-		else if ( type === "text/plain" && regex.is_xml.test( xhr.responseText) && xml.valid( xhr.responseText ) ) {
+		else if ( type === "text/plain" && regex.is_xml.test( xhr.responseText ) && xml.valid( xhr.responseText ) ) {
 			result = xml.decode( xhr.responseText );
 		}
 		else {
@@ -426,20 +426,20 @@ var client = {
 		    bit    = !cached ? 0 : cached.permission,
 		    result = {allows: [], bit: bit, map: {partial: 8, read: 4, write: 2, "delete": 1, unknown: 0}};
 
-		if ( bit & 1) {
+		if ( bit & 1 ) {
 			result.allows.push( "DELETE" );
 		}
 
-		if ( bit & 2) {
+		if ( bit & 2 ) {
 			result.allows.push( "POST" );
 			result.allows.push( "PUT" );
 		}
 
-		if ( bit & 4) {
+		if ( bit & 4 ) {
 			result.allows.push( "GET" );
 		}
 
-		if ( bit & 8) {
+		if ( bit & 8 ) {
 			result.allows.push( "PATCH" );
 		}
 
@@ -462,18 +462,18 @@ var client = {
 		    callback = "callback", cbid, s;
 
 		if ( external === undefined ) {
-			if ( global.abaaso === undefined ) {
+			if ( !global.abaaso ) {
 				utility.define( "abaaso.callback", {}, global );
 			}
 
 			external = "abaaso";
 		}
 
-		if ( args instanceof Object && args.callback !== undefined ) {
+		if ( args instanceof Object && !args.callback ) {
 			callback = args.callback;
 		}
 
-		defer.then( function (arg ) {
+		defer.then( function ( arg ) {
 			if ( typeof success == "function") {
 				success( arg );
 			}
@@ -488,7 +488,7 @@ var client = {
 		do {
 			cbid = utility.genId().slice( 0, 10 );
 		}
-		while ( global.abaaso.callback[cbid] !== undefined );
+		while ( global.abaaso.callback[cbid] );
 
 		uri = uri.replace( callback + "=?", callback + "=" + external + ".callback." + cbid );
 
@@ -544,8 +544,8 @@ var client = {
 		type        = type.toLowerCase();
 		headers     = headers instanceof Object ? headers : null;
 		cors        = client.cors( uri );
-		xhr         = !client.ie || type !== "patch"  ? new XMLHttpRequest() : new ActiveXObject( "Microsoft.XMLHTTP" );
-		payload     = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args !== undefined ? args : null;
+		xhr         = new XMLHttpRequest();
+		payload     = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args ? args : null;
 		cached      = type === "get" ? cache.get( uri ) : false;
 		typed       = type.capitalize();
 		contentType = null;
@@ -598,26 +598,26 @@ var client = {
 
 			// Setting timeout
 			try {
-				if ( xhr.timeout !== undefined ) {
+				if ( xhr.timeout ) {
 					xhr.timeout = timeout;
 				}
 			}
 			catch ( e ) {}
 
 			// Setting events
-			if ( xhr.ontimeout  !== undefined ) {
+			if ( xhr.ontimeout ) {
 				xhr.ontimeout = function ( e ) {
 					uri.fire( "timeout"  + typed, e, xhr );
 				};
 			}
 
-			if ( xhr.onprogress !== undefined ) {
-				xhr.onprogress = function (e) {
+			if ( xhr.onprogress ) {
+				xhr.onprogress = function ( e ) {
 					uri.fire( "progress" + typed, e, xhr );
 				};
 			}
 
-			if ( xhr.upload !== undefined && xhr.upload.onprogress !== undefined ) {
+			if ( xhr.upload && xhr.upload.onprogress ) {
 				xhr.upload.onprogress = function ( e ) {
 					uri.fire( "progressUpload" + typed, e, xhr );
 				};
@@ -653,7 +653,7 @@ var client = {
 					payload = json.encode( payload );
 				}
 
-				if ( contentType === null && ((ab && payload instanceof ArrayBuffer) || (blob && payload instanceof Blob)) ) {
+				if ( contentType === null && ( ( ab && payload instanceof ArrayBuffer ) || ( blob && payload instanceof Blob ) ) ) {
 					contentType = "application/octet-stream";
 				}
 
@@ -662,30 +662,27 @@ var client = {
 				}
 			}
 
-			// Setting headers (using typeof for PATCH support in IE8)
-			if ( typeof xhr.setRequestHeader != "undefined" ) {
-				if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
-					xhr.setRequestHeader( "ETag", cached.headers.ETag );
-				}
-
-				if ( headers === null ) {
-					headers = {};
-				}
-
-				if ( contentType !== null ) {
-					headers["Content-Type"] = contentType;
-				}
-
-				if ( headers.hasOwnProperty( "callback" ) ) {
-					delete headers.callback;
-				}
-
-				utility.iterate( headers, function ( v, k ) {
-					if ( v !== null && k !== "withCredentials") {
-						xhr.setRequestHeader( k, v );
-					}
-				} );
+			if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
+				xhr.setRequestHeader( "ETag", cached.headers.ETag );
 			}
+
+			if ( headers === null ) {
+				headers = {};
+			}
+
+			if ( contentType !== null ) {
+				headers["Content-Type"] = contentType;
+			}
+
+			if ( headers.hasOwnProperty( "callback" ) ) {
+				delete headers.callback;
+			}
+
+			utility.iterate( headers, function ( v, k ) {
+				if ( v !== null && k !== "withCredentials") {
+					xhr.setRequestHeader( k, v );
+				}
+			} );
 
 			// Cross Origin Resource Sharing ( CORS )
 			if ( typeof xhr.withCredentials == "boolean" && headers !== null && typeof headers.withCredentials == "boolean" ) {
@@ -735,7 +732,7 @@ var client = {
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
 
-		if ( xhr.readyState === 2) {
+		if ( xhr.readyState === 2 ) {
 			uri.fire( "received" + typed, null, xhr );
 		}
 		else if ( xhr.readyState === 4 ) {

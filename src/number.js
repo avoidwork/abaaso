@@ -77,7 +77,7 @@ var number = {
 	 * @return {Mixed}    Boolean if b is passed, Number if b is undefined
 	 */
 	half : function ( a, b ) {
-		return b !== undefined ? ( ( a / b ) === 0.5 ) : ( a / 2 );
+		return b ? ( ( a / b ) === 0.5 ) : ( a / 2 );
 	},
 
 	/**

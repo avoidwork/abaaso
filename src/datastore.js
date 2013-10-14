@@ -1050,13 +1050,14 @@ DataStore.prototype.setExpires = function ( arg ) {
 	utility.repeat( function () {
 		if ( self.uri === null ) {
 			self.setExpires( null );
+
 			return false;
 		}
 
 		if ( !cache.expire( self.uri ) ) {
 			observer.fire( self.uri, "beforeExpire, expire, afterExpire" );
 		}
-	}, expires, id, false);
+	}, expires, id, false );
 };
 
 /**
@@ -1080,7 +1081,7 @@ DataStore.prototype.setUri = function ( arg ) {
 		defer.resolve( this.records );
 	}
 	else {
-		if ( this.uri !== null) {
+		if ( this.uri !== null ) {
 			observer.remove( this.uri );
 		}
 
@@ -1089,11 +1090,11 @@ DataStore.prototype.setUri = function ( arg ) {
 		if ( this.uri !== null ) {
 			observer.add( this.uri, "expire", function () {
 				this.sync();
-			}, "dataSync", this);
+			}, "dataSync", this );
 
 			cache.expire( this.uri, true );
 
-			this.sync().then( function (arg ) {
+			this.sync().then( function ( arg ) {
 				defer.resolve( arg );
 			}, function ( e ) {
 				defer.reject( e );
@@ -1444,7 +1445,7 @@ DataStore.prototype.sync = function () {
 			}
 
 			defer.resolve( arg );
-		}, failure);
+		}, failure );
 	};
 
 	/**
@@ -1464,7 +1465,7 @@ DataStore.prototype.sync = function () {
 		defer.reject( e );
 	};
 
-	if ( events) {
+	if ( events ) {
 		observer.fire( this.parentNode, "beforeDataSync", this.uri );
 	}
 
@@ -1472,7 +1473,7 @@ DataStore.prototype.sync = function () {
 		client.jsonp( this.uri, success, failure, {callback: this.callback} );
 	}
 	else {
-		client.request( this.uri, "GET", success, failure, null, utility.merge( {withCredentials: this.credentials}, this.headers) );
+		client.request( this.uri, "GET", success, failure, null, utility.merge( {withCredentials: this.credentials}, this.headers ) );
 	}
 
 	return defer;
@@ -1517,7 +1518,7 @@ DataStore.prototype.teardown = function () {
 
 	delete abaaso.datastores[this.id];
 
-	array.each( this.datalists, function (i ) {
+	array.each( this.datalists, function ( i ) {
 		i.teardown();
 	} );
 

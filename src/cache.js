@@ -38,7 +38,7 @@ var cache = {
 	 * @return {Undefined}      undefined
 	 */
 	expire : function ( uri, silent ) {
-		if ( cache.items[uri] !== undefined ) {
+		if ( cache.items[uri] ) {
 			delete cache.items[uri];
 
 			if ( silent !== true ) {

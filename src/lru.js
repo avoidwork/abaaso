@@ -81,7 +81,7 @@ LRU.prototype.get = function ( key ) {
 LRU.prototype.remove = function ( key ) {
 	var item = this.cache[ key ];
 
-	if ( item !== undefined ) {
+	if ( item ) {
 		delete this.cache[key];
 
 		this.length--;

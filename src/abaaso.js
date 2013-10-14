@@ -214,12 +214,12 @@ Abaaso.prototype.css = function ( key, value ) {
  */
 Abaaso.prototype.data = function ( key, value ) {
 	if ( value !== undefined ) {
-		return array.each( this, function (i) {
+		return array.each( this, function ( i ) {
 			element.data( i, key, value );
 		} );
 	}
 	else {
-		return this.map( function (i) {
+		return this.map( function ( i ) {
 			return element.data( i, key );
 		} );
 	}

@@ -27,7 +27,7 @@ var datalist = {
 		// Creating instance
 		instance = new DataList( obj, ref[0], template );
 
-		if ( options instanceof Object) {
+		if ( options instanceof Object ) {
 			utility.merge( instance, options );
 		}
 
@@ -218,28 +218,28 @@ DataList.prototype.pages = function () {
 		el = element.create( "ul", {"class": "list pages hidden " + i, id: obj.id + "-pages-" + i}, obj, i === "bottom" ? "after" : "before" );
 
 		// First page
-		element.create( more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create( "li", {}, el) );
+		element.create( more ? "a" : "span", {"class": "first page", "data-page": 1, innerHTML: "&lt;&lt;"}, element.create( "li", {}, el ) );
 
 		// Previous page
-		element.create( more ? "a" : "span", {"class": "prev page", "data-page": (page - 1), innerHTML: "&lt;"}, element.create( "li", {}, el) );
+		element.create( more ? "a" : "span", {"class": "prev page", "data-page": ( page - 1 ), innerHTML: "&lt;"}, element.create( "li", {}, el ) );
 
 		// Rendering the page range
 		for ( n = start; n <= end; n++ ) {
 			current = ( n === page );
-			element.create( current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": n, innerHTML: n}, element.create( "li", {}, el) );
+			element.create( current ? "span" : "a", {"class": current ? "current page" : "page", "data-page": n, innerHTML: n}, element.create( "li", {}, el ) );
 		}
 
 		// Next page
-		element.create( next ? "a" : "span", {"class": "next page", "data-page": next ? (page + 1) : null, innerHTML: "&gt;"}, element.create( "li", {}, el) );
+		element.create( next ? "a" : "span", {"class": "next page", "data-page": next ? ( page + 1 ) : null, innerHTML: "&gt;"}, element.create( "li", {}, el ) );
 
 		// Last page
-		element.create( last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create( "li", {}, el) );
+		element.create( last ? "span" : "a", {"class": "last page", "data-page": last ? null : total, innerHTML: "&gt;&gt;"}, element.create( "li", {}, el ) );
 
 		// Adding to DOM
 		element.klass( el, "hidden", false );
 
 		// Click handler scrolls to top the top of page
-		observer.add( el, "click", function (e ) {
+		observer.add( el, "click", function ( e ) {
 			var target = utility.target( e );
 
 			utility.stop( e );

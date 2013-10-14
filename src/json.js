@@ -103,7 +103,7 @@ var json = {
 			return JSON.stringify( arg );
 		}
 		catch ( e ) {
-			if ( silent !== true) {
+			if ( silent !== true ) {
 				utility.error( e, arguments, this );
 			}
 

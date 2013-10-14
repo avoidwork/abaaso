@@ -58,7 +58,7 @@ var element = {
 			else if ( regex.checked_disabled.test( key ) && value !== undefined ) {
 				obj[key] = value;
 			}
-			else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined) {
+			else if ( obj.nodeName === "SELECT" && key === "selected" && value === undefined ) {
 				return utility.dom( "#" + obj.id + " option[selected=\"selected\"]" )[0] || utility.dom( "#" + obj.id + " option" )[0];
 			}
 			else if ( obj.nodeName === "SELECT" && key === "selected" && value !== undefined ) {
@@ -135,14 +135,14 @@ var element = {
 		// Removing potential HTML template formatting
 		type = type.replace( /\t|\n|\r/g, "" );
 
-		if ( target !== undefined ) {
-			svg = ( target.namespaceURI !== undefined && regex.svg.test( target.namespaceURI ) );
+		if ( target ) {
+			svg = target.namespaceURI && regex.svg.test( target.namespaceURI );
 		}
 		else {
 			target = document.body;
 		}
 		
-		if ( args instanceof Object && args.id !== undefined && utility.dom( "#" + args.id ) === undefined ) {
+		if ( args instanceof Object && args.id && !utility.dom( "#" + args.id ) ) {
 			uid = args.id;
 			delete args.id;
 		}
@@ -165,7 +165,7 @@ var element = {
 				obj = document.createElementNS( "http://www.w3.org/2000/svg", type );
 			}
 
-			if ( uid !== undefined ) {
+			if ( uid ) {
 				obj.id = uid;
 			}
 
@@ -174,7 +174,7 @@ var element = {
 			}
 		}
 
-		if ( pos === undefined || pos === "last" ) {
+		if ( !pos || pos === "last" ) {
 			target.appendChild( obj );
 		}
 		else if ( pos === "first" ) {
@@ -186,7 +186,7 @@ var element = {
 			target    = target.parentNode;
 			target.insertBefore( obj, pos.after.nextSibling );
 		}
-		else if ( pos.after !== undefined ) {
+		else if ( pos.after ) {
 			target.insertBefore( obj, pos.after.nextSibling );
 		}
 		else if ( pos === "before" ) {
@@ -195,7 +195,7 @@ var element = {
 			target     = target.parentNode;
 			target.insertBefore( obj, pos.before );
 		}
-		else if ( pos.before !== undefined ) {
+		else if ( pos.before ) {
 			target.insertBefore( obj, pos.before );
 		}
 		else {
@@ -706,7 +706,7 @@ var element = {
 			if ( obj.nodeName === "SELECT" && key === "selected") {
 				target = utility.dom( "#" + obj.id + " option[selected=\"selected\"]" )[0];
 
-				if ( target !== undefined ) {
+				if ( target ) {
 					target.selected = false;
 					target.removeAttribute( "selected" );
 				}
@@ -761,13 +761,13 @@ var element = {
 		    registry = {},
 		    result;
 
-		children = obj.nodeName === "FORM" ? ( obj.elements !== undefined ? array.cast( obj.elements ) : obj.find( "button, input, select, textarea" ) ) : [obj];
+		children = obj.nodeName === "FORM" ? ( obj.elements ? array.cast( obj.elements ) : obj.find( "button, input, select, textarea" ) ) : [obj];
 
 		array.each( children, function ( i ) {
 			if ( i.nodeName === "FORM" ) {
 				utility.merge( registry, json.decode( element.serialize( i ) ) );
 			}
-			else if ( registry[i.name] === undefined ) {
+			else if ( !registry[i.name] ) {
 				registry[i.name] = element.val( i );
 			}
 		} );
@@ -813,7 +813,7 @@ var element = {
 	 * @return {Object}     Element
 	 */
 	text : function ( obj, arg ) {
-		var key     = obj.textContent !== undefined ? "textContent" : "innerText",
+		var key     = obj.textContent ? "textContent" : "innerText",
 		    payload = {},
 		    set     = false;
 
@@ -865,7 +865,7 @@ var element = {
 			else if ( k === "id" ) {
 				var o = observer.listeners;
 
-				if ( o[obj.id] !== undefined ) {
+				if ( o[obj.id] ) {
 					o[k] = o[obj.id];
 					delete o[obj.id];
 				}
@@ -888,7 +888,7 @@ var element = {
 	 * @return {Object}       Element
 	 */
 	val : function ( obj, value ) {
-		var event = "input",
+		var ev = "input",
 		    output;
 
 		if ( value === undefined ) {
@@ -926,7 +926,7 @@ var element = {
 			value = value.toString();
 
 			if ( regex.radio_checkbox.test( obj.type ) ) {
-				event = "click";
+				ev = "click";
 
 				array.each( utility.dom( "input[name='" + obj.name + "']" ), function ( i ) {
 					if ( i.value === value ) {
@@ -937,7 +937,7 @@ var element = {
 				} );
 			}
 			else if ( regex.select.test( obj.type ) ) {
-				event = "change";
+				ev = "change";
 
 				array.each( element.find( obj, "> *" ), function ( i ) {
 					if ( i.value === value ) {
@@ -951,7 +951,7 @@ var element = {
 				obj.value !== undefined ? obj.value = value : element.text( obj, value );
 			}
 
-			element.dispatch( obj, event );
+			element.dispatch( obj, ev );
 
 			output = obj;
 		}

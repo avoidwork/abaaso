@@ -154,7 +154,7 @@ abaaso.client          = {
 
 	
 	jsonp       : function ( uri, success, failure, callback ) {
-		return client.jsonp(uri, success, failure, callback );
+		return client.jsonp( uri, success, failure, callback );
 	},
 
 	/**
@@ -170,7 +170,7 @@ abaaso.client          = {
 	 * @return {Object} {@link abaaso.Deferred}
 	 */
 	options     : function ( uri, success, failure, timeout ) {
-		return client.request(uri, "OPTIONS", success, failure, null, null, timeout );
+		return client.request( uri, "OPTIONS", success, failure, null, null, timeout );
 	},
 	permissions : client.permissions,
 	scrollPos   : client.scrollPos,
@@ -769,7 +769,7 @@ abaaso.iterate         = utility.iterate;
  * @param  {Function} callback Callback function
  * @return {Object} {@link abaaso.Deferred}
  */
-abaaso.jsonp           = function ( uri, success, failure, callback) {
+abaaso.jsonp           = function ( uri, success, failure, callback ) {
 	return client.jsonp( uri, success, failure, callback );
 };
 

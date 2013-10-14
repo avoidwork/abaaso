@@ -18,7 +18,7 @@ var validate = {
 		    c         = [],
 		    p;
 
-		if ( args.nodeName !== undefined && args.nodeName === "FORM" ) {
+		if ( args.nodeName && args.nodeName === "FORM" ) {
 			if ( string.isEmpty( args.id ) ) {
 				utility.genId( args );
 			}
@@ -53,7 +53,7 @@ var validate = {
 					return;
 				}
 
-				value = v.toString().charAt( 0 ) === "#" ? ( utility.dom( v ) !== undefined ? element.val( utility.dom( v ) ) : "" ) : v;
+				value = v.toString().charAt( 0 ) === "#" ? ( utility.dom( v ) ? element.val( utility.dom( v ) ) : "" ) : v;
 
 				if ( k === "date" ) {
 					if ( isNaN( new Date( value ).getYear() ) ) {

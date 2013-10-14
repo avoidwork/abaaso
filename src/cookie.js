@@ -121,7 +121,7 @@ var cookie = {
 			}
 		}
 
-		if ( expire instanceof Date) {
+		if ( expire instanceof Date ) {
 			expire = " Expires=" + expire.toUTCString() + ";";
 		}
 

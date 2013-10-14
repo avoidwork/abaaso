@@ -13,7 +13,7 @@ var filter = function ( obj, datalist, filters, debounce ) {
 	debounce = debounce || 250;
 	var ref  = [datalist];
 
-	if ( !( obj instanceof Element ) || ( datalist !== undefined && datalist.store === undefined ) || ( typeof filters != "string" || string.isEmpty( filters ) ) ) {
+	if ( !( obj instanceof Element ) || ( datalist && !datalist.store ) || ( typeof filters != "string" || string.isEmpty( filters ) ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 

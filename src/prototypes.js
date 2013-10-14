@@ -61,7 +61,7 @@ var prototypes = {
 		},
 		clear : function () {
 			return !server && ( this[0] instanceof Element ) ? array.each( this, function ( i ) {
-				element.clear(i);
+				element.clear( i );
 			}) : array.clear( this );
 		},
 		clone : function () {
@@ -96,7 +96,7 @@ var prototypes = {
 		data : function ( key, value ) {
 			var result = [];
 
-			array.each( this, function (i) {
+			array.each( this, function ( i ) {
 				result.push( element.data( i, key, value ) );
 			} );
 
@@ -382,7 +382,7 @@ var prototypes = {
 			var result = [];
 
 			array.each( this, function ( i ) {
-				array.merge(result, observer.listeners( i, event ) );
+				result.push( observer.listeners( i, event ) );
 			} );
 
 			return result;
@@ -663,7 +663,7 @@ var prototypes = {
 				defer.resolve( arg );
 			}, function ( e ) {
 				defer.reject( e );
-			}, headers, timeout);
+			}, headers, timeout );
 
 			return defer;
 		},
@@ -721,29 +721,15 @@ var prototypes = {
 		isUrl : function () {
 			return element.isUrl( this );
 		},
-		jsonp : function ( uri, property, callback ) {
-			var target = this,
-			    arg    = property;
+		jsonp : function ( uri, prop, callback ) {
+			var self = this;
 
 			return client.jsonp( uri, function ( response ) {
-				var self = target,
-				    node = response,
-				    prop = arg,
-				    result;
+				var result;
 
 				try {
-					if ( prop !== undefined ) {
-						prop = prop.replace( /\]|'|"/g , "" ).replace( /\./g, "[" ).split( "[" );
-
-						prop.each( function ( i ) {
-							node = node[!!isNaN( i ) ? i : number.parse( i, 10 )];
-
-							if ( node === undefined ) {
-								throw new Error( label.error.propertyNotFound );
-							}
-						} );
-
-						result = node;
+					if ( prop ) {
+						result = utility.walk( response, prop );
 					}
 					else {
 						result = response;
@@ -756,7 +742,7 @@ var prototypes = {
 
 				element.html( self, result );
 			}, function ( e ) {
-				element.html( target, label.error.serverError );
+				element.html( self, label.error.serverError );
 
 				throw e;
 			}, callback );

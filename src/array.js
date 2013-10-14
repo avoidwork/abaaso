@@ -348,7 +348,7 @@ var array = {
 		    i   = !isNaN( start ) ? start : 0,
 		    nth = !isNaN( offset ) ? i + offset : l - 1;
 
-		if ( nth > ( l - 1) ) {
+		if ( nth > ( l - 1 ) ) {
 			nth = l - 1;
 		}
 
@@ -517,15 +517,13 @@ var array = {
 		}
 
 		array.each( queries, function ( i ) {
-			var desc = i[1] === "desc";
-
-			if ( !desc ) {
-				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] < b" + sub + "[\"" + i[0] + "\"] ) return -1;" );
-				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] > b" + sub + "[\"" + i[0] + "\"] ) return 1;" );
-			}
-			else {
+			if ( i[1] === "desc" ) {
 				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] < b" + sub + "[\"" + i[0] + "\"] ) return 1;" );
 				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] > b" + sub + "[\"" + i[0] + "\"] ) return -1;" );
+			}
+			else {
+				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] < b" + sub + "[\"" + i[0] + "\"] ) return -1;" );
+				sorts.push( "if ( a" + sub + "[\"" + i[0] + "\"] > b" + sub + "[\"" + i[0] + "\"] ) return 1;" );
 			}
 		} );
 
@@ -922,7 +920,7 @@ var array = {
 		} );
 
 		array.each( remove, function ( i ) {
-			array.remove( obj, array.index( obj, i) );
+			array.remove( obj, array.index( obj, i ) );
 		} );
 
 		return obj;
@@ -1212,7 +1210,7 @@ var array = {
 		var result = [];
 
 		// Preparing args
-		if ( !(args instanceof Array) ) {
+		if ( !( args instanceof Array ) ) {
 			args = typeof args == "object" ? array.cast( args ) : [args];
 		}
 

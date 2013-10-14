@@ -1,6 +1,14 @@
 /** @namespace abaaso.utility */
 var utility = {
 	/**
+	 * MutationObserver instances
+	 *
+	 * @memberOf abaaso.utility
+	 * @type {Object}
+	 */
+	observers : {},
+
+	/**
 	 * Collection of timers
 	 *
 	 * @memberOf abaaso.utility
@@ -92,7 +100,7 @@ var utility = {
 			if ( !( v instanceof RegExp ) && typeof v == "function" ) {
 				o[k] = v.bind( o[k] );
 			}
-			else if ( !(v instanceof RegExp ) && !(v instanceof Array ) && v instanceof Object ) {
+			else if ( !( v instanceof RegExp ) && !( v instanceof Array ) && ( v instanceof Object ) ) {
 				if ( o[k] === undefined ) {
 					o[k] = {};
 				}
@@ -129,13 +137,13 @@ var utility = {
 		}
 
 		// deferred
-		if ( utility.timer[id] !== undefined ) {
+		if ( utility.timer[id] ) {
 			clearTimeout( utility.timer[id] );
 			delete utility.timer[id];
 		}
 
 		// repeating
-		if ( utility.repeating[id] !== undefined ) {
+		if ( utility.repeating[id] ) {
 			clearTimeout( utility.repeating[id] );
 			delete utility.repeating[id];
 		}
@@ -293,7 +301,7 @@ var utility = {
 		return function debounced () {
 			setTimeout( function () {
 				fn.apply( scope, arguments );
-			}, ms);
+			}, ms );
 		};
 	},
 
@@ -439,18 +447,17 @@ var utility = {
 	 * @return {Undefined}       undefined
 	 */
 	error : function ( e, args, scope, warning ) {
-		warning = ( warning === true );
-		var o   = {
-			"arguments" : args !== undefined ? array.cast( args ) : [],
+		var o = {
+			"arguments" : args ? array.cast( args ) : [],
 			message     : e.message || e,
-			number      : e.number !== undefined ? ( e.number & 0xFFFF ) : undefined,
+			number      : e.number ? ( e.number & 0xFFFF ) : undefined,
 			scope       : scope,
-			stack       : e.stack   || undefined,
+			stack       : e.stack || undefined,
 			timestamp   : new Date().toUTCString(),
-			type        : e.type    || "TypeError"
+			type        : e.type || "TypeError"
 		};
 
-		utility.log( o.stack || o.message, !warning ? "error" : "warn" );
+		utility.log( o.stack || o.message, warning !== true ? "error" : "warn" );
 		utility.error.log.push( o );
 		observer.fire( "abaaso", "error", o );
 
@@ -513,18 +520,18 @@ var utility = {
 		dom = ( dom === true );
 		var id;
 
-		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj == "string" ) ) ) {
+		if ( obj && ( obj.id || ( obj instanceof Array ) || ( typeof obj == "string" || obj instanceof String ) ) ) {
 			return obj;
 		}
 
 		if ( dom ) {
 			do {
-				id = utility.domId( utility.uuid( true) );
+				id = utility.domId( utility.uuid( true ) );
 			}
-			while ( utility.dom( "#" + id ) !== undefined );
+			while ( utility.dom( "#" + id ) );
 		}
 		else {
-			id = utility.domId( utility.uuid( true) );
+			id = utility.domId( utility.uuid( true ) );
 		}
 
 		if ( typeof obj == "object" ) {
@@ -623,12 +630,12 @@ var utility = {
 	loading : function ( obj ) {
 		var l = abaaso.loading;
 
-		if ( l.url === null || obj === undefined ) {
+		if ( l.url === null || !obj ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
 		// Setting loading image
-		if ( l.image === undefined ) {
+		if ( !l.image ) {
 			l.image     = new Image();
 			l.image.src = l.url;
 		}
@@ -801,7 +808,7 @@ var utility = {
 			throw new Error( label.error.invalidArguments );
 		}
 
-		if ( descriptor.value !== undefined && descriptor.get !== undefined ) {
+		if ( descriptor.value && descriptor.get ) {
 			delete descriptor.value;
 		}
 
@@ -844,32 +851,32 @@ var utility = {
 	 */
 	queryString : function ( arg, qstring ) {
 		var obj    = {},
-		    result = qstring !== undefined ? ( qstring.indexOf( "?" ) > -1 ? qstring.replace( /.*\?/, "" ) : null) : ( server || string.isEmpty( location.search ) ? null : location.search.replace( "?", "" ) ),
+		    result = qstring !== undefined ? ( qstring.indexOf( "?" ) > -1 ? qstring.replace( /.*\?/, "" ) : null ) : ( server || string.isEmpty( location.search ) ? null : location.search.replace( "?", "" ) ),
 		    item;
 
 		if ( result !== null && !string.isEmpty( result ) ) {
 			result = result.split( "&" );
-			array.each( result, function (prop ) {
+			array.each( result, function ( prop ) {
 				item = prop.split( "=" );
 
 				if ( string.isEmpty( item[0] ) ) {
 					return;
 				}
 
-				if ( item[1] === undefined || string.isEmpty( item[1] ) ) {
+				if ( !item[1] ) {
 					item[1] = "";
 				}
 				else if ( string.isNumber( item[1] )) {
-					item[1] = Number(item[1] );
+					item[1] = Number( item[1] );
 				}
 				else if ( string.isBoolean( item[1] )) {
-					item[1] = (item[1] === "true" );
+					item[1] = ( item[1] === "true" );
 				}
 
 				if ( obj[item[0]] === undefined ) {
 					obj[item[0]] = item[1];
 				}
-				else if ( !(obj[item[0]] instanceof Array) ) {
+				else if ( !( obj[item[0]] instanceof Array ) ) {
 					obj[item[0]] = [obj[item[0]]];
 					obj[item[0]].push( item[1] );
 				}
@@ -1015,7 +1022,7 @@ var utility = {
 	tpl : function ( arg, target ) {
 		var frag;
 
-		if ( typeof arg != "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) === undefined ) ) {
+		if ( typeof arg != "object" || ( !regex.object_undefined.test( typeof target ) && !( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -1027,7 +1034,7 @@ var utility = {
 
 		if ( arg instanceof Array ) {
 			array.each( arg, function ( i ) {
-				element.html(element.create( array.cast( i, true )[0], frag ), array.cast(i)[0] );
+				element.html( element.create( array.cast( i, true )[0], frag ), array.cast( i )[0] );
 			} );
 		}
 		else {

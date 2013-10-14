@@ -58,7 +58,7 @@ var xhr = function () {
 		this.status      = res.statusCode;
 		this._resheaders = res.headers;
 
-		if ( this._resheaders["set-cookie"] !== undefined && this._resheaders["set-cookie"] instanceof Array ) {
+		if ( this._resheaders["set-cookie"] && this._resheaders["set-cookie"] instanceof Array ) {
 			this._resheaders["set-cookie"] = this._resheaders["set-cookie"].join( ";" );
 		}
 
@@ -93,7 +93,7 @@ var xhr = function () {
 	handlerError = function ( e ) {
 		this.status       = 503;
 		this.statusText   = e;
-		this.responseText = e !== undefined ? ( e.stack || e ) : e;
+		this.responseText = e ? ( e.stack || e ) : e;
 		this._error       = true;
 		this._send        = false;
 		this.setRequestHeader( "Content-Type", "text/plain" );
@@ -264,7 +264,7 @@ var xhr = function () {
 	XMLHttpRequest.prototype.open = function ( method, url, async, user, password ) {
 		var self = this;
 
-		if ( async !== undefined && async !== true) {
+		if ( async !== true ) {
 			throw new Error( label.error.invalidStateNoSync );
 		}
 
@@ -367,7 +367,7 @@ var xhr = function () {
 			options.agent              = false;
 		}
 
-		if ( parsed.auth !== undefined ) {
+		if ( parsed.auth ) {
 			options.auth = parsed.auth;
 		}
 

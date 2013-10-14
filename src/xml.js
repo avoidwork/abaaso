@@ -52,7 +52,7 @@ var xml = {
 				return output.replace(/<(\/)?n>/g, "<$1" + name + ">");
 			};
 
-			if ( arg !== null && arg.xml !== undefined ) {
+			if ( arg !== null && arg.xml ) {
 				arg = arg.xml;
 			}
 
