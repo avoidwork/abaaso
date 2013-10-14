@@ -71,7 +71,10 @@ var observer = {
 	 */
 	add : function ( obj, events, fn, id, scope, st ) {
 		var oId      = observer.id( obj ),
-		    instance = regex.observer_globals.test( oId ) || ( !/\//g.test( oId ) && oId !== "abaaso" ) ? obj : null;
+		    instance = regex.observer_globals.test( oId ) || ( !/\//g.test( oId ) && oId !== "abaaso" ) ? obj : null,
+		    jsonp    = /^afterjsonp$/i,
+		    add      = false,
+		    reg      = false;
 
 		if ( !oId || !events || typeof fn !== "function" ) {
 			throw new Error( label.error.invalidArguments );
@@ -92,10 +95,14 @@ var observer = {
 			observer.listeners[oId][st] = {};
 		}
 
+		if ( instance ) {
+			add = typeof instance.addEventListener === "function";
+			reg = typeof instance.attachEvent === "object" || add;
+		}
+
 		// Setting event listeners (with DOM hooks if applicable)
 		array.each( string.explode( events ), function ( ev ) {
-			var eId = oId + "_" + ev,
-			    add, reg;
+			var eId = oId + "_" + ev;
 
 			// Creating caches if not present
 			if ( !observer.listeners[oId].all[ev] ) {
@@ -106,20 +113,13 @@ var observer = {
 				observer.listeners[oId][st][ev] = lru( observer.maxListeners );
 			}
 
-			// Setting up event listener if valid
-			if ( instance && ev.toLowerCase() !== "afterjsonp" && !observer.elisteners[eId] && ( regex.observer_globals.test( oId ) || obj.nodeName ) ) {
-				add = typeof instance.addEventListener === "function";
-				reg = typeof instance.attachEvent === "object" || add;
+			// Hooking event listener
+			if ( reg && !jsonp.test( ev ) && !observer.elisteners[eId] ) {
+				observer.elisteners[eId] = function ( e ) {
+					observer.fire( oId, ev, e );
+				};
 
-				if ( reg ) {
-					// Registering event listener
-					observer.elisteners[eId] = function ( e ) {
-						observer.fire( oId, ev, e );
-					};
-
-					// Hooking event listener
-					instance[add ? "addEventListener" : "attachEvent"]( ( add ? "" : "on" ) + ev, observer.elisteners[eId], false );
-				}
+				instance[add ? "addEventListener" : "attachEvent"]( ( add ? "" : "on" ) + ev, observer.elisteners[eId], false );
 			}
 
 			observer.listeners[oId][st][ev].set( id, {fn: fn, scope: scope} );
