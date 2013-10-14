@@ -73,6 +73,10 @@ var observer = {
 		var oId      = observer.id( obj ),
 		    instance = regex.observer_globals.test( oId ) || ( !/\//g.test( oId ) && oId !== "abaaso" ) ? obj : null;
 
+		if ( !oId || !events || typeof fn !== "function" ) {
+			throw new Error( label.error.invalidArguments );
+		}
+
 		// Preparing variables
 		id    = id    || utility.uuid();
 		scope = scope || obj;
@@ -120,6 +124,8 @@ var observer = {
 
 			observer.listeners[oId][st][ev].set( id, {fn: fn, scope: scope} );
 		} );
+
+		return obj;
 	},
 
 	/**
@@ -320,6 +326,10 @@ var observer = {
 		id    = id    || utility.uuid();
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
+
+		if ( !obj || !events || typeof fn !== "function" ) {
+			throw new Error( label.error.invalidArguments );
+		}
 
 		array.each( string.explode( events ), function ( ev ) {
 			observer.add( obj, ev, function () {
