@@ -343,7 +343,7 @@ var array = {
 	 * @return {Array}        Filled Array
 	 */
 	fill : function ( obj, arg, start, offset ) {
-		var fn  = typeof arg === "function",
+		var fn  = typeof arg == "function",
 		    l   = obj.length,
 		    i   = !isNaN( start ) ? start : 0,
 		    nth = !isNaN( offset ) ? i + offset : l - 1;
@@ -477,7 +477,7 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	keepIf : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -883,7 +883,7 @@ var array = {
 	removeIf : function ( obj, fn ) {
 		var remove;
 
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -906,7 +906,7 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	removeWhile : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -1213,7 +1213,7 @@ var array = {
 
 		// Preparing args
 		if ( !(args instanceof Array) ) {
-			args = typeof args === "object" ? array.cast( args ) : [args];
+			args = typeof args == "object" ? array.cast( args ) : [args];
 		}
 
 		array.each( args, function ( i, idx ) {

@@ -75,7 +75,7 @@ Deferred.prototype.constructor = Deferred;
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.always = function ( arg ) {
-	if ( typeof arg !== "function" ) {
+	if ( typeof arg != "function" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 	else if ( this.promise.state > 0 ) {
@@ -96,7 +96,7 @@ Deferred.prototype.always = function ( arg ) {
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.done = function ( arg ) {
-	if ( typeof arg !== "function" ) {
+	if ( typeof arg != "function" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 	else if ( this.promise.state > 0 ) {
@@ -117,7 +117,7 @@ Deferred.prototype.done = function ( arg ) {
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.fail = function ( arg ) {
-	if ( typeof arg !== "function" ) {
+	if ( typeof arg != "function" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 	else if ( this.promise.state > 0 ) {

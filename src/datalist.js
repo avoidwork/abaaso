@@ -18,7 +18,7 @@ var datalist = {
 		var ref = [store],
 		    obj, instance;
 
-		if ( !( target instanceof Element ) || typeof store !== "object" || !regex.string_object.test( typeof template ) ) {
+		if ( !( target instanceof Element ) || typeof store != "object" || !regex.string_object.test( typeof template ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 

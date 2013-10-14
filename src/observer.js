@@ -76,7 +76,7 @@ var observer = {
 		    add      = false,
 		    reg      = false;
 
-		if ( !oId || !events || typeof fn !== "function" ) {
+		if ( !oId || !events || typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -350,7 +350,7 @@ var observer = {
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
-		if ( !obj || !events || typeof fn !== "function" ) {
+		if ( !obj || !events || typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 

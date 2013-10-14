@@ -29,7 +29,7 @@ var datastore = {
 			utility.merge( obj.data, args );
 		}
 
-		if ( recs !== null && typeof recs === "object" ) {
+		if ( recs !== null && typeof recs == "object" ) {
 			obj.data.batch( "set", recs );
 		}
 
@@ -155,7 +155,7 @@ DataStore.prototype.constructor = DataStore;
  * @return {Object} {@link abaaso.Deferred}
  */
 DataStore.prototype.batch = function ( type, data, sync ) {
-	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
+	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data != "object" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
@@ -330,7 +330,7 @@ DataStore.prototype.crawl = function ( arg ) {
 	utility.iterate( record.data, function ( v, k ) {
 		var uri;
 
-		if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) || ( v.indexOf( "//" ) === -1 && v.charAt( 0 ) !== "/" ) ) {
+		if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v != "string" ) || ( v.indexOf( "//" ) === -1 && v.charAt( 0 ) !== "/" ) ) {
 			return;
 		}
 
@@ -822,7 +822,7 @@ DataStore.prototype.select = function ( where ) {
 		functions = [];
 
 		utility.iterate( where, function ( v, k ) {
-			if ( typeof v === "function" ) {
+			if ( typeof v == "function" ) {
 				this[k] = v.toString();
 				functions.push( k );
 			}
@@ -866,7 +866,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	    parsed = utility.parse( self.uri || "" ),
 	    uri;
 
-	if ( typeof data === "string" ) {
+	if ( typeof data == "string" ) {
 		if ( data.indexOf( "//" ) === -1 ) {
 			// Relative path to store, i.e. a child
 			if ( data.charAt( 0 ) !== "/" ) {
@@ -992,7 +992,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			if ( !array.contains( self.collections, k ) ) {
 				record.data[k] = v;
 			}
-			else if ( typeof v === "string" ) {
+			else if ( typeof v == "string" ) {
 				deferreds.push( record.data[k].data.setUri( record.data[k].data.uri + "/" + v, true ) );
 			}
 			else {
@@ -1174,7 +1174,7 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 	var self    = this,
 	    record  = false,
 	    mongo   = !string.isEmpty( this.mongodb ),
-	    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
+	    session = ( type === "session" && typeof sessionStorage != "undefined" ),
 	    defer   = deferred(),
 	    data, deferreds, key, result;
 
@@ -1423,7 +1423,7 @@ DataStore.prototype.sync = function () {
 	success = function ( arg ) {
 		var data;
 
-		if ( typeof arg !== "object" ) {
+		if ( typeof arg != "object" ) {
 			throw new Error( label.error.expectedObject );
 		}
 

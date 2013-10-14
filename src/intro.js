@@ -3,7 +3,7 @@
 var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
-    server    = typeof exports !== "undefined",
+    server    = typeof exports != "undefined",
     framework, http, https, url, WORKER;
 
 if ( global.abaaso !== undefined ) {
@@ -17,11 +17,11 @@ if ( server ) {
 	mongodb = require( "mongodb" ).MongoClient;
 	format  = require( "util" ).format;
 
-	if ( typeof Storage === "undefined" ) {
+	if ( typeof Storage == "undefined" ) {
 		localStorage = require( "localStorage" );
 	}
 
-	if ( typeof XMLHttpRequest === "undefined" ) {
+	if ( typeof XMLHttpRequest == "undefined" ) {
 		XMLHttpRequest = null;
 	}
 }

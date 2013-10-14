@@ -23,7 +23,7 @@ var state = ( function () {
 	 * @return {String}     Application state
 	 */
 	setCurrent = function ( arg ) {
-		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) {
+		if ( arg === null || typeof arg != "string" || prop[0] === arg || string.isEmpty( arg ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -55,7 +55,7 @@ var state = ( function () {
 	 * @return {String}     Application state header
 	 */
 	setHeader = function ( arg ) {
-		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
+		if ( arg !== null && ( typeof arg != "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 

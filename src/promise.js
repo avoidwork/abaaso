@@ -11,10 +11,10 @@ var promise = {
 	 * @return {Function} Delay method
 	 */
 	delay : function () {
-		if ( typeof setImmediate !== "undefined" ) {
+		if ( typeof setImmediate != "undefined" ) {
 			return setImmediate;
 		}
-		else if ( typeof process !== "undefined" ) {
+		else if ( typeof process != "undefined" ) {
 			return process.nextTick;
 		}
 		else {
@@ -111,7 +111,7 @@ Promise.prototype.process = function() {
 		var callback = i[success ? "success" : "failure" ],
 		    child    = i.promise;
 
-		if ( !callback || typeof callback !== "function" ) {
+		if ( !callback || typeof callback != "function" ) {
 			if ( value && typeof value.then === "function" ) {
 				promise.pipe( value, child );
 			}

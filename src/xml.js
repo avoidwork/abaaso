@@ -9,7 +9,7 @@ var xml = {
 	 * @return {Object}     XML Object or undefined
 	 */
 	decode : function ( arg ) {
-		if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
+		if ( typeof arg != "string" || string.isEmpty( arg ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -63,9 +63,9 @@ var xml = {
 			if ( regex.boolean_number_string.test( typeof arg ) ) {
 				x += node( "item", arg );
 			}
-			else if ( typeof arg === "object" ) {
+			else if ( typeof arg == "object" ) {
 				utility.iterate( arg, function ( v, k ) {
-					x += xml.encode( v, ( typeof v === "object" ), false ).replace( /item|xml/g, isNaN( k ) ? k : "item" );
+					x += xml.encode( v, ( typeof v == "object" ), false ).replace( /item|xml/g, isNaN( k ) ? k : "item" );
 				} );
 			}
 

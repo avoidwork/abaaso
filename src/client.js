@@ -14,7 +14,7 @@ var client = {
 		var result = false,
 		    obj;
 
-		if ( typeof ActiveXObject !== "undefined" ) {
+		if ( typeof ActiveXObject != "undefined" ) {
 			try {
 				obj    = new ActiveXObject( "Microsoft.XMLHTTP" );
 				result = true;
@@ -474,11 +474,11 @@ var client = {
 		}
 
 		defer.then( function (arg ) {
-			if ( typeof success === "function") {
+			if ( typeof success == "function") {
 				success( arg );
 			}
 		}, function ( e ) {
-			if ( typeof failure === "function") {
+			if ( typeof failure == "function") {
 				failure( e );
 			}
 
@@ -549,20 +549,20 @@ var client = {
 		cached      = type === "get" ? cache.get( uri ) : false;
 		typed       = type.capitalize();
 		contentType = null;
-		doc         = ( typeof Document !== "undefined" );
-		ab          = ( typeof ArrayBuffer !== "undefined" );
-		blob        = ( typeof Blob !== "undefined" );
+		doc         = ( typeof Document != "undefined" );
+		ab          = ( typeof ArrayBuffer != "undefined" );
+		blob        = ( typeof Blob != "undefined" );
 		defer       = deferred();
 
 		// Using a deferred to resolve request
 		defer.then( function ( arg ) {
-			if ( typeof success === "function" ) {
+			if ( typeof success == "function" ) {
 				success.call( uri, arg, xhr );
 			}
 
 			xhr = null;
 		}, function ( e ) {
-			if ( typeof failure === "function" ) {
+			if ( typeof failure == "function" ) {
 				failure.call( uri, e, xhr );
 			}
 
@@ -644,7 +644,7 @@ var client = {
 					payload = xml.decode( payload );
 				}
 
-				if ( typeof payload === "string" && regex.is_xml.test( payload ) ) {
+				if ( typeof payload == "string" && regex.is_xml.test( payload ) ) {
 					contentType = "application/xml";
 				}
 
@@ -664,7 +664,7 @@ var client = {
 
 			// Setting headers (using typeof for PATCH support in IE8)
 			if ( typeof xhr.setRequestHeader !== "undefined" ) {
-				if ( typeof cached === "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
+				if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
 					xhr.setRequestHeader( "ETag", cached.headers.ETag );
 				}
 

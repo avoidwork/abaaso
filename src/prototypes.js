@@ -515,7 +515,7 @@ var prototypes = {
 		},
 		text : function ( arg ) {
 			return array.each( this, function ( node ) {
-				if ( typeof node !== "object") {
+				if ( typeof node != "object") {
 					node = utility.object( node );
 				}
 
@@ -643,14 +643,14 @@ var prototypes = {
 				element.html( self, arg );
 				observer.fire( self, "afterGet" );
 
-				if ( typeof success === "function") {
+				if ( typeof success == "function") {
 					success.call( self, arg );
 				}
 			}, function ( e ) {
 				element.html( self, e || label.error.serverError );
 				observer.fire( self, "failedGet" );
 
-				if ( typeof failure === "function") {
+				if ( typeof failure == "function") {
 					failure.call( self, e );
 				}
 

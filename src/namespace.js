@@ -591,7 +591,7 @@ abaaso.filter          = filter;
  * @see {@link abaaso.observer.fire}
  */
 abaaso.fire            = function ( obj, event ) {
-	var all  = typeof obj === "object",
+	var all  = typeof obj == "object",
 	    o    = all ? obj   : this,
 	    e    = all ? event : obj,
 	    args = [o, e].concat( array.remove( array.cast( arguments ), 0, !all ? 0 : 1 ) );
@@ -784,7 +784,7 @@ abaaso.jsonp           = function ( uri, success, failure, callback) {
  * @see {@link abaaso.observer.list}
  */
 abaaso.listeners       = function ( obj, event ) {
-	return observer.list( typeof obj === "object" ? obj : this, event );
+	return observer.list( typeof obj == "object" ? obj : this, event );
 };
 
 /**
@@ -870,7 +870,7 @@ abaaso.observerable    = observer.decorate;
  * @see {@link abaaso.observer.add}
  */
 abaaso.on              = function ( obj, event, listener, id, scope, state ) {
-	var all = typeof obj === "object",
+	var all = typeof obj == "object",
 	    o, e, l, i, s, st;
 
 	if ( all ) {
@@ -911,7 +911,7 @@ abaaso.on              = function ( obj, event, listener, id, scope, state ) {
  * @see {@link abaaso.observer.once}
  */
 abaaso.once            = function ( obj, event, listener, id, scope, state ) {
-	var all = typeof obj === "object",
+	var all = typeof obj == "object",
 	    o, e, l, i, s, st;
 
 	if ( all ) {
@@ -1300,7 +1300,7 @@ abaaso.tpl             = utility.tpl;
  * @see {@link abaaso.observer.remove}
  */
 abaaso.un              = function ( obj, event, id, state ) {
-	var all = typeof obj === "object",
+	var all = typeof obj == "object",
 	    o, e, i, s;
 
 	if ( all ) {

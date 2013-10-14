@@ -9,10 +9,10 @@ return abaaso;
 } )();
 
 // Node, AMD & window supported
-if ( typeof exports !== "undefined" ) {
+if ( typeof exports != "undefined" ) {
 	module.exports = framework;
 }
-else if ( typeof define === "function" ) {
+else if ( typeof define == "function" ) {
 	define( function () {
 		return framework;
 	} );

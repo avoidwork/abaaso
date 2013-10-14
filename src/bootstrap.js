@@ -104,7 +104,7 @@ bootstrap = function () {
 	abaaso.ready = true;
 
 	// Initializing
-	if ( typeof exports !== "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
+	if ( typeof exports != "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
 		init();
 	}
 	else if ( typeof document.addEventListener === "function" ) {

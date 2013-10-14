@@ -199,7 +199,7 @@ var xhr = function () {
 
 		if ( this._listeners.hasOwnProperty( event )) {
 			array.each( this._listeners[event], function ( i ) {
-				if ( typeof i === "function" ) {
+				if ( typeof i == "function" ) {
 					i.call( self );
 				}
 			} );

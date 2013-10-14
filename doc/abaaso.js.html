@@ -40,7 +40,7 @@
 var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
-    server    = typeof exports !== "undefined",
+    server    = typeof exports != "undefined",
     framework, http, https, url, WORKER;
 
 if ( global.abaaso !== undefined ) {
@@ -54,11 +54,11 @@ if ( server ) {
 	mongodb = require( "mongodb" ).MongoClient;
 	format  = require( "util" ).format;
 
-	if ( typeof Storage === "undefined" ) {
+	if ( typeof Storage == "undefined" ) {
 		localStorage = require( "localStorage" );
 	}
 
-	if ( typeof XMLHttpRequest === "undefined" ) {
+	if ( typeof XMLHttpRequest == "undefined" ) {
 		XMLHttpRequest = null;
 	}
 }
@@ -524,7 +524,7 @@ var array = {
 	 * @return {Array}        Filled Array
 	 */
 	fill : function ( obj, arg, start, offset ) {
-		var fn  = typeof arg === "function",
+		var fn  = typeof arg == "function",
 		    l   = obj.length,
 		    i   = !isNaN( start ) ? start : 0,
 		    nth = !isNaN( offset ) ? i + offset : l - 1;
@@ -658,7 +658,7 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	keepIf : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -1064,7 +1064,7 @@ var array = {
 	removeIf : function ( obj, fn ) {
 		var remove;
 
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -1087,7 +1087,7 @@ var array = {
 	 * @return {Array}        Array
 	 */
 	removeWhile : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -1394,7 +1394,7 @@ var array = {
 
 		// Preparing args
 		if ( !(args instanceof Array) ) {
-			args = typeof args === "object" ? array.cast( args ) : [args];
+			args = typeof args == "object" ? array.cast( args ) : [args];
 		}
 
 		array.each( args, function ( i, idx ) {
@@ -1631,7 +1631,7 @@ var client = {
 		var result = false,
 		    obj;
 
-		if ( typeof ActiveXObject !== "undefined" ) {
+		if ( typeof ActiveXObject != "undefined" ) {
 			try {
 				obj    = new ActiveXObject( "Microsoft.XMLHTTP" );
 				result = true;
@@ -2091,11 +2091,11 @@ var client = {
 		}
 
 		defer.then( function (arg ) {
-			if ( typeof success === "function") {
+			if ( typeof success == "function") {
 				success( arg );
 			}
 		}, function ( e ) {
-			if ( typeof failure === "function") {
+			if ( typeof failure == "function") {
 				failure( e );
 			}
 
@@ -2166,20 +2166,20 @@ var client = {
 		cached      = type === "get" ? cache.get( uri ) : false;
 		typed       = type.capitalize();
 		contentType = null;
-		doc         = ( typeof Document !== "undefined" );
-		ab          = ( typeof ArrayBuffer !== "undefined" );
-		blob        = ( typeof Blob !== "undefined" );
+		doc         = ( typeof Document != "undefined" );
+		ab          = ( typeof ArrayBuffer != "undefined" );
+		blob        = ( typeof Blob != "undefined" );
 		defer       = deferred();
 
 		// Using a deferred to resolve request
 		defer.then( function ( arg ) {
-			if ( typeof success === "function" ) {
+			if ( typeof success == "function" ) {
 				success.call( uri, arg, xhr );
 			}
 
 			xhr = null;
 		}, function ( e ) {
-			if ( typeof failure === "function" ) {
+			if ( typeof failure == "function" ) {
 				failure.call( uri, e, xhr );
 			}
 
@@ -2261,7 +2261,7 @@ var client = {
 					payload = xml.decode( payload );
 				}
 
-				if ( typeof payload === "string" && regex.is_xml.test( payload ) ) {
+				if ( typeof payload == "string" && regex.is_xml.test( payload ) ) {
 					contentType = "application/xml";
 				}
 
@@ -2281,7 +2281,7 @@ var client = {
 
 			// Setting headers (using typeof for PATCH support in IE8)
 			if ( typeof xhr.setRequestHeader !== "undefined" ) {
-				if ( typeof cached === "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
+				if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
 					xhr.setRequestHeader( "ETag", cached.headers.ETag );
 				}
 
@@ -2635,9 +2635,9 @@ var cookie = {
 	set : function ( name, value, offset, domain, secure, path, jar ) {
 		value      = ( value || "" ) + ";";
 		offset     = offset || "";
-		domain     = typeof domain === "string" ? ( " Domain=" + domain + ";" ) : "";
+		domain     = typeof domain == "string" ? ( " Domain=" + domain + ";" ) : "";
 		secure     = ( secure === true ) ? " secure" : "";
-		path       = typeof path === "string" ? ( " Path=" + path + ";" ) : "";
+		path       = typeof path == "string" ? ( " Path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,
 		    type   = null,
@@ -2723,7 +2723,7 @@ var datastore = {
 			utility.merge( obj.data, args );
 		}
 
-		if ( recs !== null && typeof recs === "object" ) {
+		if ( recs !== null && typeof recs == "object" ) {
 			obj.data.batch( "set", recs );
 		}
 
@@ -2849,7 +2849,7 @@ DataStore.prototype.constructor = DataStore;
  * @return {Object} {@link abaaso.Deferred}
  */
 DataStore.prototype.batch = function ( type, data, sync ) {
-	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data !== "object" ) {
+	if ( !regex.set_del.test( type ) || ( sync && regex.del.test( type ) ) || typeof data != "object" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
@@ -3024,7 +3024,7 @@ DataStore.prototype.crawl = function ( arg ) {
 	utility.iterate( record.data, function ( v, k ) {
 		var uri;
 
-		if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) || ( v.indexOf( "//" ) === -1 && v.charAt( 0 ) !== "/" ) ) {
+		if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v != "string" ) || ( v.indexOf( "//" ) === -1 && v.charAt( 0 ) !== "/" ) ) {
 			return;
 		}
 
@@ -3516,7 +3516,7 @@ DataStore.prototype.select = function ( where ) {
 		functions = [];
 
 		utility.iterate( where, function ( v, k ) {
-			if ( typeof v === "function" ) {
+			if ( typeof v == "function" ) {
 				this[k] = v.toString();
 				functions.push( k );
 			}
@@ -3560,7 +3560,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	    parsed = utility.parse( self.uri || "" ),
 	    uri;
 
-	if ( typeof data === "string" ) {
+	if ( typeof data == "string" ) {
 		if ( data.indexOf( "//" ) === -1 ) {
 			// Relative path to store, i.e. a child
 			if ( data.charAt( 0 ) !== "/" ) {
@@ -3686,7 +3686,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			if ( !array.contains( self.collections, k ) ) {
 				record.data[k] = v;
 			}
-			else if ( typeof v === "string" ) {
+			else if ( typeof v == "string" ) {
 				deferreds.push( record.data[k].data.setUri( record.data[k].data.uri + "/" + v, true ) );
 			}
 			else {
@@ -3868,7 +3868,7 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 	var self    = this,
 	    record  = false,
 	    mongo   = !string.isEmpty( this.mongodb ),
-	    session = ( type === "session" && typeof sessionStorage !== "undefined" ),
+	    session = ( type === "session" && typeof sessionStorage != "undefined" ),
 	    defer   = deferred(),
 	    data, deferreds, key, result;
 
@@ -4117,7 +4117,7 @@ DataStore.prototype.sync = function () {
 	success = function ( arg ) {
 		var data;
 
-		if ( typeof arg !== "object" ) {
+		if ( typeof arg != "object" ) {
 			throw new Error( label.error.expectedObject );
 		}
 
@@ -4287,7 +4287,7 @@ var datalist = {
 		var ref = [store],
 		    obj, instance;
 
-		if ( !( target instanceof Element ) || typeof store !== "object" || !regex.string_object.test( typeof template ) ) {
+		if ( !( target instanceof Element ) || typeof store != "object" || !regex.string_object.test( typeof template ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -4834,7 +4834,7 @@ Deferred.prototype.constructor = Deferred;
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.always = function ( arg ) {
-	if ( typeof arg !== "function" ) {
+	if ( typeof arg != "function" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 	else if ( this.promise.state > 0 ) {
@@ -4855,7 +4855,7 @@ Deferred.prototype.always = function ( arg ) {
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.done = function ( arg ) {
-	if ( typeof arg !== "function" ) {
+	if ( typeof arg != "function" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 	else if ( this.promise.state > 0 ) {
@@ -4876,7 +4876,7 @@ Deferred.prototype.done = function ( arg ) {
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.fail = function ( arg ) {
-	if ( typeof arg !== "function" ) {
+	if ( typeof arg != "function" ) {
 		throw new Error( label.error.invalidArguments );
 	}
 	else if ( this.promise.state > 0 ) {
@@ -5012,7 +5012,7 @@ var element = {
 			}
 		}
 		else {
-			if ( typeof value === "string" ) {
+			if ( typeof value == "string" ) {
 				value = string.trim( value );
 			}
 
@@ -5781,7 +5781,7 @@ var element = {
 		    payload = {},
 		    set     = false;
 
-		if ( typeof arg !== "undefined" ) {
+		if ( typeof arg != "undefined" ) {
 			set          = true;
 			payload[key] = arg;
 		}
@@ -5882,7 +5882,7 @@ var element = {
 				output = utility.coerce( output );
 			}
 
-			if ( typeof output === "string" ) {
+			if ( typeof output == "string" ) {
 				output = string.trim( output );
 			}
 		}
@@ -5951,7 +5951,7 @@ var filter = function ( obj, datalist, filters, debounce ) {
 	debounce = debounce || 250;
 	var ref  = [datalist];
 
-	if ( !( obj instanceof Element ) || ( datalist !== undefined && datalist.store === undefined ) || ( typeof filters !== "string" || string.isEmpty( filters ) ) ) {
+	if ( !( obj instanceof Element ) || ( datalist !== undefined && datalist.store === undefined ) || ( typeof filters != "string" || string.isEmpty( filters ) ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
@@ -7676,7 +7676,7 @@ var observer = {
 		    add      = false,
 		    reg      = false;
 
-		if ( !oId || !events || typeof fn !== "function" ) {
+		if ( !oId || !events || typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -7950,7 +7950,7 @@ var observer = {
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
-		if ( !obj || !events || typeof fn !== "function" ) {
+		if ( !obj || !events || typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -8106,10 +8106,10 @@ var promise = {
 	 * @return {Function} Delay method
 	 */
 	delay : function () {
-		if ( typeof setImmediate !== "undefined" ) {
+		if ( typeof setImmediate != "undefined" ) {
 			return setImmediate;
 		}
-		else if ( typeof process !== "undefined" ) {
+		else if ( typeof process != "undefined" ) {
 			return process.nextTick;
 		}
 		else {
@@ -8206,7 +8206,7 @@ Promise.prototype.process = function() {
 		var callback = i[success ? "success" : "failure" ],
 		    child    = i.promise;
 
-		if ( !callback || typeof callback !== "function" ) {
+		if ( !callback || typeof callback != "function" ) {
 			if ( value && typeof value.then === "function" ) {
 				promise.pipe( value, child );
 			}
@@ -8846,7 +8846,7 @@ var prototypes = {
 		},
 		text : function ( arg ) {
 			return array.each( this, function ( node ) {
-				if ( typeof node !== "object") {
+				if ( typeof node != "object") {
 					node = utility.object( node );
 				}
 
@@ -8974,14 +8974,14 @@ var prototypes = {
 				element.html( self, arg );
 				observer.fire( self, "afterGet" );
 
-				if ( typeof success === "function") {
+				if ( typeof success == "function") {
 					success.call( self, arg );
 				}
 			}, function ( e ) {
 				element.html( self, e || label.error.serverError );
 				observer.fire( self, "failedGet" );
 
-				if ( typeof failure === "function") {
+				if ( typeof failure == "function") {
 					failure.call( self, e );
 				}
 
@@ -9360,7 +9360,7 @@ var state = ( function () {
 	 * @return {String}     Application state
 	 */
 	setCurrent = function ( arg ) {
-		if ( arg === null || typeof arg !== "string" || prop[0] === arg || string.isEmpty( arg ) ) {
+		if ( arg === null || typeof arg != "string" || prop[0] === arg || string.isEmpty( arg ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -9392,7 +9392,7 @@ var state = ( function () {
 	 * @return {String}     Application state header
 	 */
 	setHeader = function ( arg ) {
-		if ( arg !== null && ( typeof arg !== "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
+		if ( arg !== null && ( typeof arg != "string" || prop.header === arg || string.isEmpty( arg ) ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -9859,7 +9859,7 @@ var utility = {
 		utility.iterate( s, function ( v, k ) {
 			var getter, setter;
 
-			if ( !( v instanceof RegExp ) && typeof v === "function" ) {
+			if ( !( v instanceof RegExp ) && typeof v == "function" ) {
 				o[k] = v.bind( o[k] );
 			}
 			else if ( !(v instanceof RegExp ) && !(v instanceof Array ) && v instanceof Object ) {
@@ -9947,7 +9947,7 @@ var utility = {
 
 				// Decorating Functions that would be lost with JSON encoding/decoding
 				utility.iterate( obj, function ( v, k ) {
-					if ( typeof v === "function" ) {
+					if ( typeof v == "function" ) {
 						clone[k] = v;
 					}
 				} );
@@ -10283,7 +10283,7 @@ var utility = {
 		dom = ( dom === true );
 		var id;
 
-		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj === "string" ) ) ) {
+		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj == "string" ) ) ) {
 			return obj;
 		}
 
@@ -10297,7 +10297,7 @@ var utility = {
 			id = utility.domId( utility.uuid( true) );
 		}
 
-		if ( typeof obj === "object" ) {
+		if ( typeof obj == "object" ) {
 			obj.id = id;
 
 			return obj;
@@ -10370,7 +10370,7 @@ var utility = {
 	 * @return {Object}       Object
 	 */
 	iterate : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -10424,8 +10424,8 @@ var utility = {
 	log : function ( arg, target ) {
 		var ts, msg;
 
-		if ( typeof console !== "undefined" ) {
-			ts  = typeof arg !== "object";
+		if ( typeof console != "undefined" ) {
+			ts  = typeof arg != "object";
 			msg = ts ? "[" + new Date().toLocaleTimeString() + "] " + arg : arg;
 			console[target || "log"]( msg );
 		}
@@ -10467,7 +10467,7 @@ var utility = {
 	 * @return {Mixed}     Entity
 	 */
 	object : function ( obj ) {
-		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.dom( obj ) : obj );
+		return typeof obj == "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.dom( obj ) : obj );
 	},
 
 	/**
@@ -10751,7 +10751,7 @@ var utility = {
 	sugar : function () {
 		utility.proto( Array, "array" );
 
-		if ( typeof Element !== "undefined" ) {
+		if ( typeof Element != "undefined" ) {
 			utility.proto( Element, "element" );
 		}
 
@@ -10789,7 +10789,7 @@ var utility = {
 	tpl : function ( arg, target ) {
 		var frag;
 
-		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) === undefined ) ) {
+		if ( typeof arg != "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) === undefined ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -10806,7 +10806,7 @@ var utility = {
 		}
 		else {
 			utility.iterate( arg, function ( v, k ) {
-				if ( typeof v === "string" ) {
+				if ( typeof v == "string" ) {
 					element.html( element.create( k, undefined, frag ), v );
 				}
 				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) {
@@ -11208,7 +11208,7 @@ var xhr = function () {
 
 		if ( this._listeners.hasOwnProperty( event )) {
 			array.each( this._listeners[event], function ( i ) {
-				if ( typeof i === "function" ) {
+				if ( typeof i == "function" ) {
 					i.call( self );
 				}
 			} );
@@ -11436,7 +11436,7 @@ var xml = {
 	 * @return {Object}     XML Object or undefined
 	 */
 	decode : function ( arg ) {
-		if ( typeof arg !== "string" || string.isEmpty( arg ) ) {
+		if ( typeof arg != "string" || string.isEmpty( arg ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -11490,9 +11490,9 @@ var xml = {
 			if ( regex.boolean_number_string.test( typeof arg ) ) {
 				x += node( "item", arg );
 			}
-			else if ( typeof arg === "object" ) {
+			else if ( typeof arg == "object" ) {
 				utility.iterate( arg, function ( v, k ) {
-					x += xml.encode( v, ( typeof v === "object" ), false ).replace( /item|xml/g, isNaN( k ) ? k : "item" );
+					x += xml.encode( v, ( typeof v == "object" ), false ).replace( /item|xml/g, isNaN( k ) ? k : "item" );
 				} );
 			}
 
@@ -13325,7 +13325,7 @@ abaaso.filter          = filter;
  * @see {@link abaaso.observer.fire}
  */
 abaaso.fire            = function ( obj, event ) {
-	var all  = typeof obj === "object",
+	var all  = typeof obj == "object",
 	    o    = all ? obj   : this,
 	    e    = all ? event : obj,
 	    args = [o, e].concat( array.remove( array.cast( arguments ), 0, !all ? 0 : 1 ) );
@@ -13518,7 +13518,7 @@ abaaso.jsonp           = function ( uri, success, failure, callback) {
  * @see {@link abaaso.observer.list}
  */
 abaaso.listeners       = function ( obj, event ) {
-	return observer.list( typeof obj === "object" ? obj : this, event );
+	return observer.list( typeof obj == "object" ? obj : this, event );
 };
 
 /**
@@ -13604,7 +13604,7 @@ abaaso.observerable    = observer.decorate;
  * @see {@link abaaso.observer.add}
  */
 abaaso.on              = function ( obj, event, listener, id, scope, state ) {
-	var all = typeof obj === "object",
+	var all = typeof obj == "object",
 	    o, e, l, i, s, st;
 
 	if ( all ) {
@@ -13645,7 +13645,7 @@ abaaso.on              = function ( obj, event, listener, id, scope, state ) {
  * @see {@link abaaso.observer.once}
  */
 abaaso.once            = function ( obj, event, listener, id, scope, state ) {
-	var all = typeof obj === "object",
+	var all = typeof obj == "object",
 	    o, e, l, i, s, st;
 
 	if ( all ) {
@@ -14034,7 +14034,7 @@ abaaso.tpl             = utility.tpl;
  * @see {@link abaaso.observer.remove}
  */
 abaaso.un              = function ( obj, event, id, state ) {
-	var all = typeof obj === "object",
+	var all = typeof obj == "object",
 	    o, e, i, s;
 
 	if ( all ) {
@@ -14218,7 +14218,7 @@ bootstrap = function () {
 	abaaso.ready = true;
 
 	// Initializing
-	if ( typeof exports !== "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
+	if ( typeof exports != "undefined" || typeof define == "function" || regex.complete_loaded.test( document.readyState ) ) {
 		init();
 	}
 	else if ( typeof document.addEventListener === "function" ) {
@@ -14245,10 +14245,10 @@ return abaaso;
 } )();
 
 // Node, AMD & window supported
-if ( typeof exports !== "undefined" ) {
+if ( typeof exports != "undefined" ) {
 	module.exports = framework;
 }
-else if ( typeof define === "function" ) {
+else if ( typeof define == "function" ) {
 	define( function () {
 		return framework;
 	} );
@@ -14273,7 +14273,7 @@ else {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Oct 14 2013 13:19:07 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Oct 14 2013 13:33:51 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

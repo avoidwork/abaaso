@@ -79,9 +79,9 @@ var cookie = {
 	set : function ( name, value, offset, domain, secure, path, jar ) {
 		value      = ( value || "" ) + ";";
 		offset     = offset || "";
-		domain     = typeof domain === "string" ? ( " Domain=" + domain + ";" ) : "";
+		domain     = typeof domain == "string" ? ( " Domain=" + domain + ";" ) : "";
 		secure     = ( secure === true ) ? " secure" : "";
-		path       = typeof path === "string" ? ( " Path=" + path + ";" ) : "";
+		path       = typeof path == "string" ? ( " Path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,
 		    type   = null,

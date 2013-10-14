@@ -48,7 +48,7 @@ var element = {
 			}
 		}
 		else {
-			if ( typeof value === "string" ) {
+			if ( typeof value == "string" ) {
 				value = string.trim( value );
 			}
 
@@ -817,7 +817,7 @@ var element = {
 		    payload = {},
 		    set     = false;
 
-		if ( typeof arg !== "undefined" ) {
+		if ( typeof arg != "undefined" ) {
 			set          = true;
 			payload[key] = arg;
 		}
@@ -918,7 +918,7 @@ var element = {
 				output = utility.coerce( output );
 			}
 
-			if ( typeof output === "string" ) {
+			if ( typeof output == "string" ) {
 				output = string.trim( output );
 			}
 		}

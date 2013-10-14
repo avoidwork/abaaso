@@ -89,7 +89,7 @@ var utility = {
 		utility.iterate( s, function ( v, k ) {
 			var getter, setter;
 
-			if ( !( v instanceof RegExp ) && typeof v === "function" ) {
+			if ( !( v instanceof RegExp ) && typeof v == "function" ) {
 				o[k] = v.bind( o[k] );
 			}
 			else if ( !(v instanceof RegExp ) && !(v instanceof Array ) && v instanceof Object ) {
@@ -177,7 +177,7 @@ var utility = {
 
 				// Decorating Functions that would be lost with JSON encoding/decoding
 				utility.iterate( obj, function ( v, k ) {
-					if ( typeof v === "function" ) {
+					if ( typeof v == "function" ) {
 						clone[k] = v;
 					}
 				} );
@@ -513,7 +513,7 @@ var utility = {
 		dom = ( dom === true );
 		var id;
 
-		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj === "string" ) ) ) {
+		if ( obj !== undefined && ( ( obj.id !== undefined && obj.id !== "" ) || ( obj instanceof Array ) || ( obj instanceof String || typeof obj == "string" ) ) ) {
 			return obj;
 		}
 
@@ -527,7 +527,7 @@ var utility = {
 			id = utility.domId( utility.uuid( true) );
 		}
 
-		if ( typeof obj === "object" ) {
+		if ( typeof obj == "object" ) {
 			obj.id = id;
 
 			return obj;
@@ -600,7 +600,7 @@ var utility = {
 	 * @return {Object}       Object
 	 */
 	iterate : function ( obj, fn ) {
-		if ( typeof fn !== "function" ) {
+		if ( typeof fn != "function" ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -654,8 +654,8 @@ var utility = {
 	log : function ( arg, target ) {
 		var ts, msg;
 
-		if ( typeof console !== "undefined" ) {
-			ts  = typeof arg !== "object";
+		if ( typeof console != "undefined" ) {
+			ts  = typeof arg != "object";
 			msg = ts ? "[" + new Date().toLocaleTimeString() + "] " + arg : arg;
 			console[target || "log"]( msg );
 		}
@@ -697,7 +697,7 @@ var utility = {
 	 * @return {Mixed}     Entity
 	 */
 	object : function ( obj ) {
-		return typeof obj === "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.dom( obj ) : obj );
+		return typeof obj == "object" ? obj : ( obj.charAt && obj.charAt( 0 ) === "#" ? utility.dom( obj ) : obj );
 	},
 
 	/**
@@ -981,7 +981,7 @@ var utility = {
 	sugar : function () {
 		utility.proto( Array, "array" );
 
-		if ( typeof Element !== "undefined" ) {
+		if ( typeof Element != "undefined" ) {
 			utility.proto( Element, "element" );
 		}
 
@@ -1019,7 +1019,7 @@ var utility = {
 	tpl : function ( arg, target ) {
 		var frag;
 
-		if ( typeof arg !== "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) === undefined ) ) {
+		if ( typeof arg != "object" || (!(regex.object_undefined.test( typeof target ) ) && ( target = target.charAt( 0 ) === "#" ? utility.dom( target ) : utility.dom( target )[0] ) === undefined ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -1036,7 +1036,7 @@ var utility = {
 		}
 		else {
 			utility.iterate( arg, function ( v, k ) {
-				if ( typeof v === "string" ) {
+				if ( typeof v == "string" ) {
 					element.html( element.create( k, undefined, frag ), v );
 				}
 				else if ( ( v instanceof Array ) || ( v instanceof Object ) ) {
