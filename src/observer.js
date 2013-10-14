@@ -74,7 +74,7 @@ var observer = {
 		    instance = regex.observer_globals.test( oId ) || ( !/\//g.test( oId ) && oId !== "abaaso" ) ? obj : null;
 
 		// Preparing variables
-		id    = id    || utility.genId();
+		id    = id    || utility.uuid();
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
@@ -89,7 +89,7 @@ var observer = {
 		}
 
 		// Setting event listeners (with DOM hooks if applicable)
-		array.each( array.explode( events ), function ( ev ) {
+		array.each( string.explode( events ), function ( ev ) {
 			var eId = oId + "_" + ev,
 			    add, reg;
 
@@ -103,17 +103,13 @@ var observer = {
 			}
 
 			// Setting up event listener if valid
-			if ( instance && ev.toLowerCase() !== "afterjsonp" && !observer.elisteners[eId] && regex.observer_globals.test( oId ) ) {
+			if ( instance && ev.toLowerCase() !== "afterjsonp" && !observer.elisteners[eId] && ( regex.observer_globals.test( oId ) || obj.nodeName ) ) {
 				add = typeof instance.addEventListener === "function";
 				reg = typeof instance.attachEvent === "object" || add;
 
 				if ( reg ) {
 					// Registering event listener
-					observer.elisteners[eid] = function ( e ) {
-						if ( !regex.observer_allowed.test( e.type ) ) {
-							utility.stop( e );
-						}
-
+					observer.elisteners[eId] = function ( e ) {
 						observer.fire( oId, ev, e );
 					};
 
@@ -122,7 +118,7 @@ var observer = {
 				}
 			}
 
-			observer.listeners[oId][st].set( id, {fn: fn, scope: scope} );
+			observer.listeners[oId][st][ev].set( id, {fn: fn, scope: scope} );
 		} );
 	},
 
@@ -203,33 +199,39 @@ var observer = {
 			if ( observer.silent ) {
 				observer.queue.push( array.cast( arguments ) );
 			}
-			else if ( observer.listeners[oId] ) {
+			else {
 				oId  = observer.id( obj );
-				args = array.remove( array.cast( arguments ), 0, 1 );
-				log  = abaaso.logging;
 
-				array.each( string.explode( events ), function ( ev ) {
-					if ( log ) {
-						utility.log( oId + " fired " + ev );
-					}
+				if ( observer.listeners[oId] ) {
+					args = array.remove( array.cast( arguments ), 0, 1 );
+					log  = abaaso.logging;
 
-					array.each( observer.states(), function ( st ) {
-						if ( observer.listeners[oId][st] && observer.listeners[oId][st][ev] ) {
-							cache = observer.listeners[oId][st][ev];
-							item  = cache.get( cache.last );
+					array.each( string.explode( events ), function ( ev ) {
+						if ( log ) {
+							utility.log( oId + " fired " + ev );
+						}
 
-							do {
-								if ( item.fn.apply( item.scope, args ) !== false ) {
-									item = cache.get( item.previous );
-								}
-								else {
-									return false;
+						array.each( observer.states(), function ( st ) {
+							if ( observer.listeners[oId][st] && observer.listeners[oId][st][ev] ) {
+								cache = observer.listeners[oId][st][ev];
+
+								if ( cache.length > 0 ) {
+									item  = cache.cache[cache.last];
+
+									do {
+										if ( item.value.fn.apply( item.value.scope, args ) !== false && item.next ) {
+											item = cache.cache[item.next];
+										}
+										else {
+											return false;
+										}
+									}
+									while ( item );
 								}
 							}
-							while ( item );
-						}
+						} );
 					} );
-				} );
+				}
 			}
 		}
 
@@ -315,11 +317,11 @@ var observer = {
 	 * @return {Mixed}           Primitive
 	 */
 	once : function ( obj, events, fn, id, scope, st ) {
-		id    = id    || utility.genId();
+		id    = id    || utility.uuid();
 		scope = scope || obj;
 		st    = st    || state.getCurrent();
 
-		array.each( array.explode( events ), function ( ev ) {
+		array.each( string.explode( events ), function ( ev ) {
 			observer.add( obj, ev, function () {
 				fn.apply( scope, arguments );
 				observer.remove( obj, ev, id, st );
@@ -365,76 +367,83 @@ var observer = {
 	 * @param  {String} st     [Optional] Application state, default is current
 	 * @return {Mixed}         Primitive
 	 */
-	remove : function ( obj, event, id, st ) {
-		var oId = observer.id( obj ),
-		    add = typeof obj.addEventListener === "function",
-		    reg = typeof obj.attachEvent === "object" || add,
-		    fn;
+	remove : function ( obj, events, id, st ) {
+		var oId   = observer.id( obj ),
+		    add   = typeof obj.addEventListener === "function",
+		    reg   = typeof obj.attachEvent === "object" || add,
+		    regex = /.*_/,
+		    states, total, unhook;
 
 		st = st || state.getCurrent();
 
 		/**
 		 * Removes DOM event hook
 		 *
-		 * @method fn
+		 * @method unhook
 		 * @memberOf abaaso.observer.remove
 		 * @private
-		 * @param  {Mixed}  event String or null
-		 * @param  {Number} i     Amount of listeners being removed
-		 * @return {Undefined}    undefined
+		 * @param  {Mixed}  eId Event ID
+		 * @param  {Number} ev  Event
+		 * @return {Undefined}  undefined
 		 */
-		fn = function ( event, i ) {
-			var unhook = ( typeof i === "number" && ( cl[o][event] = ( cl[o][event] - i ) ) === 0 );
-
-			if ( unhook && reg ) {
-				obj[add ? "removeEventListener" : "detachEvent"]( ( add ? "" : "on" ) + event, ev[o + "_" + event], false );
-				delete ev[o + "_" + event];
+		unhook = function ( eId, ev ) {
+			if ( reg ) {
+				obj[add ? "removeEventListener" : "detachEvent"]( ( add ? "" : "on" ) + ev, this[eId], false );
 			}
+
+			delete this[eId];
 		};
 
-		if ( !observer.listeners[oId] ) {
-			return obj;
-		}
+		if ( observer.listeners[oId] ) {
+			if ( !events ) {
+				utility.iterate( observer.elisteners, function ( v, k ) {
+					if ( k.indexOf( oId + "_" ) === 0 ) {
+						unhook.call( this, k, k.replace( regex, "" ) );
+					}
+				} );
 
-		if ( event ) {
-			if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) {
-				utility.iterate( ev, function ( v, k ) {
-					if ( k.indexOf( o + "_" ) === 0) {
-						fn( k.replace( /.*_/, "" ), 1 );
+				delete observer.listeners[oId];
+			}
+			else {
+				events = string.explode( events );
+				states = array.keys( observer.listeners[oId] );
+				total  = 0;
+
+				// Total listeners
+				array.each( states, function ( s ) {
+					array.each( events, function ( e ) {
+						if ( observer.listeners[oId][s][e] ) {
+							total += observer.listeners[oId][s][e].length;
+						}
+					} );
+				} );
+
+				array.each( events, function ( ev ) {
+					if ( observer.listeners[oId][st][ev] ) {
+						// Specific listener
+						if ( id ) {
+							observer.listeners[oId][st][ev].remove( id );
+							total--;
+
+							if ( total === 0 ) {
+								array.each( states, function ( s ) {
+									delete observer.listeners[oId][s][ev];
+								} );
+
+								unhook.call( observer.elisteners, oId + "_" + ev, ev );
+							}
+						}
+						// All listeners for the event
+						else {
+							array.each( states, function ( s ) {
+								delete observer.listeners[oId][s][ev];
+							} );
+
+							unhook.call( observer.elisteners, oId + "_" + ev, ev );
+						}
 					}
 				} );
 			}
-
-			delete l[o];
-			delete a[o];
-			delete cl[o];
-		}
-		else {
-			array.each( string.explode( event ), function ( e ) {
-				var sync = false;
-
-				if ( l[o][e] === undefined ) {
-					return;
-				}
-
-				if ( id === undefined ) {
-					if ( regex.observer_globals.test( o ) || typeof o.listeners === "function" ) {
-						fn( e, array.keys( l[o][e][st] ).length );
-					}
-
-					l[o][e][st] = {};
-					sync = true;
-				}
-				else if ( l[o][e][st][id] !== undefined ) {
-					fn( e, 1 );
-					delete l[o][e][st][id];
-					sync = true;
-				}
-
-				if ( sync ) {
-					observer.sync( o, e, st );
-				}
-			} );
 		}
 
 		return obj;

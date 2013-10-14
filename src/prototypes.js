@@ -969,7 +969,7 @@ var prototypes = {
 			return observer.add( this, event, listener, id, scope, state );
 		},
 		once : function ( event, listener, id, scope, state ) {
-			return observer.add( this, event, listener, id, scope, state );
+			return observer.once( this, event, listener, id, scope, state );
 		},
 		options : function ( success, failure ) {
 			return client.request( this, "OPTIONS", success, failure );

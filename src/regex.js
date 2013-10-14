@@ -68,7 +68,6 @@ var regex = {
 	number_string           : /number|string/i,
 	number_string_object    : /number|object|string/i,
 	null_undefined          : /null|undefined/,
-	observer_allowed        : /click|error|key|mousedown|mouseup|touchstart|touchend|touchmove|touchenter|touchleave|touchcancel|submit/i,
 	observer_globals        : /body|document|window/i,
 	object_type             : /\[object Object\]/,
 	object_undefined        : /object|undefined/,

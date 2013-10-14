@@ -80,6 +80,7 @@ bootstrap = function () {
 			observer.add( global, "DOMNodeInserted", function ( e ) {
 				var obj = utility.target( e );
 
+				// @todo change to a MutationObserver: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 				Object.observe( obj, function ( arg ) {
 					observer.fire( obj, "change", arg );
 				} );
