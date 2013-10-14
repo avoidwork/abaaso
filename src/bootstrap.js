@@ -83,7 +83,9 @@ bootstrap = function () {
 
 		// DOM 4+
 		if ( typeof MutationObserver == "function" ) {
-			utility.observers.body = new MutationObserver( function ( arg ) {
+			utility.observers.document = new MutationObserver( function ( arg ) {
+				observer.fire( document, "change", arg );
+
 				array.each( arg, function ( record ) {
 					// Added Elements
 					array.each( array.cast( record.addedNodes ).filter( function ( obj ) {
@@ -107,7 +109,7 @@ bootstrap = function () {
 				} );
 			} );
 
-			utility.observers.body.observe( document, {childList: true, subtree: true} );
+			utility.observers.document.observe( document, {childList: true, subtree: true} );
 		}
 		// DOM 3 (slow!)
 		else {

@@ -411,6 +411,7 @@ var array = {
 	 * Creates a 2D Array from an Object
 	 *
 	 * @method fromObject
+	 * @memberOf abaaso.array
 	 * @param  {Object} obj Object to convert
 	 * @return {Array}      2D Array
 	 */
