@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Namespace: datastore</title>
+    <title>JSDoc: Namespace: validate</title>
     
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">Namespace: datastore</h1>
+    <h1 class="page-title">Namespace: validate</h1>
     
     
 
@@ -29,7 +29,7 @@
     <h2>
         <span class="ancestors"><a href="abaaso.html">abaaso</a>.</span>
     
-    datastore
+    validate
     </h2>
     
 </header>  
@@ -64,7 +64,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line2656">line 2656</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line10875">line 10875</a>
     </li></ul></dd>
     
     
@@ -98,7 +98,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="decorator"><span class="type-signature">&lt;static> </span>decorator<span class="signature">(obj, recs, args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="test"><span class="type-signature">&lt;static> </span>test<span class="signature">(args)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -106,7 +106,7 @@
     
     
     <div class="description">
-        Decorates a DataStore on an Object
+        Validates args based on the type or pattern specified
     </div>
     
 
@@ -136,52 +136,6 @@
 	</thead>
 	
 	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Object</td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>recs</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Mixed</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">[Optional] Data to set with this.batch</td>
-        </tr>
-	
 	
 	
         <tr>
@@ -202,7 +156,7 @@
             
             
             
-            <td class="description last">[Optional] Arguments to set on the store</td>
+            <td class="description last">Object to test {( pattern[name] || /pattern/) : (value || #object.id )}</td>
         </tr>
 	
 	
@@ -233,7 +187,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line2661">line 2661</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line10880">line 10880</a>
     </li></ul></dd>
     
     
@@ -258,7 +212,7 @@
     
             
 <div class="param-desc">
-    Decorated Object
+    Results
 </div>
 
 
@@ -270,145 +224,6 @@
 	<dd>
 		
 <span class="param-type">Object</span>
-
-
-	</dd>
-</dl>
-
-        
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="worker"><span class="type-signature">&lt;static> </span>worker<span class="signature">(ev)</span><span class="type-signature"> &rarr; {Undefined}</span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        DataStore worker handler
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>ev</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">Event</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line2694">line 2694</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    undefined
-</div>
-
-
-
-<dl>
-	<dt>
-		Type
-	</dt>
-	<dd>
-		
-<span class="param-type">Undefined</span>
 
 
 	</dd>
@@ -441,7 +256,7 @@
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Tue Oct 15 2013 07:55:44 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Tue Oct 15 2013 07:55:46 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
