@@ -4,6 +4,7 @@ var document  = global.document,
     location  = global.location,
     navigator = global.navigator,
     server    = typeof exports != "undefined",
+    webWorker = typeof Blob != "undefined" && typeof Worker != "undefined",
     framework, http, https, url, WORKER;
 
 if ( server ) {

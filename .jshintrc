@@ -39,6 +39,7 @@
 		"mongodb": true,
 		"format": true,
 		"Blob": true,
+		"Worker": true,
 		"postMessage": true
 	}
 }

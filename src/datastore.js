@@ -779,7 +779,26 @@ DataStore.prototype.select = function ( where ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	if ( server ) {
+	if ( webWorker ) {
+		functions = [];
+
+		utility.iterate( where, function ( v, k ) {
+			if ( typeof v == "function" ) {
+				this[k] = v.toString();
+				functions.push( k );
+			}
+		} );
+
+		blob   = new Blob( [WORKER] );
+		worker = new Worker( global.URL.createObjectURL( blob ) );
+
+		worker.onmessage = function ( ev ) {
+			defer.resolve( ev.data );
+		};
+
+		worker.postMessage( {cmd: "select", records: this.records, where: json.encode( where ), functions: functions} );
+	}
+	else {
 		clauses = array.fromObject( where );
 		cond    = "return ( ";
 
@@ -817,25 +836,6 @@ DataStore.prototype.select = function ( where ) {
 		cond += " );";
 
 		defer.resolve( this.records.slice().filter( new Function( "rec", cond ) ) );
-	}
-	else {
-		functions = [];
-
-		utility.iterate( where, function ( v, k ) {
-			if ( typeof v == "function" ) {
-				this[k] = v.toString();
-				functions.push( k );
-			}
-		} );
-
-		blob   = new Blob( [WORKER] );
-		worker = new Worker( global.URL.createObjectURL( blob ) );
-
-		worker.onmessage = function ( ev ) {
-			defer.resolve( ev.data );
-		};
-
-		worker.postMessage( {cmd: "select", records: this.records, where: json.encode( where ), functions: functions} );
 	}
 
 	return defer;
@@ -1132,11 +1132,7 @@ DataStore.prototype.sort = function ( query, create, where ) {
 		else if ( !create && self.views[view] ) {
 			defer.resolve( self.views[view] );
 		}
-		else if ( server ) {
-			self.views[view] = array.keySort( records.slice(), query, "data" );
-			defer.resolve( self.views[view] );
-		}
-		else {
+		else if ( webWorker ) {
 			blob   = new Blob( [WORKER] );
 			worker = new Worker( global.URL.createObjectURL( blob ) );
 
@@ -1145,7 +1141,11 @@ DataStore.prototype.sort = function ( query, create, where ) {
 				defer.resolve( self.views[view] );
 			};
 
-			worker.postMessage( {cmd: "sort", records: records.slice(), query: query} );
+			worker.postMessage( {cmd: "sort", records: records, query: query} );
+		}
+		else {
+			self.views[view] = array.keySort( records.slice(), query, "data" );
+			defer.resolve( self.views[view] );
 		}
 	};
 
