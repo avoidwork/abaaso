@@ -6,9 +6,11 @@ abaaso is a modern, lightweight Enterprise class RESTful JavaScript application 
 
 ## How is it different?
 
-abaaso gets in front of APIs with `DataStores`, providing a really powerful model which can be displayed with reactive DOM components: `DataLists` & `DataGrids`. It complements UI frameworks by handling the I/O, as well as filtering & sorting the data.
+On the Client (browser), abaaso gets in front of APIs with `DataStores`, providing a really powerful model in RAM which can be wired to reactive components: `DataLists` & `DataGrids`. It complements UI frameworks by handling the I/O, filtering & sorting of data.
 
-abaaso foregoes MVC in favor of the native OOP design of JavaScript with custom instances, allowing for a clean separation of concerns.
+On the Server (node.js), `DataStores` can be used for API end points, with an "autosave" feature that sends the model to MongoDB for persistent storage.
+
+abaaso forgoes MVC in favor of the native OOP design of JavaScript with custom instances, allowing for a clean separation of concerns.
 
 ## What is Supported?
 
