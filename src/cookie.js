@@ -45,7 +45,7 @@ var cookie = {
 	list : function ( jar ) {
 		var result = {};
 
-		if ( jar === undefined ) {
+		if ( !jar ) {
 			jar = server ? "" : document.cookie;
 		}
 
@@ -80,7 +80,7 @@ var cookie = {
 		value      = ( value || "" ) + ";";
 		offset     = offset || "";
 		domain     = typeof domain == "string" ? ( " Domain=" + domain + ";" ) : "";
-		secure     = ( secure === true ) ? " secure" : "";
+		secure     = ( secure === true ) ? " Secure" : "";
 		path       = typeof path == "string" ? ( " Path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,

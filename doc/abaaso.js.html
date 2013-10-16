@@ -2142,7 +2142,6 @@ var client = {
 	 * @return {Object}   {@link abaaso.Deferred}
 	 */
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
-		timeout = timeout || 30000;
 		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, defer;
 
 		if ( regex.put_post.test( type ) && args === undefined ) {
@@ -2152,15 +2151,16 @@ var client = {
 		uri         = utility.parse( uri ).href;
 		type        = type.toLowerCase();
 		headers     = headers instanceof Object ? headers : null;
+		timeout     = timeout || 30000;
 		cors        = client.cors( uri );
-		xhr         = new XMLHttpRequest();
+		xhr         = !client.ie || ( !cors || client.version > 9 ) ? new XMLHttpRequest() : new XDomainRequest();
 		payload     = ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args ? args : null;
 		cached      = type === "get" ? cache.get( uri ) : false;
 		typed       = type.capitalize();
 		contentType = null;
-		doc         = ( typeof Document != "undefined" );
-		ab          = ( typeof ArrayBuffer != "undefined" );
-		blob        = ( typeof Blob != "undefined" );
+		doc         = typeof Document != "undefined";
+		ab          = typeof ArrayBuffer != "undefined";
+		blob        = typeof Blob != "undefined";
 		defer       = deferred();
 
 		// Using a deferred to resolve request
@@ -2271,31 +2271,34 @@ var client = {
 				}
 			}
 
-			if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
-				xhr.setRequestHeader( "ETag", cached.headers.ETag );
-			}
-
-			if ( headers === null ) {
-				headers = {};
-			}
-
-			if ( contentType !== null ) {
-				headers["Content-Type"] = contentType;
-			}
-
-			if ( headers.hasOwnProperty( "callback" ) ) {
-				delete headers.callback;
-			}
-
-			utility.iterate( headers, function ( v, k ) {
-				if ( v !== null && k !== "withCredentials") {
-					xhr.setRequestHeader( k, v );
+			// Setting headers for everything except IE9 CORS requests
+			if ( !client.ie || ( !cors || client.version > 9 ) ) {
+				if ( headers === null ) {
+					headers = {};
 				}
-			} );
 
-			// Cross Origin Resource Sharing ( CORS )
-			if ( typeof xhr.withCredentials == "boolean" && headers !== null && typeof headers.withCredentials == "boolean" ) {
-				xhr.withCredentials = headers.withCredentials;
+				if ( typeof cached == "object" && cached.headers.hasOwnProperty( "ETag" ) ) {
+					headers.Etag = cached.headers.Etag;
+				}
+
+				if ( contentType !== null ) {
+					headers["Content-Type"] = contentType;
+				}
+
+				if ( headers.hasOwnProperty( "callback" ) ) {
+					delete headers.callback;
+				}
+
+				utility.iterate( headers, function ( v, k ) {
+					if ( v !== null && k !== "withCredentials") {
+						xhr.setRequestHeader( k, v );
+					}
+				} );
+
+				// Cross Origin Resource Sharing ( CORS )
+				if ( typeof xhr.withCredentials == "boolean" && headers !== null && typeof headers.withCredentials == "boolean" ) {
+					xhr.withCredentials = headers.withCredentials;
+				}
 			}
 
 			// Firing event & sending request
@@ -2331,6 +2334,7 @@ var client = {
 	response : function ( xhr, uri, type, defer ) {
 		var typed    = string.capitalize( type.toLowerCase() ),
 		    xhrState = null,
+		    xdr      = client.ie && xhr.readyState === undefined,
 		    shared   = true,
 		    exception, o, r, t, redirect;
 
@@ -2341,10 +2345,10 @@ var client = {
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
 
-		if ( xhr.readyState === 2 ) {
+		if ( !xdr && xhr.readyState === 2 ) {
 			uri.fire( "received" + typed, null, xhr );
 		}
-		else if ( xhr.readyState === 4 ) {
+		else if ( !xdr && xhr.readyState === 4 ) {
 			switch ( xhr.status ) {
 				case 200:
 				case 201:
@@ -2393,7 +2397,7 @@ var client = {
 					}
 
 					// Application state change triggered by hypermedia ( HATEOAS )
-					if ( state.getHeader() !== null && Boolean( xhrState = o.headers[state.getHeader()]) && state.current !== xhrState ) {
+					if ( state.getHeader() !== null && Boolean( xhrState = o.headers[state.getHeader()] ) && state.current !== xhrState ) {
 						state.setCurrent( state );
 					}
 
@@ -2454,6 +2458,13 @@ var client = {
 				xhr.onreadystatechange = null;
 			}
 			catch ( e ) {}
+		}
+		else if ( xdr ) {
+			r = client.parse( xhr, "text/plain" );
+			cache.set( uri, "permission", client.bit( ["get"] ) );
+			cache.set( uri, "response", r );
+			defer.resolve( r );
+			uri.fire( "afterGet", r, xhr );
 		}
 	},
 
@@ -2590,7 +2601,7 @@ var cookie = {
 	list : function ( jar ) {
 		var result = {};
 
-		if ( jar === undefined ) {
+		if ( !jar ) {
 			jar = server ? "" : document.cookie;
 		}
 
@@ -2625,7 +2636,7 @@ var cookie = {
 		value      = ( value || "" ) + ";";
 		offset     = offset || "";
 		domain     = typeof domain == "string" ? ( " Domain=" + domain + ";" ) : "";
-		secure     = ( secure === true ) ? " secure" : "";
+		secure     = ( secure === true ) ? " Secure" : "";
 		path       = typeof path == "string" ? ( " Path=" + path + ";" ) : "";
 		var expire = "",
 		    span   = null,
@@ -14154,7 +14165,7 @@ bootstrap = function () {
 		}
 
 		// classList shim for IE9
-		if ( document.documentElement.classList === undefined ) {
+		if ( !document.documentElement.classList ) {
 			( function ( view ) {
 				var ClassList, getter, proto, target, descriptor;
 
@@ -14355,7 +14366,7 @@ else {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Tue Oct 15 2013 12:24:16 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Wed Oct 16 2013 07:36:18 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>

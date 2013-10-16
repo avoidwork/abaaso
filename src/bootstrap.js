@@ -57,7 +57,7 @@ bootstrap = function () {
 		}
 
 		// classList shim for IE9
-		if ( document.documentElement.classList === undefined ) {
+		if ( !document.documentElement.classList ) {
 			( function ( view ) {
 				var ClassList, getter, proto, target, descriptor;
 
