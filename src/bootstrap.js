@@ -153,7 +153,12 @@ bootstrap = function () {
 					return document.querySelectorAll( "." + arg );
 				};
 
-				Element.prototype.getElementsByClassName = HTMLDocument.prototype.getElementsByClassName = getElementsByClassName;
+				if ( typeof HTMLDocument != "undefined" ) {
+					Element.prototype.getElementsByClassName = HTMLDocument.prototype.getElementsByClassName = getElementsByClassName;
+				}
+				else {
+					Element.prototype.getElementsByClassName = getElementsByClassName;
+				}
 			})();
 		}
 

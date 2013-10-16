@@ -190,11 +190,7 @@ var client = {
 			version = navigator.userAgent.replace( /(.*firefox\/)/gi, "" );
 		}
 		else if ( this.ie ) {
-			version = number.parse( navigator.userAgent.replace(/(.*msie|;.*)/gi, ""), 10 );
-
-			if ( document.documentMode < version ) {
-				version = document.documentMode;
-			}
+			version = navigator.userAgent.replace(/(.*msie|;.*)/gi, "");
 		}
 		else if ( this.opera ) {
 			version = navigator.userAgent.replace( /(.*version\/|\(.*)/gi, "" );
@@ -203,13 +199,17 @@ var client = {
 			version = navigator.userAgent.replace( /(.*version\/|safari.*)/gi, "" );
 		}
 		else {
-			version = ( navigator !== undefined ) ? navigator.appVersion : 0;
+			version = navigator.appVersion || "0";
 		}
 
 		version = number.parse( string.trim( version ) );
 
 		if ( isNaN( version ) ) {
 			version = 0;
+		}
+
+		if ( this.ie && document.documentMode && document.documentMode < version ) {
+			version = document.documentMode;
 		}
 
 		return version;

@@ -102,11 +102,7 @@ Modern smartphone resolution makes this a hit/miss scenario</p></div></div><div 
       <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*firefox\/)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">ie</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">version</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(.*msie|;.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="mi">10</span> <span class="p">);</span>
-
-      <span class="k">if</span> <span class="p">(</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span> <span class="o">&lt;</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">version</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span><span class="p">;</span>
-      <span class="p">}</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/(.*msie|;.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">opera</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*version\/|\(.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
@@ -115,13 +111,17 @@ Modern smartphone resolution makes this a hit/miss scenario</p></div></div><div 
       <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span> <span class="sr">/(.*version\/|safari.*)/gi</span><span class="p">,</span> <span class="s2">&quot;&quot;</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="nx">version</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">navigator</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">appVersion</span> <span class="o">:</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">appVersion</span> <span class="o">||</span> <span class="s2">&quot;0&quot;</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="nx">version</span> <span class="o">=</span> <span class="nx">number</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">string</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">);</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nb">isNaN</span><span class="p">(</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">version</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">ie</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span> <span class="o">&amp;&amp;</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span> <span class="o">&lt;</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">version</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">documentMode</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">version</span><span class="p">;</span>
