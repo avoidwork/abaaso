@@ -174,6 +174,12 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 	}
 
 	if ( data.length === 0 ) {
+		self.loaded = true;
+
+		if ( events ) {
+			observer.fire( self.parentNode, "afterDataBatch", self.records );
+		}
+
 		defer.resolve( this.records );
 	}
 	else {

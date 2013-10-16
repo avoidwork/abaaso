@@ -56,6 +56,13 @@ bootstrap = function () {
 			throw new Error( label.error.upgrade );
 		}
 
+		// getElementsByClassName shim for IE9
+		if ( Element.prototype.getElementsByClassName === undefined ) {
+			Element.prototype.getElementsByClassName = function ( arg ) {
+				return document.querySelectorAll( "." + arg );
+			};
+		}
+
 		// classList shim for IE9
 		if ( !document.documentElement.classList ) {
 			( function ( view ) {
