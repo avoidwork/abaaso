@@ -928,7 +928,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 				method = "PUT";
 				uri    = this.buildUri( key );
 
-				if ( client.allows( uri, "patch" ) && ( !client.ie || client.activex ) ) {
+				if ( client.allows( uri, "patch" ) ) {
 					method = "PATCH";
 				}
 				else if ( record !== null ) {

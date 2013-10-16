@@ -30,7 +30,6 @@ abaaso.array           = array;
  */
 abaaso.callback        = {};
 abaaso.client          = {
-	activex     : client.activex,
 	android     : client.android,
 	blackberry  : client.blackberry,
 	chrome      : client.chrome,

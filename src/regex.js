@@ -106,5 +106,6 @@ var regex = {
 	webos                   : /webos/i,
 	windows                 : /windows/i,
 	word                    : /^\w+$/,
+	xdomainrequest          : /^(get|post)$/i,
 	xml                     : /xml/i
 };

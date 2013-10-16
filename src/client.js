@@ -5,27 +5,6 @@
  */
 var client = {
 	/**
-	 * ActiveX support
-	 *
-	 * @memberOf abaaso.client
-	 * @type {Boolean}
-	 */
-	activex : function () {
-		var result = false,
-		    obj;
-
-		if ( typeof ActiveXObject != "undefined" ) {
-			try {
-				obj    = new ActiveXObject( "Microsoft.XMLHTTP" );
-				result = true;
-			}
-			catch ( e ) {}
-		}
-
-		return result;
-	}(),
-
-	/**
 	 * Android platform
 	 *
 	 * @memberOf abaaso.client
@@ -531,7 +510,7 @@ var client = {
 	request : function ( uri, type, success, failure, args, headers, timeout ) {
 		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, defer;
 
-		if ( regex.put_post.test( type ) && args === undefined ) {
+		if ( ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args === undefined ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -549,6 +528,11 @@ var client = {
 		ab          = typeof ArrayBuffer != "undefined";
 		blob        = typeof Blob != "undefined";
 		defer       = deferred();
+
+		// Only GET & POST is supported by XDomainRequest (so useless!)
+		if ( cors && client.ie && client.version === 9 && !regex.xdomainrequest.test( type ) ) {
+			throw new Error( label.error.notAvailable );
+		}
 
 		// Using a deferred to resolve request
 		defer.then( function ( arg ) {
