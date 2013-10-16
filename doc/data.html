@@ -86,6 +86,7 @@ Events: beforeDataBatch  Fires before the batch is queued
   <span class="p">}</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">data</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">loaded</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
     <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="p">);</span>
   <span class="p">}</span>
   <span class="k">else</span> <span class="p">{</span>

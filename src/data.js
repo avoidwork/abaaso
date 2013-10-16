@@ -97,6 +97,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 	}
 
 	if ( data.length === 0 ) {
+		self.loaded = true;
 		defer.resolve( this.records );
 	}
 	else {

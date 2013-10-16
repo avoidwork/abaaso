@@ -129,7 +129,12 @@
           <span class="k">return</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelectorAll</span><span class="p">(</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="nx">arg</span> <span class="p">);</span>
         <span class="p">};</span>
 
-        <span class="nx">Element</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">HTMLDocument</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">getElementsByClassName</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">HTMLDocument</span> <span class="o">!=</span> <span class="s2">&quot;undefined&quot;</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="nx">Element</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">HTMLDocument</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">getElementsByClassName</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="nx">Element</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getElementsByClassName</span> <span class="o">=</span> <span class="nx">getElementsByClassName</span><span class="p">;</span>
+        <span class="p">}</span>
       <span class="p">})();</span>
     <span class="p">}</span>
 
