@@ -97,7 +97,12 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 	}
 
 	if ( data.length === 0 ) {
-		self.loaded = true;
+		this.loaded = true;
+
+		if ( events ) {
+			observer.fire( this.parentNode, "afterDataBatch", this.records );
+		}
+
 		defer.resolve( this.records );
 	}
 	else {
