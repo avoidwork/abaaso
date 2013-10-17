@@ -525,7 +525,7 @@ var utility = {
 	 * @return {String}     Current route
 	 */
 	hash : function ( arg ) {
-		if ( arg ) {
+		if ( arg !== undefined ) {
 			document.location.hash = arg;
 		}
 
