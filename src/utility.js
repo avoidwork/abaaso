@@ -553,7 +553,7 @@ var utility = {
 	 * @return {String}     Current hash
 	 */
 	hash : function ( arg ) {
-		if ( arg ) {
+		if ( arg !== undefined ) {
 			document.location.hash = arg;
 		}
 
