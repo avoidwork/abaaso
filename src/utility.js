@@ -1020,7 +1020,7 @@ var utility = {
 
 		if ( arg instanceof Array ) {
 			array.each( arg, function ( i ) {
-				element.html(element.create( array.cast( i, true )[0], frag ), array.cast(i)[0] );
+				element.html( element.create( array.cast( i, true )[0], frag ), array.cast(i)[0] );
 			});
 		}
 		else {
