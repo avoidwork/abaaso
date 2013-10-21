@@ -77,7 +77,7 @@ DataGrid.prototype.init = function ( debounce ) {
 		ref       = [];
 		template  = "";
 		container = element.create( "section", {"class": "grid"}, this.element );
-		header    = element.create( "ul", {"class": "header"}, container );
+		header    = element.create( "li", {}, element.create( "ul", {"class": "header"}, container ) );
 		width     = ( 100 / this.fields.length ) + "%";
 		css       = "display:inline-block;width:" + width;
 		sort      = this.options.order ? string.explode( this.options.order ) : [];
@@ -85,7 +85,7 @@ DataGrid.prototype.init = function ( debounce ) {
 		// Creating DataList template based on fields
 		array.each( this.fields, function ( i ) {
 			var trimmed =  i.replace( /.*\./g, "" ),
-			    obj     = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( trimmed, true ) ), true ), style: css, "class": trimmed, "data-field": i} );
+			    obj     = element.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( trimmed, true ) ), true ), style: css, "class": trimmed, "data-field": i}, header );
 
 			// Adding CSS class if "column" is sortable
 			if ( self.sortable.contains( i ) ) {
