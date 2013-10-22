@@ -1101,8 +1101,11 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
     <span class="k">if</span> <span class="p">(</span> <span class="nx">mongo</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">mongodb</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">mongodb</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+          <span class="p">}</span>
+
           <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-          <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="p">{</span>
           <span class="nx">db</span><span class="p">.</span><span class="nx">createCollection</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">collection</span> <span class="p">)</span> <span class="p">{</span>
@@ -1117,6 +1120,7 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
                 <span class="p">}</span>
                 <span class="k">else</span> <span class="p">{</span>
                   <span class="k">delete</span> <span class="nx">recs</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">_id</span><span class="p">;</span>
+
                   <span class="nx">self</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">recs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">rec</span> <span class="p">)</span> <span class="p">{</span>
                     <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">rec</span> <span class="p">);</span>
                   <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
@@ -1187,21 +1191,33 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
     <span class="k">if</span> <span class="p">(</span> <span class="nx">mongo</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">mongodb</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">mongodb</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+          <span class="p">}</span>
+
           <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-          <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="p">{</span>
           <span class="nx">db</span><span class="p">.</span><span class="nx">createCollection</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">collection</span> <span class="p">)</span> <span class="p">{</span>
-            <span class="nx">collection</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">record</span> <span class="o">?</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">key</span><span class="p">}</span> <span class="o">:</span> <span class="p">{},</span> <span class="p">{</span><span class="nx">safe</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-              <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-                <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-              <span class="p">}</span>
-              <span class="k">else</span> <span class="p">{</span>
-                <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+              <span class="k">if</span> <span class="p">(</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
               <span class="p">}</span>
 
-              <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
-            <span class="p">}</span> <span class="p">);</span>
+              <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+              <span class="nx">collection</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">record</span> <span class="o">?</span> <span class="p">{</span><span class="nx">_id</span><span class="o">:</span> <span class="nx">key</span><span class="p">}</span> <span class="o">:</span> <span class="p">{},</span> <span class="p">{</span><span class="nx">safe</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+                  <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">else</span> <span class="p">{</span>
+                  <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+                <span class="p">}</span>
+
+                <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+              <span class="p">}</span> <span class="p">);</span>
+            <span class="p">}</span>
           <span class="p">}</span> <span class="p">);</span>
         <span class="p">}</span>
       <span class="p">}</span> <span class="p">);</span>
@@ -1215,8 +1231,11 @@ SQL/NoSQL backends will be used if configured in lieu of localStorage (node.js o
     <span class="k">if</span> <span class="p">(</span> <span class="nx">mongo</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">mongodb</span><span class="p">.</span><span class="nx">connect</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">mongodb</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
         <span class="k">if</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="k">if</span> <span class="p">(</span> <span class="nx">db</span> <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
+          <span class="p">}</span>
+
           <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-          <span class="nx">db</span><span class="p">.</span><span class="nx">close</span><span class="p">();</span>
         <span class="p">}</span>
         <span class="k">else</span> <span class="p">{</span>
           <span class="nx">db</span><span class="p">.</span><span class="nx">createCollection</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">collection</span> <span class="p">)</span> <span class="p">{</span>
