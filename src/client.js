@@ -806,6 +806,12 @@ var client = {
 					cache.set( uri, "!permission", client.bit( [type] ) );
 					exception( !server ? new Error( label.error.serverInvalidMethod ) : label.error.serverInvalidMethod, xhr );
 					break;
+				case 500:
+				case 501:
+				case 502:
+				case 503:
+				case 504:
+				case 505:
 				case 0:
 					exception( !server ? new Error( label.error.serverError ) : label.error.serverError, xhr );
 					break;
