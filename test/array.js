@@ -1006,6 +1006,23 @@ exports["sort"] = {
 	}
 };
 
+exports["stddev"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 5];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.stddev(this.val), 1.632993161855452, "Should be '1.632993161855452'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.stddev(), 1.632993161855452, "Should be '1.632993161855452'");
+		test.done();
+	}
+};
+
 exports["sum"] = {
 	setUp: function (done) {
 		this.val = [1, 3, 5];
@@ -1093,6 +1110,23 @@ exports["unique"] = {
 	sugar: function (test) {
 		test.expect(1);
 		test.equal(this.val.unique().length, 4, "Should be '4'");
+		test.done();
+	}
+};
+
+exports["variance"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 5];
+		done();
+	},
+	direct: function (test) {
+		test.expect(1);
+		test.equal(array.variance(this.val), 2.6666666666666665, "Should be '2.6666666666666665'");
+		test.done();
+	},
+	sugar: function (test) {
+		test.expect(1);
+		test.equal(this.val.variance(), 2.6666666666666665, "Should be '2.6666666666666665'");
 		test.done();
 	}
 };
