@@ -508,6 +508,9 @@ var prototypes = {
 		split : function ( size ) {
 			return array.split( this, size );
 		},
+		stddev : function () {
+			return array.stddev( this );
+		},
 		sum : function () {
 			return array.sum( this );
 		},
@@ -581,6 +584,9 @@ var prototypes = {
 			});
 
 			return result;
+		},
+		variance : function () {
+			return array.variance( this );
 		},
 		zip : function () {
 			return array.zip( this, arguments );

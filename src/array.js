@@ -1098,6 +1098,17 @@ var array = {
 	},
 
 	/**
+	 * Finds the standard deviation of an Array ( of numbers )
+	 *
+	 * @method stddev
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Standard deviation of the Array ( float or integer )
+	 */
+	stddev : function ( obj ) {
+		return Math.sqrt( array.variance( obj ) );
+	},
+
+	/**
 	 * Gets the summation of an Array of numbers
 	 *
 	 * @method sum
@@ -1172,6 +1183,32 @@ var array = {
 		});
 
 		return result;
+	},
+
+	/**
+	 * Finds the variance of an Array ( of numbers )
+	 *
+	 * @method variance
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Variance of the Array ( float or integer )
+	 */
+	variance : function ( obj ) {
+		var nth = obj.length,
+		    n   = 0,
+		    mean;
+
+		if ( nth > 0 ) {
+			mean = array.mean( obj );
+
+			array.each( obj, function ( i ) {
+				n += math.sqr( i - mean );
+			} );
+
+			return n / nth;
+		}
+		else {
+			return n;
+		}
 	},
 
 	/**
