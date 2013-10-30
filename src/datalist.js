@@ -85,6 +85,7 @@ function DataList ( element, store, template ) {
 	this.placeholder = "";
 	this.order       = "";
 	this.records     = [];
+	this.current     = [];
 	this.template    = template;
 	this.total       = 0;
 	this.store       = store;
@@ -356,7 +357,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		}
 	});
 
-	// Exposting records & total count of items in the list
+	// Setting state
 	this.records = items;
 	this.total   = items.length;
 
@@ -372,8 +373,14 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		// Paginating the items
 		else if ( this.total > 0 ) {
 			limit = datalist.range.call( this );
-			items = items.limit( limit[0], limit[1] );
+			items = array.limit( items, limit[0], limit[1] );
+
+			// Exposing "current" items, visible in the list
+			this.current = array.limit( consumed, limit[0], limit[1] );
 		}
+	}
+	else {
+		this.current = consumed;
 	}
 
 	// Preparing the target element
