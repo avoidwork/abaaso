@@ -148,7 +148,7 @@ DataGrid.prototype.refresh = function () {
 	this.list.where = null;
 	utility.merge( this.list, this.options );
 
-	this.list.refresh();
+	this.list.refresh( true, true );
 
 	return this;
 };

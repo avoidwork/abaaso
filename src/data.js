@@ -125,7 +125,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 			}
 
 			array.each( self.datalists, function ( i ) {
-				i.refresh( true );
+				i.refresh( true, true );
 			});
 
 			if ( type === "del" ) {
@@ -390,6 +390,10 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 		if ( this.events ) {
 			observer.fire( this.parentNode, "afterDataDelete", record );
 		}
+
+		array.each( this.datalists, function ( i ) {
+			i.refresh( true, true );
+		});
 	}
 
 	defer.resolve( record.key );
@@ -966,6 +970,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 
 	if ( !batch && this.events ) {
 		observer.fire( self.parentNode, "afterDataSet", record );
+
+		array.each( this.datalists, function ( i ) {
+			i.refresh( true, true );
+		});
 	}
 
 	if ( deferreds.length === 0 ) {
