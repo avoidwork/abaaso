@@ -47,6 +47,34 @@ var promise = {
 	},
 
 	/**
+	 * Initiates processing a Promise
+	 *
+	 * @memberOf process
+	 * @param  {Object} obj   Promise instance
+	 * @param  {Mixed}  arg   Promise value
+	 * @param  {Number} state State, e.g. "1"
+	 * @return {Object}       Promise instance
+	 */
+	process : function ( obj, arg, state ) {
+		if ( obj.state > promise.state.PENDING ) {
+			return;
+		}
+
+		obj.value = arg;
+		obj.state = state;
+
+		if ( !obj.deferred ) {
+			promise.delay( function () {
+				obj.process();
+			});
+
+			obj.deferred = true;
+		}
+
+		return obj;
+	},
+
+	/**
 	 * States of a Promise
 	 *
 	 * @type {Object}
@@ -141,24 +169,7 @@ Promise.prototype.process = function() {
  * @return {Object}    Promise instance
  */
 Promise.prototype.reject = function ( arg ) {
-	var self = this;
-
-	if ( this.state > promise.state.PENDING ) {
-		return;
-	}
-
-	this.value = arg;
-	this.state = promise.state.FAILURE;
-
-	if ( !this.deferred ) {
-		promise.delay( function () {
-			self.process();
-		});
-
-		this.deferred = true;
-	}
-
-	return this;
+	return promise.process( this, arg, promise.state.FAILURE );
 };
 
 /**
@@ -169,24 +180,7 @@ Promise.prototype.reject = function ( arg ) {
  * @return {Object}    Promise instance
  */
 Promise.prototype.resolve = function ( arg ) {
-	var self = this;
-
-	if ( this.state > promise.state.PENDING ) {
-		return;
-	}
-
-	this.value = arg;
-	this.state = promise.state.SUCCESS;
-
-	if ( !this.deferred ) {
-		promise.delay( function () {
-			self.process();
-		} );
-
-		this.deferred = true;
-	}
-
-	return this;
+	return promise.process( this, arg, promise.state.SUCCESS );
 };
 
 /**
