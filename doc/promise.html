@@ -37,6 +37,35 @@
     <span class="p">});</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
 
+<p>Initiates processing a Promise</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>obj must be an Object.</strong><br/>(Promise instance)</p></li>
+<li><p><strong>arg can be of any type.</strong><br/>(Promise value)</p></li>
+<li><p><strong>state must be a Number.</strong><br/>(State, e.g. "1")</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Promise instance)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">process</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">state</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">state</span> <span class="o">&gt;</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">PENDING</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="nx">obj</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
+    <span class="nx">obj</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">state</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">obj</span><span class="p">.</span><span class="nx">deferred</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">promise</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">obj</span><span class="p">.</span><span class="nx">process</span><span class="p">();</span>
+      <span class="p">});</span>
+
+      <span class="nx">obj</span><span class="p">.</span><span class="nx">deferred</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">obj</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'> </span></p>
+
 <p>States of a Promise</p></div></div><div class="code"><div class="wrapper">  <span class="nx">state</span> <span class="o">:</span> <span class="p">{</span>
     <span class="nx">PENDING</span> <span class="o">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="nx">FAILURE</span> <span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -90,6 +119,7 @@
       <span class="nx">result</span> <span class="o">=</span> <span class="nx">callback</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="k">this</span> <span class="p">);</span>
       <span class="nx">child</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
 
       <span class="k">return</span><span class="p">;</span>
@@ -115,24 +145,7 @@
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Promise instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">Promise</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">reject</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-
-  <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">&gt;</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">PENDING</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">FAILURE</span><span class="p">;</span>
-
-  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">deferred</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">promise</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">process</span><span class="p">();</span>
-    <span class="p">});</span>
-
-    <span class="k">this</span><span class="p">.</span><span class="nx">deferred</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">FAILURE</span> <span class="p">);</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method resolve</span></p>
 
 <p>Resolves a Promise</p>
@@ -144,24 +157,7 @@
 </ul>
 
 <p><strong>Returns an Object</strong><br/>(Promise instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">Promise</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">resolve</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
-  <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
-
-  <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">&gt;</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">PENDING</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
-  <span class="k">this</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">SUCCESS</span><span class="p">;</span>
-
-  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">deferred</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="nx">promise</span><span class="p">.</span><span class="nx">delay</span><span class="p">(</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-      <span class="nx">self</span><span class="p">.</span><span class="nx">process</span><span class="p">();</span>
-    <span class="p">}</span> <span class="p">);</span>
-
-    <span class="k">this</span><span class="p">.</span><span class="nx">deferred</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">process</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">promise</span><span class="p">.</span><span class="nx">state</span><span class="p">.</span><span class="nx">SUCCESS</span> <span class="p">);</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method then</span></p>
 
 <p>Registers handler(s) for a Promise</p>
