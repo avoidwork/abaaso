@@ -1121,6 +1121,18 @@ Parameters for fn are 'value', 'index'</p>
 
 <p><strong>Returns an Array</strong><br/>(Sorted Array)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">sorted</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">sort</span> <span class="p">);</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method stddev</span></p>
+
+<p>Finds the standard deviation of an Array ( of numbers )</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Standard deviation of the Array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">stddev</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">sqrt</span><span class="p">(</span> <span class="nx">array</span><span class="p">.</span><span class="nx">variance</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">);</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method sum</span></p>
 
 <p>Gets the summation of an Array of numbers</p>
@@ -1203,6 +1215,33 @@ Parameters for fn are 'value', 'index'</p>
     <span class="p">});</span>
 
     <span class="k">return</span> <span class="nx">result</span><span class="p">;</span>
+  <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method variance</span></p>
+
+<p>Finds the variance of an Array ( of numbers )</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><strong>obj must be an Array.</strong><br/>(Array to parse)</li>
+</ul>
+
+<p><strong>Returns a Number</strong><br/>(Variance of the Array ( float or integer ))</p></div></div><div class="code"><div class="wrapper">  <span class="nx">variance</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">obj</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">nth</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span>
+        <span class="nx">n</span>   <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="nx">mean</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">nth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">mean</span> <span class="o">=</span> <span class="nx">array</span><span class="p">.</span><span class="nx">mean</span><span class="p">(</span> <span class="nx">obj</span> <span class="p">);</span>
+
+      <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">obj</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">n</span> <span class="o">+=</span> <span class="nx">math</span><span class="p">.</span><span class="nx">sqr</span><span class="p">(</span> <span class="nx">i</span> <span class="o">-</span> <span class="nx">mean</span> <span class="p">);</span>
+      <span class="p">}</span> <span class="p">);</span>
+
+      <span class="k">return</span> <span class="nx">n</span> <span class="o">/</span> <span class="nx">nth</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">n</span><span class="p">;</span>
+    <span class="p">}</span>
   <span class="p">},</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method zip</span></p>
 
 <p>Converts any arguments to Arrays, then merges elements of <code>obj</code> with corresponding elements from each argument</p>
