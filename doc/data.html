@@ -804,7 +804,7 @@ Events: beforeDataSet  Fires before the record is set
   <span class="kd">var</span> <span class="nx">self</span>   <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
       <span class="nx">events</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">events</span><span class="p">,</span>
       <span class="nx">defer</span>  <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
-      <span class="nx">record</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="o">||</span> <span class="kc">null</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+      <span class="nx">record</span> <span class="o">=</span> <span class="nx">key</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="o">||</span> <span class="kc">null</span> <span class="o">:</span> <span class="nx">data</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">data</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="p">)</span> <span class="o">||</span> <span class="kc">null</span> <span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nx">method</span> <span class="o">=</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
       <span class="nx">parsed</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">uri</span> <span class="o">||</span> <span class="s2">&quot;&quot;</span> <span class="p">),</span>
       <span class="nx">uri</span><span class="p">;</span>
@@ -853,6 +853,9 @@ Events: beforeDataSet  Fires before the record is set
       <span class="k">else</span> <span class="p">{</span>
         <span class="nx">key</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
       <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">delete</span> <span class="nx">data</span><span class="p">[</span><span class="k">this</span><span class="p">.</span><span class="nx">key</span><span class="p">];</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">batch</span> <span class="o">&amp;&amp;</span> <span class="nx">events</span> <span class="p">)</span> <span class="p">{</span>

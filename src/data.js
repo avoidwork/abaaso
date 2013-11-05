@@ -829,7 +829,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	var self   = this,
 	    events = this.events,
 	    defer  = deferred(),
-	    record = key !== null ? this.get( key ) || null : null,
+	    record = key !== null ? this.get( key ) || null : data[this.key] ? this.get( data[this.key] ) || null : null,
 	    method = "POST",
 	    parsed = utility.parse( self.uri || "" ),
 	    uri;
@@ -882,6 +882,9 @@ DataStore.prototype.set = function ( key, data, batch ) {
 			else {
 				key = utility.genId();
 			}
+		}
+		else {
+			delete data[this.key];
 		}
 
 		if ( !batch && events ) {
