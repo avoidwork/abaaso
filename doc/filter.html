@@ -102,7 +102,7 @@ Create an object based on comma separated key string</p>
     <span class="p">}</span>
 
     <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">datalists</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">);</span>
+    <span class="nx">self</span><span class="p">.</span><span class="nx">datalist</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
   <span class="p">},</span> <span class="k">this</span><span class="p">.</span><span class="nx">debounce</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;Debounce&quot;</span><span class="p">);</span>
 
   <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
