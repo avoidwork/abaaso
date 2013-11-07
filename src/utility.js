@@ -330,15 +330,20 @@ var utility = {
 		var op;
 
 		ms     = ms || 0;
-		id     = id || utility.uuid( true );
 		repeat = ( repeat === true );
+
+		if ( id ) {
+			utility.clearTimers( id );
+		}
+		else {
+			id = utility.uuid( true );
+		}
 
 		op = function () {
 			utility.clearTimers( id );
 			fn();
 		};
 
-		utility.clearTimers( id );
 		utility[repeat ? "repeating" : "timer"][id] = setTimeout( op, ms );
 
 		return id;
