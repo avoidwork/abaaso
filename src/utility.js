@@ -92,7 +92,7 @@ var utility = {
 	 * @return {Undefined} undefined
 	 */
 	clearTimers : function ( id ) {
-		if ( id === undefined || id.isEmpty() ) {
+		if ( id === undefined || string.isEmpty( id ) ) {
 			throw new Error( label.error.invalidArguments );
 		}
 
@@ -332,7 +332,7 @@ var utility = {
 		ms     = ms || 0;
 		repeat = ( repeat === true );
 
-		if ( id ) {
+		if ( id !== undefined ) {
 			utility.clearTimers( id );
 		}
 		else {
