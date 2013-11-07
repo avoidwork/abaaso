@@ -87,7 +87,7 @@
 </ul>
 
 <p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">clearTimers</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">id</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="o">||</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">id</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
     <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>deferred</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">clearTimeout</span><span class="p">(</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">timer</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="p">);</span>
@@ -313,15 +313,20 @@ Timing may vary under "heavy load" relative to the CPU &amp; client JavaScript e
     <span class="kd">var</span> <span class="nx">op</span><span class="p">;</span>
 
     <span class="nx">ms</span>     <span class="o">=</span> <span class="nx">ms</span> <span class="o">||</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="nx">id</span>     <span class="o">=</span> <span class="nx">id</span> <span class="o">||</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
     <span class="nx">repeat</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">repeat</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">id</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">utility</span><span class="p">.</span><span class="nx">clearTimers</span><span class="p">(</span> <span class="nx">id</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">id</span> <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">uuid</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+    <span class="p">}</span>
 
     <span class="nx">op</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="nx">utility</span><span class="p">.</span><span class="nx">clearTimers</span><span class="p">(</span> <span class="nx">id</span> <span class="p">);</span>
       <span class="nx">fn</span><span class="p">();</span>
     <span class="p">};</span>
 
-    <span class="nx">utility</span><span class="p">.</span><span class="nx">clearTimers</span><span class="p">(</span> <span class="nx">id</span> <span class="p">);</span>
     <span class="nx">utility</span><span class="p">[</span><span class="nx">repeat</span> <span class="o">?</span> <span class="s2">&quot;repeating&quot;</span> <span class="o">:</span> <span class="s2">&quot;timer&quot;</span><span class="p">][</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">op</span><span class="p">,</span> <span class="nx">ms</span> <span class="p">);</span>
 
     <span class="k">return</span> <span class="nx">id</span><span class="p">;</span>
