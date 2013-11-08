@@ -197,7 +197,7 @@ var string = {
 	 * @return {String}     Transformed string
 	 */
 	singular : function ( obj ) {
-		return obj.replace( /oe?s$/, "o" ).replace( /ies$/, "y" ).replace( /es$/, "" ).replace( /s$/, "" );
+		return obj.replace( /oe?s$/, "o" ).replace( /ies$/, "y" ).replace( /ses$/, "se" ).replace( /s$/, "" );
 	},
 
 	/**
