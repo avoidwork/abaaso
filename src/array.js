@@ -1137,6 +1137,18 @@ var array = {
 	},
 
 	/**
+	 * Finds the standard deviation of an Array ( of numbers )
+	 *
+	 * @method stddev
+	 * @memberOf abaaso.array
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Standard deviation of the Array ( float or integer )
+	 */
+	stddev : function ( obj ) {
+		return Math.sqrt( array.variance( obj ) );
+	},
+
+	/**
 	 * Takes the first `arg` indices from `obj`
 	 *
 	 * @method take
@@ -1196,6 +1208,33 @@ var array = {
 		} );
 
 		return result;
+	},
+
+	/**
+	 * Finds the variance of an Array ( of numbers )
+	 *
+	 * @method variance
+	 * @memberOf abaaso.array
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Variance of the Array ( float or integer )
+	 */
+	variance : function ( obj ) {
+		var nth = obj.length,
+		    n   = 0,
+		    mean;
+
+		if ( nth > 0 ) {
+			mean = array.mean( obj );
+
+			array.each( obj, function ( i ) {
+				n += math.sqr( i - mean );
+			} );
+
+			return n / nth;
+		}
+		else {
+			return n;
+		}
 	},
 
 	/**

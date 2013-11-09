@@ -35,7 +35,7 @@ var datalist = {
 
 		// Rendering if not tied to an API or data is ready
 		if ( instance.store.uri === null || instance.store.loaded ) {
-			instance.refresh( true );
+			instance.refresh( true, true );
 		}
 
 		return instance;
@@ -53,7 +53,7 @@ var datalist = {
 			throw new Error( label.error.invalidArguments );
 		}
 
-		return number.round( this.total / this.pageSize, "up" );
+		return number.round( ( !this.filter ? this.total : this.filtered.length ) / this.pageSize, "up" );
 	},
 
 	/**
@@ -79,9 +79,11 @@ var datalist = {
  */
 function DataList ( element, store, template ) {
 	this.callback    = null;
+	this.current     = [];
 	this.element     = element;
 	this.emptyMsg    = "Nothing to display";
 	this.filter      = null;
+	this.filtered    = [];
 	this.id          = utility.genId();
 	this.pageIndex   = 1;
 	this.pageSize    = null;
@@ -107,31 +109,6 @@ function DataList ( element, store, template ) {
 DataList.prototype.constructor = DataList;
 
 /**
- * Delete sync handler
- *
- * @method del
- * @memberOf abaaso.DataList
- * @param  {Object} rec Record
- * @return {Object} {@link abaaso.DataList}
- */
-DataList.prototype.del = function ( rec ) {
-	if ( typeof this.pageIndex == "number" && typeof this.pageSize == "number" ) {
-		this.refresh();
-	}
-	else {
-		observer.fire( this.element, "beforeDataListRefresh" );
-		
-		array.each( this.element.find( "> li[data-key='" + rec.key + "']" ), function ( i ) {
-			element.destroy( i );
-		} );
-
-		observer.fire( this.element, "afterDataListRefresh" );
-	}
-
-	return this;
-};
-
-/**
  * Exports data list records
  *
  * @method dump
@@ -147,12 +124,13 @@ DataList.prototype.dump = function () {
  *
  * @method page
  * @memberOf abaaso.DataList
- * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
+ * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList, default is `true`, `false` toggles "hidden" class of items
  * @param  {Boolean} create [Optional] Recreates cached View of data
  * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.page = function ( arg, redraw, create ) {
 	this.pageIndex = arg;
+
 	return this.refresh( redraw, create );
 };
 
@@ -187,7 +165,7 @@ DataList.prototype.pages = function () {
 	} );
 	
 	// Halting because there's 1 page, or nothing
-	if ( this.total === 0 || total === 1 ) {
+	if ( ( this.filter && this.filtered.length === 0 ) || this.total === 0 || total === 1 ) {
 		return this;
 	}
 
@@ -267,21 +245,23 @@ DataList.prototype.pages = function () {
  * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.refresh = function ( redraw, create ) {
-	redraw       = ( redraw !== false );
-	create       = ( create === true );
 	var el       = this.element,
-	    template = ( typeof this.template == "object" ),
+	    template = ( typeof this.template === "object" ),
+	    filter   = this.filter !== null,
 	    items    = [],
 	    self     = this,
-	    callback = ( typeof this.callback == "function" ),
+	    callback = ( typeof this.callback === "function" ),
 	    reg      = new RegExp(),
 	    registry = [], // keeps track of records in the list ( for filtering )
-	    limit    = [],
-	    fn, ceiling, next;
+	    range    = [],
+	    fn, ceiling;
+
+	redraw = ( redraw !== false );
+	create = ( create === true );
 
 	observer.fire( el, "beforeDataListRefresh" );
 
-	// Creating templates for the html rep
+	// Function to create templates for the html rep
 	if ( !template ) {
 		fn = function ( i ) {
 			var html  = self.template,
@@ -297,7 +277,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
-			} );
+			});
 
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
@@ -322,7 +302,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-			} );
+			});
 
 			// Filling in placeholder value
 			obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
@@ -331,110 +311,117 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		};
 	}
 
-	// Next step after retrieving records
-	next = function ( consumed ) {
-		// Processing ( filtering ) records & generating templates
-		array.each( consumed, function ( i ) {
-			if ( self.filter === null || !( self.filter instanceof Object ) ) {
-				items.push( {key: i.key, template: fn( i )} );
-			}
-			else {
-				utility.iterate( self.filter, function ( v, k ) {
-					var reg, key;
-
-					if ( array.contains( registry, i.key ) ) {
-						return;
-					}
-					
-					v   = string.explode( v );
-					reg = new RegExp(),
-					key = ( k === self.store.key );
-
-					array.each( v, function ( query ) {
-						var value = !key ? utility.walk( i.data, k ) : "";
-
-						utility.compile( reg, query, "i" );
-
-						if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
-							registry.push( i.key );
-							items.push( {key: i.key, template: fn( i )} );
-
-							return false;
-						}
-					} );
-				} );
-			}
-		} );
-
-		// Exposting records & total count of items in the list
-		self.records = items;
-		self.total   = items.length;
-
-		// Pagination ( supports filtering )
-		if ( typeof self.pageIndex == "number" && typeof self.pageSize == "number" ) {
-			ceiling = datalist.pages.call( self );
-
-			// Passed the end, so putting you on the end
-			if ( ceiling > 0 && self.pageIndex > ceiling ) {
-				return self.page( ceiling );
-			}
-
-			// Paginating the items
-			else if ( self.total > 0 ) {
-				limit = datalist.range.call( self );
-				items = items.limit( limit[0], limit[1] );
-			}
+	// Creating view of DataStore
+	if ( create ) {
+		// Consuming records based on sort
+		if ( this.where === null ) {
+			this.records = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create );
+		}
+		else {
+			this.records = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.where );
 		}
 
-		// Preparing the target element
-		if ( redraw ) {
-			if ( self.total === 0 ) {
-				el.innerHTML = "<li class=\"empty\">" + self.emptyMsg + "</li>";
-			}
-			else {
-				el.innerHTML = items.map( function ( i ) {
-					return i.template;
-				}).join( "\n" );
+		this.total    = this.records.length;
+		this.filtered = [];
+	}
 
-				if ( callback ) {
-					array.each( element.find( el, "> li" ), function ( i ) {
-						self.callback( i );
-					} );
+	// Resetting 'view' specific arrays
+	this.current  = [];
+
+	// Filtering records (if applicable)
+	if ( filter && create ) {
+		array.each( this.records, function ( i ) {
+			utility.iterate( self.filter, function ( v, k ) {
+				var reg, key;
+
+				if ( array.contains( registry, i.key ) ) {
+					return false;
 				}
-			}
-		}
-		else {
-			array.each( element.find( el, "> li" ), function ( i ) {
-				element.addClass( i, "hidden" );
-			} );
+				
+				v   = string.explode( v );
+				reg = new RegExp(),
+				key = ( k === self.store.key );
 
-			array.each( items, function ( i ) {
-				array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
-					element.removeClass( o, "hidden" );
-				} );
-			} );
+				array.each( v, function ( query ) {
+					var value = !key ? utility.walk( i.data, k ) : "";
+
+					utility.compile( reg, query, "i" );
+
+					if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
+						registry.push( i.key );
+						self.filtered.push( i );
+
+						return false;
+					}
+				});
+			});
+		});
+	}
+
+	// Pagination
+	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
+		ceiling = datalist.pages.call( this );
+
+		// Passed the end, so putting you on the end
+		if ( ceiling > 0 && this.pageIndex > ceiling ) {
+			return this.page( ceiling );
 		}
 
-		// Rendering pagination elements
-		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex == "number" && typeof self.pageSize == "number") {
-			self.pages();
+		// Paginating the items
+		else if ( this.total > 0 ) {
+			range        = datalist.range.call( this );
+			this.current = array.limit( !filter ? this.records : this.filtered, range[0], range[1] );
 		}
-		else {
-			array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
-				element.destroy( i );
-			} );
-		}
-
-		observer.fire( el, "afterDataListRefresh" );
-	};
-
-	// Consuming records based on sort
-	if ( this.where === null ) {
-		string.isEmpty( this.order ) ? next( this.store.get() ) : this.store.sort( this.order, create ).then( next );
 	}
 	else {
-		string.isEmpty( this.order ) ? this.store.select( this.where ).then( next ) : this.store.sort( this.order, create, this.where ).then( next );
+		this.current = !filter ? this.records : this.filtered;
 	}
+
+	// Processing records & generating templates
+	array.each( this.current, function ( i ) {
+		items.push( {key: i.key, template: fn( i )} );
+	});
+
+	// Preparing the target element
+	if ( redraw ) {
+		if ( items.length === 0 ) {
+			el.innerHTML = "<li class=\"empty\">" + this.emptyMsg + "</li>";
+		}
+		else {
+			el.innerHTML = items.map( function ( i ) {
+				return i.template;
+			}).join( "\n" );
+
+			if ( callback ) {
+				array.each( element.find( el, "> li" ), function ( i ) {
+					self.callback( i );
+				});
+			}
+		}
+	}
+	else {
+		array.each( element.find( el, "> li" ), function ( i ) {
+			element.addClass( i, "hidden" );
+		});
+
+		array.each( items, function ( i ) {
+			array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
+				element.removeClass( o, "hidden" );
+			});
+		});
+	}
+
+	// Rendering pagination elements
+	if ( regex.top_bottom.test( this.pagination ) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
+		this.pages();
+	}
+	else {
+		array.each( utility.$( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
+			element.destroy( i );
+		});
+	}
+
+	observer.fire( el, "afterDataListRefresh" );
 
 	return this;
 };

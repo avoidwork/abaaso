@@ -72,6 +72,6 @@ var math = {
 	 * @return {Number}   Squared value
 	 */
 	sqr : function ( n ) {
-		return n * n;
+		return Math.pow( n, 2 );
 	}
 };

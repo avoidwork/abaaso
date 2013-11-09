@@ -541,6 +541,8 @@ var client = {
 			}
 
 			xhr = null;
+
+			return arg;
 		}, function ( e ) {
 			if ( typeof failure == "function" ) {
 				failure.call( uri, e, xhr );

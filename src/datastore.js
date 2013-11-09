@@ -202,7 +202,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 			}
 
 			array.each( self.datalists, function ( i ) {
-				i.refresh( true );
+				i.refresh( true, true );
 			} );
 
 			if ( type === "del" ) {
@@ -472,6 +472,10 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 		if ( this.events ) {
 			observer.fire( this.parentNode, "afterDataDelete", record );
 		}
+
+		array.each( this.datalists, function ( i ) {
+			i.refresh( true, true );
+		} );
 	}
 
 	defer.resolve( record.key );
@@ -867,7 +871,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	var self   = this,
 	    events = this.events,
 	    defer  = deferred(),
-	    record = key !== null ? this.get( key ) || null : null,
+	    record = key !== null ? this.get( key ) || null : data[this.key] ? this.get( data[this.key] ) || null : null,
 	    method = "POST",
 	    parsed = utility.parse( self.uri || "" ),
 	    uri;
@@ -920,6 +924,9 @@ DataStore.prototype.set = function ( key, data, batch ) {
 			else {
 				key = utility.uuid();
 			}
+		}
+		else {
+			delete data[this.key];
 		}
 
 		if ( !batch && events ) {
@@ -1009,6 +1016,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 
 	if ( !batch && this.events ) {
 		observer.fire( self.parentNode, "afterDataSet", record );
+
+		array.each( this.datalists, function ( i ) {
+			i.refresh( true, true );
+		} );
 	}
 
 	if ( deferreds.length === 0 ) {
@@ -1206,8 +1217,11 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 		if ( mongo ) {
 			mongodb.connect( this.mongodb, function( e, db ) {
 				if ( e ) {
+					if ( db ) {
+						db.close();
+					}
+
 					defer.reject( e );
-					db.close();
 				}
 				else {
 					db.createCollection( self.parentNode.id, function ( e, collection ) {
@@ -1222,6 +1236,7 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 								}
 								else {
 									delete recs[0]._id;
+
 									self.set( key, recs[0], true ).then( function ( rec ) {
 										defer.resolve( rec );
 									}, function ( e ) {
@@ -1292,21 +1307,33 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 		if ( mongo ) {
 			mongodb.connect( this.mongodb, function( e, db ) {
 				if ( e ) {
+					if ( db ) {
+						db.close();
+					}
+
 					defer.reject( e );
-					db.close();
 				}
 				else {
 					db.createCollection( self.parentNode.id, function ( e, collection ) {
-						collection.remove( record ? {_id: key} : {}, {safe: true}, function ( e, arg ) {
-							if ( e ) {
-								defer.reject( e );
-							}
-							else {
-								defer.resolve( arg );
+						if ( e ) {
+							if ( db ) {
+								db.close();
 							}
 
-							db.close();
-						} );
+							defer.reject( e );
+						}
+						else {
+							collection.remove( record ? {_id: key} : {}, {safe: true}, function ( e, arg ) {
+								if ( e ) {
+									defer.reject( e );
+								}
+								else {
+									defer.resolve( arg );
+								}
+
+								db.close();
+							} );
+						}
 					} );
 				}
 			} );
@@ -1320,8 +1347,11 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 		if ( mongo ) {
 			mongodb.connect( this.mongodb, function( e, db ) {
 				if ( e ) {
+					if ( db ) {
+						db.close();
+					}
+
 					defer.reject( e );
-					db.close();
 				}
 				else {
 					db.createCollection( self.parentNode.id, function ( e, collection ) {

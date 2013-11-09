@@ -1316,6 +1316,18 @@ var array = {
 	},
 
 	/**
+	 * Finds the standard deviation of an Array ( of numbers )
+	 *
+	 * @method stddev
+	 * @memberOf abaaso.array
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Standard deviation of the Array ( float or integer )
+	 */
+	stddev : function ( obj ) {
+		return Math.sqrt( array.variance( obj ) );
+	},
+
+	/**
 	 * Takes the first `arg` indices from `obj`
 	 *
 	 * @method take
@@ -1375,6 +1387,33 @@ var array = {
 		} );
 
 		return result;
+	},
+
+	/**
+	 * Finds the variance of an Array ( of numbers )
+	 *
+	 * @method variance
+	 * @memberOf abaaso.array
+	 * @param  {Array} obj Array to parse
+	 * @return {Number}    Variance of the Array ( float or integer )
+	 */
+	variance : function ( obj ) {
+		var nth = obj.length,
+		    n   = 0,
+		    mean;
+
+		if ( nth > 0 ) {
+			mean = array.mean( obj );
+
+			array.each( obj, function ( i ) {
+				n += math.sqr( i - mean );
+			} );
+
+			return n / nth;
+		}
+		else {
+			return n;
+		}
 	},
 
 	/**
@@ -2155,6 +2194,8 @@ var client = {
 			}
 
 			xhr = null;
+
+			return arg;
 		}, function ( e ) {
 			if ( typeof failure == "function" ) {
 				failure.call( uri, e, xhr );
@@ -2881,7 +2922,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 			}
 
 			array.each( self.datalists, function ( i ) {
-				i.refresh( true );
+				i.refresh( true, true );
 			} );
 
 			if ( type === "del" ) {
@@ -3151,6 +3192,10 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 		if ( this.events ) {
 			observer.fire( this.parentNode, "afterDataDelete", record );
 		}
+
+		array.each( this.datalists, function ( i ) {
+			i.refresh( true, true );
+		} );
 	}
 
 	defer.resolve( record.key );
@@ -3546,7 +3591,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
 	var self   = this,
 	    events = this.events,
 	    defer  = deferred(),
-	    record = key !== null ? this.get( key ) || null : null,
+	    record = key !== null ? this.get( key ) || null : data[this.key] ? this.get( data[this.key] ) || null : null,
 	    method = "POST",
 	    parsed = utility.parse( self.uri || "" ),
 	    uri;
@@ -3599,6 +3644,9 @@ DataStore.prototype.set = function ( key, data, batch ) {
 			else {
 				key = utility.uuid();
 			}
+		}
+		else {
+			delete data[this.key];
 		}
 
 		if ( !batch && events ) {
@@ -3688,6 +3736,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 
 	if ( !batch && this.events ) {
 		observer.fire( self.parentNode, "afterDataSet", record );
+
+		array.each( this.datalists, function ( i ) {
+			i.refresh( true, true );
+		} );
 	}
 
 	if ( deferreds.length === 0 ) {
@@ -3885,8 +3937,11 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 		if ( mongo ) {
 			mongodb.connect( this.mongodb, function( e, db ) {
 				if ( e ) {
+					if ( db ) {
+						db.close();
+					}
+
 					defer.reject( e );
-					db.close();
 				}
 				else {
 					db.createCollection( self.parentNode.id, function ( e, collection ) {
@@ -3901,6 +3956,7 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 								}
 								else {
 									delete recs[0]._id;
+
 									self.set( key, recs[0], true ).then( function ( rec ) {
 										defer.resolve( rec );
 									}, function ( e ) {
@@ -3971,21 +4027,33 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 		if ( mongo ) {
 			mongodb.connect( this.mongodb, function( e, db ) {
 				if ( e ) {
+					if ( db ) {
+						db.close();
+					}
+
 					defer.reject( e );
-					db.close();
 				}
 				else {
 					db.createCollection( self.parentNode.id, function ( e, collection ) {
-						collection.remove( record ? {_id: key} : {}, {safe: true}, function ( e, arg ) {
-							if ( e ) {
-								defer.reject( e );
-							}
-							else {
-								defer.resolve( arg );
+						if ( e ) {
+							if ( db ) {
+								db.close();
 							}
 
-							db.close();
-						} );
+							defer.reject( e );
+						}
+						else {
+							collection.remove( record ? {_id: key} : {}, {safe: true}, function ( e, arg ) {
+								if ( e ) {
+									defer.reject( e );
+								}
+								else {
+									defer.resolve( arg );
+								}
+
+								db.close();
+							} );
+						}
 					} );
 				}
 			} );
@@ -3999,8 +4067,11 @@ DataStore.prototype.storage = function ( obj, op, type ) {
 		if ( mongo ) {
 			mongodb.connect( this.mongodb, function( e, db ) {
 				if ( e ) {
+					if ( db ) {
+						db.close();
+					}
+
 					defer.reject( e );
-					db.close();
 				}
 				else {
 					db.createCollection( self.parentNode.id, function ( e, collection ) {
@@ -4296,7 +4367,7 @@ var datalist = {
 
 		// Rendering if not tied to an API or data is ready
 		if ( instance.store.uri === null || instance.store.loaded ) {
-			instance.refresh( true );
+			instance.refresh( true, true );
 		}
 
 		return instance;
@@ -4314,7 +4385,7 @@ var datalist = {
 			throw new Error( label.error.invalidArguments );
 		}
 
-		return number.round( this.total / this.pageSize, "up" );
+		return number.round( ( !this.filter ? this.total : this.filtered.length ) / this.pageSize, "up" );
 	},
 
 	/**
@@ -4340,9 +4411,11 @@ var datalist = {
  */
 function DataList ( element, store, template ) {
 	this.callback    = null;
+	this.current     = [];
 	this.element     = element;
 	this.emptyMsg    = "Nothing to display";
 	this.filter      = null;
+	this.filtered    = [];
 	this.id          = utility.genId();
 	this.pageIndex   = 1;
 	this.pageSize    = null;
@@ -4368,31 +4441,6 @@ function DataList ( element, store, template ) {
 DataList.prototype.constructor = DataList;
 
 /**
- * Delete sync handler
- *
- * @method del
- * @memberOf abaaso.DataList
- * @param  {Object} rec Record
- * @return {Object} {@link abaaso.DataList}
- */
-DataList.prototype.del = function ( rec ) {
-	if ( typeof this.pageIndex == "number" && typeof this.pageSize == "number" ) {
-		this.refresh();
-	}
-	else {
-		observer.fire( this.element, "beforeDataListRefresh" );
-		
-		array.each( this.element.find( "> li[data-key='" + rec.key + "']" ), function ( i ) {
-			element.destroy( i );
-		} );
-
-		observer.fire( this.element, "afterDataListRefresh" );
-	}
-
-	return this;
-};
-
-/**
  * Exports data list records
  *
  * @method dump
@@ -4408,12 +4456,13 @@ DataList.prototype.dump = function () {
  *
  * @method page
  * @memberOf abaaso.DataList
- * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items
+ * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList, default is `true`, `false` toggles "hidden" class of items
  * @param  {Boolean} create [Optional] Recreates cached View of data
  * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.page = function ( arg, redraw, create ) {
 	this.pageIndex = arg;
+
 	return this.refresh( redraw, create );
 };
 
@@ -4448,7 +4497,7 @@ DataList.prototype.pages = function () {
 	} );
 	
 	// Halting because there's 1 page, or nothing
-	if ( this.total === 0 || total === 1 ) {
+	if ( ( this.filter && this.filtered.length === 0 ) || this.total === 0 || total === 1 ) {
 		return this;
 	}
 
@@ -4528,21 +4577,23 @@ DataList.prototype.pages = function () {
  * @return {Object} {@link abaaso.DataList}
  */
 DataList.prototype.refresh = function ( redraw, create ) {
-	redraw       = ( redraw !== false );
-	create       = ( create === true );
 	var el       = this.element,
-	    template = ( typeof this.template == "object" ),
+	    template = ( typeof this.template === "object" ),
+	    filter   = this.filter !== null,
 	    items    = [],
 	    self     = this,
-	    callback = ( typeof this.callback == "function" ),
+	    callback = ( typeof this.callback === "function" ),
 	    reg      = new RegExp(),
 	    registry = [], // keeps track of records in the list ( for filtering )
-	    limit    = [],
-	    fn, ceiling, next;
+	    range    = [],
+	    fn, ceiling;
+
+	redraw = ( redraw !== false );
+	create = ( create === true );
 
 	observer.fire( el, "beforeDataListRefresh" );
 
-	// Creating templates for the html rep
+	// Function to create templates for the html rep
 	if ( !template ) {
 		fn = function ( i ) {
 			var html  = self.template,
@@ -4558,7 +4609,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
-			} );
+			});
 
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
@@ -4583,7 +4634,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-			} );
+			});
 
 			// Filling in placeholder value
 			obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
@@ -4592,110 +4643,117 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		};
 	}
 
-	// Next step after retrieving records
-	next = function ( consumed ) {
-		// Processing ( filtering ) records & generating templates
-		array.each( consumed, function ( i ) {
-			if ( self.filter === null || !( self.filter instanceof Object ) ) {
-				items.push( {key: i.key, template: fn( i )} );
-			}
-			else {
-				utility.iterate( self.filter, function ( v, k ) {
-					var reg, key;
-
-					if ( array.contains( registry, i.key ) ) {
-						return;
-					}
-					
-					v   = string.explode( v );
-					reg = new RegExp(),
-					key = ( k === self.store.key );
-
-					array.each( v, function ( query ) {
-						var value = !key ? utility.walk( i.data, k ) : "";
-
-						utility.compile( reg, query, "i" );
-
-						if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
-							registry.push( i.key );
-							items.push( {key: i.key, template: fn( i )} );
-
-							return false;
-						}
-					} );
-				} );
-			}
-		} );
-
-		// Exposting records & total count of items in the list
-		self.records = items;
-		self.total   = items.length;
-
-		// Pagination ( supports filtering )
-		if ( typeof self.pageIndex == "number" && typeof self.pageSize == "number" ) {
-			ceiling = datalist.pages.call( self );
-
-			// Passed the end, so putting you on the end
-			if ( ceiling > 0 && self.pageIndex > ceiling ) {
-				return self.page( ceiling );
-			}
-
-			// Paginating the items
-			else if ( self.total > 0 ) {
-				limit = datalist.range.call( self );
-				items = items.limit( limit[0], limit[1] );
-			}
+	// Creating view of DataStore
+	if ( create ) {
+		// Consuming records based on sort
+		if ( this.where === null ) {
+			this.records = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create );
+		}
+		else {
+			this.records = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.where );
 		}
 
-		// Preparing the target element
-		if ( redraw ) {
-			if ( self.total === 0 ) {
-				el.innerHTML = "&lt;li class=\"empty\">" + self.emptyMsg + "&lt;/li>";
-			}
-			else {
-				el.innerHTML = items.map( function ( i ) {
-					return i.template;
-				}).join( "\n" );
+		this.total    = this.records.length;
+		this.filtered = [];
+	}
 
-				if ( callback ) {
-					array.each( element.find( el, "> li" ), function ( i ) {
-						self.callback( i );
-					} );
+	// Resetting 'view' specific arrays
+	this.current  = [];
+
+	// Filtering records (if applicable)
+	if ( filter && create ) {
+		array.each( this.records, function ( i ) {
+			utility.iterate( self.filter, function ( v, k ) {
+				var reg, key;
+
+				if ( array.contains( registry, i.key ) ) {
+					return false;
 				}
-			}
-		}
-		else {
-			array.each( element.find( el, "> li" ), function ( i ) {
-				element.addClass( i, "hidden" );
-			} );
+				
+				v   = string.explode( v );
+				reg = new RegExp(),
+				key = ( k === self.store.key );
 
-			array.each( items, function ( i ) {
-				array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
-					element.removeClass( o, "hidden" );
-				} );
-			} );
+				array.each( v, function ( query ) {
+					var value = !key ? utility.walk( i.data, k ) : "";
+
+					utility.compile( reg, query, "i" );
+
+					if ( ( key && reg.test( i.key ) ) || reg.test( value ) ) {
+						registry.push( i.key );
+						self.filtered.push( i );
+
+						return false;
+					}
+				});
+			});
+		});
+	}
+
+	// Pagination
+	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
+		ceiling = datalist.pages.call( this );
+
+		// Passed the end, so putting you on the end
+		if ( ceiling > 0 && this.pageIndex > ceiling ) {
+			return this.page( ceiling );
 		}
 
-		// Rendering pagination elements
-		if ( regex.top_bottom.test( self.pagination ) && typeof self.pageIndex == "number" && typeof self.pageSize == "number") {
-			self.pages();
+		// Paginating the items
+		else if ( this.total > 0 ) {
+			range        = datalist.range.call( this );
+			this.current = array.limit( !filter ? this.records : this.filtered, range[0], range[1] );
 		}
-		else {
-			array.each( utility.dom( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
-				element.destroy( i );
-			} );
-		}
-
-		observer.fire( el, "afterDataListRefresh" );
-	};
-
-	// Consuming records based on sort
-	if ( this.where === null ) {
-		string.isEmpty( this.order ) ? next( this.store.get() ) : this.store.sort( this.order, create ).then( next );
 	}
 	else {
-		string.isEmpty( this.order ) ? this.store.select( this.where ).then( next ) : this.store.sort( this.order, create, this.where ).then( next );
+		this.current = !filter ? this.records : this.filtered;
 	}
+
+	// Processing records & generating templates
+	array.each( this.current, function ( i ) {
+		items.push( {key: i.key, template: fn( i )} );
+	});
+
+	// Preparing the target element
+	if ( redraw ) {
+		if ( items.length === 0 ) {
+			el.innerHTML = "&lt;li class=\"empty\">" + this.emptyMsg + "&lt;/li>";
+		}
+		else {
+			el.innerHTML = items.map( function ( i ) {
+				return i.template;
+			}).join( "\n" );
+
+			if ( callback ) {
+				array.each( element.find( el, "> li" ), function ( i ) {
+					self.callback( i );
+				});
+			}
+		}
+	}
+	else {
+		array.each( element.find( el, "> li" ), function ( i ) {
+			element.addClass( i, "hidden" );
+		});
+
+		array.each( items, function ( i ) {
+			array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
+				element.removeClass( o, "hidden" );
+			});
+		});
+	}
+
+	// Rendering pagination elements
+	if ( regex.top_bottom.test( this.pagination ) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
+		this.pages();
+	}
+	else {
+		array.each( utility.$( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
+			element.destroy( i );
+		});
+	}
+
+	observer.fire( el, "afterDataListRefresh" );
 
 	return this;
 };
@@ -6063,7 +6121,7 @@ DataListFilter.prototype.update = function () {
 		}
 
 		self.datalist.pageIndex = 1;
-		self.datalist.refresh( true, ( self.datalist.store.datalists.length > 1 ) );
+		self.datalist.refresh( true, true );
 	}, this.debounce, this.element.id + "Debounce");
 
 	return this;
@@ -6159,15 +6217,15 @@ DataGrid.prototype.init = function ( debounce ) {
 		ref       = [];
 		template  = "";
 		container = element.create( "section", {"class": "grid"}, this.element );
-		header    = element.create( "ul", {"class": "header"}, container );
+		header    = element.create( "li", {}, element.create( "ul", {"class": "header"}, container ) );
 		width     = ( 100 / this.fields.length ) + "%";
 		css       = "display:inline-block;width:" + width;
 		sort      = this.options.order ? string.explode( this.options.order ) : [];
 
 		// Creating DataList template based on fields
 		array.each( this.fields, function ( i ) {
-			var trimmed =  i.replace( /.*\./g, "" ),
-			    obj     = header.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( trimmed, true ) ), true ), style: css, "class": trimmed, "data-field": i} );
+			var trimmed = i.replace( /.*\./g, "" ),
+			    obj     = element.create( "span", {innerHTML: string.capitalize( string.unCamelCase( string.unhyphenate( trimmed, true ) ), true ), style: css, "class": trimmed, "data-field": i}, header );
 
 			// Adding CSS class if "column" is sortable
 			if ( self.sortable.contains( i ) ) {
@@ -6231,7 +6289,7 @@ DataGrid.prototype.refresh = function () {
 	this.list.where = null;
 	utility.merge( this.list, this.options );
 
-	this.list.refresh();
+	this.list.refresh( true, true );
 
 	return this;
 };
@@ -7289,7 +7347,7 @@ var math = {
 	 * @return {Number}   Squared value
 	 */
 	sqr : function ( n ) {
-		return n * n;
+		return Math.pow( n, 2 );
 	}
 };
 
@@ -8144,6 +8202,35 @@ var promise = {
 	},
 
 	/**
+	 * Initiates processing a Promise
+	 *
+	 * @memberOf process
+	 * @memberOf abaaso.promise
+	 * @param  {Object} obj   Promise instance
+	 * @param  {Mixed}  arg   Promise value
+	 * @param  {Number} state State, e.g. "1"
+	 * @return {Object}       Promise instance
+	 */
+	process : function ( obj, arg, state ) {
+		if ( obj.state > promise.state.PENDING ) {
+			return;
+		}
+
+		obj.value = arg;
+		obj.state = state;
+
+		if ( !obj.deferred ) {
+			promise.delay( function () {
+				obj.process();
+			} );
+
+			obj.deferred = true;
+		}
+
+		return obj;
+	},
+
+	/**
 	 * States of a Promise
 	 *
 	 * @memberOf abaaso.promise
@@ -8187,7 +8274,8 @@ Promise.prototype.constructor = Promise;
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.process = function() {
-	var result, success, value;
+	var self = this,
+	    result, success, value;
 
 	this.deferred = false;
 
@@ -8221,6 +8309,7 @@ Promise.prototype.process = function() {
 			result = callback( value );
 		}
 		catch ( e ) {
+			utility.error( e, value, self );
 			child.reject( e );
 
 			return;
@@ -8246,24 +8335,7 @@ Promise.prototype.process = function() {
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.reject = function ( arg ) {
-	var self = this;
-
-	if ( this.state > promise.state.PENDING ) {
-		return;
-	}
-
-	this.value = arg;
-	this.state = promise.state.FAILURE;
-
-	if ( !this.deferred ) {
-		promise.delay( function () {
-			self.process();
-		} );
-
-		this.deferred = true;
-	}
-
-	return this;
+	return promise.process( this, arg, promise.state.FAILURE );
 };
 
 /**
@@ -8275,24 +8347,7 @@ Promise.prototype.reject = function ( arg ) {
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.resolve = function ( arg ) {
-	var self = this;
-
-	if ( this.state > promise.state.PENDING ) {
-		return;
-	}
-
-	this.value = arg;
-	this.state = promise.state.SUCCESS;
-
-	if ( !this.deferred ) {
-		promise.delay( function () {
-			self.process();
-		} );
-
-		this.deferred = true;
-	}
-
-	return this;
+	return promise.process( this, arg, promise.state.SUCCESS );
 };
 
 /**
@@ -8834,6 +8889,9 @@ var prototypes = {
 		split : function ( size ) {
 			return array.split( this, size );
 		},
+		stddev : function () {
+			return array.stddev( this );
+		},
 		sum : function () {
 			return array.sum( this );
 		},
@@ -8907,6 +8965,9 @@ var prototypes = {
 			} );
 
 			return result;
+		},
+		variance : function () {
+			return array.variance( this );
 		},
 		zip : function () {
 			return array.zip( this, arguments );
@@ -9654,7 +9715,7 @@ var string = {
 	 * @return {String}     Transformed string
 	 */
 	singular : function ( obj ) {
-		return regex.plural.test( obj ) ? obj.slice( 0, -1 ) : obj;
+		return obj.replace( /oe?s$/, "o" ).replace( /ies$/, "y" ).replace( /ses$/, "se" ).replace( /s$/, "" );
 	},
 
 	/**
@@ -10129,15 +10190,20 @@ var utility = {
 		var op;
 
 		ms     = ms || 0;
-		id     = id || utility.uuid( true );
 		repeat = ( repeat === true );
+
+		if ( id !== undefined ) {
+			utility.clearTimers( id );
+		}
+		else {
+			id = utility.uuid( true );
+		}
 
 		op = function () {
 			utility.clearTimers( id );
 			fn();
 		};
 
-		utility.clearTimers( id );
 		utility[repeat ? "repeating" : "timer"][id] = setTimeout( op, ms );
 
 		return id;
@@ -14363,7 +14429,7 @@ else {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Fri Oct 18 2013 07:01:36 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Nov 09 2013 17:51:52 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

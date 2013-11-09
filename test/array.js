@@ -727,6 +727,18 @@ exports["sum"] = {
 	}
 };
 
+exports["stddev"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 5];
+		done();
+	},
+	test: function (test) {
+		test.expect(1);
+		test.equal(array.stddev(this.val), 1.632993161855452, "Should be '1.632993161855452'");
+		test.done();
+	}
+};
+
 exports["take"] = {
 	setUp: function (done) {
 		this.val = [0, 1, 2, 3, 4];
@@ -778,6 +790,18 @@ exports["unique"] = {
 		test.done();
 	}
 };
+
+exports["variance"] = {
+	setUp: function (done) {
+		this.val = [1, 3, 5];
+		done();
+	},
+	test: function (test) {
+		test.expect(1);
+		test.equal(array.variance(this.val), 2.6666666666666665, "Should be '2.6666666666666665'");
+		test.done();
+	}
+ };
 
 exports["zip"] = {
 	setUp: function (done) {

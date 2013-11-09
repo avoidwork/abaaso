@@ -236,7 +236,7 @@ var string = {
 	 * @return {String}     Transformed string
 	 */
 	singular : function ( obj ) {
-		return regex.plural.test( obj ) ? obj.slice( 0, -1 ) : obj;
+		return obj.replace( /oe?s$/, "o" ).replace( /ies$/, "y" ).replace( /ses$/, "se" ).replace( /s$/, "" );
 	},
 
 	/**

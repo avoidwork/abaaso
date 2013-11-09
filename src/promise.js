@@ -53,6 +53,35 @@ var promise = {
 	},
 
 	/**
+	 * Initiates processing a Promise
+	 *
+	 * @memberOf process
+	 * @memberOf abaaso.promise
+	 * @param  {Object} obj   Promise instance
+	 * @param  {Mixed}  arg   Promise value
+	 * @param  {Number} state State, e.g. "1"
+	 * @return {Object}       Promise instance
+	 */
+	process : function ( obj, arg, state ) {
+		if ( obj.state > promise.state.PENDING ) {
+			return;
+		}
+
+		obj.value = arg;
+		obj.state = state;
+
+		if ( !obj.deferred ) {
+			promise.delay( function () {
+				obj.process();
+			} );
+
+			obj.deferred = true;
+		}
+
+		return obj;
+	},
+
+	/**
 	 * States of a Promise
 	 *
 	 * @memberOf abaaso.promise
@@ -96,7 +125,8 @@ Promise.prototype.constructor = Promise;
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.process = function() {
-	var result, success, value;
+	var self = this,
+	    result, success, value;
 
 	this.deferred = false;
 
@@ -130,6 +160,7 @@ Promise.prototype.process = function() {
 			result = callback( value );
 		}
 		catch ( e ) {
+			utility.error( e, value, self );
 			child.reject( e );
 
 			return;
@@ -155,24 +186,7 @@ Promise.prototype.process = function() {
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.reject = function ( arg ) {
-	var self = this;
-
-	if ( this.state > promise.state.PENDING ) {
-		return;
-	}
-
-	this.value = arg;
-	this.state = promise.state.FAILURE;
-
-	if ( !this.deferred ) {
-		promise.delay( function () {
-			self.process();
-		} );
-
-		this.deferred = true;
-	}
-
-	return this;
+	return promise.process( this, arg, promise.state.FAILURE );
 };
 
 /**
@@ -184,24 +198,7 @@ Promise.prototype.reject = function ( arg ) {
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.resolve = function ( arg ) {
-	var self = this;
-
-	if ( this.state > promise.state.PENDING ) {
-		return;
-	}
-
-	this.value = arg;
-	this.state = promise.state.SUCCESS;
-
-	if ( !this.deferred ) {
-		promise.delay( function () {
-			self.process();
-		} );
-
-		this.deferred = true;
-	}
-
-	return this;
+	return promise.process( this, arg, promise.state.SUCCESS );
 };
 
 /**
