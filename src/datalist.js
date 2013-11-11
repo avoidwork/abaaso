@@ -437,6 +437,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
  */
 DataList.prototype.sort = function ( order, create ) {
 	this.order = order;
+
 	return this.refresh( true, create );
 };
 
