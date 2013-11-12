@@ -640,7 +640,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
           <span class="p">}</span>
           <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;delete&quot;</span> <span class="p">)</span> <span class="p">{</span>
             <span class="nx">cache</span><span class="p">.</span><span class="nx">expire</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
-          <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Application state change triggered by hypermedia ( HATEOAS )</p></div></div><div class="code"><div class="wrapper">          <span class="k">if</span> <span class="p">(</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">()</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">xhrState</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="nx">state</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">()])</span> <span class="o">&amp;&amp;</span> <span class="nx">state</span><span class="p">.</span><span class="nx">current</span> <span class="o">!==</span> <span class="nx">xhrState</span> <span class="p">)</span> <span class="p">{</span>
+          <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Application state change triggered by hypermedia ( HATEOAS )</p></div></div><div class="code"><div class="wrapper">          <span class="k">if</span> <span class="p">(</span> <span class="nx">state</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">()</span> <span class="o">!==</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="nb">Boolean</span><span class="p">(</span> <span class="nx">xhrState</span> <span class="o">=</span> <span class="nx">o</span><span class="p">.</span><span class="nx">headers</span><span class="p">[</span><span class="nx">state</span><span class="p">.</span><span class="nx">getHeader</span><span class="p">()]</span> <span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">state</span><span class="p">.</span><span class="nx">current</span> <span class="o">!==</span> <span class="nx">xhrState</span> <span class="p">)</span> <span class="p">{</span>
             <span class="nx">state</span><span class="p">.</span><span class="nx">setCurrent</span><span class="p">(</span> <span class="nx">state</span> <span class="p">);</span>
           <span class="p">}</span>
 
@@ -663,7 +663,7 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
                   <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
                 <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
                   <span class="nx">exception</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
-                <span class="p">});</span>
+                <span class="p">}</span> <span class="p">);</span>
                 <span class="k">break</span><span class="p">;</span>
               <span class="p">}</span>
               <span class="k">break</span><span class="p">;</span>
@@ -677,6 +677,10 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
               <span class="k">break</span><span class="p">;</span>
           <span class="p">}</span>
           <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="mi">304</span><span class="o">:</span>
+          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
+          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
+          <span class="k">break</span><span class="p">;</span>
         <span class="k">case</span> <span class="mi">401</span><span class="o">:</span>
           <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverUnauthorized</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverUnauthorized</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
           <span class="k">break</span><span class="p">;</span>
@@ -688,18 +692,9 @@ Events: after[type]  Fires after the XmlHttpRequest response is received, type s
           <span class="nx">cache</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">uri</span><span class="p">,</span> <span class="s2">&quot;!permission&quot;</span><span class="p">,</span> <span class="nx">client</span><span class="p">.</span><span class="nx">bit</span><span class="p">(</span> <span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="p">)</span> <span class="p">);</span>
           <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverInvalidMethod</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
           <span class="k">break</span><span class="p">;</span>
-        <span class="k">case</span> <span class="mi">500</span><span class="o">:</span>
-        <span class="k">case</span> <span class="mi">501</span><span class="o">:</span>
-        <span class="k">case</span> <span class="mi">502</span><span class="o">:</span>
-        <span class="k">case</span> <span class="mi">503</span><span class="o">:</span>
-        <span class="k">case</span> <span class="mi">504</span><span class="o">:</span>
-        <span class="k">case</span> <span class="mi">505</span><span class="o">:</span>
-        <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
+        <span class="k">default</span><span class="o">:</span>
           <span class="nx">exception</span><span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
           <span class="k">break</span><span class="p">;</span>
-        <span class="k">default</span><span class="o">:</span>
-          <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">r</span> <span class="p">);</span>
-          <span class="nx">uri</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="s2">&quot;after&quot;</span> <span class="o">+</span> <span class="nx">typed</span><span class="p">,</span> <span class="nx">r</span><span class="p">,</span> <span class="nx">xhr</span> <span class="p">);</span>
       <span class="p">}</span>
 
       <span class="k">try</span> <span class="p">{</span>
