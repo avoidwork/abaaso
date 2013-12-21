@@ -744,7 +744,7 @@ var client = {
 							r = client.parse( xhr, t );
 
 							if ( r === undefined ) {
-								throw new Error( label.error.serverError );
+								exception( new Error( label.error.serverError ), xhr );
 							}
 						}
 
@@ -802,18 +802,18 @@ var client = {
 					uri.fire( "after" + typed, r, xhr );
 					break;
 				case 401:
-					exception( !server ? new Error( label.error.serverUnauthorized ) : label.error.serverUnauthorized, xhr );
+					exception( new Error( label.error.serverUnauthorized ), xhr );
 					break;
 				case 403:
 					cache.set( uri, "!permission", client.bit( [type] ) );
-					exception( !server ? new Error( label.error.serverForbidden ) : label.error.serverForbidden, xhr );
+					exception( new Error( label.error.serverForbidden ), xhr );
 					break;
 				case 405:
 					cache.set( uri, "!permission", client.bit( [type] ) );
-					exception( !server ? new Error( label.error.serverInvalidMethod ) : label.error.serverInvalidMethod, xhr );
+					exception( new Error( label.error.serverInvalidMethod ), xhr );
 					break;
 				default:
-					exception( !server ? new Error( label.error.serverError ) : label.error.serverError, xhr );
+					exception( new Error( label.error.serverError ), xhr );
 					break;
 			}
 

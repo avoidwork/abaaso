@@ -729,6 +729,8 @@ with a class of "loading"</p>
       <span class="nx">uri</span> <span class="o">=</span> <span class="o">!</span><span class="nx">server</span> <span class="o">?</span> <span class="nx">location</span><span class="p">.</span><span class="nx">href</span> <span class="o">:</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
     <span class="p">}</span>
 
+    <span class="nx">uri</span> <span class="o">=</span> <span class="nb">decodeURIComponent</span><span class="p">(</span> <span class="nx">uri</span> <span class="p">);</span>
+
     <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">server</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">obj</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span> <span class="s2">&quot;a&quot;</span> <span class="p">);</span>
       <span class="nx">obj</span><span class="p">.</span><span class="nx">href</span> <span class="o">=</span> <span class="nx">uri</span><span class="p">;</span>
