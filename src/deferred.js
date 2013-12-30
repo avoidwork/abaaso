@@ -75,14 +75,9 @@ Deferred.prototype.constructor = Deferred;
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.always = function ( arg ) {
-	if ( typeof arg != "function" ) {
-		throw new Error( label.error.invalidArguments );
+	if ( !this.isResolved() && !this.isRejected() && typeof arg == "function" ) {
+		this.onAlways.push( arg );
 	}
-	else if ( this.promise.state > 0 ) {
-		throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.value ) );
-	}
-
-	this.onAlways.push( arg );
 
 	return this;
 };
@@ -96,14 +91,9 @@ Deferred.prototype.always = function ( arg ) {
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.done = function ( arg ) {
-	if ( typeof arg != "function" ) {
-		throw new Error( label.error.invalidArguments );
+	if ( !this.isResolved() && !this.isRejected() && typeof arg == "function" ) {
+		this.onDone.push( arg );
 	}
-	else if ( this.promise.state > 0 ) {
-		throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.value ) );
-	}
-
-	this.onDone.push( arg );
 
 	return this;
 };
@@ -117,14 +107,9 @@ Deferred.prototype.done = function ( arg ) {
  * @return {Object} {@link abaaso.Deferred}
  */
 Deferred.prototype.fail = function ( arg ) {
-	if ( typeof arg != "function" ) {
-		throw new Error( label.error.invalidArguments );
+	if ( !this.isResolved() && !this.isRejected() && typeof arg == "function" ) {
+		this.onFail.push( arg );
 	}
-	else if ( this.promise.state > 0 ) {
-		throw new Error( label.error.promiseResolved.replace( "{{outcome}}", this.promise.value ) );
-	}
-
-	this.onFail.push( arg );
 
 	return this;
 };

@@ -250,11 +250,11 @@ DataList.prototype.pages = function () {
  */
 DataList.prototype.refresh = function ( redraw, create ) {
 	var el       = this.element,
-	    template = ( typeof this.template === "object" ),
+	    template = ( typeof this.template == "object" ),
 	    filter   = this.filter !== null,
 	    items    = [],
 	    self     = this,
-	    callback = ( typeof this.callback === "function" ),
+	    callback = ( typeof this.callback == "function" ),
 	    reg      = new RegExp(),
 	    registry = [], // keeps track of records in the list ( for filtering )
 	    range    = [],
@@ -363,7 +363,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	}
 
 	// Pagination
-	if ( typeof this.pageIndex === "number" && typeof this.pageSize === "number" ) {
+	if ( !isNaN( this.pageIndex ) && !isNaN( this.pageSize ) ) {
 		ceiling = datalist.pages.call( this );
 
 		// Passed the end, so putting you on the end
@@ -416,7 +416,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	}
 
 	// Rendering pagination elements
-	if ( regex.top_bottom.test( this.pagination ) && typeof this.pageIndex === "number" && typeof this.pageSize === "number") {
+	if ( regex.top_bottom.test( this.pagination ) && !isNaN( this.pageIndex ) && !isNaN( this.pageSize ) ) {
 		this.pages();
 	}
 	else {
