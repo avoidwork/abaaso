@@ -10,7 +10,7 @@ On the Client (browser), abaaso gets in front of APIs with `DataStores`, providi
 
 On the Server (node.js), `DataStores` can be used for API end points, with an "autosave" feature that sends the model to MongoDB for persistent storage.
 
-abaaso forgoes MVC in favor of the native OOP design of JavaScript with custom instances, allowing for a clean separation of concerns.
+abaaso forgoes MVC in favor of OORP, allowing for a clean separation of concerns.
 
 ## What is Supported?
 
@@ -33,7 +33,6 @@ All HTML5 compliant browsers and platforms such as Desktops, Tablets, Smartphone
 * abaaso.sugar() to enable syntactic sugar
 * Familiar API
 * Evented with a global observer, Elements fire "change" events via `MutationObservers`
-* I/O built on Promises/A+
 * localStorage or MongoDB for persistent storage
 
 ## Support
