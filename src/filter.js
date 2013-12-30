@@ -120,7 +120,7 @@ DataListFilter.prototype.update = function () {
 
 				// Shaping valid pattern
 				array.each( queries, function ( i, idx ) {
-					this[idx] = "^" + string.escape( i ).replace( "\\*", ".*" );
+					this[idx] = "^.*" + string.escape( i ).replace( /(^\*|\*$)/g, "" ).replace( /\*/g, ".*" ) + ".*";
 				} );
 
 				this[k] = queries.join( "," );

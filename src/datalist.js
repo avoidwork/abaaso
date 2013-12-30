@@ -185,6 +185,10 @@ DataList.prototype.pages = function () {
 		}
 	}
 
+	if ( number.diff( start, end ) >= range ) {
+		--end;
+	}
+
 	array.each( string.explode( pos ), function ( i ) {
 		var current = false,
 		    more    = page > 1,

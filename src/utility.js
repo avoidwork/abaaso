@@ -728,6 +728,8 @@ var utility = {
 			uri = !server ? location.href : "";
 		}
 
+		uri = decodeURIComponent( uri );
+
 		if ( !server ) {
 			obj = document.createElement( "a" );
 			obj.href = uri;

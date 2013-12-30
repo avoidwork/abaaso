@@ -91,12 +91,11 @@ var xhr = function () {
 	 * @return {Undefined} undefined
 	 */
 	handlerError = function ( e ) {
-		this.status       = 503;
+		this.status       = 500;
 		this.statusText   = e;
 		this.responseText = e ? ( e.stack || e ) : e;
 		this._error       = true;
 		this._send        = false;
-		this.setRequestHeader( "Content-Type", "text/plain" );
 		this.dispatchEvent( "error" );
 		state.call( this, DONE );
 	};
