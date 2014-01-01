@@ -948,8 +948,7 @@ DataStore.prototype.set = function ( key, data, batch ) {
  */
 DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	var self      = this,
-	    deferreds = [],
-	    vKey;
+	    deferreds = [];
 
 	// Create
 	if ( record === null ) {
@@ -959,10 +958,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			data  : data
 		};
 
-		this.keys[key]             = record.index;
-		this.records[record.index] = record;
-
-		this.versions[record.key] = lru( VERSIONS );
+		this.keys[key]                = record.index;
+		this.records[record.index]    = record;
+		this.versions[record.key]     = lru( VERSIONS );
+		this.versions[record.key].nth = 0;
 
 		if ( this.retrieve ) {
 			deferreds.push( this.crawl( record ) );
@@ -970,8 +969,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	}
 	// Update
 	else {
-		vKey = "v" + ( this.versions[record.key].first ? ( parseInt( this.versions[record.key].first.match( /\d+/ ), 10 ) + 1) : 1);
-		this.versions[record.key].set( vKey, this.dump( [record] )[0] );
+		this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth), this.dump( [record] )[0] );
 
 		utility.iterate( data, function ( v, k ) {
 			if ( !array.contains( self.collections, k ) ) {
