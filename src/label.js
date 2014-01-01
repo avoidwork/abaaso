@@ -45,6 +45,7 @@ var label = {
 		databaseNotSupported  : "Client does not support local database storage",
 		databaseWarnInjection : "Possible SQL injection in database transaction, use the &#63; placeholder",
 		databaseMoreThanOne   : "More than one match found",
+		datastoreNoPrevVersion: "Could not find a previous version of this record",
 		elementNotCreated     : "Could not create the Element",
 		elementNotFound       : "Could not find the Element",
 		expectedArray         : "Expected an Array",

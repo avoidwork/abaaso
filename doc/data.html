@@ -50,6 +50,7 @@
   <span class="k">this</span><span class="p">.</span><span class="nx">source</span>      <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">total</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">views</span>       <span class="o">=</span> <span class="p">{};</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">versions</span>    <span class="o">=</span> <span class="p">{};</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">uri</span>         <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
 <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Setting constructor loop</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">constructor</span> <span class="o">=</span> <span class="nx">DataStore</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method batch</span></p>
 
@@ -192,6 +193,7 @@ Events: beforeDataClear Fires before the data is cleared
     <span class="k">this</span><span class="p">.</span><span class="nx">retrieve</span>    <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">source</span>      <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">total</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">versions</span>    <span class="o">=</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">views</span>       <span class="o">=</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">uri</span>         <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
 
@@ -205,6 +207,7 @@ Events: beforeDataClear Fires before the data is cleared
     <span class="k">this</span><span class="p">.</span><span class="nx">loaded</span>      <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">records</span>     <span class="o">=</span> <span class="p">[];</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">total</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">versions</span>    <span class="o">=</span> <span class="p">{};</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">views</span>       <span class="o">=</span> <span class="p">{};</span>
 
     <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">datalists</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
@@ -354,7 +357,10 @@ Events: beforeDataDelete  Fires before the record is deleted
 
 <p><strong>Returns an Object</strong><br/>(DataStore instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">delComplete</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">reindex</span><span class="p">,</span> <span class="nx">batch</span><span class="p">,</span> <span class="nx">defer</span> <span class="p">)</span> <span class="p">{</span>
   <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">keys</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">];</span>
+  <span class="k">delete</span> <span class="k">this</span><span class="p">.</span><span class="nx">versions</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">];</span>
+
   <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span> <span class="nx">record</span><span class="p">.</span><span class="nx">index</span> <span class="p">);</span>
+
   <span class="k">this</span><span class="p">.</span><span class="nx">total</span><span class="o">--</span><span class="p">;</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">views</span> <span class="o">=</span> <span class="p">{};</span>
 
@@ -398,6 +404,7 @@ Events: beforeDataDelete  Fires before the record is deleted
   <span class="nx">args</span>       <span class="o">=</span> <span class="nx">args</span> <span class="o">||</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">;</span>
   <span class="kd">var</span> <span class="nx">self</span>   <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
       <span class="nx">custom</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">fields</span> <span class="k">instanceof</span> <span class="nb">Array</span> <span class="o">&amp;&amp;</span> <span class="nx">fields</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">),</span>
+      <span class="nx">key</span>    <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">key</span> <span class="o">!==</span> <span class="kc">null</span><span class="p">,</span>
       <span class="nx">fn</span><span class="p">;</span>
 
   <span class="k">if</span> <span class="p">(</span> <span class="nx">custom</span> <span class="p">)</span> <span class="p">{</span>
@@ -415,7 +422,9 @@ Events: beforeDataDelete  Fires before the record is deleted
     <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
       <span class="kd">var</span> <span class="nx">record</span> <span class="o">=</span> <span class="p">{};</span>
 
-      <span class="nx">record</span><span class="p">[</span><span class="nx">self</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span> <span class="nx">key</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">record</span><span class="p">[</span><span class="nx">self</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">i</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span>
+      <span class="p">}</span>
 
       <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">i</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">record</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">collections</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="o">?</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">clone</span><span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="kc">true</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">v</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">uri</span><span class="p">;</span>
@@ -911,7 +920,8 @@ Events: beforeDataSet  Fires before the record is set
 
 <p><strong>Returns an Object</strong><br/>(DataStore instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">setComplete</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">record</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">batch</span><span class="p">,</span> <span class="nx">defer</span> <span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">self</span>      <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
-      <span class="nx">deferreds</span> <span class="o">=</span> <span class="p">[];</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Create</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">deferreds</span> <span class="o">=</span> <span class="p">[],</span>
+      <span class="nx">vKey</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Create</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">record</span> <span class="o">=</span> <span class="p">{</span>
       <span class="nx">index</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">total</span><span class="o">++</span><span class="p">,</span>
       <span class="nx">key</span>   <span class="o">:</span> <span class="nx">key</span><span class="p">,</span>
@@ -921,10 +931,15 @@ Events: beforeDataSet  Fires before the record is set
     <span class="k">this</span><span class="p">.</span><span class="nx">keys</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span>             <span class="o">=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">index</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">index</span><span class="p">]</span> <span class="o">=</span> <span class="nx">record</span><span class="p">;</span>
 
+    <span class="k">this</span><span class="p">.</span><span class="nx">versions</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">lru</span><span class="p">(</span> <span class="nx">VERSIONS</span> <span class="p">);</span>
+
     <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">retrieve</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">deferreds</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">crawl</span><span class="p">(</span> <span class="nx">record</span> <span class="p">)</span> <span class="p">);</span>
     <span class="p">}</span>
   <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Update</p></div></div><div class="code"><div class="wrapper">  <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">vKey</span> <span class="o">=</span> <span class="s2">&quot;v&quot;</span> <span class="o">+</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">versions</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">].</span><span class="nx">first</span> <span class="o">?</span> <span class="p">(</span> <span class="nb">parseInt</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">versions</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">].</span><span class="nx">first</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span> <span class="sr">/\d+/</span> <span class="p">),</span> <span class="mi">10</span> <span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">:</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">versions</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">].</span><span class="nx">set</span><span class="p">(</span> <span class="nx">vKey</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">dump</span><span class="p">(</span> <span class="p">[</span><span class="nx">record</span><span class="p">]</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="p">);</span>
+
     <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
       <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">array</span><span class="p">.</span><span class="nx">contains</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">collections</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
         <span class="nx">record</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
@@ -1440,6 +1455,46 @@ Events: beforeDataSync  Fires before syncing the DataStore
   <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;afterDataTeardown&quot;</span> <span class="p">);</span>
 
   <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+<span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method undo</span></p>
+
+<p>Undoes the last modification to a record, if it exists</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><p><strong>key can be of any type.</strong><br/>(Key or index)</p></li>
+<li><p><strong>version must be a String.</strong><br/>([Optional] Version to restore)</p></li>
+</ul>
+
+<p><strong>Returns an Object</strong><br/>(Deferred)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataStore</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">undo</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">version</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">record</span>   <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">key</span> <span class="p">),</span>
+      <span class="nx">defer</span>    <span class="o">=</span> <span class="nx">deferred</span><span class="p">(),</span>
+      <span class="nx">versions</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">versions</span><span class="p">[</span><span class="nx">record</span><span class="p">.</span><span class="nx">key</span><span class="p">],</span>
+      <span class="nx">previous</span><span class="p">;</span>
+
+  <span class="k">if</span> <span class="p">(</span> <span class="nx">record</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">invalidArguments</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span> <span class="p">(</span> <span class="nx">versions</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="nx">previous</span> <span class="o">=</span> <span class="nx">versions</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span> <span class="nx">version</span> <span class="o">||</span> <span class="nx">versions</span><span class="p">.</span><span class="nx">first</span> <span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">previous</span> <span class="o">===</span> <span class="kc">undefined</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">datastoreNoPrevVersion</span> <span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">previous</span> <span class="p">).</span><span class="nx">then</span><span class="p">(</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">defer</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span> <span class="nx">arg</span> <span class="p">);</span>
+      <span class="p">},</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
+      <span class="p">}</span> <span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">defer</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">datastoreNoPrevVersion</span> <span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">defer</span><span class="p">;</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method unique</span></p>
 
 <p>Returns Array of unique values of <code>key</code></p>
