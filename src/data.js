@@ -969,7 +969,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	}
 	// Update
 	else {
-		this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth), this.dump( [record] )[0] );
+		this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth ), this.dump( [record] )[0] );
 
 		utility.iterate( data, function ( v, k ) {
 			if ( !array.contains( self.collections, k ) ) {
