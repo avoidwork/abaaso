@@ -59,6 +59,7 @@ function DataStore ( obj ) {
 	this.total       = 0;
 	this.views       = {};
 	this.versions    = {};
+	this.versioning  = true;
 	this.uri         = null;
 }
 
@@ -204,6 +205,7 @@ DataStore.prototype.clear = function ( sync ) {
 		this.source      = null;
 		this.total       = 0;
 		this.versions    = {};
+		this.versioning  = true;
 		this.views       = {};
 		this.uri         = null;
 
@@ -969,7 +971,9 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	}
 	// Update
 	else {
-		this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth ), this.dump( [record] )[0] );
+		if ( this.versioning ) {
+			this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth ), this.dump( [record] )[0] );
+		}
 
 		utility.iterate( data, function ( v, k ) {
 			if ( !array.contains( self.collections, k ) ) {
