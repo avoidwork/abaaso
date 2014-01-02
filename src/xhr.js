@@ -10,6 +10,7 @@ var xhr = function () {
 	    HEADERS_RECEIVED = 2,
 	    LOADING          = 3,
 	    DONE             = 4,
+	    ERR_REFUSED      = /ECONNREFUSED/,
 	    ready            = new RegExp( HEADERS_RECEIVED + "|" + LOADING ),
 	    XMLHttpRequest, headers, handler, handlerError, state;
 
@@ -87,9 +88,9 @@ var xhr = function () {
 	 * @return {Undefined} undefined
 	 */
 	handlerError = function ( e ) {
-		this.status       = 500;
-		this.statusText   = e;
-		this.responseText = e !== undefined ? ( e.stack || e ) : e;
+		this.status       = ERR_REFUSED.test( e.message ) ? 503 : 500;
+		this.statusText   = "";
+		this.responseText = e.message;
 		this._error       = true;
 		this._send        = false;
 		this.dispatchEvent( "error" );

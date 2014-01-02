@@ -704,7 +704,6 @@ var client = {
 		// server-side exception handling
 		exception = function ( e, xhr ) {
 			defer.reject( e );
-			utility.error( e, arguments, this, true );
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
 
