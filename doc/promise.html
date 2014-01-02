@@ -119,9 +119,7 @@
       <span class="nx">result</span> <span class="o">=</span> <span class="nx">callback</span><span class="p">(</span> <span class="nx">value</span> <span class="p">);</span>
     <span class="p">}</span>
     <span class="k">catch</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">utility</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="nx">e</span><span class="p">,</span> <span class="nx">value</span><span class="p">,</span> <span class="k">this</span> <span class="p">);</span>
       <span class="nx">child</span><span class="p">.</span><span class="nx">reject</span><span class="p">(</span> <span class="nx">e</span> <span class="p">);</span>
-
       <span class="k">return</span><span class="p">;</span>
     <span class="p">}</span>
 
