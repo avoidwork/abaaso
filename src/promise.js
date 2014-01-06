@@ -125,8 +125,7 @@ Promise.prototype.constructor = Promise;
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.process = function() {
-	var self = this,
-	    result, success, value;
+	var result, success, value;
 
 	this.deferred = false;
 
@@ -160,7 +159,6 @@ Promise.prototype.process = function() {
 			result = callback( value );
 		}
 		catch ( e ) {
-			utility.error( e, value, self );
 			child.reject( e );
 
 			return;

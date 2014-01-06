@@ -438,7 +438,7 @@ var element = {
 			utility.id( obj );
 			return ( element.find( obj.parentNode, obj.nodeName.toLowerCase() + arg ).filter( function ( i ) {
 				return ( i.id === obj.id );
-			}).length === 1 );
+			} ).length === 1 );
 		}
 		else {
 			return new RegExp( arg, "i" ).test( obj.nodeName );

@@ -91,7 +91,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="refresh"><span class="type-signature"></span>refresh<span class="signature">(redraw, create)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    <h4 class="name" id="undo"><span class="type-signature"></span>undo<span class="signature">(key, version)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
     
 </dt>
@@ -99,10 +99,7 @@
     
     
     <div class="description">
-        Refreshes element
-
-Events: beforeDataListRefresh  Fires from the element containing the DataList
-        afterDataListRefresh   Fires from the element containing the DataList
+        Undoes the last modification to a record, if it exists
     </div>
     
 
@@ -136,13 +133,13 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
 	
         <tr>
             
-                <td class="name"><code>redraw</code></td>
+                <td class="name"><code>key</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">Mixed</span>
 
 
             
@@ -152,20 +149,20 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
             
             
             
-            <td class="description last">[Optional] Boolean to force clearing the DataList ( default ), false toggles "hidden" class of items</td>
+            <td class="description last">Key or index</td>
         </tr>
 	
 	
 	
         <tr>
             
-                <td class="name"><code>create</code></td>
+                <td class="name"><code>version</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">Boolean</span>
+<span class="param-type">String</span>
 
 
             
@@ -175,7 +172,7 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
             
             
             
-            <td class="description last">[Optional] Recreates cached View of data</td>
+            <td class="description last">[Optional] Version to restore</td>
         </tr>
 	
 	
@@ -206,7 +203,7 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4541">line 4541</a>
+        <a href="abaaso.js.html">abaaso.js</a>, <a href="abaaso.js.html#line4275">line 4275</a>
     </li></ul></dd>
     
     
@@ -231,7 +228,7 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
     
             
 <div class="param-desc">
-    DataList instance
+    Deferred
 </div>
 
 
@@ -269,13 +266,13 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore_.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.cache.html">cache</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.html#datalist">datalist</a></li><li><a href="abaaso.datastore.html">datastore</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.html#promise">promise</a></li><li><a href="abaaso.regex.html">regex</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.html#validate">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul><h3>Global</h3><ul><li><a href="global.html#refresh">refresh</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore_.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.cache.html">cache</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.html#datalist">datalist</a></li><li><a href="abaaso.datastore.html">datastore</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.html#promise">promise</a></li><li><a href="abaaso.regex.html">regex</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.html#validate">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul><h3>Global</h3><ul><li><a href="global.html#undo">undo</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Nov 09 2013 17:50:52 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Jan 06 2014 14:40:42 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>

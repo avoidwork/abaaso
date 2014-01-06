@@ -58,7 +58,7 @@ var regex = {
 	jsonp_wrap              : /([a-zA-Z0-9\.]+\()(.*)(\))$/,
 	klass                   : /^\./,
 	linux                   : /linux|bsd|unix/i,
-	no                      : /no/i,
+	no                      : /no-store|no-cache/i,
 	not_endpoint            : /.*\//,
 	notEmpty                : /\w{1,}/,
 	number                  : /(^-?\d\d*\.\d*$)|(^-?\d\d*$)|(^-?\.\d\d*$)|number/,

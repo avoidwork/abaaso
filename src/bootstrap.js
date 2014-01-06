@@ -78,7 +78,7 @@ bootstrap = function () {
 
 					array.each( classes, function ( i ) {
 						self.push( i );
-					});
+					} );
 
 					this.updateClassName = function () {
 						obj.className = this.join( " " );
@@ -130,7 +130,7 @@ bootstrap = function () {
 				else {
 					throw new Error( "Could not create classList shim" );
 				}
-			})( global );
+			} )( global );
 		}
 	}
 	else {

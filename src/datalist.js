@@ -281,7 +281,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
-			});
+			} );
 
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
@@ -306,7 +306,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-			});
+			} );
 
 			// Filling in placeholder value
 			obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
@@ -357,9 +357,9 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 						return false;
 					}
-				});
-			});
-		});
+				} );
+			} );
+		} );
 	}
 
 	// Pagination
@@ -384,7 +384,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	// Processing records & generating templates
 	array.each( this.current, function ( i ) {
 		items.push( {key: i.key, template: fn( i )} );
-	});
+	} );
 
 	// Preparing the target element
 	if ( redraw ) {
@@ -394,25 +394,25 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		else {
 			el.innerHTML = items.map( function ( i ) {
 				return i.template;
-			}).join( "\n" );
+			} ).join( "\n" );
 
 			if ( callback ) {
 				array.each( element.find( el, "> li" ), function ( i ) {
 					self.callback( i );
-				});
+				} );
 			}
 		}
 	}
 	else {
 		array.each( element.find( el, "> li" ), function ( i ) {
 			element.addClass( i, "hidden" );
-		});
+		} );
 
 		array.each( items, function ( i ) {
 			array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
 				element.removeClass( o, "hidden" );
-			});
-		});
+			} );
+		} );
 	}
 
 	// Rendering pagination elements
@@ -422,7 +422,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	else {
 		array.each( utility.$( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 			element.destroy( i );
-		});
+		} );
 	}
 
 	observer.fire( el, "afterDataListRefresh" );

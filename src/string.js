@@ -17,7 +17,7 @@ var string = {
 		if ( all ) {
 			result = string.explode( obj, " " ).map( function ( i ) {
 				return i.charAt( 0 ).toUpperCase() + i.slice( 1 );
-			}).join(" ");
+			} ).join(" ");
 		}
 		else {
 			result = obj.charAt( 0 ).toUpperCase() + obj.slice( 1 );
@@ -327,7 +327,7 @@ var string = {
 		else {
 			return string.explode( obj, "-" ).map( function ( i ) {
 				return string.capitalize( i );
-			}).join( " " );
+			} ).join( " " );
 		}
 	}
 };

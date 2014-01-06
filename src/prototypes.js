@@ -62,7 +62,7 @@ var prototypes = {
 		clear : function () {
 			return !server && ( this[0] instanceof Element ) ? array.each( this, function ( i ) {
 				element.clear( i );
-			}) : array.clear( this );
+			} ) : array.clear( this );
 		},
 		clone : function () {
 			return utility.clone( this );

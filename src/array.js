@@ -191,7 +191,7 @@ var array = {
 	count : function ( obj, value ) {
 		return obj.filter( function ( i ) {
 			return ( i === value );
-		}).length;
+		} ).length;
 	},
 
 	/**
@@ -507,7 +507,7 @@ var array = {
 	 */
 	keySort : function ( obj, query, sub ) {
 		query       = query.replace( /\s*asc/ig, "" ).replace( /\s*desc/ig, " desc" );
-		var queries = string.explode( query ).map( function ( i ) { return i.split( " " ); }),
+		var queries = string.explode( query ).map( function ( i ) { return i.split( " " ); } ),
 		    sorts   = [];
 
 		if ( sub && sub !== "" ) {

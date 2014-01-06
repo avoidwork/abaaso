@@ -873,10 +873,10 @@ var utility = {
 				if ( !item[1] ) {
 					item[1] = "";
 				}
-				else if ( string.isNumber( item[1] )) {
+				else if ( string.isNumber( item[1] ) ) {
 					item[1] = Number( item[1] );
 				}
-				else if ( string.isBoolean( item[1] )) {
+				else if ( string.isBoolean( item[1] ) ) {
 					item[1] = ( item[1] === "true" );
 				}
 
@@ -1128,11 +1128,11 @@ var utility = {
 		else {
 			array.each( args, function ( p ) {
 				p.then( function () {
-					if ( ++i === nth && !defer.isResolved()) {
+					if ( ++i === nth && !defer.isResolved() ) {
 						if ( args.length > 1 ) {
 							defer.resolve( args.map( function ( obj ) {
 								return obj.value || obj.promise.value;
-							}));
+							} ) );
 						}
 						else {
 							defer.resolve( args[0].value || args[0].promise.value );
@@ -1143,7 +1143,7 @@ var utility = {
 						if ( args.length > 1 ) {
 							defer.reject( args.map( function ( obj ) {
 								return obj.value || obj.promise.value;
-							}));
+							} ) );
 						}
 						else {
 							defer.reject( args[0].value || args[0].promise.value );

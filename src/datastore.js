@@ -126,6 +126,8 @@ function DataStore ( obj ) {
 	this.retrieve    = false;
 	this.source      = null;
 	this.total       = 0;
+	this.versions    = {};
+	this.versioning  = true;
 	this.views       = {};
 	this.uri         = null;
 }
@@ -281,6 +283,8 @@ DataStore.prototype.clear = function ( sync ) {
 		this.retrieve    = false;
 		this.source      = null;
 		this.total       = 0;
+		this.versions    = {};
+		this.versioning  = true;
 		this.views       = {};
 		this.uri         = null;
 
@@ -452,7 +456,10 @@ DataStore.prototype.del = function ( record, reindex, batch ) {
  */
 DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 	delete this.keys[record.key];
+	delete this.versions[record.key];
+
 	this.records.remove( record.index );
+
 	this.total--;
 	this.views = {};
 
@@ -496,6 +503,7 @@ DataStore.prototype.dump = function ( args, fields ) {
 	args       = args || this.records;
 	var self   = this,
 	    custom = ( fields instanceof Array && fields.length > 0 ),
+	    key    = this.key !== null,
 	    fn;
 
 	if ( custom ) {
@@ -513,7 +521,9 @@ DataStore.prototype.dump = function ( args, fields ) {
 		fn = function ( i ) {
 			var record = {};
 
-			record[self.key] = i.key;
+			if ( key ) {
+				record[self.key] = i.key;
+			}
 
 			utility.iterate( i.data, function ( v, k ) {
 				record[k] = !array.contains( self.collections, k ) ? utility.clone( v, true ) : v.data.uri;
@@ -992,8 +1002,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			data  : data
 		};
 
-		this.keys[key]             = record.index;
-		this.records[record.index] = record;
+		this.keys[key]                = record.index;
+		this.records[record.index]    = record;
+		this.versions[record.key]     = lru( VERSIONS );
+		this.versions[record.key].nth = 0;
 
 		if ( this.retrieve ) {
 			deferreds.push( this.crawl( record ) );
@@ -1001,6 +1013,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	}
 	// Update
 	else {
+		if ( this.versioning ) {
+			this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth ), this.dump( [record] )[0] );
+		}
+
 		utility.iterate( data, function ( v, k ) {
 			if ( !array.contains( self.collections, k ) ) {
 				record.data[k] = v;
@@ -1565,6 +1581,45 @@ DataStore.prototype.teardown = function () {
 };
 
 /**
+ * Undoes the last modification to a record, if it exists
+ *
+ * @method undo
+ * @param  {Mixed}  key     Key or index
+ * @param  {String} version [Optional] Version to restore
+ * @return {Object}         Deferred
+ */
+DataStore.prototype.undo = function ( key, version ) {
+        var record   = this.get( key ),
+            defer    = deferred(),
+            versions = this.versions[record.key],
+            previous;
+
+        if ( record === undefined ) {
+                throw new Error( label.error.invalidArguments );
+        }
+
+        if ( versions ) {
+                previous = versions.get( version || versions.first );
+
+                if ( previous === undefined ) {
+                        defer.reject( label.error.datastoreNoPrevVersion );
+                }
+                else {
+                        this.set( key, previous ).then( function ( arg ) {
+                                defer.resolve( arg );
+                        }, function ( e ) {
+                                defer.reject( e );
+                        } );
+                }
+        }
+        else {
+                defer.reject( label.error.datastoreNoPrevVersion );
+        }
+
+        return defer;
+};
+
+/**
  * Returns Array of unique values of `key`
  *
  * @method unique
@@ -1575,7 +1630,7 @@ DataStore.prototype.teardown = function () {
 DataStore.prototype.unique = function ( key ) {
 	return array.unique( this.records.map( function ( i ) {
 		return i.data[key];
-	}));
+	} ) );
 };
 
 /**

@@ -463,7 +463,7 @@ Abaaso.prototype.has = function ( arg ) {
 
 	array.each( this.filter( function ( i ) {
 		return element.has( i, arg );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -484,7 +484,7 @@ Abaaso.prototype.hasClass = function ( arg ) {
 
 	array.each( this.filter( function ( i ) {
 		return element.hasClass( i, arg );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -534,7 +534,7 @@ Abaaso.prototype.is = function ( arg ) {
 
 	array.each( this.filter( function ( i ) {
 		return element.is( i, arg );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -554,7 +554,7 @@ Abaaso.prototype.isAlphaNum = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isAlphaNum( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -574,7 +574,7 @@ Abaaso.prototype.isBoolean = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isBoolean( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -594,7 +594,7 @@ Abaaso.prototype.isChecked = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isChecked( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -614,7 +614,7 @@ Abaaso.prototype.isDate = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isDate( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -634,7 +634,7 @@ Abaaso.prototype.isDisabled = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isDisabled( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -654,7 +654,7 @@ Abaaso.prototype.isDomain = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isDomain( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -674,7 +674,7 @@ Abaaso.prototype.isEmail = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isEmail( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -694,7 +694,7 @@ Abaaso.prototype.isEmpty = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isEmpty( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -714,7 +714,7 @@ Abaaso.prototype.isHidden = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isHidden( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -734,7 +734,7 @@ Abaaso.prototype.isIP = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isIP( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -754,7 +754,7 @@ Abaaso.prototype.isInt = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isInt( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -774,7 +774,7 @@ Abaaso.prototype.isNumber = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isNumber( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -794,7 +794,7 @@ Abaaso.prototype.isPhone = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isPhone( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -814,7 +814,7 @@ Abaaso.prototype.isUrl = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isUrl( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 

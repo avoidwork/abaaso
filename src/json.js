@@ -49,7 +49,7 @@ var json = {
 
 				result += obj.map( function ( i ) {
 					return json.csv( i, delimiter, false );
-				}).join( "\n" );
+				} ).join( "\n" );
 			}
 			else {
 				result += ( prepare( obj, delimiter ) + "\n" );

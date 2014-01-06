@@ -29,7 +29,7 @@
  * abaaso
  *
  * @author Jason Mulligan &lt;jason.mulligan@avoidwork.com>
- * @copyright 2013 Jason Mulligan
+ * @copyright 2014 Jason Mulligan
  * @license BSD-3 &lt;https://raw.github.com/avoidwork/abaaso/master/LICENSE>
  * @link http://abaaso.com
  * @module abaaso
@@ -42,6 +42,7 @@ var document  = global.document,
     navigator = global.navigator,
     server    = typeof exports != "undefined",
     webWorker = typeof Blob != "undefined" && typeof Worker != "undefined",
+    VERSIONS  = 100,
     framework, http, https, url, WORKER;
 
 if ( server ) {
@@ -370,7 +371,7 @@ var array = {
 	count : function ( obj, value ) {
 		return obj.filter( function ( i ) {
 			return ( i === value );
-		}).length;
+		} ).length;
 	},
 
 	/**
@@ -686,7 +687,7 @@ var array = {
 	 */
 	keySort : function ( obj, query, sub ) {
 		query       = query.replace( /\s*asc/ig, "" ).replace( /\s*desc/ig, " desc" );
-		var queries = string.explode( query ).map( function ( i ) { return i.split( " " ); }),
+		var queries = string.explode( query ).map( function ( i ) { return i.split( " " ); } ),
 		    sorts   = [];
 
 		if ( sub && sub !== "" ) {
@@ -2367,7 +2368,6 @@ var client = {
 		// server-side exception handling
 		exception = function ( e, xhr ) {
 			defer.reject( e );
-			utility.error( e, arguments, this, true );
 			uri.fire( "failed" + typed, client.parse( xhr ), xhr );
 		};
 
@@ -2845,6 +2845,8 @@ function DataStore ( obj ) {
 	this.retrieve    = false;
 	this.source      = null;
 	this.total       = 0;
+	this.versions    = {};
+	this.versioning  = true;
 	this.views       = {};
 	this.uri         = null;
 }
@@ -3000,6 +3002,8 @@ DataStore.prototype.clear = function ( sync ) {
 		this.retrieve    = false;
 		this.source      = null;
 		this.total       = 0;
+		this.versions    = {};
+		this.versioning  = true;
 		this.views       = {};
 		this.uri         = null;
 
@@ -3171,7 +3175,10 @@ DataStore.prototype.del = function ( record, reindex, batch ) {
  */
 DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 	delete this.keys[record.key];
+	delete this.versions[record.key];
+
 	this.records.remove( record.index );
+
 	this.total--;
 	this.views = {};
 
@@ -3215,6 +3222,7 @@ DataStore.prototype.dump = function ( args, fields ) {
 	args       = args || this.records;
 	var self   = this,
 	    custom = ( fields instanceof Array && fields.length > 0 ),
+	    key    = this.key !== null,
 	    fn;
 
 	if ( custom ) {
@@ -3232,7 +3240,9 @@ DataStore.prototype.dump = function ( args, fields ) {
 		fn = function ( i ) {
 			var record = {};
 
-			record[self.key] = i.key;
+			if ( key ) {
+				record[self.key] = i.key;
+			}
 
 			utility.iterate( i.data, function ( v, k ) {
 				record[k] = !array.contains( self.collections, k ) ? utility.clone( v, true ) : v.data.uri;
@@ -3711,8 +3721,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			data  : data
 		};
 
-		this.keys[key]             = record.index;
-		this.records[record.index] = record;
+		this.keys[key]                = record.index;
+		this.records[record.index]    = record;
+		this.versions[record.key]     = lru( VERSIONS );
+		this.versions[record.key].nth = 0;
 
 		if ( this.retrieve ) {
 			deferreds.push( this.crawl( record ) );
@@ -3720,6 +3732,10 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	}
 	// Update
 	else {
+		if ( this.versioning ) {
+			this.versions[record.key].set( "v" + ( ++this.versions[record.key].nth ), this.dump( [record] )[0] );
+		}
+
 		utility.iterate( data, function ( v, k ) {
 			if ( !array.contains( self.collections, k ) ) {
 				record.data[k] = v;
@@ -4284,6 +4300,45 @@ DataStore.prototype.teardown = function () {
 };
 
 /**
+ * Undoes the last modification to a record, if it exists
+ *
+ * @method undo
+ * @param  {Mixed}  key     Key or index
+ * @param  {String} version [Optional] Version to restore
+ * @return {Object}         Deferred
+ */
+DataStore.prototype.undo = function ( key, version ) {
+        var record   = this.get( key ),
+            defer    = deferred(),
+            versions = this.versions[record.key],
+            previous;
+
+        if ( record === undefined ) {
+                throw new Error( label.error.invalidArguments );
+        }
+
+        if ( versions ) {
+                previous = versions.get( version || versions.first );
+
+                if ( previous === undefined ) {
+                        defer.reject( label.error.datastoreNoPrevVersion );
+                }
+                else {
+                        this.set( key, previous ).then( function ( arg ) {
+                                defer.resolve( arg );
+                        }, function ( e ) {
+                                defer.reject( e );
+                        } );
+                }
+        }
+        else {
+                defer.reject( label.error.datastoreNoPrevVersion );
+        }
+
+        return defer;
+};
+
+/**
  * Returns Array of unique values of `key`
  *
  * @method unique
@@ -4294,7 +4349,7 @@ DataStore.prototype.teardown = function () {
 DataStore.prototype.unique = function ( key ) {
 	return array.unique( this.records.map( function ( i ) {
 		return i.data[key];
-	}));
+	} ) );
 };
 
 /**
@@ -4612,7 +4667,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				reg.compile( string.escape( attr ), "g" );
 				html = html.replace( reg, value );
-			});
+			} );
 
 			// Filling in placeholder value
 			html = html.replace( /\{\{.*\}\}/g, self.placeholder );
@@ -4637,7 +4692,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 				// Stripping first and last " to concat to valid JSON
 				obj = obj.replace( reg, json.encode( value ).replace( /(^")|("$)/g, "" ) );
-			});
+			} );
 
 			// Filling in placeholder value
 			obj = json.decode( obj.replace( /\{\{.*\}\}/g, self.placeholder ) );
@@ -4688,9 +4743,9 @@ DataList.prototype.refresh = function ( redraw, create ) {
 
 						return false;
 					}
-				});
-			});
-		});
+				} );
+			} );
+		} );
 	}
 
 	// Pagination
@@ -4715,7 +4770,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	// Processing records & generating templates
 	array.each( this.current, function ( i ) {
 		items.push( {key: i.key, template: fn( i )} );
-	});
+	} );
 
 	// Preparing the target element
 	if ( redraw ) {
@@ -4725,25 +4780,25 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		else {
 			el.innerHTML = items.map( function ( i ) {
 				return i.template;
-			}).join( "\n" );
+			} ).join( "\n" );
 
 			if ( callback ) {
 				array.each( element.find( el, "> li" ), function ( i ) {
 					self.callback( i );
-				});
+				} );
 			}
 		}
 	}
 	else {
 		array.each( element.find( el, "> li" ), function ( i ) {
 			element.addClass( i, "hidden" );
-		});
+		} );
 
 		array.each( items, function ( i ) {
 			array.each( element.find( el, "> li[data-key='" + i.key + "']" ), function ( o ) {
 				element.removeClass( o, "hidden" );
-			});
-		});
+			} );
+		} );
 	}
 
 	// Rendering pagination elements
@@ -4753,7 +4808,7 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	else {
 		array.each( utility.$( "#" + el.id + "-pages-top, #" + el.id + "-pages-bottom" ), function ( i ) {
 			element.destroy( i );
-		});
+		} );
 	}
 
 	observer.fire( el, "afterDataListRefresh" );
@@ -5441,7 +5496,7 @@ var element = {
 			utility.id( obj );
 			return ( element.find( obj.parentNode, obj.nodeName.toLowerCase() + arg ).filter( function ( i ) {
 				return ( i.id === obj.id );
-			}).length === 1 );
+			} ).length === 1 );
 		}
 		else {
 			return new RegExp( arg, "i" ).test( obj.nodeName );
@@ -6385,7 +6440,7 @@ var json = {
 
 				result += obj.map( function ( i ) {
 					return json.csv( i, delimiter, false );
-				}).join( "\n" );
+				} ).join( "\n" );
 			}
 			else {
 				result += ( prepare( obj, delimiter ) + "\n" );
@@ -8263,8 +8318,7 @@ Promise.prototype.constructor = Promise;
  * @return {Object} {@link abaaso.Promise}
  */
 Promise.prototype.process = function() {
-	var self = this,
-	    result, success, value;
+	var result, success, value;
 
 	this.deferred = false;
 
@@ -8298,7 +8352,6 @@ Promise.prototype.process = function() {
 			result = callback( value );
 		}
 		catch ( e ) {
-			utility.error( e, value, self );
 			child.reject( e );
 
 			return;
@@ -8433,7 +8486,7 @@ var prototypes = {
 		clear : function () {
 			return !server && ( this[0] instanceof Element ) ? array.each( this, function ( i ) {
 				element.clear( i );
-			}) : array.clear( this );
+			} ) : array.clear( this );
 		},
 		clone : function () {
 			return utility.clone( this );
@@ -9485,7 +9538,7 @@ var string = {
 		if ( all ) {
 			result = string.explode( obj, " " ).map( function ( i ) {
 				return i.charAt( 0 ).toUpperCase() + i.slice( 1 );
-			}).join(" ");
+			} ).join(" ");
 		}
 		else {
 			result = obj.charAt( 0 ).toUpperCase() + obj.slice( 1 );
@@ -9795,7 +9848,7 @@ var string = {
 		else {
 			return string.explode( obj, "-" ).map( function ( i ) {
 				return string.capitalize( i );
-			}).join( " " );
+			} ).join( " " );
 		}
 	}
 };
@@ -10675,10 +10728,10 @@ var utility = {
 				if ( !item[1] ) {
 					item[1] = "";
 				}
-				else if ( string.isNumber( item[1] )) {
+				else if ( string.isNumber( item[1] ) ) {
 					item[1] = Number( item[1] );
 				}
-				else if ( string.isBoolean( item[1] )) {
+				else if ( string.isBoolean( item[1] ) ) {
 					item[1] = ( item[1] === "true" );
 				}
 
@@ -10930,11 +10983,11 @@ var utility = {
 		else {
 			array.each( args, function ( p ) {
 				p.then( function () {
-					if ( ++i === nth && !defer.isResolved()) {
+					if ( ++i === nth && !defer.isResolved() ) {
 						if ( args.length > 1 ) {
 							defer.resolve( args.map( function ( obj ) {
 								return obj.value || obj.promise.value;
-							}));
+							} ) );
 						}
 						else {
 							defer.resolve( args[0].value || args[0].promise.value );
@@ -10945,7 +10998,7 @@ var utility = {
 						if ( args.length > 1 ) {
 							defer.reject( args.map( function ( obj ) {
 								return obj.value || obj.promise.value;
-							}));
+							} ) );
 						}
 						else {
 							defer.reject( args[0].value || args[0].promise.value );
@@ -11062,6 +11115,7 @@ var xhr = function () {
 	    HEADERS_RECEIVED = 2,
 	    LOADING          = 3,
 	    DONE             = 4,
+	    ERR_REFUSED      = /ECONNREFUSED/,
 	    ready            = new RegExp( HEADERS_RECEIVED + "|" + LOADING ),
 	    XMLHttpRequest, headers, handler, handlerError, state;
 
@@ -11142,9 +11196,9 @@ var xhr = function () {
 	 * @return {Undefined} undefined
 	 */
 	handlerError = function ( e ) {
-		this.status       = 500;
-		this.statusText   = e;
-		this.responseText = e ? ( e.stack || e ) : e;
+		this.status       = ERR_REFUSED.test( e.message ) ? 503 : 500;
+		this.statusText   = "";
+		this.responseText = e.message;
 		this._error       = true;
 		this._send        = false;
 		this.dispatchEvent( "error" );
@@ -11247,7 +11301,7 @@ var xhr = function () {
 			this["on" + event]();
 		}
 
-		if ( this._listeners.hasOwnProperty( event )) {
+		if ( this._listeners.hasOwnProperty( event ) ) {
 			array.each( this._listeners[event], function ( i ) {
 				if ( typeof i == "function" ) {
 					i.call( self );
@@ -11428,7 +11482,7 @@ var xhr = function () {
 
 		request = obj.request( options, function ( arg ) {
 			handler.call( self, arg );
-		}).on( "error", function ( e ) {
+		} ).on( "error", function ( e ) {
 			handlerError.call( self, e );
 		} );
 
@@ -12030,7 +12084,7 @@ Abaaso.prototype.has = function ( arg ) {
 
 	array.each( this.filter( function ( i ) {
 		return element.has( i, arg );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12051,7 +12105,7 @@ Abaaso.prototype.hasClass = function ( arg ) {
 
 	array.each( this.filter( function ( i ) {
 		return element.hasClass( i, arg );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12101,7 +12155,7 @@ Abaaso.prototype.is = function ( arg ) {
 
 	array.each( this.filter( function ( i ) {
 		return element.is( i, arg );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12121,7 +12175,7 @@ Abaaso.prototype.isAlphaNum = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isAlphaNum( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12141,7 +12195,7 @@ Abaaso.prototype.isBoolean = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isBoolean( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12161,7 +12215,7 @@ Abaaso.prototype.isChecked = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isChecked( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12181,7 +12235,7 @@ Abaaso.prototype.isDate = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isDate( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12201,7 +12255,7 @@ Abaaso.prototype.isDisabled = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isDisabled( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12221,7 +12275,7 @@ Abaaso.prototype.isDomain = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isDomain( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12241,7 +12295,7 @@ Abaaso.prototype.isEmail = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isEmail( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12261,7 +12315,7 @@ Abaaso.prototype.isEmpty = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isEmpty( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12281,7 +12335,7 @@ Abaaso.prototype.isHidden = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isHidden( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12301,7 +12355,7 @@ Abaaso.prototype.isIP = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isIP( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12321,7 +12375,7 @@ Abaaso.prototype.isInt = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isInt( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12341,7 +12395,7 @@ Abaaso.prototype.isNumber = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isNumber( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12361,7 +12415,7 @@ Abaaso.prototype.isPhone = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isPhone( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -12381,7 +12435,7 @@ Abaaso.prototype.isUrl = function () {
 
 	array.each( this.filter( function ( i ) {
 		return element.isUrl( i );
-	}), function ( i ) {
+	} ), function ( i ) {
 		result.push( i );
 	} );
 
@@ -14232,7 +14286,7 @@ bootstrap = function () {
 
 					array.each( classes, function ( i ) {
 						self.push( i );
-					});
+					} );
 
 					this.updateClassName = function () {
 						obj.className = this.join( " " );
@@ -14284,7 +14338,7 @@ bootstrap = function () {
 				else {
 					throw new Error( "Could not create classList shim" );
 				}
-			})( global );
+			} )( global );
 		}
 	}
 	else {
@@ -14413,13 +14467,13 @@ else {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore_.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.cache.html">cache</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.html#datalist">datalist</a></li><li><a href="abaaso.datastore.html">datastore</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.html#promise">promise</a></li><li><a href="abaaso.regex.html">regex</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.html#validate">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-abaaso.html">abaaso</a></li></ul><h3>Classes</h3><ul><li><a href="abaaso.Abaaso.html">Abaaso</a></li><li><a href="abaaso.Channel.html">Channel</a></li><li><a href="abaaso.DataGrid.html">DataGrid</a></li><li><a href="abaaso.DataList_.html">DataList</a></li><li><a href="abaaso.DataListFilter.html">DataListFilter</a></li><li><a href="abaaso.DataStore_.html">DataStore</a></li><li><a href="abaaso.Deferred.html">Deferred</a></li><li><a href="abaaso.LRU.html">LRU</a></li><li><a href="abaaso.LRUItem.html">LRUItem</a></li><li><a href="abaaso.Promise_.html">Promise</a></li><li><a href="abaaso.XMLHttpRequest.html">XMLHttpRequest</a></li></ul><h3>Namespaces</h3><ul><li><a href="abaaso.html">abaaso</a></li><li><a href="abaaso.array.html">array</a></li><li><a href="abaaso.cache.html">cache</a></li><li><a href="abaaso.client.html">client</a></li><li><a href="abaaso.cookie.html">cookie</a></li><li><a href="abaaso.html#datalist">datalist</a></li><li><a href="abaaso.datastore.html">datastore</a></li><li><a href="abaaso.element.html">element</a></li><li><a href="abaaso.fn.html">fn</a></li><li><a href="abaaso.json.html">json</a></li><li><a href="abaaso.label.html">label</a></li><li><a href="abaaso.label.common.html">common</a></li><li><a href="abaaso.label.day.html">day</a></li><li><a href="abaaso.label.error.html">error</a></li><li><a href="abaaso.label.month.html">month</a></li><li><a href="abaaso.loading.html">loading</a></li><li><a href="abaaso.math.html">math</a></li><li><a href="abaaso.message.html">message</a></li><li><a href="abaaso.mouse.html">mouse</a></li><li><a href="abaaso.number.html">number</a></li><li><a href="abaaso.observer.html">observer</a></li><li><a href="abaaso.html#promise">promise</a></li><li><a href="abaaso.regex.html">regex</a></li><li><a href="abaaso.state.html">state</a></li><li><a href="abaaso.string.html">string</a></li><li><a href="abaaso.utility.html">utility</a></li><li><a href="abaaso.html#validate">validate</a></li><li><a href="abaaso.xml.html">xml</a></li></ul><h3>Global</h3><ul><li><a href="global.html#undo">undo</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Dec 30 2013 10:56:55 GMT-0500 (EST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Mon Jan 06 2014 14:40:41 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
