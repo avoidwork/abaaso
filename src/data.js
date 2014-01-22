@@ -1067,40 +1067,42 @@ DataStore.prototype.setUri = function ( arg ) {
 	parsed = utility.parse( arg );
 	uri    = parsed.href;
 
-	// Re-encoding the query string
+	// Re-encoding the query string for the request
 	if ( array.keys( parsed.query ).length > 0 ) {
 		uri = uri.replace( /\?.*/, "?" );
 
 		utility.iterate( parsed.query, function ( v, k ) {
-			uri += "&" + k + "=" + encodeURIComponent( v );
+			if ( !( v instanceof Array ) ) {
+				uri += "&" + k + "=" + encodeURIComponent( v );
+			}
+			else {
+				array.each( v, function ( i ) {
+					uri += "&" + k + "=" + encodeURIComponent( i );
+				} );
+			}
 		} );
 
 		uri = uri.replace( "?&", "?" );
 	}
 
-	if ( this.uri === uri ) {
-		defer.resolve( this.records );
+	if ( this.uri !== null) {
+		observer.remove( this.uri );
 	}
-	else {
-		if ( this.uri !== null) {
-			observer.remove( this.uri );
-		}
 
-		this.uri = uri;
+	this.uri = uri;
 
-		if ( this.uri !== null ) {
-			observer.add( this.uri, "expire", function () {
-				this.sync();
-			}, "dataSync", this);
+	if ( this.uri !== null ) {
+		observer.add( this.uri, "expire", function () {
+			this.sync();
+		}, "dataSync", this);
 
-			cache.expire( this.uri, true );
+		cache.expire( this.uri, true );
 
-			this.sync().then( function (arg ) {
-				defer.resolve( arg );
-			}, function ( e ) {
-				defer.reject( e );
-			});
-		}
+		this.sync().then( function (arg ) {
+			defer.resolve( arg );
+		}, function ( e ) {
+			defer.reject( e );
+		});
 	}
 
 	return defer;
