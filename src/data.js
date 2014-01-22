@@ -1057,37 +1057,52 @@ DataStore.prototype.setExpires = function ( arg ) {
  * @return {Object}     Deferred
  */
 DataStore.prototype.setUri = function ( arg ) {
-	var defer = deferred();
+	var defer = deferred(),
+	    parsed, uri;
 
 	if ( arg !== null && string.isEmpty( arg ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	arg = utility.parse( arg ).href;
+	parsed = utility.parse( arg );
+	uri    = parsed.href;
 
-	if ( this.uri === arg ) {
-		defer.resolve( this.records );
+	// Re-encoding the query string for the request
+	if ( array.keys( parsed.query ).length > 0 ) {
+		uri = uri.replace( /\?.*/, "?" );
+
+		utility.iterate( parsed.query, function ( v, k ) {
+			if ( !( v instanceof Array ) ) {
+				uri += "&" + k + "=" + encodeURIComponent( v );
+			}
+			else {
+				array.each( v, function ( i ) {
+					uri += "&" + k + "=" + encodeURIComponent( i );
+				} );
+			}
+		} );
+
+		uri = uri.replace( "?&", "?" );
 	}
-	else {
-		if ( this.uri !== null) {
-			observer.remove( this.uri );
-		}
 
-		this.uri = arg;
+	if ( this.uri !== null) {
+		observer.remove( this.uri );
+	}
 
-		if ( this.uri !== null ) {
-			observer.add( this.uri, "expire", function () {
-				this.sync();
-			}, "dataSync", this);
+	this.uri = uri;
 
-			cache.expire( this.uri, true );
+	if ( this.uri !== null ) {
+		observer.add( this.uri, "expire", function () {
+			this.sync();
+		}, "dataSync", this);
 
-			this.sync().then( function (arg ) {
-				defer.resolve( arg );
-			}, function ( e ) {
-				defer.reject( e );
-			});
-		}
+		cache.expire( this.uri, true );
+
+		this.sync().then( function (arg ) {
+			defer.resolve( arg );
+		}, function ( e ) {
+			defer.reject( e );
+		});
 	}
 
 	return defer;
