@@ -1057,15 +1057,28 @@ DataStore.prototype.setExpires = function ( arg ) {
  * @return {Object}     Deferred
  */
 DataStore.prototype.setUri = function ( arg ) {
-	var defer = deferred();
+	var defer = deferred(),
+	    parsed, uri;
 
 	if ( arg !== null && string.isEmpty( arg ) ) {
 		throw new Error( label.error.invalidArguments );
 	}
 
-	arg = utility.parse( arg ).href;
+	parsed = utility.parse( arg );
+	uri    = parsed.href;
 
-	if ( this.uri === arg ) {
+	// Re-encoding the query string
+	if ( array.keys( parsed.query ).length > 0 ) {
+		uri = uri.replace( /\?.*/, "?" );
+
+		utility.iterate( parsed.query, function ( v, k ) {
+			uri += "&" + k + "=" + encodeURIComponent( v );
+		} );
+
+		uri = uri.replace( "?&", "?" );
+	}
+
+	if ( this.uri === uri ) {
 		defer.resolve( this.records );
 	}
 	else {
@@ -1073,7 +1086,7 @@ DataStore.prototype.setUri = function ( arg ) {
 			observer.remove( this.uri );
 		}
 
-		this.uri = arg;
+		this.uri = uri;
 
 		if ( this.uri !== null ) {
 			observer.add( this.uri, "expire", function () {
