@@ -888,14 +888,10 @@ DataStore.prototype.set = function ( key, data, batch ) {
 			}
 			else if ( data[this.key] ) {
 				key = data[this.key];
-				delete data[this.key];
 			}
 			else {
 				key = utility.genId();
 			}
-		}
-		else {
-			delete data[this.key];
 		}
 
 		if ( !batch && events ) {
@@ -951,6 +947,11 @@ DataStore.prototype.set = function ( key, data, batch ) {
 DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	var self      = this,
 	    deferreds = [];
+
+	// Removing primary key from data
+	if ( this.key ) {
+		delete data[this.key];
+	}
 
 	// Create
 	if ( record === null ) {
