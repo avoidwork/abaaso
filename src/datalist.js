@@ -31,7 +31,7 @@ var datalist = {
 
 		// Rendering if not tied to an API or data is ready
 		if ( instance.store.uri === null || instance.store.loaded ) {
-			instance.refresh( true, true );
+			instance.refresh();
 		}
 
 		return instance;
@@ -110,14 +110,13 @@ DataList.prototype.dump = function () {
  * Changes the page index of the DataList
  *
  * @method page
- * @param  {Boolean} redraw [Optional] Boolean to force clearing the DataList, default is `true`, false toggles "hidden" class of items
- * @param  {Boolean} create [Optional] Recreates cached View of data
- * @return {Object}         DataList instance
+ * @param  {Number} arg Page number to display
+ * @return {Object}     DataList instance
  */
-DataList.prototype.page = function ( arg, redraw, create ) {
+DataList.prototype.page = function ( arg ) {
 	this.pageIndex = arg;
 
-	return this.refresh( redraw, create );
+	return this.refresh();
 };
 
 /**
@@ -244,8 +243,8 @@ DataList.prototype.refresh = function ( redraw, create ) {
 	    range    = [],
 	    fn, ceiling;
 
-	redraw = ( redraw !== false );
-	create = ( create === true );
+	redraw = redraw !== false;
+	create = create === true;
 
 	observer.fire( el, "beforeDataListRefresh" );
 
@@ -299,25 +298,22 @@ DataList.prototype.refresh = function ( redraw, create ) {
 		};
 	}
 
-	// Creating view of DataStore
-	if ( create ) {
-		// Consuming records based on sort
-		if ( this.where === null ) {
-			this.records = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create );
-		}
-		else {
-			this.records = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.where );
-		}
-
-		this.total    = this.records.length;
-		this.filtered = [];
+	// Consuming records based on sort
+	if ( this.where === null ) {
+		this.records = string.isEmpty( this.order ) ? this.store.get() : this.store.sort( this.order, create );
 	}
+	else {
+		this.records = string.isEmpty( this.order ) ? this.store.select( this.where ) : this.store.sort( this.order, create, this.where );
+	}
+
+	this.total    = this.records.length;
+	this.filtered = [];
 
 	// Resetting 'view' specific arrays
 	this.current  = [];
 
 	// Filtering records (if applicable)
-	if ( filter && create ) {
+	if ( filter ) {
 		array.each( this.records, function ( i ) {
 			utility.iterate( self.filter, function ( v, k ) {
 				var reg, key;
@@ -418,14 +414,13 @@ DataList.prototype.refresh = function ( redraw, create ) {
  * Sorts data list & refreshes element
  *
  * @method sort
- * @param  {String}  order  SQL "order by" statement
- * @param  {Boolean} create [Optional] Recreates cached View of data store
- * @return {Object}         DataList instance
+ * @param  {String} order SQL "order by" statement
+ * @return {Object}       DataList instance
  */
-DataList.prototype.sort = function ( order, create ) {
+DataList.prototype.sort = function ( order ) {
 	this.order = order;
 
-	return this.refresh( true, create );
+	return this.refresh();
 };
 
 /**

@@ -116,7 +116,7 @@ Events: beforeDataBatch  Fires before the batch is queued
       <span class="p">}</span>
 
       <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">datalists</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+        <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
       <span class="p">});</span>
 
       <span class="k">if</span> <span class="p">(</span> <span class="nx">type</span> <span class="o">===</span> <span class="s2">&quot;del&quot;</span> <span class="p">)</span> <span class="p">{</span>
@@ -213,7 +213,7 @@ Events: beforeDataClear Fires before the data is cleared
     <span class="k">this</span><span class="p">.</span><span class="nx">views</span>       <span class="o">=</span> <span class="p">{};</span>
 
     <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">datalists</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
     <span class="p">});</span>
   <span class="p">}</span>
 
@@ -384,7 +384,7 @@ Events: beforeDataDelete  Fires before the record is deleted
     <span class="p">}</span>
 
     <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">datalists</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
     <span class="p">});</span>
   <span class="p">}</span>
 
@@ -957,7 +957,7 @@ Events: beforeDataSet  Fires before the record is set
     <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">parentNode</span><span class="p">,</span> <span class="s2">&quot;afterDataSet&quot;</span><span class="p">,</span> <span class="nx">record</span> <span class="p">);</span>
 
     <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">datalists</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="nx">i</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
     <span class="p">});</span>
   <span class="p">}</span>
 

@@ -120,7 +120,7 @@ DataListFilter.prototype.update = function () {
 		}
 
 		self.datalist.pageIndex = 1;
-		self.datalist.refresh( true, true );
+		self.datalist.refresh();
 	}, this.debounce, this.element.id + "Debounce");
 
 	return this;
