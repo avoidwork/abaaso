@@ -127,7 +127,7 @@ DataStore.prototype.batch = function ( type, data, sync ) {
 			}
 
 			array.each( self.datalists, function ( i ) {
-				i.refresh( true, true );
+				i.refresh();
 			});
 
 			if ( type === "del" ) {
@@ -223,7 +223,7 @@ DataStore.prototype.clear = function ( sync ) {
 		this.views       = {};
 
 		array.each( this.datalists, function ( i ) {
-			i.refresh( true, true );
+			i.refresh();
 		});
 	}
 
@@ -400,7 +400,7 @@ DataStore.prototype.delComplete = function ( record, reindex, batch, defer ) {
 		}
 
 		array.each( this.datalists, function ( i ) {
-			i.refresh( true, true );
+			i.refresh();
 		});
 	}
 
@@ -993,7 +993,7 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 		observer.fire( self.parentNode, "afterDataSet", record );
 
 		array.each( this.datalists, function ( i ) {
-			i.refresh( true, true );
+			i.refresh();
 		});
 	}
 

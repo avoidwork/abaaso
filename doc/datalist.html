@@ -24,7 +24,7 @@
     <span class="p">}</span>
 
     <span class="nx">instance</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">datalists</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="nx">instance</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Rendering if not tied to an API or data is ready</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">uri</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">instance</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">loaded</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="nx">instance</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="kc">true</span> <span class="p">);</span>
+      <span class="nx">instance</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
     <span class="p">}</span>
 
     <span class="k">return</span> <span class="nx">instance</span><span class="p">;</span>
@@ -82,14 +82,13 @@
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>redraw must be a Boolean.</strong><br/>([Optional] Boolean to force clearing the DataList, default is <code>true</code>, false toggles "hidden" class of items)</p></li>
-<li><p><strong>create must be a Boolean.</strong><br/>([Optional] Recreates cached View of data)</p></li>
+<li><strong>arg must be a Number.</strong><br/>(Page number to display)</li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">page</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span><span class="p">,</span> <span class="nx">redraw</span><span class="p">,</span> <span class="nx">create</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">page</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">pageIndex</span> <span class="o">=</span> <span class="nx">arg</span><span class="p">;</span>
 
-  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="nx">redraw</span><span class="p">,</span> <span class="nx">create</span> <span class="p">);</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method pages</span></p>
 
 <p>Adds pagination Elements to the View</p>
@@ -180,8 +179,8 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
       <span class="nx">range</span>    <span class="o">=</span> <span class="p">[],</span>
       <span class="nx">fn</span><span class="p">,</span> <span class="nx">ceiling</span><span class="p">;</span>
 
-  <span class="nx">redraw</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">redraw</span> <span class="o">!==</span> <span class="kc">false</span> <span class="p">);</span>
-  <span class="nx">create</span> <span class="o">=</span> <span class="p">(</span> <span class="nx">create</span> <span class="o">===</span> <span class="kc">true</span> <span class="p">);</span>
+  <span class="nx">redraw</span> <span class="o">=</span> <span class="nx">redraw</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">;</span>
+  <span class="nx">create</span> <span class="o">=</span> <span class="nx">create</span> <span class="o">===</span> <span class="kc">true</span><span class="p">;</span>
 
   <span class="nx">observer</span><span class="p">.</span><span class="nx">fire</span><span class="p">(</span> <span class="nx">el</span><span class="p">,</span> <span class="s2">&quot;beforeDataListRefresh&quot;</span> <span class="p">);</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Function to create templates for the html rep</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nx">template</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">fn</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
@@ -211,16 +210,15 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
 
       <span class="k">return</span> <span class="p">{</span><span class="nx">li</span><span class="o">:</span> <span class="nx">obj</span><span class="p">};</span>
     <span class="p">};</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Creating view of DataStore</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="nx">create</span> <span class="p">)</span> <span class="p">{</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Consuming records based on sort</p></div></div><div class="code"><div class="wrapper">    <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span><span class="p">,</span> <span class="nx">create</span> <span class="p">);</span>
-    <span class="p">}</span>
-    <span class="k">else</span> <span class="p">{</span>
-      <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span><span class="p">,</span> <span class="nx">create</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="p">);</span>
-    <span class="p">}</span>
+  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Consuming records based on sort</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="o">===</span> <span class="kc">null</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">get</span><span class="p">()</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span><span class="p">,</span> <span class="nx">create</span> <span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">else</span> <span class="p">{</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">records</span> <span class="o">=</span> <span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="p">)</span> <span class="o">?</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="p">)</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">sort</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">order</span><span class="p">,</span> <span class="nx">create</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">where</span> <span class="p">);</span>
+  <span class="p">}</span>
 
-    <span class="k">this</span><span class="p">.</span><span class="nx">total</span>    <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">filtered</span> <span class="o">=</span> <span class="p">[];</span>
-  <span class="p">}</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Resetting 'view' specific arrays</p></div></div><div class="code"><div class="wrapper">  <span class="k">this</span><span class="p">.</span><span class="nx">current</span>  <span class="o">=</span> <span class="p">[];</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Filtering records (if applicable)</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="nx">filter</span> <span class="o">&amp;&amp;</span> <span class="nx">create</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">total</span>    <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span>
+  <span class="k">this</span><span class="p">.</span><span class="nx">filtered</span> <span class="o">=</span> <span class="p">[];</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Resetting 'view' specific arrays</p></div></div><div class="code"><div class="wrapper">  <span class="k">this</span><span class="p">.</span><span class="nx">current</span>  <span class="o">=</span> <span class="p">[];</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Filtering records (if applicable)</p></div></div><div class="code"><div class="wrapper">  <span class="k">if</span> <span class="p">(</span> <span class="nx">filter</span> <span class="p">)</span> <span class="p">{</span>
     <span class="nx">array</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">records</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">i</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">utility</span><span class="p">.</span><span class="nx">iterate</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">filter</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">v</span><span class="p">,</span> <span class="nx">k</span> <span class="p">)</span> <span class="p">{</span>
         <span class="kd">var</span> <span class="nx">reg</span><span class="p">,</span> <span class="nx">key</span><span class="p">;</span>
@@ -304,14 +302,13 @@ Events: beforeDataListRefresh  Fires from the element containing the DataList
 <p>Parameters:</p>
 
 <ul>
-<li><p><strong>order must be a String.</strong><br/>(SQL "order by" statement)</p></li>
-<li><p><strong>create must be a Boolean.</strong><br/>([Optional] Recreates cached View of data store)</p></li>
+<li><strong>order must be a String.</strong><br/>(SQL "order by" statement)</li>
 </ul>
 
-<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">order</span><span class="p">,</span> <span class="nx">create</span> <span class="p">)</span> <span class="p">{</span>
+<p><strong>Returns an Object</strong><br/>(DataList instance)</p></div></div><div class="code"><div class="wrapper"><span class="nx">DataList</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">sort</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">order</span> <span class="p">)</span> <span class="p">{</span>
   <span class="k">this</span><span class="p">.</span><span class="nx">order</span> <span class="o">=</span> <span class="nx">order</span><span class="p">;</span>
 
-  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">create</span> <span class="p">);</span>
+  <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">refresh</span><span class="p">();</span>
 <span class="p">};</span></div></div></div><div class="segment"><div class="comments doc-section"><div class="wrapper"><p><span class='doc-section-header'>Method teardown</span></p>
 
 <p>Tears down references to the DataList</p>

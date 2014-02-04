@@ -140,15 +140,14 @@ DataGrid.prototype.refresh = function () {
 			var obj = element.find( self.element, ".header span[data-field='" + i + "']" )[0];
 
 			sort.push( string.trim( i + " " + ( element.data( obj, "sort" ) || "" ) ) );
-		});
+		} );
 
 		this.options.order = this.list.order = sort.join( ", " );
 	}
 
 	this.list.where = null;
 	utility.merge( this.list, this.options );
-
-	this.list.refresh( true, true );
+	this.list.refresh();
 
 	return this;
 };
