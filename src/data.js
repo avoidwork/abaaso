@@ -948,6 +948,9 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 	var self      = this,
 	    deferreds = [];
 
+	// Clearing cached views
+	this.views = {};
+
 	// Removing primary key from data
 	if ( this.key ) {
 		delete data[this.key];
