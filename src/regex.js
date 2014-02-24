@@ -69,7 +69,7 @@ var regex = {
 	object_undefined        : /object|undefined/,
 	opera                   : /opera/i,
 	osx                     : /macintosh/i,
-	patch                   : /^patch$/,
+	patch                   : /^patch$/i,
 	phone                   : /^([0-9\(\)\/\+ \-\.]+)$/,
 	playbook                : /playbook/i,
 	plural                  : /s$/,
