@@ -941,19 +941,11 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 
 	// Setting key
 	if ( !key ) {
-		if ( this.source === null ) {
-			if ( this.key === null ) {
-				key = utility.uuid();
-			}
-			else {
-				key = data[this.key] || utility.uuid();
-			}
-		}
-		else if ( data[this.source] === undefined ) {
-			key = utility.uuid();
+		if ( this.key !== null && data[this.key] ) {
+			key = data[this.key];
 		}
 		else {
-			key = data[this.source][this.key];
+			key = utility.uuid();
 		}
 	}
 
