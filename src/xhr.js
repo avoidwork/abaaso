@@ -335,7 +335,7 @@ var xhr = function () {
 		}
 
 		// Specifying Content-Length accordingly
-		if ( regex.put_post.test( this._params.method ) ) {
+		if ( regex.put_post.test( this._params.method ) || regex.patch.test( this._params.method ) ) {
 			this._headers["Content-Length"] = data !== null ? Buffer.byteLength( data ) : 0;
 		}
 
@@ -354,7 +354,7 @@ var xhr = function () {
 			options.agent              = false;
 		}
 
-		if ( parsed.auth !== undefined ) {
+		if ( parsed.auth !== undefined && !string.isEmpty( parsed.auth ) ) {
 			options.auth = parsed.auth;
 		}
 

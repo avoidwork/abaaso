@@ -507,7 +507,7 @@ var client = {
 		timeout = timeout || 30000;
 		var cors, xhr, payload, cached, typed, contentType, doc, ab, blob, defer;
 
-		if ( regex.put_post.test( type ) && args === undefined ) {
+		if ( ( regex.put_post.test( type ) || regex.patch.test( type ) ) && args === undefined ) {
 			throw new Error( label.error.invalidArguments );
 		}
 

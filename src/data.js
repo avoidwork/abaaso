@@ -882,18 +882,6 @@ DataStore.prototype.set = function ( key, data, batch ) {
 		}
 	}
 	else {
-		if ( record === null && ( key === null || key === undefined ) ) {
-			if ( this.key === null ) {
-				key = utility.genId();
-			}
-			else if ( data[this.key] ) {
-				key = data[this.key];
-			}
-			else {
-				key = utility.genId();
-			}
-		}
-
 		if ( !batch && events ) {
 			observer.fire( self.parentNode, "beforeDataSet", {key: key, data: data} );
 		}
@@ -950,6 +938,27 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 
 	// Clearing cached views
 	this.views = {};
+
+	// Setting key
+	if ( !key ) {
+		if ( this.source === null ) {
+			if ( this.key === null ) {
+				key = utility.uuid();
+			}
+			else {
+				key = data[this.key] || utility.uuid();
+			}
+		}
+		else if ( data[this.source] === undefined ) {
+			key = utility.uuid();
+		}
+		else {
+			key = data[this.source][this.key];
+		}
+	}
+	else {
+		key = utility.uuid();
+	}
 
 	// Removing primary key from data
 	if ( this.key ) {
