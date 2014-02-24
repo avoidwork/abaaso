@@ -90,7 +90,7 @@ var xhr = function () {
 	handlerError = function ( e ) {
 		this.status       = ERR_REFUSED.test( e.message ) ? 503 : 500;
 		this.statusText   = "";
-		this.responseText = e.message;
+		this.responseText = e.message || label.error.serverError;
 		this._error       = true;
 		this._send        = false;
 		this.dispatchEvent( "error" );
@@ -116,6 +116,7 @@ var xhr = function () {
 		this.responseText       = "";
 		this.responseType       = "";
 		this.responseXML        = null;
+		this.timeout            = 30000;
 		this.status             = UNSENT;
 		this.statusText         = "";
 
@@ -365,9 +366,19 @@ var xhr = function () {
 
 		request = obj.request( options, function ( arg ) {
 			handler.call( self, arg );
-		}).on( "error", function ( e ) {
+		} ).on( "error", function ( e ) {
 			handlerError.call( self, e );
-		});
+		} ).on( "socket", function ( socket ) {
+			socket.setTimeout( self.timeout, function () {
+				socket.destroy();
+				handlerError.call( self );
+			} );
+
+			socket.on( "error", function ( e ) {
+				socket.destroy();
+				handlerError.call( self, e );
+			} );
+		} );
 
 		data === null ? request.setSocketKeepAlive( true, 10000 ) : request.write( data, "utf8" );
 		this._request = request;

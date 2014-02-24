@@ -91,7 +91,7 @@
 <p><strong>Returns an Undefined</strong><br/>(undefined)</p></div></div><div class="code"><div class="wrapper">  <span class="nx">handlerError</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">status</span>       <span class="o">=</span> <span class="nx">ERR_REFUSED</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span> <span class="nx">e</span><span class="p">.</span><span class="nx">message</span> <span class="p">)</span> <span class="o">?</span> <span class="mi">503</span> <span class="o">:</span> <span class="mi">500</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">statusText</span>   <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">message</span> <span class="o">||</span> <span class="nx">label</span><span class="p">.</span><span class="nx">error</span><span class="p">.</span><span class="nx">serverError</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>       <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_send</span>        <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">dispatchEvent</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span> <span class="p">);</span>
@@ -112,6 +112,7 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">responseType</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">responseXML</span>        <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">timeout</span>            <span class="o">=</span> <span class="mi">30000</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">status</span>             <span class="o">=</span> <span class="nx">UNSENT</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">statusText</span>         <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Psuedo private for prototype chain</p></div></div><div class="code"><div class="wrapper">    <span class="k">this</span><span class="p">.</span><span class="nx">_id</span>                <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>             <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
@@ -343,7 +344,7 @@
       <span class="nx">options</span><span class="p">.</span><span class="nx">agent</span>              <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">}</span>
 
-    <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">empty</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">options</span><span class="p">.</span><span class="nx">auth</span> <span class="o">=</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span><span class="p">;</span>
     <span class="p">}</span>
 
@@ -354,9 +355,19 @@
 
     <span class="nx">request</span> <span class="o">=</span> <span class="nx">obj</span><span class="p">.</span><span class="nx">request</span><span class="p">(</span> <span class="nx">options</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">arg</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">handler</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
-    <span class="p">}).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
-    <span class="p">});</span>
+    <span class="p">}</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;socket&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">socket</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nx">socket</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">timeout</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">socket</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+        <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span> <span class="p">);</span>
+      <span class="p">}</span> <span class="p">);</span>
+
+      <span class="nx">socket</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
+        <span class="nx">socket</span><span class="p">.</span><span class="nx">destroy</span><span class="p">();</span>
+        <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
+      <span class="p">}</span> <span class="p">);</span>
+    <span class="p">}</span> <span class="p">);</span>
 
     <span class="nx">data</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">request</span><span class="p">.</span><span class="nx">setSocketKeepAlive</span><span class="p">(</span> <span class="kc">true</span><span class="p">,</span> <span class="mi">10000</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="s2">&quot;utf8&quot;</span> <span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_request</span> <span class="o">=</span> <span class="nx">request</span><span class="p">;</span>
