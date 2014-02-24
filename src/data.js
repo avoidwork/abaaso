@@ -956,9 +956,6 @@ DataStore.prototype.setComplete = function ( record, key, data, batch, defer ) {
 			key = data[this.source][this.key];
 		}
 	}
-	else {
-		key = utility.uuid();
-	}
 
 	// Removing primary key from data
 	if ( this.key ) {
