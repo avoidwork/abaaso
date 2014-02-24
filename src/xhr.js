@@ -368,19 +368,9 @@ var xhr = function () {
 			handler.call( self, arg );
 		} ).on( "error", function ( e ) {
 			handlerError.call( self, e );
-		} ).on( "socket", function ( socket ) {
-			socket.setTimeout( self.timeout, function () {
-				socket.destroy();
-				handlerError.call( self );
-			} );
-
-			socket.on( "error", function ( e ) {
-				socket.destroy();
-				handlerError.call( self, e );
-			} );
 		} );
 
-		data === null ? request.setSocketKeepAlive( true, 10000 ) : request.write( data, "utf8" );
+		data === null ? request.setSocketKeepAlive( true ) : request.write( data, "utf8" );
 		this._request = request;
 		request.end();
 
