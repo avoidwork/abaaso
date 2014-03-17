@@ -1030,15 +1030,18 @@ var array = {
 		if ( number.diff( total, ( divisor * nth ) ) > nth ) {
 			lower = total - ( low * divisor ) + low - 1;
 		}
+		else if ( total % divisor > 0 && lower * nth >= total ) {
+			lower--;
+		}
 
 		while ( ++i < divisor ) {
+			if ( i > 0 ) {
+				start = start + nth;
+			}
+
 			if ( !lowered && lower < divisor && i === lower ) {
 				--nth;
 				lowered = true;
-			}
-
-			if ( i > 0 ) {
-				start = start + nth;
 			}
 
 			result.push( array.limit( obj, start, nth ) );

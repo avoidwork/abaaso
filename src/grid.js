@@ -113,7 +113,7 @@ DataGrid.prototype.init = function ( debounce ) {
 
 		if ( this.filtered === true ) {
 			// Creating DataListFilter
-			ref.push( filter( element.create( "input", {"class": "filter"}, container, "first" ), ref[0], this.fields.join( "," ), debounce || 250 ) );
+			ref.push( filter( element.create( "input", {"class": "filter", "type": "text"}, container, "first" ), ref[0], this.fields.join( "," ), debounce || 250 ) );
 			
 			// Setting by-reference DataListFilter on DataGrid
 			this.filter = ref[1];
