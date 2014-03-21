@@ -357,7 +357,11 @@
       <span class="nx">handler</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">arg</span> <span class="p">);</span>
     <span class="p">}</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span> <span class="nx">e</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">handlerError</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">self</span><span class="p">,</span> <span class="nx">e</span> <span class="p">);</span>
+    <span class="p">}</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;timeout&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+      <span class="nx">request</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span>
     <span class="p">}</span> <span class="p">);</span>
+
+    <span class="nx">request</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">||</span> <span class="mi">30000</span> <span class="p">);</span>
 
     <span class="nx">data</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">request</span><span class="p">.</span><span class="nx">setSocketKeepAlive</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="s2">&quot;utf8&quot;</span> <span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_request</span> <span class="o">=</span> <span class="nx">request</span><span class="p">;</span>
