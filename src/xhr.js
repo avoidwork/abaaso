@@ -347,12 +347,12 @@ var xhr = function () {
 			path     : parsed.path,
 			port     : parsed.port,
 			method   : this._params.method,
-			headers  : this._headers
+			headers  : this._headers,
+			agent    : false
 		};
 
 		if ( parsed.protocol === "https:" ) {
 			options.rejectUnauthorized = false;
-			options.agent              = false;
 		}
 
 		if ( parsed.auth !== undefined && !string.isEmpty( parsed.auth ) ) {
