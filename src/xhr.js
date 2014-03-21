@@ -368,7 +368,11 @@ var xhr = function () {
 			handler.call( self, arg );
 		} ).on( "error", function ( e ) {
 			handlerError.call( self, e );
+		} ).on( "timeout", function () {
+			request.abort();
 		} );
+
+		request.setTimeout( self.timeout || 30000 );
 
 		data === null ? request.setSocketKeepAlive( true ) : request.write( data, "utf8" );
 		this._request = request;

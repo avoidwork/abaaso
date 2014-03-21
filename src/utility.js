@@ -413,7 +413,7 @@ var utility = {
 			type        : e.type    || "TypeError"
 		};
 
-		utility.log( o.stack || o.message, !warning ? "error" : "warn" );
+		utility.log( ( o.stack || o.message || o ), !warning ? "error" : "warn" );
 		utility.error.log.push( o );
 		observer.fire( abaaso, "error", o );
 
