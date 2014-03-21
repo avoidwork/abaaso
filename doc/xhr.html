@@ -336,12 +336,12 @@
       <span class="nx">path</span>     <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span>
       <span class="nx">port</span>     <span class="o">:</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">port</span><span class="p">,</span>
       <span class="nx">method</span>   <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_params</span><span class="p">.</span><span class="nx">method</span><span class="p">,</span>
-      <span class="nx">headers</span>  <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span>
+      <span class="nx">headers</span>  <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">_headers</span><span class="p">,</span>
+      <span class="nx">agent</span>    <span class="o">:</span> <span class="kc">false</span>
     <span class="p">};</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">protocol</span> <span class="o">===</span> <span class="s2">&quot;https:&quot;</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nx">options</span><span class="p">.</span><span class="nx">rejectUnauthorized</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
-      <span class="nx">options</span><span class="p">.</span><span class="nx">agent</span>              <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="o">!==</span> <span class="kc">undefined</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">string</span><span class="p">.</span><span class="nx">isEmpty</span><span class="p">(</span> <span class="nx">parsed</span><span class="p">.</span><span class="nx">auth</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
