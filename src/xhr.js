@@ -116,7 +116,6 @@ var xhr = function () {
 		this.responseText       = "";
 		this.responseType       = "";
 		this.responseXML        = null;
-		this.timeout            = 30000;
 		this.status             = UNSENT;
 		this.statusText         = "";
 
@@ -371,8 +370,6 @@ var xhr = function () {
 		} ).on( "timeout", function () {
 			request.abort();
 		} );
-
-		request.setTimeout( self.timeout || 30000 );
 
 		data === null ? request.setSocketKeepAlive( true ) : request.write( data, "utf8" );
 		this._request = request;

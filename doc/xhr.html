@@ -112,7 +112,6 @@
     <span class="k">this</span><span class="p">.</span><span class="nx">responseText</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">responseType</span>       <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">responseXML</span>        <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
-    <span class="k">this</span><span class="p">.</span><span class="nx">timeout</span>            <span class="o">=</span> <span class="mi">30000</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">status</span>             <span class="o">=</span> <span class="nx">UNSENT</span><span class="p">;</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">statusText</span>         <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">;</span></div></div></div><div class="segment"><div class="comments "><div class="wrapper"><p>Psuedo private for prototype chain</p></div></div><div class="code"><div class="wrapper">    <span class="k">this</span><span class="p">.</span><span class="nx">_id</span>                <span class="o">=</span> <span class="nx">utility</span><span class="p">.</span><span class="nx">genId</span><span class="p">();</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_error</span>             <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
@@ -360,8 +359,6 @@
     <span class="p">}</span> <span class="p">).</span><span class="nx">on</span><span class="p">(</span> <span class="s2">&quot;timeout&quot;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
       <span class="nx">request</span><span class="p">.</span><span class="nx">abort</span><span class="p">();</span>
     <span class="p">}</span> <span class="p">);</span>
-
-    <span class="nx">request</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span> <span class="nx">self</span><span class="p">.</span><span class="nx">timeout</span> <span class="o">||</span> <span class="mi">30000</span> <span class="p">);</span>
 
     <span class="nx">data</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">?</span> <span class="nx">request</span><span class="p">.</span><span class="nx">setSocketKeepAlive</span><span class="p">(</span> <span class="kc">true</span> <span class="p">)</span> <span class="o">:</span> <span class="nx">request</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span> <span class="nx">data</span><span class="p">,</span> <span class="s2">&quot;utf8&quot;</span> <span class="p">);</span>
     <span class="k">this</span><span class="p">.</span><span class="nx">_request</span> <span class="o">=</span> <span class="nx">request</span><span class="p">;</span>
