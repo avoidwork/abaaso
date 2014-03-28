@@ -247,7 +247,8 @@ DataStore.prototype.crawl = function ( arg ) {
 	    record    = ( arg instanceof Object ) ? arg : this.get( arg ),
 	    defer     = deferred(),
 	    deferreds = [],
-	    parsed    = utility.parse( this.uri || "" );
+	    parsed    = utility.parse( this.uri || "" ),
+	    clone;
 
 	if ( this.uri === null || record === undefined ) {
 		throw new Error( label.error.invalidArguments );
@@ -257,41 +258,71 @@ DataStore.prototype.crawl = function ( arg ) {
 		observer.fire( this.parentNode, "beforeDataRetrieve", record );
 	}
 
-	// Depth of recursion is controled by `maxDepth`
-	utility.iterate( record.data, function ( v, k ) {
-		var uri;
+	// An Array is considered a collection
+	if ( record.data instanceof Array ) {
+		clone       = utility.clone( record.data );
+		record.data = {};
 
-		if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) || ( v.indexOf( "//" ) === -1 && v.charAt( 0 ) !== "/" ) ) {
-			return;
-		}
+		array.each( clone, function ( i ) {
+			var key = i.replace( /.*\//, "" ),
+			    uri;
 
-		array.add( self.collections, k );
+			record.data[key] = data( {id: record.key + "-" + key}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers, retrieve: true} );
 
-		record.data[k] = data( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers, retrieve: true} );
-
-		if ( !array.contains( self.leafs, k ) && ( record.data[k].data.maxDepth === 0 || record.data[k].data.depth <= record.data[k].data.maxDepth ) ) {
-			if ( v instanceof Array ) {
-				deferreds.push( record.data[k].data.batch( "set", v ) );
+			if ( i.indexOf( "//" ) === -1 ) {
+				// Relative path to store, i.e. a child
+				if ( i.charAt( 0 ) !== "/" ) {
+					uri = self.buildUri( i );
+				}
+				// Root path, relative to store, i.e. a domain
+				else {
+					uri = parsed.protocol + "//" + parsed.host + i;
+				}
 			}
 			else {
-				if ( v.indexOf( "//" ) === -1 ) {
-					// Relative path to store, i.e. a child
-					if ( v.charAt( 0 ) !== "/" ) {
-						uri = self.buildUri( v );
-					}
-					// Root path, relative to store, i.e. a domain
-					else {
-						uri = parsed.protocol + "//" + parsed.host + v;
-					}
+				uri = i;
+			}
+
+			deferreds.push( record.data[key].data.setUri( uri ) );
+		} );
+	}
+	else {
+		// Depth of recursion is controled by `maxDepth`
+		utility.iterate( record.data, function ( v, k ) {
+			var uri;
+
+			if ( array.contains( self.ignore, k ) || array.contains( self.leafs, k ) || self.depth >= self.maxDepth || ( !( v instanceof Array ) && typeof v !== "string" ) || ( v.indexOf( "//" ) === -1 && v.charAt( 0 ) !== "/" ) ) {
+				return;
+			}
+
+			array.add( self.collections, k );
+
+			record.data[k] = data( {id: record.key + "-" + k}, null, {key: self.key, pointer: self.pointer, source: self.source, ignore: self.ignore.slice(), leafs: self.leafs.slice(), depth: self.depth + 1, maxDepth: self.maxDepth, headers: self.headers, retrieve: true} );
+
+			if ( !array.contains( self.leafs, k ) && ( record.data[k].data.maxDepth === 0 || record.data[k].data.depth <= record.data[k].data.maxDepth ) ) {
+				if ( v instanceof Array ) {
+					deferreds.push( record.data[k].data.batch( "set", v ) );
 				}
 				else {
-					uri = v;
-				}
+					if ( v.indexOf( "//" ) === -1 ) {
+						// Relative path to store, i.e. a child
+						if ( v.charAt( 0 ) !== "/" ) {
+							uri = self.buildUri( v );
+						}
+						// Root path, relative to store, i.e. a domain
+						else {
+							uri = parsed.protocol + "//" + parsed.host + v;
+						}
+					}
+					else {
+						uri = v;
+					}
 
-				deferreds.push( record.data[k].data.setUri( uri ) );
+					deferreds.push( record.data[k].data.setUri( uri ) );
+				}
 			}
-		}
-	});
+		});
+	}
 
 	if ( deferreds.length > 0 ) {
 		utility.when( deferreds ).then( function () {
