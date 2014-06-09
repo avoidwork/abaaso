@@ -40,7 +40,7 @@ var regex = {
 	header_replace          : /:.*/,
 	header_value_replace    : /.*:\s+/,
 	html                    : /^<.*>$/,
-	http_body               : /200|202|203|206/,
+	http_body               : /200|201|202|203|206/,
 	http_ports              : /80|443/,
 	ie                      : /msie|ie/i,
 	input_button            : /button|submit|reset/,

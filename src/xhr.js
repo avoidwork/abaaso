@@ -336,10 +336,22 @@ var xhr = function () {
 
 		// Specifying Content-Length accordingly
 		if ( regex.put_post.test( this._params.method ) || regex.patch.test( this._params.method ) ) {
-			this._headers["Content-Length"] = data !== null ? Buffer.byteLength( data ) : 0;
+			if ( data === null ) {
+				this._headers["content-length"] = 0;
+			}
+			else if ( typeof data == "string" ) {
+				this._headers["content-length"] = Buffer.byteLength( data );
+			}
+			else if ( data instanceof Buffer || typeof data.toString == "function" ) {
+				data = data.toString();
+				this._headers["content-length"] = Buffer.byteLength( data );
+			}
+			else {
+				throw new Error( label.error.invalidArguments );
+			}
 		}
 
-		this._headers.Host = parsed.hostname + ( !regex.http_ports.test( parsed.port ) ? ":" + parsed.port : "" );
+		this._headers.Host = parsed.host;
 
 		options = {
 			hostname : parsed.hostname,

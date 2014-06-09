@@ -772,8 +772,8 @@ var client = {
 							uri.fire( "after" + typed, r, xhr );
 							break;
 						case 201:
-							if ( ( o.headers.Location === undefined || string.isEmpty ( o.headers.Location ) ) && !string.isUrl ( r ) ) {
-								exception( new Error( label.error.invalidArguments ), xhr );
+							if ( ( o.headers.location === undefined || string.isEmpty( o.headers.location ) ) && !string.isUrl( r ) ) {
+								defer.resolve( r );
 							}
 							else {
 								redirect = string.trim ( o.headers.Location || r );
@@ -783,7 +783,6 @@ var client = {
 								}, function ( e ) {
 									exception( e, xhr );
 								} );
-								break;
 							}
 							break;
 						case 204:
@@ -812,7 +811,7 @@ var client = {
 					exception( new Error( label.error.serverInvalidMethod ), xhr );
 					break;
 				default:
-					exception( new Error( label.error.serverError ), xhr );
+					exception( new Error( xhr.responseText || label.error.serverError ), xhr );
 					break;
 			}
 

@@ -741,8 +741,6 @@ var utility = {
 			uri = !server ? location.href : "";
 		}
 
-		uri = decodeURIComponent( uri );
-
 		if ( !server ) {
 			obj = document.createElement( "a" );
 			obj.href = uri;
@@ -865,26 +863,22 @@ var utility = {
 	 */
 	queryString : function ( arg, qstring ) {
 		var obj    = {},
-		    result = qstring !== undefined ? ( qstring.indexOf( "?" ) > -1 ? qstring.replace( /.*\?/, "" ) : null) : ( server || string.isEmpty( location.search ) ? null : location.search.replace( "?", "" ) ),
-		    item;
+		    result = qstring !== undefined ? ( qstring.indexOf( "?" ) > -1 ? qstring.replace( /.*\?/, "" ) : null) : ( server || string.isEmpty( location.search ) ? null : location.search.replace( "?", "" ) );
 
 		if ( result !== null && !string.isEmpty( result ) ) {
 			result = result.split( "&" );
 			array.each( result, function (prop ) {
-				item = prop.split( "=" );
+				var item = prop.split( "=" );
 
 				if ( string.isEmpty( item[0] ) ) {
 					return;
 				}
 
-				if ( item[1] === undefined || string.isEmpty( item[1] ) ) {
+				if ( item[1] === undefined ) {
 					item[1] = "";
 				}
-				else if ( string.isNumber( item[1] )) {
-					item[1] = Number(item[1] );
-				}
-				else if ( string.isBoolean( item[1] )) {
-					item[1] = (item[1] === "true" );
+				else {
+					item[1] = utility.coerce( decodeURIComponent( item[1] ) );
 				}
 
 				if ( obj[item[0]] === undefined ) {
