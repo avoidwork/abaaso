@@ -4,6 +4,9 @@ abaaso is a modern, lightweight Enterprise class RESTful JavaScript application 
 
 [![build status](https://secure.travis-ci.org/avoidwork/abaaso.png)](http://travis-ci.org/avoidwork/abaaso)
 
+## Deprecated!
+**Notice** This project is 'complete', but flawed.Please use [keigai](https://github.com/avoidwork/keigai), which is a fork refactored toward functional programming!
+
 ## What is Supported?
 
 All standards compliant browsers and platforms such as Desktops, Tablets, Smartphones, Google TV, and more!
